@@ -21,7 +21,7 @@ import androidx.core.os.asOutcomeReceiver
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryDetailsFormatter
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
 import com.android.healthconnect.controller.shared.usecase.BaseUseCase
@@ -71,7 +71,7 @@ constructor(
 }
 
 data class LoadDataEntryInput(
-    val permissionType: HealthPermissionType,
+    val permissionType: FitnessPermissionType,
     val entryId: String,
     val showDataOrigin: Boolean
 )

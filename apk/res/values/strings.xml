@@ -19,7 +19,7 @@
     <string name="health_connect_summary" description="Health connect summary, which describes what user can do when they click Health Connect">Manage app access to health data</string>
     <!-- region Home screen -->
     <string name="permissions_and_data_header" description="Header for section listing actions for showing connected apps permissions and data screens [CHAR LIMIT=NONE] ">Permissions and data</string>
-    <string name="home_subtitle" description="Description on the home screen of the app. [CHAR_LIMIT=NONE]">Manage the health and fitness data on your phone, and control which apps can access it</string>
+    <string name="home_subtitle" description="Description on the home screen of the app. [CHAR_LIMIT=NONE]">Manage the health and fitness data on your device, and control which apps can access it</string>
     <string name="data_title" description="Label for a button that takes the user to the data management screens. [CHAR_LIMIT=40]">Data and access</string>
     <string name="all_categories_title" description="Title of a screen that lists all health data categories. [CHAR_LIMIT=40]">All categories</string>
     <string name="see_all_categories" description="Label for a button that takes the user to the all categories screens. [CHAR_LIMIT=40]">See all categories</string>
@@ -428,6 +428,10 @@
     <string name="connected_apps_empty_list_section_title" description="Title of section when there are no connected apps">You don\'t currently have any compatible apps installed</string>
     <string name="additional_access_label" description="Label of a button that opens additional permissions access for an app. [CHAR_LIMIT=40]">Additional access</string>
     <string name="removed_additional_permissions_toast" description="Message letting the user know that additional permissions have also been removed for this app">Removed additional permissions for this app</string>
+    <string name="permissions_header" description="Title shown for section that lists permissions. [CHAR_LIMIT=40]">Permissions</string>
+    <string name="manage_fitness_permissions" description="Label of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Manage fitness permissions</string>
+    <string name="manage_medical_permissions" description="Label of a button that opens the medical permissions screen. [CHAR_LIMIT=40]">Manage health record permissions</string>
+
     <!--endregion-->
 
     <!--region Denied Apps -->
@@ -479,6 +483,7 @@
 
     <string name="export_destination_title" description="Title of the export destination screen where users can select which cloud storage service to store their exported data. [CHAR_LIMIT=40]">Choose where to save scheduled export</string>
     <string name="export_invalid_storage" description="Message shown to the user when they pick a local storage app instead of a cloud storage app to export their data to. [CHAR_LIMIT=NONE]">Please choose a storage app to export your data</string>
+    <string name="export_default_file_name" description="File name of exported Health Connect data. Note: Health Connect is the brand. [CHAR_LIMIT=40]">Health Connect</string>
 
     <string name="import_confirmation_dialog_title" description="Title displayed on dialog asking user to confirm their choice of file for import. [CHAR_LIMIT=NONE]">Import this file?</string>
     <string name="import_confirmation_dialog_cancel_button" description="Text on a button that cancels the file import process if the user chooses not to import the selected file. [CHAR_LIMIT=40]">Cancel</string>
@@ -501,7 +506,7 @@
 
     <!--region Onboarding -->
     <string name="onboarding_title" description="Label used to show the title of onboarding page when user opens Health Connect app for the fist time">Get started with Health&#160;Connect</string>
-    <string name="onboarding_description" description="Content description of Health Connect app on the onboarding page">Health&#160;Connect stores your health and fitness data, giving you a simple way to sync the different apps on your phone</string>
+    <string name="onboarding_description" description="Content description of Health Connect app on the onboarding page">Health&#160;Connect stores your health and fitness data, giving you a simple way to sync the different apps on your device</string>
     <string name="share_data" description="Label used to show how the user can share data with apps">Share data with your apps</string>
     <string name="share_data_description" description="Content description for how the user can share data with apps">Choose the data each app can read or write to Health&#160;Connect</string>
     <string name="manage_your_settings" description="Label used to show how the user can manage settings and privacy">Manage your settings and privacy</string>

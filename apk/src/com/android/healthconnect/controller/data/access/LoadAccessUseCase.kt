@@ -17,7 +17,7 @@ package com.android.healthconnect.controller.data.access
 
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -41,33 +41,35 @@ constructor(
 ) : ILoadAccessUseCase {
     /** Returns a map of [AppAccessState] to apps. */
     override suspend operator fun invoke(
-        permissionType: HealthPermissionType
-    ): UseCaseResults<Map<AppAccessState, List<AppMetadata>>> =
+        permissionType: FitnessPermissionType
+    ): UseCaseResults<Map<AppAccessState, List<AppAccessMetadata>>> =
         withContext(dispatcher) {
             try {
                 val appsWithFitnessPermissions: List<String> =
                     healthPermissionReader.getAppsWithFitnessPermissions()
                 val contributingApps: List<AppMetadata> =
                     loadPermissionTypeContributorAppsUseCase.invoke(permissionType)
-                val readAppMetadataSet: MutableSet<AppMetadata> = mutableSetOf()
-                val writeAppMetadataSet: MutableSet<AppMetadata> = mutableSetOf()
+                val readAppMetadataSet: MutableSet<AppAccessMetadata> = mutableSetOf()
+                val writeAppMetadataSet: MutableSet<AppAccessMetadata> = mutableSetOf()
                 val writeAppPackageNameSet: MutableSet<String> = mutableSetOf()
-                val inactiveAppMetadataSet: MutableSet<AppMetadata> = mutableSetOf()
+                val inactiveAppMetadataSet: MutableSet<AppAccessMetadata> = mutableSetOf()
 
                 appsWithFitnessPermissions.forEach {
                     val permissionsPerPackage: List<String> =
                         loadGrantedHealthPermissionsUseCase(it)
+                    val appPermissionsType = healthPermissionReader.getAppPermissionsType(it)
+                    val appAccessMetadata = AppAccessMetadata(appInfoReader.getAppMetadata(it), appPermissionsType)
 
                     // Apps that can READ the given healthPermissionType.
                     if (permissionsPerPackage.contains(
                         FitnessPermission(permissionType, PermissionsAccessType.READ).toString())) {
-                        readAppMetadataSet.add(appInfoReader.getAppMetadata(it))
+                        readAppMetadataSet.add(appAccessMetadata)
                     }
                     // Apps that can WRITE the given healthPermissionType.
                     if (permissionsPerPackage.contains(
                         FitnessPermission(permissionType, PermissionsAccessType.WRITE)
                             .toString())) {
-                        writeAppMetadataSet.add(appInfoReader.getAppMetadata(it))
+                        writeAppMetadataSet.add(appAccessMetadata)
                         writeAppPackageNameSet.add(it)
                     }
                 }
@@ -75,7 +77,9 @@ constructor(
                 // Connect.
                 contributingApps.forEach { app ->
                     if (!writeAppPackageNameSet.contains(app.packageName)) {
-                        inactiveAppMetadataSet.add(app)
+                        // Inactive apps don't navigate to appInfoScreen hence no need to specify appPermissionsType.
+                        val appAccessMetadata = AppAccessMetadata(appMetadata = app)
+                        inactiveAppMetadataSet.add(appAccessMetadata)
                     }
                 }
 
@@ -93,14 +97,14 @@ constructor(
         }
 
     private fun alphabeticallySortedMetadataList(
-        packageNames: Set<AppMetadata>
-    ): List<AppMetadata> {
-        return packageNames.sortedBy { appMetadata -> appMetadata.appName }
+        packageNames: Set<AppAccessMetadata>
+    ): List<AppAccessMetadata> {
+        return packageNames.sortedBy { appAccessMetadata -> appAccessMetadata.appMetadata.appName }
     }
 }
 
 interface ILoadAccessUseCase {
     suspend fun invoke(
-        permissionType: HealthPermissionType
-    ): UseCaseResults<Map<AppAccessState, List<AppMetadata>>>
+        permissionType: FitnessPermissionType
+    ): UseCaseResults<Map<AppAccessState, List<AppAccessMetadata>>>
 }

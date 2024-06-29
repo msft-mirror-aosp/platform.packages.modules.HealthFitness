@@ -18,7 +18,7 @@ import com.android.healthconnect.controller.dataentries.formatters.DistanceForma
 import com.android.healthconnect.controller.dataentries.formatters.SleepSessionFormatter
 import com.android.healthconnect.controller.dataentries.formatters.StepsFormatter
 import com.android.healthconnect.controller.dataentries.formatters.TotalCaloriesBurnedFormatter
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
@@ -88,7 +88,7 @@ class LoadDataAggregationsUseCaseTest {
 
             val input =
                 LoadAggregationInput.PeriodAggregation(
-                    HealthPermissionType.STEPS,
+                    FitnessPermissionType.STEPS,
                     TEST_APP_PACKAGE_NAME,
                     Instant.now(),
                     DateNavigationPeriod.PERIOD_DAY,
@@ -111,7 +111,7 @@ class LoadDataAggregationsUseCaseTest {
 
             val input =
                 LoadAggregationInput.PeriodAggregation(
-                    HealthPermissionType.DISTANCE,
+                    FitnessPermissionType.DISTANCE,
                     TEST_APP_PACKAGE_NAME,
                     Instant.now(),
                     DateNavigationPeriod.PERIOD_DAY,
@@ -133,7 +133,7 @@ class LoadDataAggregationsUseCaseTest {
 
             val input =
                 LoadAggregationInput.PeriodAggregation(
-                    HealthPermissionType.TOTAL_CALORIES_BURNED,
+                    FitnessPermissionType.TOTAL_CALORIES_BURNED,
                     TEST_APP_PACKAGE_NAME,
                     Instant.now(),
                     DateNavigationPeriod.PERIOD_DAY,
@@ -156,7 +156,7 @@ class LoadDataAggregationsUseCaseTest {
 
             val input =
                 LoadAggregationInput.CustomAggregation(
-                    HealthPermissionType.SLEEP,
+                    FitnessPermissionType.SLEEP,
                     TEST_APP_PACKAGE_NAME,
                     Instant.now(),
                     Instant.now(),

@@ -20,7 +20,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissiontypes.api.FilterPermissionTypesUseCase
 import com.android.healthconnect.controller.permissiontypes.api.LoadContributingAppsUseCase
 import com.android.healthconnect.controller.permissiontypes.api.LoadPermissionTypesUseCase
@@ -57,7 +57,7 @@ constructor(
     private val _editedPriorityList = MutableLiveData<List<AppMetadata>>()
     private val _categoryLabel = MutableLiveData<String>()
 
-    /** Provides a list of [HealthPermissionType]s displayed in [HealthPermissionTypesFragment]. */
+    /** Provides a list of [FitnessPermissionType]s displayed in [HealthPermissionTypesFragment]. */
     val permissionTypesData: LiveData<PermissionTypesState>
         get() = _permissionTypesData
 
@@ -164,7 +164,7 @@ constructor(
 
     sealed class PermissionTypesState {
         object Loading : PermissionTypesState()
-        data class WithData(val permissionTypes: List<HealthPermissionType>) :
+        data class WithData(val permissionTypes: List<FitnessPermissionType>) :
             PermissionTypesState()
     }
 

@@ -15,7 +15,7 @@ import com.android.healthconnect.controller.data.entries.api.LoadDataEntriesUseC
 import com.android.healthconnect.controller.data.entries.api.LoadEntriesHelper
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.tests.utils.forDataType
 import com.android.healthconnect.controller.tests.utils.getStepsRecord
@@ -70,7 +70,7 @@ class LoadDataEntriesUseCaseTest {
         val stepsDate = LocalDate.of(2023, 4, 5)
         val input =
             LoadDataEntriesInput(
-                permissionType = HealthPermissionType.STEPS,
+                permissionType = FitnessPermissionType.STEPS,
                 packageName = null,
                 displayedStartTime = stepsDate.toInstantAtStartOfDay(),
                 period = DateNavigationPeriod.PERIOD_DAY,
@@ -115,7 +115,7 @@ class LoadDataEntriesUseCaseTest {
 
         val input =
             LoadDataEntriesInput(
-                permissionType = HealthPermissionType.SLEEP,
+                permissionType = FitnessPermissionType.SLEEP,
                 packageName = null,
                 displayedStartTime = sleepDate.toInstantAtStartOfDay(),
                 period = DateNavigationPeriod.PERIOD_DAY,
