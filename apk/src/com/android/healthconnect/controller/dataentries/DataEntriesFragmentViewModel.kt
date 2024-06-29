@@ -22,10 +22,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedAggregation
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.DISTANCE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.STEPS
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.TOTAL_CALORIES_BURNED
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.DISTANCE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.TOTAL_CALORIES_BURNED
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Instant
@@ -53,7 +53,7 @@ constructor(
 
     val currentSelectedDate = MutableLiveData<Instant>()
 
-    fun loadData(permissionType: HealthPermissionType, selectedDate: Instant) {
+    fun loadData(permissionType: FitnessPermissionType, selectedDate: Instant) {
         _dataEntries.postValue(DataEntriesFragmentState.Loading)
         currentSelectedDate.postValue(selectedDate)
         viewModelScope.launch {
@@ -61,7 +61,7 @@ constructor(
             val entriesResults =
                 when (permissionType) {
                     // Special-casing Menstruation as it spans multiple days
-                    HealthPermissionType.MENSTRUATION -> {
+                    FitnessPermissionType.MENSTRUATION -> {
                         loadMenstruationDataUseCase.invoke(selectedDate)
                     }
                     else -> {
@@ -87,7 +87,7 @@ constructor(
     }
 
     private suspend fun loadAggregation(
-        permissionType: HealthPermissionType,
+        permissionType: FitnessPermissionType,
         selectedDate: Instant
     ): UseCaseResults<FormattedAggregation> {
         val input = LoadAggregationInput(permissionType, selectedDate)
@@ -95,7 +95,7 @@ constructor(
     }
 
     private suspend fun loadEntries(
-        permissionType: HealthPermissionType,
+        permissionType: FitnessPermissionType,
         selectedDate: Instant
     ): UseCaseResults<List<FormattedEntry>> {
         val input = LoadDataEntriesInput(permissionType, selectedDate)
@@ -103,7 +103,7 @@ constructor(
     }
 
     private suspend fun addAggregation(
-        permissionType: HealthPermissionType,
+        permissionType: FitnessPermissionType,
         selectedDate: Instant,
         list: ArrayList<FormattedEntry>
     ) {

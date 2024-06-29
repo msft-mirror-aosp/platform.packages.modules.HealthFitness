@@ -21,6 +21,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.UpsertMedicalResourceRequest;
+import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 
@@ -40,7 +41,6 @@ public class PhrDataFactory {
             "https://fhir.com/oauth/api/FHIR/R5/";
     public static final String DIFFERENT_DATA_SOURCE_DISPLAY_NAME = "Doctor Y";
 
-    public static final String MEDICAL_RESOURCE_ID = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
     public static final String FHIR_DATA_IMMUNIZATION =
             "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization1\"}";
 
@@ -52,8 +52,6 @@ public class PhrDataFactory {
     public static final String FHIR_RESOURCE_TYPE_IMMUNIZATION = "Immunization";
     public static final String FHIR_RESOURCE_ID_IMMUNIZATION = "Immunization1";
 
-    public static final String DIFFERENT_MEDICAL_RESOURCE_ID =
-            "ffffffff-gggg-hhhh-iiii-jjjjjjjjjjjj";
     public static final String FHIR_DATA_ALLERGY =
             "{\"resourceType\" : \"Allergy\", \"id\" : \"Allergy1\"}";
     public static final String FHIR_RESOURCE_TYPE_ALLERGY = "Allergy";
@@ -95,13 +93,33 @@ public class PhrDataFactory {
     }
 
     /**
+     * Creates and returns a {@link FhirResource.Builder} with default arguments.
+     *
+     * <p>By default, it contains the {@link PhrDataFactory#FHIR_DATA_IMMUNIZATION}.
+     */
+    public static FhirResource.Builder getFhirResourceBuilder() {
+        return new FhirResource.Builder(
+                FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                FHIR_RESOURCE_ID_IMMUNIZATION,
+                FHIR_DATA_IMMUNIZATION);
+    }
+
+    /**
+     * Creates and returns a {@link FhirResource} with default arguments.
+     *
+     * <p>By default, it contains the {@link PhrDataFactory#FHIR_DATA_IMMUNIZATION}.
+     */
+    public static FhirResource getFhirResource() {
+        return getFhirResourceBuilder().build();
+    }
+
+    /**
      * Creates and returns a {@link MedicalResource.Builder} with default arguments.
      *
      * <p>By default, it contains the {@link PhrDataFactory#FHIR_DATA_IMMUNIZATION}.
      */
     public static MedicalResource.Builder getMedicalResourceBuilder() {
         return new MedicalResource.Builder(
-                MEDICAL_RESOURCE_ID,
                 MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                 DATA_SOURCE_ID,
                 FHIR_DATA_IMMUNIZATION);
