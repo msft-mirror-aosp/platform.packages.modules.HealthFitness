@@ -13,7 +13,7 @@ import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.StepsCadenceRecord
 import android.os.OutcomeReceiver
 import androidx.test.platform.app.InstrumentationRegistry
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissiontypes.api.FilterPermissionTypesUseCase
 import com.android.healthconnect.controller.tests.utils.CoroutineTestRule
 import com.android.healthconnect.controller.tests.utils.NOW
@@ -74,14 +74,14 @@ class FilterPermissionTypesUseCaseTest {
             usecase.invoke(HealthDataCategory.ACTIVITY, TEST_APP_PACKAGE_NAME)
 
         Truth.assertThat(testApp1FilteredPermissionCategories.size).isEqualTo(1)
-        Truth.assertThat(testApp1FilteredPermissionCategories).contains(HealthPermissionType.STEPS)
+        Truth.assertThat(testApp1FilteredPermissionCategories).contains(FitnessPermissionType.STEPS)
 
         val testApp2FilteredPermissionCategories =
             usecase.invoke(HealthDataCategory.ACTIVITY, TEST_APP_PACKAGE_NAME_2)
 
         Truth.assertThat(testApp2FilteredPermissionCategories.size).isEqualTo(1)
         Truth.assertThat(testApp2FilteredPermissionCategories)
-            .contains(HealthPermissionType.EXERCISE)
+            .contains(FitnessPermissionType.EXERCISE)
     }
 
     @Test
@@ -117,8 +117,8 @@ class FilterPermissionTypesUseCaseTest {
             val result = usecase.invoke(HealthDataCategory.ACTIVITY, TEST_APP_PACKAGE_NAME)
 
             Truth.assertThat(result.size).isEqualTo(2)
-            Truth.assertThat(result).contains(HealthPermissionType.EXERCISE)
-            Truth.assertThat(result).contains(HealthPermissionType.STEPS)
+            Truth.assertThat(result).contains(FitnessPermissionType.EXERCISE)
+            Truth.assertThat(result).contains(FitnessPermissionType.STEPS)
         }
 
     private fun prepareAnswer(

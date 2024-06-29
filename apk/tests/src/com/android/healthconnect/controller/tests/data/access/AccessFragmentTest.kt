@@ -37,7 +37,7 @@ import com.android.healthconnect.controller.data.access.AccessViewModel.AccessSc
 import com.android.healthconnect.controller.data.access.AppAccessMetadata
 import com.android.healthconnect.controller.data.access.AppAccessState
 import com.android.healthconnect.controller.dataaccess.HealthDataAccessFragment
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
@@ -262,7 +262,7 @@ class AccessFragmentTest {
 
     private fun distanceBundle(): Bundle {
         val bundle = Bundle()
-        bundle.putSerializable(PERMISSION_TYPE_KEY, HealthPermissionType.DISTANCE)
+        bundle.putSerializable(PERMISSION_TYPE_KEY, FitnessPermissionType.DISTANCE)
         return bundle
     }
 }

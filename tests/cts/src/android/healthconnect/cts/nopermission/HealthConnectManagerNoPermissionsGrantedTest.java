@@ -40,6 +40,11 @@ import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurned
 import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurnedRecordWithEmptyMetadata;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_LONG_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.utils.TestUtils.createMedicalDataSource;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByDuration;
@@ -49,6 +54,7 @@ import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.readMedicalResourcesByIds;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
 import static android.healthconnect.cts.utils.TestUtils.updateRecords;
+import static android.healthconnect.cts.utils.TestUtils.upsertMedicalResources;
 import static android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
@@ -58,12 +64,14 @@ import static com.google.common.truth.Truth.assertThat;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 import android.health.connect.AggregateRecordsRequest;
+import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.datatypes.AggregationType;
@@ -397,6 +405,44 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
                     .isEqualTo(HealthConnectException.ERROR_SECURITY);
             assertThat(healthConnectException.getMessage())
                     .contains("Caller doesn't have permission to read or write medical data");
+        }
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void createMedicalDataSource_noPermission_expectError() throws InterruptedException {
+        try {
+            CreateMedicalDataSourceRequest request =
+                    new CreateMedicalDataSourceRequest.Builder(
+                                    DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME)
+                            .build();
+
+            createMedicalDataSource(request);
+            Assert.fail(
+                    "Create medical data source must be not allowed without correct HC PHR "
+                            + "permission");
+        } catch (HealthConnectException healthConnectException) {
+            assertThat(healthConnectException.getErrorCode())
+                    .isEqualTo(HealthConnectException.ERROR_SECURITY);
+        }
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void upsertMedicalResources_noPermission_expectError() throws InterruptedException {
+        try {
+            UpsertMedicalResourceRequest request =
+                    new UpsertMedicalResourceRequest.Builder(
+                                    DATA_SOURCE_LONG_ID, FHIR_DATA_IMMUNIZATION)
+                            .build();
+
+            upsertMedicalResources(List.of(request));
+            Assert.fail(
+                    "Upsert medical resources must be not allowed without correct HC PHR"
+                            + " permission");
+        } catch (HealthConnectException healthConnectException) {
+            assertThat(healthConnectException.getErrorCode())
+                    .isEqualTo(HealthConnectException.ERROR_SECURITY);
         }
     }
 

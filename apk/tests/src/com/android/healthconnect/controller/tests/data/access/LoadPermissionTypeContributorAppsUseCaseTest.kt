@@ -12,7 +12,7 @@ import android.health.connect.datatypes.WeightRecord
 import android.os.OutcomeReceiver
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.access.LoadPermissionTypeContributorAppsUseCase
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -62,7 +62,7 @@ class LoadPermissionTypeContributorAppsUseCaseTest {
             .`when`(healthConnectManager)
             .queryAllRecordTypesInfo(ArgumentMatchers.any(), ArgumentMatchers.any())
 
-        val result = loadPermissionTypeContributorAppsUseCase.invoke(HealthPermissionType.STEPS)
+        val result = loadPermissionTypeContributorAppsUseCase.invoke(FitnessPermissionType.STEPS)
         val expected = listOf<AppMetadata>()
         assertThat(result).isEqualTo(expected)
     }
@@ -92,7 +92,7 @@ class LoadPermissionTypeContributorAppsUseCaseTest {
             .`when`(healthConnectManager)
             .queryAllRecordTypesInfo(ArgumentMatchers.any(), ArgumentMatchers.any())
 
-        val result = loadPermissionTypeContributorAppsUseCase.invoke(HealthPermissionType.STEPS)
+        val result = loadPermissionTypeContributorAppsUseCase.invoke(FitnessPermissionType.STEPS)
         assertThat(result.size).isEqualTo(2)
         assertThat(result[0].packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
         assertThat(result[1].packageName).isEqualTo(TEST_APP_PACKAGE_NAME_2)

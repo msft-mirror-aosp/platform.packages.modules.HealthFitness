@@ -36,7 +36,7 @@ import com.android.healthconnect.controller.data.entries.datenavigation.DateNavi
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationView
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsFragment
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings.Companion.fromPermissionType
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -55,7 +55,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     @Inject lateinit var logger: HealthConnectLogger
     // TODO(b/291249677): Add logging.
 
-    private lateinit var permissionType: HealthPermissionType
+    private lateinit var permissionType: FitnessPermissionType
     private val entriesViewModel: EntriesViewModel by viewModels()
 
     private lateinit var header: AppHeaderPreference
@@ -101,7 +101,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         val view = inflater.inflate(R.layout.fragment_entries, container, false)
         if (requireArguments().containsKey(PERMISSION_TYPE_KEY)) {
             permissionType =
-                arguments?.getSerializable(PERMISSION_TYPE_KEY, HealthPermissionType::class.java)
+                arguments?.getSerializable(PERMISSION_TYPE_KEY, FitnessPermissionType::class.java)
                     ?: throw IllegalArgumentException("PERMISSION_TYPE_KEY can't be null!")
         }
         setTitle(fromPermissionType(permissionType).uppercaseLabel)
