@@ -25,6 +25,10 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.android.healthconnect.controller.shared.app.AppPermissionsType.COMBINED_PERMISSIONS
+import com.android.healthconnect.controller.shared.app.AppPermissionsType.FITNESS_PERMISSIONS_ONLY
+import com.android.healthconnect.controller.shared.app.AppPermissionsType.MEDICAL_PERMISSIONS_ONLY
+import com.android.healthconnect.controller.tests.utils.MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME
 
 @HiltAndroidTest
 class HealthPermissionReaderTest {
@@ -212,6 +216,34 @@ class HealthPermissionReaderTest {
     fun isMedicalPermission_withoutMedicalPermission_returnsFalse() = runTest {
         val perm = HealthPermission.AdditionalPermission(HealthPermissions.READ_EXERCISE_ROUTES)
         assertThat(permissionReader.isMedicalPermission(perm.toString())).isFalse()
+    }
+
+    @Test
+    fun getAppPermissionsType_flagDisabled_returnsFitnessOnly() = runTest {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(false)
+
+        assertThat(permissionReader.getAppPermissionsType(TEST_APP_PACKAGE_NAME)).isEqualTo(FITNESS_PERMISSIONS_ONLY)
+    }
+
+    @Test
+    fun getAppPermissionsType_flagEnabled_returnsCombinedPermissions() = runTest {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
+
+        assertThat(permissionReader.getAppPermissionsType(TEST_APP_PACKAGE_NAME)).isEqualTo(COMBINED_PERMISSIONS)
+    }
+
+    @Test
+    fun getAppPermissionsType_medicalPermissionsOnlyApp_returnsMedicalPermissions() = runTest {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
+
+        assertThat(permissionReader.getAppPermissionsType(MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME)).isEqualTo(MEDICAL_PERMISSIONS_ONLY)
+    }
+
+    @Test
+    fun getAppPermissionsType_noPermissions_returnsFitnessPermissions() = runTest {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(false)
+
+        assertThat(permissionReader.getAppPermissionsType(MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME)).isEqualTo(FITNESS_PERMISSIONS_ONLY)
     }
 
     private fun String.toHealthPermission(): FitnessPermission {

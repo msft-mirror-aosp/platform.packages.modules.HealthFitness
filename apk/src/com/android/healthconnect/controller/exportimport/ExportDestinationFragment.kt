@@ -48,7 +48,6 @@ import javax.inject.Inject
 /** Export destination fragment for Health Connect. */
 @AndroidEntryPoint(Fragment::class)
 class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
-
     private val contract = ActivityResultContracts.StartActivityForResult()
     private val saveResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(contract, ::onSave)
@@ -117,7 +116,8 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
                                                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                                         .setType("application/zip")
                                         .addCategory(Intent.CATEGORY_OPENABLE)
-                                        .putExtra(DocumentsContract.EXTRA_INITIAL_URI, root.uri))
+                                        .putExtra(DocumentsContract.EXTRA_INITIAL_URI, root.uri)
+                                        .putExtra(Intent.EXTRA_TITLE, getDefaultFileName()))
                             }
                             nextButton.setEnabled(true)
                         }
@@ -149,5 +149,9 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
                 requireActivity().finish()
             }
         }
+    }
+
+    private fun getDefaultFileName(): String {
+        return getString(R.string.export_default_file_name) + ".zip";
     }
 }

@@ -41,6 +41,7 @@ import com.android.healthconnect.controller.permissions.connectedapps.ConnectedA
 import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsViewModel.DisconnectAllState.Loading
 import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsViewModel.DisconnectAllState.NotStarted
 import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsViewModel.DisconnectAllState.Updated
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.ALLOWED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.DENIED
@@ -118,11 +119,58 @@ class ConnectedAppsFragmentTest {
     }
 
     @Test
-    fun appName_navigatesToManageAppPermissions() {
-        setupFragmentForNavigation()
+    fun appName_navigatesToFitnessAppPermissions() {
+        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ALLOWED, permissionsType = AppPermissionsType.FITNESS_PERMISSIONS_ONLY))
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
+        (deviceInfoUtils as FakeDeviceInfoUtils).setSendFeedbackAvailability(false)
+        deviceInfoUtils.setPlayStoreAvailability(true)
+
+        launchFragment<ConnectedAppsFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            navHostController.setCurrentDestination(R.id.connectedAppsFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText(TEST_APP_NAME)).perform(click())
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.fitnessAppFragment)
+    }
+
+    @Test
+    fun appName_navigatesToMedicalAppPermissions() {
+        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ALLOWED, permissionsType = AppPermissionsType.MEDICAL_PERMISSIONS_ONLY))
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
+        (deviceInfoUtils as FakeDeviceInfoUtils).setSendFeedbackAvailability(false)
+        deviceInfoUtils.setPlayStoreAvailability(true)
+
+        launchFragment<ConnectedAppsFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            navHostController.setCurrentDestination(R.id.connectedAppsFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
+        onView(withText(TEST_APP_NAME)).perform(click())
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.medicalAppFragment)
+    }
+
+    @Test
+    fun appName_navigatesToCombinedPermissions() {
+        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ALLOWED, permissionsType = AppPermissionsType.COMBINED_PERMISSIONS))
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
+
+        (deviceInfoUtils as FakeDeviceInfoUtils).setSendFeedbackAvailability(false)
+        deviceInfoUtils.setPlayStoreAvailability(true)
+
+        launchFragment<ConnectedAppsFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            navHostController.setCurrentDestination(R.id.connectedAppsFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
+        onView(withText(TEST_APP_NAME)).perform(click())
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.combinedPermissionsFragment)
     }
 
     @Test

@@ -74,7 +74,6 @@ import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissionCategory;
 import android.health.connect.InsertRecordsResponse;
-import android.health.connect.MedicalIdFilter;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
@@ -86,6 +85,7 @@ import android.health.connect.RecordIdFilter;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.UpdateDataOriginPriorityOrderRequest;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogTokenResponse;
@@ -1252,7 +1252,19 @@ public final class TestUtils {
     }
 
     /**
-     * Helper function to read medical resources from the DB by a list of {@link MedicalIdFilter},
+     * Helper function to upsert medical resources into the DB by a list of {@link
+     * UpsertMedicalResourceRequest}s, using HealthConnectManager.
+     */
+    public static List<MedicalResource> upsertMedicalResources(
+            List<UpsertMedicalResourceRequest> requests) throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        getHealthConnectManager()
+                .upsertMedicalResources(requests, Executors.newSingleThreadExecutor(), receiver);
+        return receiver.getResponse();
+    }
+
+    /**
+     * Helper function to read medical resources from the DB by a list of {@link MedicalResourceId},
      * using HealthConnectManager.
      */
     public static List<MedicalResource> readMedicalResourcesByIds(List<MedicalResourceId> ids)

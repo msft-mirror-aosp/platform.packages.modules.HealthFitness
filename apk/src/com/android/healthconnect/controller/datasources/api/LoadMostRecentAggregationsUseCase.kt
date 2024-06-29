@@ -18,7 +18,7 @@ import com.android.healthconnect.controller.data.entries.api.ILoadDataAggregatio
 import com.android.healthconnect.controller.data.entries.api.LoadAggregationInput
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.datasources.AggregationCardInfo
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthDataCategoryInt
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
@@ -55,9 +55,9 @@ constructor(
                 if (healthDataCategory == HealthDataCategory.ACTIVITY) {
                     val activityPermissionTypesWithAggregations =
                         listOf(
-                            HealthPermissionType.STEPS,
-                            HealthPermissionType.DISTANCE,
-                            HealthPermissionType.TOTAL_CALORIES_BURNED)
+                            FitnessPermissionType.STEPS,
+                            FitnessPermissionType.DISTANCE,
+                            FitnessPermissionType.TOTAL_CALORIES_BURNED)
 
                     activityPermissionTypesWithAggregations.forEach { permissionType ->
                         val lastDateWithData: LocalDate?
@@ -80,7 +80,7 @@ constructor(
 
                     val lastDateWithSleepData: LocalDate?
                     when (val lastDateWithSleepDataResult =
-                        loadLastDateWithPriorityDataUseCase.invoke(HealthPermissionType.SLEEP)) {
+                        loadLastDateWithPriorityDataUseCase.invoke(FitnessPermissionType.SLEEP)) {
                         is UseCaseResults.Success -> {
                             lastDateWithSleepData = lastDateWithSleepDataResult.data
                         }
@@ -102,7 +102,7 @@ constructor(
 
     private suspend fun getLastAvailableActivityAggregation(
         lastDateWithData: LocalDate?,
-        healthPermissionType: HealthPermissionType
+        fitnessPermissionType: FitnessPermissionType
     ): AggregationCardInfo? {
         if (lastDateWithData == null) {
             return null
@@ -114,7 +114,7 @@ constructor(
         // call for aggregate
         val input =
             LoadAggregationInput.PeriodAggregation(
-                permissionType = healthPermissionType,
+                permissionType = fitnessPermissionType,
                 packageName = null,
                 displayedStartTime = lastDateInstant,
                 period = DateNavigationPeriod.PERIOD_DAY,
@@ -123,7 +123,7 @@ constructor(
         return when (val useCaseResult = loadDataAggregationsUseCase.invoke(input)) {
             is UseCaseResults.Success -> {
                 // use this aggregation value to construct the card
-                AggregationCardInfo(healthPermissionType, useCaseResult.data, lastDateInstant)
+                AggregationCardInfo(fitnessPermissionType, useCaseResult.data, lastDateInstant)
             }
             is UseCaseResults.Failed -> {
                 throw useCaseResult.exception
@@ -162,7 +162,7 @@ constructor(
     ): AggregationCardInfo {
         val aggregationInput =
             LoadAggregationInput.CustomAggregation(
-                permissionType = HealthPermissionType.SLEEP,
+                permissionType = FitnessPermissionType.SLEEP,
                 packageName = null,
                 startTime = minStartTime,
                 endTime = maxEndTime,
@@ -172,7 +172,7 @@ constructor(
             is UseCaseResults.Success -> {
                 // use this aggregation value to construct the card
                 AggregationCardInfo(
-                    HealthPermissionType.SLEEP, useCaseResult.data, minStartTime, maxEndTime)
+                    FitnessPermissionType.SLEEP, useCaseResult.data, minStartTime, maxEndTime)
             }
             is UseCaseResults.Failed -> {
                 throw useCaseResult.exception

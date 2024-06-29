@@ -19,7 +19,7 @@ import android.health.connect.HealthConnectManager
 import android.health.connect.RecordTypeInfoResponse
 import android.health.connect.datatypes.Record
 import androidx.core.os.asOutcomeReceiver
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.fromHealthPermissionCategory
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.app.AppInfoReader
@@ -39,8 +39,8 @@ constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ILoadPermissionTypeContributorAppsUseCase {
 
-    /** Returns a list of [AppMetadata]s that have data in this [HealthPermissionType]. */
-    override suspend operator fun invoke(permissionType: HealthPermissionType): List<AppMetadata> =
+    /** Returns a list of [AppMetadata]s that have data in this [FitnessPermissionType]. */
+    override suspend operator fun invoke(permissionType: FitnessPermissionType): List<AppMetadata> =
         withContext(dispatcher) {
             try {
                 val recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse> =
@@ -66,5 +66,5 @@ constructor(
 }
 
 interface ILoadPermissionTypeContributorAppsUseCase {
-    suspend fun invoke(permissionType: HealthPermissionType): List<AppMetadata>
+    suspend fun invoke(permissionType: FitnessPermissionType): List<AppMetadata>
 }

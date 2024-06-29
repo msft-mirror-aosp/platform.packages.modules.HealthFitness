@@ -43,6 +43,7 @@ import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.R
 import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.Constants.MIGRATION_NOT_COMPLETE_DIALOG_SEEN
 import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
@@ -357,13 +358,7 @@ class HomeFragment : Hilt_HomeFragment() {
                         newPreference ->
                         if (!recentApp.isInactive) {
                             newPreference.setOnPreferenceClickListener {
-                                findNavController()
-                                    .navigate(
-                                        R.id.action_homeFragment_to_fitnessAppFragment,
-                                        bundleOf(
-                                            Intent.EXTRA_PACKAGE_NAME to
-                                                recentApp.metadata.packageName,
-                                            Constants.EXTRA_APP_NAME to recentApp.metadata.appName))
+                                navigateToAppInfoScreen(recentApp)
                                 true
                             }
                         }
@@ -382,5 +377,21 @@ class HomeFragment : Hilt_HomeFragment() {
             }
             mRecentAccessPreference?.addPreference(seeAllPreference)
         }
+    }
+
+    private fun navigateToAppInfoScreen(recentApp: RecentAccessEntry) {
+        val appPermissionsType = recentApp.appPermissionsType
+        val navigationId =
+            when (appPermissionsType) {
+                AppPermissionsType.FITNESS_PERMISSIONS_ONLY -> R.id.action_homeFragment_to_fitnessAppFragment
+                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY -> R.id.action_homeFragment_to_medicalAppFragment
+                AppPermissionsType.COMBINED_PERMISSIONS -> R.id.action_homeFragment_to_combinedPermissionsFragment
+            }
+        findNavController()
+            .navigate(
+                navigationId,
+                bundleOf(
+                    Intent.EXTRA_PACKAGE_NAME to recentApp.metadata.packageName,
+                    Constants.EXTRA_APP_NAME to recentApp.metadata.appName))
     }
 }

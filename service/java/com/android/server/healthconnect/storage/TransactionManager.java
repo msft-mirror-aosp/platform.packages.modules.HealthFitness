@@ -38,10 +38,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.health.connect.Constants;
 import android.health.connect.HealthConnectException;
-import android.health.connect.MedicalResourceId;
 import android.health.connect.PageTokenWrapper;
-import android.health.connect.datatypes.MedicalResource;
-import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.os.UserHandle;
 import android.util.Pair;
@@ -52,7 +49,6 @@ import androidx.annotation.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -70,6 +66,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -110,56 +107,6 @@ public final class TransactionManager {
         mHealthConnectDatabase =
                 mUserHandleToDatabaseMap.get(healthConnectUserContext.getCurrentUserHandle());
         mUserHandle = healthConnectUserContext.getCurrentUserHandle();
-    }
-
-    // TODO(b/347193220): move all the medical resource related methods from transaction manager to
-    // their
-    // specific helpers.
-    /**
-     * Upserts (insert/update) a list of {@link MedicalResource}s created based on the given list of
-     * {@link MedicalResourceInternal}s into the HealthConnect database.
-     *
-     * @param medicalResourceInternals a list of {@link MedicalResourceInternal}.
-     * @return List of {@link MedicalResource}s that were upserted into the database, in the same
-     *     order as their associated {@link MedicalResourceInternal}s.
-     */
-    public List<MedicalResource> upsertMedicalResources(
-            @NonNull List<MedicalResourceInternal> medicalResourceInternals)
-            throws SQLiteException {
-        if (Constants.DEBUG) {
-            Slog.d(
-                    TAG,
-                    "Upserting "
-                            + medicalResourceInternals.size()
-                            + " "
-                            + MedicalResourceInternal.class.getSimpleName()
-                            + "(s).");
-        }
-
-        // TODO(b/337018927): Add support for change logs and access logs.
-        List<MedicalResource> upsertedMedicalResources = new ArrayList<>();
-        SQLiteDatabase db = getWritableDb();
-        db.beginTransaction();
-
-        try {
-            for (MedicalResourceInternal medicalResourceInternal : medicalResourceInternals) {
-                UUID uuid =
-                        StorageUtils.generateMedicalResourceUUID(
-                                medicalResourceInternal.getFhirResourceId(),
-                                medicalResourceInternal.getFhirResourceType(),
-                                medicalResourceInternal.getDataSourceId());
-                UpsertTableRequest upsertTableRequest =
-                        MedicalResourceHelper.getUpsertTableRequest(uuid, medicalResourceInternal);
-                insertOrReplaceRecord(db, upsertTableRequest);
-                upsertedMedicalResources.add(
-                        MedicalResourceHelper.buildMedicalResource(uuid, medicalResourceInternal));
-            }
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
-        }
-
-        return upsertedMedicalResources;
     }
 
     /**
@@ -366,23 +313,6 @@ public final class TransactionManager {
                                 aggregateTableRequest.getCommandToFetchAggregateMetadata(), null)) {
             aggregateTableRequest.onResultsFetched(cursor, metaDataCursor);
         }
-    }
-
-    /**
-     * Reads the {@link MedicalResource}s stored in the HealthConnect database.
-     *
-     * @param medicalResourceIds a {@link MedicalResourceId}.
-     * @return List of {@link MedicalResource}s read from medical_resource table based on ids.
-     */
-    public List<MedicalResource> readMedicalResourcesByIds(
-            @NonNull List<MedicalResourceId> medicalResourceIds) throws SQLiteException {
-        List<MedicalResource> medicalResources;
-        ReadTableRequest readTableRequest =
-                MedicalResourceHelper.getReadTableRequest(medicalResourceIds);
-        try (Cursor cursor = read(readTableRequest)) {
-            medicalResources = MedicalResourceHelper.getMedicalResources(cursor);
-        }
-        return medicalResources;
     }
 
     /**
@@ -606,10 +536,10 @@ public final class TransactionManager {
      * @return list of distinct packageNames corresponding to the input table name after querying
      *     the table.
      */
-    public HashMap<Integer, HashSet<String>> getDistinctPackageNamesForRecordsTable(
+    public Map<Integer, Set<String>> getDistinctPackageNamesForRecordsTable(
             Set<Integer> recordTypes) throws SQLiteException {
         final SQLiteDatabase db = getReadableDb();
-        HashMap<Integer, HashSet<String>> packagesForRecordTypeMap = new HashMap<>();
+        HashMap<Integer, Set<String>> packagesForRecordTypeMap = new HashMap<>();
         for (Integer recordType : recordTypes) {
             RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordType);
             HashSet<String> packageNamesForDatatype = new HashSet<>();

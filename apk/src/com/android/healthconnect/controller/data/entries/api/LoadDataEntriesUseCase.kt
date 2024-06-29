@@ -17,7 +17,7 @@ package com.android.healthconnect.controller.data.entries.api
 
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.usecase.BaseUseCase
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
@@ -44,7 +44,7 @@ constructor(
 }
 
 data class LoadDataEntriesInput(
-    val permissionType: HealthPermissionType,
+    val permissionType: FitnessPermissionType,
     val packageName: String?,
     val displayedStartTime: Instant,
     val period: DateNavigationPeriod,
