@@ -37,7 +37,7 @@ import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.filters.ChipPreference
 import com.android.healthconnect.controller.filters.FilterChip
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings.Companion.fromPermissionType
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissiontypes.prioritylist.PriorityListDialogFragment
 import com.android.healthconnect.controller.permissiontypes.prioritylist.PriorityListDialogFragment.Companion.PRIORITY_UPDATED_EVENT
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
@@ -259,7 +259,7 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
         mManageDataCategory?.addPreference(appPriorityButton)
     }
 
-    private fun updatePermissionTypesList(permissionTypeList: List<HealthPermissionType>) {
+    private fun updatePermissionTypesList(permissionTypeList: List<FitnessPermissionType>) {
         mDeleteCategoryData?.isEnabled = permissionTypeList.isNotEmpty()
         mPermissionTypes?.removeAll()
         if (permissionTypeList.isEmpty()) {
