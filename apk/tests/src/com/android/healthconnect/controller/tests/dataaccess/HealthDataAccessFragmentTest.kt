@@ -28,9 +28,10 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.access.AccessViewModel
 import com.android.healthconnect.controller.data.access.AccessViewModel.AccessScreenState
 import com.android.healthconnect.controller.data.access.AccessViewModel.AccessScreenState.WithData
+import com.android.healthconnect.controller.data.access.AppAccessMetadata
 import com.android.healthconnect.controller.data.access.AppAccessState
 import com.android.healthconnect.controller.dataaccess.HealthDataAccessFragment
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.launchFragment
@@ -94,7 +95,7 @@ class HealthDataAccessFragmentTest {
     fun dataAccessFragment_readSection_isDisplayed() {
         val map =
             mapOf(
-                AppAccessState.Read to listOf(AppMetadata("package1", "appName1", null)),
+                AppAccessState.Read to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
                 AppAccessState.Write to emptyList(),
                 AppAccessState.Inactive to emptyList())
         whenever(viewModel.appMetadataMap).then {
@@ -118,8 +119,8 @@ class HealthDataAccessFragmentTest {
     fun dataAccessFragment_readAndWriteSections_isDisplayed() {
         val map =
             mapOf(
-                AppAccessState.Read to listOf(AppMetadata("package1", "appName1", null)),
-                AppAccessState.Write to listOf(AppMetadata("package1", "appName1", null)),
+                AppAccessState.Read to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
+                AppAccessState.Write to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
                 AppAccessState.Inactive to emptyList())
         whenever(viewModel.appMetadataMap).then {
             MutableLiveData<AccessScreenState>(WithData(map))
@@ -151,7 +152,7 @@ class HealthDataAccessFragmentTest {
             mapOf(
                 AppAccessState.Read to emptyList(),
                 AppAccessState.Write to emptyList(),
-                AppAccessState.Inactive to listOf(AppMetadata("package1", "appName1", null)))
+                AppAccessState.Inactive to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))))
         whenever(viewModel.appMetadataMap).then {
             MutableLiveData<AccessScreenState>(WithData(map))
         }
@@ -200,7 +201,7 @@ class HealthDataAccessFragmentTest {
 
     private fun distanceBundle(): Bundle {
         val bundle = Bundle()
-        bundle.putSerializable(PERMISSION_TYPE_KEY, HealthPermissionType.DISTANCE)
+        bundle.putSerializable(PERMISSION_TYPE_KEY, FitnessPermissionType.DISTANCE)
         return bundle
     }
 }

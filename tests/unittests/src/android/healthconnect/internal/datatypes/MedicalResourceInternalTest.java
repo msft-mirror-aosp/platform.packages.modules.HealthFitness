@@ -16,37 +16,73 @@
 
 package android.healthconnect.internal.datatypes;
 
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_LONG_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceId;
+import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceType;
+
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import android.health.connect.datatypes.MedicalResource;
-import android.health.connect.internal.datatypes.MedicalResourceInternal;
+import static org.junit.Assert.assertThrows;
 
+import android.health.connect.UpsertMedicalResourceRequest;
+import android.health.connect.internal.datatypes.MedicalResourceInternal;
+import android.platform.test.annotations.DisableFlags;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
+
+import org.json.JSONException;
+import org.junit.Rule;
 import org.junit.Test;
 
-import java.util.UUID;
-
 public class MedicalResourceInternalTest {
-    private static final UUID MEDICAL_RESOURCE_ID = UUID.randomUUID();
-    private static final String DATA_SOURCE_ID = "data_source_id";
-    private static final String DATA = "{\"resourceType\" : \"Immunization\"}";
+    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Test
-    public void testMedicalResourceInternal_convertToExternalAndBack_objectsAreIdentical() {
-        MedicalResourceInternal original = buildMedicalResourceInternal();
+    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testMedicalResourceInternal_convertFromUpsertRequest_flagOff() {
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_LONG_ID, FHIR_DATA_IMMUNIZATION)
+                        .build();
 
-        MedicalResource external = original.toExternalResource();
-        MedicalResourceInternal restored = MedicalResourceInternal.fromExternalResource(external);
-
-        assertThat(restored).isEqualTo(original);
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> MedicalResourceInternal.fromUpsertRequest(request));
     }
 
-    private MedicalResourceInternal buildMedicalResourceInternal() {
-        return new MedicalResourceInternal()
-                .setType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
-                .setUuid(MEDICAL_RESOURCE_ID)
-                .setDataSourceId(DATA_SOURCE_ID)
-                .setData(DATA);
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testMedicalResourceInternal_convertFromUpsertRequest_success()
+            throws JSONException {
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_LONG_ID, FHIR_DATA_IMMUNIZATION)
+                        .build();
+        MedicalResourceInternal expected =
+                new MedicalResourceInternal()
+                        .setDataSourceId(DATA_SOURCE_ID)
+                        .setFhirResourceType(getFhirResourceType(FHIR_DATA_IMMUNIZATION))
+                        .setFhirResourceId(getFhirResourceId(FHIR_DATA_IMMUNIZATION))
+                        .setData(FHIR_DATA_IMMUNIZATION);
+
+        MedicalResourceInternal medicalResourceInternal =
+                MedicalResourceInternal.fromUpsertRequest(request);
+
+        assertThat(medicalResourceInternal).isEqualTo(expected);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testMedicalResourceInternal_convertFromUpsertRequest_invalidJson() {
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_LONG_ID, "{\"resourceType\" : \"Immunization}")
+                        .build();
+
+        assertThrows(JSONException.class, () -> MedicalResourceInternal.fromUpsertRequest(request));
     }
 }

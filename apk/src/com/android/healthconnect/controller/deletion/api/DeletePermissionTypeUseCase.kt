@@ -41,7 +41,7 @@ constructor(
     ) {
         val deleteRequest = DeleteUsingFiltersRequest.Builder().setTimeRangeFilter(timeRangeFilter)
 
-        HealthPermissionToDatatypeMapper.getDataTypes(deletePermissionType.healthPermissionType)
+        HealthPermissionToDatatypeMapper.getDataTypes(deletePermissionType.fitnessPermissionType)
             .map { recordType -> deleteRequest.addRecordType(recordType) }
 
         withContext(dispatcher) {

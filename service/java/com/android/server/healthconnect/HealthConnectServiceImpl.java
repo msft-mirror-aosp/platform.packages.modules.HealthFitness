@@ -58,6 +58,7 @@ import android.health.connect.MedicalResourceId;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.RecordTypeInfoResponse;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.accesslog.AccessLogsResponseParcel;
 import android.health.connect.aidl.ActivityDatesRequestParcel;
@@ -81,6 +82,7 @@ import android.health.connect.aidl.IGetPriorityResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
+import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
@@ -109,6 +111,7 @@ import android.health.connect.exportimport.IScheduledExportStatusCallback;
 import android.health.connect.exportimport.ImportStatus;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
+import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
@@ -149,6 +152,7 @@ import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.permission.DataPermissionEnforcer;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
+import com.android.server.healthconnect.permission.MedicalDataPermissionEnforcer;
 import com.android.server.healthconnect.storage.AutoDeleteService;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -161,12 +165,15 @@ import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.AggregateTransactionRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -210,6 +217,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     private final DataPermissionEnforcer mDataPermissionEnforcer;
 
+    private final MedicalDataPermissionEnforcer mMedicalDataPermissionEnforcer;
+
     private final AppOpsManagerLocal mAppOpsManagerLocal;
     private final MigrationUiStateManager mMigrationUiStateManager;
     private final ImportManager mImportManager;
@@ -220,6 +229,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final RecordMapper mRecordMapper;
     private final AggregationTypeIdMapper mAggregationTypeIdMapper;
     private final DeviceInfoHelper mDeviceInfoHelper;
+    private final MedicalResourceHelper mMedicalResourceHelper;
 
     private volatile UserHandle mCurrentForegroundUser;
 
@@ -242,6 +252,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mMigrationStateManager = migrationStateManager;
         mDataPermissionEnforcer =
                 new DataPermissionEnforcer(mPermissionManager, mContext, deviceConfigManager);
+        mMedicalDataPermissionEnforcer = new MedicalDataPermissionEnforcer(mPermissionManager);
         mAppOpsManagerLocal = LocalManagerRegistry.getManager(AppOpsManagerLocal.class);
         mBackupRestore =
                 new BackupRestore(mFirstGrantTimeManager, mMigrationStateManager, mContext);
@@ -255,6 +266,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mRecordMapper = RecordMapper.getInstance();
         mAggregationTypeIdMapper = AggregationTypeIdMapper.getInstance();
         mDeviceInfoHelper = DeviceInfoHelper.getInstance();
+        mMedicalResourceHelper = new MedicalResourceHelper(mTransactionManager);
     }
 
     public void onUserSwitching(UserHandle currentForegroundUser) {
@@ -2268,7 +2280,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 logger,
                                 request.getDataSize());
 
-                        // TODO(b/344902130) - Enforce WRITE_MEDICAL_RESOURCE permissions.
+                        mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
+                                attributionSource);
 
                         // TODO(b/344560623) - Add character limits to CreateMedicalDataSource
                         // displayName and fhirBaseUri values and enforce limit of 20 sources per
@@ -2289,6 +2302,115 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
                         tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                    } catch (HealthConnectException healthConnectException) {
+                        logger.setHealthDataServiceApiStatusError(
+                                healthConnectException.getErrorCode());
+                        Slog.e(TAG, "HealthConnectException: ", healthConnectException);
+                        tryAndThrowException(
+                                callback,
+                                healthConnectException,
+                                healthConnectException.getErrorCode());
+                    } catch (Exception e) {
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        Slog.e(TAG, "Exception: ", e);
+                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                    } finally {
+                        logger.build().log();
+                    }
+                },
+                uid,
+                holdsDataManagementPermission);
+    }
+
+    @Override
+    public void upsertMedicalResources(
+            @NonNull AttributionSource attributionSource,
+            @NonNull List<UpsertMedicalResourceRequest> requests,
+            @NonNull IMedicalResourcesResponseCallback callback) {
+        if (!personalHealthRecord()) {
+            HealthConnectException unsupportedException =
+                    new HealthConnectException(
+                            ERROR_UNSUPPORTED_OPERATION,
+                            "Upsert MedicalResources is not supported.");
+            Slog.e(TAG, "HealthConnectException: ", unsupportedException);
+            tryAndThrowException(
+                    callback, unsupportedException, unsupportedException.getErrorCode());
+            return;
+        }
+
+        checkParamsNonNull(attributionSource, requests, callback);
+
+        final int uid = Binder.getCallingUid();
+        final int pid = Binder.getCallingPid();
+        final UserHandle userHandle = Binder.getCallingUserHandle();
+        final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
+        final String callingPackageName =
+                Objects.requireNonNull(attributionSource.getPackageName());
+        final HealthConnectServiceLogger.Builder logger =
+                new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, INSERT_DATA)
+                        .setPackageName(callingPackageName);
+
+        HealthConnectThreadScheduler.schedule(
+                mContext,
+                () -> {
+                    try {
+                        enforceIsForegroundUser(userHandle);
+                        verifyPackageNameFromUid(uid, attributionSource);
+                        if (holdsDataManagementPermission) {
+                            throw new SecurityException(
+                                    "Apps with android.permission.MANAGE_HEALTH_DATA permission are"
+                                            + " not allowed to insert data");
+                        }
+                        List<Long> requestsSize =
+                                requests.stream()
+                                        .map(UpsertMedicalResourceRequest::getDataSize)
+                                        .toList();
+                        long requestsTotalSize =
+                                requestsSize.stream().mapToLong(Long::valueOf).sum();
+                        enforceMemoryRateLimit(requestsSize, requestsTotalSize);
+                        throwExceptionIfDataSyncInProgress();
+                        boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
+                        tryAcquireApiCallQuota(
+                                uid,
+                                QuotaCategory.QUOTA_CATEGORY_WRITE,
+                                isInForeground,
+                                logger,
+                                requestsTotalSize);
+
+                        mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
+                                attributionSource);
+
+                        List<MedicalResourceInternal> medicalResourcesToUpsert = new ArrayList<>();
+                        for (UpsertMedicalResourceRequest upsertMedicalResourceRequest : requests) {
+                            MedicalResourceInternal medicalResourceInternal =
+                                    MedicalResourceInternal.fromUpsertRequest(
+                                            upsertMedicalResourceRequest);
+                            medicalResourcesToUpsert.add(medicalResourceInternal);
+                        }
+                        List<MedicalResource> medicalResources =
+                                mMedicalResourceHelper.upsertMedicalResources(
+                                        medicalResourcesToUpsert);
+                        logger.setNumberOfRecords(medicalResources.size());
+
+                        tryAndReturnResult(callback, medicalResources, logger);
+                    } catch (JSONException jsonException) {
+                        logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
+                        Slog.e(TAG, "JSONException: ", jsonException);
+                        tryAndThrowException(
+                                callback, jsonException, HealthConnectException.ERROR_IO);
+                    } catch (SQLiteException sqLiteException) {
+                        logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
+                        Slog.e(TAG, "SQLiteException: ", sqLiteException);
+                        tryAndThrowException(
+                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                    } catch (SecurityException securityException) {
+                        logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
+                        Slog.e(TAG, "SecurityException: ", securityException);
+                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                    } catch (IllegalStateException illegalStateException) {
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        Slog.e(TAG, "IllegalStateException: ", illegalStateException);
+                        tryAndThrowException(callback, illegalStateException, ERROR_INTERNAL);
                     } catch (HealthConnectException healthConnectException) {
                         logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
@@ -2355,8 +2477,17 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             tryAcquireApiCallQuota(
                                     uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, logger);
 
-                            // TODO(b/340204629): Perform basic permission check. And set
-                            // enforceSelfRead.
+                            // Enforce caller has permission granted to at least one PHR permission
+                            // before reading from DB.
+                            // TODO(b/340204629): Pass granted permissions list to db.
+                            if (mMedicalDataPermissionEnforcer
+                                    .getGrantedMedicalPermissionsForPreflight(attributionSource)
+                                    .isEmpty()) {
+                                throw new SecurityException(
+                                        "Caller doesn't have permission to read or write medical"
+                                                + " data");
+                            }
+
                             if (!isInForeground) {
                                 // If Background Read feature is disabled or
                                 // READ_HEALTH_DATA_IN_BACKGROUND permission is not granted, then
@@ -2376,7 +2507,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                         // TODO(b/340204629): Pass extra fields to DB to perform permission check.
                         List<MedicalResource> medicalResources =
-                                mTransactionManager.readMedicalResourcesByIds(medicalResourceIds);
+                                mMedicalResourceHelper.readMedicalResourcesByIds(
+                                        medicalResourceIds);
                         logger.setNumberOfRecords(medicalResources.size());
 
                         // TODO(b/343921816): Creates access log.
@@ -2735,6 +2867,19 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         }
     }
 
+    private static void tryAndReturnResult(
+            IMedicalResourcesResponseCallback callback,
+            List<MedicalResource> medicalResources,
+            HealthConnectServiceLogger.Builder logger) {
+        try {
+            callback.onResult(medicalResources);
+            logger.setHealthDataServiceApiStatusSuccess();
+        } catch (RemoteException e) {
+            Slog.e(TAG, "Remote call to return UpsertMedicalResourcesResponse failed", e);
+            logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+        }
+    }
+
     private static void tryAndThrowException(
             @NonNull IInsertRecordsResponseCallback callback,
             @NonNull Exception exception,
@@ -2927,6 +3072,19 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             new HealthConnectException(errorCode, exception.toString())));
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to send result to the callback", e);
+        }
+    }
+
+    private static void tryAndThrowException(
+            @NonNull IMedicalResourcesResponseCallback callback,
+            @NonNull Exception exception,
+            @HealthConnectException.ErrorCode int errorCode) {
+        try {
+            callback.onError(
+                    new HealthConnectExceptionParcel(
+                            new HealthConnectException(errorCode, exception.toString())));
+        } catch (RemoteException e) {
+            Log.e(TAG, "Unable to send UpsertMedicalResourcesResponse to the callback", e);
         }
     }
 

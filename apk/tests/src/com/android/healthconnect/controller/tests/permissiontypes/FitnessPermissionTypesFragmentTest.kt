@@ -34,7 +34,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesViewModel
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesViewModel.AppsWithDataFragmentState
@@ -71,7 +71,7 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 
 @HiltAndroidTest
-class HealthPermissionTypesFragmentTest {
+class FitnessPermissionTypesFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @Inject lateinit var fakeFeatureUtils: FeatureUtils
@@ -120,9 +120,9 @@ class HealthPermissionTypesFragmentTest {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
                     listOf(
-                        HealthPermissionType.DISTANCE,
-                        HealthPermissionType.EXERCISE,
-                        HealthPermissionType.STEPS)))
+                        FitnessPermissionType.DISTANCE,
+                        FitnessPermissionType.EXERCISE,
+                        FitnessPermissionType.STEPS)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -166,9 +166,9 @@ class HealthPermissionTypesFragmentTest {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
                     listOf(
-                        HealthPermissionType.DISTANCE,
-                        HealthPermissionType.EXERCISE,
-                        HealthPermissionType.STEPS)))
+                        FitnessPermissionType.DISTANCE,
+                        FitnessPermissionType.EXERCISE,
+                        FitnessPermissionType.STEPS)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -215,7 +215,7 @@ class HealthPermissionTypesFragmentTest {
     fun permissionTypesFragment_activityCategory_trainingPlansAvailable_isDisplayed() {
         whenever(viewModel.permissionTypesData).then {
             MutableLiveData<PermissionTypesState>(
-                PermissionTypesState.WithData(listOf(HealthPermissionType.PLANNED_EXERCISE)))
+                PermissionTypesState.WithData(listOf(FitnessPermissionType.PLANNED_EXERCISE)))
         }
         whenever(viewModel.priorityList).then {
             MutableLiveData<PriorityListState>(
@@ -247,7 +247,7 @@ class HealthPermissionTypesFragmentTest {
         Mockito.`when`(viewModel.permissionTypesData).then {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
-                    listOf(HealthPermissionType.SLEEP)))
+                    listOf(FitnessPermissionType.SLEEP)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -280,9 +280,9 @@ class HealthPermissionTypesFragmentTest {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
                     listOf(
-                        HealthPermissionType.DISTANCE,
-                        HealthPermissionType.EXERCISE,
-                        HealthPermissionType.STEPS)))
+                        FitnessPermissionType.DISTANCE,
+                        FitnessPermissionType.EXERCISE,
+                        FitnessPermissionType.STEPS)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -322,9 +322,9 @@ class HealthPermissionTypesFragmentTest {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
                     listOf(
-                        HealthPermissionType.DISTANCE,
-                        HealthPermissionType.EXERCISE,
-                        HealthPermissionType.STEPS)))
+                        FitnessPermissionType.DISTANCE,
+                        FitnessPermissionType.EXERCISE,
+                        FitnessPermissionType.STEPS)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -362,9 +362,9 @@ class HealthPermissionTypesFragmentTest {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
                     listOf(
-                        HealthPermissionType.DISTANCE,
-                        HealthPermissionType.EXERCISE,
-                        HealthPermissionType.STEPS)))
+                        FitnessPermissionType.DISTANCE,
+                        FitnessPermissionType.EXERCISE,
+                        FitnessPermissionType.STEPS)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -416,9 +416,9 @@ class HealthPermissionTypesFragmentTest {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
                     listOf(
-                        HealthPermissionType.DISTANCE,
-                        HealthPermissionType.EXERCISE,
-                        HealthPermissionType.STEPS)))
+                        FitnessPermissionType.DISTANCE,
+                        FitnessPermissionType.EXERCISE,
+                        FitnessPermissionType.STEPS)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -454,9 +454,9 @@ class HealthPermissionTypesFragmentTest {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
                     listOf(
-                        HealthPermissionType.DISTANCE,
-                        HealthPermissionType.EXERCISE,
-                        HealthPermissionType.STEPS)))
+                        FitnessPermissionType.DISTANCE,
+                        FitnessPermissionType.EXERCISE,
+                        FitnessPermissionType.STEPS)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -488,7 +488,7 @@ class HealthPermissionTypesFragmentTest {
         Mockito.`when`(viewModel.permissionTypesData).then {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
-                    listOf(HealthPermissionType.DISTANCE, HealthPermissionType.EXERCISE)))
+                    listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.EXERCISE)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -515,7 +515,7 @@ class HealthPermissionTypesFragmentTest {
         Mockito.`when`(viewModel.permissionTypesData).then {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
-                    listOf(HealthPermissionType.DISTANCE, HealthPermissionType.EXERCISE)))
+                    listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.EXERCISE)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -545,9 +545,9 @@ class HealthPermissionTypesFragmentTest {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
                     listOf(
-                        HealthPermissionType.DISTANCE,
-                        HealthPermissionType.EXERCISE,
-                        HealthPermissionType.STEPS)))
+                        FitnessPermissionType.DISTANCE,
+                        FitnessPermissionType.EXERCISE,
+                        FitnessPermissionType.STEPS)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -591,7 +591,7 @@ class HealthPermissionTypesFragmentTest {
         Mockito.`when`(viewModel.permissionTypesData).then {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
-                    listOf(HealthPermissionType.SLEEP)))
+                    listOf(FitnessPermissionType.SLEEP)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -624,9 +624,9 @@ class HealthPermissionTypesFragmentTest {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
                     listOf(
-                        HealthPermissionType.BASAL_METABOLIC_RATE,
-                        HealthPermissionType.BODY_FAT,
-                        HealthPermissionType.HEIGHT)))
+                        FitnessPermissionType.BASAL_METABOLIC_RATE,
+                        FitnessPermissionType.BODY_FAT,
+                        FitnessPermissionType.HEIGHT)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -657,9 +657,9 @@ class HealthPermissionTypesFragmentTest {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
                     listOf(
-                        HealthPermissionType.BASAL_METABOLIC_RATE,
-                        HealthPermissionType.BODY_FAT,
-                        HealthPermissionType.HEIGHT)))
+                        FitnessPermissionType.BASAL_METABOLIC_RATE,
+                        FitnessPermissionType.BODY_FAT,
+                        FitnessPermissionType.HEIGHT)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -688,7 +688,7 @@ class HealthPermissionTypesFragmentTest {
         Mockito.`when`(viewModel.permissionTypesData).then {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
-                    listOf(HealthPermissionType.MENSTRUATION)))
+                    listOf(FitnessPermissionType.MENSTRUATION)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -718,7 +718,7 @@ class HealthPermissionTypesFragmentTest {
         Mockito.`when`(viewModel.permissionTypesData).then {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
-                    listOf(HealthPermissionType.MENSTRUATION)))
+                    listOf(FitnessPermissionType.MENSTRUATION)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -747,7 +747,7 @@ class HealthPermissionTypesFragmentTest {
         Mockito.`when`(viewModel.permissionTypesData).then {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
-                    listOf(HealthPermissionType.NUTRITION)))
+                    listOf(FitnessPermissionType.NUTRITION)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -777,7 +777,7 @@ class HealthPermissionTypesFragmentTest {
         Mockito.`when`(viewModel.permissionTypesData).then {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
-                    listOf(HealthPermissionType.NUTRITION)))
+                    listOf(FitnessPermissionType.NUTRITION)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -806,7 +806,7 @@ class HealthPermissionTypesFragmentTest {
         Mockito.`when`(viewModel.permissionTypesData).then {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
-                    listOf(HealthPermissionType.HEART_RATE)))
+                    listOf(FitnessPermissionType.HEART_RATE)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -836,7 +836,7 @@ class HealthPermissionTypesFragmentTest {
         Mockito.`when`(viewModel.permissionTypesData).then {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
-                    listOf(HealthPermissionType.HEART_RATE)))
+                    listOf(FitnessPermissionType.HEART_RATE)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
@@ -902,9 +902,9 @@ class HealthPermissionTypesFragmentTest {
             MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
                 HealthPermissionTypesViewModel.PermissionTypesState.WithData(
                     listOf(
-                        HealthPermissionType.DISTANCE,
-                        HealthPermissionType.EXERCISE,
-                        HealthPermissionType.STEPS)))
+                        FitnessPermissionType.DISTANCE,
+                        FitnessPermissionType.EXERCISE,
+                        FitnessPermissionType.STEPS)))
         }
         Mockito.`when`(viewModel.priorityList).then {
             MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(

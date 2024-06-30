@@ -7,7 +7,7 @@ import com.android.healthconnect.controller.deletion.DeletionParameters
 import com.android.healthconnect.controller.deletion.DeletionState
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import java.time.Duration
@@ -43,7 +43,7 @@ class DeletionParametersTest {
         val endTime = Instant.parse("2022-11-14T20:00:00.000Z")
         val deletionType =
             DeletionType.DeletionTypeHealthPermissionTypeData(
-                HealthPermissionType.ACTIVE_CALORIES_BURNED)
+                FitnessPermissionType.ACTIVE_CALORIES_BURNED)
         val deletionParameters =
             DeletionParameters(
                 chosenRange = ChosenRange.DELETE_RANGE_LAST_30_DAYS,
@@ -64,9 +64,9 @@ class DeletionParametersTest {
         assertTrue(deletionParameters.endTimeMs == outValue?.endTimeMs)
         assertTrue(deletionParameters.deletionType == outValue?.deletionType)
         assertTrue(
-            deletionType.healthPermissionType ==
+            deletionType.fitnessPermissionType ==
                 (outValue?.deletionType as DeletionType.DeletionTypeHealthPermissionTypeData)
-                    .healthPermissionType)
+                    .fitnessPermissionType)
         assertTrue(deletionParameters.deletionState == outValue.deletionState)
         assertTrue(
             deletionParameters.showTimeRangePickerDialog == outValue.showTimeRangePickerDialog)
@@ -111,7 +111,7 @@ class DeletionParametersTest {
                 chosenRange = ChosenRange.DELETE_RANGE_LAST_24_HOURS,
                 deletionType =
                     DeletionType.DeletionTypeHealthPermissionTypeFromApp(
-                        HealthPermissionType.ACTIVE_CALORIES_BURNED,
+                        FitnessPermissionType.ACTIVE_CALORIES_BURNED,
                         packageName = TEST_APP_PACKAGE_NAME,
                         appName = TEST_APP_NAME),
             )
@@ -119,7 +119,7 @@ class DeletionParametersTest {
         assertTrue(
             deletionParameters.getPermissionTypeLabel() ==
                 FitnessPermissionStrings.fromPermissionType(
-                        HealthPermissionType.ACTIVE_CALORIES_BURNED)
+                        FitnessPermissionType.ACTIVE_CALORIES_BURNED)
                     .lowercaseLabel)
     }
 

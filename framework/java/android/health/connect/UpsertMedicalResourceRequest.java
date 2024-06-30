@@ -32,6 +32,7 @@ import android.os.Parcelable;
 public final class UpsertMedicalResourceRequest implements Parcelable {
     private final long mDataSourceId;
     @NonNull private final String mData;
+    private long mDataSize;
 
     @NonNull
     public static final Creator<UpsertMedicalResourceRequest> CREATOR =
@@ -60,6 +61,7 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
 
     private UpsertMedicalResourceRequest(@NonNull Parcel in) {
         requireNonNull(in);
+        mDataSize = in.dataSize();
         mDataSourceId = in.readLong();
         mData = requireNonNull(in.readString());
     }
@@ -68,7 +70,6 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
      * Returns the id of the existing {@link MedicalDataSource}, to represent where the data is
      * coming from.
      */
-    @NonNull
     public long getDataSourceId() {
         return mDataSourceId;
     }
@@ -77,6 +78,15 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
     @NonNull
     public String getData() {
         return mData;
+    }
+
+    /**
+     * Returns the size of the parcel when the class was created from Parcel.
+     *
+     * @hide
+     */
+    public long getDataSize() {
+        return mDataSize;
     }
 
     @Override

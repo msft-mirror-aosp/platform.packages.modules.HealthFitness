@@ -19,6 +19,7 @@ import android.health.connect.HealthDataCategory
 import android.health.connect.accesslog.AccessLog
 import android.health.connect.datatypes.Record
 import android.health.connect.exportimport.ScheduledExportSettings
+import com.android.healthconnect.controller.data.access.AppAccessMetadata
 import com.android.healthconnect.controller.data.access.AppAccessState
 import com.android.healthconnect.controller.data.access.ILoadAccessUseCase
 import com.android.healthconnect.controller.data.access.ILoadPermissionTypeContributorAppsUseCase
@@ -52,7 +53,7 @@ import com.android.healthconnect.controller.permissions.additionalaccess.ILoadEx
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.shared.IQueryRecentAccessLogsUseCase
 import com.android.healthconnect.controller.permissiontypes.api.ILoadPriorityListUseCase
 import com.android.healthconnect.controller.recentaccess.ILoadRecentAccessUseCase
@@ -229,7 +230,7 @@ class FakeLoadPriorityEntriesUseCase : ILoadPriorityEntriesUseCase {
     private var exceptionMessage = ""
 
     override suspend fun invoke(
-        healthPermissionType: HealthPermissionType,
+        fitnessPermissionType: FitnessPermissionType,
         localDate: LocalDate
     ): UseCaseResults<List<Record>> {
         return if (forceFail) UseCaseResults.Failed(Exception(this.exceptionMessage))
@@ -323,15 +324,15 @@ class FakeUpdatePriorityListUseCase : IUpdatePriorityListUseCase {
 
 class FakeLoadAccessUseCase : ILoadAccessUseCase {
 
-    private var appDataMap: Map<AppAccessState, List<AppMetadata>> = mutableMapOf()
+    private var appDataMap: Map<AppAccessState, List<AppAccessMetadata>> = mutableMapOf()
 
     override suspend fun invoke(
-        permissionType: HealthPermissionType
-    ): UseCaseResults<Map<AppAccessState, List<AppMetadata>>> {
+        permissionType: FitnessPermissionType
+    ): UseCaseResults<Map<AppAccessState, List<AppAccessMetadata>>> {
         return UseCaseResults.Success(appDataMap)
     }
 
-    fun updateMap(map: Map<AppAccessState, List<AppMetadata>>) {
+    fun updateMap(map: Map<AppAccessState, List<AppAccessMetadata>>) {
         appDataMap = map
     }
 
@@ -344,7 +345,7 @@ class FakeLoadPermissionTypeContributorAppsUseCase : ILoadPermissionTypeContribu
 
     private var contributorApps: List<AppMetadata> = listOf()
 
-    override suspend fun invoke(permissionType: HealthPermissionType): List<AppMetadata> {
+    override suspend fun invoke(permissionType: FitnessPermissionType): List<AppMetadata> {
         return contributorApps
     }
 
@@ -376,15 +377,15 @@ class FakeGetGrantedHealthPermissionsUseCase : IGetGrantedHealthPermissionsUseCa
 
 class FakeLoadLastDateWithPriorityDataUseCase : ILoadLastDateWithPriorityDataUseCase {
 
-    private var lastDateWithPriorityDataMap = mutableMapOf<HealthPermissionType, LocalDate?>()
+    private var lastDateWithPriorityDataMap = mutableMapOf<FitnessPermissionType, LocalDate?>()
     private var forceFail = false
     private var exceptionMessage = ""
 
     fun setLastDateWithPriorityDataForHealthPermissionType(
-        healthPermissionType: HealthPermissionType,
+        fitnessPermissionType: FitnessPermissionType,
         localDate: LocalDate?
     ) {
-        lastDateWithPriorityDataMap[healthPermissionType] = localDate
+        lastDateWithPriorityDataMap[fitnessPermissionType] = localDate
     }
 
     fun setFailure(exceptionMessage: String) {
@@ -393,11 +394,11 @@ class FakeLoadLastDateWithPriorityDataUseCase : ILoadLastDateWithPriorityDataUse
     }
 
     override suspend fun invoke(
-        healthPermissionType: HealthPermissionType
+        fitnessPermissionType: FitnessPermissionType
     ): UseCaseResults<LocalDate?> {
         if (forceFail) return UseCaseResults.Failed(Exception(this.exceptionMessage))
-        return if (lastDateWithPriorityDataMap.containsKey(healthPermissionType))
-            UseCaseResults.Success(lastDateWithPriorityDataMap[healthPermissionType])
+        return if (lastDateWithPriorityDataMap.containsKey(fitnessPermissionType))
+            UseCaseResults.Success(lastDateWithPriorityDataMap[fitnessPermissionType])
         else UseCaseResults.Success(null)
     }
 
