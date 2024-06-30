@@ -43,6 +43,7 @@ import static android.healthconnect.cts.utils.TestUtils.getMedicalDataSourcesByI
 import static android.healthconnect.cts.utils.TestUtils.getRecordById;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.readMedicalResourcesByIds;
+import static android.healthconnect.cts.utils.TestUtils.upsertMedicalResources;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
@@ -1977,6 +1978,15 @@ public class HealthConnectManagerTest {
         assertThrows(UnsupportedOperationException.class, () -> getMedicalDataSourcesByIds(ids));
     }
 
+    // TODO(b/343923754): Add more upsert/readMedicalResources tests once deleteAll can be called.
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testUpsertMedicalResources_emptyIds_returnsEmptyList() throws InterruptedException {
+        List<MedicalResource> medicalResources = upsertMedicalResources(List.of());
+
+        assertThat(medicalResources).isEmpty();
+    }
+
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testReadMedicalResources_emptyIds_returnsEmptyList() throws InterruptedException {
@@ -2000,10 +2010,10 @@ public class HealthConnectManagerTest {
         assertThrows(IllegalArgumentException.class, () -> readMedicalResourcesByIds(ids));
     }
 
-    // TODO(b/343923754): Add readMedicalResources more tests once insert can be called.
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testReadMedicalResources_byIds_returnsEmptyList() throws InterruptedException {
+    public void testReadMedicalResources_byIds_noData_returnsEmptyList()
+            throws InterruptedException {
         List<MedicalResourceId> ids = List.of(getMedicalResourceId());
         List<MedicalResource> medicalResources = readMedicalResourcesByIds(ids);
 

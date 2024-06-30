@@ -16,14 +16,18 @@
 
 package android.health.connect.internal.datatypes;
 
+import static com.android.healthfitness.flags.Flags.personalHealthRecord;
 
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.MedicalResource;
-import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -34,8 +38,9 @@ import java.util.UUID;
  * @hide
  */
 public final class MedicalResourceInternal {
+    private static final String FHIR_RESOURCE_TYPE_FIELD_NAME = "resourceType";
+    private static final String FHIR_RESOURCE_ID_FIELD_NAME = "id";
     @Nullable private UUID mUuid;
-    @MedicalResourceType private int mType;
     @NonNull private String mDataSourceId = "";
     @NonNull private String mData = "";
     @NonNull private String mFhirResourceType = "";
@@ -52,19 +57,6 @@ public final class MedicalResourceInternal {
     public MedicalResourceInternal setUuid(@Nullable UUID uuid) {
         requireNonNull(uuid);
         mUuid = uuid;
-        return this;
-    }
-
-    /** Returns the medical resource type. */
-    @MedicalResourceType
-    public int getType() {
-        return mType;
-    }
-
-    /** Returns this object with the type. */
-    @NonNull
-    public MedicalResourceInternal setType(@MedicalResourceType int type) {
-        mType = type;
         return this;
     }
 
@@ -124,28 +116,25 @@ public final class MedicalResourceInternal {
         return this;
     }
 
-    /** Converts this object to an external representation. */
+    /** Converts to this object from an upsert request. */
     @NonNull
-    @SuppressWarnings("FlaggedApi") // this class is internal only
-    public MedicalResource toExternalResource() {
-        return new MedicalResource.Builder(
-                        requireNonNull(getUuid()).toString(),
-                        getType(),
-                        getDataSourceId(),
-                        getData())
-                .build();
-    }
-
-    /** Converts to this object from an external representation. */
-    @NonNull
-    @SuppressWarnings("FlaggedApi") // this class is internal only
-    public static MedicalResourceInternal fromExternalResource(@NonNull MedicalResource external) {
-        requireNonNull(external);
+    public static MedicalResourceInternal fromUpsertRequest(
+            @NonNull UpsertMedicalResourceRequest request) throws JSONException {
+        if (!personalHealthRecord()) {
+            throw new UnsupportedOperationException(
+                    "Convert from UpsertMedicalResourceRequest is not supported");
+        }
+        requireNonNull(request);
+        String fhirJson = request.getData();
+        JSONObject fhirJsonObj = new JSONObject(fhirJson);
+        String resourceType = fhirJsonObj.getString(FHIR_RESOURCE_TYPE_FIELD_NAME);
+        String resourceId = fhirJsonObj.getString(FHIR_RESOURCE_ID_FIELD_NAME);
+        String dataSourceId = String.valueOf(request.getDataSourceId());
         return new MedicalResourceInternal()
-                .setUuid(UUID.fromString(external.getId()))
-                .setType(external.getType())
-                .setDataSourceId(external.getDataSourceId())
-                .setData(external.getData());
+                .setFhirResourceId(resourceId)
+                .setFhirResourceType(resourceType)
+                .setDataSourceId(dataSourceId)
+                .setData(fhirJson);
     }
 
     @Override
@@ -153,13 +142,19 @@ public final class MedicalResourceInternal {
         if (this == o) return true;
         if (!(o instanceof MedicalResourceInternal that)) return false;
         return Objects.equals(getUuid(), that.getUuid())
-                && getType() == that.getType()
                 && getDataSourceId().equals(that.getDataSourceId())
+                && getFhirResourceType().equals(that.getFhirResourceType())
+                && getFhirResourceId().equals(that.getFhirResourceId())
                 && getData().equals(that.getData());
     }
 
     @Override
     public int hashCode() {
-        return hash(getUuid(), getType(), getDataSourceId(), getData());
+        return hash(
+                getUuid(),
+                getDataSourceId(),
+                getFhirResourceType(),
+                getFhirResourceId(),
+                getData());
     }
 }

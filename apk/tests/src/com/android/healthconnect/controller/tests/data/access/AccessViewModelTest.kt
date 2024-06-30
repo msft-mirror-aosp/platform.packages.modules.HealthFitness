@@ -1,9 +1,12 @@
 package com.android.healthconnect.controller.tests.data.access
 
 import com.android.healthconnect.controller.data.access.AccessViewModel
+import com.android.healthconnect.controller.data.access.AppAccessMetadata
 import com.android.healthconnect.controller.data.access.AppAccessState
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.app.AppInfoReader
+import com.android.healthconnect.controller.shared.app.AppPermissionsType.COMBINED_PERMISSIONS
+import com.android.healthconnect.controller.shared.app.AppPermissionsType.MEDICAL_PERMISSIONS_ONLY
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_2
@@ -58,14 +61,14 @@ class AccessViewModelTest {
     fun loadAppMetadataMap_returnsCorrectApps() = runTest {
         val expected =
             mapOf(
-                AppAccessState.Read to listOf(TEST_APP, TEST_APP_2),
-                AppAccessState.Write to listOf(TEST_APP_2),
-                AppAccessState.Inactive to listOf(TEST_APP_3))
+                AppAccessState.Read to listOf(AppAccessMetadata(TEST_APP), AppAccessMetadata((TEST_APP_2))),
+                AppAccessState.Write to listOf(AppAccessMetadata(TEST_APP_2, COMBINED_PERMISSIONS)),
+                AppAccessState.Inactive to listOf(AppAccessMetadata(TEST_APP_3, MEDICAL_PERMISSIONS_ONLY)))
         fakeLoadAccessUseCase.updateMap(expected)
 
         val testObserver = TestObserver<AccessViewModel.AccessScreenState>()
         viewModel.appMetadataMap.observeForever(testObserver)
-        viewModel.loadAppMetaDataMap(HealthPermissionType.STEPS)
+        viewModel.loadAppMetaDataMap(FitnessPermissionType.STEPS)
         advanceUntilIdle()
 
         assertThat(testObserver.getLastValue())

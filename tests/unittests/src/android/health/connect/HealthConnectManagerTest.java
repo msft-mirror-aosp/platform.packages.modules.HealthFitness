@@ -16,6 +16,8 @@
 
 package android.health.connect;
 
+import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
@@ -24,7 +26,6 @@ import static org.mockito.Mockito.when;
 
 import android.content.Context;
 import android.health.connect.aidl.IHealthConnectService;
-import android.health.connect.datatypes.MedicalResource;
 import android.os.OutcomeReceiver;
 import android.os.RemoteException;
 
@@ -97,20 +98,6 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    public void testHealthConnectManager_upsertMedicalResources_throws() throws Exception {
-        Context context = ApplicationProvider.getApplicationContext();
-        HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
-        Executor executor = MoreExecutors.directExecutor();
-        OutcomeReceiver<List<MedicalResource>, HealthConnectException> callback = result -> {};
-
-        assertThrows(
-                UnsupportedOperationException.class,
-                () ->
-                        healthConnectManager.upsertMedicalResources(
-                                ImmutableList.of(), executor, callback));
-    }
-
-    @Test
     public void testHealthConnectManager_deleteResources_notImplemented() throws Exception {
         Context context = ApplicationProvider.getApplicationContext();
         HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
@@ -124,9 +111,7 @@ public class HealthConnectManagerTest {
                 UnsupportedOperationException.class,
                 () ->
                         healthConnectManager.deleteMedicalResources(
-                                ImmutableList.of(MedicalIdFilter.fromId("fictionalid")),
-                                executor,
-                                callback));
+                                ImmutableList.of(getMedicalResourceId()), executor, callback));
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,6 @@
  * limitations under the License.
  *
  *
- */
-
-/**
- * Copyright (C) 2022 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
  */
 package com.android.healthconnect.controller.permissions.app
 
@@ -82,8 +68,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /**
- * Fragment for a screen that shows the permissions for an app that has medical permissions but no
- * fitness permissions.
+ * Fragment for a screen that shows the permissions for an app that has fitness permissions but no
+ * medical permissions.
  */
 @AndroidEntryPoint(HealthPreferenceFragment::class)
 class FitnessAppFragment : Hilt_FitnessAppFragment() {
@@ -228,6 +214,11 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
     }
 
     private fun setupManageDataPreferenceCategory() {
+        if (!showManageAppSection) {
+            manageDataCategory.isVisible = false
+            return
+        }
+        manageDataCategory.isVisible = true
         manageDataCategory.removeAll()
         if (featureUtils.isNewInformationArchitectureEnabled()) {
             manageDataCategory.addPreference(
@@ -317,7 +308,7 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
         permissions
             .sortedBy {
                 requireContext()
-                    .getString(fromPermissionType(it.healthPermissionType).uppercaseLabel)
+                    .getString(fromPermissionType(it.fitnessPermissionType).uppercaseLabel)
             }
             .forEach { permission ->
                 val category =
@@ -330,10 +321,10 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
                 val preference =
                     HealthSwitchPreference(requireContext()).also { it ->
                         val healthCategory =
-                            fromHealthPermissionType(permission.healthPermissionType)
+                            fromHealthPermissionType(permission.fitnessPermissionType)
                         it.icon = healthCategory.icon(requireContext())
                         it.setTitle(
-                            fromPermissionType(permission.healthPermissionType).uppercaseLabel)
+                            fromPermissionType(permission.fitnessPermissionType).uppercaseLabel)
                         it.logNameActive = AppAccessElement.PERMISSION_SWITCH_ACTIVE
                         it.logNameInactive = AppAccessElement.PERMISSION_SWITCH_INACTIVE
                         it.setOnPreferenceChangeListener { _, newValue ->
