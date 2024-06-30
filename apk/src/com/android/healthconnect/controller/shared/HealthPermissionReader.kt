@@ -24,6 +24,7 @@ import android.content.pm.PackageManager.ResolveInfoFlags
 import android.health.connect.HealthConnectManager
 import android.health.connect.HealthPermissions
 import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.google.common.annotations.VisibleForTesting
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -154,6 +155,23 @@ constructor(
             appInfo.requestedPermissions?.filter { it in healthPermissions }.orEmpty()
         } catch (e: NameNotFoundException) {
             emptyList()
+        }
+    }
+
+    fun getAppPermissionsType(packageName: String) : AppPermissionsType {
+        val permissions = getValidHealthPermissions(packageName)
+        val hasAtLeastOneFitnessPermission = permissions.firstOrNull { it is HealthPermission.FitnessPermission} != null
+        val hasAtLeastOneMedicalPermission = permissions.firstOrNull { it is HealthPermission.MedicalPermission} != null
+
+        return if (hasAtLeastOneFitnessPermission && hasAtLeastOneMedicalPermission) {
+            AppPermissionsType.COMBINED_PERMISSIONS
+        } else if (hasAtLeastOneFitnessPermission) {
+            AppPermissionsType.FITNESS_PERMISSIONS_ONLY
+        } else if (hasAtLeastOneMedicalPermission) {
+            AppPermissionsType.MEDICAL_PERMISSIONS_ONLY
+        } else {
+            // All Fitness, Medical and Combined screens handle the empty state so any of those can be returned here.
+            AppPermissionsType.FITNESS_PERMISSIONS_ONLY
         }
     }
 

@@ -41,7 +41,7 @@ public class HealthConnectDatabaseTest {
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
     // This number can only increase, as we are not allowed to make changes that remove tables or
     // columns
-    private static final int NUM_OF_TABLES = 65;
+    private static final int NUM_OF_TABLES = 67;
     @Mock Context mContext;
     private HealthConnectDatabase mHealthConnectDatabase;
     private SQLiteDatabase mSQLiteDatabase;

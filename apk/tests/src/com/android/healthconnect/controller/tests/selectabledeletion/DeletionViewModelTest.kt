@@ -15,7 +15,7 @@
  */
 package com.android.healthconnect.controller.tests.selectabledeletion
 
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesUseCase
@@ -79,27 +79,27 @@ class DeletionViewModelTest {
     fun deleteSet_setCorrectly() {
         val deleteSet =
             setOf(
-                HealthPermissionType.DISTANCE,
-                HealthPermissionType.HEART_RATE,
-                HealthPermissionType.STEPS)
+                FitnessPermissionType.DISTANCE,
+                FitnessPermissionType.HEART_RATE,
+                FitnessPermissionType.STEPS)
         viewModel.setDeleteSet(deleteSet)
 
         assertThat(viewModel.getDeleteSet())
             .isEqualTo(
                 setOf(
-                    HealthPermissionType.DISTANCE,
-                    HealthPermissionType.HEART_RATE,
-                    HealthPermissionType.STEPS))
+                    FitnessPermissionType.DISTANCE,
+                    FitnessPermissionType.HEART_RATE,
+                    FitnessPermissionType.STEPS))
     }
 
     @Test
     fun delete_deletionInvokesCorrectly() = runTest {
-        viewModel.setDeleteSet(setOf(HealthPermissionType.DISTANCE))
+        viewModel.setDeleteSet(setOf(FitnessPermissionType.DISTANCE))
         viewModel.delete()
         advanceUntilIdle()
 
         val expectedDeletionType =
-            DeletionType.DeletionTypeHealthPermissionTypes(listOf(HealthPermissionType.DISTANCE))
+            DeletionType.DeletionTypeHealthPermissionTypes(listOf(FitnessPermissionType.DISTANCE))
         verify(deletePermissionTypesUseCase).invoke(expectedDeletionType)
     }
 }

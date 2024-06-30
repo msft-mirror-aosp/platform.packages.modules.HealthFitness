@@ -48,7 +48,7 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
 import com.android.healthconnect.controller.permissions.app.SettingsManageAppPermissionsFragment
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
@@ -160,9 +160,9 @@ class SettingsManageAppPermissionsFragmentTest {
     @Test
     fun fragment_starts() {
         val writePermission =
-            FitnessPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
         val readPermission =
-            FitnessPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
+            FitnessPermission(FitnessPermissionType.DISTANCE, PermissionsAccessType.READ)
         whenever(viewModel.fitnessPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -189,7 +189,7 @@ class SettingsManageAppPermissionsFragmentTest {
     @Test
     fun doesNotShowWriteHeader_whenNoWritePermissions() {
         val readPermission =
-            FitnessPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
+            FitnessPermission(FitnessPermissionType.DISTANCE, PermissionsAccessType.READ)
         whenever(viewModel.fitnessPermissions).then { MutableLiveData(listOf(readPermission)) }
         whenever(viewModel.grantedFitnessPermissions).then {
             MutableLiveData(setOf(readPermission))
@@ -210,7 +210,7 @@ class SettingsManageAppPermissionsFragmentTest {
     @Test
     fun doesNotShowReadHeader_whenNoReadPermissions() {
         val writePermission =
-            FitnessPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
         whenever(viewModel.fitnessPermissions).then { MutableLiveData(listOf(writePermission)) }
         whenever(viewModel.grantedFitnessPermissions).then {
             MutableLiveData(setOf(writePermission))
@@ -231,9 +231,9 @@ class SettingsManageAppPermissionsFragmentTest {
     @Test
     fun unsupportedPackage_grantedPermissionsNotLoaded_onOrientationChange() {
         val readStepsPermission =
-            FitnessPermission(HealthPermissionType.STEPS, PermissionsAccessType.READ)
+            FitnessPermission(FitnessPermissionType.STEPS, PermissionsAccessType.READ)
         val writeSleepPermission =
-            FitnessPermission(HealthPermissionType.SLEEP, PermissionsAccessType.WRITE)
+            FitnessPermission(FitnessPermissionType.SLEEP, PermissionsAccessType.WRITE)
 
         whenever(viewModel.fitnessPermissions).then {
             MutableLiveData(listOf(readStepsPermission, writeSleepPermission))
@@ -269,9 +269,9 @@ class SettingsManageAppPermissionsFragmentTest {
     @Test
     fun unsupportedPackage_doesNotShowFooter() {
         val readStepsPermission =
-            FitnessPermission(HealthPermissionType.STEPS, PermissionsAccessType.READ)
+            FitnessPermission(FitnessPermissionType.STEPS, PermissionsAccessType.READ)
         val writeSleepPermission =
-            FitnessPermission(HealthPermissionType.SLEEP, PermissionsAccessType.WRITE)
+            FitnessPermission(FitnessPermissionType.SLEEP, PermissionsAccessType.WRITE)
 
         whenever(viewModel.fitnessPermissions).then {
             MutableLiveData(listOf(readStepsPermission, writeSleepPermission))
@@ -302,9 +302,9 @@ class SettingsManageAppPermissionsFragmentTest {
     @Test
     fun supportedPackage_whenNoHistoryRead_showsFooterWithGrantTime() {
         val writePermission =
-            FitnessPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
         val readPermission =
-            FitnessPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
+            FitnessPermission(FitnessPermissionType.DISTANCE, PermissionsAccessType.READ)
         whenever(viewModel.fitnessPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -333,9 +333,9 @@ class SettingsManageAppPermissionsFragmentTest {
     @Test
     fun supportedPackage_whenHistoryRead_showsFooterWithoutGrantTime() {
         val writePermission =
-            FitnessPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
         val readPermission =
-            FitnessPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
+            FitnessPermission(FitnessPermissionType.DISTANCE, PermissionsAccessType.READ)
         whenever(viewModel.fitnessPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -444,9 +444,9 @@ class SettingsManageAppPermissionsFragmentTest {
                         dataRestoreError = DataRestoreUiError.ERROR_NONE)))
         }
         val writePermission =
-            FitnessPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
         val readPermission =
-            FitnessPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
+            FitnessPermission(FitnessPermissionType.DISTANCE, PermissionsAccessType.READ)
         whenever(viewModel.fitnessPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -496,9 +496,9 @@ class SettingsManageAppPermissionsFragmentTest {
                         dataRestoreError = DataRestoreUiError.ERROR_NONE)))
         }
         val writePermission =
-            FitnessPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
         val readPermission =
-            FitnessPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
+            FitnessPermission(FitnessPermissionType.DISTANCE, PermissionsAccessType.READ)
         whenever(viewModel.fitnessPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -548,9 +548,9 @@ class SettingsManageAppPermissionsFragmentTest {
                         dataRestoreError = DataRestoreUiError.ERROR_NONE)))
         }
         val writePermission =
-            FitnessPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
         val readPermission =
-            FitnessPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
+            FitnessPermission(FitnessPermissionType.DISTANCE, PermissionsAccessType.READ)
         whenever(viewModel.fitnessPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
