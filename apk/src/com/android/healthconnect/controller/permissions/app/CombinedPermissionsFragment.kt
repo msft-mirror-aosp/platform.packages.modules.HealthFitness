@@ -73,6 +73,7 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
     }
 
     init {
+        // TODO(b/342159144): Update visual elements.
         this.setPageName(PageName.UNKNOWN_PAGE)
     }
 

@@ -152,6 +152,7 @@ import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.permission.DataPermissionEnforcer;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
+import com.android.server.healthconnect.permission.MedicalDataPermissionEnforcer;
 import com.android.server.healthconnect.storage.AutoDeleteService;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -216,6 +217,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     private final DataPermissionEnforcer mDataPermissionEnforcer;
 
+    private final MedicalDataPermissionEnforcer mMedicalDataPermissionEnforcer;
+
     private final AppOpsManagerLocal mAppOpsManagerLocal;
     private final MigrationUiStateManager mMigrationUiStateManager;
     private final ImportManager mImportManager;
@@ -249,6 +252,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mMigrationStateManager = migrationStateManager;
         mDataPermissionEnforcer =
                 new DataPermissionEnforcer(mPermissionManager, mContext, deviceConfigManager);
+        mMedicalDataPermissionEnforcer = new MedicalDataPermissionEnforcer(mPermissionManager);
         mAppOpsManagerLocal = LocalManagerRegistry.getManager(AppOpsManagerLocal.class);
         mBackupRestore =
                 new BackupRestore(mFirstGrantTimeManager, mMigrationStateManager, mContext);
@@ -2276,7 +2280,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 logger,
                                 request.getDataSize());
 
-                        // TODO(b/344902130) - Enforce WRITE_MEDICAL_RESOURCE permissions.
+                        mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
+                                attributionSource);
 
                         // TODO(b/344560623) - Add character limits to CreateMedicalDataSource
                         // displayName and fhirBaseUri values and enforce limit of 20 sources per
@@ -2371,7 +2376,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 isInForeground,
                                 logger,
                                 requestsTotalSize);
-                        // TODO(b/344902130) - Enforce write permissions.
+
+                        mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
+                                attributionSource);
+
                         List<MedicalResourceInternal> medicalResourcesToUpsert = new ArrayList<>();
                         for (UpsertMedicalResourceRequest upsertMedicalResourceRequest : requests) {
                             MedicalResourceInternal medicalResourceInternal =
@@ -2469,8 +2477,17 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             tryAcquireApiCallQuota(
                                     uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, logger);
 
-                            // TODO(b/340204629): Perform basic permission check. And set
-                            // enforceSelfRead.
+                            // Enforce caller has permission granted to at least one PHR permission
+                            // before reading from DB.
+                            // TODO(b/340204629): Pass granted permissions list to db.
+                            if (mMedicalDataPermissionEnforcer
+                                    .getGrantedMedicalPermissionsForPreflight(attributionSource)
+                                    .isEmpty()) {
+                                throw new SecurityException(
+                                        "Caller doesn't have permission to read or write medical"
+                                                + " data");
+                            }
+
                             if (!isInForeground) {
                                 // If Background Read feature is disabled or
                                 // READ_HEALTH_DATA_IN_BACKGROUND permission is not granted, then

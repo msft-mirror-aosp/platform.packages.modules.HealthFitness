@@ -4,7 +4,7 @@ import com.android.healthconnect.controller.data.access.AppAccessState
 import com.android.healthconnect.controller.data.access.ILoadAccessUseCase
 import com.android.healthconnect.controller.data.access.LoadAccessUseCase
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
@@ -41,7 +41,7 @@ class LoadAccessUseCaseTest {
     private lateinit var useCase: ILoadAccessUseCase
     private val fakeLoadPermissionTypeContributorAppsUseCase =
         FakeLoadPermissionTypeContributorAppsUseCase()
-    private val fakeFakeGetGrantedHealthPermissionsUseCase =
+    private val fakeGetGrantedHealthPermissionsUseCase =
         FakeGetGrantedHealthPermissionsUseCase()
 
     @Inject lateinit var appInfoReader: AppInfoReader
@@ -55,7 +55,7 @@ class LoadAccessUseCaseTest {
         useCase =
             LoadAccessUseCase(
                 fakeLoadPermissionTypeContributorAppsUseCase,
-                fakeFakeGetGrantedHealthPermissionsUseCase,
+                fakeGetGrantedHealthPermissionsUseCase,
                 healthPermissionReader,
                 appInfoReader,
                 Dispatchers.Main)
@@ -63,7 +63,7 @@ class LoadAccessUseCaseTest {
 
     @Test
     fun invoke_noDataNorPermission_returnsEmptyMap() = runTest {
-        val actual = (useCase.invoke(HealthPermissionType.STEPS) as UseCaseResults.Success).data
+        val actual = (useCase.invoke(FitnessPermissionType.STEPS) as UseCaseResults.Success).data
 
         assertThat(actual[AppAccessState.Write]!!.size).isEqualTo(0)
         assertThat(actual[AppAccessState.Read]!!.size).isEqualTo(0)
@@ -74,11 +74,11 @@ class LoadAccessUseCaseTest {
     fun invoke_returnsCorrectApps() = runTest {
         fakeLoadPermissionTypeContributorAppsUseCase.updateList(listOf(TEST_APP, TEST_APP_2))
         val writeSteps =
-            FitnessPermission(HealthPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
-        fakeFakeGetGrantedHealthPermissionsUseCase.updateData(
+            FitnessPermission(FitnessPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
+        fakeGetGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME, listOf(writeSteps))
 
-        val actual = (useCase.invoke(HealthPermissionType.STEPS) as UseCaseResults.Success).data
+        val actual = (useCase.invoke(FitnessPermissionType.STEPS) as UseCaseResults.Success).data
 
         assertThat(actual[AppAccessState.Write]).isNotNull()
         assertThat(actual[AppAccessState.Write]!!.size).isEqualTo(1)
@@ -100,11 +100,11 @@ class LoadAccessUseCaseTest {
 
         fakeLoadPermissionTypeContributorAppsUseCase.updateList(listOf(TEST_APP, TEST_APP_2))
         val writeSteps =
-            FitnessPermission(HealthPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
-        fakeFakeGetGrantedHealthPermissionsUseCase.updateData(
+            FitnessPermission(FitnessPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
+        fakeGetGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME, listOf(writeSteps))
 
-        val actual = (useCase.invoke(HealthPermissionType.STEPS) as UseCaseResults.Success).data
+        val actual = (useCase.invoke(FitnessPermissionType.STEPS) as UseCaseResults.Success).data
 
         assertThat(actual[AppAccessState.Write]).isNotNull()
         assertThat(actual[AppAccessState.Write]!!.size).isEqualTo(1)

@@ -2256,7 +2256,7 @@ public class HealthConnectManager {
      */
     // TODO: b/338035191 - Make this flagged Api and add CTS tests.
     public void deleteMedicalResources(
-            @NonNull List<MedicalIdFilter> ids,
+            @NonNull List<MedicalResourceId> ids,
             @NonNull Executor executor,
             @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
         throw new UnsupportedOperationException("Not implemented");

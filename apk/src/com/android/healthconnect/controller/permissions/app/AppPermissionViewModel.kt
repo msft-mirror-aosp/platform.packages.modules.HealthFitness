@@ -109,11 +109,11 @@ constructor(
 
     val allMedicalPermissionsGranted =
         MediatorLiveData(false).apply {
-            addSource(_fitnessPermissions) {
+            addSource(_medicalPermissions) {
                 postValue(
                     isAllMedicalPermissionsGranted(medicalPermissions, grantedMedicalPermissions))
             }
-            addSource(_grantedFitnessPermissions) {
+            addSource(_grantedMedicalPermissions) {
                 postValue(
                     isAllMedicalPermissionsGranted(medicalPermissions, grantedMedicalPermissions))
             }

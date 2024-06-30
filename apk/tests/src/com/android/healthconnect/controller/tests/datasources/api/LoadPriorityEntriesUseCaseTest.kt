@@ -13,7 +13,7 @@ import com.android.healthconnect.controller.data.entries.api.LoadEntriesHelper
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
 import com.android.healthconnect.controller.datasources.api.LoadPriorityEntriesUseCase
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.tests.utils.TEST_APP
@@ -98,7 +98,7 @@ class LoadPriorityEntriesUseCaseTest {
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME,
-            healthPermissionType = HealthPermissionType.SLEEP,
+            fitnessPermissionType = FitnessPermissionType.SLEEP,
             queryDate = sleepDate,
             records =
                 getSleepSessionRecords(
@@ -108,13 +108,13 @@ class LoadPriorityEntriesUseCaseTest {
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME_2,
-            healthPermissionType = HealthPermissionType.SLEEP,
+            fitnessPermissionType = FitnessPermissionType.SLEEP,
             queryDate = sleepDate,
             records =
                 getSleepSessionRecords(
                     listOf(Pair(SLEEP_SESSION_3_START_DATE, SLEEP_SESSION_3_END_DATE))))
 
-        val result = loadPriorityEntriesUseCase.invoke(HealthPermissionType.SLEEP, sleepDate)
+        val result = loadPriorityEntriesUseCase.invoke(FitnessPermissionType.SLEEP, sleepDate)
         assertThat(result is UseCaseResults.Success).isTrue()
         verifySleepSessionListsEqual(
             actual = (result as UseCaseResults.Success).data,
@@ -158,7 +158,7 @@ class LoadPriorityEntriesUseCaseTest {
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME,
-            healthPermissionType = HealthPermissionType.SLEEP,
+            fitnessPermissionType = FitnessPermissionType.SLEEP,
             queryDate = sleepDate,
             records =
                 getSleepSessionRecords(
@@ -166,7 +166,7 @@ class LoadPriorityEntriesUseCaseTest {
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME_2,
-            healthPermissionType = HealthPermissionType.SLEEP,
+            fitnessPermissionType = FitnessPermissionType.SLEEP,
             queryDate = sleepDate,
             records =
                 getSleepSessionRecords(
@@ -174,7 +174,7 @@ class LoadPriorityEntriesUseCaseTest {
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME,
-            healthPermissionType = HealthPermissionType.SLEEP,
+            fitnessPermissionType = FitnessPermissionType.SLEEP,
             queryDate = pastSleepDate,
             records =
                 getSleepSessionRecords(
@@ -182,7 +182,7 @@ class LoadPriorityEntriesUseCaseTest {
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME_2,
-            healthPermissionType = HealthPermissionType.SLEEP,
+            fitnessPermissionType = FitnessPermissionType.SLEEP,
             queryDate = pastSleepDate,
             records =
                 getSleepSessionRecords(
@@ -192,13 +192,13 @@ class LoadPriorityEntriesUseCaseTest {
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME_3,
-            healthPermissionType = HealthPermissionType.SLEEP,
+            fitnessPermissionType = FitnessPermissionType.SLEEP,
             queryDate = sleepDate,
             records =
                 getSleepSessionRecords(
                     listOf(Pair(SLEEP_SESSION_6_START_DATE, SLEEP_SESSION_6_END_DATE))))
 
-        val result = loadPriorityEntriesUseCase.invoke(HealthPermissionType.SLEEP, sleepDate)
+        val result = loadPriorityEntriesUseCase.invoke(FitnessPermissionType.SLEEP, sleepDate)
         assertThat(result is UseCaseResults.Success).isTrue()
         verifySleepSessionListsEqual(
             actual = (result as UseCaseResults.Success).data,
@@ -243,19 +243,19 @@ class LoadPriorityEntriesUseCaseTest {
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME,
-            healthPermissionType = HealthPermissionType.SLEEP,
+            fitnessPermissionType = FitnessPermissionType.SLEEP,
             queryDate = noDataDate,
             records = listOf())
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME_2,
-            healthPermissionType = HealthPermissionType.SLEEP,
+            fitnessPermissionType = FitnessPermissionType.SLEEP,
             queryDate = noDataDate,
             records = listOf())
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME,
-            healthPermissionType = HealthPermissionType.SLEEP,
+            fitnessPermissionType = FitnessPermissionType.SLEEP,
             queryDate = sleepDate,
             records =
                 getSleepSessionRecords(
@@ -263,7 +263,7 @@ class LoadPriorityEntriesUseCaseTest {
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME_2,
-            healthPermissionType = HealthPermissionType.SLEEP,
+            fitnessPermissionType = FitnessPermissionType.SLEEP,
             queryDate = sleepDate,
             records =
                 getSleepSessionRecords(
@@ -271,7 +271,7 @@ class LoadPriorityEntriesUseCaseTest {
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME,
-            healthPermissionType = HealthPermissionType.SLEEP,
+            fitnessPermissionType = FitnessPermissionType.SLEEP,
             queryDate = pastSleepDate,
             records =
                 getSleepSessionRecords(
@@ -279,7 +279,7 @@ class LoadPriorityEntriesUseCaseTest {
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME_2,
-            healthPermissionType = HealthPermissionType.SLEEP,
+            fitnessPermissionType = FitnessPermissionType.SLEEP,
             queryDate = pastSleepDate,
             records =
                 getSleepSessionRecords(
@@ -289,13 +289,13 @@ class LoadPriorityEntriesUseCaseTest {
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME_3,
-            healthPermissionType = HealthPermissionType.SLEEP,
+            fitnessPermissionType = FitnessPermissionType.SLEEP,
             queryDate = sleepDate,
             records =
                 getSleepSessionRecords(
                     listOf(Pair(SLEEP_SESSION_6_START_DATE, SLEEP_SESSION_6_END_DATE))))
 
-        val result = loadPriorityEntriesUseCase.invoke(HealthPermissionType.SLEEP, noDataDate)
+        val result = loadPriorityEntriesUseCase.invoke(FitnessPermissionType.SLEEP, noDataDate)
         assertThat(result is UseCaseResults.Success).isTrue()
         assertThat((result as UseCaseResults.Success).data).isEmpty()
     }
@@ -305,7 +305,7 @@ class LoadPriorityEntriesUseCaseTest {
         val queryDate = LocalDate.of(2023, 1, 4)
         loadPriorityListUseCase.setFailure("Exception")
 
-        val result = loadPriorityEntriesUseCase.invoke(HealthPermissionType.SLEEP, queryDate)
+        val result = loadPriorityEntriesUseCase.invoke(FitnessPermissionType.SLEEP, queryDate)
         assertThat(result is UseCaseResults.Failed).isTrue()
         assertThat((result as UseCaseResults.Failed).exception.message).isEqualTo("Exception")
         Mockito.verify(healthConnectManager, times(0))
@@ -320,7 +320,7 @@ class LoadPriorityEntriesUseCaseTest {
             .`when`(healthConnectManager)
             .readRecords<SleepSessionRecord>(any(), any(), any())
 
-        val result = loadPriorityEntriesUseCase.invoke(HealthPermissionType.SLEEP, queryDate)
+        val result = loadPriorityEntriesUseCase.invoke(FitnessPermissionType.SLEEP, queryDate)
         assertThat(result is UseCaseResults.Failed).isTrue()
         assertThat((result as UseCaseResults.Failed).exception is HealthConnectException).isTrue()
         assertThat((result.exception as HealthConnectException).errorCode)
@@ -329,7 +329,7 @@ class LoadPriorityEntriesUseCaseTest {
 
     private fun mockEntriesResult(
         packageName: String,
-        healthPermissionType: HealthPermissionType,
+        fitnessPermissionType: FitnessPermissionType,
         queryDate: LocalDate,
         records: List<Record>
     ) {
@@ -338,7 +338,7 @@ class LoadPriorityEntriesUseCaseTest {
                 queryDate.toInstantAtStartOfDay(),
                 DateNavigationPeriod.PERIOD_DAY,
                 endTimeExclusive = true)
-        val dataTypes = HealthPermissionToDatatypeMapper.getDataTypes(healthPermissionType)
+        val dataTypes = HealthPermissionToDatatypeMapper.getDataTypes(fitnessPermissionType)
 
         dataTypes.map { dataType ->
             Mockito.doAnswer(prepareRecordsAnswer(records))

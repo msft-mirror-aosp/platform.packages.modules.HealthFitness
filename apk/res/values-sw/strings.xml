@@ -20,7 +20,8 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Dhibiti uwezo wa programu kufikia data ya afya"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Ruhusa na data"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Dhibiti data za afya na siha kwenye simu yako na usimamie programu zinazoweza kuifikia"</string>
+    <!-- no translation found for home_subtitle (2154213430054477787) -->
+    <skip />
     <string name="data_title" msgid="4456619761533380816">"Data na ufikiaji"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Aina zote"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Angalia aina zote"</string>
@@ -267,14 +268,10 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Chanjo"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"chanjo"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Soma data ya chanjo"</string>
-    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
-    <skip />
-    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
-    <skip />
-    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
-    <skip />
-    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
-    <skip />
+    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Umakinifu"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"umakinifu"</string>
+    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Kusoma data ya umakinifu"</string>
+    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Kuandika data ya umakinifu"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Ruhusu “<xliff:g id="APP_NAME">%1$s</xliff:g>” isome"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Ruhusu “<xliff:g id="APP_NAME">%1$s</xliff:g>” ili uandike"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Ghairi"</string>
@@ -327,6 +324,12 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Kwa sasa hujasakinisha programu zozote zinazooana"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Ufikiaji wa ziada"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Ruhusa za ziada za programu hii zimeondolewa"</string>
+    <!-- no translation found for permissions_header (6519976063360071569) -->
+    <skip />
+    <!-- no translation found for manage_fitness_permissions (1001729292172461314) -->
+    <skip />
+    <!-- no translation found for manage_medical_permissions (7658181359096889932) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Imeondoa ruhusa za programu"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect imeondoa ruhusa za <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect imeondoa ruhusa za <xliff:g id="APP_DATA_0">%1$s</xliff:g> na <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -346,29 +349,37 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Uhamishaji wa data ulioratibiwa"</string>
     <string name="import_data" msgid="404502315533233094">"Pakia data"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Rejesha data kutoka kwenye faili iliyohamishwa hapo awali"</string>
+    <string name="import_error_banner_title" msgid="1480977889067027790">"Imeshindwa kurejesha data"</string>
     <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
-    <skip />
-    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
     <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
     <skip />
+    <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"Sasisha sasa"</string>
+    <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Sasisha mfumo wako ili Health Connect iweze kurejesha data yako, kisha ujaribu tena."</string>
+    <string name="import_other_error_banner_button" msgid="8006947649520909176">"Jaribu tena"</string>
+    <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Tatizo limetokea wakati wa kurejesha data uliyohamisha."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Kipengele cha Uhamishaji kinakuwezesha kuhifadhi data yako ili uweze kuihamisha kwenye simu mpya"</string>
-    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Pata maelezo zaidi"</string>
+    <!-- no translation found for backup_and_restore_footer_link_text (9075133737244288876) -->
+    <skip />
     <string name="automatic_export_on" msgid="6972389773963624315">"Imewashwa"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Imezimwa"</string>
-    <string name="choose_frequency_category" msgid="2230821549715237663">"Chagua mara za kurudia"</string>
-    <string name="choose_frequency" msgid="1077467424225083246">"Kuchagua mara"</string>
-    <string name="choose_frequency_description" msgid="752601326653048254">"Chagua kuhifadhi data mara moja au uweke mipangilio ili ihifadhiwe kiotomatiki baada ya kila kipindi kilichobainiswa."</string>
+    <!-- no translation found for choose_frequency_category (9094154407387676553) -->
+    <skip />
+    <!-- no translation found for scheduled_export_settings_footer_text (8488483803782086291) -->
+    <skip />
+    <!-- no translation found for choose_frequency (8119085390857180221) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (7698155810053504157) -->
+    <skip />
     <string name="frequency_daily" msgid="3596412357416125727">"Kila siku"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Kila wiki"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Kila mwezi"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"Chagua mahali pa kuhamishia"</string>
+    <!-- no translation found for export_destination_title (8352929396306002479) -->
+    <skip />
     <string name="export_invalid_storage" msgid="3945266169513895950">"Tafadhali chagua programu ya hifadhi ambako utahamishia data yako"</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"Weka nenosiri"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Nenosiri lako la usimbaji fiche linahitajika ili kupakia data yako ya Health Connect"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Umesahau nenosiri?"</string>
-    <string name="import_password_hint" msgid="5158553589723883063">"Nenosiri"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Iwapo bado una simu yako ya zamani, unaweza kuhamisha tena data yako na uweke nenosiri jipya"</string>
+    <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Ungependa kupakia faili hii?"</string>
+    <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Acha"</string>
+    <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Pakia"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Rudi nyuma"</string>
     <string name="export_next_button" msgid="657930567137105172">"Endelea"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Acha"</string>
@@ -385,7 +396,8 @@
     <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
     <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Anza kutumia Health Connect"</string>
-    <string name="onboarding_description" msgid="4873129122057931161">"Health Connect huhifadhi data yako ya afya na siha, hivyo kukupatia njia rahisi ya kusawazisha programu tofauti kwenye simu yako"</string>
+    <!-- no translation found for onboarding_description (3479157507808350452) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"Shiriki data na programu zako"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Chagua data ambayo kila programu inaweza kusoma na kuandika kwenye Health Connect"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Dhibiti mipangilio na faragha yako"</string>
