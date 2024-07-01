@@ -14,6 +14,7 @@
 
 package {
     default_applicable_licenses: ["Android-Apache-2.0"],
+    default_team: "trendy_team_android_health",
 }
 
 android_test {
@@ -58,6 +59,8 @@ android_test {
         "healthfitness-aconfig-flags-lib",
         "cts-healthconnect-utils",
         "cts-healthconnect-lib",
+        "flag-junit",
+        "healthfitness-aconfig-flags-lib",
     ],
     min_sdk_version: "34",
     sdk_version: "module_current",
@@ -65,6 +68,7 @@ android_test {
         ":HealthFitnessCtsTestApp",
         ":HealthFitnessCtsTestApp2",
         ":HealthFitnessPermsTestApp",
+        ":CtsHealthConnectTestAppAWithNormalReadWritePermission",
         ":CtsHealthConnectTestAppWithWritePermissionsOnly",
     ],
 }
@@ -97,6 +101,8 @@ android_test {
         "testng",
         "cts-healthconnect-utils",
         "cts-healthconnect-lib",
+        "flag-junit",
+        "healthfitness-aconfig-flags-lib",
     ],
     min_sdk_version: "34",
     sdk_version: "test_current",
@@ -174,6 +180,7 @@ android_test {
         "modules-utils-build",
         "testng",
         "cts-healthconnect-utils",
+        "healthfitness-aconfig-flags-lib",
     ],
     min_sdk_version: "34",
     sdk_version: "test_current",

@@ -16,6 +16,8 @@
 
 package android.health.connect;
 
+import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
@@ -100,7 +102,6 @@ public class HealthConnectManagerTest {
         Context context = ApplicationProvider.getApplicationContext();
         HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
         Executor executor = MoreExecutors.directExecutor();
-
         OutcomeReceiver<Void, HealthConnectException> callback =
                 new OutcomeReceiver<>() {
                     @Override
@@ -110,9 +111,7 @@ public class HealthConnectManagerTest {
                 UnsupportedOperationException.class,
                 () ->
                         healthConnectManager.deleteMedicalResources(
-                                ImmutableList.of(MedicalIdFilter.fromId("fictionalid")),
-                                executor,
-                                callback));
+                                ImmutableList.of(getMedicalResourceId()), executor, callback));
     }
 
     /**

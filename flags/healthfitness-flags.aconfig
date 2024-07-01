@@ -4,29 +4,33 @@ container: "com.android.healthfitness"
 flag {
     name: "personal_health_record"
     is_exported: true
-    namespace: "healthfitness"
+    namespace: "health_fitness_aconfig"
     description: "Flag for adding new PHR features."
     bug: "329271826"
+    is_fixed_read_only: true
 }
 
 flag {
     name: "personal_health_record_database"
     is_exported: true
-    namespace: "healthfitness"
+    namespace: "health_fitness_aconfig"
     description: "Flag for guarding DB schema changes for PHR features."
     bug: "340809376"
+    is_fixed_read_only: true
 }
 
 flag {
     name: "export_import"
-    namespace: "healthfitness"
+    namespace: "health_fitness_aconfig"
     description: "Flag for adding new export/import feature."
     bug: "318484778"
+    is_fixed_read_only: true
 }
 
 flag {
     name: "mindfulness"
-    namespace: "healthfitness"
+    namespace: "health_fitness_aconfig"
     description: "Enables mindfulness session data type."
     bug: "341704006"
+    is_fixed_read_only: true
 }

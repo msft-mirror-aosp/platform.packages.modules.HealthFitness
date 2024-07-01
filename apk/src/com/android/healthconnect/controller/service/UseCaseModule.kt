@@ -46,13 +46,18 @@ import com.android.healthconnect.controller.datasources.api.LoadPriorityEntriesU
 import com.android.healthconnect.controller.datasources.api.SleepSessionHelper
 import com.android.healthconnect.controller.datasources.api.UpdatePriorityListUseCase
 import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
+import com.android.healthconnect.controller.exportimport.api.HealthDataImportManager
 import com.android.healthconnect.controller.exportimport.api.ILoadExportSettingsUseCase
+import com.android.healthconnect.controller.exportimport.api.ILoadImportStatusUseCase
 import com.android.healthconnect.controller.exportimport.api.ILoadScheduledExportStatusUseCase
 import com.android.healthconnect.controller.exportimport.api.IQueryDocumentProvidersUseCase
+import com.android.healthconnect.controller.exportimport.api.ITriggerImportUseCase
 import com.android.healthconnect.controller.exportimport.api.IUpdateExportSettingsUseCase
 import com.android.healthconnect.controller.exportimport.api.LoadExportSettingsUseCase
+import com.android.healthconnect.controller.exportimport.api.LoadImportStatusUseCase
 import com.android.healthconnect.controller.exportimport.api.LoadScheduledExportStatusUseCase
 import com.android.healthconnect.controller.exportimport.api.QueryDocumentProvidersUseCase
+import com.android.healthconnect.controller.exportimport.api.TriggerImportUseCase
 import com.android.healthconnect.controller.exportimport.api.UpdateExportSettingsUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.ILoadExerciseRoutePermissionUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.LoadDeclaredHealthPermissionUseCase
@@ -323,5 +328,19 @@ class UseCaseModule {
         healthDataExportManager: HealthDataExportManager
     ): IQueryDocumentProvidersUseCase {
         return QueryDocumentProvidersUseCase(healthDataExportManager)
+    }
+
+    @Provides
+    fun providesTriggerImportUseCase(
+        healthDataImportManager: HealthDataImportManager
+    ): ITriggerImportUseCase {
+        return TriggerImportUseCase(healthDataImportManager)
+    }
+
+    @Provides
+    fun providesLoadImportStatusUseCase(
+        healthDataImportManager: HealthDataImportManager
+    ): ILoadImportStatusUseCase {
+        return LoadImportStatusUseCase(healthDataImportManager)
     }
 }

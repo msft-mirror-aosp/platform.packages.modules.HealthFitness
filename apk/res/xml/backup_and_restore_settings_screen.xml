@@ -18,21 +18,21 @@
     <PreferenceCategory
         android:key="settings_category"
         android:title="@string/export_and_import_title"
-        android:order="0">
+        android:order="1">
         <com.android.healthconnect.controller.shared.preference.HealthPreference
             android:key="scheduled_export"
             android:icon="?attr/repeatIcon"
             android:title="@string/scheduled_export"
-            android:order="2"/>
+            android:order="3"/>
         <com.android.healthconnect.controller.shared.preference.HealthPreference
             android:key="import_data"
             android:icon="?attr/importIcon"
             android:title="@string/import_data"
             android:summary="@string/import_data_description"
-            android:order="3"/>
+            android:order="4"/>
     </PreferenceCategory>
     <com.android.settingslib.widget.FooterPreference
         android:key="backup_restore_footer"
         android:title="@string/backup_and_restore_footer_body_text"
-        android:order="4"/>
+        android:order="5"/>
 </PreferenceScreen>

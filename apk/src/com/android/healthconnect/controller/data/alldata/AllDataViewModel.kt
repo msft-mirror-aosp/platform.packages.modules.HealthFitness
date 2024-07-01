@@ -23,7 +23,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.data.appdata.AppDataUseCase
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -43,7 +43,7 @@ constructor(
 
     private val _allData = MutableLiveData<AllDataState>()
 
-    private var setOfPermissionTypesToBeDeleted: MutableSet<HealthPermissionType> = mutableSetOf()
+    private var setOfPermissionTypesToBeDeleted: MutableSet<FitnessPermissionType> = mutableSetOf()
 
     private var isDeletionState: Boolean = false
 
@@ -51,10 +51,10 @@ constructor(
     val allData: LiveData<AllDataState>
         get() = _allData
 
-    fun loadAllData() {
+    fun loadAllFitnessData() {
         _allData.postValue(AllDataState.Loading)
         viewModelScope.launch {
-            when (val result = loadAppDataUseCase.loadAllData()) {
+            when (val result = loadAppDataUseCase.loadAllFitnessData()) {
                 is UseCaseResults.Success -> {
                     _allData.postValue(AllDataState.WithData(result.data))
                 }
@@ -69,15 +69,15 @@ constructor(
         setOfPermissionTypesToBeDeleted.clear()
     }
 
-    fun addToDeleteSet(permissionType: HealthPermissionType) {
+    fun addToDeleteSet(permissionType: FitnessPermissionType) {
         setOfPermissionTypesToBeDeleted.add(permissionType)
     }
 
-    fun removeFromDeleteSet(permissionType: HealthPermissionType) {
+    fun removeFromDeleteSet(permissionType: FitnessPermissionType) {
         setOfPermissionTypesToBeDeleted.remove(permissionType)
     }
 
-    fun getDeleteSet(): Set<HealthPermissionType> {
+    fun getDeleteSet(): Set<FitnessPermissionType> {
         return setOfPermissionTypesToBeDeleted.toSet()
     }
 
