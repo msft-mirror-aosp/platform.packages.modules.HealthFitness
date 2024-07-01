@@ -51,7 +51,6 @@ import android.util.Slog;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
-import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
@@ -155,16 +154,10 @@ public final class MedicalResourceHelper {
     static ReadTableRequest getReadTableRequest(
             @NonNull List<MedicalResourceId> medicalResourceIds) {
         return new ReadTableRequest(getMainTableName())
-                .setWhereClause(getResourceIdsWhereClause(medicalResourceIds));
+                .setWhereClause(getReadTableWhereClause(medicalResourceIds));
     }
 
-    private static WhereClauses getResourceIdsWhereClause(
-            @NonNull List<MedicalResourceId> medicalResourceIds) {
-        List<String> hexUuids = medicalResourceIdsToHexUuids(medicalResourceIds);
-        return new WhereClauses(AND).addWhereInClauseWithoutQuotes(UUID_COLUMN_NAME, hexUuids);
-    }
-
-    private static @NonNull List<String> medicalResourceIdsToHexUuids(
+    private static WhereClauses getReadTableWhereClause(
             @NonNull List<MedicalResourceId> medicalResourceIds) {
         List<UUID> ids =
                 medicalResourceIds.stream()
@@ -175,7 +168,9 @@ public final class MedicalResourceHelper {
                                                 medicalResourceId.getFhirResourceType(),
                                                 medicalResourceId.getDataSourceId()))
                         .toList();
-        return StorageUtils.getListOfHexStrings(ids);
+        return new WhereClauses(AND)
+                .addWhereInClauseWithoutQuotes(
+                        UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(ids));
     }
 
     /**
@@ -289,35 +284,6 @@ public final class MedicalResourceHelper {
     private static int getMedicalResourceType(@NonNull String fhirResourceType) {
         int fhirResourceTypeInt = getFhirResourceTypeInt(fhirResourceType);
         return getMedicalResourceType(fhirResourceTypeInt);
-    }
-
-    /**
-     * Deletes a list of {@link MedicalResource}s created based on the given list of {@link
-     * MedicalResourceId}s into the HealthConnect database.
-     *
-     * @param medicalResourceIds list of {@link MedicalResourceInternal}.
-     */
-    public void deleteMedicalResourcesByIds(@NonNull List<MedicalResourceId> medicalResourceIds)
-            throws SQLiteException {
-
-        mTransactionManager.delete(getDeleteRequest(medicalResourceIds));
-    }
-
-    /**
-     * Create an SQL string to delete a list of medical records.
-     *
-     * @param medicalResourceIds the ids to delete
-     * @return A {@link DeleteTableRequest} which when executed will delete those ids
-     */
-    @NonNull
-    @VisibleForTesting
-    static DeleteTableRequest getDeleteRequest(
-            @NonNull List<MedicalResourceId> medicalResourceIds) {
-        if (medicalResourceIds.isEmpty()) {
-            throw new IllegalArgumentException("Cannot delete without filters");
-        }
-        List<String> hexUuids = medicalResourceIdsToHexUuids(medicalResourceIds);
-        return new DeleteTableRequest(getMainTableName()).setIds(UUID_COLUMN_NAME, hexUuids);
     }
 
     /**
