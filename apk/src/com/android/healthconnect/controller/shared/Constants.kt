@@ -30,4 +30,5 @@ object Constants {
 
     // Connected apps
     const val EXTRA_APP_NAME = "app_name_extras"
+    const val SHOW_MANAGE_APP_SECTION = "show_manage_app_section"
 }

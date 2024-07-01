@@ -18,10 +18,14 @@ package com.android.server.healthconnect.storage.request;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Collections;
 
+@RunWith(AndroidJUnit4.class)
 public class CreateIndexRequestTest {
     private static final String TABLE_NAME = "sample_table";
     private static final String INDEX_NAME = "index_column";

@@ -31,8 +31,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
-import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.permissions.shared.SettingsActivity
 import com.android.healthconnect.controller.service.HealthPermissionManagerModule
@@ -77,20 +77,20 @@ class SettingsActivityTest {
         hiltRule.inject()
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
             TEST_APP_PACKAGE_NAME, listOf())
-        whenever(viewModel.grantedPermissions).then {
-            MutableLiveData<Set<DataTypePermission>>(emptySet())
+        whenever(viewModel.grantedFitnessPermissions).then {
+            MutableLiveData<Set<FitnessPermission>>(emptySet())
         }
         showOnboarding(context, false)
 
         // Needed for the fragment
-        whenever(viewModel.revokeAllPermissionsState).then {
+        whenever(viewModel.revokeAllHealthPermissionsState).then {
             MutableLiveData(AppPermissionViewModel.RevokeAllState.NotStarted)
         }
         whenever(viewModel.showDisableExerciseRouteEvent)
             .thenReturn(MediatorLiveData(AppPermissionViewModel.DisableExerciseRouteDialogEvent()))
 
-        whenever(viewModel.allAppPermissionsGranted).then { MediatorLiveData(false) }
-        whenever(viewModel.atLeastOnePermissionGranted).then { MediatorLiveData(false) }
+        whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(false) }
+        whenever(viewModel.atLeastOneFitnessPermissionGranted).then { MediatorLiveData(false) }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
         whenever(viewModel.loadAccessDate(Mockito.anyString())).thenReturn(accessDate)
 
@@ -102,13 +102,15 @@ class SettingsActivityTest {
                     context.getDrawable(R.drawable.health_connect_logo)))
         }
         val writePermission =
-            DataTypePermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
         val readPermission =
-            DataTypePermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
-        whenever(viewModel.appPermissions).then {
+            FitnessPermission(FitnessPermissionType.DISTANCE, PermissionsAccessType.READ)
+        whenever(viewModel.fitnessPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
-        whenever(viewModel.grantedPermissions).then { MutableLiveData(setOf(writePermission)) }
+        whenever(viewModel.grantedFitnessPermissions).then {
+            MutableLiveData(setOf(writePermission))
+        }
         whenever(viewModel.lastReadPermissionDisconnected).then { MutableLiveData(false) }
     }
 

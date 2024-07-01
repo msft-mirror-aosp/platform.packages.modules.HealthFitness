@@ -28,20 +28,26 @@ import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
+import com.android.healthconnect.controller.utils.logging.ExportFrequencyElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /** Export frequency fragment for Health Connect. */
 @AndroidEntryPoint(Fragment::class)
 class ExportFrequencyFragment : Hilt_ExportFrequencyFragment() {
 
+    @Inject lateinit var logger: HealthConnectLogger
+
     private val viewModel: ExportSettingsViewModel by activityViewModels()
 
-    // TODO: b/325917283 - Add proper logging for the export frequency fragment.
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        logger.setPageId(PageName.EXPORT_FREQUENCY_PAGE)
         val view = inflater.inflate(R.layout.export_frequency_screen, container, false)
 
         val backButton = view.findViewById<Button>(R.id.export_import_cancel_button)
@@ -50,13 +56,34 @@ class ExportFrequencyFragment : Hilt_ExportFrequencyFragment() {
         backButton.text = getString(R.string.export_back_button)
         nextButton.text = getString(R.string.export_next_button)
 
-        backButton.setOnClickListener { requireActivity().finish() }
+        logger.logImpression(ExportFrequencyElement.EXPORT_FREQUENCY_BACK_BUTTON)
+        logger.logImpression(ExportFrequencyElement.EXPORT_FREQUENCY_NEXT_BUTTON)
+        logger.logImpression(ExportFrequencyElement.EXPORT_FREQUENCY_DAILY_BUTTON)
+        logger.logImpression(ExportFrequencyElement.EXPORT_FREQUENCY_WEEKLY_BUTTON)
+        logger.logImpression(ExportFrequencyElement.EXPORT_FREQUENCY_MONTHLY_BUTTON)
+
+        backButton.setOnClickListener {
+            logger.logInteraction(ExportFrequencyElement.EXPORT_FREQUENCY_BACK_BUTTON)
+            requireActivity().finish()
+        }
+
+        val radioGroup = view.findViewById<RadioGroup>(R.id.radio_group_frequency)
+
         nextButton.setOnClickListener {
+            logger.logInteraction(ExportFrequencyElement.EXPORT_FREQUENCY_NEXT_BUTTON)
+            val checkedId = radioGroup.checkedRadioButtonId
+            when (checkedId) {
+                R.id.radio_button_daily ->
+                    logger.logInteraction(ExportFrequencyElement.EXPORT_FREQUENCY_DAILY_BUTTON)
+                R.id.radio_button_weekly ->
+                    logger.logInteraction(ExportFrequencyElement.EXPORT_FREQUENCY_WEEKLY_BUTTON)
+                R.id.radio_button_monthly ->
+                    logger.logInteraction(ExportFrequencyElement.EXPORT_FREQUENCY_MONTHLY_BUTTON)
+            }
             findNavController()
                 .navigate(R.id.action_exportFrequencyFragment_to_exportDestinationFragment)
         }
 
-        val radioGroup = view.findViewById<RadioGroup>(R.id.radio_group_frequency)
         viewModel.selectedExportFrequency.observe(viewLifecycleOwner) {
             exportFrequency: ExportFrequency? ->
             when (exportFrequency) {
@@ -82,5 +109,10 @@ class ExportFrequencyFragment : Hilt_ExportFrequencyFragment() {
         }
 
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logger.logPageImpression()
     }
 }
