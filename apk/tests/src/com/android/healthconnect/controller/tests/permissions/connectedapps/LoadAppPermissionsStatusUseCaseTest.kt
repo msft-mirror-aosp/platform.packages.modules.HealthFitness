@@ -17,8 +17,8 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 
 import com.android.healthconnect.controller.permissions.app.HealthPermissionStatus
 import com.android.healthconnect.controller.permissions.app.LoadAppPermissionsStatusUseCase
-import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -53,9 +53,9 @@ class LoadAppPermissionsStatusUseCaseTest {
     @Test
     fun allGrantedPermissionsDeclared_returnsAllPermissions() = runTest {
         val readExercisePermission =
-            DataTypePermission(HealthPermissionType.EXERCISE, PermissionsAccessType.READ)
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.READ)
         val writeExercisePermission =
-            DataTypePermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
 
         loadGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME, listOf(readExercisePermission.toString()))
@@ -73,9 +73,9 @@ class LoadAppPermissionsStatusUseCaseTest {
     @Test
     fun doesNotReturn_grantedButNotDeclaredPermission() = runTest {
         val readExercisePermission =
-            DataTypePermission(HealthPermissionType.EXERCISE, PermissionsAccessType.READ)
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.READ)
         val writeExercisePermission =
-            DataTypePermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
 
         loadGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME,

@@ -20,7 +20,8 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Beheer de toegang van apps tot gezondheidsgegevens"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Rechten en gegevens"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Beheer de gezondheids- en fitnessgegevens op je telefoon en bepaal welke apps er toegang toe krijgen"</string>
+    <!-- no translation found for home_subtitle (2154213430054477787) -->
+    <skip />
     <string name="data_title" msgid="4456619761533380816">"Gegevens en toegang"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Alle categorieën"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Alle categorieën bekijken"</string>
@@ -37,6 +38,9 @@
     <string name="backup_title" msgid="211503191266235085">"Back-up"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Gegevensbronnen en prioriteit"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Eenheden instellen"</string>
+    <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Voorkeuren"</string>
+    <string name="manage_data_category_title" msgid="6328886061582616519">"Gegevens beheren"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Gegevens exporteren en importeren"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Recente toegang"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Er zijn geen apps die recent toegang tot Health Connect hebben gehad"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Alle recente toegangsacties bekijken"</string>
@@ -60,7 +64,7 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"cyclus bijhouden"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Voeding"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"voeding"</string>
-    <string name="browse_data_category" msgid="4813955610391357638">"Browsen door gegevens"</string>
+    <string name="browse_data_category" msgid="4813955610391357638">"Door gegevens browsen"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Gegevens beheren"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Gegevens exporteren"</string>
     <string name="delete_all_data_button" msgid="7238755635416521487">"Alle gegevens verwijderen"</string>
@@ -258,6 +262,16 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"huidtemperatuur"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Huidtemperatuur lezen"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Huidtemperatuur schrijven"</string>
+    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Alle medische gegevens"</string>
+    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"alle medische gegevens"</string>
+    <string name="all_medical_data_content_description" msgid="6103488863059447886">"Alle medische gegevens schrijven"</string>
+    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Vaccinatie"</string>
+    <string name="immunization_lowercase_label" msgid="6464922369026887687">"vaccinatie"</string>
+    <string name="immunization_content_description" msgid="2910674919337229803">"Vaccinatie lezen"</string>
+    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Mindfulness"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"mindfulness"</string>
+    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Mindfulness lezen"</string>
+    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Mindfulness schrijven"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"<xliff:g id="APP_NAME">%1$s</xliff:g> toestaan te lezen"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"<xliff:g id="APP_NAME">%1$s</xliff:g> toestaan te schrijven"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Annuleren"</string>
@@ -310,6 +324,12 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Je hebt momenteel geen compatibele apps geïnstalleerd"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Aanvullende toegang"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Aanvullende rechten voor deze app verwijderd"</string>
+    <!-- no translation found for permissions_header (6519976063360071569) -->
+    <skip />
+    <!-- no translation found for manage_fitness_permissions (1001729292172461314) -->
+    <skip />
+    <!-- no translation found for manage_medical_permissions (7658181359096889932) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"App-rechten verwijderd"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect heeft rechten verwijderd voor <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect heeft rechten verwijderd voor <xliff:g id="APP_DATA_0">%1$s</xliff:g> en <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -319,54 +339,65 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Waarom Health Connect app-rechten verwijdert"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Als een app wordt opgeschort of verwijderd van Google Play, verwijdert Health Connect automatisch de rechten voor die app.\n\nDit betekent dat de app geen toegang meer heeft tot gegevens die zijn opgeslagen in Health Connect. Heeft de app eerder gegevens geschreven, dan verschijnt deze in de lijst met inactieve apps."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
-    <!-- no translation found for export_file_access_error_banner_button (6336949702329425932) -->
-    <skip />
-    <!-- no translation found for export_file_access_error_banner_title (8290988049467813322) -->
-    <skip />
-    <!-- no translation found for export_file_access_error_banner_summary (1226999878868505503) -->
-    <skip />
-    <!-- no translation found for next_export_time (3138247220014510213) -->
-    <skip />
+    <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"Instellen"</string>
+    <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Kan gegevens niet exporteren"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Er is een probleem met de export voor <xliff:g id="DATE">%1$s</xliff:g>. Stel een nieuwe geplande export in en probeer het opnieuw."</string>
+    <string name="next_export_time" msgid="3138247220014510213">"Volgende export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Back-up maken en terugzetten"</string>
-    <!-- no translation found for last_export_time (9205875050823594041) -->
-    <skip />
+    <string name="last_export_time" msgid="9205875050823594041">"Laatste export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Exporteren en importeren"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Geplande export"</string>
     <string name="import_data" msgid="404502315533233094">"Gegevens importeren"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Herstel gegevens uit een eerder geëxporteerd bestand"</string>
+    <string name="import_error_banner_title" msgid="1480977889067027790">"Kan gegevens niet herstellen"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
+    <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"Nu updaten"</string>
+    <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Update je systeem zodat Health Connect je gegevens kan herstellen en probeer het dan opnieuw."</string>
+    <string name="import_other_error_banner_button" msgid="8006947649520909176">"Opnieuw proberen"</string>
+    <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Er is een probleem met het herstellen van gegevens uit je export."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Met de functie Exporteren kun je je gegevens opslaan zodat je die kunt overzetten naar een nieuwe telefoon"</string>
-    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Meer informatie"</string>
+    <!-- no translation found for backup_and_restore_footer_link_text (9075133737244288876) -->
+    <skip />
     <string name="automatic_export_on" msgid="6972389773963624315">"Aan"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Uit"</string>
-    <string name="choose_frequency_category" msgid="2230821549715237663">"Frequentie kiezen"</string>
-    <string name="choose_frequency" msgid="1077467424225083246">"Frequentie kiezen"</string>
-    <string name="choose_frequency_description" msgid="752601326653048254">"Kies of je gegevens eenmalig wilt opslaan of ze op regelmatige tijdstippen automatisch wilt laten opslaan."</string>
+    <!-- no translation found for choose_frequency_category (9094154407387676553) -->
+    <skip />
+    <!-- no translation found for scheduled_export_settings_footer_text (8488483803782086291) -->
+    <skip />
+    <!-- no translation found for choose_frequency (8119085390857180221) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (7698155810053504157) -->
+    <skip />
     <string name="frequency_daily" msgid="3596412357416125727">"Dagelijks"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Wekelijks"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Maandelijks"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"Kies waar je naartoe wilt exporteren"</string>
-    <!-- no translation found for export_invalid_storage (3945266169513895950) -->
+    <!-- no translation found for export_destination_title (8352929396306002479) -->
     <skip />
-    <string name="import_decryption_title" msgid="396608799208392844">"Typ het wachtwoord"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Je hebt je wachtwoord voor versleuteling nodig om je Health Connect-gegevens te importeren"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Wachtwoord vergeten?"</string>
-    <string name="import_password_hint" msgid="5158553589723883063">"Wachtwoord"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Als je je oude telefoon nog steeds hebt, kun je je gegevens opnieuw exporteren met een nieuw wachtwoord"</string>
+    <string name="export_invalid_storage" msgid="3945266169513895950">"Kies een opslag-app om je gegevens te exporteren"</string>
+    <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Dit bestand importeren?"</string>
+    <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Annuleren"</string>
+    <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Importeren"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Terug"</string>
     <string name="export_next_button" msgid="657930567137105172">"Volgende"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Annuleren"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Volgende"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Importeren vanuit"</string>
-    <!-- no translation found for import_invalid_storage (4873640088459948487) -->
+    <string name="import_invalid_storage" msgid="4873640088459948487">"Kies een opslag-app om je gegevens te importeren"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
     <skip />
-    <!-- no translation found for export_import_choose_account_title (1047021319012735232) -->
+    <string name="export_import_choose_account_title" msgid="1047021319012735232">"Account kiezen"</string>
+    <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Annuleren"</string>
+    <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Klaar"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
     <skip />
-    <!-- no translation found for export_import_choose_account_cancel_button (7975616126298263479) -->
-    <skip />
-    <!-- no translation found for export_import_choose_account_done_button (8450305343787469429) -->
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
     <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Aan de slag met Health Connect"</string>
-    <string name="onboarding_description" msgid="4873129122057931161">"Health Connect slaat je gezondheids- en fitnessgegevens op zodat je de verschillende apps op je telefoon makkelijk kunt synchroniseren"</string>
+    <!-- no translation found for onboarding_description (3479157507808350452) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"Gegevens delen met je apps"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Kies de gegevens die elke app mag lezen in of sturen naar Health Connect"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Je instellingen en privacy beheren"</string>

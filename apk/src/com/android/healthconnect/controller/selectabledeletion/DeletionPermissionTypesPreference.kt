@@ -23,8 +23,8 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.preference.PreferenceViewHolder
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 
 /** Custom preference for displaying checkboxes where the user can delete their data */
@@ -37,7 +37,7 @@ class DeletionPermissionTypesPreference constructor(context: Context) : HealthPr
     private var widgetFrame: ViewGroup? = null
     private var checkBox: CheckBox? = null
     private var isChecked: Boolean = false
-    private lateinit var healthPermissionType: HealthPermissionType
+    private lateinit var mFitnessPermissionType: FitnessPermissionType
 
     init {
         widgetLayoutResource = R.layout.widget_checkbox
@@ -54,7 +54,9 @@ class DeletionPermissionTypesPreference constructor(context: Context) : HealthPr
 
         checkBox?.isChecked = this.isChecked
 
-        checkBox?.contentDescription = context.getString(DataTypePermissionStrings.fromPermissionType(healthPermissionType).uppercaseLabel)
+        checkBox?.contentDescription =
+            context.getString(
+                FitnessPermissionStrings.fromPermissionType(mFitnessPermissionType).uppercaseLabel)
 
         checkBox?.setOnClickListener(checkboxButtonListener)
 
@@ -91,18 +93,18 @@ class DeletionPermissionTypesPreference constructor(context: Context) : HealthPr
         super.setOnPreferenceClickListener(clickListener)
     }
 
-    fun setHealthPermissionType(healthPermissionType: HealthPermissionType) {
-        this.healthPermissionType = healthPermissionType
+    fun setHealthPermissionType(fitnessPermissionType: FitnessPermissionType) {
+        this.mFitnessPermissionType = fitnessPermissionType
     }
 
-    fun getHealthPermissionType(): HealthPermissionType {
-        return healthPermissionType
+    fun getHealthPermissionType(): FitnessPermissionType {
+        return mFitnessPermissionType
     }
 
     /** Display or hide checkbox */
     fun showCheckbox(isShowCheckbox: Boolean) {
         setShowCheckbox(isShowCheckbox)
-        widgetFrame?.visibility = if(isShowCheckbox) VISIBLE else GONE
+        widgetFrame?.visibility = if (isShowCheckbox) VISIBLE else GONE
         widgetFrame?.tag = if (isShowCheckbox) "checkbox" else ""
     }
 

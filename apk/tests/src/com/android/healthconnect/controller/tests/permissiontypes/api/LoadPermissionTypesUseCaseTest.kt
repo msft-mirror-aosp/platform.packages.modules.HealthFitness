@@ -13,7 +13,7 @@ import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.StepsCadenceRecord
 import android.os.OutcomeReceiver
 import androidx.test.platform.app.InstrumentationRegistry
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissiontypes.api.LoadPermissionTypesUseCase
 import com.android.healthconnect.controller.tests.utils.CoroutineTestRule
 import com.android.healthconnect.controller.tests.utils.NOW
@@ -75,7 +75,7 @@ class LoadPermissionTypesUseCaseTest {
         Truth.assertThat(loadedContributingApps.size).isEqualTo(2)
         Truth.assertThat(loadedContributingApps)
             .containsExactlyElementsIn(
-                listOf(HealthPermissionType.STEPS, HealthPermissionType.EXERCISE))
+                listOf(FitnessPermissionType.STEPS, FitnessPermissionType.EXERCISE))
     }
 
     @Test

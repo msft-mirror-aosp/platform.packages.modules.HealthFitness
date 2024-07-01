@@ -94,7 +94,7 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
     private fun setupAllowButton(permissionList: List<AdditionalPermission>) {
         logger.logImpression(allowButtonName)
 
-        if (viewModel.isDataTypePermissionRequestConcluded() ||
+        if (viewModel.isFitnessPermissionRequestConcluded() ||
             viewModel.isMedicalPermissionRequestConcluded()) {
             // if requested additional permissions == 1 then allow by default
             if (permissionList.size == 1) {
@@ -109,6 +109,9 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
 
         getAllowButton().setOnClickListener {
             logger.logInteraction(allowButtonName)
+            if (permissionList.size == 1) {
+                viewModel.updateAdditionalPermissions(true)
+            }
             viewModel.requestAdditionalPermissions(getPackageNameExtra())
             handlePermissionResults(viewModel.getPermissionGrants())
         }

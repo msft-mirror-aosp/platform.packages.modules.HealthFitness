@@ -40,8 +40,8 @@ import com.android.healthconnect.controller.data.entries.datenavigation.DateNavi
 import com.android.healthconnect.controller.deletion.DeletionConstants.FRAGMENT_TAG_DELETION
 import com.android.healthconnect.controller.deletion.DeletionFragment
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsFragment
-import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings.Companion.fromPermissionType
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings.Companion.fromPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -62,7 +62,7 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
     private var packageName: String = ""
     private var appName: String = ""
 
-    private lateinit var permissionType: HealthPermissionType
+    private lateinit var permissionType: FitnessPermissionType
     private val entriesViewModel: EntriesViewModel by viewModels()
 
     private lateinit var header: AppHeaderPreference
@@ -116,7 +116,7 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
         val view = inflater.inflate(R.layout.fragment_entries, container, false)
         if (requireArguments().containsKey(PERMISSION_TYPE_KEY)) {
             permissionType =
-                arguments?.getSerializable(PERMISSION_TYPE_KEY, HealthPermissionType::class.java)
+                arguments?.getSerializable(PERMISSION_TYPE_KEY, FitnessPermissionType::class.java)
                     ?: throw IllegalArgumentException("PERMISSION_TYPE_KEY can't be null!")
         }
         setTitle(fromPermissionType(permissionType).uppercaseLabel)

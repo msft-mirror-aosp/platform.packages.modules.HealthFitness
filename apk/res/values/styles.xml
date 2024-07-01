@@ -201,19 +201,6 @@
 
     <!-- END REGION -->
 
-    <!-- REGION EDITTEXT -->
-    <style name="Widget.HealthConnect.EditText.Password" parent="Widget.AppCompat.EditText">
-        <item name="android:maxHeight">56dp</item>
-        <item name="android:paddingVertical">@dimen/spacing_large</item>
-        <item name="android:paddingHorizontal">0dp</item>
-        <item name="android:layout_marginHorizontal">0dp</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:textAppearance">?android:textAppearanceMedium</item>
-    </style>
-    <!-- END REGION -->
-
     <!-- REGION DIALOG -->
     <style name="Theme.HealthConnect.Dialog.Alert" parent="@style/Theme.AlertDialog.SettingsLib">
         <item name="textAllCaps">false</item>

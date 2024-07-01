@@ -37,11 +37,11 @@ import com.android.healthconnect.controller.dataentries.formatters.DistanceForma
 import com.android.healthconnect.controller.dataentries.formatters.SleepSessionFormatter
 import com.android.healthconnect.controller.dataentries.formatters.StepsFormatter
 import com.android.healthconnect.controller.dataentries.formatters.TotalCaloriesBurnedFormatter
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.DISTANCE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.SLEEP
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.STEPS
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.TOTAL_CALORIES_BURNED
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.DISTANCE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.SLEEP
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.TOTAL_CALORIES_BURNED
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.usecase.BaseUseCase
@@ -128,7 +128,7 @@ constructor(
         aggregationType: AggregationType<T>,
         packageName: String?,
         showDataOrigin: Boolean,
-        healthPermissionType: HealthPermissionType
+        fitnessPermissionType: FitnessPermissionType
     ): FormattedAggregation {
         val request =
             AggregateRecordsRequest.Builder<T>(timeFilterRange).addAggregationType(aggregationType)
@@ -143,19 +143,19 @@ constructor(
             }
         val aggregationResult: T = requireNotNull(response.get(aggregationType))
         val apps = response.getDataOrigins(aggregationType)
-        return formatAggregation(aggregationResult, apps, showDataOrigin, healthPermissionType)
+        return formatAggregation(aggregationResult, apps, showDataOrigin, fitnessPermissionType)
     }
 
     private suspend fun <T> formatAggregation(
         aggregationResult: T,
         apps: Set<DataOrigin>,
         showDataOrigin: Boolean,
-        healthPermissionType: HealthPermissionType
+        fitnessPermissionType: FitnessPermissionType
     ): FormattedAggregation {
         val contributingApps = getContributingApps(apps, showDataOrigin)
         return when (aggregationResult) {
             is Long -> {
-                when (healthPermissionType) {
+                when (fitnessPermissionType) {
                     STEPS ->
                         FormattedAggregation(
                             aggregation = stepsFormatter.formatUnit(aggregationResult),
@@ -203,13 +203,13 @@ constructor(
 }
 
 sealed class LoadAggregationInput(
-    open val permissionType: HealthPermissionType,
+    open val permissionType: FitnessPermissionType,
     open val packageName: String?,
     open val showDataOrigin: Boolean
 ) {
     /** Aggregation input which uses a [DateNavigationPeriod] to calculate start and end times */
     data class PeriodAggregation(
-        override val permissionType: HealthPermissionType,
+        override val permissionType: FitnessPermissionType,
         override val packageName: String?,
         val displayedStartTime: Instant,
         val period: DateNavigationPeriod,
@@ -218,7 +218,7 @@ sealed class LoadAggregationInput(
 
     /** Aggregation input with custom start and end times */
     data class CustomAggregation(
-        override val permissionType: HealthPermissionType,
+        override val permissionType: FitnessPermissionType,
         override val packageName: String?,
         val startTime: Instant,
         val endTime: Instant,
