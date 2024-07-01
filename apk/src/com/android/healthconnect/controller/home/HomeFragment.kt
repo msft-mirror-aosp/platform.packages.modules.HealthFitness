@@ -56,7 +56,6 @@ import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HomePageElement
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -265,11 +264,10 @@ class HomeFragment : Hilt_HomeFragment() {
         lastSuccessfulDate: Instant,
         periodInDays: Int
     ): BannerPreference {
-        // TODO: b/325917283 - Add proper logging for the export file access error banner.
-        return BannerPreference(requireContext(), ErrorPageElement.UNKNOWN_ELEMENT).also {
+        return BannerPreference(requireContext(), HomePageElement.EXPORT_ERROR_BANNER).also {
             it.setPrimaryButton(
                 getString(R.string.export_file_access_error_banner_button),
-                ErrorPageElement.UNKNOWN_ELEMENT)
+                HomePageElement.EXPORT_ERROR_BANNER_BUTTON)
             it.title = getString(R.string.export_file_access_error_banner_title)
             it.key = EXPORT_ERROR_BANNER_PREFERENCE_KEY
             it.summary =
@@ -383,9 +381,12 @@ class HomeFragment : Hilt_HomeFragment() {
         val appPermissionsType = recentApp.appPermissionsType
         val navigationId =
             when (appPermissionsType) {
-                AppPermissionsType.FITNESS_PERMISSIONS_ONLY -> R.id.action_homeFragment_to_fitnessAppFragment
-                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY -> R.id.action_homeFragment_to_medicalAppFragment
-                AppPermissionsType.COMBINED_PERMISSIONS -> R.id.action_homeFragment_to_combinedPermissionsFragment
+                AppPermissionsType.FITNESS_PERMISSIONS_ONLY ->
+                    R.id.action_homeFragment_to_fitnessAppFragment
+                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY ->
+                    R.id.action_homeFragment_to_medicalAppFragment
+                AppPermissionsType.COMBINED_PERMISSIONS ->
+                    R.id.action_homeFragment_to_combinedPermissionsFragment
             }
         findNavController()
             .navigate(

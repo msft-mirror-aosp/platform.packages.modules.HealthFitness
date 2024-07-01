@@ -50,22 +50,30 @@ public final class MedicalResource implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     public @interface MedicalResourceType {}
 
+    @NonNull private final String mId;
     @MedicalResourceType private final int mType;
     @NonNull private final String mDataSourceId;
     @NonNull private final String mData;
 
     /**
+     * @param id The unique identifier of this data, assigned by the Android Health Platform at
+     *     insertion time.
      * @param type The medical resource type assigned by the Android Health Platform at insertion
      *     time.
      * @param dataSourceId Where the data comes from.
      * @param data The FHIR resource data in JSON representation.
      */
     private MedicalResource(
-            @MedicalResourceType int type, @NonNull String dataSourceId, @NonNull String data) {
+            @NonNull String id,
+            @MedicalResourceType int type,
+            @NonNull String dataSourceId,
+            @NonNull String data) {
+        requireNonNull(id);
         requireNonNull(dataSourceId);
         requireNonNull(data);
         validateMedicalResourceType(type);
 
+        mId = id;
         mType = type;
         mDataSourceId = dataSourceId;
         mData = data;
@@ -77,6 +85,7 @@ public final class MedicalResource implements Parcelable {
      */
     private MedicalResource(@NonNull Parcel in) {
         requireNonNull(in);
+        mId = requireNonNull(in.readString());
         mType = in.readInt();
         mDataSourceId = requireNonNull(in.readString());
         mData = requireNonNull(in.readString());
@@ -99,6 +108,12 @@ public final class MedicalResource implements Parcelable {
                     return new MedicalResource[size];
                 }
             };
+
+    /** Returns the unique identifier of this data. */
+    @NonNull
+    public String getId() {
+        return mId;
+    }
 
     /** Returns the medical resource type. */
     @MedicalResourceType
@@ -127,6 +142,7 @@ public final class MedicalResource implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         requireNonNull(dest);
+        dest.writeString(getId());
         dest.writeInt(getType());
         dest.writeString(getDataSourceId());
         dest.writeString(getData());
@@ -157,7 +173,8 @@ public final class MedicalResource implements Parcelable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof MedicalResource that)) return false;
-        return getType() == that.getType()
+        return getId().equals(that.getId())
+                && getType() == that.getType()
                 && getDataSourceId().equals(that.getDataSourceId())
                 && getData().equals(that.getData());
     }
@@ -165,7 +182,7 @@ public final class MedicalResource implements Parcelable {
     /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
-        return hash(getType(), getDataSourceId(), getData());
+        return hash(getId(), getType(), getDataSourceId(), getData());
     }
 
     /** Returns a string representation of this {@link MedicalResource}. */
@@ -173,7 +190,8 @@ public final class MedicalResource implements Parcelable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.getClass().getSimpleName()).append("{");
-        sb.append("type=").append(getType());
+        sb.append("id=").append(getId());
+        sb.append(",type=").append(getType());
         sb.append(",dataSourceId=").append(getDataSourceId());
         sb.append(",data=").append(getData());
         sb.append("}");
@@ -182,22 +200,22 @@ public final class MedicalResource implements Parcelable {
 
     /** Builder class for {@link MedicalResource} */
     public static final class Builder {
+        @NonNull private String mId;
         @MedicalResourceType private int mType;
         @NonNull private String mDataSourceId;
         @NonNull private String mData;
 
-        /**
-         * @param type The medical resource type assigned by the Android Health Platform at
-         *     insertion time.
-         * @param dataSourceId Where the data comes from.
-         * @param data The FHIR resource data in JSON representation.
-         */
         public Builder(
-                @MedicalResourceType int type, @NonNull String dataSourceId, @NonNull String data) {
+                @NonNull String id,
+                @MedicalResourceType int type,
+                @NonNull String dataSourceId,
+                @NonNull String data) {
+            requireNonNull(id);
             requireNonNull(dataSourceId);
             requireNonNull(data);
             validateMedicalResourceType(type);
 
+            mId = id;
             mType = type;
             mDataSourceId = dataSourceId;
             mData = data;
@@ -209,6 +227,7 @@ public final class MedicalResource implements Parcelable {
          */
         public Builder(@NonNull Builder original) {
             requireNonNull(original);
+            mId = original.mId;
             mType = original.mType;
             mDataSourceId = original.mDataSourceId;
             mData = original.mData;
@@ -220,9 +239,21 @@ public final class MedicalResource implements Parcelable {
          */
         public Builder(@NonNull MedicalResource original) {
             requireNonNull(original);
+            mId = original.getId();
             mType = original.getType();
             mDataSourceId = original.getDataSourceId();
             mData = original.getData();
+        }
+
+        /**
+         * Sets the unique identifier of this data, assigned by the Android Health Platform at
+         * insertion time.
+         */
+        @NonNull
+        public Builder setId(@NonNull String id) {
+            requireNonNull(id);
+            mId = id;
+            return this;
         }
 
         /**
@@ -255,7 +286,7 @@ public final class MedicalResource implements Parcelable {
         /** Returns a new instance of {@link MedicalResource} with the specified parameters. */
         @NonNull
         public MedicalResource build() {
-            return new MedicalResource(mType, mDataSourceId, mData);
+            return new MedicalResource(mId, mType, mDataSourceId, mData);
         }
     }
 }
