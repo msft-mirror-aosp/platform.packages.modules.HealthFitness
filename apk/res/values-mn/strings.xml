@@ -83,7 +83,7 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"таны эрүүл мэндийн өгөгдөлд хандах"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Шатаасан калорийг унших"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Аппад шатаасан калори уншихыг зөвшөөрөх"</string>
-    <string name="background_read_title" msgid="5061383169517186234">"Дэвсгэрт өгөгдөлд хандах"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"Ард өгөгдөлд хандах"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"<xliff:g id="APP_NAME">%1$s</xliff:g>-д дэвсгэрт өгөгдөлд хандахыг зөвшөөрөх үү?"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Та аппыг ашиглаагүй үедээ энэ аппад Health Connect-н өгөгдөлд хандахыг зөвшөөрөх"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"Хэрэв та зөвшөөрвөл таныг аппыг ашиглаагүй үед энэ апп Health Connect-н өгөгдөлд хандах боломжтой."</string>

@@ -420,7 +420,7 @@
     <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"100 metre başına <xliff:g id="MINUTE">%1$s</xliff:g> dakika"</string>
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g> - <xliff:g id="END_TIME">%2$s</xliff:g> arası"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g> - <xliff:g id="END_TIME">%2$s</xliff:g> arası"</string>
-    <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{Tekerlekli sandalyede 1 şınav}other{Tekerlekli sandalyede # şınav}}"</string>
+    <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{Tekerlekli sandalyeyi 1 kez itme}other{Tekerlekli sandalyeyi # kez itme}}"</string>
     <string name="liter" msgid="8276522589564337053">"{count,plural, =1{1 L}other{# L}}"</string>
     <string name="liter_long" msgid="7094280457555707835">"{count,plural, =1{1 litre}other{# litre}}"</string>
     <string name="floors_climbed" msgid="7483572478744998930">"{count,plural, =1{1 kat}other{# kat}}"</string>

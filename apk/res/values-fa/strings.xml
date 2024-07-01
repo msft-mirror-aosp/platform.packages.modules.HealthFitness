@@ -206,10 +206,10 @@
     <string name="spotting_lowercase_label" msgid="4361141146039580583">"لکه‌بینی"</string>
     <string name="spotting_read_content_description" msgid="5422420770022357631">"خواندن لکه‌بینی"</string>
     <string name="spotting_write_content_description" msgid="9049462631184362964">"نوشتن لکه‌بینی"</string>
-    <string name="hydration_uppercase_label" msgid="1196083392597480565">"سطح آب بدن"</string>
-    <string name="hydration_lowercase_label" msgid="7793261552870970551">"سطح آب بدن"</string>
-    <string name="hydration_read_content_description" msgid="3255941233933808082">"خواندن داده سطح آب بدن"</string>
-    <string name="hydration_write_content_description" msgid="7549819425875969941">"نوشتن داده سطح آب بدن"</string>
+    <string name="hydration_uppercase_label" msgid="1196083392597480565">"آب‌رسانی"</string>
+    <string name="hydration_lowercase_label" msgid="7793261552870970551">"آب‌رسانی"</string>
+    <string name="hydration_read_content_description" msgid="3255941233933808082">"خواندن داده آب‌رسانی"</string>
+    <string name="hydration_write_content_description" msgid="7549819425875969941">"نوشتن داده آب‌رسانی"</string>
     <string name="nutrition_uppercase_label" msgid="2352959651072134084">"تغذیه"</string>
     <string name="nutrition_lowercase_label" msgid="4123518952030658702">"تغذیه"</string>
     <string name="nutrition_read_content_description" msgid="5820331769605952082">"خواندن داده تغذیه"</string>
@@ -303,7 +303,7 @@
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"‫«<xliff:g id="APP_NAME">%1$s</xliff:g>» می‌تواند داده‌های اضافه‌شده بعداز <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g> را بخواند"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"برای مدیریت سایر اجازه‌های Android که این برنامه می‌تواند به آن‌ها دسترسی داشته باشد، به «تنظیمات &gt; برنامه‌ها» بروید"</string>
     <string name="manage_permissions_rationale" msgid="9183689798847740274">"داده‌هایی که با <xliff:g id="APP_NAME">%1$s</xliff:g> هم‌رسانی می‌کنید تحت‌پوشش خط‌مشی رازداری آن است"</string>
-    <string name="other_android_permissions_content_description" msgid="2261431010048933820">"برای مدیریت دیگر اجازه‌های Android که این برنامه می‌تواند به آن‌ها دسترسی داشته باشد، به «تنظیمات» بروید و روی «برنامه‌ها» ضربه بزنید"</string>
+    <string name="other_android_permissions_content_description" msgid="2261431010048933820">"برای مدیریت دیگر اجازه‌های Android که این برنامه می‌تواند به آن‌ها دسترسی داشته باشد، به «تنظیمات» بروید و روی «برنامه‌ها» تک‌ضرب بزنید"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"خواندن خط‌مشی رازداری"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"آخرین دسترسی: در ۲۴ ساعت گذشته"</string>
     <string name="app_access_title" msgid="7137018424885371763">"دسترسی برنامه"</string>
@@ -848,10 +848,10 @@
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"برای حفظ داده‌های Health Connect، این فرایند را ظرف <xliff:g id="TIME_NEEDED">%1$s</xliff:g> آینده تکمیل کنید"</string>
     <string name="resume_button" msgid="2255148549862208047">"ازسرگیری"</string>
     <string name="migration_paused_notification_title" msgid="4368414714202113077">"عملیات ادغام موقتاً متوقف شد"</string>
-    <string name="migration_paused_notification_content" msgid="1950511270109811771">"Health Connect درحال ادغام شدن با سیستم Android است. برای ادامه ضربه بزنید"</string>
+    <string name="migration_paused_notification_content" msgid="1950511270109811771">"Health Connect درحال ادغام شدن با سیستم Android است. برای ادامه تک‌ضرب بزنید"</string>
     <string name="resume_migration_banner_title" msgid="4443957114824045317">"ازسرگیری یکپارچه‌سازی"</string>
-    <string name="resume_migration_banner_description" msgid="6236230413670826036">"برای ادامه یکپارچه‌سازی Health Connect با سیستم Android، ضربه بزنید. برای حفظ داده‌ها، این فرایند را ظرف <xliff:g id="TIME_NEEDED">%1$s</xliff:g> آینده تکمیل کنید"</string>
-    <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"برای ادامه یکپارچه‌سازی Health Connect با سیستم Android، ضربه بزنید."</string>
+    <string name="resume_migration_banner_description" msgid="6236230413670826036">"برای ادامه یکپارچه‌سازی Health Connect با سیستم Android، تک‌ضرب بزنید. برای حفظ داده‌ها، این فرایند را ظرف <xliff:g id="TIME_NEEDED">%1$s</xliff:g> آینده تکمیل کنید"</string>
+    <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"برای ادامه یکپارچه‌سازی Health Connect با سیستم Android، تک‌ضرب بزنید."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"ادامه"</string>
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"ازسرگیری یکپارچه‌سازی Health Connect"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"برای حفظ داده‌ها، این فرایند را ظرف <xliff:g id="TIME_NEEDED">%1$s</xliff:g> آینده تکمیل کنید"</string>

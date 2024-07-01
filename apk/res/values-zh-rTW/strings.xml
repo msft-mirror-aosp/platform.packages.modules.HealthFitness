@@ -85,7 +85,7 @@
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"允許應用程式讀取卡路里燃燒量資料"</string>
     <string name="background_read_title" msgid="5061383169517186234">"在背景存取資料"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"要允許「<xliff:g id="APP_NAME">%1$s</xliff:g>」在背景存取資料嗎？"</string>
-    <string name="background_read_description" msgid="3203594555849969283">"允許這個應用程式在你未使用時存取健康資料同步的資料"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"允許這個應用程式在你未使用時，存取「健康資料同步」的資料"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"如果允許，這個應用程式將可在你未使用時存取健康資料同步的資料。"</string>
     <string name="historic_access_title" msgid="3584594624937737030">"存取過往資料"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"要允許「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取過往資料嗎？"</string>

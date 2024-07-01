@@ -85,12 +85,12 @@
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Mengizinkan aplikasi membaca kalori yang dibakar"</string>
     <string name="background_read_title" msgid="5061383169517186234">"Mengakses data di latar belakang"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"Izinkan <xliff:g id="APP_NAME">%1$s</xliff:g> untuk mengakses data di latar belakang?"</string>
-    <string name="background_read_description" msgid="3203594555849969283">"Izinkan aplikasi ini untuk mengakses data Health Connect saat Anda tidak menggunakan aplikasi"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Izinkan aplikasi ini mengakses data Health Connect saat Anda tidak menggunakan aplikasi"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"Jika Anda mengizinkan, aplikasi ini dapat mengakses data Health Connect saat Anda tidak menggunakan aplikasi."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Mengakses data lama"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Izinkan <xliff:g id="APP_NAME">%1$s</xliff:g> untuk mengakses data lama?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"Izinkan aplikasi ini untuk mengakses data Health Connect yang ditambahkan sebelum <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Mengizinkan aplikasi ini untuk mengakses semua data lama Health Connect"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Izinkan aplikasi ini mengakses data Health Connect yang ditambahkan sebelum <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Izinkan aplikasi ini mengakses semua data lama Health Connect"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Jika Anda mengizinkan, aplikasi ini dapat mengakses data Health Connect yang ditambahkan sebelum <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Jika Anda mengizinkan, aplikasi ini dapat mengakses semua data lama Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Kalori aktif yang dibakar"</string>

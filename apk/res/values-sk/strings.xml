@@ -90,7 +90,7 @@
     <string name="historic_access_title" msgid="3584594624937737030">"Prístup k minulým údajom"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Chcete aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> povoliť prístup k minulým údajom?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Povoliť tejto aplikácii prístup k údajom Dát o zdraví pridaným pred <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Povolenie prístupu tejto aplikácie k všetkým minulým údajom Dát o zdraví"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Povoliť tejto aplikácii prístup k všetkým minulým údajom Dát o zdraví"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Ak ho povolíte, táto aplikácia bude mať prístup k údajom Dát o zdraví pridaným pred <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Ak ho povolíte, táto aplikácia bude mať prístup k všetkým minulým údajom Dát o zdraví."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Kalórie spálené počas aktivity"</string>

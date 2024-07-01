@@ -87,10 +87,10 @@
     <string name="background_read_request_title" msgid="8492898140120977977">"¿Permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a los datos en segundo plano?"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Permitir que esta app acceda a los datos de Health Connect cuando la app no está en uso"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"Si estás de acuerdo, esta app podrá acceder a los datos de Health Connect cuando la app no está en uso."</string>
-    <string name="historic_access_title" msgid="3584594624937737030">"Acceso a datos antiguos"</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Acceso a datos anteriores"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"¿Quieres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a datos antiguos?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Permitir que esta app acceda a los datos de Health Connect agregados antes del <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Permite que esta app acceda a todos los datos anteriores de Health Connect"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Permitir que esta app acceda a todos los datos anteriores de Health Connect"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Si estás de acuerdo, esta app podrá acceder a los datos de Health Connect que se agregaron antes del <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Si estás de acuerdo, esta app podrá acceder a todos los datos anteriores de Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Calorías activas quemadas"</string>
@@ -908,7 +908,7 @@
     <string name="tab_access" msgid="7818197975407243701">"Acceso"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"¿Permitir acceso adicional en <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> también quiere acceder a estos parámetros de configuración de Health Connect"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Habilita al menos un permiso de lectura para activar el acceso en segundo plano o de datos anteriores para esta app"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Habilita al menos un permiso de lectura para activar el acceso en segundo plano o a datos anteriores para esta app"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Habilita al menos un permiso de lectura para activar el acceso en segundo plano para esta app"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Habilita al menos un permiso de lectura para activar el acceso de datos anteriores para esta app"</string>
 </resources>

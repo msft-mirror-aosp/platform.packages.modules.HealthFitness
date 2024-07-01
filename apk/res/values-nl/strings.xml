@@ -60,7 +60,7 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"cyclus bijhouden"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Voeding"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"voeding"</string>
-    <string name="browse_data_category" msgid="4813955610391357638">"Browsen door gegevens"</string>
+    <string name="browse_data_category" msgid="4813955610391357638">"Door gegevens browsen"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Gegevens beheren"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Gegevens exporteren"</string>
     <string name="delete_all_data_button" msgid="7238755635416521487">"Alle gegevens verwijderen"</string>

@@ -908,7 +908,7 @@
     <string name="tab_access" msgid="7818197975407243701">"Přístup"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Povolit aplikaci <xliff:g id="APP_NAME">%1$s</xliff:g> další přístup?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> chce také získat přístup k těmto nastavením Health Connect"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Pokud pro tuto aplikaci chcete zapnout přístup k datům na pozadí nebo k dřívějším datům, povolte alespoň jedno oprávnění ke čtení"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Pokud pro tuto aplikaci chcete zapnout přístup k datům na pozadí nebo k dřívějším datům, povolte alespoň jedno oprávnění ke čtení."</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Pokud pro tuto aplikaci chcete zapnout přístup na pozadí, povolte alespoň jedno oprávnění ke čtení"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Pokud pro tuto aplikaci chcete zapnout přístup k dřívějším datům, povolte alespoň jedno oprávnění ke čtení"</string>
 </resources>

@@ -93,8 +93,8 @@
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Cho phép ứng dụng này truy cập vào tất cả dữ liệu trước đây của Health Connect"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Nếu bạn cho phép, ứng dụng này có thể truy cập vào dữ liệu trên Health Connect được thêm vào trước ngày <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Nếu bạn cho phép, ứng dụng này có thể truy cập vào tất cả dữ liệu trước đây của Health Connect."</string>
-    <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Lượng calo hoạt động đã đốt cháy"</string>
-    <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"lượng calo hoạt động đã đốt cháy"</string>
+    <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Lượng calo đã đốt cháy khi vận động"</string>
+    <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"lượng calo đã đốt cháy khi vận động"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Đọc dữ liệu về lượng calo hoạt động đã đốt cháy"</string>
     <string name="active_calories_burned_write_content_description" msgid="8794383690157452892">"Ghi dữ liệu về lượng calo hoạt động đã đốt cháy"</string>
     <string name="exercise_uppercase_label" msgid="9174662895529523172">"Hoạt động thể dục"</string>
@@ -194,8 +194,8 @@
     <string name="menstruation_lowercase_label" msgid="8098816978006207242">"kinh nguyệt"</string>
     <string name="menstruation_read_content_description" msgid="7710047469771882021">"Đọc dữ liệu về kinh nguyệt"</string>
     <string name="menstruation_write_content_description" msgid="5142669435897047396">"Ghi dữ liệu về kinh nguyệt"</string>
-    <string name="ovulation_test_uppercase_label" msgid="1929868571862288837">"Kiểm tra sự rụng trứng"</string>
-    <string name="ovulation_test_lowercase_label" msgid="93260039417722840">"kiểm tra sự rụng trứng"</string>
+    <string name="ovulation_test_uppercase_label" msgid="1929868571862288837">"Kiểm tra tình trạng rụng trứng"</string>
+    <string name="ovulation_test_lowercase_label" msgid="93260039417722840">"kiểm tra tình trạng rụng trứng"</string>
     <string name="ovulation_test_read_content_description" msgid="8008351738285775840">"Đọc dữ liệu về việc kiểm tra sự rụng trứng"</string>
     <string name="ovulation_test_write_content_description" msgid="7061493310852203463">"Ghi dữ liệu về việc kiểm tra sự rụng trứng"</string>
     <string name="sexual_activity_uppercase_label" msgid="1093238473810194127">"Hoạt động tình dục"</string>
@@ -234,8 +234,8 @@
     <string name="body_temperature_lowercase_label" msgid="324124730971992259">"thân nhiệt"</string>
     <string name="body_temperature_read_content_description" msgid="5966765249024688738">"Đọc dữ liệu về thân nhiệt"</string>
     <string name="body_temperature_write_content_description" msgid="5498016171067859369">"Ghi dữ liệu về thân nhiệt"</string>
-    <string name="heart_rate_uppercase_label" msgid="4990167215137642430">"Nhịp tim"</string>
-    <string name="heart_rate_lowercase_label" msgid="693492686337628283">"nhịp tim"</string>
+    <string name="heart_rate_uppercase_label" msgid="4990167215137642430">"Tần số tim"</string>
+    <string name="heart_rate_lowercase_label" msgid="693492686337628283">"tần số tim"</string>
     <string name="heart_rate_read_content_description" msgid="4165867166260001259">"Đọc dữ liệu về nhịp tim"</string>
     <string name="heart_rate_write_content_description" msgid="2876667918366409170">"Ghi dữ liệu về nhịp tim"</string>
     <string name="heart_rate_variability_uppercase_label" msgid="2047887230527012536">"Sự thay đổi nhịp tim"</string>
@@ -250,8 +250,8 @@
     <string name="respiratory_rate_lowercase_label" msgid="8138249029197360098">"nhịp thở"</string>
     <string name="respiratory_rate_read_content_description" msgid="8545898979648419722">"Đọc dữ liệu về nhịp thở"</string>
     <string name="respiratory_rate_write_content_description" msgid="7689533746809591931">"Ghi dữ liệu về nhịp thở"</string>
-    <string name="resting_heart_rate_uppercase_label" msgid="5700827752396195453">"Nhịp tim lúc nghỉ ngơi"</string>
-    <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"nhịp tim lúc nghỉ ngơi"</string>
+    <string name="resting_heart_rate_uppercase_label" msgid="5700827752396195453">"Tần số tim lúc nghỉ ngơi"</string>
+    <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"tần số tim lúc nghỉ ngơi"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Đọc dữ liệu về nhịp tim lúc nghỉ ngơi"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Ghi dữ liệu về nhịp tim lúc nghỉ ngơi"</string>
     <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Nhiệt độ trên da"</string>
