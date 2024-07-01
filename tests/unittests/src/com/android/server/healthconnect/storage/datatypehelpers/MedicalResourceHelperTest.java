@@ -203,9 +203,11 @@ public class MedicalResourceHelperTest {
     public void insertMedicalResources_returnsMedicalResources() throws JSONException {
         String fhirResourceId = getFhirResourceId(FHIR_DATA_IMMUNIZATION);
         String fhirResourceType = getFhirResourceType(FHIR_DATA_IMMUNIZATION);
+        UUID uuid = generateMedicalResourceUUID(fhirResourceId, fhirResourceType, DATA_SOURCE_ID);
         List<MedicalResource> expected =
                 Collections.singletonList(
                         new MedicalResource.Builder(
+                                        uuid.toString(),
                                         MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                                         DATA_SOURCE_ID,
                                         FHIR_DATA_IMMUNIZATION)
@@ -229,6 +231,7 @@ public class MedicalResourceHelperTest {
     public void insertSingleMedicalResource_readSingleResource() throws JSONException {
         String fhirResourceId = getFhirResourceId(FHIR_DATA_IMMUNIZATION);
         String fhirResourceType = getFhirResourceType(FHIR_DATA_IMMUNIZATION);
+        UUID uuid = generateMedicalResourceUUID(fhirResourceId, fhirResourceType, DATA_SOURCE_ID);
         MedicalResourceInternal medicalResourceInternal =
                 new MedicalResourceInternal()
                         .setFhirResourceId(fhirResourceId)
@@ -240,6 +243,7 @@ public class MedicalResourceHelperTest {
         List<MedicalResource> expected =
                 Collections.singletonList(
                         new MedicalResource.Builder(
+                                        uuid.toString(),
                                         MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                                         DATA_SOURCE_ID,
                                         FHIR_DATA_IMMUNIZATION)
@@ -260,6 +264,8 @@ public class MedicalResourceHelperTest {
     public void insertMultipleMedicalResources_readMultipleResources() throws JSONException {
         String fhirResourceId1 = getFhirResourceId(FHIR_DATA_IMMUNIZATION);
         String fhirResourceType1 = getFhirResourceType(FHIR_DATA_IMMUNIZATION);
+        UUID uuid1 =
+                generateMedicalResourceUUID(fhirResourceId1, fhirResourceType1, DATA_SOURCE_ID);
         MedicalResourceInternal medicalResourceInternal1 =
                 new MedicalResourceInternal()
                         .setFhirResourceId(fhirResourceId1)
@@ -268,6 +274,7 @@ public class MedicalResourceHelperTest {
                         .setDataSourceId(DATA_SOURCE_ID);
         MedicalResource resource1 =
                 new MedicalResource.Builder(
+                                uuid1.toString(),
                                 MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                                 DATA_SOURCE_ID,
                                 FHIR_DATA_IMMUNIZATION)
@@ -276,6 +283,9 @@ public class MedicalResourceHelperTest {
                 new MedicalResourceId(DATA_SOURCE_ID, fhirResourceType1, fhirResourceId1);
         String fhirResourceId2 = getFhirResourceId(FHIR_DATA_ALLERGY);
         String fhirResourceType2 = getFhirResourceType(FHIR_DATA_ALLERGY);
+        UUID uuid2 =
+                generateMedicalResourceUUID(
+                        fhirResourceId2, fhirResourceType2, DIFFERENT_DATA_SOURCE_ID);
         MedicalResourceInternal medicalResourceInternal2 =
                 new MedicalResourceInternal()
                         .setFhirResourceId(fhirResourceId2)
@@ -284,6 +294,7 @@ public class MedicalResourceHelperTest {
                         .setDataSourceId(DIFFERENT_DATA_SOURCE_ID);
         MedicalResource resource2 =
                 new MedicalResource.Builder(
+                                uuid2.toString(),
                                 MEDICAL_RESOURCE_TYPE_UNKNOWN,
                                 DIFFERENT_DATA_SOURCE_ID,
                                 FHIR_DATA_ALLERGY)
@@ -321,11 +332,13 @@ public class MedicalResourceHelperTest {
                         .setFhirResourceType(fhirResourceType)
                         .setData(addCompletedStatus(FHIR_DATA_IMMUNIZATION))
                         .setDataSourceId(DATA_SOURCE_ID);
+        UUID uuid = generateMedicalResourceUUID(fhirResourceId, fhirResourceType, DATA_SOURCE_ID);
         List<MedicalResourceId> medicalIdFilters =
                 List.of(new MedicalResourceId(DATA_SOURCE_ID, fhirResourceType, fhirResourceId));
         List<MedicalResource> expected =
                 Collections.singletonList(
                         new MedicalResource.Builder(
+                                        uuid.toString(),
                                         MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                                         DATA_SOURCE_ID,
                                         addCompletedStatus(FHIR_DATA_IMMUNIZATION))

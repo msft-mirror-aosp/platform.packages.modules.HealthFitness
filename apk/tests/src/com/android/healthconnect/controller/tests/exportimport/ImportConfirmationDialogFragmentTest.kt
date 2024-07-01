@@ -106,6 +106,8 @@ class ImportConfirmationDialogFragmentTest {
             onView(withText(R.string.import_confirmation_dialog_import_button)).inRoot(isDialog())
         dialogImportButton.check(matches(isDisplayed()))
         dialogImportButton.check(matches(isClickable()))
+        verify(healthConnectLogger)
+            .logImpression(ImportConfirmationDialogElement.IMPORT_CONFIRMATION_CONTAINER)
     }
 
     @Test

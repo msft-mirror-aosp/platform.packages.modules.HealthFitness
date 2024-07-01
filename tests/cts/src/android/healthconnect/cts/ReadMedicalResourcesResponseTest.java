@@ -18,6 +18,7 @@ package android.healthconnect.cts;
 
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_MEDICAL_RESOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResource;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceBuilder;
@@ -68,6 +69,7 @@ public class ReadMedicalResourcesResponseTest {
                 List.of(
                         getMedicalResource(),
                         getMedicalResourceBuilder()
+                                .setId(DIFFERENT_MEDICAL_RESOURCE_ID)
                                 .setType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                                 .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                                 .setData(FHIR_DATA_ALLERGY)
@@ -95,6 +97,7 @@ public class ReadMedicalResourcesResponseTest {
                 new ReadMedicalResourcesResponse(
                         List.of(
                                 getMedicalResourceBuilder()
+                                        .setId(DIFFERENT_MEDICAL_RESOURCE_ID)
                                         .setType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                                         .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                                         .setData(FHIR_DATA_ALLERGY)
@@ -110,6 +113,7 @@ public class ReadMedicalResourcesResponseTest {
                 List.of(
                         getMedicalResource(),
                         getMedicalResourceBuilder()
+                                .setId(DIFFERENT_MEDICAL_RESOURCE_ID)
                                 .setType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                                 .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                                 .setData(FHIR_DATA_ALLERGY)
