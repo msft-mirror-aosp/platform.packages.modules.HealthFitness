@@ -56,7 +56,7 @@ public class PriorityRecordsAggregator {
     private final Map<Integer, ZoneOffset> mGroupToFirstZoneOffset;
     private final int mNumberOfGroups;
     private int mCurrentGroup = -1;
-    private long mLatestPopulatedStart = -1;
+    private long mLatestPopulatedStart = Long.MIN_VALUE;
     @AggregationType.AggregationTypeIdentifier private final int mAggregationType;
 
     private final TreeSet<AggregationTimestamp> mTimestampsBuffer;
@@ -187,7 +187,6 @@ public class PriorityRecordsAggregator {
         if (HealthConnectDeviceConfigManager.getInitialisedInstance()
                         .isAggregationSourceControlsEnabled()
                 && priority == Integer.MIN_VALUE) {
-            Slog.d(TAG, "App out of priority list, ignoring data " + data);
             return null;
         }
 
@@ -195,7 +194,6 @@ public class PriorityRecordsAggregator {
         // solution
         if (data.getStartTime() > data.getEndTime()) {
             // skip records with start time > end time to keep the algorithm functional
-            Slog.w(TAG, "Problematic data point, skip");
             return null;
         }
 
@@ -208,7 +206,6 @@ public class PriorityRecordsAggregator {
     AggregationRecordData readNewData(Cursor cursor) {
         AggregationRecordData data = createAggregationRecordData();
         data.populateAggregationData(cursor, mUseLocalTime, mAppIdToPriority);
-        Slog.d(TAG, "Reading data " + data + " useLocalTime = " + mUseLocalTime);
         return data;
     }
 
@@ -277,7 +274,9 @@ public class PriorityRecordsAggregator {
             mGroupToAggregationResult.put(mCurrentGroup, 0.0d);
         }
 
-        Slog.d(TAG, "Update result with: " + mOpenIntervals.last());
+        if (Constants.DEBUG) {
+            Slog.d(TAG, "Update result with: " + mOpenIntervals.last());
+        }
 
         mGroupToAggregationResult.put(
                 mCurrentGroup,

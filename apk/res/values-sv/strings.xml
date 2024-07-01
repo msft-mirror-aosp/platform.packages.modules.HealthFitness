@@ -20,7 +20,8 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Hantera appars åtkomst till din hälsodata"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Behörigheter och data"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Hantera hälso- och träningsdata på telefonen och styr vilka appar som har åtkomst till den"</string>
+    <!-- no translation found for home_subtitle (2154213430054477787) -->
+    <skip />
     <string name="data_title" msgid="4456619761533380816">"Data och åtkomst"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Alla kategorier"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Visa alla kategorier"</string>
@@ -37,6 +38,9 @@
     <string name="backup_title" msgid="211503191266235085">"Säkerhetskopiering"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Datakällor och prioritet"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Ställ in enheter"</string>
+    <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Inställningar"</string>
+    <string name="manage_data_category_title" msgid="6328886061582616519">"Hantera data"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Exportera och importera data"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Senaste åtkomst"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Inga appar har nyligen kommit åt Health Connect"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Se all ny åtkomst"</string>
@@ -258,6 +262,16 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"hudtemperatur"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Läsa hudtemperatur"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Registrera hudtemperatur"</string>
+    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"All medicinsk data"</string>
+    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"all medicinsk data"</string>
+    <string name="all_medical_data_content_description" msgid="6103488863059447886">"Skriva all medicinsk data"</string>
+    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Immunisering"</string>
+    <string name="immunization_lowercase_label" msgid="6464922369026887687">"immunisering"</string>
+    <string name="immunization_content_description" msgid="2910674919337229803">"Läsa immuniseringsdata"</string>
+    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Mindfulness"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"mindfulness"</string>
+    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Läsa mindfulness"</string>
+    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Skriva mindfulness"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Ge <xliff:g id="APP_NAME">%1$s</xliff:g> läsbehörighet"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Ge <xliff:g id="APP_NAME">%1$s</xliff:g> skrivbehörighet"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Avbryt"</string>
@@ -310,6 +324,12 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Du har för närvarande inga kompatibla appar installerade"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Ytterligare åtkomst"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Ytterligare behörigheter för den här appen har tagits bort"</string>
+    <!-- no translation found for permissions_header (6519976063360071569) -->
+    <skip />
+    <!-- no translation found for manage_fitness_permissions (1001729292172461314) -->
+    <skip />
+    <!-- no translation found for manage_medical_permissions (7658181359096889932) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Tog bort appbehörigheter"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect tog bort behörigheter för <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect tog bort behörigheter för <xliff:g id="APP_DATA_0">%1$s</xliff:g> och <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -319,41 +339,65 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Därför tar Health Connect bort appbehörigheter"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Om en app stängs av eller tas bort från Google Play tar Health Connect automatiskt bort dess behörigheter.\n\nDet innebär att appen inte längre har åtkomst till data som sparats i Health Connect. Om appen har skrivit data tidigare visas den i listan över inaktiva appar."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
+    <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"Ställ in"</string>
+    <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Det gick inte att exportera data"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Det uppstod ett problem med exporten för <xliff:g id="DATE">%1$s</xliff:g>. Ställ in en ny schemalagd export och försök igen."</string>
+    <string name="next_export_time" msgid="3138247220014510213">"Nästa export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Säkerhetskopiering och återställning"</string>
+    <string name="last_export_time" msgid="9205875050823594041">"Senaste export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Export och import"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Schemalagd export"</string>
     <string name="import_data" msgid="404502315533233094">"Importera data"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Återställ data från en tidigare exporterad fil"</string>
+    <string name="import_error_banner_title" msgid="1480977889067027790">"Det gick inte att återställa data"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
+    <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"Uppdatera nu"</string>
+    <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Uppdatera systemet så att Health Connect kan återställa datan och försök sedan igen"</string>
+    <string name="import_other_error_banner_button" msgid="8006947649520909176">"Försök igen"</string>
+    <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Ett problem uppstod när datan skulle återställas från exporten."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Genom att exportera kan du spara data så att du kan överföra den till en ny telefon"</string>
-    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Läs mer"</string>
+    <!-- no translation found for backup_and_restore_footer_link_text (9075133737244288876) -->
+    <skip />
     <string name="automatic_export_on" msgid="6972389773963624315">"På"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Av"</string>
-    <string name="choose_frequency_category" msgid="2230821549715237663">"Välj frekvens"</string>
-    <string name="choose_frequency" msgid="1077467424225083246">"Välj frekvens"</string>
-    <string name="choose_frequency_description" msgid="752601326653048254">"Välj att spara data en gång, eller ställ in så att data regelbundet sparas automatiskt."</string>
+    <!-- no translation found for choose_frequency_category (9094154407387676553) -->
+    <skip />
+    <!-- no translation found for scheduled_export_settings_footer_text (8488483803782086291) -->
+    <skip />
+    <!-- no translation found for choose_frequency (8119085390857180221) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (7698155810053504157) -->
+    <skip />
     <string name="frequency_daily" msgid="3596412357416125727">"En gång om dagen"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"En gång i veckan"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"En gång i månaden"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"Välj vart du vill exportera till"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"Aktivera kryptering"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Data måste krypteras innan den sparas. Ingen, inte ens Google eller Health Connect, kommer åt den."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Skapa ett lösenord för att skydda din krypterade data. Du behöver det här lösenordet för att importera och återställa datan."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"Lösenord"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Upprepa lösenordet"</string>
-    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Lösenorden matchar inte"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"Om du glömmer lösenordet eller tappar bort telefonen kan Health Connect inte hjälpa dig att återställa din sparade data."</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"Ange lösenord"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Ditt krypterade lösenord krävs för att importera din Health Connect-data"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Har du glömt lösenordet?"</string>
-    <string name="import_password_hint" msgid="5158553589723883063">"Lösenord"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Om du fortfarande har din gamla telefon kan du exportera datan på nytt med ett nytt lösenord"</string>
+    <!-- no translation found for export_destination_title (8352929396306002479) -->
+    <skip />
+    <string name="export_invalid_storage" msgid="3945266169513895950">"Välj en lagringsapp för att exportera din data"</string>
+    <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Vill du importera filen?"</string>
+    <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Avbryt"</string>
+    <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Importera"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Tillbaka"</string>
     <string name="export_next_button" msgid="657930567137105172">"Nästa"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Avbryt"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Nästa"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Importera från"</string>
+    <string name="import_invalid_storage" msgid="4873640088459948487">"Välj en lagringsapp för att importera din data"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
+    <string name="export_import_choose_account_title" msgid="1047021319012735232">"Välj ett konto"</string>
+    <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Avbryt"</string>
+    <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Klar"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Kom igång med Health Connect"</string>
-    <string name="onboarding_description" msgid="4873129122057931161">"Health Connect lagrar din hälso- och träningsdata, så att du enkelt kan synkronisera olika appar på telefonen"</string>
+    <!-- no translation found for onboarding_description (3479157507808350452) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"Dela data med dina appar"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Välj vilken data varje app får läs- eller skrivbehörighet till för Health Connect"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Hantera inställningar och integritet"</string>
@@ -361,10 +405,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Tillbaka"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Kom igång"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Radera data"</string>
-    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
-    <skip />
-    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
-    <skip />
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Öppna raderingsläget"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Stäng raderingsläget"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Välj vilken data som ska raderas"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Nästa"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"All data som har lagts till i Health Connect under den valda tidsperioden raderas permanent"</string>
@@ -924,14 +966,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Aktivera minst en läsbehörighet för att aktivera åtkomst i bakgrunden eller till tidigare data för den här appen"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Aktivera minst en läsbehörighet för att aktivera åtkomst i bakgrunden för den här appen"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Aktivera minst en läsbehörighet för att aktivera åtkomst till tidigare data för den här appen"</string>
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
-    <skip />
-    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
-    <skip />
-    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Vill du radera all data från Health Connect permanent?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Vill du radera markerad data från Health Connect permanent?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"All data har raderats"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>-data har raderats"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> objekt har raderats"</string>
 </resources>

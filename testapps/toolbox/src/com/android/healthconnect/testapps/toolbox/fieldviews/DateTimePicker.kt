@@ -45,13 +45,13 @@ class DateTimePicker(context: Context, fieldName: String, setPreviousDay: Boolea
 
     init {
         inflate(context, R.layout.date_time_picker, this)
-        findViewById<TextView>(R.id.title).text = fieldName
+        requireViewById<TextView>(R.id.title).text = fieldName
         setupDate()
         setupTime()
     }
 
     private fun setupDate() {
-        findViewById<EditText>(R.id.select_date).let { date ->
+        requireViewById<EditText>(R.id.select_date).let { date ->
             date.setText(getDateString())
             date.inputType = InputType.TYPE_NULL
             date.setOnClickListener { showDatePicker(date) }
@@ -59,7 +59,7 @@ class DateTimePicker(context: Context, fieldName: String, setPreviousDay: Boolea
     }
 
     private fun setupTime() {
-        findViewById<EditText>(R.id.select_time).let { time ->
+        requireViewById<EditText>(R.id.select_time).let { time ->
             time.setText(getTimeString())
             time.inputType = InputType.TYPE_NULL
             time.setOnClickListener { showTimePicker(time) }

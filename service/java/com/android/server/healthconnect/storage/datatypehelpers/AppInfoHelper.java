@@ -130,7 +130,7 @@ public final class AppInfoHelper extends DatabaseHelper {
      * helper
      */
     @NonNull
-    public CreateTableRequest getCreateTableRequest() {
+    public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 
@@ -408,7 +408,7 @@ public final class AppInfoHelper extends DatabaseHelper {
                                         .getRecordIdToExternalRecordClassMap()
                                         .keySet());
 
-        HashMap<Integer, HashSet<String>> recordTypeToContributingPackagesMap =
+        Map<Integer, Set<String>> recordTypeToContributingPackagesMap =
                 TransactionManager.getInitialisedInstance()
                         .getDistinctPackageNamesForRecordsTable(recordTypesToBeUpdated);
 
@@ -434,7 +434,7 @@ public final class AppInfoHelper extends DatabaseHelper {
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @SuppressLint("LongLogTag")
     private synchronized void syncAppInfoMapRecordTypesUsed(
-            @NonNull Map<Integer, HashSet<String>> recordTypeToContributingPackagesMap) {
+            @NonNull Map<Integer, Set<String>> recordTypeToContributingPackagesMap) {
         HashMap<String, List<Integer>> packageToRecordTypesMap =
                 getPackageToRecordTypesMap(recordTypeToContributingPackagesMap);
         getAppInfoMap()
@@ -462,7 +462,7 @@ public final class AppInfoHelper extends DatabaseHelper {
     }
 
     private HashMap<String, List<Integer>> getPackageToRecordTypesMap(
-            @NonNull Map<Integer, HashSet<String>> recordTypeToContributingPackagesMap) {
+            @NonNull Map<Integer, Set<String>> recordTypeToContributingPackagesMap) {
         HashMap<String, List<Integer>> packageToRecordTypesMap = new HashMap<>();
         recordTypeToContributingPackagesMap.forEach(
                 (recordType, packageList) -> {
@@ -471,13 +471,9 @@ public final class AppInfoHelper extends DatabaseHelper {
                                 if (packageToRecordTypesMap.containsKey(packageName)) {
                                     packageToRecordTypesMap.get(packageName).add(recordType);
                                 } else {
-                                    packageToRecordTypesMap.put(
-                                            packageName,
-                                            new ArrayList<>() {
-                                                {
-                                                    add(recordType);
-                                                }
-                                            });
+                                    ArrayList<Integer> types = new ArrayList<>();
+                                    types.add(recordType);
+                                    packageToRecordTypesMap.put(packageName, types);
                                 }
                             });
                 });
@@ -492,7 +488,7 @@ public final class AppInfoHelper extends DatabaseHelper {
     @SuppressLint("LongLogTag")
     private synchronized void deleteRecordTypesForPackagesIfRequiredInternal(
             Set<Integer> recordTypesToBeDeleted,
-            HashMap<Integer, HashSet<String>> currentRecordTypePackageMap,
+            Map<Integer, Set<String>> currentRecordTypePackageMap,
             String packageName) {
         AppInfoInternal appInfo = getAppInfoMap().get(packageName);
         if (appInfo == null) {
@@ -671,9 +667,8 @@ public final class AppInfoHelper extends DatabaseHelper {
      *
      * <p>PLEASE DON'T USE THIS METHOD TO ADD NEW COLUMNS
      */
-    @Override
     @NonNull
-    protected List<Pair<String, String>> getColumnInfo() {
+    private static List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(RecordHelper.PRIMARY_COLUMN_NAME, PRIMARY));
         columnInfo.add(new Pair<>(PACKAGE_COLUMN_NAME, TEXT_NOT_NULL_UNIQUE));

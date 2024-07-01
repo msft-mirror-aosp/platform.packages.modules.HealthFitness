@@ -43,6 +43,7 @@ import com.android.healthconnect.controller.permissions.shared.HelpAndFeedbackFr
 import com.android.healthconnect.controller.shared.Constants.APP_UPDATE_NEEDED_BANNER_SEEN
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.ALLOWED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.DENIED
@@ -327,9 +328,15 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
     }
 
     private fun navigateToAppInfoScreen(app: ConnectedAppMetadata) {
+        val navigationId =
+            when (app.permissionsType) {
+            AppPermissionsType.FITNESS_PERMISSIONS_ONLY -> R.id.action_connectedApps_to_fitnessApp
+            AppPermissionsType.MEDICAL_PERMISSIONS_ONLY -> R.id.action_connectedApps_to_medicalApp
+            AppPermissionsType.COMBINED_PERMISSIONS -> R.id.action_connectedApps_to_combinedPermissions
+            }
         findNavController()
             .navigate(
-                R.id.action_connectedApps_to_connectedApp,
+                navigationId,
                 bundleOf(
                     EXTRA_PACKAGE_NAME to app.appMetadata.packageName,
                     EXTRA_APP_NAME to app.appMetadata.appName))

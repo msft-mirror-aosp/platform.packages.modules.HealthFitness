@@ -16,6 +16,8 @@
 
 package android.health.connect;
 
+import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
@@ -24,11 +26,13 @@ import static org.mockito.Mockito.when;
 
 import android.content.Context;
 import android.health.connect.aidl.IHealthConnectService;
+import android.os.OutcomeReceiver;
 import android.os.RemoteException;
 
 import androidx.test.core.app.ApplicationProvider;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.util.concurrent.MoreExecutors;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,6 +44,7 @@ import org.mockito.junit.MockitoRule;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 @RunWith(JUnit4.class)
 public class HealthConnectManagerTest {
@@ -90,6 +95,23 @@ public class HealthConnectManagerTest {
         assertThrows(
                 RuntimeException.class,
                 () -> healthConnectManager.getGrantedHealthPermissions("com.foo.bar"));
+    }
+
+    @Test
+    public void testHealthConnectManager_deleteResources_notImplemented() throws Exception {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
+        Executor executor = MoreExecutors.directExecutor();
+        OutcomeReceiver<Void, HealthConnectException> callback =
+                new OutcomeReceiver<>() {
+                    @Override
+                    public void onResult(Void result) {}
+                };
+        assertThrows(
+                UnsupportedOperationException.class,
+                () ->
+                        healthConnectManager.deleteMedicalResources(
+                                ImmutableList.of(getMedicalResourceId()), executor, callback));
     }
 
     /**

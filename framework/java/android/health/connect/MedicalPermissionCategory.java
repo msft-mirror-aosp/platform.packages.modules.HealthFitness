@@ -35,6 +35,7 @@ import java.lang.annotation.RetentionPolicy;
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 @SystemApi
 public final class MedicalPermissionCategory {
+    /** Unknown medical permission category */
     public static final int UNKNOWN = 0;
 
     /** Permission category for all medical data */

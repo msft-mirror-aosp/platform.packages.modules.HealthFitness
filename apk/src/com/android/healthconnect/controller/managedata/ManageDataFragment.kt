@@ -16,7 +16,7 @@ import com.android.healthconnect.controller.shared.preference.HealthPreferenceFr
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.ManageDataElement
 import com.android.healthconnect.controller.utils.logging.PageName
-import com.android.healthfitness.flags.Flags
+import com.android.healthfitness.flags.Flags.exportImport
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -55,7 +55,11 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
-        setPreferencesFromResource(R.xml.manage_data_screen, rootKey)
+        if (exportImport()) {
+            setPreferencesFromResource(R.xml.new_manage_data_screen, rootKey)
+        } else {
+            setPreferencesFromResource(R.xml.manage_data_screen, rootKey)
+        }
 
         mAutoDeletePreference?.logName = ManageDataElement.AUTO_DELETE_BUTTON
         mAutoDeletePreference?.setOnPreferenceClickListener {
@@ -84,14 +88,12 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
             true
         }
 
-        if (Flags.exportImport()) {
-            // TODO: b/325917291 - Add proper log name for the backup and restore button.
+        if (exportImport()) {
+            backupAndRestorePreference?.logName = ManageDataElement.BACKUP_AND_RESTORE_BUTTON
             backupAndRestorePreference?.setOnPreferenceClickListener {
                 findNavController().navigate(R.id.action_manageData_to_backupAndRestore)
                 true
             }
-        } else {
-            preferenceScreen.removePreferenceRecursively(BACKUP_AND_RESTORE_PREFERENCE_KEY)
         }
     }
 
