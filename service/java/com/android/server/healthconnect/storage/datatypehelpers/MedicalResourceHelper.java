@@ -34,6 +34,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.genera
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
@@ -209,7 +210,7 @@ public final class MedicalResourceHelper {
                             medicalResourceInternal.getDataSourceId());
             UpsertTableRequest upsertTableRequest =
                     getUpsertTableRequest(uuid, medicalResourceInternal);
-            upsertedMedicalResources.add(buildMedicalResource(medicalResourceInternal));
+            upsertedMedicalResources.add(buildMedicalResource(uuid, medicalResourceInternal));
             requests.add(upsertTableRequest);
         }
 
@@ -249,8 +250,9 @@ public final class MedicalResourceHelper {
      * MedicalResourceInternal}.
      */
     private static MedicalResource buildMedicalResource(
-            @NonNull MedicalResourceInternal medicalResourceInternal) {
+            @NonNull UUID uuid, @NonNull MedicalResourceInternal medicalResourceInternal) {
         return new MedicalResource.Builder(
+                        uuid.toString(),
                         getMedicalResourceType(medicalResourceInternal.getFhirResourceType()),
                         medicalResourceInternal.getDataSourceId(),
                         medicalResourceInternal.getData())
@@ -314,6 +316,7 @@ public final class MedicalResourceHelper {
     private static MedicalResource getMedicalResource(Cursor cursor) {
         int fhirResourceTypeInt = getCursorInt(cursor, FHIR_RESOURCE_TYPE_COLUMN_NAME);
         return new MedicalResource.Builder(
+                        getCursorUUID(cursor, UUID_COLUMN_NAME).toString(),
                         getMedicalResourceType(fhirResourceTypeInt),
                         String.valueOf(getCursorLong(cursor, DATA_SOURCE_ID_COLUMN_NAME)),
                         getCursorString(cursor, FHIR_DATA_COLUMN_NAME))

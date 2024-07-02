@@ -33,6 +33,8 @@ import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiSt
 import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
+import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.ScheduledExportElement
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.temporal.ChronoUnit
 
@@ -41,11 +43,14 @@ import java.time.temporal.ChronoUnit
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 class ScheduledExportFragment : Hilt_ScheduledExportFragment() {
 
-    // TODO: b/325917283 - Add proper logging for the automatic export fragment.
     companion object {
         const val SCHEDULED_EXPORT_CONTROL_PREFERENCE_KEY = "scheduled_export_control_preference"
         const val CHOOSE_FREQUENCY_PREFERENCE_KEY = "choose_frequency"
         const val EXPORT_STATUS_PREFERENCE_ORDER = 1
+    }
+
+    init {
+        this.setPageName(PageName.EXPORT_SETTINGS_PAGE)
     }
 
     private val exportSettingsViewModel: ExportSettingsViewModel by viewModels()
@@ -66,6 +71,10 @@ class ScheduledExportFragment : Hilt_ScheduledExportFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.scheduled_export_screen, rootKey)
+        scheduledExportControlPreference?.logNameActive =
+            ScheduledExportElement.EXPORT_CONTROL_SWITCH_ON
+        scheduledExportControlPreference?.logNameInactive =
+            ScheduledExportElement.EXPORT_CONTROL_SWITCH_OFF
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
