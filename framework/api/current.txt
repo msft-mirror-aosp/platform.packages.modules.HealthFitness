@@ -961,6 +961,37 @@ package android.health.connect.datatypes {
     field public static final int EXERCISE_SESSION_TYPE_YOGA = 57; // 0x39
   }
 
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class FhirResource implements android.os.Parcelable {
+    method public int describeContents();
+    method @NonNull public String getData();
+    method @NonNull public String getId();
+    method public int getType();
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.datatypes.FhirResource> CREATOR;
+    field public static final int FHIR_RESOURCE_TYPE_IMMUNIZATION = 1; // 0x1
+    field public static final int FHIR_RESOURCE_TYPE_UNKNOWN = 0; // 0x0
+  }
+
+  public static final class FhirResource.Builder {
+    ctor public FhirResource.Builder(int, @NonNull String, @NonNull String);
+    ctor public FhirResource.Builder(@NonNull android.health.connect.datatypes.FhirResource.Builder);
+    ctor public FhirResource.Builder(@NonNull android.health.connect.datatypes.FhirResource);
+    method @NonNull public android.health.connect.datatypes.FhirResource build();
+    method @NonNull public android.health.connect.datatypes.FhirResource.Builder setData(@NonNull String);
+    method @NonNull public android.health.connect.datatypes.FhirResource.Builder setId(@NonNull String);
+    method @NonNull public android.health.connect.datatypes.FhirResource.Builder setType(int);
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class FhirVersion implements android.os.Parcelable {
+    method public int describeContents();
+    method public int getMajor();
+    method public int getMinor();
+    method public int getPatch();
+    method @NonNull public static android.health.connect.datatypes.FhirVersion parseFhirVersion(@NonNull String);
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.datatypes.FhirVersion> CREATOR;
+  }
+
   public final class FloorsClimbedRecord extends android.health.connect.datatypes.IntervalRecord {
     method @FloatRange(from=0.0f, to=1000000.0f) public double getFloors();
     field @NonNull public static final android.health.connect.datatypes.AggregationType<java.lang.Double> FLOORS_CLIMBED_TOTAL;

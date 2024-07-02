@@ -18,7 +18,7 @@ package com.android.healthconnect.controller.permissions.data
 import android.health.connect.HealthPermissionCategory
 
 // TODO (b/299880830) possibly rename "category" to something else
-enum class HealthPermissionType(val category: Int) {
+enum class FitnessPermissionType(val category: Int) {
     // ACTIVITY
     ACTIVE_CALORIES_BURNED(HealthPermissionCategory.ACTIVE_CALORIES_BURNED),
     DISTANCE(HealthPermissionCategory.DISTANCE),
@@ -73,58 +73,58 @@ enum class HealthPermissionType(val category: Int) {
     MINDFULNESS(HealthPermissionCategory.MINDFULNESS),
 }
 
-fun fromHealthPermissionCategory(healthPermissionCategory: Int): HealthPermissionType {
+fun fromHealthPermissionCategory(healthPermissionCategory: Int): FitnessPermissionType {
     return when (healthPermissionCategory) {
         HealthPermissionCategory.UNKNOWN ->
             throw IllegalArgumentException("PermissionType is UNKNOWN.")
         // ACTIVITY
         HealthPermissionCategory.ACTIVE_CALORIES_BURNED ->
-            HealthPermissionType.ACTIVE_CALORIES_BURNED
-        HealthPermissionCategory.DISTANCE -> HealthPermissionType.DISTANCE
-        HealthPermissionCategory.ELEVATION_GAINED -> HealthPermissionType.ELEVATION_GAINED
-        HealthPermissionCategory.EXERCISE -> HealthPermissionType.EXERCISE
-        HealthPermissionCategory.PLANNED_EXERCISE -> HealthPermissionType.PLANNED_EXERCISE
-        HealthPermissionCategory.FLOORS_CLIMBED -> HealthPermissionType.FLOORS_CLIMBED
-        HealthPermissionCategory.STEPS -> HealthPermissionType.STEPS
-        HealthPermissionCategory.TOTAL_CALORIES_BURNED -> HealthPermissionType.TOTAL_CALORIES_BURNED
-        HealthPermissionCategory.VO2_MAX -> HealthPermissionType.VO2_MAX
-        HealthPermissionCategory.WHEELCHAIR_PUSHES -> HealthPermissionType.WHEELCHAIR_PUSHES
-        HealthPermissionCategory.POWER -> HealthPermissionType.POWER
-        HealthPermissionCategory.SPEED -> HealthPermissionType.SPEED
+            FitnessPermissionType.ACTIVE_CALORIES_BURNED
+        HealthPermissionCategory.DISTANCE -> FitnessPermissionType.DISTANCE
+        HealthPermissionCategory.ELEVATION_GAINED -> FitnessPermissionType.ELEVATION_GAINED
+        HealthPermissionCategory.EXERCISE -> FitnessPermissionType.EXERCISE
+        HealthPermissionCategory.PLANNED_EXERCISE -> FitnessPermissionType.PLANNED_EXERCISE
+        HealthPermissionCategory.FLOORS_CLIMBED -> FitnessPermissionType.FLOORS_CLIMBED
+        HealthPermissionCategory.STEPS -> FitnessPermissionType.STEPS
+        HealthPermissionCategory.TOTAL_CALORIES_BURNED -> FitnessPermissionType.TOTAL_CALORIES_BURNED
+        HealthPermissionCategory.VO2_MAX -> FitnessPermissionType.VO2_MAX
+        HealthPermissionCategory.WHEELCHAIR_PUSHES -> FitnessPermissionType.WHEELCHAIR_PUSHES
+        HealthPermissionCategory.POWER -> FitnessPermissionType.POWER
+        HealthPermissionCategory.SPEED -> FitnessPermissionType.SPEED
         // BODY_MEASUREMENTS
-        HealthPermissionCategory.BASAL_METABOLIC_RATE -> HealthPermissionType.BASAL_METABOLIC_RATE
-        HealthPermissionCategory.BODY_FAT -> HealthPermissionType.BODY_FAT
-        HealthPermissionCategory.BODY_WATER_MASS -> HealthPermissionType.BODY_WATER_MASS
-        HealthPermissionCategory.BONE_MASS -> HealthPermissionType.BONE_MASS
-        HealthPermissionCategory.HEIGHT -> HealthPermissionType.HEIGHT
-        HealthPermissionCategory.LEAN_BODY_MASS -> HealthPermissionType.LEAN_BODY_MASS
-        HealthPermissionCategory.WEIGHT -> HealthPermissionType.WEIGHT
+        HealthPermissionCategory.BASAL_METABOLIC_RATE -> FitnessPermissionType.BASAL_METABOLIC_RATE
+        HealthPermissionCategory.BODY_FAT -> FitnessPermissionType.BODY_FAT
+        HealthPermissionCategory.BODY_WATER_MASS -> FitnessPermissionType.BODY_WATER_MASS
+        HealthPermissionCategory.BONE_MASS -> FitnessPermissionType.BONE_MASS
+        HealthPermissionCategory.HEIGHT -> FitnessPermissionType.HEIGHT
+        HealthPermissionCategory.LEAN_BODY_MASS -> FitnessPermissionType.LEAN_BODY_MASS
+        HealthPermissionCategory.WEIGHT -> FitnessPermissionType.WEIGHT
         // CYCLE_TRACKING
-        HealthPermissionCategory.CERVICAL_MUCUS -> HealthPermissionType.CERVICAL_MUCUS
-        HealthPermissionCategory.MENSTRUATION -> HealthPermissionType.MENSTRUATION
-        HealthPermissionCategory.OVULATION_TEST -> HealthPermissionType.OVULATION_TEST
-        HealthPermissionCategory.SEXUAL_ACTIVITY -> HealthPermissionType.SEXUAL_ACTIVITY
+        HealthPermissionCategory.CERVICAL_MUCUS -> FitnessPermissionType.CERVICAL_MUCUS
+        HealthPermissionCategory.MENSTRUATION -> FitnessPermissionType.MENSTRUATION
+        HealthPermissionCategory.OVULATION_TEST -> FitnessPermissionType.OVULATION_TEST
+        HealthPermissionCategory.SEXUAL_ACTIVITY -> FitnessPermissionType.SEXUAL_ACTIVITY
         HealthPermissionCategory.INTERMENSTRUAL_BLEEDING ->
-            HealthPermissionType.INTERMENSTRUAL_BLEEDING
+            FitnessPermissionType.INTERMENSTRUAL_BLEEDING
         // NUTRITION
-        HealthPermissionCategory.HYDRATION -> HealthPermissionType.HYDRATION
-        HealthPermissionCategory.NUTRITION -> HealthPermissionType.NUTRITION
+        HealthPermissionCategory.HYDRATION -> FitnessPermissionType.HYDRATION
+        HealthPermissionCategory.NUTRITION -> FitnessPermissionType.NUTRITION
         // SLEEP
-        HealthPermissionCategory.SLEEP -> HealthPermissionType.SLEEP
+        HealthPermissionCategory.SLEEP -> FitnessPermissionType.SLEEP
         // VITALS
         HealthPermissionCategory.BASAL_BODY_TEMPERATURE ->
-            HealthPermissionType.BASAL_BODY_TEMPERATURE
-        HealthPermissionCategory.BLOOD_GLUCOSE -> HealthPermissionType.BLOOD_GLUCOSE
-        HealthPermissionCategory.BLOOD_PRESSURE -> HealthPermissionType.BLOOD_PRESSURE
-        HealthPermissionCategory.BODY_TEMPERATURE -> HealthPermissionType.BODY_TEMPERATURE
-        HealthPermissionCategory.HEART_RATE -> HealthPermissionType.HEART_RATE
+            FitnessPermissionType.BASAL_BODY_TEMPERATURE
+        HealthPermissionCategory.BLOOD_GLUCOSE -> FitnessPermissionType.BLOOD_GLUCOSE
+        HealthPermissionCategory.BLOOD_PRESSURE -> FitnessPermissionType.BLOOD_PRESSURE
+        HealthPermissionCategory.BODY_TEMPERATURE -> FitnessPermissionType.BODY_TEMPERATURE
+        HealthPermissionCategory.HEART_RATE -> FitnessPermissionType.HEART_RATE
         HealthPermissionCategory.HEART_RATE_VARIABILITY ->
-            HealthPermissionType.HEART_RATE_VARIABILITY
-        HealthPermissionCategory.OXYGEN_SATURATION -> HealthPermissionType.OXYGEN_SATURATION
-        HealthPermissionCategory.RESPIRATORY_RATE -> HealthPermissionType.RESPIRATORY_RATE
-        HealthPermissionCategory.RESTING_HEART_RATE -> HealthPermissionType.RESTING_HEART_RATE
-        HealthPermissionCategory.SKIN_TEMPERATURE -> HealthPermissionType.SKIN_TEMPERATURE
-        HealthPermissionCategory.MINDFULNESS -> HealthPermissionType.MINDFULNESS
+            FitnessPermissionType.HEART_RATE_VARIABILITY
+        HealthPermissionCategory.OXYGEN_SATURATION -> FitnessPermissionType.OXYGEN_SATURATION
+        HealthPermissionCategory.RESPIRATORY_RATE -> FitnessPermissionType.RESPIRATORY_RATE
+        HealthPermissionCategory.RESTING_HEART_RATE -> FitnessPermissionType.RESTING_HEART_RATE
+        HealthPermissionCategory.SKIN_TEMPERATURE -> FitnessPermissionType.SKIN_TEMPERATURE
+        HealthPermissionCategory.MINDFULNESS -> FitnessPermissionType.MINDFULNESS
         else -> throw IllegalArgumentException("PermissionType is not supported.")
     }
 }
