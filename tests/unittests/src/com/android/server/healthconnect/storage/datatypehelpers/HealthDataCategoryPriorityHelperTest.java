@@ -64,7 +64,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.quality.Strictness;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -99,7 +98,6 @@ public class HealthDataCategoryPriorityHelperTest {
                     .mockStatic(PackageInfoUtils.class)
                     .mockStatic(PreferenceHelper.class)
                     .mockStatic(HealthConnectManager.class)
-                    .setStrictness(Strictness.LENIENT)
                     .build();
 
     @Mock private Cursor mCursor;
@@ -145,6 +143,7 @@ public class HealthDataCategoryPriorityHelperTest {
         when(HealthConnectDeviceConfigManager.getInitialisedInstance())
                 .thenReturn(mHealthConnectDeviceConfigManager);
         when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
+        HealthDataCategoryPriorityHelper.clearInstanceForTest();
         mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
         // Clear data in case the singleton is already initialised.
         mHealthDataCategoryPriorityHelper.clearData(mTransactionManager);
