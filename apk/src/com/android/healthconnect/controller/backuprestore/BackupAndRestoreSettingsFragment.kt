@@ -41,7 +41,6 @@ import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsImpl
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.logging.BackupAndRestoreElement
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
 import com.android.settingslib.widget.FooterPreference
@@ -207,7 +206,6 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
         if (importErrorBanner != null) {
             preferenceScreen.removePreferenceRecursively(IMPORT_ERROR_BANNER_KEY)
         }
-        // TODO: b/330169060 - Add proper logging all error banners.
         when (importUiState.dataImportError) {
             ImportUiState.DataImportError.DATA_IMPORT_ERROR_WRONG_FILE -> {
                 preferenceScreen.addPreference(getImportWrongFileErrorBanner())
@@ -225,56 +223,68 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
     }
 
     private fun getImportWrongFileErrorBanner(): BannerPreference {
-        return BannerPreference(requireContext(), ErrorPageElement.UNKNOWN_ELEMENT).also {
-            it.setPrimaryButton(
-                getString(R.string.import_wrong_file_error_banner_button),
-                ErrorPageElement.UNKNOWN_ELEMENT,
-            )
-            it.title = getString(R.string.import_error_banner_title)
-            it.key = IMPORT_ERROR_BANNER_KEY
-            it.summary = getString(R.string.import_wrong_file_error_banner_summary)
-            it.icon = AttributeResolver.getNullableDrawable(requireContext(), R.attr.warningIcon)
-            it.setPrimaryButtonOnClickListener {
-                findNavController()
-                    .navigate(R.id.action_backupAndRestoreSettingsFragment_to_importFlowActivity)
+        return BannerPreference(
+                requireContext(), BackupAndRestoreElement.IMPORT_WRONG_FILE_ERROR_BANNER)
+            .also {
+                it.setPrimaryButton(
+                    getString(R.string.import_wrong_file_error_banner_button),
+                    BackupAndRestoreElement.IMPORT_WRONG_FILE_ERROR_BANNER_BUTTON,
+                )
+                it.title = getString(R.string.import_error_banner_title)
+                it.key = IMPORT_ERROR_BANNER_KEY
+                it.summary = getString(R.string.import_wrong_file_error_banner_summary)
+                it.icon =
+                    AttributeResolver.getNullableDrawable(requireContext(), R.attr.warningIcon)
+                it.setPrimaryButtonOnClickListener {
+                    findNavController()
+                        .navigate(
+                            R.id.action_backupAndRestoreSettingsFragment_to_importFlowActivity)
+                }
+                it.order = IMPORT_ERROR_BANNER_ORDER
             }
-            it.order = IMPORT_ERROR_BANNER_ORDER
-        }
     }
 
     private fun getImportVersionMismatchErrorBanner(): BannerPreference {
-        return BannerPreference(requireContext(), ErrorPageElement.UNKNOWN_ELEMENT).also {
-            it.setPrimaryButton(
-                getString(R.string.import_version_mismatch_error_banner_button),
-                ErrorPageElement.UNKNOWN_ELEMENT,
-            )
-            it.title = getString(R.string.import_error_banner_title)
-            it.key = IMPORT_ERROR_BANNER_KEY
-            it.summary = getString(R.string.import_version_mismatch_error_banner_summary)
-            it.icon = AttributeResolver.getNullableDrawable(requireContext(), R.attr.warningIcon)
-            it.setPrimaryButtonOnClickListener {
-                findNavController()
-                    .navigate(R.id.action_backupAndRestoreSettingsFragment_to_systemUpdateActivity)
+        return BannerPreference(
+                requireContext(), BackupAndRestoreElement.IMPORT_VERSION_MISMATCH_ERROR_BANNER)
+            .also {
+                it.setPrimaryButton(
+                    getString(R.string.import_version_mismatch_error_banner_button),
+                    BackupAndRestoreElement.IMPORT_VERSION_MISMATCH_ERROR_BANNER_BUTTON,
+                )
+                it.title = getString(R.string.import_error_banner_title)
+                it.key = IMPORT_ERROR_BANNER_KEY
+                it.summary = getString(R.string.import_version_mismatch_error_banner_summary)
+                it.icon =
+                    AttributeResolver.getNullableDrawable(requireContext(), R.attr.warningIcon)
+                it.setPrimaryButtonOnClickListener {
+                    findNavController()
+                        .navigate(
+                            R.id.action_backupAndRestoreSettingsFragment_to_systemUpdateActivity)
+                }
+                it.order = IMPORT_ERROR_BANNER_ORDER
             }
-            it.order = IMPORT_ERROR_BANNER_ORDER
-        }
     }
 
     private fun getImportOtherErrorBanner(): BannerPreference {
-        return BannerPreference(requireContext(), ErrorPageElement.UNKNOWN_ELEMENT).also {
-            it.setPrimaryButton(
-                getString(R.string.import_other_error_banner_button),
-                ErrorPageElement.UNKNOWN_ELEMENT,
-            )
-            it.title = getString(R.string.import_error_banner_title)
-            it.key = IMPORT_ERROR_BANNER_KEY
-            it.summary = getString(R.string.import_other_error_banner_summary)
-            it.icon = AttributeResolver.getNullableDrawable(requireContext(), R.attr.warningIcon)
-            it.setPrimaryButtonOnClickListener {
-                findNavController()
-                    .navigate(R.id.action_backupAndRestoreSettingsFragment_to_importFlowActivity)
+        return BannerPreference(
+                requireContext(), BackupAndRestoreElement.IMPORT_GENERAL_ERROR_BANNER)
+            .also {
+                it.setPrimaryButton(
+                    getString(R.string.import_other_error_banner_button),
+                    BackupAndRestoreElement.IMPORT_GENERAL_ERROR_BANNER_BUTTON,
+                )
+                it.title = getString(R.string.import_error_banner_title)
+                it.key = IMPORT_ERROR_BANNER_KEY
+                it.summary = getString(R.string.import_other_error_banner_summary)
+                it.icon =
+                    AttributeResolver.getNullableDrawable(requireContext(), R.attr.warningIcon)
+                it.setPrimaryButtonOnClickListener {
+                    findNavController()
+                        .navigate(
+                            R.id.action_backupAndRestoreSettingsFragment_to_importFlowActivity)
+                }
+                it.order = IMPORT_ERROR_BANNER_ORDER
             }
-            it.order = IMPORT_ERROR_BANNER_ORDER
-        }
     }
 }
