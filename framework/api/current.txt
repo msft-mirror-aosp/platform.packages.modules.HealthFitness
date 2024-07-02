@@ -112,9 +112,9 @@ package android.health.connect {
     field public static final String READ_HYDRATION = "android.permission.health.READ_HYDRATION";
     field public static final String READ_INTERMENSTRUAL_BLEEDING = "android.permission.health.READ_INTERMENSTRUAL_BLEEDING";
     field public static final String READ_LEAN_BODY_MASS = "android.permission.health.READ_LEAN_BODY_MASS";
-    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_RESOURCES_IMMUNIZATION = "android.permission.health.READ_MEDICAL_RESOURCES_IMMUNIZATION";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_IMMUNIZATION = "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION";
     field public static final String READ_MENSTRUATION = "android.permission.health.READ_MENSTRUATION";
-    field @FlaggedApi("com.android.healthfitness.flags.mindfulness") public static final String READ_MINDFULNESS_SESSION = "android.permission.health.READ_MINDFULNESS_SESSION";
+    field @FlaggedApi("com.android.healthfitness.flags.mindfulness") public static final String READ_MINDFULNESS = "android.permission.health.READ_MINDFULNESS";
     field public static final String READ_NUTRITION = "android.permission.health.READ_NUTRITION";
     field public static final String READ_OVULATION_TEST = "android.permission.health.READ_OVULATION_TEST";
     field public static final String READ_OXYGEN_SATURATION = "android.permission.health.READ_OXYGEN_SATURATION";
@@ -152,9 +152,9 @@ package android.health.connect {
     field public static final String WRITE_HYDRATION = "android.permission.health.WRITE_HYDRATION";
     field public static final String WRITE_INTERMENSTRUAL_BLEEDING = "android.permission.health.WRITE_INTERMENSTRUAL_BLEEDING";
     field public static final String WRITE_LEAN_BODY_MASS = "android.permission.health.WRITE_LEAN_BODY_MASS";
-    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String WRITE_MEDICAL_RESOURCES = "android.permission.health.WRITE_MEDICAL_RESOURCES";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String WRITE_MEDICAL_DATA = "android.permission.health.WRITE_MEDICAL_DATA";
     field public static final String WRITE_MENSTRUATION = "android.permission.health.WRITE_MENSTRUATION";
-    field @FlaggedApi("com.android.healthfitness.flags.mindfulness") public static final String WRITE_MINDFULNESS_SESSION = "android.permission.health.WRITE_MINDFULNESS_SESSION";
+    field @FlaggedApi("com.android.healthfitness.flags.mindfulness") public static final String WRITE_MINDFULNESS = "android.permission.health.WRITE_MINDFULNESS";
     field public static final String WRITE_NUTRITION = "android.permission.health.WRITE_NUTRITION";
     field public static final String WRITE_OVULATION_TEST = "android.permission.health.WRITE_OVULATION_TEST";
     field public static final String WRITE_OXYGEN_SATURATION = "android.permission.health.WRITE_OXYGEN_SATURATION";
@@ -292,6 +292,23 @@ package android.health.connect {
   }
 
   public interface TimeRangeFilter {
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class UpsertMedicalResourceRequest implements android.os.Parcelable {
+    method public int describeContents();
+    method @NonNull public String getData();
+    method @NonNull public long getDataSourceId();
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.UpsertMedicalResourceRequest> CREATOR;
+  }
+
+  public static final class UpsertMedicalResourceRequest.Builder {
+    ctor public UpsertMedicalResourceRequest.Builder(long, @NonNull String);
+    ctor public UpsertMedicalResourceRequest.Builder(@NonNull android.health.connect.UpsertMedicalResourceRequest.Builder);
+    ctor public UpsertMedicalResourceRequest.Builder(@NonNull android.health.connect.UpsertMedicalResourceRequest);
+    method @NonNull public android.health.connect.UpsertMedicalResourceRequest build();
+    method @NonNull public android.health.connect.UpsertMedicalResourceRequest.Builder setData(@NonNull String);
+    method @NonNull public android.health.connect.UpsertMedicalResourceRequest.Builder setDataSourceId(long);
   }
 
 }

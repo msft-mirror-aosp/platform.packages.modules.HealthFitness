@@ -37,12 +37,9 @@
     <string name="backup_title" msgid="211503191266235085">"Hifadhi nakala"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Vyanzo vya data na kipaumbele"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Weka vipimo"</string>
-    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
-    <skip />
-    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
-    <skip />
-    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
-    <skip />
+    <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Mapendeleo"</string>
+    <string name="manage_data_category_title" msgid="6328886061582616519">"Kudhibiti data"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Kuhamisha na kupakia data"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Ufikiaji wa hivi karibuni"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Hakuna programu zilizofikia Health Connect hivi karibuni"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Angalia ruhusa zote za ufikiaji za karibuni"</string>
@@ -264,17 +261,19 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"kiwango cha joto kwenye ngozi"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Soma kiwango cha joto kwenye ngozi"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Andika kiwango cha joto kwenye ngozi"</string>
-    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
+    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Data yote ya matibabu"</string>
+    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"data yote ya matibabu"</string>
+    <string name="all_medical_data_content_description" msgid="6103488863059447886">"Andika data yote ya matibabu"</string>
+    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Chanjo"</string>
+    <string name="immunization_lowercase_label" msgid="6464922369026887687">"chanjo"</string>
+    <string name="immunization_content_description" msgid="2910674919337229803">"Soma data ya chanjo"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
     <skip />
-    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
     <skip />
-    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
     <skip />
-    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
-    <skip />
-    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
-    <skip />
-    <!-- no translation found for immunization_content_description (2910674919337229803) -->
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
     <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"Ruhusu “<xliff:g id="APP_NAME">%1$s</xliff:g>” isome"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Ruhusu “<xliff:g id="APP_NAME">%1$s</xliff:g>” ili uandike"</string>
@@ -347,6 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Uhamishaji wa data ulioratibiwa"</string>
     <string name="import_data" msgid="404502315533233094">"Pakia data"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Rejesha data kutoka kwenye faili iliyohamishwa hapo awali"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Kipengele cha Uhamishaji kinakuwezesha kuhifadhi data yako ili uweze kuihamisha kwenye simu mpya"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Pata maelezo zaidi"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Imewashwa"</string>
@@ -370,9 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"Endelea"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Pakia kutoka"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"Tafadhali chagua programu ya hifadhi ambako utahamisha data yako"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Chagua akaunti"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Acha"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Nimemaliza"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Anza kutumia Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect huhifadhi data yako ya afya na siha, hivyo kukupatia njia rahisi ya kusawazisha programu tofauti kwenye simu yako"</string>
     <string name="share_data" msgid="3481932156368883946">"Shiriki data na programu zako"</string>

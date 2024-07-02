@@ -16,21 +16,27 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiError
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
+import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
 import com.android.healthconnect.controller.tests.utils.whenever
+import com.android.healthconnect.controller.utils.DeviceInfoUtils
+import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
 
+@UninstallModules(DeviceInfoUtilsModule::class)
 @HiltAndroidTest
 class MigrationActivityTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @BindValue val viewModel: MigrationViewModel = Mockito.mock(MigrationViewModel::class.java)
+    @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
 
     private lateinit var context: Context
 
@@ -38,6 +44,7 @@ class MigrationActivityTest {
     fun setup() {
         hiltRule.inject()
         context = getInstrumentation().context
+        (deviceInfoUtils as FakeDeviceInfoUtils).setHealthConnectAvailable(true)
     }
 
     @Test
