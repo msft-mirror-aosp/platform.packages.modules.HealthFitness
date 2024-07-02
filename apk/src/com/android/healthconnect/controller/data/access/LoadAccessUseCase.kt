@@ -17,7 +17,7 @@ package com.android.healthconnect.controller.data.access
 
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -41,7 +41,7 @@ constructor(
 ) : ILoadAccessUseCase {
     /** Returns a map of [AppAccessState] to apps. */
     override suspend operator fun invoke(
-        permissionType: HealthPermissionType
+        permissionType: FitnessPermissionType
     ): UseCaseResults<Map<AppAccessState, List<AppAccessMetadata>>> =
         withContext(dispatcher) {
             try {
@@ -105,6 +105,6 @@ constructor(
 
 interface ILoadAccessUseCase {
     suspend fun invoke(
-        permissionType: HealthPermissionType
+        permissionType: FitnessPermissionType
     ): UseCaseResults<Map<AppAccessState, List<AppAccessMetadata>>>
 }

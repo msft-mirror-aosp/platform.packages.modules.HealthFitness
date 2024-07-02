@@ -2280,7 +2280,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 logger,
                                 request.getDataSize());
 
-                        // TODO(b/344902130) - Enforce WRITE_MEDICAL_RESOURCE permissions.
+                        mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
+                                attributionSource);
 
                         // TODO(b/344560623) - Add character limits to CreateMedicalDataSource
                         // displayName and fhirBaseUri values and enforce limit of 20 sources per
@@ -2375,7 +2376,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 isInForeground,
                                 logger,
                                 requestsTotalSize);
-                        // TODO(b/344902130) - Enforce write permissions.
+
+                        mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
+                                attributionSource);
+
                         List<MedicalResourceInternal> medicalResourcesToUpsert = new ArrayList<>();
                         for (UpsertMedicalResourceRequest upsertMedicalResourceRequest : requests) {
                             MedicalResourceInternal medicalResourceInternal =

@@ -27,10 +27,10 @@ import com.android.healthconnect.controller.data.entries.api.LoadAggregationInpu
 import com.android.healthconnect.controller.data.entries.api.LoadDataEntriesInput
 import com.android.healthconnect.controller.data.entries.api.LoadMenstruationDataInput
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.DISTANCE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.STEPS
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.TOTAL_CALORIES_BURNED
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.DISTANCE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.TOTAL_CALORIES_BURNED
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
@@ -67,7 +67,7 @@ constructor(
         get() = _appInfo
 
     fun loadEntries(
-        permissionType: HealthPermissionType,
+        permissionType: FitnessPermissionType,
         selectedDate: Instant,
         period: DateNavigationPeriod
     ) {
@@ -75,7 +75,7 @@ constructor(
     }
 
     fun loadEntries(
-        permissionType: HealthPermissionType,
+        permissionType: FitnessPermissionType,
         packageName: String,
         selectedDate: Instant,
         period: DateNavigationPeriod
@@ -84,7 +84,7 @@ constructor(
     }
 
     private fun loadData(
-        permissionType: HealthPermissionType,
+        permissionType: FitnessPermissionType,
         packageName: String?,
         selectedDate: Instant,
         period: DateNavigationPeriod,
@@ -99,7 +99,7 @@ constructor(
             val entriesResults =
                 when (permissionType) {
                     // Special-casing Menstruation as it spans multiple days
-                    HealthPermissionType.MENSTRUATION -> {
+                    FitnessPermissionType.MENSTRUATION -> {
                         loadMenstruation(packageName, selectedDate, period, showDataOrigin)
                     }
                     else -> {
@@ -127,7 +127,7 @@ constructor(
     }
 
     private suspend fun loadAppEntries(
-        permissionType: HealthPermissionType,
+        permissionType: FitnessPermissionType,
         packageName: String?,
         selectedDate: Instant,
         period: DateNavigationPeriod,
@@ -149,7 +149,7 @@ constructor(
     }
 
     private suspend fun loadAggregation(
-        permissionType: HealthPermissionType,
+        permissionType: FitnessPermissionType,
         packageName: String?,
         selectedDate: Instant,
         period: DateNavigationPeriod,
@@ -166,7 +166,7 @@ constructor(
     }
 
     private suspend fun addAggregation(
-        permissionType: HealthPermissionType,
+        permissionType: FitnessPermissionType,
         packageName: String?,
         selectedDate: Instant,
         period: DateNavigationPeriod,

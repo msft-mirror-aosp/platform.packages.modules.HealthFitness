@@ -42,7 +42,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.android.healthconnect.controller.data.alldata.AllDataFragment
 import com.android.healthconnect.controller.data.alldata.AllDataViewModel
 import com.android.healthconnect.controller.data.appdata.AppDataUseCase
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionPermissionTypesPreference
 import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -227,7 +227,7 @@ class AllDataFragmentTest {
         onView(withText("Distance")).perform(click())
         onIdle()
         assertThat(allDataViewModel.getDeleteSet())
-            .containsExactlyElementsIn(setOf(HealthPermissionType.DISTANCE))
+            .containsExactlyElementsIn(setOf(FitnessPermissionType.DISTANCE))
 
         onView(withText("Distance")).perform(click())
         assertThat(allDataViewModel.getDeleteSet()).isEmpty()
@@ -285,10 +285,10 @@ class AllDataFragmentTest {
                     preference.children.forEach { permissionTypePreference ->
                         if (permissionTypePreference is DeletionPermissionTypesPreference) {
                             if (permissionTypePreference.getHealthPermissionType() ==
-                                HealthPermissionType.DISTANCE) {
+                                FitnessPermissionType.DISTANCE) {
                                 assertThat(permissionTypePreference.getIsChecked()).isTrue()
                             } else if (permissionTypePreference.getHealthPermissionType() ==
-                                HealthPermissionType.MENSTRUATION) {
+                                FitnessPermissionType.MENSTRUATION) {
                                 assertThat(permissionTypePreference.getIsChecked()).isFalse()
                             }
                         }

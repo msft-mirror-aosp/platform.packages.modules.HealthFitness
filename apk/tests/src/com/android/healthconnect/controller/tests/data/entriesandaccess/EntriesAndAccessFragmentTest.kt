@@ -21,7 +21,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.android.healthconnect.controller.data.entriesandaccess.EntriesAndAccessFragment
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.STEPS
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import dagger.hilt.android.testing.HiltAndroidRule

@@ -8,7 +8,7 @@ import com.android.healthconnect.controller.datasources.DataSourcesViewModel.Agg
 import com.android.healthconnect.controller.datasources.DataSourcesViewModel.DataSourcesAndAggregationsInfo
 import com.android.healthconnect.controller.datasources.DataSourcesViewModel.PotentialAppSourcesState
 import com.android.healthconnect.controller.datasources.DataSourcesViewModel.PriorityListState
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.TEST_APP
@@ -112,7 +112,7 @@ class DataSourcesViewModelTest {
     fun loadData_withAllData_returnsDataSourcesAndAggregationsInfoWithData() = runTest {
         val mostRecentAggregations = listOf(
             AggregationCardInfo(
-                HealthPermissionType.STEPS,
+                FitnessPermissionType.STEPS,
                 formattedAggregation("100 steps"),
                 Instant.now())
         )

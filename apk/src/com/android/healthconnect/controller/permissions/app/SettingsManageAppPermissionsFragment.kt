@@ -281,7 +281,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
         permissions
             .sortedBy {
                 requireContext()
-                    .getString(fromPermissionType(it.healthPermissionType).uppercaseLabel)
+                    .getString(fromPermissionType(it.fitnessPermissionType).uppercaseLabel)
             }
             .forEach { permission ->
                 val category =
@@ -293,10 +293,10 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
                 val switchPreference =
                     HealthSwitchPreference(requireContext()).also {
                         val healthCategory =
-                            fromHealthPermissionType(permission.healthPermissionType)
+                            fromHealthPermissionType(permission.fitnessPermissionType)
                         it.icon = healthCategory.icon(requireContext())
                         it.setTitle(
-                            fromPermissionType(permission.healthPermissionType).uppercaseLabel)
+                            fromPermissionType(permission.fitnessPermissionType).uppercaseLabel)
                         it.logNameActive = PermissionsElement.PERMISSION_SWITCH
                         it.logNameInactive = PermissionsElement.PERMISSION_SWITCH
                         it.setOnPreferenceChangeListener { _, newValue ->
