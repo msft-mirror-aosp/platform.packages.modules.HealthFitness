@@ -27,6 +27,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers
@@ -186,6 +187,33 @@ class HomeFragmentTest {
     }
 
     @Test
+    fun browseMedicalData_flagDisabled_notDisplayed() {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(false)
+        setupFragmentForNavigation()
+
+        onView(withText("Browse health records")).check(doesNotExist())
+    }
+
+    @Test
+    fun browseMedicalData_flagEnabled_isDiplayed() {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
+        setupFragmentForNavigation()
+
+        onView(withText("Browse health records")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun browseMedicalData_navigatesToBrowseMedicalData() {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
+        setupFragmentForNavigation()
+
+        onView(withText("Browse health records")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Browse health records")).perform(scrollTo()).perform(click())
+
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.medicalAllDataFragment)
+    }
+
+    @Test
     fun seeAllRecentAccess_navigatesToRecentAccess() {
         setupFragmentForNavigation()
         onView(withText("See all recent access")).check(matches(isDisplayed()))
@@ -224,8 +252,7 @@ class HomeFragmentTest {
 
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText(TEST_APP_NAME)).perform(click())
-        Truth.assertThat(navHostController.currentDestination?.id)
-            .isEqualTo(R.id.fitnessAppFragment)
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.fitnessAppFragment)
     }
 
     @Test

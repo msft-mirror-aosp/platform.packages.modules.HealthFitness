@@ -76,6 +76,7 @@ class HomeFragment : Hilt_HomeFragment() {
         private const val MIGRATION_BANNER_PREFERENCE_KEY = "migration_banner"
         private const val DATA_RESTORE_BANNER_PREFERENCE_KEY = "data_restore_banner"
         private const val MANAGE_DATA_PREFERENCE_KEY = "manage_data"
+        private const val BROSE_MEDICAL_DATA_PREFERENCE_KEY = "medical_data"
         private const val EXPORT_ERROR_BANNER_PREFERENCE_KEY = "export_error_banner"
         private const val HOME_FRAGMENT_BANNER_ORDER = 1
 
@@ -111,6 +112,10 @@ class HomeFragment : Hilt_HomeFragment() {
         preferenceScreen.findPreference(MANAGE_DATA_PREFERENCE_KEY)
     }
 
+    private val mBrowseMedicalDataPreference: HealthPreference? by lazy {
+        preferenceScreen.findPreference(BROSE_MEDICAL_DATA_PREFERENCE_KEY)
+    }
+
     private val dateFormatter: LocalDateTimeFormatter by lazy {
         LocalDateTimeFormatter(requireContext())
     }
@@ -141,6 +146,17 @@ class HomeFragment : Hilt_HomeFragment() {
             }
         } else {
             preferenceScreen.removePreferenceRecursively(MANAGE_DATA_PREFERENCE_KEY)
+        }
+
+        //TODO(b/343148212): Change condition to whether there is any medical data stored in HC when the API is ready.
+        if (featureUtils.isPersonalHealthRecordEnabled()) {
+            //TODO(b/343148212): Add logname.
+            mBrowseMedicalDataPreference?.setOnPreferenceClickListener {
+                findNavController().navigate(R.id.action_homeFragment_to_medicalDataFragment)
+                true
+            }
+        } else {
+            preferenceScreen.removePreferenceRecursively(BROSE_MEDICAL_DATA_PREFERENCE_KEY)
         }
 
         migrationBannerSummary = getString(R.string.resume_migration_banner_description_fallback)

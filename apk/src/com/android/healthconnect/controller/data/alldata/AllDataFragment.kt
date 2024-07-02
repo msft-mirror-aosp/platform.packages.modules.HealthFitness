@@ -48,7 +48,7 @@ import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-/** Fragment for health permission types. */
+/** Fragment for fitness permission types. */
 @AndroidEntryPoint(HealthPreferenceFragment::class)
 open class AllDataFragment : Hilt_AllDataFragment() {
 
