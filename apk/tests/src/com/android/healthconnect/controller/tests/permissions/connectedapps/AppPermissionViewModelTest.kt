@@ -29,7 +29,7 @@ import com.android.healthconnect.controller.permissions.app.LoadAppPermissionsSt
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -90,9 +90,9 @@ class AppPermissionViewModelTest {
     @Inject lateinit var featureUtils: FeatureUtils
 
     private val readExercisePermission =
-        FitnessPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.READ)
+        FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.READ)
     private val readNutritionPermission =
-        FitnessPermission(HealthPermissionType.NUTRITION, PermissionsAccessType.READ)
+        FitnessPermission(FitnessPermissionType.NUTRITION, PermissionsAccessType.READ)
     private val readExerciseRoutesPermission =
         HealthPermission.AdditionalPermission.READ_EXERCISE_ROUTES
     private val readHistoryDataPermission =
@@ -101,9 +101,9 @@ class AppPermissionViewModelTest {
         HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND
     private val readImmunization = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
     private val writeSleepPermission =
-        FitnessPermission(HealthPermissionType.SLEEP, PermissionsAccessType.WRITE)
+        FitnessPermission(FitnessPermissionType.SLEEP, PermissionsAccessType.WRITE)
     private val writeDistancePermission =
-        FitnessPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.WRITE)
+        FitnessPermission(FitnessPermissionType.DISTANCE, PermissionsAccessType.WRITE)
     private val writeMedicalData = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
 
     @Captor lateinit var appDataCaptor: ArgumentCaptor<DeletionType.DeletionTypeAppData>
@@ -372,7 +372,7 @@ class AppPermissionViewModelTest {
     fun updateFitnessPermissions_grant_whenSuccessful_returnsTrue() = runTest {
         val grantedPermissionsObserver = TestObserver<Set<FitnessPermission>>()
         val readExercisePermission =
-            FitnessPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.READ)
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.READ)
         appPermissionViewModel.grantedFitnessPermissions.observeForever(grantedPermissionsObserver)
 
         val result =
@@ -389,7 +389,7 @@ class AppPermissionViewModelTest {
     fun updateFitnessPermissions_grant_whenUnsuccessful_returnsFalse() = runTest {
         val grantedPermissionsObserver = TestObserver<Set<FitnessPermission>>()
         val readExercisePermission =
-            FitnessPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.READ)
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.READ)
         whenever(grantPermissionsUseCase.invoke(any(), any())).thenThrow(RuntimeException("Error!"))
         appPermissionViewModel.grantedFitnessPermissions.observeForever(grantedPermissionsObserver)
 
@@ -960,6 +960,63 @@ class AppPermissionViewModelTest {
     fun isPackageSupported_callsCorrectMethod() {
         appPermissionViewModel.isPackageSupported(TEST_APP_PACKAGE_NAME)
         verify(healthPermissionReader).isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME)
+    }
+
+
+    @Test
+    fun grantAllFitnessPermissions_isAllFitnessPermissionsGranted_returnTrue() = runTest {
+        setupDeclaredAndGrantedFitnessAndMedicalPermissions()
+        appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        appPermissionViewModel.grantAllFitnessPermissions(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        appPermissionViewModel.allFitnessPermissionsGranted.observeForever{
+            assertThat(it).isTrue()
+        }
+    }
+
+    @Test
+    fun grantAllFitnessPermissions_isAllMedicalPermissionsGranted_returnFalse() = runTest {
+        setupDeclaredAndGrantedFitnessAndMedicalPermissions()
+        appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        appPermissionViewModel.grantAllFitnessPermissions(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        appPermissionViewModel.allMedicalPermissionsGranted.observeForever{
+            assertThat(it).isFalse()
+        }
+    }
+
+    @Test
+    fun grantAllMedicalPermissions_isAllFitnessPermissionsGranted_returnFalse() = runTest {
+        setupDeclaredAndGrantedFitnessAndMedicalPermissions()
+        appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        appPermissionViewModel.grantAllMedicalPermissions(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        appPermissionViewModel.allFitnessPermissionsGranted.observeForever{
+            assertThat(it).isFalse()
+        }
+    }
+
+    @Test
+    fun grantAllMedicalPermissions_isAllMedicalPermissionsGranted_returnTrue() = runTest {
+        setupDeclaredAndGrantedFitnessAndMedicalPermissions()
+        appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        appPermissionViewModel.grantAllMedicalPermissions(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        appPermissionViewModel.allMedicalPermissionsGranted.observeForever{
+            assertThat(it).isTrue()
+        }
     }
 
     private fun setupDeclaredAndGrantedFitnessPermissions() {

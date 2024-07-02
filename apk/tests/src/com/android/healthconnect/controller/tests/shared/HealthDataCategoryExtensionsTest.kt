@@ -26,7 +26,7 @@ import android.health.connect.HealthDataCategory.SLEEP
 import android.health.connect.HealthDataCategory.VITALS
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.HEALTH_DATA_CATEGORIES
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.healthPermissionTypes
@@ -65,7 +65,7 @@ class HealthDataCategoryExtensionsTest {
             val fitnessPermission = FitnessPermission.fromPermissionString(permissionString)
             assertThat(
                     HEALTH_DATA_CATEGORIES.any {
-                        it.healthPermissionTypes().contains(fitnessPermission.healthPermissionType)
+                        it.healthPermissionTypes().contains(fitnessPermission.fitnessPermissionType)
                     })
                 .isEqualTo(true)
         }
@@ -111,10 +111,10 @@ class HealthDataCategoryExtensionsTest {
 
     @Test
     fun fromHealthPermissionType() {
-        assertThat(fromHealthPermissionType(HealthPermissionType.HEART_RATE)).isEqualTo(VITALS)
-        assertThat(fromHealthPermissionType(HealthPermissionType.PLANNED_EXERCISE))
+        assertThat(fromHealthPermissionType(FitnessPermissionType.HEART_RATE)).isEqualTo(VITALS)
+        assertThat(fromHealthPermissionType(FitnessPermissionType.PLANNED_EXERCISE))
             .isEqualTo(ACTIVITY)
-        assertThat(fromHealthPermissionType(HealthPermissionType.EXERCISE_ROUTE))
+        assertThat(fromHealthPermissionType(FitnessPermissionType.EXERCISE_ROUTE))
             .isEqualTo(ACTIVITY)
     }
 }

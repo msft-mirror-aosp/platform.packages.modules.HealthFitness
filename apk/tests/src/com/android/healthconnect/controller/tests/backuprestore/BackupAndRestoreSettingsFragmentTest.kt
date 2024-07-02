@@ -289,6 +289,10 @@ class BackupAndRestoreSettingsFragmentTest {
                 withText(
                     "The file you selected isn't compatible for restore. Make sure to select the correct exported file."))
             .check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(BackupAndRestoreElement.IMPORT_WRONG_FILE_ERROR_BANNER)
+        verify(healthConnectLogger)
+            .logImpression(BackupAndRestoreElement.IMPORT_WRONG_FILE_ERROR_BANNER_BUTTON)
     }
 
     @Test
@@ -313,6 +317,10 @@ class BackupAndRestoreSettingsFragmentTest {
                 withText(
                     "Update your system so that Health\u00A0Connect can restore your data, then try again."))
             .check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(BackupAndRestoreElement.IMPORT_VERSION_MISMATCH_ERROR_BANNER)
+        verify(healthConnectLogger)
+            .logImpression(BackupAndRestoreElement.IMPORT_VERSION_MISMATCH_ERROR_BANNER_BUTTON)
     }
 
     @Test
@@ -335,6 +343,10 @@ class BackupAndRestoreSettingsFragmentTest {
         onView(withText("Couldn't restore data")).check(matches(isDisplayed()))
         onView(withText("There was a problem with restoring data from your export."))
             .check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(BackupAndRestoreElement.IMPORT_GENERAL_ERROR_BANNER)
+        verify(healthConnectLogger)
+            .logImpression(BackupAndRestoreElement.IMPORT_GENERAL_ERROR_BANNER_BUTTON)
     }
 
     @Test

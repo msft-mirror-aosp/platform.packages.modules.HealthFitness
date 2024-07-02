@@ -39,5 +39,9 @@
             android:key="manage_data"
             android:icon="?attr/manageDataIcon"
             android:title="@string/manage_data_section"/>
+        <com.android.healthconnect.controller.shared.preference.HealthPreference
+            android:key="medical_data"
+            android:icon="?attr/dataAndAccessIcon"
+            android:title="@string/browse_medical_data"/>
     </PreferenceCategory>
 </PreferenceScreen>
