@@ -73,6 +73,8 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
     private final PackageInfoUtils mPackageInfoHelper;
     private final Context mContext;
 
+    private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+
     public FirstGrantTimeManager(
             @NonNull Context context,
             @NonNull HealthPermissionIntentAppsTracker tracker,
@@ -84,6 +86,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
         mUidToGrantTimeCache = new UidToGrantTimeCache();
         mContext = context;
         mPackageInfoHelper = PackageInfoUtils.getInstance();
+        mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
         mPackageManager.addOnPermissionsChangeListener(this);
     }
 
@@ -244,9 +247,8 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
                 if (!MigrationStateManager.getInitialisedInstance().isMigrationInProgress()) {
                     HealthConnectThreadScheduler.scheduleInternalTask(
                             () ->
-                                    HealthDataCategoryPriorityHelper.getInstance()
-                                            .updateHealthDataPriority(
-                                                    packageNames, user, getUserContext(user)));
+                                    mHealthDataCategoryPriorityHelper.updateHealthDataPriority(
+                                            packageNames, user, getUserContext(user)));
                 }
             }
         } finally {
@@ -723,8 +725,8 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
 
     private void removeAppsFromPriorityList(String[] packageNames) {
         for (String packageName : packageNames) {
-            HealthDataCategoryPriorityHelper.getInstance()
-                    .maybeRemoveAppWithoutWritePermissionsFromPriorityList(packageName);
+            mHealthDataCategoryPriorityHelper.maybeRemoveAppWithoutWritePermissionsFromPriorityList(
+                    packageName);
         }
     }
 

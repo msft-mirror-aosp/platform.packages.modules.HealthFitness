@@ -1134,7 +1134,6 @@ package android.health.connect.datatypes {
     method public int describeContents();
     method @NonNull public String getData();
     method @NonNull public String getDataSourceId();
-    method @NonNull public String getId();
     method public int getType();
     method public void writeToParcel(@NonNull android.os.Parcel, int);
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.datatypes.MedicalResource> CREATOR;
@@ -1143,13 +1142,12 @@ package android.health.connect.datatypes {
   }
 
   public static final class MedicalResource.Builder {
-    ctor public MedicalResource.Builder(@NonNull String, int, @NonNull String, @NonNull String);
+    ctor public MedicalResource.Builder(int, @NonNull String, @NonNull String);
     ctor public MedicalResource.Builder(@NonNull android.health.connect.datatypes.MedicalResource.Builder);
     ctor public MedicalResource.Builder(@NonNull android.health.connect.datatypes.MedicalResource);
     method @NonNull public android.health.connect.datatypes.MedicalResource build();
     method @NonNull public android.health.connect.datatypes.MedicalResource.Builder setData(@NonNull String);
     method @NonNull public android.health.connect.datatypes.MedicalResource.Builder setDataSourceId(@NonNull String);
-    method @NonNull public android.health.connect.datatypes.MedicalResource.Builder setId(@NonNull String);
     method @NonNull public android.health.connect.datatypes.MedicalResource.Builder setType(int);
   }
 
