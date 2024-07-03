@@ -27,6 +27,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers
@@ -46,7 +47,6 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.recentaccess.RecentAccessEntry
-import com.android.healthconnect.controller.recentaccess.RecentAccessFragment
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.RecentAccessState
 import com.android.healthconnect.controller.shared.Constants
@@ -187,6 +187,33 @@ class HomeFragmentTest {
     }
 
     @Test
+    fun browseMedicalData_flagDisabled_notDisplayed() {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(false)
+        setupFragmentForNavigation()
+
+        onView(withText("Browse health records")).check(doesNotExist())
+    }
+
+    @Test
+    fun browseMedicalData_flagEnabled_isDiplayed() {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
+        setupFragmentForNavigation()
+
+        onView(withText("Browse health records")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun browseMedicalData_navigatesToBrowseMedicalData() {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
+        setupFragmentForNavigation()
+
+        onView(withText("Browse health records")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Browse health records")).perform(scrollTo()).perform(click())
+
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.medicalAllDataFragment)
+    }
+
+    @Test
     fun seeAllRecentAccess_navigatesToRecentAccess() {
         setupFragmentForNavigation()
         onView(withText("See all recent access")).check(matches(isDisplayed()))
@@ -203,13 +230,13 @@ class HomeFragmentTest {
                 isToday = true,
                 isInactive = false,
                 dataTypesWritten =
-                mutableSetOf(
-                    HealthDataCategory.ACTIVITY.uppercaseTitle(),
-                    HealthDataCategory.VITALS.uppercaseTitle()),
+                    mutableSetOf(
+                        HealthDataCategory.ACTIVITY.uppercaseTitle(),
+                        HealthDataCategory.VITALS.uppercaseTitle()),
                 dataTypesRead =
-                mutableSetOf(
-                    HealthDataCategory.SLEEP.uppercaseTitle(),
-                    HealthDataCategory.NUTRITION.uppercaseTitle()))
+                    mutableSetOf(
+                        HealthDataCategory.SLEEP.uppercaseTitle(),
+                        HealthDataCategory.NUTRITION.uppercaseTitle()))
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
         }
@@ -225,7 +252,7 @@ class HomeFragmentTest {
 
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText(TEST_APP_NAME)).perform(click())
-        Truth.assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.fitnessAppFragment)
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.fitnessAppFragment)
     }
 
     @Test
@@ -237,13 +264,13 @@ class HomeFragmentTest {
                 isToday = true,
                 isInactive = false,
                 dataTypesWritten =
-                mutableSetOf(
-                    HealthDataCategory.ACTIVITY.uppercaseTitle(),
-                    HealthDataCategory.VITALS.uppercaseTitle()),
+                    mutableSetOf(
+                        HealthDataCategory.ACTIVITY.uppercaseTitle(),
+                        HealthDataCategory.VITALS.uppercaseTitle()),
                 dataTypesRead =
-                mutableSetOf(
-                    HealthDataCategory.SLEEP.uppercaseTitle(),
-                    HealthDataCategory.NUTRITION.uppercaseTitle()),
+                    mutableSetOf(
+                        HealthDataCategory.SLEEP.uppercaseTitle(),
+                        HealthDataCategory.NUTRITION.uppercaseTitle()),
                 appPermissionsType = AppPermissionsType.MEDICAL_PERMISSIONS_ONLY)
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
@@ -272,13 +299,13 @@ class HomeFragmentTest {
                 isToday = true,
                 isInactive = false,
                 dataTypesWritten =
-                mutableSetOf(
-                    HealthDataCategory.ACTIVITY.uppercaseTitle(),
-                    HealthDataCategory.VITALS.uppercaseTitle()),
+                    mutableSetOf(
+                        HealthDataCategory.ACTIVITY.uppercaseTitle(),
+                        HealthDataCategory.VITALS.uppercaseTitle()),
                 dataTypesRead =
-                mutableSetOf(
-                    HealthDataCategory.SLEEP.uppercaseTitle(),
-                    HealthDataCategory.NUTRITION.uppercaseTitle()),
+                    mutableSetOf(
+                        HealthDataCategory.SLEEP.uppercaseTitle(),
+                        HealthDataCategory.NUTRITION.uppercaseTitle()),
                 appPermissionsType = AppPermissionsType.COMBINED_PERMISSIONS)
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
@@ -295,7 +322,8 @@ class HomeFragmentTest {
 
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText(TEST_APP_NAME)).perform(click())
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.combinedPermissionsFragment)
+        assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.combinedPermissionsFragment)
     }
 
     @Test
@@ -872,6 +900,8 @@ class HomeFragmentTest {
                 withText(
                     "There was a problem with the export for October 21, 2022. Please set up a new scheduled export and try again."))
             .check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(HomePageElement.EXPORT_ERROR_BANNER)
+        verify(healthConnectLogger).logImpression(HomePageElement.EXPORT_ERROR_BANNER_BUTTON)
     }
 
     @Test
