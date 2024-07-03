@@ -2180,7 +2180,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        HealthConnectThreadScheduler.scheduleInternalTask(
+        HealthConnectThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
