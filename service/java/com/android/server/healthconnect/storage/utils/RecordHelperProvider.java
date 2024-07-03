@@ -45,6 +45,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.IntermenstrualBl
 import com.android.server.healthconnect.storage.datatypehelpers.LeanBodyMassRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MenstruationFlowRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MenstruationPeriodRecordHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MindfulnessSessionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.NutritionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.OvulationTestRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.OxygenSaturationRecordHelper;
@@ -171,6 +172,9 @@ public final class RecordHelperProvider {
                 new PlannedExerciseSessionRecordHelper());
         recordIDToHelperMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION, new SleepSessionRecordHelper());
+        recordIDToHelperMap.put(
+                RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION,
+                new MindfulnessSessionRecordHelper());
 
         RECORD_ID_TO_HELPER_MAP = Collections.unmodifiableMap(recordIDToHelperMap);
     }

@@ -1,11 +1,14 @@
 package android.health.connect.aidl;
 
 import android.content.AttributionSource;
+import android.health.connect.MedicalResourceId;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.aidl.ActivityDatesRequestParcel;
 import android.health.connect.aidl.AggregateDataRequestParcel;
 import android.health.connect.aidl.IAggregateRecordsResponseCallback;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogsRequest;
+import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.aidl.DeleteUsingFiltersRequestParcel;
 import android.health.connect.aidl.IAccessLogsResponseCallback;
 import android.health.connect.aidl.IChangeLogsResponseCallback;
@@ -16,6 +19,7 @@ import android.health.connect.aidl.IGetPriorityResponseCallback;
 import android.health.connect.aidl.IGetHealthConnectMigrationUiStateCallback;
 import android.health.connect.aidl.IGetHealthConnectDataStateCallback;
 import android.health.connect.aidl.RecordsParcel;
+import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.migration.MigrationEntityParcel;
 import android.health.connect.aidl.IApplicationInfoResponseCallback;
@@ -24,9 +28,12 @@ import android.health.connect.aidl.IInsertRecordsResponseCallback;
 import android.health.connect.aidl.RecordsParcel;
 import android.health.connect.aidl.UpdatePriorityRequestParcel;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
+import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
+import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IActivityDatesResponseCallback;
 import android.health.connect.aidl.IRecordTypeInfoResponseCallback;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
+import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.exportimport.IImportStatusCallback;
 import android.health.connect.exportimport.IQueryDocumentProvidersCallback;
 import android.health.connect.exportimport.IScheduledExportStatusCallback;
@@ -382,4 +389,40 @@ interface IHealthConnectService {
     * @hide
     */
     void runImport(in UserHandle userHandle, in Uri file);
+
+    /**
+     * Creates a {@code MedicalDataSource} in HealthConnect based on the {@code request} values.
+     *
+     * @param request Creation request.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void createMedicalDataSource(
+            in AttributionSource attributionSource,
+            in CreateMedicalDataSourceRequest request,
+            in IMedicalDataSourceResponseCallback callback);
+
+    /**
+     * Upserts {@link MedicalResource}s in HealthConnect based on a list of {@link
+     * UpsertMedicalResourceRequest}s.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param requests A list of upsert requests.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void upsertMedicalResources(
+        in AttributionSource attributionSource,
+        in List<UpsertMedicalResourceRequest> requests,
+        in IMedicalResourcesResponseCallback callback);
+
+    /**
+     * Reads from the HealthConnect database.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param medicalResourceIds represents the ids to be read.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void readMedicalResources(
+        in AttributionSource attributionSource,
+        in List<MedicalResourceId> medicalResourceIds,
+        in IReadMedicalResourcesResponseCallback callback);
 }

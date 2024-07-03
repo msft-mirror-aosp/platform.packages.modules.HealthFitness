@@ -20,8 +20,8 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission.Ad
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.fromPermissionString
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.ACTIVE_CALORIES_BURNED
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.BLOOD_GLUCOSE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.ACTIVE_CALORIES_BURNED
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.BLOOD_GLUCOSE
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -94,12 +94,12 @@ class HealthPermissionTest {
 
     @Test
     fun fromPermissionString_returnsCorrectMedicalPermission() {
-        assertThat(fromPermissionString("android.permission.health.WRITE_MEDICAL_RESOURCES"))
+        assertThat(fromPermissionString("android.permission.health.WRITE_MEDICAL_DATA"))
             .isEqualTo(MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
 
         assertThat(
                 fromPermissionString(
-                    "android.permission.health.READ_MEDICAL_RESOURCES_IMMUNIZATION"))
+                    "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION"))
             .isEqualTo(MedicalPermission(MedicalPermissionType.IMMUNIZATION))
     }
 

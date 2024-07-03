@@ -37,7 +37,7 @@ import com.android.healthconnect.controller.deletion.DeletionParameters
 import com.android.healthconnect.controller.deletion.DeletionState
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.DeletionViewModel
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -128,12 +128,12 @@ class DeletionFragmentTest {
 
     @Test
     fun deletePermissionTypeData_timeRangeDialog_showsCorrectText() {
-        val deletionTypeHealthPermissionType =
+        val deletionTypeFitnessPermissionType =
             DeletionType.DeletionTypeHealthPermissionTypeData(
-                healthPermissionType = HealthPermissionType.BLOOD_GLUCOSE)
+                fitnessPermissionType = FitnessPermissionType.BLOOD_GLUCOSE)
 
         Mockito.`when`(viewModel.deletionParameters).then {
-            MutableLiveData(DeletionParameters(deletionType = deletionTypeHealthPermissionType))
+            MutableLiveData(DeletionParameters(deletionType = deletionTypeFitnessPermissionType))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -141,7 +141,7 @@ class DeletionFragmentTest {
                 .parentFragmentManager
                 .setFragmentResult(
                     START_DELETION_EVENT,
-                    bundleOf(DELETION_TYPE to deletionTypeHealthPermissionType))
+                    bundleOf(DELETION_TYPE to deletionTypeFitnessPermissionType))
         }
 
         onView(withText("Choose data to delete")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -459,14 +459,14 @@ class DeletionFragmentTest {
 
     @Test
     fun deletePermissionTypeData_confirmationDialogForOneDay_showsCorrectText() {
-        val deletionTypeHealthPermissionType =
+        val deletionTypeFitnessPermissionType =
             DeletionType.DeletionTypeHealthPermissionTypeData(
-                healthPermissionType = HealthPermissionType.BLOOD_GLUCOSE)
+                fitnessPermissionType = FitnessPermissionType.BLOOD_GLUCOSE)
 
         Mockito.`when`(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
-                    deletionType = deletionTypeHealthPermissionType,
+                    deletionType = deletionTypeFitnessPermissionType,
                     chosenRange = ChosenRange.DELETE_RANGE_LAST_24_HOURS))
         }
 
@@ -475,7 +475,7 @@ class DeletionFragmentTest {
                 .parentFragmentManager
                 .setFragmentResult(
                     START_DELETION_EVENT,
-                    bundleOf(DELETION_TYPE to deletionTypeHealthPermissionType))
+                    bundleOf(DELETION_TYPE to deletionTypeFitnessPermissionType))
         }
 
         onView(withId(R.id.radio_button_one_day)).inRoot(isDialog()).perform(click())
@@ -495,13 +495,13 @@ class DeletionFragmentTest {
 
     @Test
     fun deletePermissionTypeData_confirmationDialogForOneWeek_showsCorrectText() {
-        val deletionTypeHealthPermissionType =
+        val deletionTypeFitnessPermissionType =
             DeletionType.DeletionTypeHealthPermissionTypeData(
-                healthPermissionType = HealthPermissionType.BLOOD_GLUCOSE)
+                fitnessPermissionType = FitnessPermissionType.BLOOD_GLUCOSE)
         Mockito.`when`(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
-                    deletionType = deletionTypeHealthPermissionType,
+                    deletionType = deletionTypeFitnessPermissionType,
                     chosenRange = ChosenRange.DELETE_RANGE_LAST_7_DAYS))
         }
 
@@ -510,7 +510,7 @@ class DeletionFragmentTest {
                 .parentFragmentManager
                 .setFragmentResult(
                     START_DELETION_EVENT,
-                    bundleOf(DELETION_TYPE to deletionTypeHealthPermissionType))
+                    bundleOf(DELETION_TYPE to deletionTypeFitnessPermissionType))
         }
 
         onView(withId(R.id.radio_button_one_week)).inRoot(isDialog()).perform(click())
@@ -530,14 +530,14 @@ class DeletionFragmentTest {
 
     @Test
     fun deletePermissionTypeData_confirmationDialogForOneMonth_showsCorrectText() {
-        val deletionTypeHealthPermissionType =
+        val deletionTypeFitnessPermissionType =
             DeletionType.DeletionTypeHealthPermissionTypeData(
-                healthPermissionType = HealthPermissionType.BLOOD_GLUCOSE)
+                fitnessPermissionType = FitnessPermissionType.BLOOD_GLUCOSE)
 
         Mockito.`when`(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
-                    deletionType = deletionTypeHealthPermissionType,
+                    deletionType = deletionTypeFitnessPermissionType,
                     chosenRange = ChosenRange.DELETE_RANGE_LAST_30_DAYS))
         }
 
@@ -546,7 +546,7 @@ class DeletionFragmentTest {
                 .parentFragmentManager
                 .setFragmentResult(
                     START_DELETION_EVENT,
-                    bundleOf(DELETION_TYPE to deletionTypeHealthPermissionType))
+                    bundleOf(DELETION_TYPE to deletionTypeFitnessPermissionType))
         }
 
         onView(withId(R.id.radio_button_one_month)).inRoot(isDialog()).perform(click())
@@ -566,13 +566,13 @@ class DeletionFragmentTest {
 
     @Test
     fun deletePermissionTypeData_confirmationDialogForAllTime_showsCorrectText() {
-        val deletionTypeHealthPermissionType =
+        val deletionTypeFitnessPermissionType =
             DeletionType.DeletionTypeHealthPermissionTypeData(
-                healthPermissionType = HealthPermissionType.BLOOD_GLUCOSE)
+                fitnessPermissionType = FitnessPermissionType.BLOOD_GLUCOSE)
         Mockito.`when`(viewModel.deletionParameters).then {
             MutableLiveData(
                 DeletionParameters(
-                    deletionType = deletionTypeHealthPermissionType,
+                    deletionType = deletionTypeFitnessPermissionType,
                     chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA))
         }
 
@@ -581,7 +581,7 @@ class DeletionFragmentTest {
                 .parentFragmentManager
                 .setFragmentResult(
                     START_DELETION_EVENT,
-                    bundleOf(DELETION_TYPE to deletionTypeHealthPermissionType))
+                    bundleOf(DELETION_TYPE to deletionTypeFitnessPermissionType))
         }
 
         onView(withId(R.id.radio_button_all)).inRoot(isDialog()).perform(click())

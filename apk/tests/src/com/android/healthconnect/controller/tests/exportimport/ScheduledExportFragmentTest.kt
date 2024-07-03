@@ -38,6 +38,8 @@ import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.whenever
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.ScheduledExportElement
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -51,6 +53,8 @@ import org.mockito.Mockito
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 
 @HiltAndroidTest
 @UninstallModules(HealthDataExportManagerModule::class)
@@ -67,6 +71,8 @@ class ScheduledExportFragmentTest {
     @BindValue
     val healthDataExportManager: HealthDataExportManager =
         Mockito.mock(HealthDataExportManager::class.java)
+
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     @Before
     fun setup() {
@@ -94,12 +100,37 @@ class ScheduledExportFragmentTest {
         launchFragment<ScheduledExportFragment>(Bundle())
 
         onView(withText("On")).check(matches(isDisplayed()))
-        onView(withText("Choose frequency")).check(matches(isDisplayed()))
+        onView(withText("Change frequency")).check(matches(isDisplayed()))
         onView(withText("Daily")).check(matches(isDisplayed()))
         onView(withText("Weekly")).check(matches(isDisplayed()))
         onView(withText("Monthly")).check(matches(isDisplayed()))
-
         onView(withText("Next export: October 21, 2022")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "If you turn off scheduled export, this won't delete previously exported data from where it was saved"))
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun scheduledExportFragment_impressionsLogged() {
+        doAnswer(
+                prepareAnswer(
+                    ScheduledExportStatus(
+                        NOW,
+                        HealthConnectManager.DATA_EXPORT_ERROR_NONE,
+                        TEST_EXPORT_PERIOD_IN_DAYS)))
+            .`when`(healthDataExportManager)
+            .getScheduledExportStatus(any(), any())
+        launchFragment<ScheduledExportFragment>(Bundle())
+
+        onView(withText("On")).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger)
+            .logImpression(ScheduledExportElement.EXPORT_SETTINGS_FREQUENCY_DAILY)
+        verify(healthConnectLogger)
+            .logImpression(ScheduledExportElement.EXPORT_SETTINGS_FREQUENCY_WEEKLY)
+        verify(healthConnectLogger)
+            .logImpression(ScheduledExportElement.EXPORT_SETTINGS_FREQUENCY_MONTHLY)
     }
 
     @Test
@@ -174,6 +205,24 @@ class ScheduledExportFragmentTest {
     }
 
     @Test
+    fun scheduledExportFragment_turnsOffControl_doesNotShowExportStatus() {
+        doAnswer(
+                prepareAnswer(
+                    ScheduledExportStatus(
+                        NOW,
+                        HealthConnectManager.DATA_EXPORT_ERROR_NONE,
+                        TEST_EXPORT_PERIOD_IN_DAYS)))
+            .`when`(healthDataExportManager)
+            .getScheduledExportStatus(any(), any())
+        launchFragment<ScheduledExportFragment>(Bundle())
+
+        onView(withText("On")).perform(click())
+
+        onView(withText("Off")).check(matches(isDisplayed()))
+        onView(withText("Next export: October 21, 2022")).check(doesNotExist())
+    }
+
+    @Test
     fun scheduledExportFragment_turnsOffControlAndOnAgain_exportFrequencyNotChanged() = runTest {
         launchFragment<ScheduledExportFragment>(Bundle())
 
@@ -206,6 +255,7 @@ class ScheduledExportFragmentTest {
             .configureScheduledExport(
                 ScheduledExportSettings.withPeriodInDays(
                     ExportFrequency.EXPORT_FREQUENCY_MONTHLY.periodInDays))
+        verify(healthConnectLogger).logInteraction(ScheduledExportElement.EXPORT_SETTINGS_FREQUENCY_MONTHLY)
     }
 
     private fun prepareAnswer(
