@@ -14,5 +14,6 @@ rdidukh@google.com
 rosiebye@google.com
 sameerj@google.com
 ymq@google.com
+xueweizhao@google.com
 
 include platform/packages/modules/common:/MODULES_OWNERS  # see go/mainline-owners-policy
