@@ -162,6 +162,22 @@ public final class AppInfoHelper extends DatabaseHelper {
 
     /**
      * Inserts or replaces (based on the passed param onlyUpdate) the application info of the
+     * specified {@code packageName} with the specified {@code name}, only if the corresponding
+     * application is not currently installed.
+     *
+     * <p>{@code icon} is retrieved from the package
+     */
+    public void addOrUpdateAppInfoIfNotInstalled(
+            @NonNull Context context,
+            @NonNull String packageName,
+            @Nullable String name,
+            boolean onlyUpdate) {
+        byte[] icon = getIconFromPackageName(context, packageName);
+        addOrUpdateAppInfoIfNotInstalled(context, packageName, name, icon, onlyUpdate);
+    }
+
+    /**
+     * Inserts or replaces (based on the passed param onlyUpdate) the application info of the
      * specified {@code packageName} with the specified {@code name} and {@code icon}, only if the
      * corresponding application is not currently installed.
      *
@@ -604,6 +620,19 @@ public final class AppInfoHelper extends DatabaseHelper {
         Drawable icon = packageManager.getApplicationIcon(info);
         Bitmap bitmap = getBitmapFromDrawable(icon);
         return new AppInfoInternal(DEFAULT_LONG, packageName, appName, bitmap, null);
+    }
+
+    private @Nullable byte[] getIconFromPackageName(@NonNull Context context, String packageName) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            Drawable drawable = packageManager.getApplicationIcon(packageName);
+            Bitmap bitmap = getBitmapFromDrawable(drawable);
+            return encodeBitmap(bitmap);
+        } catch (PackageManager.NameNotFoundException e) {
+            Drawable drawable = packageManager.getDefaultActivityIcon();
+            Bitmap bitmap = getBitmapFromDrawable(drawable);
+            return encodeBitmap(bitmap);
+        }
     }
 
     private synchronized void insertIfNotPresent(
