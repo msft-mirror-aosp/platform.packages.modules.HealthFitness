@@ -22,6 +22,8 @@ import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_TYPE_ALLERGY;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.addCompletedStatus;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceId;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceType;
@@ -50,6 +52,8 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getHex
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
 import android.content.ContentValues;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.datatypes.MedicalResource;
@@ -60,9 +64,12 @@ import android.util.Pair;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
+import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
+
+import com.google.common.collect.ImmutableList;
 
 import org.json.JSONException;
 import org.junit.Before;
@@ -154,22 +161,17 @@ public class MedicalResourceHelperTest {
 
     @Test
     public void getReadTableRequest_usingMedicalResourceId_correctQuery() throws JSONException {
-        String fhirResourceId1 = getFhirResourceId(FHIR_DATA_IMMUNIZATION);
-        String fhirResourceType1 = getFhirResourceType(FHIR_DATA_IMMUNIZATION);
-        String fhirResourceId2 = getFhirResourceId(FHIR_DATA_ALLERGY);
-        String fhirResourceType2 = getFhirResourceType(FHIR_DATA_ALLERGY);
         MedicalResourceId medicalResourceId1 =
-                new MedicalResourceId(DATA_SOURCE_ID, fhirResourceType1, fhirResourceId1);
+                new MedicalResourceId(
+                        DATA_SOURCE_ID, FHIR_RESOURCE_TYPE_IMMUNIZATION, "resourceId1");
         MedicalResourceId medicalResourceId2 =
-                new MedicalResourceId(DIFFERENT_DATA_SOURCE_ID, fhirResourceType2, fhirResourceId2);
+                new MedicalResourceId(
+                        DIFFERENT_DATA_SOURCE_ID, FHIR_RESOURCE_TYPE_ALLERGY, "resourceId2");
         List<MedicalResourceId> medicalResourceIds =
                 List.of(medicalResourceId1, medicalResourceId2);
-        UUID uuid1 =
-                generateMedicalResourceUUID(fhirResourceId1, fhirResourceType1, DATA_SOURCE_ID);
-        UUID uuid2 =
-                generateMedicalResourceUUID(
-                        fhirResourceId2, fhirResourceType2, DIFFERENT_DATA_SOURCE_ID);
-        List<String> hexValues = List.of(getHexString(uuid1), getHexString(uuid2));
+        String hex1 = makeMedicalResourceHexString(medicalResourceId1);
+        String hex2 = makeMedicalResourceHexString(medicalResourceId2);
+        List<String> hexValues = List.of(hex1, hex2);
 
         ReadTableRequest readRequest =
                 MedicalResourceHelper.getReadTableRequest(medicalResourceIds);
@@ -341,5 +343,150 @@ public class MedicalResourceHelperTest {
         assertThat(result.size()).isEqualTo(1);
         assertThat(result).isEqualTo(updatedMedicalResource);
         assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteMedicalResourcesByIds_noId_fails() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> mMedicalResourceHelper.deleteMedicalResourcesByIds(List.of()));
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteMedicalResourcesByIds_oneIdNotPresent_succeeds() throws Exception {
+        String fhirResourceType = getFhirResourceType(FHIR_DATA_IMMUNIZATION);
+        String fhirResourceId = getFhirResourceId(FHIR_DATA_IMMUNIZATION);
+
+        mMedicalResourceHelper.deleteMedicalResourcesByIds(
+                List.of(new MedicalResourceId(DATA_SOURCE_ID, fhirResourceType, fhirResourceId)));
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteMedicalResourcesByIds_oneIdPresent_succeedsDeleting() throws Exception {
+        String fhirResourceId = getFhirResourceId(FHIR_DATA_IMMUNIZATION);
+        String fhirResourceType = getFhirResourceType(FHIR_DATA_IMMUNIZATION);
+        MedicalResourceInternal medicalResourceInternal =
+                new MedicalResourceInternal()
+                        .setFhirResourceId(fhirResourceId)
+                        .setFhirResourceType(fhirResourceType)
+                        .setData(FHIR_DATA_IMMUNIZATION)
+                        .setDataSourceId(DATA_SOURCE_ID);
+        mMedicalResourceHelper.upsertMedicalResources(List.of(medicalResourceInternal));
+
+        MedicalResourceId id =
+                new MedicalResourceId(DATA_SOURCE_ID, fhirResourceType, fhirResourceId);
+        mMedicalResourceHelper.deleteMedicalResourcesByIds(List.of(id));
+
+        List<MedicalResource> result =
+                mMedicalResourceHelper.readMedicalResourcesByIds(List.of(id));
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteMedicalResourcesByIds_oneOfTwoSpecified_onlySpecifiedDeleted()
+            throws Exception {
+        String fhirResourceId = getFhirResourceId(FHIR_DATA_IMMUNIZATION);
+        String fhirResourceType = getFhirResourceType(FHIR_DATA_IMMUNIZATION);
+        MedicalResourceInternal medicalResource1 =
+                new MedicalResourceInternal()
+                        .setFhirResourceId(fhirResourceId)
+                        .setFhirResourceType(fhirResourceType)
+                        .setData(FHIR_DATA_IMMUNIZATION)
+                        .setDataSourceId(DATA_SOURCE_ID);
+
+        String fhirResourceId2 = getFhirResourceId(FHIR_DATA_ALLERGY);
+        String fhirResourceType2 = getFhirResourceType(FHIR_DATA_ALLERGY);
+        MedicalResourceInternal medicalResource2 =
+                new MedicalResourceInternal()
+                        .setFhirResourceId(fhirResourceId2)
+                        .setFhirResourceType(fhirResourceType2)
+                        .setData(FHIR_DATA_ALLERGY)
+                        .setDataSourceId(DATA_SOURCE_ID);
+
+        mMedicalResourceHelper.upsertMedicalResources(List.of(medicalResource1, medicalResource2));
+
+        MedicalResourceId id1 =
+                new MedicalResourceId(DATA_SOURCE_ID, fhirResourceType, fhirResourceId);
+        MedicalResourceId id2 =
+                new MedicalResourceId(DATA_SOURCE_ID, fhirResourceType2, fhirResourceId2);
+        mMedicalResourceHelper.deleteMedicalResourcesByIds(List.of(id1));
+
+        List<MedicalResource> result =
+                mMedicalResourceHelper.readMedicalResourcesByIds(List.of(id1, id2));
+        assertThat(result)
+                .containsExactly(
+                        new MedicalResource.Builder(
+                                        MEDICAL_RESOURCE_TYPE_UNKNOWN,
+                                        DATA_SOURCE_ID,
+                                        FHIR_DATA_ALLERGY)
+                                .build());
+    }
+
+    @Test
+    public void getDeleteRequest_noIds_exceptions() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> MedicalResourceHelper.getDeleteRequest(Collections.emptyList()));
+    }
+
+    @Test
+    public void getDeleteRequest_oneId_success() throws JSONException {
+        MedicalResourceId medicalResourceId =
+                new MedicalResourceId(DATA_SOURCE_ID, FHIR_RESOURCE_TYPE_IMMUNIZATION, "anId");
+        DeleteTableRequest request =
+                MedicalResourceHelper.getDeleteRequest(ImmutableList.of(medicalResourceId));
+        String hex = makeMedicalResourceHexString(medicalResourceId);
+
+        assertThat(request.getDeleteCommand())
+                .isEqualTo("DELETE FROM medical_resource_table WHERE uuid IN (" + hex + ")");
+    }
+
+    @Test
+    public void getDeleteRequest_multipleId_success() {
+        MedicalResourceId medicalResourceId1 =
+                new MedicalResourceId(
+                        DATA_SOURCE_ID, FHIR_RESOURCE_TYPE_IMMUNIZATION, "Immunization1");
+        MedicalResourceId medicalResourceId2 =
+                new MedicalResourceId(
+                        DIFFERENT_DATA_SOURCE_ID, FHIR_RESOURCE_TYPE_ALLERGY, "Allergy1");
+        MedicalResourceId medicalResourceId3 =
+                new MedicalResourceId(
+                        DIFFERENT_DATA_SOURCE_ID, FHIR_RESOURCE_TYPE_ALLERGY, "Allergy2");
+        String uuidHex1 = makeMedicalResourceHexString(medicalResourceId1);
+        String uuidHex2 = makeMedicalResourceHexString(medicalResourceId2);
+        String uuidHex3 = makeMedicalResourceHexString(medicalResourceId3);
+
+        DeleteTableRequest request =
+                MedicalResourceHelper.getDeleteRequest(
+                        ImmutableList.of(
+                                medicalResourceId1, medicalResourceId2, medicalResourceId3));
+
+        assertThat(request.getIds()).isEqualTo(ImmutableList.of(uuidHex1, uuidHex2, uuidHex3));
+        assertThat(request.getIdColumnName()).isEqualTo("uuid");
+        assertThat(request.getDeleteCommand())
+                .isEqualTo(
+                        "DELETE FROM medical_resource_table WHERE uuid IN ("
+                                + uuidHex1
+                                + ", "
+                                + uuidHex2
+                                + ", "
+                                + uuidHex3
+                                + ")");
+    }
+
+    /**
+     * Returns a UUID for the given triple {@code resourceId}, {@code resourceType} and {@code
+     * dataSourceId}.
+     */
+    private static String makeMedicalResourceHexString(MedicalResourceId medicalResourceId) {
+        return getHexString(
+                generateMedicalResourceUUID(
+                        medicalResourceId.getFhirResourceId(),
+                        medicalResourceId.getFhirResourceType(),
+                        medicalResourceId.getDataSourceId()));
     }
 }
