@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.health.connect.internal.datatypes;
+package com.android.server.healthconnect.storage.request;
 
 import static com.android.healthfitness.flags.Flags.personalHealthRecord;
 
@@ -37,7 +37,7 @@ import java.util.UUID;
  *
  * @hide
  */
-public final class MedicalResourceInternal {
+public final class UpsertMedicalResourceInternalRequest {
     private static final String FHIR_RESOURCE_TYPE_FIELD_NAME = "resourceType";
     private static final String FHIR_RESOURCE_ID_FIELD_NAME = "id";
     @Nullable private UUID mUuid;
@@ -54,7 +54,7 @@ public final class MedicalResourceInternal {
 
     /** Returns this object with the identifier. */
     @NonNull
-    public MedicalResourceInternal setUuid(@Nullable UUID uuid) {
+    public UpsertMedicalResourceInternalRequest setUuid(@Nullable UUID uuid) {
         requireNonNull(uuid);
         mUuid = uuid;
         return this;
@@ -68,7 +68,7 @@ public final class MedicalResourceInternal {
 
     /** Returns this object with the data source ID. */
     @NonNull
-    public MedicalResourceInternal setDataSourceId(@NonNull String dataSourceId) {
+    public UpsertMedicalResourceInternalRequest setDataSourceId(@NonNull String dataSourceId) {
         requireNonNull(dataSourceId);
         mDataSourceId = dataSourceId;
         return this;
@@ -82,7 +82,7 @@ public final class MedicalResourceInternal {
 
     /** Returns this object with the FHIR resource data in JSON representation. */
     @NonNull
-    public MedicalResourceInternal setData(@NonNull String data) {
+    public UpsertMedicalResourceInternalRequest setData(@NonNull String data) {
         requireNonNull(data);
         mData = data;
         return this;
@@ -96,7 +96,8 @@ public final class MedicalResourceInternal {
 
     /** Returns this object with the FHIR resource type. */
     @NonNull
-    public MedicalResourceInternal setFhirResourceType(@NonNull String fhirResourceType) {
+    public UpsertMedicalResourceInternalRequest setFhirResourceType(
+            @NonNull String fhirResourceType) {
         requireNonNull(fhirResourceType);
         mFhirResourceType = fhirResourceType;
         return this;
@@ -110,7 +111,7 @@ public final class MedicalResourceInternal {
 
     /** Returns this object with the FHIR resource id. */
     @NonNull
-    public MedicalResourceInternal setFhirResourceId(@NonNull String fhirResourceId) {
+    public UpsertMedicalResourceInternalRequest setFhirResourceId(@NonNull String fhirResourceId) {
         requireNonNull(fhirResourceId);
         mFhirResourceId = fhirResourceId;
         return this;
@@ -118,7 +119,7 @@ public final class MedicalResourceInternal {
 
     /** Converts to this object from an upsert request. */
     @NonNull
-    public static MedicalResourceInternal fromUpsertRequest(
+    public static UpsertMedicalResourceInternalRequest fromUpsertRequest(
             @NonNull UpsertMedicalResourceRequest request) throws JSONException {
         if (!personalHealthRecord()) {
             throw new UnsupportedOperationException(
@@ -130,7 +131,7 @@ public final class MedicalResourceInternal {
         String resourceType = fhirJsonObj.getString(FHIR_RESOURCE_TYPE_FIELD_NAME);
         String resourceId = fhirJsonObj.getString(FHIR_RESOURCE_ID_FIELD_NAME);
         String dataSourceId = String.valueOf(request.getDataSourceId());
-        return new MedicalResourceInternal()
+        return new UpsertMedicalResourceInternalRequest()
                 .setFhirResourceId(resourceId)
                 .setFhirResourceType(resourceType)
                 .setDataSourceId(dataSourceId)
@@ -140,7 +141,7 @@ public final class MedicalResourceInternal {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MedicalResourceInternal that)) return false;
+        if (!(o instanceof UpsertMedicalResourceInternalRequest that)) return false;
         return Objects.equals(getUuid(), that.getUuid())
                 && getDataSourceId().equals(that.getDataSourceId())
                 && getFhirResourceType().equals(that.getFhirResourceType())

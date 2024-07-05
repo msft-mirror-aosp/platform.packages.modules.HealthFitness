@@ -491,6 +491,25 @@
     <string name="import_confirmation_dialog_cancel_button" description="Text on a button that cancels the file import process if the user chooses not to import the selected file. [CHAR_LIMIT=40]">Cancel</string>
     <string name="import_confirmation_dialog_import_button" description="Text on a button that proceeds with the import process if the user confirms their choice of file. [CHAR_LIMIT=40]">Import</string>
 
+    <string name="import_notification_import_in_progress_title" description="Title text of notification displayed when import is in progress. [CHAR_LIMIT=NONE]">Health&#160;Connect restore in progress</string>
+    <string name="import_notification_import_complete_title" description="Title text of notification displayed when import has completed successfully. [CHAR_LIMIT=NONE]">Health&#160;Connect restore complete</string>
+
+    <string name="import_complete_toast_text" description="Toast text displayed when import completes successfully. [CHAR_LIMIT=40]">Finished restoring data</string>
+
+    <string name="import_notification_error_generic_error_title" description="Title text of notification displayed when import fails due to generic error. [CHAR_LIMIT=NONE]">Health&#160;Connect couldn\'t restore data</string>
+    <string name="import_notification_error_more_space_needed_title" description="Title text of notification displayed when import fails due to needing additional space. [CHAR_LIMIT=NONE]">More space needed</string>
+
+    <string name="import_notification_error_invalid_file_body_text" description="Body text of notification displayed when import fails due to invalid file selection. [CHAR_LIMIT=NONE]">The file you selected isn\'t compatible for restore. Make sure to select the correct exported file.</string>
+    <string name="import_notification_error_more_space_needed_body_text" description="Body text of notification displayed when import fails due to needing additional space. [CHAR_LIMIT=NONE]">Health&#160;Connect needs <xliff:g example="500MB" id="space_needed">%1$s</xliff:g> of storage space on your phone to continue restoring your data.</string>
+    <string name="import_notification_error_generic_error_body_text" description="Body text of notification displayed when import fails due to generic error. [CHAR_LIMIT=NONE]">There was a problem with restoring data from your export.</string>
+    <string name="import_notification_error_version_mismatch_body_text" description="Body text of notification displayed when import fails due to a version mismatch between new and old backup file. [CHAR_LIMIT=NONE]">Update your system so that Health&#160;Connect can restore your data, then try again.</string>
+
+    <string name="import_notification_update_now_intent_button" description="Button text on notification that triggers an update of Health Connect. [CHAR_LIMIT=40]">Update now</string>
+    <string name="import_notification_try_again_intent_button" description="Button text on notification that restarts the import process. [CHAR_LIMIT=40]">Try again</string>
+    <string name="import_notification_open_intent_button" description="Button text on notification that returns the user to the Export-Import section of Health Connect to see their completed import. [CHAR_LIMIT=40]">Open</string>
+    <string name="import_notification_choose_file_intent_button" description="Button text on notification restarts the file selection stage of the import process. [CHAR_LIMIT=40]">Choose file</string>
+    <string name="import_notification_free_up_space_intent_button" description="Button text on notification that lets the user open their cloud storage provider to delete/move files to create space. [CHAR_LIMIT=40]">Free up space</string>
+
     <string name="export_back_button" descrption="Text on a button that navigates back to the previous screen of the data saving setup flow. [CHAR_LIMIT=40]">Back</string>
     <string name="export_next_button" descrption="Text on a button that navigates to the next screen of the data saving setup flow. [CHAR_LIMIT=40]">Next</string>
     <string name="import_cancel_button" description="Text on a button that navigates back to the backup and restore home page. [CHAR_LIMIT=40]">Cancel</string>

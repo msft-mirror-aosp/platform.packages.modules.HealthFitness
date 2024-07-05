@@ -42,7 +42,6 @@ import android.health.connect.MedicalResourceId;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.internal.datatypes.InstantRecordInternal;
 import android.health.connect.internal.datatypes.IntervalRecordInternal;
-import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper;
@@ -51,6 +50,7 @@ import android.util.Slog;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 
 import java.nio.ByteBuffer;
 import java.time.ZoneOffset;
@@ -135,14 +135,15 @@ public final class StorageUtils {
     }
 
     /**
-     * Sets {@link UUID} for the given {@code medicalResourceInternal}. Since the rest of the fields
-     * in {@link MedicalResourceInternal} are not yet created, the UUID is randomly generated.
+     * Sets {@link UUID} for the given {@code upsertMedicalResourceInternalRequest}. Since the rest
+     * of the fields in {@link UpsertMedicalResourceInternalRequest} are not yet created, the UUID
+     * is randomly generated.
      */
     public static void addNameBasedUUIDTo(
-            @NonNull MedicalResourceInternal medicalResourceInternal) {
+            @NonNull UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest) {
         // TODO(b/338195583): generate uuid based on medical_data_source_id, resource_type and
         // resource_id.
-        medicalResourceInternal.setUuid(UUID.randomUUID());
+        upsertMedicalResourceInternalRequest.setUuid(UUID.randomUUID());
     }
 
     /**
