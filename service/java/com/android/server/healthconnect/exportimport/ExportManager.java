@@ -152,7 +152,7 @@ public class ExportManager {
     private void exportLocally(File destination) throws IOException {
         Slog.i(TAG, "Local export started.");
 
-        if (!destination.mkdirs()) {
+        if (!destination.exists() && !destination.mkdirs()) {
             throw new IOException("Unable to create directory for local export.");
         }
 

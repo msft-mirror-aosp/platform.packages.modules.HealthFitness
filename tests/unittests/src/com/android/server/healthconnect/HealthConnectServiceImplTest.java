@@ -104,6 +104,7 @@ import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import org.junit.After;
@@ -208,7 +209,6 @@ public class HealthConnectServiceImplTest {
                     .mockStatic(LocalManagerRegistry.class)
                     .mockStatic(UserHandle.class)
                     .spyStatic(RateLimiter.class)
-                    .mockStatic(MedicalDataSourceHelper.class)
                     .setStrictness(Strictness.LENIENT)
                     .build();
 
@@ -224,6 +224,8 @@ public class HealthConnectServiceImplTest {
     @Mock private AppOpsManagerLocal mAppOpsManagerLocal;
     @Mock private PackageManager mPackageManager;
     @Mock private PermissionManager mPermissionManager;
+    @Mock private MedicalDataSourceHelper mMedicalDataSourceHelper;
+    @Mock private MedicalResourceHelper mMedicalResourceHelper;
     @Mock IMigrationCallback mMigrationCallback;
     @Mock IMedicalDataSourceResponseCallback mMedicalDataSourceCallback;
     @Captor ArgumentCaptor<HealthConnectExceptionParcel> mErrorCaptor;
@@ -273,7 +275,9 @@ public class HealthConnectServiceImplTest {
                         mFirstGrantTimeManager,
                         mMigrationStateManager,
                         mMigrationUiStateManager,
-                        mServiceContext);
+                        mServiceContext,
+                        mMedicalResourceHelper,
+                        mMedicalDataSourceHelper);
     }
 
     @After
@@ -685,7 +689,7 @@ public class HealthConnectServiceImplTest {
         when(mPermissionManager.checkPermissionForDataDelivery(
                         WRITE_MEDICAL_DATA, mAttributionSource, null))
                 .thenReturn(PermissionManager.PERMISSION_GRANTED);
-        when(MedicalDataSourceHelper.createMedicalDataSource(any(), any()))
+        when(mMedicalDataSourceHelper.createMedicalDataSource(any(), any()))
                 .thenThrow(SQLiteException.class);
 
         mHealthConnectService.createMedicalDataSource(
@@ -731,7 +735,7 @@ public class HealthConnectServiceImplTest {
                                         anyLong()));
         ExtendedMockito.doNothing().when(() -> RateLimiter.checkMaxRecordMemoryUsage(anyLong()));
         ExtendedMockito.doNothing().when(() -> RateLimiter.checkMaxChunkMemoryUsage(anyLong()));
-        when(MedicalDataSourceHelper.createMedicalDataSource(
+        when(mMedicalDataSourceHelper.createMedicalDataSource(
                         eq(getCreateMedicalDataSourceRequest()), any()))
                 .thenReturn(getMedicalDataSource());
     }
