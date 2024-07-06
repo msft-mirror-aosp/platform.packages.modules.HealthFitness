@@ -93,7 +93,7 @@ public class PriorityMigrationTest {
                             }
                         })
                 .when(mTransactionManager)
-                .runAsTransaction(any());
+                .runAsTransaction(any(TransactionManager.TransactionRunnable.class));
 
         mDataMigrationManager =
                 new DataMigrationManager(

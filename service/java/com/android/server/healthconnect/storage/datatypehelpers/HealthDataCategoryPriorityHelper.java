@@ -74,8 +74,10 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     private static final String TAG = "HealthConnectPrioHelper";
     private static final String DEFAULT_APP_RESOURCE_NAME =
             "android:string/config_defaultHealthConnectApp";
-
     public static final String INACTIVE_APPS_ADDED = "inactive_apps_added";
+
+    private final AppInfoHelper mAppInfoHelper;
+    private final PackageInfoUtils mPackageInfoUtils;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private static volatile HealthDataCategoryPriorityHelper sHealthDataCategoryPriorityHelper;
@@ -87,7 +89,10 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     private volatile ConcurrentHashMap<Integer, List<Long>> mHealthDataCategoryToAppIdPriorityMap;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private HealthDataCategoryPriorityHelper() {}
+    private HealthDataCategoryPriorityHelper() {
+        mAppInfoHelper = AppInfoHelper.getInstance();
+        mPackageInfoUtils = PackageInfoUtils.getInstance();
+    }
 
     /**
      * Returns a requests representing the tables that should be created corresponding to this
@@ -113,7 +118,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
             boolean isInactiveApp) {
         List<Long> newPriorityOrder;
         getHealthDataCategoryToAppIdPriorityMap().putIfAbsent(dataCategory, new ArrayList<>());
-        long appInfoId = AppInfoHelper.getInstance().getOrInsertAppInfoId(packageName, context);
+        long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(packageName, context);
         if (getHealthDataCategoryToAppIdPriorityMap().get(dataCategory).contains(appInfoId)) {
             return;
         }
@@ -180,10 +185,9 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         Objects.requireNonNull(packageNames);
         Objects.requireNonNull(user);
         Objects.requireNonNull(context);
-        PackageInfoUtils packageInfoUtils = PackageInfoUtils.getInstance();
         for (String packageName : packageNames) {
             PackageInfo packageInfo =
-                    packageInfoUtils.getPackageInfoWithPermissionsAsUser(
+                    mPackageInfoUtils.getPackageInfoWithPermissionsAsUser(
                             packageName, user, context);
 
             Set<Integer> dataCategoriesWithWritePermission =
@@ -220,7 +224,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         if (newAggregationSourceControl) {
             reSyncHealthDataPriorityTable(context);
         }
-        return AppInfoHelper.getInstance().getPackageNames(getAppIdPriorityOrder(type));
+        return mAppInfoHelper.getPackageNames(getAppIdPriorityOrder(type));
     }
 
     /** Returns list of App ids based on priority for the input {@link HealthDataCategory} */
@@ -246,8 +250,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
                 HealthConnectDeviceConfigManager.getInitialisedInstance()
                         .isAggregationSourceControlsEnabled();
 
-        List<Long> newPriorityOrder =
-                AppInfoHelper.getInstance().getAppInfoIds(packagePriorityOrder);
+        List<Long> newPriorityOrder = mAppInfoHelper.getAppInfoIds(packagePriorityOrder);
 
         if (!newAggregationSourceControl) {
             newPriorityOrder = sanitizePriorityOder(dataCategory, newPriorityOrder);
@@ -399,6 +402,13 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         return sHealthDataCategoryPriorityHelper;
     }
 
+    /** Used in testing to clear the instance to clear and re-reference the mocks. */
+    @VisibleForTesting
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    static synchronized void clearInstanceForTest() {
+        sHealthDataCategoryPriorityHelper = null;
+    }
+
     /** Syncs priority table with the permissions and data. */
     public synchronized void reSyncHealthDataPriorityTable(@NonNull Context context) {
         Objects.requireNonNull(context);
@@ -419,11 +429,10 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
                                         Map.Entry::getKey, e -> new HashSet<>(e.getValue())));
 
         List<PackageInfo> validHealthApps = getValidHealthApps(context);
-        AppInfoHelper appInfoHelper = AppInfoHelper.getInstance();
         for (PackageInfo packageInfo : validHealthApps) {
             Set<Integer> dataCategoriesWithWritePermissionsForThisPackage =
                     getDataCategoriesWithWritePermissionsForPackage(packageInfo, context);
-            long appInfoId = appInfoHelper.getOrInsertAppInfoId(packageInfo.packageName, context);
+            long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(packageInfo.packageName, context);
 
             for (int dataCategory : dataCategoriesWithWritePermissionsForThisPackage) {
                 List<Long> appIdsHavingPermission =
@@ -458,8 +467,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     private List<PackageInfo> getValidHealthApps(@NonNull Context context) {
         UserHandle user = TransactionManager.getInitialisedInstance().getCurrentUserHandle();
         Context currentUserContext = context.createContextAsUser(user, /*flags*/ 0);
-        return PackageInfoUtils.getInstance()
-                .getPackagesHoldingHealthPermissions(user, currentUserContext);
+        return mPackageInfoUtils.getPackagesHoldingHealthPermissions(user, currentUserContext);
     }
 
     /**
@@ -485,7 +493,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
             return;
         }
 
-        newPriorityList.remove(AppInfoHelper.getInstance().getAppInfoId(packageName));
+        newPriorityList.remove(mAppInfoHelper.getAppInfoId(packageName));
         if (newPriorityList.isEmpty()) {
             safelyUpdateDBAndUpdateCache(
                     new DeleteTableRequest(TABLE_NAME)
@@ -514,7 +522,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         for (int dataCategory : dataCategoryToAppIdsWithoutPermissions.keySet()) {
             for (Long appInfoId : dataCategoryToAppIdsWithoutPermissions.get(dataCategory)) {
                 maybeRemoveAppFromPriorityListInternal(
-                        dataCategory, AppInfoHelper.getInstance().getPackageName(appInfoId));
+                        dataCategory, mAppInfoHelper.getPackageName(appInfoId));
             }
         }
     }
@@ -645,7 +653,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     @VisibleForTesting
     Set<Integer> getDataCategoriesWithDataForPackage(String packageName) {
         Map<Integer, Set<String>> recordTypeToContributingPackages =
-                AppInfoHelper.getInstance().getRecordTypesToContributingPackagesMap();
+                mAppInfoHelper.getRecordTypesToContributingPackagesMap();
         Set<Integer> dataCategoriesWithData = new HashSet<>();
 
         for (Map.Entry<Integer, Set<String>> entry : recordTypeToContributingPackages.entrySet()) {
@@ -667,7 +675,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     @VisibleForTesting
     Map<Integer, Set<String>> getAllContributorApps() {
         Map<Integer, Set<String>> recordTypeToContributingPackages =
-                AppInfoHelper.getInstance().getRecordTypesToContributingPackagesMap();
+                mAppInfoHelper.getRecordTypesToContributingPackagesMap();
 
         Map<Integer, Set<String>> allContributorApps = new HashMap<>();
 
