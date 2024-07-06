@@ -62,14 +62,14 @@ public final class TestUtils {
                         (HealthConnectThreadScheduler.sInternalBackgroundExecutor.getTaskCount()
                                         == HealthConnectThreadScheduler.sInternalBackgroundExecutor
                                                 .getCompletedTaskCount())
-                                || (HealthConnectThreadScheduler.sControllerExecutor.getTaskCount()
+                                && (HealthConnectThreadScheduler.sControllerExecutor.getTaskCount()
                                         == HealthConnectThreadScheduler.sControllerExecutor
                                                 .getCompletedTaskCount())
-                                || (HealthConnectThreadScheduler.sBackgroundThreadExecutor
+                                && (HealthConnectThreadScheduler.sBackgroundThreadExecutor
                                                 .getTaskCount()
                                         == HealthConnectThreadScheduler.sBackgroundThreadExecutor
                                                 .getCompletedTaskCount())
-                                || (HealthConnectThreadScheduler.sForegroundExecutor.getTaskCount()
+                                && (HealthConnectThreadScheduler.sForegroundExecutor.getTaskCount()
                                         == HealthConnectThreadScheduler.sForegroundExecutor
                                                 .getCompletedTaskCount()),
                 15);
