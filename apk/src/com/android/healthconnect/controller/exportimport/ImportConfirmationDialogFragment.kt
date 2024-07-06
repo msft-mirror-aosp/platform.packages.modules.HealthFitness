@@ -29,7 +29,6 @@ import androidx.fragment.app.activityViewModels
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.api.ImportFlowViewModel
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.ImportConfirmationDialogElement
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -47,11 +46,13 @@ class ImportConfirmationDialogFragment : Hilt_ImportConfirmationDialogFragment()
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val importFileUriString = arguments?.getString(IMPORT_FILE_URI_KEY) ?: ""
         val importFileName = getFileName(importFileUriString)
-        // TODO: b/325917283 - Add proper logging for this container
-        return AlertDialogBuilder(requireContext(), ErrorPageElement.UNKNOWN_ELEMENT)
+        val importMessage = requireContext().getString(R.string.import_confirmation_dialog_text, importFileName)
+
+        return AlertDialogBuilder(
+                requireContext(), ImportConfirmationDialogElement.IMPORT_CONFIRMATION_CONTAINER)
             .setIcon(R.attr.importIcon)
             .setTitle(R.string.import_confirmation_dialog_title)
-            .setMessage(importFileName)
+            .setMessage(importMessage)
             .setPositiveButton(
                 R.string.import_confirmation_dialog_import_button,
                 ImportConfirmationDialogElement.IMPORT_CONFIRMATION_DONE_BUTTON) {

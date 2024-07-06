@@ -21,6 +21,7 @@
     <include app:graph="@navigation/fitness_app_nav_graph"/>
     <include app:graph="@navigation/medical_app_nav_graph"/>
     <include app:graph="@navigation/combined_permissions_nav_graph"/>
+    <include app:graph="@navigation/medical_data_nav_graph"/>
 
     <fragment
         android:id="@+id/recentAccessFragment"
@@ -57,6 +58,9 @@
         <action
             android:id="@+id/action_homeFragment_to_healthDataCategoriesFragment"
             app:destination="@id/data_activity" />
+        <action
+            android:id="@+id/action_homeFragment_to_medicalDataFragment"
+            app:destination="@id/medical_data_nav_graph" />
         <action
             android:id="@+id/action_homeFragment_to_recentAccessFragment"
             app:destination="@id/recentAccessFragment" />

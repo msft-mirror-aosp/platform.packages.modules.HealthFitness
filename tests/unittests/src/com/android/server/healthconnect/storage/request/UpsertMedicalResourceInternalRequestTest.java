@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.healthconnect.internal.datatypes;
+package com.android.server.healthconnect.storage.request;
 
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_LONG_ID;
@@ -29,7 +29,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
 import android.health.connect.UpsertMedicalResourceRequest;
-import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -38,7 +37,7 @@ import org.json.JSONException;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class MedicalResourceInternalTest {
+public class UpsertMedicalResourceInternalRequestTest {
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Test
@@ -51,7 +50,7 @@ public class MedicalResourceInternalTest {
 
         assertThrows(
                 UnsupportedOperationException.class,
-                () -> MedicalResourceInternal.fromUpsertRequest(request));
+                () -> UpsertMedicalResourceInternalRequest.fromUpsertRequest(request));
     }
 
     @Test
@@ -62,17 +61,17 @@ public class MedicalResourceInternalTest {
                 new UpsertMedicalResourceRequest.Builder(
                                 DATA_SOURCE_LONG_ID, FHIR_DATA_IMMUNIZATION)
                         .build();
-        MedicalResourceInternal expected =
-                new MedicalResourceInternal()
+        UpsertMedicalResourceInternalRequest expected =
+                new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
                         .setFhirResourceType(getFhirResourceType(FHIR_DATA_IMMUNIZATION))
                         .setFhirResourceId(getFhirResourceId(FHIR_DATA_IMMUNIZATION))
                         .setData(FHIR_DATA_IMMUNIZATION);
 
-        MedicalResourceInternal medicalResourceInternal =
-                MedicalResourceInternal.fromUpsertRequest(request);
+        UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest =
+                UpsertMedicalResourceInternalRequest.fromUpsertRequest(request);
 
-        assertThat(medicalResourceInternal).isEqualTo(expected);
+        assertThat(upsertMedicalResourceInternalRequest).isEqualTo(expected);
     }
 
     @Test
@@ -83,6 +82,8 @@ public class MedicalResourceInternalTest {
                                 DATA_SOURCE_LONG_ID, "{\"resourceType\" : \"Immunization}")
                         .build();
 
-        assertThrows(JSONException.class, () -> MedicalResourceInternal.fromUpsertRequest(request));
+        assertThrows(
+                JSONException.class,
+                () -> UpsertMedicalResourceInternalRequest.fromUpsertRequest(request));
     }
 }
