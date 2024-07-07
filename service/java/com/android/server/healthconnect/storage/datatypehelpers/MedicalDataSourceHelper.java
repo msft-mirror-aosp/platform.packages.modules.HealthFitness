@@ -40,6 +40,7 @@ import android.util.Pair;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
+import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
@@ -50,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 /**
  * Helper class for MedicalDataSource.
@@ -201,6 +203,42 @@ public class MedicalDataSourceHelper {
         ContentValues contentValues =
                 getContentValues(uuid, createMedicalDataSourceRequest, packageName);
         return new UpsertTableRequest(getMainTableName(), contentValues, UNIQUE_COLUMNS_INFO);
+    }
+
+    /**
+     * Deletes the {@link MedicalDataSource}s stored in the HealthConnect database using the given
+     * list of {@code ids}.
+     *
+     * <p>Note that this deletes without producing change logs, or access logs.
+     *
+     * @param ids a list of {@link MedicalDataSource} ids.
+     */
+    @NonNull
+    public static void deleteMedicalDataSources(@NonNull List<String> ids) throws SQLiteException {
+        List<UUID> uuids =
+                ids.stream()
+                        .flatMap(
+                                s -> {
+                                    try {
+                                        return Stream.of(UUID.fromString(s));
+                                    } catch (IllegalArgumentException ex) {
+                                        return Stream.empty();
+                                    }
+                                })
+                        .toList();
+        // If you set an empty list of ids on a DeleteTableRequest, it is silently ignored then
+        // everything is deleted. Handle that here. Don't handle before UUID conversion, as
+        // if an id is silently ignored to create an empty list then again everything will be
+        // deleted.
+        if (uuids.isEmpty()) {
+            return;
+        }
+        DeleteTableRequest request =
+                new DeleteTableRequest(MEDICAL_DATA_SOURCE_TABLE_NAME)
+                        .setIds(
+                                DATA_SOURCE_UUID_COLUMN_NAME,
+                                StorageUtils.getListOfHexStrings(uuids));
+        TransactionManager.getInitialisedInstance().delete(request);
     }
 
     /**
