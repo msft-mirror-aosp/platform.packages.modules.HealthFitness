@@ -49,6 +49,7 @@ public final class AggregateTransactionRequest {
     private final Period mPeriod;
     private final Duration mDuration;
     private final TimeRangeFilter mTimeRangeFilter;
+    private final AggregationTypeIdMapper mAggregationTypeIdMapper;
 
     public AggregateTransactionRequest(
             @NonNull String packageName,
@@ -59,11 +60,10 @@ public final class AggregateTransactionRequest {
         mPeriod = request.getPeriod();
         mDuration = request.getDuration();
         mTimeRangeFilter = request.getTimeRangeFilter();
+        mAggregationTypeIdMapper = AggregationTypeIdMapper.getInstance();
 
-        final AggregationTypeIdMapper aggregationTypeIdMapper =
-                AggregationTypeIdMapper.getInstance();
         for (int id : request.getAggregateIds()) {
-            AggregationType<?> aggregationType = aggregationTypeIdMapper.getAggregationTypeFor(id);
+            AggregationType<?> aggregationType = mAggregationTypeIdMapper.getAggregationTypeFor(id);
             List<Integer> recordTypeIds = aggregationType.getApplicableRecordTypeIds();
             if (recordTypeIds.size() == 1) {
                 RecordHelper<?> recordHelper =
@@ -121,7 +121,7 @@ public final class AggregateTransactionRequest {
             Map<Integer, AggregateResult<?>> aggregateResultMap = new ArrayMap<>();
             for (AggregationType<?> aggregationType : results.keySet()) {
                 aggregateResultMap.put(
-                        (AggregationTypeIdMapper.getInstance().getIdFor(aggregationType)),
+                        (mAggregationTypeIdMapper.getIdFor(aggregationType)),
                         Objects.requireNonNull(results.get(aggregationType)).get(i));
             }
             aggregateRecordsResponses.add(new AggregateRecordsResponse<>(aggregateResultMap));
