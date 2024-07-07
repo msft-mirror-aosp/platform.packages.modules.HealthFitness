@@ -2093,6 +2093,11 @@ public class HealthConnectManager {
      * UpsertMedicalResourceRequest#getDataSourceId() data source id}, FHIR resource type and FHIR
      * resource id extracted from the provided {@link MedicalResource} data. If there is no match,
      * then a new {@link MedicalResource} is inserted, otherwise the existing one is updated.
+     *
+     * <p>If an invalid {@link UpsertMedicalResourceRequest#getDataSourceId() data source id} is
+     * provided, this will throw an {@link IllegalArgumentException} with the first data source id
+     * that is invalid. In this case, none of the given {@link UpsertMedicalResourceRequest}s will
+     * be upserted into the HealthConnect database.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public void upsertMedicalResources(

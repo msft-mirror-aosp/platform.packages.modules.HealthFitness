@@ -111,7 +111,6 @@ import android.health.connect.exportimport.IScheduledExportStatusCallback;
 import android.health.connect.exportimport.ImportStatus;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
-import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
@@ -170,6 +169,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.AggregateTransactionRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
+import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
@@ -229,7 +229,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final RecordMapper mRecordMapper;
     private final AggregationTypeIdMapper mAggregationTypeIdMapper;
     private final DeviceInfoHelper mDeviceInfoHelper;
-    private final MedicalResourceHelper mMedicalResourceHelper;
+    private MedicalResourceHelper mMedicalResourceHelper;
+    private MedicalDataSourceHelper mMedicalDataSourceHelper;
 
     private volatile UserHandle mCurrentForegroundUser;
 
@@ -241,7 +242,34 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             FirstGrantTimeManager firstGrantTimeManager,
             MigrationStateManager migrationStateManager,
             MigrationUiStateManager migrationUiStateManager,
+            MedicalResourceHelper medicalResourceHelper,
+            MedicalDataSourceHelper medicalDataSourceHelper,
             Context context) {
+        this(
+                transactionManager,
+                deviceConfigManager,
+                permissionHelper,
+                migrationCleaner,
+                firstGrantTimeManager,
+                migrationStateManager,
+                migrationUiStateManager,
+                context,
+                medicalResourceHelper,
+                medicalDataSourceHelper);
+    }
+
+    @VisibleForTesting
+    HealthConnectServiceImpl(
+            TransactionManager transactionManager,
+            HealthConnectDeviceConfigManager deviceConfigManager,
+            HealthConnectPermissionHelper permissionHelper,
+            MigrationCleaner migrationCleaner,
+            FirstGrantTimeManager firstGrantTimeManager,
+            MigrationStateManager migrationStateManager,
+            MigrationUiStateManager migrationUiStateManager,
+            Context context,
+            MedicalResourceHelper medicalResourceHelper,
+            MedicalDataSourceHelper medicalDataSourceHelper) {
         mTransactionManager = transactionManager;
         mDeviceConfigManager = deviceConfigManager;
         mPermissionHelper = permissionHelper;
@@ -266,7 +294,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mRecordMapper = RecordMapper.getInstance();
         mAggregationTypeIdMapper = AggregationTypeIdMapper.getInstance();
         mDeviceInfoHelper = DeviceInfoHelper.getInstance();
-        mMedicalResourceHelper = new MedicalResourceHelper(mTransactionManager);
+        mMedicalResourceHelper = medicalResourceHelper;
+        mMedicalDataSourceHelper = medicalDataSourceHelper;
     }
 
     public void onUserSwitching(UserHandle currentForegroundUser) {
@@ -2180,7 +2209,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        HealthConnectThreadScheduler.scheduleInternalTask(
+        HealthConnectThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -2289,7 +2318,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                         // TODO(b/344560623) - Enforce uniqueness constraint on fhir base uri.
                         MedicalDataSource dataSource =
-                                MedicalDataSourceHelper.createMedicalDataSource(
+                                mMedicalDataSourceHelper.createMedicalDataSource(
                                         request, packageName);
 
                         tryAndReturnResult(callback, dataSource, logger);
@@ -2380,12 +2409,14 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
                                 attributionSource);
 
-                        List<MedicalResourceInternal> medicalResourcesToUpsert = new ArrayList<>();
+                        List<UpsertMedicalResourceInternalRequest> medicalResourcesToUpsert =
+                                new ArrayList<>();
                         for (UpsertMedicalResourceRequest upsertMedicalResourceRequest : requests) {
-                            MedicalResourceInternal medicalResourceInternal =
-                                    MedicalResourceInternal.fromUpsertRequest(
-                                            upsertMedicalResourceRequest);
-                            medicalResourcesToUpsert.add(medicalResourceInternal);
+                            UpsertMedicalResourceInternalRequest
+                                    upsertMedicalResourceInternalRequest =
+                                            UpsertMedicalResourceInternalRequest.fromUpsertRequest(
+                                                    upsertMedicalResourceRequest);
+                            medicalResourcesToUpsert.add(upsertMedicalResourceInternalRequest);
                         }
                         List<MedicalResource> medicalResources =
                                 mMedicalResourceHelper.upsertMedicalResources(
