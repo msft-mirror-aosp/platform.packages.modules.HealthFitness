@@ -189,6 +189,17 @@ public final class TransactionManager {
     }
 
     /**
+     * Inserts or replaces all the {@link UpsertTableRequest} into the given database.
+     *
+     * @param db a {@link SQLiteDatabase}.
+     * @param upsertTableRequests a list of insert table requests.
+     */
+    public void insertOrReplaceAll(
+            @NonNull SQLiteDatabase db, @NonNull List<UpsertTableRequest> upsertTableRequests) {
+        insertRequests(db, upsertTableRequests, this::insertOrReplaceRecord);
+    }
+
+    /**
      * Inserts or ignore on conflicts all the {@link UpsertTableRequest} into the HealthConnect
      * database.
      *
@@ -454,6 +465,21 @@ public final class TransactionManager {
         return getReadableDb().rawQuery(request.getReadCommand(), null);
     }
 
+    /**
+     * Reads the given {@link SQLiteDatabase} using the given {@link ReadTableRequest}.
+     *
+     * <p>Note: It is the responsibility of the caller to close the returned cursor.
+     *
+     * @param db a {@link SQLiteDatabase}.
+     * @param request a {@link ReadTableRequest}.
+     */
+    public Cursor read(@NonNull SQLiteDatabase db, @NonNull ReadTableRequest request) {
+        if (Constants.DEBUG) {
+            Slog.d(TAG, "Read query: " + request.getReadCommand());
+        }
+        return db.rawQuery(request.getReadCommand(), null);
+    }
+
     public long getLastRowIdFor(String tableName) {
         final SQLiteDatabase db = getReadableDb();
         try (Cursor cursor = db.rawQuery(StorageUtils.getMaxPrimaryKeyQuery(tableName), null)) {
@@ -599,12 +625,18 @@ public final class TransactionManager {
         final SQLiteDatabase db = getWritableDb();
         db.beginTransaction();
         try {
-            upsertTableRequests.forEach(
-                    (upsertTableRequest) -> insert.accept(db, upsertTableRequest));
+            insertRequests(db, upsertTableRequests, insert);
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
         }
+    }
+
+    private void insertRequests(
+            @NonNull SQLiteDatabase db,
+            @NonNull List<UpsertTableRequest> upsertTableRequests,
+            @NonNull BiConsumer<SQLiteDatabase, UpsertTableRequest> insert) {
+        upsertTableRequests.forEach((upsertTableRequest) -> insert.accept(db, upsertTableRequest));
     }
 
     public <E extends Throwable> void runAsTransaction(TransactionRunnable<E> task) throws E {
@@ -613,6 +645,26 @@ public final class TransactionManager {
         try {
             task.run(db);
             db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    /**
+     * Runs a {@link TransactionRunnableWithReturn} task in a Transaction.
+     *
+     * @param task is a {@link TransactionRunnableWithReturn}.
+     * @param <R> is the return type of the {@code task}.
+     * @param <E> is the exception thrown by the {@code task}.
+     */
+    public <R, E extends Throwable> R runAsTransaction(TransactionRunnableWithReturn<R, E> task)
+            throws E {
+        final SQLiteDatabase db = getWritableDb();
+        db.beginTransaction();
+        try {
+            R result = task.run(db);
+            db.setTransactionSuccessful();
+            return result;
         } finally {
             db.endTransaction();
         }
@@ -871,6 +923,18 @@ public final class TransactionManager {
 
     public interface TransactionRunnable<E extends Throwable> {
         void run(SQLiteDatabase db) throws E;
+    }
+
+    /**
+     * Runnable interface where run method throws Throwable or its subclasses and returns any data
+     * type R.
+     *
+     * @param <E> Throwable or its subclass.
+     * @param <R> any data type.
+     */
+    public interface TransactionRunnableWithReturn<R, E extends Throwable> {
+        /** Task to be executed that throws throwable of type E and returns type R. */
+        R run(SQLiteDatabase db) throws E;
     }
 
     @NonNull

@@ -82,7 +82,7 @@ public class PriorityMigrationHelperTest {
         when(HealthDataCategoryPriorityHelper.getInstance())
                 .thenReturn(mHealthDataCategoryPriorityHelper);
         when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
-
+        PriorityMigrationHelper.clearInstanceForTest();
         mPriorityMigrationHelper = PriorityMigrationHelper.getInstance();
     }
 

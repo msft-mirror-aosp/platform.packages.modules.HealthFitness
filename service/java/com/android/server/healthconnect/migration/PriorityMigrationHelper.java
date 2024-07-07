@@ -67,8 +67,12 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
     private final Object mPriorityMigrationHelperInstanceLock = new Object();
     private Map<Integer, List<Long>> mPreMigrationPriorityCache;
 
+    private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private PriorityMigrationHelper() {}
+    private PriorityMigrationHelper() {
+        mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
+    }
 
     /**
      * Populate the pre-migration priority table by copying entries from priority table at the start
@@ -145,7 +149,7 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
      */
     private void populatePreMigrationTable() {
         Map<Integer, List<Long>> existingPriority =
-                HealthDataCategoryPriorityHelper.getInstance()
+                mHealthDataCategoryPriorityHelper
                         .getHealthDataCategoryToAppIdPriorityMapImmutable();
 
         TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
@@ -212,5 +216,14 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
         }
 
         return sPriorityMigrationHelper;
+    }
+
+    /** Used in testing to clear the instance to clear and re-reference the mocks. */
+    @VisibleForTesting
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    static synchronized void clearInstanceForTest() {
+        synchronized (sPriorityMigrationHelperLock) {
+            sPriorityMigrationHelper = null;
+        }
     }
 }
