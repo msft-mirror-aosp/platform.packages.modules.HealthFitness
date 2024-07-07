@@ -42,6 +42,8 @@ import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTra
 import com.android.server.healthconnect.permission.PermissionPackageChangesOrchestrator;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import java.util.Objects;
@@ -104,6 +106,8 @@ public class HealthConnectManagerService extends SystemService {
                         mCurrentForegroundUser,
                         migrationStateManager,
                         mMigrationNotificationSender);
+        MedicalDataSourceHelper medicalDataSourceHelper =
+                new MedicalDataSourceHelper(mTransactionManager);
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mTransactionManager,
@@ -113,7 +117,9 @@ public class HealthConnectManagerService extends SystemService {
                         firstGrantTimeManager,
                         migrationStateManager,
                         mMigrationUiStateManager,
-                        mContext);
+                        mContext,
+                        new MedicalResourceHelper(mTransactionManager, medicalDataSourceHelper),
+                        medicalDataSourceHelper);
     }
 
     @Override
