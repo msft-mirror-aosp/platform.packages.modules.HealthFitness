@@ -1377,42 +1377,11 @@ public final class TestUtils {
         }
     }
 
-    private static class TestReceiver<T, E extends RuntimeException>
-            implements OutcomeReceiver<T, E> {
-        private final CountDownLatch mLatch = new CountDownLatch(1);
-        private final AtomicReference<T> mResponse = new AtomicReference<>();
-        private final AtomicReference<E> mException = new AtomicReference<>();
-
-        public T getResponse() throws InterruptedException {
-            verifyNoExceptionOrThrow();
-            return mResponse.get();
-        }
-
-        public void verifyNoExceptionOrThrow() throws InterruptedException {
-            assertThat(mLatch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
-            if (mException.get() != null) {
-                throw mException.get();
-            }
-        }
-
-        @Override
-        public void onResult(T result) {
-            mResponse.set(result);
-            mLatch.countDown();
-        }
-
-        @Override
-        public void onError(@NonNull E error) {
-            mException.set(error);
-            Log.e(TAG, error.getMessage());
-            mLatch.countDown();
-        }
-    }
-
     private static final class HealthConnectReceiver<T>
-            extends TestReceiver<T, HealthConnectException> {}
+            extends TestOutcomeReceiver<T, HealthConnectException> {}
 
-    public static final class MigrationReceiver extends TestReceiver<Void, MigrationException> {}
+    public static final class MigrationReceiver
+            extends TestOutcomeReceiver<Void, MigrationException> {}
 
     /**
      * A {@link Consumer} that allows throwing checked exceptions from its single abstract method.
