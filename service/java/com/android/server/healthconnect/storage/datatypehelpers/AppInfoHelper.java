@@ -162,6 +162,22 @@ public final class AppInfoHelper extends DatabaseHelper {
 
     /**
      * Inserts or replaces (based on the passed param onlyUpdate) the application info of the
+     * specified {@code packageName} with the specified {@code name}, only if the corresponding
+     * application is not currently installed.
+     *
+     * <p>{@code icon} is retrieved from the package
+     */
+    public void addOrUpdateAppInfoIfNotInstalled(
+            @NonNull Context context,
+            @NonNull String packageName,
+            @Nullable String name,
+            boolean onlyUpdate) {
+        byte[] icon = getIconFromPackageName(context, packageName);
+        addOrUpdateAppInfoIfNotInstalled(context, packageName, name, icon, onlyUpdate);
+    }
+
+    /**
+     * Inserts or replaces (based on the passed param onlyUpdate) the application info of the
      * specified {@code packageName} with the specified {@code name} and {@code icon}, only if the
      * corresponding application is not currently installed.
      *
@@ -408,7 +424,7 @@ public final class AppInfoHelper extends DatabaseHelper {
                                         .getRecordIdToExternalRecordClassMap()
                                         .keySet());
 
-        HashMap<Integer, HashSet<String>> recordTypeToContributingPackagesMap =
+        Map<Integer, Set<String>> recordTypeToContributingPackagesMap =
                 TransactionManager.getInitialisedInstance()
                         .getDistinctPackageNamesForRecordsTable(recordTypesToBeUpdated);
 
@@ -434,7 +450,7 @@ public final class AppInfoHelper extends DatabaseHelper {
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @SuppressLint("LongLogTag")
     private synchronized void syncAppInfoMapRecordTypesUsed(
-            @NonNull Map<Integer, HashSet<String>> recordTypeToContributingPackagesMap) {
+            @NonNull Map<Integer, Set<String>> recordTypeToContributingPackagesMap) {
         HashMap<String, List<Integer>> packageToRecordTypesMap =
                 getPackageToRecordTypesMap(recordTypeToContributingPackagesMap);
         getAppInfoMap()
@@ -462,7 +478,7 @@ public final class AppInfoHelper extends DatabaseHelper {
     }
 
     private HashMap<String, List<Integer>> getPackageToRecordTypesMap(
-            @NonNull Map<Integer, HashSet<String>> recordTypeToContributingPackagesMap) {
+            @NonNull Map<Integer, Set<String>> recordTypeToContributingPackagesMap) {
         HashMap<String, List<Integer>> packageToRecordTypesMap = new HashMap<>();
         recordTypeToContributingPackagesMap.forEach(
                 (recordType, packageList) -> {
@@ -471,13 +487,9 @@ public final class AppInfoHelper extends DatabaseHelper {
                                 if (packageToRecordTypesMap.containsKey(packageName)) {
                                     packageToRecordTypesMap.get(packageName).add(recordType);
                                 } else {
-                                    packageToRecordTypesMap.put(
-                                            packageName,
-                                            new ArrayList<>() {
-                                                {
-                                                    add(recordType);
-                                                }
-                                            });
+                                    ArrayList<Integer> types = new ArrayList<>();
+                                    types.add(recordType);
+                                    packageToRecordTypesMap.put(packageName, types);
                                 }
                             });
                 });
@@ -492,7 +504,7 @@ public final class AppInfoHelper extends DatabaseHelper {
     @SuppressLint("LongLogTag")
     private synchronized void deleteRecordTypesForPackagesIfRequiredInternal(
             Set<Integer> recordTypesToBeDeleted,
-            HashMap<Integer, HashSet<String>> currentRecordTypePackageMap,
+            Map<Integer, Set<String>> currentRecordTypePackageMap,
             String packageName) {
         AppInfoInternal appInfo = getAppInfoMap().get(packageName);
         if (appInfo == null) {
@@ -608,6 +620,19 @@ public final class AppInfoHelper extends DatabaseHelper {
         Drawable icon = packageManager.getApplicationIcon(info);
         Bitmap bitmap = getBitmapFromDrawable(icon);
         return new AppInfoInternal(DEFAULT_LONG, packageName, appName, bitmap, null);
+    }
+
+    private @Nullable byte[] getIconFromPackageName(@NonNull Context context, String packageName) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            Drawable drawable = packageManager.getApplicationIcon(packageName);
+            Bitmap bitmap = getBitmapFromDrawable(drawable);
+            return encodeBitmap(bitmap);
+        } catch (PackageManager.NameNotFoundException e) {
+            Drawable drawable = packageManager.getDefaultActivityIcon();
+            Bitmap bitmap = getBitmapFromDrawable(drawable);
+            return encodeBitmap(bitmap);
+        }
     }
 
     private synchronized void insertIfNotPresent(

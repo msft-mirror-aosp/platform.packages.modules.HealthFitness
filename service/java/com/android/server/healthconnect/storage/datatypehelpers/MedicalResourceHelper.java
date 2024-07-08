@@ -20,9 +20,12 @@ import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
 
 import static com.android.healthfitness.flags.Flags.personalHealthRecord;
 import static com.android.server.healthconnect.storage.HealthConnectDatabase.createTable;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getDataSourceUuidColumnName;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getCreateMedicalResourceIndicesTableRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.UUID_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.utils.SqlJoin.SQL_JOIN_LEFT;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_UNIQUE_NON_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
@@ -31,7 +34,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.generateMedicalResourceUUID;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
@@ -40,19 +42,27 @@ import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.health.connect.Constants;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.datatypes.MedicalResource;
-import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.util.Pair;
+import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.TransactionManager.TransactionRunnableWithReturn;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
+import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
+import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
+import com.android.server.healthconnect.storage.utils.SqlJoin;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -65,6 +75,7 @@ import java.util.UUID;
  * @hide
  */
 public final class MedicalResourceHelper {
+    private static final String TAG = "MedicalResourceHelper";
     @VisibleForTesting static final String MEDICAL_RESOURCE_TABLE_NAME = "medical_resource_table";
     @VisibleForTesting static final String FHIR_RESOURCE_TYPE_COLUMN_NAME = "fhir_resource_type";
     @VisibleForTesting static final String FHIR_DATA_COLUMN_NAME = "fhir_data";
@@ -89,6 +100,16 @@ public final class MedicalResourceHelper {
     private static final Map<Integer, Integer> FHIR_RESOURCE_TYPE_TO_MEDICAL_RESOURCE_TYPE =
             new HashMap<>();
 
+    private final TransactionManager mTransactionManager;
+    private final MedicalDataSourceHelper mMedicalDataSourceHelper;
+
+    public MedicalResourceHelper(
+            @NonNull TransactionManager transactionManager,
+            @NonNull MedicalDataSourceHelper medicalDataSourceHelper) {
+        mTransactionManager = transactionManager;
+        mMedicalDataSourceHelper = medicalDataSourceHelper;
+    }
+
     @NonNull
     public static String getMainTableName() {
         return MEDICAL_RESOURCE_TABLE_NAME;
@@ -102,15 +123,20 @@ public final class MedicalResourceHelper {
                 Pair.create(FHIR_RESOURCE_ID_COLUMN_NAME, TEXT_NOT_NULL),
                 Pair.create(FHIR_DATA_COLUMN_NAME, TEXT_NOT_NULL),
                 Pair.create(FHIR_VERSION_COLUMN_NAME, TEXT_NULL),
-                Pair.create(DATA_SOURCE_ID_COLUMN_NAME, INTEGER),
+                Pair.create(DATA_SOURCE_ID_COLUMN_NAME, INTEGER_NOT_NULL),
                 Pair.create(UUID_COLUMN_NAME, BLOB_UNIQUE_NON_NULL),
                 Pair.create(LAST_MODIFIED_TIME_COLUMN_NAME, INTEGER));
     }
 
-    // TODO(b/338198993): add unit tests covering getCreateTableRequest.
     @NonNull
     public static CreateTableRequest getCreateTableRequest() {
-        return new CreateTableRequest(MEDICAL_RESOURCE_TABLE_NAME, getColumnInfo());
+        return new CreateTableRequest(MEDICAL_RESOURCE_TABLE_NAME, getColumnInfo())
+                .addForeignKey(
+                        MedicalDataSourceHelper.getMainTableName(),
+                        Collections.singletonList(DATA_SOURCE_ID_COLUMN_NAME),
+                        Collections.singletonList(PRIMARY_COLUMN_NAME))
+                .setChildTableRequests(
+                        Collections.singletonList(getCreateMedicalResourceIndicesTableRequest()));
     }
 
     /** Creates the medical_resource table. */
@@ -118,17 +144,50 @@ public final class MedicalResourceHelper {
         createTable(db, getCreateTableRequest());
     }
 
+    /**
+     * Reads the {@link MedicalResource}s stored in the HealthConnect database.
+     *
+     * @param medicalResourceIds a {@link MedicalResourceId}.
+     * @return List of {@link MedicalResource}s read from medical_resource table based on ids.
+     */
+    public List<MedicalResource> readMedicalResourcesByIds(
+            @NonNull List<MedicalResourceId> medicalResourceIds) throws SQLiteException {
+        List<MedicalResource> medicalResources;
+        ReadTableRequest readTableRequest = getReadTableRequest(medicalResourceIds);
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+            medicalResources = getMedicalResources(cursor);
+        }
+        return medicalResources;
+    }
+
     // TODO(b/345464102): We need to update this logic to join with indices table once we
     // have that.
     /** Creates {@link ReadTableRequest} for the given {@link MedicalResourceId}s. */
     @NonNull
-    public static ReadTableRequest getReadTableRequest(
+    static ReadTableRequest getReadTableRequest(
             @NonNull List<MedicalResourceId> medicalResourceIds) {
         return new ReadTableRequest(getMainTableName())
-                .setWhereClause(getReadTableWhereClause(medicalResourceIds));
+                .setWhereClause(getResourceIdsWhereClause(medicalResourceIds))
+                .setJoinClause(joinWithMedicalDataSourceTable());
     }
 
-    private static WhereClauses getReadTableWhereClause(
+    @NonNull
+    private static SqlJoin joinWithMedicalDataSourceTable() {
+        return new SqlJoin(
+                        MEDICAL_RESOURCE_TABLE_NAME,
+                        MedicalDataSourceHelper.getMainTableName(),
+                        DATA_SOURCE_ID_COLUMN_NAME,
+                        PRIMARY_COLUMN_NAME)
+                .setJoinType(SQL_JOIN_LEFT);
+    }
+
+    private static WhereClauses getResourceIdsWhereClause(
+            @NonNull List<MedicalResourceId> medicalResourceIds) {
+        List<String> hexUuids = medicalResourceIdsToHexUuids(medicalResourceIds);
+        return new WhereClauses(AND).addWhereInClauseWithoutQuotes(UUID_COLUMN_NAME, hexUuids);
+    }
+
+    private static @NonNull List<String> medicalResourceIdsToHexUuids(
             @NonNull List<MedicalResourceId> medicalResourceIds) {
         List<UUID> ids =
                 medicalResourceIds.stream()
@@ -139,48 +198,150 @@ public final class MedicalResourceHelper {
                                                 medicalResourceId.getFhirResourceType(),
                                                 medicalResourceId.getDataSourceId()))
                         .toList();
-        return new WhereClauses(AND)
-                .addWhereInClauseWithoutQuotes(
-                        UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(ids));
+        return StorageUtils.getListOfHexStrings(ids);
     }
 
-    /** Creates {@link UpsertTableRequest} for the given {@link MedicalResourceInternal}. */
+    /**
+     * Upserts (insert/update) a list of {@link MedicalResource}s created based on the given list of
+     * {@link UpsertMedicalResourceInternalRequest}s into the HealthConnect database.
+     *
+     * @param upsertMedicalResourceInternalRequests a list of {@link
+     *     UpsertMedicalResourceInternalRequest}.
+     * @return List of {@link MedicalResource}s that were upserted into the database, in the same
+     *     order as their associated {@link UpsertMedicalResourceInternalRequest}s.
+     */
+    public List<MedicalResource> upsertMedicalResources(
+            @NonNull
+                    List<UpsertMedicalResourceInternalRequest>
+                            upsertMedicalResourceInternalRequests)
+            throws SQLiteException {
+        if (Constants.DEBUG) {
+            Slog.d(
+                    TAG,
+                    "Upserting "
+                            + upsertMedicalResourceInternalRequests.size()
+                            + " "
+                            + UpsertMedicalResourceInternalRequest.class.getSimpleName()
+                            + "(s).");
+        }
+
+        // TODO(b/337018927): Add support for change logs and access logs.
+        // TODO(b/350697473): Add cts tests covering upsert journey with data source creation.
+        return mTransactionManager.runAsTransaction(
+                (TransactionRunnableWithReturn<List<MedicalResource>, RuntimeException>)
+                        db ->
+                                readDataSourcesAndUpsertMedicalResources(
+                                        db, upsertMedicalResourceInternalRequests));
+    }
+
+    private List<MedicalResource> readDataSourcesAndUpsertMedicalResources(
+            @NonNull SQLiteDatabase db,
+            @NonNull
+                    List<UpsertMedicalResourceInternalRequest>
+                            upsertMedicalResourceInternalRequests) {
+        List<String> dataSourceUuids =
+                upsertMedicalResourceInternalRequests.stream()
+                        .map(UpsertMedicalResourceInternalRequest::getDataSourceId)
+                        .toList();
+        Map<String, Long> dataSourceUuidToRowId =
+                mMedicalDataSourceHelper.getUuidToRowIdMap(db, dataSourceUuids);
+
+        List<UpsertTableRequest> requests =
+                createUpsertTableRequests(
+                        upsertMedicalResourceInternalRequests, dataSourceUuidToRowId);
+        mTransactionManager.insertOrReplaceAll(db, requests);
+
+        List<MedicalResource> upsertedMedicalResources = new ArrayList<>();
+        for (UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest :
+                upsertMedicalResourceInternalRequests) {
+            upsertedMedicalResources.add(
+                    buildMedicalResource(upsertMedicalResourceInternalRequest));
+        }
+        return upsertedMedicalResources;
+    }
+
     @NonNull
-    public static UpsertTableRequest getUpsertTableRequest(
-            @NonNull UUID uuid, @NonNull MedicalResourceInternal medicalResourceInternal) {
-        ContentValues contentValues = getContentValues(uuid, medicalResourceInternal);
+    private static List<UpsertTableRequest> createUpsertTableRequests(
+            @NonNull
+                    List<UpsertMedicalResourceInternalRequest>
+                            upsertMedicalResourceInternalRequests,
+            @NonNull Map<String, Long> dataSourceUuidToRowId) {
+        List<UpsertTableRequest> requests = new ArrayList<>();
+        for (UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest :
+                upsertMedicalResourceInternalRequests) {
+            // TODO(b/347193220): instead of generating a uuid here, set the uuid inside the
+            // UpsertMedicalResourceInternalRequest.fromUpsertRequest in the service layer after
+            // ag/27893719
+            // submitted.
+            UUID uuid =
+                    StorageUtils.generateMedicalResourceUUID(
+                            upsertMedicalResourceInternalRequest.getFhirResourceId(),
+                            upsertMedicalResourceInternalRequest.getFhirResourceType(),
+                            upsertMedicalResourceInternalRequest.getDataSourceId());
+            Long dataSourceRowId =
+                    dataSourceUuidToRowId.get(
+                            upsertMedicalResourceInternalRequest.getDataSourceId());
+            // TODO(b/348406569): make this a HealthConnectException instead otherwise it will get
+            // mapped to ERROR_INTERNAL: http://shortn/_oNnq2lzx5E
+            if (dataSourceRowId == null) {
+                throw new IllegalArgumentException(
+                        "Invalid data source id: "
+                                + upsertMedicalResourceInternalRequest.getDataSourceId());
+            }
+            UpsertTableRequest upsertTableRequest =
+                    getUpsertTableRequest(
+                            uuid, dataSourceRowId, upsertMedicalResourceInternalRequest);
+
+            requests.add(upsertTableRequest);
+        }
+        return requests;
+    }
+
+    /**
+     * Creates {@link UpsertTableRequest} for the given {@link
+     * UpsertMedicalResourceInternalRequest}.
+     */
+    @NonNull
+    static UpsertTableRequest getUpsertTableRequest(
+            @NonNull UUID uuid,
+            long dataSourceRowId,
+            @NonNull UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest) {
+        ContentValues contentValues =
+                getContentValues(uuid, dataSourceRowId, upsertMedicalResourceInternalRequest);
         return new UpsertTableRequest(getMainTableName(), contentValues, UNIQUE_COLUMNS_INFO);
     }
 
     // TODO(b/337020055): populate the rest of the fields.
     @NonNull
     private static ContentValues getContentValues(
-            @NonNull UUID uuid, @NonNull MedicalResourceInternal medicalResourceInternal) {
+            @NonNull UUID uuid,
+            long dataSourceRowId,
+            @NonNull UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest) {
         ContentValues resourceContentValues = new ContentValues();
         resourceContentValues.put(UUID_COLUMN_NAME, StorageUtils.convertUUIDToBytes(uuid));
+        resourceContentValues.put(DATA_SOURCE_ID_COLUMN_NAME, dataSourceRowId);
         resourceContentValues.put(
-                DATA_SOURCE_ID_COLUMN_NAME,
-                Long.parseLong(medicalResourceInternal.getDataSourceId()));
-        resourceContentValues.put(FHIR_DATA_COLUMN_NAME, medicalResourceInternal.getData());
+                FHIR_DATA_COLUMN_NAME, upsertMedicalResourceInternalRequest.getData());
         resourceContentValues.put(
                 FHIR_RESOURCE_TYPE_COLUMN_NAME,
-                getFhirResourceTypeInt(medicalResourceInternal.getFhirResourceType()));
+                getFhirResourceTypeInt(upsertMedicalResourceInternalRequest.getFhirResourceType()));
         resourceContentValues.put(
-                FHIR_RESOURCE_ID_COLUMN_NAME, medicalResourceInternal.getFhirResourceId());
+                FHIR_RESOURCE_ID_COLUMN_NAME,
+                upsertMedicalResourceInternalRequest.getFhirResourceId());
         return resourceContentValues;
     }
 
     /**
      * Creates a {@link MedicalResource} for the given {@code uuid} and {@link
-     * MedicalResourceInternal}.
+     * UpsertMedicalResourceInternalRequest}.
      */
-    public static MedicalResource buildMedicalResource(
-            @NonNull UUID uuid, @NonNull MedicalResourceInternal medicalResourceInternal) {
+    private static MedicalResource buildMedicalResource(
+            @NonNull UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest) {
         return new MedicalResource.Builder(
-                        uuid.toString(),
-                        getMedicalResourceType(medicalResourceInternal.getFhirResourceType()),
-                        medicalResourceInternal.getDataSourceId(),
-                        medicalResourceInternal.getData())
+                        getMedicalResourceType(
+                                upsertMedicalResourceInternalRequest.getFhirResourceType()),
+                        upsertMedicalResourceInternalRequest.getDataSourceId(),
+                        upsertMedicalResourceInternalRequest.getData())
                 .build();
     }
 
@@ -188,7 +349,7 @@ public final class MedicalResourceHelper {
      * Returns List of {@code MedicalResource}s from the cursor. If the cursor contains more than
      * {@link MAXIMUM_ALLOWED_CURSOR_COUNT} records, it throws {@link IllegalArgumentException}.
      */
-    public static List<MedicalResource> getMedicalResources(Cursor cursor) {
+    private static List<MedicalResource> getMedicalResources(@NonNull Cursor cursor) {
         if (cursor.getCount() > MAXIMUM_ALLOWED_CURSOR_COUNT) {
             throw new IllegalArgumentException(
                     "Too many resources in the cursor. Max allowed: "
@@ -202,6 +363,35 @@ public final class MedicalResourceHelper {
         }
         cursor.close();
         return medicalResources;
+    }
+
+    /**
+     * Deletes a list of {@link MedicalResource}s created based on the given list of {@link
+     * MedicalResourceId}s into the HealthConnect database.
+     *
+     * @param medicalResourceIds list of {@link UpsertMedicalResourceInternalRequest}.
+     */
+    public void deleteMedicalResourcesByIds(@NonNull List<MedicalResourceId> medicalResourceIds)
+            throws SQLiteException {
+
+        mTransactionManager.delete(getDeleteRequest(medicalResourceIds));
+    }
+
+    /**
+     * Create an SQL string to delete a list of medical records.
+     *
+     * @param medicalResourceIds the ids to delete
+     * @return A {@link DeleteTableRequest} which when executed will delete those ids
+     */
+    @NonNull
+    @VisibleForTesting
+    static DeleteTableRequest getDeleteRequest(
+            @NonNull List<MedicalResourceId> medicalResourceIds) {
+        if (medicalResourceIds.isEmpty()) {
+            throw new IllegalArgumentException("Cannot delete without filters");
+        }
+        List<String> hexUuids = medicalResourceIdsToHexUuids(medicalResourceIds);
+        return new DeleteTableRequest(getMainTableName()).setIds(UUID_COLUMN_NAME, hexUuids);
     }
 
     /**
@@ -238,12 +428,12 @@ public final class MedicalResourceHelper {
                 fhirResourceType.toUpperCase(Locale.ROOT), FHIR_RESOURCE_TYPE_UNKNOWN);
     }
 
-    private static MedicalResource getMedicalResource(Cursor cursor) {
+    @NonNull
+    private static MedicalResource getMedicalResource(@NonNull Cursor cursor) {
         int fhirResourceTypeInt = getCursorInt(cursor, FHIR_RESOURCE_TYPE_COLUMN_NAME);
         return new MedicalResource.Builder(
-                        getCursorUUID(cursor, UUID_COLUMN_NAME).toString(),
                         getMedicalResourceType(fhirResourceTypeInt),
-                        String.valueOf(getCursorLong(cursor, DATA_SOURCE_ID_COLUMN_NAME)),
+                        getCursorUUID(cursor, getDataSourceUuidColumnName()).toString(),
                         getCursorString(cursor, FHIR_DATA_COLUMN_NAME))
                 .build();
     }
@@ -257,6 +447,4 @@ public final class MedicalResourceHelper {
         }
         return new HashMap<>();
     }
-
-    private MedicalResourceHelper() {}
 }

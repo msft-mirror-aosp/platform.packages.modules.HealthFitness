@@ -20,8 +20,11 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Керуйте доступом додатків до даних про здоров’я"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Дозволи й дані"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Керуйте даними про здоров’я і фізичну активність на телефоні, а також визначайте додатки, які матимуть доступ до даних"</string>
+    <!-- no translation found for home_subtitle (2154213430054477787) -->
+    <skip />
     <string name="data_title" msgid="4456619761533380816">"Дані й доступ"</string>
+    <!-- no translation found for browse_medical_data (6963802956096683273) -->
+    <skip />
     <string name="all_categories_title" msgid="1446410643217937926">"Усі категорії"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Переглянути всі категорії"</string>
     <string name="no_data" msgid="1906986019249068659">"Немає даних"</string>
@@ -267,14 +270,10 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Дані про імунізацію"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"дані про імунізацію"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Переглядати дані про імунізацію"</string>
-    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
-    <skip />
-    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
-    <skip />
-    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
-    <skip />
-    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
-    <skip />
+    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Усвідомленість"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"усвідомленість"</string>
+    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Переглядати дані сеансів практики усвідомленості"</string>
+    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Записувати дані сеансів практики усвідомленості"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Дозволити додатку <xliff:g id="APP_NAME">%1$s</xliff:g> зчитувати дані"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Дозволити додатку <xliff:g id="APP_NAME">%1$s</xliff:g> записувати дані"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Скасувати"</string>
@@ -327,6 +326,12 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Наразі у вас не встановлено сумісних додатків"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Додатковий доступ"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Для цього додатка видалено й інші дозволи"</string>
+    <!-- no translation found for permissions_header (6519976063360071569) -->
+    <skip />
+    <!-- no translation found for manage_fitness_permissions (1001729292172461314) -->
+    <skip />
+    <!-- no translation found for manage_medical_permissions (7658181359096889932) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Вилучені дозволи для додатків"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Сервіс Health Connect вилучив дозволи для додатка <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Сервіс Health Connect вилучив дозволи для додатків <xliff:g id="APP_DATA_0">%1$s</xliff:g> і <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -346,46 +351,62 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Запланований експорт"</string>
     <string name="import_data" msgid="404502315533233094">"Імпорт даних"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Ви можете відновити дані з файлу, який експортували раніше"</string>
+    <string name="import_error_banner_title" msgid="1480977889067027790">"Не вдалося відновити дані"</string>
     <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
-    <skip />
-    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
     <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
     <skip />
+    <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"Оновити"</string>
+    <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Оновіть систему, щоб сервіс Health Connect міг відновити ваші дані, а потім повторіть спробу."</string>
+    <string name="import_other_error_banner_button" msgid="8006947649520909176">"Повторити спробу"</string>
+    <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Не вдалося відновити дані з експорту."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Завдяки експорту ви можете зберегти свої дані, щоб перенести їх на новий телефон"</string>
-    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Докладніше"</string>
+    <!-- no translation found for backup_and_restore_footer_link_text (9075133737244288876) -->
+    <skip />
     <string name="automatic_export_on" msgid="6972389773963624315">"Увімкнено"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Вимкнено"</string>
-    <string name="choose_frequency_category" msgid="2230821549715237663">"Виберіть частоту"</string>
-    <string name="choose_frequency" msgid="1077467424225083246">"Виберіть частоту"</string>
-    <string name="choose_frequency_description" msgid="752601326653048254">"Виберіть, як зберігатимуться дані: один раз або автоматично із заданою періодичністю."</string>
+    <!-- no translation found for choose_frequency_category (9094154407387676553) -->
+    <skip />
+    <!-- no translation found for scheduled_export_settings_footer_text (8488483803782086291) -->
+    <skip />
+    <!-- no translation found for choose_frequency (8119085390857180221) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (7698155810053504157) -->
+    <skip />
     <string name="frequency_daily" msgid="3596412357416125727">"Щодня"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Щотижня"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Щомісяця"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"Виберіть, куди експортувати дані"</string>
-    <string name="export_invalid_storage" msgid="3945266169513895950">"Виберіть додаток сховища, куди потрібно експортувати дані"</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"Введіть пароль"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Щоб імпортувати дані Health Connect, потрібен пароль для шифрування"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Забули пароль?"</string>
-    <string name="import_password_hint" msgid="5158553589723883063">"Пароль"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Якщо у вас ще є старий телефон, ви можете повторно експортувати свої дані, ввівши новий пароль"</string>
+    <!-- no translation found for export_destination_title (8352929396306002479) -->
+    <skip />
+    <!-- no translation found for export_invalid_storage (1459055934301871321) -->
+    <skip />
+    <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
+    <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Імпортувати цей файл?"</string>
+    <!-- no translation found for import_confirmation_dialog_text (7274564242039735667) -->
+    <skip />
+    <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Скасувати"</string>
+    <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Імпортувати"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
     <string name="export_next_button" msgid="657930567137105172">"Далі"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Скасувати"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Далі"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Імпортувати з"</string>
-    <string name="import_invalid_storage" msgid="4873640088459948487">"Виберіть додаток сховища, звідки потрібно імпортувати дані"</string>
+    <!-- no translation found for import_invalid_storage (341798262315495399) -->
+    <skip />
     <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
     <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Виберіть обліковий запис"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Скасувати"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Готово"</string>
+    <!-- no translation found for export_import_no_apps_text (6403119325024893690) -->
+    <skip />
     <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
     <skip />
     <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
     <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Початок роботи з Health Connect"</string>
-    <string name="onboarding_description" msgid="4873129122057931161">"Сервіс Health Connect зберігає ваші дані про здоров’я та фізичну активність, а також дає змогу легко синхронізувати їх із різними додатками на вашому телефоні"</string>
+    <!-- no translation found for onboarding_description (3479157507808350452) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"Діліться даними з додатками"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Виберіть дані, які кожен додаток зможе читати або записувати в Health Connect"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Керуйте налаштуваннями та конфіденційністю"</string>

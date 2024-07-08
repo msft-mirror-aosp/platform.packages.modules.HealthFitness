@@ -20,8 +20,11 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Manage app access to health data"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Permissions and data"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Manage the health and fitness data on your phone, and control which apps can access it"</string>
+    <!-- no translation found for home_subtitle (2154213430054477787) -->
+    <skip />
     <string name="data_title" msgid="4456619761533380816">"Data and access"</string>
+    <!-- no translation found for browse_medical_data (6963802956096683273) -->
+    <skip />
     <string name="all_categories_title" msgid="1446410643217937926">"All categories"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"See all categories"</string>
     <string name="no_data" msgid="1906986019249068659">"No data"</string>
@@ -267,14 +270,10 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Immunisation"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"immunisation"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Read immunisation"</string>
-    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
-    <skip />
-    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
-    <skip />
-    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
-    <skip />
-    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
-    <skip />
+    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Mindfulness"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"mindfulness"</string>
+    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Read mindfulness"</string>
+    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Write mindfulness"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Allow \'<xliff:g id="APP_NAME">%1$s</xliff:g>\' to read"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Allow \'<xliff:g id="APP_NAME">%1$s</xliff:g>\' to write"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Cancel"</string>
@@ -327,6 +326,12 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"You currently don\'t have any compatible apps installed"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Additional access"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Removed additional permissions for this app"</string>
+    <!-- no translation found for permissions_header (6519976063360071569) -->
+    <skip />
+    <!-- no translation found for manage_fitness_permissions (1001729292172461314) -->
+    <skip />
+    <!-- no translation found for manage_medical_permissions (7658181359096889932) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Removed app permissions"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect removed permissions for <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect removed permissions for <xliff:g id="APP_DATA_0">%1$s</xliff:g> and <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -346,46 +351,62 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Scheduled export"</string>
     <string name="import_data" msgid="404502315533233094">"Import data"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Restore data from a previously exported file"</string>
+    <string name="import_error_banner_title" msgid="1480977889067027790">"Couldn\'t restore data"</string>
     <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
-    <skip />
-    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
     <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
     <skip />
+    <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"Update now"</string>
+    <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Update your system so that Health Connect can restore your data, then try again."</string>
+    <string name="import_other_error_banner_button" msgid="8006947649520909176">"Try again"</string>
+    <string name="import_other_error_banner_summary" msgid="4378957063605649197">"There was a problem with restoring data from your export."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Export lets you save your data so that you can transfer it to a new phone"</string>
-    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Learn more"</string>
+    <!-- no translation found for backup_and_restore_footer_link_text (9075133737244288876) -->
+    <skip />
     <string name="automatic_export_on" msgid="6972389773963624315">"On"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Off"</string>
-    <string name="choose_frequency_category" msgid="2230821549715237663">"Choose frequency"</string>
-    <string name="choose_frequency" msgid="1077467424225083246">"Choose frequency"</string>
-    <string name="choose_frequency_description" msgid="752601326653048254">"Choose to save data once or set it to save automatically at regular times."</string>
+    <!-- no translation found for choose_frequency_category (9094154407387676553) -->
+    <skip />
+    <!-- no translation found for scheduled_export_settings_footer_text (8488483803782086291) -->
+    <skip />
+    <!-- no translation found for choose_frequency (8119085390857180221) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (7698155810053504157) -->
+    <skip />
     <string name="frequency_daily" msgid="3596412357416125727">"Daily"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Weekly"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Monthly"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"Choose where to export"</string>
-    <string name="export_invalid_storage" msgid="3945266169513895950">"Please choose a storage app to export your data"</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"Type password"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Your encryption password is needed to import your Health Connect data"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Forgotten password?"</string>
-    <string name="import_password_hint" msgid="5158553589723883063">"Password"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"If you still have your old phone, you can re-export your data with a new password"</string>
+    <!-- no translation found for export_destination_title (8352929396306002479) -->
+    <skip />
+    <!-- no translation found for export_invalid_storage (1459055934301871321) -->
+    <skip />
+    <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
+    <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Import this file?"</string>
+    <!-- no translation found for import_confirmation_dialog_text (7274564242039735667) -->
+    <skip />
+    <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Cancel"</string>
+    <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Import"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Back"</string>
     <string name="export_next_button" msgid="657930567137105172">"Next"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Cancel"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Next"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Import from"</string>
-    <string name="import_invalid_storage" msgid="4873640088459948487">"Please choose a storage app to import your data"</string>
+    <!-- no translation found for import_invalid_storage (341798262315495399) -->
+    <skip />
     <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
     <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Choose an account"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Cancel"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Done"</string>
+    <!-- no translation found for export_import_no_apps_text (6403119325024893690) -->
+    <skip />
     <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
     <skip />
     <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
     <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Get started with Health Connect"</string>
-    <string name="onboarding_description" msgid="4873129122057931161">"Health Connect stores your health and fitness data, giving you a simple way to sync the different apps on your phone"</string>
+    <!-- no translation found for onboarding_description (3479157507808350452) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"Share data with your apps"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Choose the data that each app can read or write to Health Connect"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Manage your settings and privacy"</string>

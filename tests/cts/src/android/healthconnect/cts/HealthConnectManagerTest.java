@@ -43,6 +43,7 @@ import static android.healthconnect.cts.utils.TestUtils.getMedicalDataSourcesByI
 import static android.healthconnect.cts.utils.TestUtils.getRecordById;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.readMedicalResourcesByIds;
+import static android.healthconnect.cts.utils.TestUtils.upsertMedicalResources;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
@@ -157,6 +158,7 @@ public class HealthConnectManagerTest {
     @Before
     public void before() throws InterruptedException {
         deleteAllRecords();
+        // TODO(b/348158309) Clean up PHR data here when delete APIs are implemented.
         TestUtils.deleteAllStagedRemoteData();
     }
 
@@ -1739,6 +1741,31 @@ public class HealthConnectManagerTest {
     }
 
     @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testCreateMedicalDataSource_migrationInProgress_apiBlocked()
+            throws InterruptedException {
+        runWithShellPermissionIdentity(
+                () -> {
+                    TestUtils.startMigration();
+                    assertThat(TestUtils.getHealthConnectDataMigrationState())
+                            .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
+                },
+                Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+
+        HealthConnectException exception =
+                assertThrows(
+                        HealthConnectException.class,
+                        () ->
+                                TestUtils.createMedicalDataSource(
+                                        getCreateMedicalDataSourceRequest()));
+        assertThat(exception.getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
+
+        runWithShellPermissionIdentity(
+                TestUtils::finishMigration, Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+    }
+
+    @Test
     public void testGetRecordTypeInfo_InsertRecords_correctContributingPackages() throws Exception {
         // Insert a set of test records for StepRecords, ExerciseSessionRecord, HeartRateRecord,
         // BasalMetabolicRateRecord.
@@ -1922,11 +1949,17 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testCreateMedicalDataSource_throws() throws InterruptedException {
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testCreateMedicalDataSource_succeeds() throws InterruptedException {
         CreateMedicalDataSourceRequest request = getCreateMedicalDataSourceRequest();
 
-        assertThrows(UnsupportedOperationException.class, () -> createMedicalDataSource(request));
+        MedicalDataSource responseDataSource = createMedicalDataSource(request);
+
+        assertThat(responseDataSource).isInstanceOf(MedicalDataSource.class);
+        assertThat(responseDataSource.getId()).isNotEmpty();
+        assertThat(responseDataSource.getFhirBaseUri()).isEqualTo(request.getFhirBaseUri());
+        assertThat(responseDataSource.getDisplayName()).isEqualTo(request.getDisplayName());
+        assertThat(responseDataSource.getPackageName()).isEqualTo(APP_PACKAGE_NAME);
     }
 
     @Test
@@ -1943,6 +1976,15 @@ public class HealthConnectManagerTest {
         List<String> ids = List.of("1");
 
         assertThrows(UnsupportedOperationException.class, () -> getMedicalDataSourcesByIds(ids));
+    }
+
+    // TODO(b/343923754): Add more upsert/readMedicalResources tests once deleteAll can be called.
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testUpsertMedicalResources_emptyIds_returnsEmptyList() throws InterruptedException {
+        List<MedicalResource> medicalResources = upsertMedicalResources(List.of());
+
+        assertThat(medicalResources).isEmpty();
     }
 
     @Test
@@ -1968,10 +2010,10 @@ public class HealthConnectManagerTest {
         assertThrows(IllegalArgumentException.class, () -> readMedicalResourcesByIds(ids));
     }
 
-    // TODO(b/343923754): Add readMedicalResources more tests once insert can be called.
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testReadMedicalResources_byIds_returnsEmptyList() throws InterruptedException {
+    public void testReadMedicalResources_byIds_noData_returnsEmptyList()
+            throws InterruptedException {
         List<MedicalResourceId> ids = List.of(getMedicalResourceId());
         List<MedicalResource> medicalResources = readMedicalResourcesByIds(ids);
 

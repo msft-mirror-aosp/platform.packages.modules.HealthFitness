@@ -19,8 +19,9 @@
     <string name="health_connect_summary" description="Health connect summary, which describes what user can do when they click Health Connect">Manage app access to health data</string>
     <!-- region Home screen -->
     <string name="permissions_and_data_header" description="Header for section listing actions for showing connected apps permissions and data screens [CHAR LIMIT=NONE] ">Permissions and data</string>
-    <string name="home_subtitle" description="Description on the home screen of the app. [CHAR_LIMIT=NONE]">Manage the health and fitness data on your phone, and control which apps can access it</string>
+    <string name="home_subtitle" description="Description on the home screen of the app. [CHAR_LIMIT=NONE]">Manage the health and fitness data on your device, and control which apps can access it</string>
     <string name="data_title" description="Label for a button that takes the user to the data management screens. [CHAR_LIMIT=40]">Data and access</string>
+    <string name="browse_medical_data" description="Label for a button that navigates to a screen with medical data. [CHAR_LIMIT=50]">Browse health records</string>
     <string name="all_categories_title" description="Title of a screen that lists all health data categories. [CHAR_LIMIT=40]">All categories</string>
     <string name="see_all_categories" description="Label for a button that takes the user to the all categories screens. [CHAR_LIMIT=40]">See all categories</string>
     <string name="no_data" description="Label that is displayed when the given health data category does not have any data.">No data</string>
@@ -428,6 +429,10 @@
     <string name="connected_apps_empty_list_section_title" description="Title of section when there are no connected apps">You don\'t currently have any compatible apps installed</string>
     <string name="additional_access_label" description="Label of a button that opens additional permissions access for an app. [CHAR_LIMIT=40]">Additional access</string>
     <string name="removed_additional_permissions_toast" description="Message letting the user know that additional permissions have also been removed for this app">Removed additional permissions for this app</string>
+    <string name="permissions_header" description="Title shown for section that lists permissions. [CHAR_LIMIT=40]">Permissions</string>
+    <string name="manage_fitness_permissions" description="Label of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Manage fitness permissions</string>
+    <string name="manage_medical_permissions" description="Label of a button that opens the medical permissions screen. [CHAR_LIMIT=40]">Manage health record permissions</string>
+
     <!--endregion-->
 
     <!--region Denied Apps -->
@@ -454,9 +459,13 @@
     <string name="scheduled_export" description="Menu item where users can click to configure scheduled data export. [CHAR_LIMIT=40]">Scheduled export</string>
     <string name="import_data" description="Menu item where users can click to import their data. [CHAR_LIMIT=40]">Import data</string>
     <string name="import_data_description" description="Description about the function of the 'restore data' preference. [CHAR_LIMIT=NONE]">Restore data from a previously exported file</string>
+    <string name="import_error_banner_title" description="Title of banner prompting the user that a previous data import failed. [CHAR LIMIT=50]">Couldn\'t restore data</string>
     <string name="import_wrong_file_error_banner_button" description="Button of banner prompting the user to set up the import again due to the wrong file error. [CHAR LIMIT=50]">Choose file</string>
-    <string name="import_wrong_file_error_banner_title" description="Title of banner prompting the user to set up the import again due to the wrong file error. [CHAR LIMIT=50]">Couldn\'t restore data</string>
     <string name="import_wrong_file_error_banner_summary" description="Summary of banner prompting the user to set up the import again due to the wrong file error. [CHAR LIMIT=NONE]">The file you selected isn\'t compatible for restore. Make sure to select the correct exported file.</string>
+    <string name="import_version_mismatch_error_banner_button" description="Button of banner prompting the user to update the mainline module due to the version mismatch error. [CHAR LIMIT=50]">Update now</string>
+    <string name="import_version_mismatch_error_banner_summary" description="Summary of banner prompting the user to update the mainline module due to the version mismatch error. [CHAR LIMIT=NONE]">Update your system so that Health&#160;Connect can restore your data, then try again.</string>
+    <string name="import_other_error_banner_button" description="Button of banner prompting the user to try the import again due to certain error. [CHAR LIMIT=50]">Try again</string>
+    <string name="import_other_error_banner_summary" description="Summary of banner prompting the user to try the import again due to certain error. [CHAR LIMIT=NONE]">There was a problem with restoring data from your export.</string>
     <string name="backup_and_restore_footer_body_text" description="Text displayed in page footer explaining the purpose of the export feature. [CHAR_LIMIT=NONE]">Export lets you save your data so you can transfer it to a new phone</string>
     <string name="backup_and_restore_footer_link_text" description="Link text displayed in the footer to allow the user to navigate to further information about the export feature. [CHAR_LIMIT=40]">About backup and restore</string>
 
@@ -474,32 +483,52 @@
     <string name="frequency_monthly" description="Label used to show that the automatic export frequency is set as monthly. [CHAR_LIMIT=40]">Monthly</string>
 
     <string name="export_destination_title" description="Title of the export destination screen where users can select which cloud storage service to store their exported data. [CHAR_LIMIT=40]">Choose where to save scheduled export</string>
-    <string name="export_invalid_storage" description="Message shown to the user when they pick a local storage app instead of a cloud storage app to export their data to. [CHAR_LIMIT=NONE]">Please choose a storage app to export your data</string>
+    <string name="export_invalid_storage" description="Message shown to the user when they pick a local storage app instead of a cloud storage app to export their data to. [CHAR_LIMIT=NONE]">Please choose a cloud storage app for exporting your data</string>
+    <string name="export_default_file_name" description="File name of exported Health Connect data. Note: Health Connect is the brand. [CHAR_LIMIT=40]">Health Connect</string>
 
-    <string name="import_decryption_title" description="Title of the 'Type password' screen where the user enters their password to decrypt the imported backup. [CHAR_LIMIT=40]">Type password</string>
-    <string name="import_decryption_description" description="Description about the password required for backup decryption. [CHAR_LIMIT=NONE]">Your encryption password is needed to import your Health&#160;Connect data</string>
-    <string name="import_decryption_forgotten_password_link_text" description="Link text displayed below password entry field to help a user with their forgotten password. [CHAR_LIMIT=40]">Forgotten password?</string>
-    <string name="import_password_hint" description="Placeholder text on the input field which reminds users to enter their password here. [CHAR_LIMIT=50]">Password</string>
-    <string name="import_decrypt_footer_body_text" description="Text displayed in page footer explaining the purpose of the export feature. [CHAR_LIMIT=NONE]">If you still have your old phone, you can re-export your data with a new password</string>
+    <string name="import_confirmation_dialog_title" description="Title displayed on dialog asking user to confirm their choice of file for import. [CHAR_LIMIT=NONE]">Import this file?</string>
+    <string name="import_confirmation_dialog_text" description="Text displayed on dialog asking user to confirm their choice of file for import. Note: Health Connect is the brand. [CHAR_LIMIT=NONE]"><xliff:g example="Health Connect.zip" id="file_name">%1$s</xliff:g> will be imported into Health&#160;Connect</string>
+    <string name="import_confirmation_dialog_cancel_button" description="Text on a button that cancels the file import process if the user chooses not to import the selected file. [CHAR_LIMIT=40]">Cancel</string>
+    <string name="import_confirmation_dialog_import_button" description="Text on a button that proceeds with the import process if the user confirms their choice of file. [CHAR_LIMIT=40]">Import</string>
+
+    <string name="import_notification_import_in_progress_title" description="Title text of notification displayed when import is in progress. [CHAR_LIMIT=NONE]">Health&#160;Connect restore in progress</string>
+    <string name="import_notification_import_complete_title" description="Title text of notification displayed when import has completed successfully. [CHAR_LIMIT=NONE]">Health&#160;Connect restore complete</string>
+
+    <string name="import_complete_toast_text" description="Toast text displayed when import completes successfully. [CHAR_LIMIT=40]">Finished restoring data</string>
+
+    <string name="import_notification_error_generic_error_title" description="Title text of notification displayed when import fails due to generic error. [CHAR_LIMIT=NONE]">Health&#160;Connect couldn\'t restore data</string>
+    <string name="import_notification_error_more_space_needed_title" description="Title text of notification displayed when import fails due to needing additional space. [CHAR_LIMIT=NONE]">More space needed</string>
+
+    <string name="import_notification_error_invalid_file_body_text" description="Body text of notification displayed when import fails due to invalid file selection. [CHAR_LIMIT=NONE]">The file you selected isn\'t compatible for restore. Make sure to select the correct exported file.</string>
+    <string name="import_notification_error_more_space_needed_body_text" description="Body text of notification displayed when import fails due to needing additional space. [CHAR_LIMIT=NONE]">Health&#160;Connect needs <xliff:g example="500MB" id="space_needed">%1$s</xliff:g> of storage space on your phone to continue restoring your data.</string>
+    <string name="import_notification_error_generic_error_body_text" description="Body text of notification displayed when import fails due to generic error. [CHAR_LIMIT=NONE]">There was a problem with restoring data from your export.</string>
+    <string name="import_notification_error_version_mismatch_body_text" description="Body text of notification displayed when import fails due to a version mismatch between new and old backup file. [CHAR_LIMIT=NONE]">Update your system so that Health&#160;Connect can restore your data, then try again.</string>
+
+    <string name="import_notification_update_now_intent_button" description="Button text on notification that triggers an update of Health Connect. [CHAR_LIMIT=40]">Update now</string>
+    <string name="import_notification_try_again_intent_button" description="Button text on notification that restarts the import process. [CHAR_LIMIT=40]">Try again</string>
+    <string name="import_notification_open_intent_button" description="Button text on notification that returns the user to the Export-Import section of Health Connect to see their completed import. [CHAR_LIMIT=40]">Open</string>
+    <string name="import_notification_choose_file_intent_button" description="Button text on notification restarts the file selection stage of the import process. [CHAR_LIMIT=40]">Choose file</string>
+    <string name="import_notification_free_up_space_intent_button" description="Button text on notification that lets the user open their cloud storage provider to delete/move files to create space. [CHAR_LIMIT=40]">Free up space</string>
 
     <string name="export_back_button" descrption="Text on a button that navigates back to the previous screen of the data saving setup flow. [CHAR_LIMIT=40]">Back</string>
     <string name="export_next_button" descrption="Text on a button that navigates to the next screen of the data saving setup flow. [CHAR_LIMIT=40]">Next</string>
     <string name="import_cancel_button" description="Text on a button that navigates back to the backup and restore home page. [CHAR_LIMIT=40]">Cancel</string>
     <string name="import_next_button" descrption="Text on a button that navigates to the next screen of the data restoration flow. [CHAR_LIMIT=40]">Next</string>
     <string name="import_source_location_title" description="Title of the 'Import from' screen where the use chooses the location where their backup is saved. [CHAR_LIMIT=40]">Import from</string>
-    <string name="import_invalid_storage" description="Message shown to the user when they pick a local storage app instead of a cloud storage app to import their data from. [CHAR_LIMIT=NONE]">Please choose a storage app to import your data</string>
+    <string name="import_invalid_storage" description="Message shown to the user when they pick a local storage app instead of a cloud storage app to import their data from. [CHAR_LIMIT=NONE]">Please choose a cloud storage app for importing your data</string>
 
     <string name="export_import_tap_to_choose_account" description="Label of text indicating that the user needs to select an account to export data to or import data from. [CHAR_LIMIT=NONE]">Tap to select an account</string>
     <string name="export_import_choose_account_title" description="Title of a dialog where users select the account to export data to or import data from. [CHAR_LIMIT=40]">Choose an account</string>
     <string name="export_import_choose_account_cancel_button" description="Text on a button that cancels the user picking an account to export data to or import data from. [CHAR_LIMIT=40]">Cancel</string>
     <string name="export_import_choose_account_done_button" description="Text on a button that confirms the account for the user to export data to or import data from. [CHAR_LIMIT=40]">Done</string>
+    <string name="export_import_no_apps_text" description="Text informing the user to install cloud storage apps to export data to or import data from. [CHAR_LIMIT=NONE]">No apps available. Install cloud storage apps to see them here</string>
     <string name="export_import_install_apps_text" description="Text informing the user to install cloud storage apps to export data to or import data from. [CHAR_LIMIT=NONE]">For more options, install cloud storage apps to see them here</string>
     <string name="export_import_go_to_play_store_text" description="Link text taking the user to the Play Store so they can install cloud storage apps to export data to or import data from. [CHAR_LIMIT=NONE]">Go to the Play Store</string>
     <!--endregion-->
 
     <!--region Onboarding -->
     <string name="onboarding_title" description="Label used to show the title of onboarding page when user opens Health Connect app for the fist time">Get started with Health&#160;Connect</string>
-    <string name="onboarding_description" description="Content description of Health Connect app on the onboarding page">Health&#160;Connect stores your health and fitness data, giving you a simple way to sync the different apps on your phone</string>
+    <string name="onboarding_description" description="Content description of Health Connect app on the onboarding page">Health&#160;Connect stores your health and fitness data, giving you a simple way to sync the different apps on your device</string>
     <string name="share_data" description="Label used to show how the user can share data with apps">Share data with your apps</string>
     <string name="share_data_description" description="Content description for how the user can share data with apps">Choose the data each app can read or write to Health&#160;Connect</string>
     <string name="manage_your_settings" description="Label used to show how the user can manage settings and privacy">Manage your settings and privacy</string>

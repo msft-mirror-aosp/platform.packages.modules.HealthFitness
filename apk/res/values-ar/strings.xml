@@ -20,8 +20,11 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"إدارة إمكانية وصول التطبيقات إلى البيانات الصحية"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"الأذونات والبيانات"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"يمكنك إدارة بيانات الصحة واللياقة البدنية على هاتفك والتحكّم في التطبيقات التي يمكنها الوصول إلى تلك البيانات."</string>
+    <!-- no translation found for home_subtitle (2154213430054477787) -->
+    <skip />
     <string name="data_title" msgid="4456619761533380816">"البيانات وإمكانية وصول التطبيقات إليها"</string>
+    <!-- no translation found for browse_medical_data (6963802956096683273) -->
+    <skip />
     <string name="all_categories_title" msgid="1446410643217937926">"جميع الفئات"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"عرض كل الفئات"</string>
     <string name="no_data" msgid="1906986019249068659">"ما مِن بيانات"</string>
@@ -267,14 +270,10 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"بيانات التحصين"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"بيانات التحصين"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"قراءة بيانات التحصين"</string>
-    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
-    <skip />
-    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
-    <skip />
-    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
-    <skip />
-    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
-    <skip />
+    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"اليقظة والوعي التام"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"اليقظة والوعي التام"</string>
+    <string name="mindfulness_read_content_description" msgid="739187536826062524">"قراءة بيانات جلسة اليقظة والوعي التام"</string>
+    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"كتابة بيانات جلسة اليقظة والوعي التام"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"منح تطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" الإذن بالقراءة"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"منح التطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" الإذن بالكتابة"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"إلغاء"</string>
@@ -327,6 +326,12 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"ليس لديك الآن أي تطبيقات متوافقة مثبَّتة"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"إذن الوصول الإضافي"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"تمت إزالة الأذونات الإضافية لهذا التطبيق"</string>
+    <!-- no translation found for permissions_header (6519976063360071569) -->
+    <skip />
+    <!-- no translation found for manage_fitness_permissions (1001729292172461314) -->
+    <skip />
+    <!-- no translation found for manage_medical_permissions (7658181359096889932) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"أذونات التطبيقات التي تمت إزالتها"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"أزال تطبيق Health Connect أذونات \"<xliff:g id="APP_DATA">%s</xliff:g>\"."</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"أزال تطبيق Health Connect أذونات \"<xliff:g id="APP_DATA_0">%1$s</xliff:g>\" و\"<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>\"."</string>
@@ -346,46 +351,62 @@
     <string name="scheduled_export" msgid="8737660963687364370">"عملية التصدير المُجدوَلة"</string>
     <string name="import_data" msgid="404502315533233094">"استيراد البيانات"</string>
     <string name="import_data_description" msgid="4040178599441724296">"استعادة البيانات من ملف تم تصديره في السابق"</string>
+    <string name="import_error_banner_title" msgid="1480977889067027790">"تعذَّرت استعادة البيانات"</string>
     <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
-    <skip />
-    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
     <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
     <skip />
+    <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"التحديث الآن"</string>
+    <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"يُرجى تحديث النظام ليتمكّن تطبيق Health Connect من استعادة بياناتك وإعادة المحاولة."</string>
+    <string name="import_other_error_banner_button" msgid="8006947649520909176">"إعادة المحاولة"</string>
+    <string name="import_other_error_banner_summary" msgid="4378957063605649197">"حدثت مشكلة أثناء استعادة بياناتك من عملية التصدير."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"تسمح ميزة التصدير بحفظ البيانات حتى تتمكن من نقلها إلى هاتف جديد"</string>
-    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"مزيد من المعلومات"</string>
+    <!-- no translation found for backup_and_restore_footer_link_text (9075133737244288876) -->
+    <skip />
     <string name="automatic_export_on" msgid="6972389773963624315">"مفعَّل"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"غير مفعَّل"</string>
-    <string name="choose_frequency_category" msgid="2230821549715237663">"اختيار معدّل التكرار"</string>
-    <string name="choose_frequency" msgid="1077467424225083246">"اختيار معدّل حفظ البيانات"</string>
-    <string name="choose_frequency_description" msgid="752601326653048254">"يمكنك اختيار حفظ البيانات مرة واحدة أو الضبط على حفظها تلقائيًا في أوقات منتظمة."</string>
+    <!-- no translation found for choose_frequency_category (9094154407387676553) -->
+    <skip />
+    <!-- no translation found for scheduled_export_settings_footer_text (8488483803782086291) -->
+    <skip />
+    <!-- no translation found for choose_frequency (8119085390857180221) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (7698155810053504157) -->
+    <skip />
     <string name="frequency_daily" msgid="3596412357416125727">"يوميًا"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"أسبوعيًا"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"شهريًا"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"اختيار مكان التصدير"</string>
-    <string name="export_invalid_storage" msgid="3945266169513895950">"يُرجى اختيار أحد تطبيقات التخزين على الجهاز لتصدير بياناتك إليه"</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"اكتب كلمة المرور"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"يجب اختيار كلمة مرور التشفير لاستيراد بيانات تطبيق Health Connect"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"هل نسيت كلمة المرور؟"</string>
-    <string name="import_password_hint" msgid="5158553589723883063">"كلمة المرور"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"إذا كان هاتفك القديم لا يزال معك، يمكنك إعادة تصدير بياناتك باستخدام كلمة مرور جديدة"</string>
+    <!-- no translation found for export_destination_title (8352929396306002479) -->
+    <skip />
+    <!-- no translation found for export_invalid_storage (1459055934301871321) -->
+    <skip />
+    <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
+    <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"هل تريد استيراد هذا الملف؟"</string>
+    <!-- no translation found for import_confirmation_dialog_text (7274564242039735667) -->
+    <skip />
+    <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"إلغاء"</string>
+    <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"استيراد"</string>
     <string name="export_back_button" msgid="3550795479165524982">"رجوع"</string>
     <string name="export_next_button" msgid="657930567137105172">"التالي"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"إلغاء"</string>
     <string name="import_next_button" msgid="5706322508691854289">"التالي"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"الاستيراد من"</string>
-    <string name="import_invalid_storage" msgid="4873640088459948487">"يُرجى اختيار أحد تطبيقات التخزين على الجهاز لاستيراد بياناتك منه"</string>
+    <!-- no translation found for import_invalid_storage (341798262315495399) -->
+    <skip />
     <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
     <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"اختيار حساب"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"إلغاء"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"تم"</string>
+    <!-- no translation found for export_import_no_apps_text (6403119325024893690) -->
+    <skip />
     <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
     <skip />
     <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
     <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"بدء استخدام Health Connect"</string>
-    <string name="onboarding_description" msgid="4873129122057931161">"يُخزِّن تطبيق Health Connect بيانات الصحة واللياقة البدنية، ما يمنحك طريقة بسيطة لمزامنة التطبيقات المختلفة على هاتفك."</string>
+    <!-- no translation found for onboarding_description (3479157507808350452) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"مشاركة البيانات مع تطبيقاتك"</string>
     <string name="share_data_description" msgid="2919871301634375092">"اختَر البيانات التي يمكن لكل تطبيق قراءتها من تطبيق Health Connect أو كتابتها فيه."</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"إدارة الإعدادات والخصوصية"</string>

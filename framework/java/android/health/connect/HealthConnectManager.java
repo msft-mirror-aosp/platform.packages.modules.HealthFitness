@@ -66,6 +66,8 @@ import android.health.connect.aidl.IGetHealthConnectMigrationUiStateCallback;
 import android.health.connect.aidl.IGetPriorityResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
+import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
+import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
@@ -2084,13 +2086,20 @@ public class HealthConnectManager {
     /**
      * Inserts or updates a list of {@link MedicalResource}s into the HealthConnect database.
      *
+     * <p>The returned list of {@link MedicalResource}s will be in the same order as the {@code
+     * requests}.
+     *
      * <p>The uniqueness is calculated comparing the combination of {@link
      * UpsertMedicalResourceRequest#getDataSourceId() data source id}, FHIR resource type and FHIR
      * resource id extracted from the provided {@link MedicalResource} data. If there is no match,
      * then a new {@link MedicalResource} is inserted, otherwise the existing one is updated.
      *
-     * @hide
+     * <p>If an invalid {@link UpsertMedicalResourceRequest#getDataSourceId() data source id} is
+     * provided, this will throw an {@link IllegalArgumentException} with the first data source id
+     * that is invalid. In this case, none of the given {@link UpsertMedicalResourceRequest}s will
+     * be upserted into the HealthConnect database.
      */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public void upsertMedicalResources(
             @NonNull List<UpsertMedicalResourceRequest> requests,
             @NonNull @CallbackExecutor Executor executor,
@@ -2099,7 +2108,29 @@ public class HealthConnectManager {
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
 
-        throw new UnsupportedOperationException("Not implemented");
+        if (requests.isEmpty()) {
+            returnResult(executor, List.of(), callback);
+            return;
+        }
+
+        try {
+            mService.upsertMedicalResources(
+                    mContext.getAttributionSource(),
+                    requests,
+                    new IMedicalResourcesResponseCallback.Stub() {
+                        @Override
+                        public void onResult(List<MedicalResource> medicalResources) {
+                            returnResult(executor, medicalResources, callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
     }
 
     /**
@@ -2230,7 +2261,7 @@ public class HealthConnectManager {
      */
     // TODO: b/338035191 - Make this flagged Api and add CTS tests.
     public void deleteMedicalResources(
-            @NonNull List<MedicalIdFilter> ids,
+            @NonNull List<MedicalResourceId> ids,
             @NonNull Executor executor,
             @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
         throw new UnsupportedOperationException("Not implemented");
@@ -2266,7 +2297,24 @@ public class HealthConnectManager {
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
 
-        throw new UnsupportedOperationException("Not implemented");
+        try {
+            mService.createMedicalDataSource(
+                    mContext.getAttributionSource(),
+                    request,
+                    new IMedicalDataSourceResponseCallback.Stub() {
+                        @Override
+                        public void onResult(MedicalDataSource dataSource) {
+                            returnResult(executor, dataSource, callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
     }
 
     /**

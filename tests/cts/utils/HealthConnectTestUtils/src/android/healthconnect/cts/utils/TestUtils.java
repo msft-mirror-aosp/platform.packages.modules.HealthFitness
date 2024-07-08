@@ -74,7 +74,6 @@ import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissionCategory;
 import android.health.connect.InsertRecordsResponse;
-import android.health.connect.MedicalIdFilter;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
@@ -86,6 +85,7 @@ import android.health.connect.RecordIdFilter;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.UpdateDataOriginPriorityOrderRequest;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogTokenResponse;
@@ -1252,7 +1252,19 @@ public final class TestUtils {
     }
 
     /**
-     * Helper function to read medical resources from the DB by a list of {@link MedicalIdFilter},
+     * Helper function to upsert medical resources into the DB by a list of {@link
+     * UpsertMedicalResourceRequest}s, using HealthConnectManager.
+     */
+    public static List<MedicalResource> upsertMedicalResources(
+            List<UpsertMedicalResourceRequest> requests) throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        getHealthConnectManager()
+                .upsertMedicalResources(requests, Executors.newSingleThreadExecutor(), receiver);
+        return receiver.getResponse();
+    }
+
+    /**
+     * Helper function to read medical resources from the DB by a list of {@link MedicalResourceId},
      * using HealthConnectManager.
      */
     public static List<MedicalResource> readMedicalResourcesByIds(List<MedicalResourceId> ids)
@@ -1365,42 +1377,11 @@ public final class TestUtils {
         }
     }
 
-    private static class TestReceiver<T, E extends RuntimeException>
-            implements OutcomeReceiver<T, E> {
-        private final CountDownLatch mLatch = new CountDownLatch(1);
-        private final AtomicReference<T> mResponse = new AtomicReference<>();
-        private final AtomicReference<E> mException = new AtomicReference<>();
-
-        public T getResponse() throws InterruptedException {
-            verifyNoExceptionOrThrow();
-            return mResponse.get();
-        }
-
-        public void verifyNoExceptionOrThrow() throws InterruptedException {
-            assertThat(mLatch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
-            if (mException.get() != null) {
-                throw mException.get();
-            }
-        }
-
-        @Override
-        public void onResult(T result) {
-            mResponse.set(result);
-            mLatch.countDown();
-        }
-
-        @Override
-        public void onError(@NonNull E error) {
-            mException.set(error);
-            Log.e(TAG, error.getMessage());
-            mLatch.countDown();
-        }
-    }
-
     private static final class HealthConnectReceiver<T>
-            extends TestReceiver<T, HealthConnectException> {}
+            extends TestOutcomeReceiver<T, HealthConnectException> {}
 
-    public static final class MigrationReceiver extends TestReceiver<Void, MigrationException> {}
+    public static final class MigrationReceiver
+            extends TestOutcomeReceiver<Void, MigrationException> {}
 
     /**
      * A {@link Consumer} that allows throwing checked exceptions from its single abstract method.
