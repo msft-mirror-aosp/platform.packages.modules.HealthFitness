@@ -38,7 +38,6 @@ import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IM
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
-import static android.healthconnect.cts.utils.TestUtils.createMedicalDataSource;
 import static android.healthconnect.cts.utils.TestUtils.getMedicalDataSourcesByIds;
 import static android.healthconnect.cts.utils.TestUtils.getRecordById;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
@@ -97,6 +96,7 @@ import android.health.connect.datatypes.units.Volume;
 import android.health.connect.restore.StageRemoteDataException;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.DataFactory;
+import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.TestUtils;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
@@ -136,6 +136,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -1744,6 +1745,9 @@ public class HealthConnectManagerTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testCreateMedicalDataSource_migrationInProgress_apiBlocked()
             throws InterruptedException {
+        HealthConnectManager manager = TestUtils.getHealthConnectManager();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
         runWithShellPermissionIdentity(
                 () -> {
                     TestUtils.startMigration();
@@ -1752,12 +1756,9 @@ public class HealthConnectManagerTest {
                 },
                 Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
 
-        HealthConnectException exception =
-                assertThrows(
-                        HealthConnectException.class,
-                        () ->
-                                TestUtils.createMedicalDataSource(
-                                        getCreateMedicalDataSourceRequest()));
+        manager.createMedicalDataSource(getCreateMedicalDataSourceRequest(), executor, receiver);
+
+        HealthConnectException exception = receiver.assertAndGetException();
         assertThat(exception.getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
 
@@ -1951,10 +1952,14 @@ public class HealthConnectManagerTest {
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testCreateMedicalDataSource_succeeds() throws InterruptedException {
+        HealthConnectManager manager = TestUtils.getHealthConnectManager();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
         CreateMedicalDataSourceRequest request = getCreateMedicalDataSourceRequest();
 
-        MedicalDataSource responseDataSource = createMedicalDataSource(request);
+        manager.createMedicalDataSource(request, executor, receiver);
 
+        MedicalDataSource responseDataSource = receiver.getResponse();
         assertThat(responseDataSource).isInstanceOf(MedicalDataSource.class);
         assertThat(responseDataSource.getId()).isNotEmpty();
         assertThat(responseDataSource.getFhirBaseUri()).isEqualTo(request.getFhirBaseUri());
