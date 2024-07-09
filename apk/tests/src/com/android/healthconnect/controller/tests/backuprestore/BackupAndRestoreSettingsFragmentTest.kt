@@ -49,6 +49,9 @@ import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import java.time.ZoneId
+import java.util.Locale
+import java.util.TimeZone
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -82,11 +85,20 @@ class BackupAndRestoreSettingsFragmentTest {
 
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
+    private var previousDefaultTimeZone: TimeZone? = null
+    private var previousLocale: Locale? = null
+
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
 
     @Before
     fun setup() {
+        previousDefaultTimeZone = TimeZone.getDefault()
+        previousLocale = Locale.getDefault()
+
+        Locale.setDefault(Locale.US)
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+
         hiltRule.inject()
         context = InstrumentationRegistry.getInstrumentation().context
         navHostController = TestNavHostController(context)
@@ -115,6 +127,9 @@ class BackupAndRestoreSettingsFragmentTest {
     @After
     fun tearDown() {
         reset(healthConnectLogger)
+
+        TimeZone.setDefault(previousDefaultTimeZone)
+        previousLocale?.let { locale -> Locale.setDefault(locale) }
     }
 
     @Test
@@ -139,7 +154,7 @@ class BackupAndRestoreSettingsFragmentTest {
         onView(withText("Import data")).check(matches(isDisplayed()))
         onView(withText("Restore data from a previously exported file"))
             .check(matches(isDisplayed()))
-        onView(withText("Last export: October 20, 2022")).check(matches(isDisplayed()))
+        onView(withText("Last export: Oct 20, 7:06 AM")).check(matches(isDisplayed()))
         onView(withText("Export lets you save your data so you can transfer it to a new phone"))
             .check(matches(isDisplayed()))
         onView(withText("About backup and restore")).check(matches(isDisplayed()))
@@ -174,7 +189,7 @@ class BackupAndRestoreSettingsFragmentTest {
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
-        onView(withText("Last export: October 20, 2022")).check(doesNotExist())
+        onView(withText("Last export: Oct 20, 7:06 AM")).check(doesNotExist())
     }
 
     @Test

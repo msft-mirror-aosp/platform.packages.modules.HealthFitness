@@ -138,7 +138,7 @@ class AutoDeleteFragmentTest {
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "Health\u00A0Connect will auto-delete new data after 3 months. Setting this will also delete existing data older than 3 months."))
+                    "This also deletes data older than 3 months from Health\u00A0Connect.\n\nIf you want to completely delete the data from your connected apps, check each app where your data may be saved."))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Set auto-delete")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -154,30 +154,12 @@ class AutoDeleteFragmentTest {
         verify(healthConnectLogger)
             .logInteraction(AutoDeleteElement.AUTO_DELETE_DIALOG_CONFIRM_BUTTON)
 
-        onView(withText("Existing data will be deleted"))
-            .inRoot(isDialog())
-            .check(matches(isDisplayed()))
-        onView(
-                withText(
-                    "Health\u00A0Connect will delete all data older than 3 months. It may take a day for these changes to appear in your connected apps."))
-            .inRoot(isDialog())
-            .check(matches(isDisplayed()))
-
-        verify(healthConnectLogger)
-            .logImpression(AutoDeleteElement.AUTO_DELETE_CONFIRMATION_DIALOG_CONTAINER)
-        verify(healthConnectLogger)
-            .logImpression(AutoDeleteElement.AUTO_DELETE_CONFIRMATION_DIALOG_DONE_BUTTON)
-
-        onView(withText("Done")).inRoot(isDialog()).perform(click())
-        verify(healthConnectLogger)
-            .logInteraction(AutoDeleteElement.AUTO_DELETE_CONFIRMATION_DIALOG_DONE_BUTTON)
-
         onView(withId(R.id.radio_button_3_months)).check(matches(isChecked()))
     }
 
     @Test
     @Throws(java.lang.Exception::class)
-    fun autoDelete_setRangeTo18Months_confirmationDialog_saveChanges() {
+    fun autoDelete_setRangeTo18Months_saveChanges() {
         Mockito.`when`(viewModel.storedAutoDeleteRange).then {
             MutableLiveData(
                 AutoDeleteViewModel.AutoDeleteState.WithData(
@@ -197,23 +179,21 @@ class AutoDeleteFragmentTest {
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "Health\u00A0Connect will auto-delete new data after 18 months. Setting this will also delete existing data older than 18 months."))
+                    "This also deletes data older than 18 months from Health\u00A0Connect.\n\nIf you want to completely delete the data from your connected apps, check each app where your data may be saved."))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Set auto-delete")).inRoot(isDialog()).check(matches(isDisplayed()))
         onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
 
-        onView(withText("Set auto-delete")).inRoot(isDialog()).perform(click())
+        verify(healthConnectLogger).logImpression(AutoDeleteElement.AUTO_DELETE_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(AutoDeleteElement.AUTO_DELETE_DIALOG_CONFIRM_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(AutoDeleteElement.AUTO_DELETE_DIALOG_CANCEL_BUTTON)
 
-        onView(withText("Existing data will be deleted"))
-            .inRoot(isDialog())
-            .check(matches(isDisplayed()))
-        onView(
-                withText(
-                    "Health\u00A0Connect will delete all data older than 18 months. It may take a day for these changes to appear in your connected apps."))
-            .inRoot(isDialog())
-            .check(matches(isDisplayed()))
-        onView(withText("Done")).inRoot(isDialog()).perform(click())
+        onView(withText("Set auto-delete")).inRoot(isDialog()).perform(click())
+        verify(healthConnectLogger)
+            .logInteraction(AutoDeleteElement.AUTO_DELETE_DIALOG_CONFIRM_BUTTON)
 
         onView(withId(R.id.radio_button_18_months)).check(matches(isChecked()))
     }

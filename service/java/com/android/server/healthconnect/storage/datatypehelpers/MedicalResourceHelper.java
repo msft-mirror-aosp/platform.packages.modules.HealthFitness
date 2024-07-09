@@ -17,8 +17,10 @@
 package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 
 import static com.android.healthfitness.flags.Flags.personalHealthRecord;
+import static com.android.server.healthconnect.phr.FhirJsonExtractor.getFhirResourceTypeInt;
 import static com.android.server.healthconnect.storage.HealthConnectDatabase.createTable;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getDataSourceUuidColumnName;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getCreateMedicalResourceIndicesTableRequest;
@@ -65,7 +67,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -84,18 +85,6 @@ public final class MedicalResourceHelper {
     @VisibleForTesting static final String FHIR_RESOURCE_ID_COLUMN_NAME = "fhir_resource_id";
     private static final List<Pair<String, Integer>> UNIQUE_COLUMNS_INFO =
             List.of(new Pair<>(UUID_COLUMN_NAME, UpsertTableRequest.TYPE_BLOB));
-    private static final String FHIR_RESOURCE_TYPE_IMMUNIZATION = "IMMUNIZATION";
-    private static final int FHIR_RESOURCE_TYPE_UNKNOWN = 0;
-    private static final int FHIR_RESOURCE_TYPE_IMMUNIZATION_INT = 1;
-    // This maps the fhir_resource_type string to an integer representation. The integer
-    // representation does not necessarily match the MEDICAL_RESOURCE_TYPE.
-    // As multiple fhir_resource_type(s) could belong to a single MEDICAL_RESOURCE_TYPE.
-    private static final Map<String, Integer> FHIR_RESOURCE_TYPE_TO_INT = new HashMap<>();
-
-    static {
-        FHIR_RESOURCE_TYPE_TO_INT.put(
-                FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_RESOURCE_TYPE_IMMUNIZATION_INT);
-    }
 
     private static final Map<Integer, Integer> FHIR_RESOURCE_TYPE_TO_MEDICAL_RESOURCE_TYPE =
             new HashMap<>();
@@ -187,15 +176,19 @@ public final class MedicalResourceHelper {
         return new WhereClauses(AND).addWhereInClauseWithoutQuotes(UUID_COLUMN_NAME, hexUuids);
     }
 
-    private static @NonNull List<String> medicalResourceIdsToHexUuids(
+    @NonNull
+    private static List<String> medicalResourceIdsToHexUuids(
             @NonNull List<MedicalResourceId> medicalResourceIds) {
+        // TODO(b/351138955): Temp use getFhirResourceTypeInt for converting before updating
+        // MedicalResourceId to use the IntDef FhirResourceType directly.
         List<UUID> ids =
                 medicalResourceIds.stream()
                         .map(
                                 medicalResourceId ->
                                         generateMedicalResourceUUID(
                                                 medicalResourceId.getFhirResourceId(),
-                                                medicalResourceId.getFhirResourceType(),
+                                                getFhirResourceTypeInt(
+                                                        medicalResourceId.getFhirResourceType()),
                                                 medicalResourceId.getDataSourceId()))
                         .toList();
         return StorageUtils.getListOfHexStrings(ids);
@@ -324,7 +317,7 @@ public final class MedicalResourceHelper {
                 FHIR_DATA_COLUMN_NAME, upsertMedicalResourceInternalRequest.getData());
         resourceContentValues.put(
                 FHIR_RESOURCE_TYPE_COLUMN_NAME,
-                getFhirResourceTypeInt(upsertMedicalResourceInternalRequest.getFhirResourceType()));
+                upsertMedicalResourceInternalRequest.getFhirResourceType());
         resourceContentValues.put(
                 FHIR_RESOURCE_ID_COLUMN_NAME,
                 upsertMedicalResourceInternalRequest.getFhirResourceId());
@@ -395,15 +388,6 @@ public final class MedicalResourceHelper {
     }
 
     /**
-     * Returns the {@link MedicalResource.MedicalResourceType} integer representation of the {@code
-     * fhirResourceType}.
-     */
-    private static int getMedicalResourceType(@NonNull String fhirResourceType) {
-        int fhirResourceTypeInt = getFhirResourceTypeInt(fhirResourceType);
-        return getMedicalResourceType(fhirResourceTypeInt);
-    }
-
-    /**
      * Returns the {@link MedicalResource.MedicalResourceType} integer representation of the given
      * {@code fhirResourceTypeInt}.
      */
@@ -420,14 +404,6 @@ public final class MedicalResourceHelper {
                         + " in HealthConnectServiceImpl");
     }
 
-    /** Returns the integer representation of the given {@code fhirResourceType}. */
-    static int getFhirResourceTypeInt(@NonNull String fhirResourceType) {
-        // TODO(b/342574702): remove the default value once we have validation and it is more
-        // clear what resources should through to the database.
-        return FHIR_RESOURCE_TYPE_TO_INT.getOrDefault(
-                fhirResourceType.toUpperCase(Locale.ROOT), FHIR_RESOURCE_TYPE_UNKNOWN);
-    }
-
     @NonNull
     private static MedicalResource getMedicalResource(@NonNull Cursor cursor) {
         int fhirResourceTypeInt = getCursorInt(cursor, FHIR_RESOURCE_TYPE_COLUMN_NAME);
@@ -441,7 +417,7 @@ public final class MedicalResourceHelper {
     private static Map<Integer, Integer> initIfNecessaryAndGetFhirResourceToMedicalResourceMap() {
         if (personalHealthRecord()) {
             FHIR_RESOURCE_TYPE_TO_MEDICAL_RESOURCE_TYPE.put(
-                    FHIR_RESOURCE_TYPE_IMMUNIZATION_INT,
+                    FHIR_RESOURCE_TYPE_IMMUNIZATION,
                     MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
             return FHIR_RESOURCE_TYPE_TO_MEDICAL_RESOURCE_TYPE;
         }
