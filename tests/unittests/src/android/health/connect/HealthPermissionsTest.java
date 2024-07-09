@@ -20,6 +20,7 @@ import static android.health.connect.HealthPermissions.HEALTH_PERMISSION_GROUP;
 import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTE;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
+import static android.health.connect.MedicalPermissionCategory.IMMUNIZATION;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
@@ -279,8 +280,7 @@ public class HealthPermissionsTest {
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermission_givenCategory_returnsPermission() {
-        String readPermission =
-                HealthPermissions.getMedicalReadPermission(MedicalPermissionCategory.IMMUNIZATION);
+        String readPermission = HealthPermissions.getMedicalReadPermission(IMMUNIZATION);
         assertThat(readPermission).isEqualTo(READ_MEDICAL_DATA_IMMUNIZATION);
     }
 
@@ -309,6 +309,21 @@ public class HealthPermissionsTest {
                 assertWithMessage(PHR_FAIL_MESSAGE).that(permissions).contains(permissionInfo.name);
             }
         }
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalPermissionCategory_returnsImmunizationPermissionCategory() {
+        @MedicalPermissionCategory.Type
+        int medicalPermissionCategory =
+                HealthPermissions.getMedicalPermissionCategory(READ_MEDICAL_DATA_IMMUNIZATION);
+        assertThat(medicalPermissionCategory).isEqualTo(IMMUNIZATION);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalPermissionCategory_permissionWithoutCategory_throws() {
+        HealthPermissions.getMedicalPermissionCategory(WRITE_MEDICAL_DATA);
     }
 
     private boolean isValidHealthPermission(PermissionInfo permissionInfo) {
