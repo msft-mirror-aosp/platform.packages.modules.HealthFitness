@@ -19,7 +19,7 @@
     android:paddingHorizontal="@dimen/spacing_large">
     <RadioGroup
         android:id="@+id/radio_group_frequency"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <RadioButton
             android:id="@+id/radio_button_daily"

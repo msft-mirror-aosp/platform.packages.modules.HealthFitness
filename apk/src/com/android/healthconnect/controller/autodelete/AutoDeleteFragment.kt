@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.autodelete
 
+import android.icu.text.MessageFormat
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -84,7 +85,8 @@ class AutoDeleteFragment : Hilt_AutoDeleteFragment() {
                                 requireContext(),
                                 childFragmentManager,
                                 state.autoDeleteRange,
-                                logger)
+                                logger,
+                            )
                         mAutoDeleteSection?.addPreference(autoDeletePreference)
                     } else {
                         val autoDeletePreference =
@@ -109,6 +111,8 @@ class AutoDeleteFragment : Hilt_AutoDeleteFragment() {
 
         childFragmentManager.setFragmentResultListener(SET_TO_NEVER_EVENT, this) { _, _ ->
             viewModel.updateAutoDeleteRange(AutoDeleteRange.AUTO_DELETE_RANGE_NEVER)
+            Toast.makeText(requireContext(), R.string.auto_delete_off_toast, Toast.LENGTH_LONG)
+                .show()
         }
 
         childFragmentManager.setFragmentResultListener(
@@ -118,7 +122,8 @@ class AutoDeleteFragment : Hilt_AutoDeleteFragment() {
                         ->
                         viewModel.updateAutoDeleteDialogArguments(
                             newAutoDeleteRange as AutoDeleteRange,
-                            oldAutoDeleteRange as AutoDeleteRange)
+                            oldAutoDeleteRange as AutoDeleteRange,
+                        )
                         AutoDeleteConfirmationDialogFragment()
                             .show(childFragmentManager, AutoDeleteConfirmationDialogFragment.TAG)
                     }
@@ -129,8 +134,9 @@ class AutoDeleteFragment : Hilt_AutoDeleteFragment() {
             bundle.getSerializable(AUTO_DELETE_SAVED_EVENT)?.let {
                 viewModel.updateAutoDeleteRange(it as AutoDeleteRange)
             }
-            DeletionStartedDialogFragment()
-                .show(childFragmentManager, DeletionStartedDialogFragment.TAG)
+            viewModel.newAutoDeleteRange.value?.let {
+                Toast.makeText(requireContext(), buildMessage(it), Toast.LENGTH_LONG).show()
+            }
         }
 
         childFragmentManager.setFragmentResultListener(AUTO_DELETE_CANCELLED_EVENT, this) {
@@ -140,5 +146,13 @@ class AutoDeleteFragment : Hilt_AutoDeleteFragment() {
                 viewModel.updateAutoDeleteRange(it as AutoDeleteRange)
             }
         }
+    }
+
+    private fun buildMessage(autoDeleteRange: AutoDeleteRange): String {
+        val count = autoDeleteRange.numberOfMonths
+        return MessageFormat.format(
+            requireContext().getString(R.string.auto_delete_confirmation_toast),
+            mapOf("count" to count),
+        )
     }
 }

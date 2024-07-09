@@ -16,29 +16,37 @@
 
 package com.android.server.healthconnect.phr;
 
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_FIELD_MISSING_INVALID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_ID_NOT_EXISTS;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_RESOURCE_TYPE_NOT_EXISTS;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceId;
-import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceType;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
+
+import android.health.connect.datatypes.FhirResource;
 
 import org.json.JSONException;
 import org.junit.Test;
 
 public class FhirJsonExtractorTest {
     @Test
-    public void getFhirResourceType_success() throws JSONException {
+    public void getFhirResourceType_immunization_success() throws JSONException {
         FhirJsonExtractor extractor = new FhirJsonExtractor(FHIR_DATA_IMMUNIZATION);
-        String expected = getFhirResourceType(FHIR_DATA_IMMUNIZATION);
 
-        String result = extractor.getFhirResourceType();
+        assertThat(extractor.getFhirResourceType())
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION);
+    }
 
-        assertThat(result).isEqualTo(expected);
+    @Test
+    public void getFhirResourceType_unknown_success() throws JSONException {
+        FhirJsonExtractor extractor = new FhirJsonExtractor(FHIR_DATA_ALLERGY);
+
+        assertThat(extractor.getFhirResourceType())
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN);
     }
 
     @Test
@@ -49,15 +57,6 @@ public class FhirJsonExtractorTest {
         String result = extractor.getFhirResourceId();
 
         assertThat(result).isEqualTo(expected);
-    }
-
-    @Test
-    public void getFhirJson_success() throws JSONException {
-        FhirJsonExtractor extractor = new FhirJsonExtractor(FHIR_DATA_IMMUNIZATION);
-
-        String result = extractor.getFhirJson();
-
-        assertThat(result).isEqualTo(FHIR_DATA_IMMUNIZATION);
     }
 
     @Test
@@ -76,7 +75,7 @@ public class FhirJsonExtractorTest {
     }
 
     @Test
-    public void getFhirJson_invalid_fails() throws JSONException {
+    public void constructWithInvalidJson_fails() {
         assertThrows(
                 JSONException.class,
                 () -> new FhirJsonExtractor(FHIR_DATA_IMMUNIZATION_FIELD_MISSING_INVALID));

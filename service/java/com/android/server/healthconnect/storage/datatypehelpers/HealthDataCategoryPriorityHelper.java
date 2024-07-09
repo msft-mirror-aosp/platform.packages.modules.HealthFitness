@@ -540,7 +540,8 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
                         HealthDataCategory.CYCLE_TRACKING,
                         HealthDataCategory.NUTRITION,
                         HealthDataCategory.SLEEP,
-                        HealthDataCategory.VITALS)
+                        HealthDataCategory.VITALS,
+                        HealthDataCategory.WELLNESS)
                 .forEach(
                         (category) ->
                                 getHealthDataCategoryToAppIdPriorityMap()

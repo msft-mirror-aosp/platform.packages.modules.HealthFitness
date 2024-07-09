@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_fitnessAppFragment_to_additionalAccessFragment"
             app:destination="@id/additionalAccessFragment" />
+        <action
+            android:id="@+id/action_connectedAppFragment_to_connectedApps"
+            app:destination="@+id/connected_apps_nav_graph"/>
     </fragment>
 
     <fragment
