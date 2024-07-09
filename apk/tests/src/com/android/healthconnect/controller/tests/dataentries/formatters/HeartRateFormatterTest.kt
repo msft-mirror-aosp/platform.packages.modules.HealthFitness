@@ -21,9 +21,11 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.dataentries.formatters.HeartRateFormatter
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
+import com.android.healthconnect.controller.tests.utils.ClearTimeFormatRule
 import com.android.healthconnect.controller.tests.utils.getHeartRateRecord
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.google.common.truth.Truth.assertThat
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import java.time.ZoneId
@@ -39,7 +41,10 @@ import org.junit.Test
 class HeartRateFormatterTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val clearTimeFormatRule = ClearTimeFormatRule()
 
+    @Inject @ApplicationContext
+    lateinit var applicationContext: Context
     @Inject lateinit var formatter: HeartRateFormatter
     @Inject lateinit var preferences: UnitPreferences
     private lateinit var context: Context

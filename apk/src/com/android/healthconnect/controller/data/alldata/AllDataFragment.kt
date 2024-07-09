@@ -31,7 +31,7 @@ import com.android.healthconnect.controller.categories.HealthDataCategoriesFragm
 import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.START_DELETION_KEY
 import com.android.healthconnect.controller.selectabledeletion.DeletionFragment
 import com.android.healthconnect.controller.selectabledeletion.DeletionPermissionTypesPreference
@@ -48,7 +48,7 @@ import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-/** Fragment for health permission types. */
+/** Fragment for fitness permission types. */
 @AndroidEntryPoint(HealthPreferenceFragment::class)
 open class AllDataFragment : Hilt_AllDataFragment() {
 
@@ -132,7 +132,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.loadAllData()
+        viewModel.loadAllFitnessData()
 
         viewModel.allData.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -158,7 +158,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
             ->
             if (isReloadNeeded) {
                 viewModel.setDeletionState(false)
-                viewModel.loadAllData()
+                viewModel.loadAllFitnessData()
                 deletionViewModel.resetPermissionTypesReloadNeeded()
             }
         }
@@ -266,7 +266,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     }
 
     private fun getPermissionTypePreference(
-        permissionType: HealthPermissionType,
+        permissionType: FitnessPermissionType,
         categoryIcon: Drawable?
     ): Preference {
         return DeletionPermissionTypesPreference(requireContext()).also { preference ->

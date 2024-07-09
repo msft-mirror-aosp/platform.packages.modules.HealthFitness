@@ -1,0 +1,151 @@
+/*
+ * Copyright (C) 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package android.healthconnect.cts.datatypes;
+
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_ALLERGY;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResource;
+import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceBuilder;
+
+import static com.google.common.truth.Truth.assertThat;
+
+import android.health.connect.datatypes.FhirResource;
+import android.os.Parcel;
+import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
+
+import androidx.test.runner.AndroidJUnit4;
+
+import com.android.healthfitness.flags.Flags;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@RunWith(AndroidJUnit4.class)
+@RequiresFlagsEnabled(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+public class FhirResourceTest {
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
+
+    @Test
+    public void testFhirResourceBuilder() {
+        FhirResource resource =
+                new FhirResource.Builder(
+                                FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                FHIR_RESOURCE_ID_IMMUNIZATION,
+                                FHIR_DATA_IMMUNIZATION)
+                        .build();
+
+        assertThat(resource.getType()).isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        assertThat(resource.getId()).isEqualTo(FHIR_RESOURCE_ID_IMMUNIZATION);
+        assertThat(resource.getData()).isEqualTo(FHIR_DATA_IMMUNIZATION);
+    }
+
+    @Test
+    public void testFhirResourceBuilder_setAllFields() {
+        FhirResource resource =
+                getFhirResourceBuilder()
+                        .setType(FHIR_RESOURCE_TYPE_UNKNOWN)
+                        .setId(FHIR_RESOURCE_ID_ALLERGY)
+                        .setData(FHIR_DATA_ALLERGY)
+                        .build();
+
+        assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_UNKNOWN);
+        assertThat(resource.getId()).isEqualTo(FHIR_RESOURCE_ID_ALLERGY);
+        assertThat(resource.getData()).isEqualTo(FHIR_DATA_ALLERGY);
+    }
+
+    @Test
+    public void testFhirResourceBuilder_fromExistingBuilder() {
+        FhirResource.Builder original = getFhirResourceBuilder();
+        FhirResource resource = new FhirResource.Builder(original).build();
+
+        assertThat(resource).isEqualTo(original.build());
+    }
+
+    @Test
+    public void testFhirResourceBuilder_fromExistingInstance() {
+        FhirResource original = getFhirResource();
+        FhirResource resource = new FhirResource.Builder(original).build();
+
+        assertThat(resource).isEqualTo(original);
+    }
+
+    @Test
+    public void testFhirResource_toString() {
+        FhirResource resource =
+                new FhirResource.Builder(
+                                FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                FHIR_RESOURCE_ID_IMMUNIZATION,
+                                FHIR_DATA_IMMUNIZATION)
+                        .build();
+        String expectedPropertiesString =
+                String.format(
+                        "type=%d,id=%s,data=%s",
+                        FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                        FHIR_RESOURCE_ID_IMMUNIZATION,
+                        FHIR_DATA_IMMUNIZATION);
+
+        assertThat(resource.toString())
+                .isEqualTo(String.format("FhirResource{%s}", expectedPropertiesString));
+    }
+
+    @Test
+    public void testFhirResource_equals() {
+        FhirResource resource1 = getFhirResource();
+        FhirResource resource2 = getFhirResource();
+
+        assertThat(resource1.equals(resource2)).isTrue();
+        assertThat(resource1.hashCode()).isEqualTo(resource2.hashCode());
+    }
+
+    @Test
+    public void testFhirResource_equals_comparesAllValues() {
+        FhirResource resource = getFhirResource();
+        FhirResource resourceDifferentType =
+                new FhirResource.Builder(resource).setType(FHIR_RESOURCE_TYPE_UNKNOWN).build();
+        FhirResource resourceDifferentId =
+                new FhirResource.Builder(resource).setId(FHIR_RESOURCE_ID_ALLERGY).build();
+        FhirResource resourceDifferentData =
+                new FhirResource.Builder(resource).setData(FHIR_DATA_ALLERGY).build();
+
+        assertThat(resourceDifferentType.equals(resource)).isFalse();
+        assertThat(resourceDifferentId.equals(resource)).isFalse();
+        assertThat(resourceDifferentData.equals(resource)).isFalse();
+        assertThat(resourceDifferentType.hashCode()).isNotEqualTo(resource.hashCode());
+        assertThat(resourceDifferentId.hashCode()).isNotEqualTo(resource.hashCode());
+        assertThat(resourceDifferentData.hashCode()).isNotEqualTo(resource.hashCode());
+    }
+
+    @Test
+    public void testWriteToParcelThenRestore_objectsAreIdentical() {
+        FhirResource original = getFhirResource();
+
+        Parcel parcel = Parcel.obtain();
+        original.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+        FhirResource restored = FhirResource.CREATOR.createFromParcel(parcel);
+
+        assertThat(restored).isEqualTo(original);
+        parcel.recycle();
+    }
+}

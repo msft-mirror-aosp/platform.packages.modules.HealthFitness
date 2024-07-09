@@ -21,11 +21,11 @@ import android.health.connect.datatypes.HeartRateRecord
 import android.health.connect.datatypes.SpeedRecord
 import android.health.connect.datatypes.StepsCadenceRecord
 import android.health.connect.datatypes.StepsRecord
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.ACTIVE_CALORIES_BURNED
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.BASAL_METABOLIC_RATE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.HEART_RATE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.SPEED
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.STEPS
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.ACTIVE_CALORIES_BURNED
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.BASAL_METABOLIC_RATE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.HEART_RATE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.SPEED
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
 import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper.getDataTypes
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test

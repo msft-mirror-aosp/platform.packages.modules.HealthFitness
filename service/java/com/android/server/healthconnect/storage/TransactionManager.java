@@ -39,8 +39,6 @@ import android.database.sqlite.SQLiteException;
 import android.health.connect.Constants;
 import android.health.connect.HealthConnectException;
 import android.health.connect.PageTokenWrapper;
-import android.health.connect.aidl.MedicalIdFiltersParcel;
-import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.os.UserHandle;
 import android.util.Pair;
@@ -51,7 +49,6 @@ import androidx.annotation.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -69,6 +66,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -188,6 +186,17 @@ public final class TransactionManager {
     public void insertOrReplaceAll(@NonNull List<UpsertTableRequest> upsertTableRequests)
             throws SQLiteException {
         insertAll(upsertTableRequests, this::insertOrReplaceRecord);
+    }
+
+    /**
+     * Inserts or replaces all the {@link UpsertTableRequest} into the given database.
+     *
+     * @param db a {@link SQLiteDatabase}.
+     * @param upsertTableRequests a list of insert table requests.
+     */
+    public void insertOrReplaceAll(
+            @NonNull SQLiteDatabase db, @NonNull List<UpsertTableRequest> upsertTableRequests) {
+        insertRequests(db, upsertTableRequests, this::insertOrReplaceRecord);
     }
 
     /**
@@ -315,24 +324,6 @@ public final class TransactionManager {
                                 aggregateTableRequest.getCommandToFetchAggregateMetadata(), null)) {
             aggregateTableRequest.onResultsFetched(cursor, metaDataCursor);
         }
-    }
-
-    /**
-     * Reads the {@code MedicalResourceInternal} stored in the HealthConnect database.
-     *
-     * @param medicalIdFiltersParcel a {code MedicalIdFiltersParcel}.
-     * @return List of {@code MedicalResourceInternal}s read from medical_resource table based on
-     *     ids.
-     */
-    public List<MedicalResourceInternal> readMedicalResourcesByIds(
-            @NonNull MedicalIdFiltersParcel medicalIdFiltersParcel) throws SQLiteException {
-        List<MedicalResourceInternal> medicalResourceInternals;
-        MedicalResourceHelper helper = new MedicalResourceHelper();
-        ReadTableRequest readTableRequest = helper.getReadTableRequest(medicalIdFiltersParcel);
-        try (Cursor cursor = read(readTableRequest)) {
-            medicalResourceInternals = helper.getMedicalResourceInternals(cursor);
-        }
-        return medicalResourceInternals;
     }
 
     /**
@@ -474,6 +465,21 @@ public final class TransactionManager {
         return getReadableDb().rawQuery(request.getReadCommand(), null);
     }
 
+    /**
+     * Reads the given {@link SQLiteDatabase} using the given {@link ReadTableRequest}.
+     *
+     * <p>Note: It is the responsibility of the caller to close the returned cursor.
+     *
+     * @param db a {@link SQLiteDatabase}.
+     * @param request a {@link ReadTableRequest}.
+     */
+    public Cursor read(@NonNull SQLiteDatabase db, @NonNull ReadTableRequest request) {
+        if (Constants.DEBUG) {
+            Slog.d(TAG, "Read query: " + request.getReadCommand());
+        }
+        return db.rawQuery(request.getReadCommand(), null);
+    }
+
     public long getLastRowIdFor(String tableName) {
         final SQLiteDatabase db = getReadableDb();
         try (Cursor cursor = db.rawQuery(StorageUtils.getMaxPrimaryKeyQuery(tableName), null)) {
@@ -556,10 +562,10 @@ public final class TransactionManager {
      * @return list of distinct packageNames corresponding to the input table name after querying
      *     the table.
      */
-    public HashMap<Integer, HashSet<String>> getDistinctPackageNamesForRecordsTable(
+    public Map<Integer, Set<String>> getDistinctPackageNamesForRecordsTable(
             Set<Integer> recordTypes) throws SQLiteException {
         final SQLiteDatabase db = getReadableDb();
-        HashMap<Integer, HashSet<String>> packagesForRecordTypeMap = new HashMap<>();
+        HashMap<Integer, Set<String>> packagesForRecordTypeMap = new HashMap<>();
         for (Integer recordType : recordTypes) {
             RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordType);
             HashSet<String> packageNamesForDatatype = new HashSet<>();
@@ -619,12 +625,18 @@ public final class TransactionManager {
         final SQLiteDatabase db = getWritableDb();
         db.beginTransaction();
         try {
-            upsertTableRequests.forEach(
-                    (upsertTableRequest) -> insert.accept(db, upsertTableRequest));
+            insertRequests(db, upsertTableRequests, insert);
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
         }
+    }
+
+    private void insertRequests(
+            @NonNull SQLiteDatabase db,
+            @NonNull List<UpsertTableRequest> upsertTableRequests,
+            @NonNull BiConsumer<SQLiteDatabase, UpsertTableRequest> insert) {
+        upsertTableRequests.forEach((upsertTableRequest) -> insert.accept(db, upsertTableRequest));
     }
 
     public <E extends Throwable> void runAsTransaction(TransactionRunnable<E> task) throws E {
@@ -633,6 +645,26 @@ public final class TransactionManager {
         try {
             task.run(db);
             db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    /**
+     * Runs a {@link TransactionRunnableWithReturn} task in a Transaction.
+     *
+     * @param task is a {@link TransactionRunnableWithReturn}.
+     * @param <R> is the return type of the {@code task}.
+     * @param <E> is the exception thrown by the {@code task}.
+     */
+    public <R, E extends Throwable> R runAsTransaction(TransactionRunnableWithReturn<R, E> task)
+            throws E {
+        final SQLiteDatabase db = getWritableDb();
+        db.beginTransaction();
+        try {
+            R result = task.run(db);
+            db.setTransactionSuccessful();
+            return result;
         } finally {
             db.endTransaction();
         }
@@ -809,7 +841,7 @@ public final class TransactionManager {
             try (Cursor cursor = db.rawQuery(request.getReadRequest().getReadCommand(), null)) {
                 if (!cursor.moveToFirst()) {
                     throw new HealthConnectException(
-                            ERROR_INTERNAL, "Conflict found, but couldn't read the entry.");
+                            ERROR_INTERNAL, "Conflict found, but couldn't read the entry.", e);
                 }
 
                 long updateResult = updateEntriesIfRequired(db, request, cursor);
@@ -891,6 +923,18 @@ public final class TransactionManager {
 
     public interface TransactionRunnable<E extends Throwable> {
         void run(SQLiteDatabase db) throws E;
+    }
+
+    /**
+     * Runnable interface where run method throws Throwable or its subclasses and returns any data
+     * type R.
+     *
+     * @param <E> Throwable or its subclass.
+     * @param <R> any data type.
+     */
+    public interface TransactionRunnableWithReturn<R, E extends Throwable> {
+        /** Task to be executed that throws throwable of type E and returns type R. */
+        R run(SQLiteDatabase db) throws E;
     }
 
     @NonNull

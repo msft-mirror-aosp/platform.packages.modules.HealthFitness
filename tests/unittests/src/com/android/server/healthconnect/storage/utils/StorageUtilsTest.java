@@ -16,14 +16,23 @@
 
 package healthconnect.storage.utils;
 
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceId;
+
 import static com.android.server.healthconnect.storage.utils.StorageUtils.UUID_BYTE_SIZE;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.bytesToUuids;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.generateMedicalResourceUUID;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getSingleByteArray;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.health.connect.datatypes.FhirResource;
+
+import org.json.JSONException;
 import org.junit.Test;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,5 +51,27 @@ public class StorageUtilsTest {
         byte[] bytes = getSingleByteArray(List.of(uuid1, uuid2));
         assertThat(bytes.length).isEqualTo(UUID_BYTE_SIZE * 2);
         assertThat(bytesToUuids(bytes)).containsExactly(uuid1, uuid2);
+    }
+
+    @Test
+    public void generateMedicalResourceUuid_correctResult() throws JSONException {
+        byte[] resourceIdBytes = getFhirResourceId(FHIR_DATA_IMMUNIZATION).getBytes();
+        byte[] dataSourceIdBytes = DATA_SOURCE_ID.getBytes();
+        byte[] bytes =
+                ByteBuffer.allocate(
+                                resourceIdBytes.length + Integer.BYTES + dataSourceIdBytes.length)
+                        .put(resourceIdBytes)
+                        .putInt(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
+                        .put(dataSourceIdBytes)
+                        .array();
+        UUID expected = UUID.nameUUIDFromBytes(bytes);
+
+        UUID result =
+                generateMedicalResourceUUID(
+                        getFhirResourceId(FHIR_DATA_IMMUNIZATION),
+                        FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                        DATA_SOURCE_ID);
+
+        assertThat(result).isEqualTo(expected);
     }
 }

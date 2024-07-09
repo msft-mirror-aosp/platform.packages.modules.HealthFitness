@@ -17,7 +17,7 @@ package com.android.healthconnect.controller.permissions.data
 
 import android.health.connect.MedicalPermissionCategory
 
-enum class MedicalPermissionType(val category: Int) {
+enum class MedicalPermissionType(val category: Int)  {
     ALL_MEDICAL_DATA(MedicalPermissionCategory.ALL_MEDICAL_DATA),
     IMMUNIZATION(MedicalPermissionCategory.IMMUNIZATION),
 }

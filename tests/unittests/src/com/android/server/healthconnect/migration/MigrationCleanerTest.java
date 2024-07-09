@@ -47,12 +47,7 @@ public class MigrationCleanerTest {
     @Before
     public void before() {
         MockitoAnnotations.initMocks(this);
-
-        mCleaner =
-                new MigrationCleaner(
-                        mTransactionManager,
-                        MigrationEntityHelper.getInstance(),
-                        PriorityMigrationHelper.getInstance());
+        mCleaner = new MigrationCleaner(mTransactionManager, PriorityMigrationHelper.getInstance());
     }
 
     @Test

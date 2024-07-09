@@ -201,15 +201,16 @@ constructor(
 
     /** Whether the user has enabled this permission in the Permission Request screen. */
     fun isPermissionLocallyGranted(permission: HealthPermission): Boolean {
-        return if (permission is FitnessPermission) {
-            _grantedFitnessPermissions.value.orEmpty().contains(permission)
-        } else if (permission is MedicalPermission) {
-            _grantedMedicalPermissions.value.orEmpty().contains(permission)
-        } else {
-            // when only one additional permission, there's no locally granted state, so by
-            // default it is true
-            _grantedAdditionalPermissions.value.orEmpty().contains(permission) ||
-                _additionalPermissionsList.value.orEmpty().size == 1
+        return when (permission) {
+            is FitnessPermission -> {
+                _grantedFitnessPermissions.value.orEmpty().contains(permission)
+            }
+            is MedicalPermission -> {
+                _grantedMedicalPermissions.value.orEmpty().contains(permission)
+            }
+            else -> {
+                _grantedAdditionalPermissions.value.orEmpty().contains(permission)
+            }
         }
     }
 
@@ -333,7 +334,6 @@ constructor(
         val grantedPermissions = getGrantedHealthPermissionsUseCase.invoke(packageName)
 
         anyReadPermissionsGranted =
-            // TODO(): Decision whether background read should apply to medical permission too.
             grantedPermissions.any { permission -> isDataTypeReadPermission(permission) }
         historyAccessGranted =
             grantedPermissions.any { permission -> isHistoryReadPermission(permission) }

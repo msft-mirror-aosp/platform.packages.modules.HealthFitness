@@ -79,10 +79,10 @@ data class DeletionParameters(
         val healthPermissionType =
             if (deletionType is DeletionType.DeletionTypeHealthPermissionTypeData)
                 (deletionType as DeletionType.DeletionTypeHealthPermissionTypeData)
-                    .healthPermissionType
+                    .fitnessPermissionType
             else
                 (deletionType as DeletionType.DeletionTypeHealthPermissionTypeFromApp)
-                    .healthPermissionType
+                    .fitnessPermissionType
 
         return FitnessPermissionStrings.fromPermissionType(healthPermissionType).lowercaseLabel
     }

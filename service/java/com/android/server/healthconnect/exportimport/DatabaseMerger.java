@@ -17,12 +17,11 @@
 package com.android.server.healthconnect.exportimport;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
-import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
+import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION;
 
-import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorBlob;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 
@@ -97,14 +96,14 @@ public final class DatabaseMerger {
                 long rowId = getCursorLong(cursor, RecordHelper.PRIMARY_COLUMN_NAME);
                 String packageName = getCursorString(cursor, AppInfoHelper.PACKAGE_COLUMN_NAME);
                 String appName = getCursorString(cursor, AppInfoHelper.APPLICATION_COLUMN_NAME);
-                byte[] icon = getCursorBlob(cursor, AppInfoHelper.APP_ICON_COLUMN_NAME);
                 stagedPackageNamesByAppIds.put(rowId, packageName);
 
                 // If this package is not installed on the target device and is not present in the
-                // health db, then fill the health db with the info from source db.
+                // health db, then fill the health db with the info from source db. According to the
+                // security review b/341253579, we should not parse the imported icon.
                 AppInfoHelper.getInstance()
                         .addOrUpdateAppInfoIfNotInstalled(
-                                mContext, packageName, appName, icon, false /* onlyReplace */);
+                                mContext, packageName, appName, false /* onlyReplace */);
             }
         }
 
@@ -247,7 +246,7 @@ public final class DatabaseMerger {
             RecordHelper<?> recordHelper) {
         ReadRecordsRequestUsingFilters<T> readRecordsRequest =
                 new ReadRecordsRequestUsingFilters.Builder<>(recordTypeClass)
-                        .setPageSize(2000)
+                        .setPageSize(MAXIMUM_PAGE_SIZE)
                         .setPageToken(requestToken.encode())
                         .build();
 
@@ -275,7 +274,7 @@ public final class DatabaseMerger {
             Pair<List<RecordInternal<?>>, PageTokenWrapper> readResult =
                     recordHelper.getNextInternalRecordsPageAndToken(
                             cursor,
-                            readTransactionRequest.getPageSize().orElse(DEFAULT_PAGE_SIZE),
+                            readTransactionRequest.getPageSize().orElse(MAXIMUM_PAGE_SIZE),
                             requireNonNull(readTransactionRequest.getPageToken()),
                             stagedPackageNamesByAppIds);
             recordInternalList = readResult.first;

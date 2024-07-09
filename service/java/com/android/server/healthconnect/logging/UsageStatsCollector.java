@@ -46,6 +46,8 @@ final class UsageStatsCollector {
     private final Context mContext;
     private final List<PackageInfo> mAllPackagesInstalledForUser;
 
+    private final PreferenceHelper mPreferenceHelper;
+
     UsageStatsCollector(@NonNull Context context, @NonNull UserHandle userHandle) {
         Objects.requireNonNull(userHandle);
         Objects.requireNonNull(context);
@@ -55,6 +57,7 @@ final class UsageStatsCollector {
                 context.createContextAsUser(userHandle, /* flag= */ 0)
                         .getPackageManager()
                         .getInstalledPackages(PackageManager.PackageInfoFlags.of(GET_PERMISSIONS));
+        mPreferenceHelper = PreferenceHelper.getInstance();
     }
 
     /**
@@ -93,10 +96,8 @@ final class UsageStatsCollector {
     }
 
     boolean isUserMonthlyActive() {
-        PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
-
         String latestAccessLogTimeStampString =
-                preferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME);
+                mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME);
 
         // Return false if preference is empty and make sure latest access was within past
         // 30 days.
@@ -110,16 +111,14 @@ final class UsageStatsCollector {
     }
 
     void upsertLastAccessLogTimeStamp() {
-        PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
 
-        long latestAccessLogTimeStamp =
-                AccessLogsHelper.getInstance().getLatestAccessLogTimeStamp();
+        long latestAccessLogTimeStamp = AccessLogsHelper.getLatestAccessLogTimeStamp();
 
         // Access logs are only stored for 7 days, therefore only update this value if there is an
         // access log. Last access timestamp can be before 7 days and might already exist in
         // preference and in that case we should not overwrite the existing value.
         if (latestAccessLogTimeStamp != Long.MIN_VALUE) {
-            preferenceHelper.insertOrReplacePreference(
+            mPreferenceHelper.insertOrReplacePreference(
                     USER_MOST_RECENT_ACCESS_LOG_TIME, String.valueOf(latestAccessLogTimeStamp));
         }
     }

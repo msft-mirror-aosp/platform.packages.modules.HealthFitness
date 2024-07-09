@@ -16,35 +16,51 @@
 
 package android.healthconnect.cts.utils;
 
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.MedicalResourceId;
+import android.health.connect.UpsertMedicalResourceRequest;
+import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class PhrDataFactory {
-    public static final String DATA_SOURCE_ID = "nhs/123";
+    public static final long DATA_SOURCE_LONG_ID = 123L;
+    public static final String DATA_SOURCE_ID = "123";
     public static final String DATA_SOURCE_PACKAGE_NAME = "com.example.app";
     public static final String DATA_SOURCE_FHIR_BASE_URI = "https://fhir.com/oauth/api/FHIR/R4/";
     public static final String DATA_SOURCE_DISPLAY_NAME = "Hospital X";
-
-    public static final String DIFFERENT_DATA_SOURCE_ID = "nhs/456";
+    public static final long DIFFERENT_DATA_SOURCE_LONG_ID = 456L;
+    public static final String DIFFERENT_DATA_SOURCE_ID = "456";
     public static final String DIFFERENT_DATA_SOURCE_PACKAGE_NAME = "com.other.app";
     public static final String DIFFERENT_DATA_SOURCE_BASE_URI =
             "https://fhir.com/oauth/api/FHIR/R5/";
     public static final String DIFFERENT_DATA_SOURCE_DISPLAY_NAME = "Doctor Y";
 
-    public static final String MEDICAL_RESOURCE_ID = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
-    public static final String FHIR_DATA_IMMUNIZATION = "{\"resourceType\" : \"Immunization\"}";
+    public static final String FHIR_DATA_IMMUNIZATION =
+            "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization1\"}";
+
+    public static final String FHIR_DATA_IMMUNIZATION_ID_NOT_EXISTS =
+            "{\"resourceType\" : \"Immunization\"}";
+    public static final String FHIR_DATA_IMMUNIZATION_RESOURCE_TYPE_NOT_EXISTS =
+            "{\"id\" : \"Immunization1\"}";
+    public static final String FHIR_DATA_IMMUNIZATION_FIELD_MISSING_INVALID = "{\"id\" : }";
     public static final String FHIR_RESOURCE_TYPE_IMMUNIZATION = "Immunization";
     public static final String FHIR_RESOURCE_ID_IMMUNIZATION = "Immunization1";
 
-    public static final String DIFFERENT_MEDICAL_RESOURCE_ID =
-            "ffffffff-gggg-hhhh-iiii-jjjjjjjjjjjj";
-    public static final String FHIR_DATA_ALLERGY = "{\"resourceType\" : \"Allergy\"}";
+    public static final String FHIR_DATA_ALLERGY =
+            "{\"resourceType\" : \"Allergy\", \"id\" : \"Allergy1\"}";
     public static final String FHIR_RESOURCE_TYPE_ALLERGY = "Allergy";
     public static final String FHIR_RESOURCE_ID_ALLERGY = "Allergy1";
+
+    public static final String RESOURCE_TYPE_FIELD_NAME = "resourceType";
+    public static final String RESOURCE_ID_FIELD_NAME = "id";
+    public static final String FHIR_VERSION_R4 = "4.0.1";
 
     /** Creates and returns a {@link MedicalDataSource.Builder} with default arguments. */
     public static MedicalDataSource.Builder getMedicalDataSourceBuilder() {
@@ -79,16 +95,46 @@ public class PhrDataFactory {
     }
 
     /**
+     * Creates and returns a {@link FhirResource.Builder} with default arguments.
+     *
+     * <p>By default, it contains the {@link PhrDataFactory#FHIR_DATA_IMMUNIZATION}.
+     */
+    public static FhirResource.Builder getFhirResourceBuilder() {
+        return new FhirResource.Builder(
+                FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                FHIR_RESOURCE_ID_IMMUNIZATION,
+                FHIR_DATA_IMMUNIZATION);
+    }
+
+    /**
+     * Creates and returns a {@link FhirResource} with default arguments.
+     *
+     * <p>By default, it contains the {@link PhrDataFactory#FHIR_DATA_IMMUNIZATION}.
+     */
+    public static FhirResource getFhirResource() {
+        return getFhirResourceBuilder().build();
+    }
+
+    /**
+     * Creates and returns a {@link FhirResource} with Allergy data.
+     *
+     * <p>{@code FHIR_RESOURCE_TYPE_UNKNOWN} is used here before we create a FHIR resource type for
+     * Allergy.
+     */
+    public static FhirResource getFhirResourceAllergy() {
+        return new FhirResource.Builder(
+                        FHIR_RESOURCE_TYPE_UNKNOWN, FHIR_RESOURCE_ID_ALLERGY, FHIR_DATA_ALLERGY)
+                .build();
+    }
+
+    /**
      * Creates and returns a {@link MedicalResource.Builder} with default arguments.
      *
      * <p>By default, it contains the {@link PhrDataFactory#FHIR_DATA_IMMUNIZATION}.
      */
     public static MedicalResource.Builder getMedicalResourceBuilder() {
         return new MedicalResource.Builder(
-                MEDICAL_RESOURCE_ID,
-                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
-                DATA_SOURCE_ID,
-                FHIR_DATA_IMMUNIZATION);
+                MEDICAL_RESOURCE_TYPE_IMMUNIZATION, DATA_SOURCE_ID, FHIR_DATA_IMMUNIZATION);
     }
 
     /**
@@ -100,6 +146,12 @@ public class PhrDataFactory {
         return getMedicalResourceBuilder().build();
     }
 
+    /** Creates and returns a {@link UpsertMedicalResourceRequest} with default arguments. */
+    public static UpsertMedicalResourceRequest getUpsertMedicalResourceRequest() {
+        return new UpsertMedicalResourceRequest.Builder(DATA_SOURCE_LONG_ID, FHIR_DATA_IMMUNIZATION)
+                .build();
+    }
+
     /**
      * Creates and returns a {@link MedicalResourceId} with default arguments.
      *
@@ -109,5 +161,22 @@ public class PhrDataFactory {
     public static MedicalResourceId getMedicalResourceId() {
         return new MedicalResourceId(
                 DATA_SOURCE_ID, FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_RESOURCE_ID_IMMUNIZATION);
+    }
+
+    /** Returns the FHIR resource type field from the given {@code fhirJSON} string. */
+    public static String getFhirResourceTypeString(String fhirJSON) throws JSONException {
+        return new JSONObject(fhirJSON).getString(RESOURCE_TYPE_FIELD_NAME);
+    }
+
+    /** Returns the FHIR resource id field from the given {@code fhirJSON} string. */
+    public static String getFhirResourceId(String fhirJSON) throws JSONException {
+        return new JSONObject(fhirJSON).getString(RESOURCE_ID_FIELD_NAME);
+    }
+
+    /** Returns an updated FHIR JSON string with an added status field. */
+    public static String addCompletedStatus(String fhirJSON) throws JSONException {
+        JSONObject jsonObj = new JSONObject(fhirJSON);
+        jsonObj.put("status", "completed");
+        return jsonObj.toString();
     }
 }
