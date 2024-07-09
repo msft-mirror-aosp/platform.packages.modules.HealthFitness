@@ -949,6 +949,10 @@ public class HealthConnectManagerTest {
                                         pfdsByFileName, executor, receiver),
                         STAGE_HEALTH_CONNECT_REMOTE_DATA);
 
+        // Staging remote data happens on a background thread, while fetching the state
+        // happens on the controller thread. We need to add a wait time before fetching the
+        // state to make sure it is the latest value.
+        Thread.sleep(500);
         HealthConnectDataState healthConnectDataState =
                 callAndGetResponseWithShellPermissionIdentity(
                         mManager::getHealthConnectDataState, MANAGE_HEALTH_DATA);
@@ -984,6 +988,10 @@ public class HealthConnectManagerTest {
                 },
                 STAGE_HEALTH_CONNECT_REMOTE_DATA);
 
+        // Staging remote data happens on a background thread, while fetching the state
+        // happens on the controller thread. We need to add a wait time before fetching the
+        // state to make sure it is the latest value.
+        Thread.sleep(500);
         HealthConnectDataState healthConnectDataState =
                 callAndGetResponseWithShellPermissionIdentity(
                         mManager::getHealthConnectDataState, MANAGE_HEALTH_DATA);
@@ -1032,6 +1040,10 @@ public class HealthConnectManagerTest {
                                         pfdsByFileName, executor, receiver),
                         STAGE_HEALTH_CONNECT_REMOTE_DATA);
 
+        // Staging remote data happens on a background thread, while fetching the state
+        // happens on the controller thread. We need to add a wait time before fetching the
+        // state to make sure it is the latest value.
+        Thread.sleep(500);
         HealthConnectDataState healthConnectDataState =
                 callAndGetResponseWithShellPermissionIdentity(
                         mManager::getHealthConnectDataState, MANAGE_HEALTH_DATA);

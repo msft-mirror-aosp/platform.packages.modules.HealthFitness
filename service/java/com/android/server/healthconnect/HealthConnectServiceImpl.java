@@ -1871,7 +1871,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     MANAGE_HEALTH_DATA_PERMISSION, Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
             final UserHandle userHandle = Binder.getCallingUserHandle();
             enforceIsForegroundUser(userHandle);
-            HealthConnectThreadScheduler.scheduleInternalTask(
+            HealthConnectThreadScheduler.scheduleControllerTask(
                     () -> {
                         try {
                             @HealthConnectDataState.DataRestoreError
@@ -1932,7 +1932,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        HealthConnectThreadScheduler.scheduleInternalTask(
+        HealthConnectThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
