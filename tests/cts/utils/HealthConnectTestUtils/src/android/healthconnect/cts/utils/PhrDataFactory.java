@@ -16,6 +16,7 @@
 
 package android.healthconnect.cts.utils;
 
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 
 import android.health.connect.CreateMedicalDataSourceRequest;
@@ -115,15 +116,25 @@ public class PhrDataFactory {
     }
 
     /**
+     * Creates and returns a {@link FhirResource} with Allergy data.
+     *
+     * <p>{@code FHIR_RESOURCE_TYPE_UNKNOWN} is used here before we create a FHIR resource type for
+     * Allergy.
+     */
+    public static FhirResource getFhirResourceAllergy() {
+        return new FhirResource.Builder(
+                        FHIR_RESOURCE_TYPE_UNKNOWN, FHIR_RESOURCE_ID_ALLERGY, FHIR_DATA_ALLERGY)
+                .build();
+    }
+
+    /**
      * Creates and returns a {@link MedicalResource.Builder} with default arguments.
      *
      * <p>By default, it contains the {@link PhrDataFactory#FHIR_DATA_IMMUNIZATION}.
      */
     public static MedicalResource.Builder getMedicalResourceBuilder() {
         return new MedicalResource.Builder(
-                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
-                DATA_SOURCE_ID,
-                FHIR_DATA_IMMUNIZATION);
+                MEDICAL_RESOURCE_TYPE_IMMUNIZATION, DATA_SOURCE_ID, FHIR_DATA_IMMUNIZATION);
     }
 
     /**
@@ -153,7 +164,7 @@ public class PhrDataFactory {
     }
 
     /** Returns the FHIR resource type field from the given {@code fhirJSON} string. */
-    public static String getFhirResourceType(String fhirJSON) throws JSONException {
+    public static String getFhirResourceTypeString(String fhirJSON) throws JSONException {
         return new JSONObject(fhirJSON).getString(RESOURCE_TYPE_FIELD_NAME);
     }
 

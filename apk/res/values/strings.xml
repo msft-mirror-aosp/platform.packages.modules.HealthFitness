@@ -545,13 +545,14 @@
     <!-- endregion -->
 
     <!-- region Dialog fragment time range -->
-    <string name="time_range_title" description="Window title where user can choose the time range for data deletion. [CHAR_LIMIT=50]">Choose data to delete</string>
+    <string name="time_range_title" description="Window title where user can choose the time range for data deletion. [CHAR_LIMIT=50]">Choose data to delete from Health&#160;Connect</string>
     <string name="time_range_next_button" description="Label of a button that navigates to the next window of the deletion flow. [CHAR_LIMIT=50]">Next</string>
 
     <string name="time_range_message_all" description="Description explaining that this data deletion user activity is permanent. [CHAR_LIMIT=NONE]">This permanently deletes all data added to Health&#160;Connect in the chosen time period</string>
     <string name="time_range_message_data_type" description="Description explaining that this data deletion user activity is permanent. [CHAR_LIMIT=NONE]">This permanently deletes <xliff:g example="heart rate" id="data_type">%s</xliff:g> data added to Health&#160;Connect in the chosen time period</string>
     <string name="time_range_message_category" description="Description explaining that this data deletion user activity is permanent. [CHAR_LIMIT=NONE]">This permanently deletes <xliff:g example="activity" id="category">%s</xliff:g> data added to Health&#160;Connect in the chosen time period</string>
     <string name="time_range_message_app_data" description="Description explaining that this data deletion user activity is permanent. [CHAR_LIMIT=NONE]">This permanently deletes <xliff:g example="Strava" id="app_data">%s</xliff:g> data added to Health&#160;Connect in the chosen time period</string>
+    <string name="time_range_message_permission_type_app_data" description="Description explaining that this data deletion user activity is permanent. [CHAR_LIMIT=NONE]">This permanently deletes <xliff:g example="heart rate" id="data_type">%1$s</xliff:g> data added by <xliff:g example="Strava" id="app_data">%2$s</xliff:g> to Health&#160;Connect in the chosen time period</string>
 
     <string name="time_range_one_day" description="Item on list of possible deletion time ranges the user can choose. This option deletes data for the last 24 hours. [CHAR_LIMIT=50]">Delete last 24 hours</string>
     <string name="time_range_one_week" description="Item on list of possible deletion time ranges the user can choose. This option deletes data for the last 7 days. [CHAR_LIMIT=50]">Delete last 7 days</string>
@@ -580,11 +581,16 @@
     <string name="confirming_question_app_data_one_week" description="Description of what permanent deletion of data written by given app from the lat 7 days means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g example="Strava" id="app_data">%s</xliff:g> data from the last 7 days?</string>
     <string name="confirming_question_app_data_one_month" description="Description of what permanent deletion of data written by given app from the lat 30 days means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g example="Strava" id="app_data">%s</xliff:g> data from the last 30 days?</string>
 
+    <string name="confirming_question_permission_type_app_data_all" description="Description of what permanent deletion of all permission type data written by given app means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g example="heart rate" id="data_type">%1$s</xliff:g> data added by <xliff:g example="Strava" id="app_data">%2$s</xliff:g> from all time?</string>
+    <string name="confirming_question_permission_type_app_data_one_day" description="Description of what permanent deletion of all permission type data written by given app from the lat 24 hours means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g example="heart rate" id="data_type">%1$s</xliff:g> data added by <xliff:g example="Strava" id="app_data">%2$s</xliff:g> from the last 24 hours?</string>
+    <string name="confirming_question_permission_type_app_data_one_week" description="Description of what permanent deletion of all permission type data written by given app from the lat 7 days means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g example="heart rate" id="data_type">%1$s</xliff:g> data added by <xliff:g example="Strava" id="app_data">%2$s</xliff:g> from the last 7 days?</string>
+    <string name="confirming_question_permission_type_app_data_one_month" description="Description of what permanent deletion of all permission type data written by given app from the lat 30 days means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g example="heart rate" id="data_type">%1$s</xliff:g> data added by <xliff:g example="Strava" id="app_data">%2$s</xliff:g> from the last 30 days?</string>
+
     <string name="confirming_question_app_remove_all_permissions" description="Message of a check box that gives the user an option to remove all permissions from an app they're deleting data from. [CHAR_LIMIT=NONE]">Also remove all <xliff:g example="Strava" id="app_with_permissions">%s</xliff:g> permissions from Health&#160;Connect</string>
 
     <string name="confirming_question_data_type_from_app_all" description="Description of what permanent deletion of given data type written by given app means. [CHAR_LIMIT=NONE]">Permanently delete all <xliff:g example="heart rate" id="data_type">%1$s</xliff:g> data added by <xliff:g example="Strava" id="app_data">%2$s</xliff:g>?</string>
 
-    <string name="confirming_question_single_entry" description="Description of what permanent deletion of a single data point means. [CHAR_LIMIT=NONE]">Permanently delete this entry?</string>
+    <string name="confirming_question_single_entry" description="Description of what permanent deletion of a single data point means. [CHAR_LIMIT=NONE]">Permanently delete this entry from Health&#160;Connect?</string>
     <string name="confirming_question_message" description="Description of what permanent deletion of some data means. [CHAR_LIMIT=NONE]">Connected apps will no longer be able to access this data from Health&#160;Connect</string>
     <string name="confirming_question_message_menstruation" description="Description of what menstruation entries this action will delete [CHAR_LIMIT=NONE]">This will delete all menstruation entries from <xliff:g example="22 January 2022" id="start_date">%1$s</xliff:g> to <xliff:g example="22 January 2022" id="end_date">%2$s</xliff:g>.</string>
     <!--endregion-->
@@ -596,8 +602,10 @@
     <string name="delete_dialog_failure_close_button" description="Label of a button that closes the window. [CHAR_LIMIT=50]">Close</string>
     <!-- endregion -->
 
-    <string name="delete_dialog_success_title" description="Title of the confirmation window of successful data deletion. [CHAR_LIMIT=50]">Data deleted</string>
-    <string name="delete_dialog_success_message" description="A message that confirms successful data deletion. [CHAR_LIMIT=NONE]">This data is no longer stored in Health&#160;Connect.</string>
+    <string name="delete_dialog_success_title" description="Title of the confirmation window of successful data deletion. [CHAR_LIMIT=50]">Data deleted from Health&#160;Connect</string>
+    <string name="delete_dialog_success_message" description="A message that confirms successful data deletion. [CHAR_LIMIT=NONE]">If you want to completely delete the data from your connected apps, check each app where your data may be saved.</string>
+    <string name="delete_dialog_done_button" description="Positive button of the confirmation window of successful data deletion. [CHAR_LIMIT=50]">Done</string>
+    <string name="delete_dialog_see_connected_apps_button" description="Button of the confirmation window of successful data deletion that takes the user to the connected apps screen. [CHAR_LIMIT=50]">See connected apps</string>
 
     <string name="delete_progress_indicator" description="Label of a message on a loading page with a progress bar during data deletion. [CHAR_LIMIT=100]">Deleting your data</string>
 
@@ -1107,8 +1115,8 @@
     other{Auto-delete data after # months?}
   }</string>
     <string name="confirming_message_x_months" description="Description to explain what auto-deleting data older than x months means. [CHAR_LIMIT=NONE]">{count, plural,
-    =1{Health&#160;Connect will auto-delete new data after # month. Setting this will also delete existing data older than # month.}
-    other{Health&#160;Connect will auto-delete new data after # months. Setting this will also delete existing data older than # months.}
+    =1{This also deletes data older than # month from Health&#160;Connect.\n\nIf you want to completely delete the data from your connected apps, check each app where your data may be saved.}
+    other{This also deletes data older than # months from Health&#160;Connect.\n\nIf you want to completely delete the data from your connected apps, check each app where your data may be saved.}
   }</string>
     <string name="set_auto_delete_button" description="Label of a button that sets the chosen auto-delete setting. [CHAR_LIMIT=50]">Set auto-delete</string>
 
@@ -1119,6 +1127,12 @@
   }</string>
     <string name="deletion_started_category_list_section" description="Title of a section that lists those categories where data will be deleted from. [CHAR_LIMIT=NONE]">Data to be deleted from these</string>
     <string name="deletion_started_done_button" description="Button that closes the dialog. [CHAR_LIMIT=40]">Done</string>
+    <string name="auto_delete_confirmation_toast" description="Toast confirming that auto-delete has been set">{
+        count, plural,
+        =1{Auto-delete is on. Data older than # month will be deleted}
+        other{Auto-delete is on. Data older than # months will be deleted}
+    }</string>
+    <string name="auto_delete_off_toast" description="Toast confirming that auto-delete is off.">Auto-delete is off</string>
     <!--endregion -->
 
     <!--  region Priority -->

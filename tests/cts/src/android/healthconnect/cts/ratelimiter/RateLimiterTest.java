@@ -37,6 +37,7 @@ import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
+import android.health.connect.HealthConnectManager;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.TimeInstantRangeFilter;
@@ -47,10 +48,12 @@ import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.HeartRateRecord;
+import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.PhrDataFactory;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
@@ -80,6 +83,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
@@ -286,7 +290,8 @@ public class RateLimiterTest {
 
     private void exceedWriteQuotaWithCreateMedicalDataSource() throws InterruptedException {
         float quotaAcquired = acquireCallQuotaForWrite();
-
+        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
+        HealthConnectManager manager = TestUtils.getHealthConnectManager();
         CreateMedicalDataSourceRequest.Builder request =
                 PhrDataFactory.getCreateMedicalDataSourceRequestBuilder();
         int count = 0;
@@ -295,14 +300,16 @@ public class RateLimiterTest {
             count++;
             // Append request count to the fhir base uri to avoid duplicates.
             request.setFhirBaseUri(DATA_SOURCE_FHIR_BASE_URI + count);
-            TestUtils.createMedicalDataSource(request.build());
+            manager.createMedicalDataSource(
+                    request.build(), Executors.newSingleThreadExecutor(), receiver);
             quotaAcquired--;
         }
         int tryWriteWithBuffer = 20;
         while (tryWriteWithBuffer > 0) {
             count++;
             request.setFhirBaseUri(DATA_SOURCE_FHIR_BASE_URI + count);
-            TestUtils.createMedicalDataSource(request.build());
+            manager.createMedicalDataSource(
+                    request.build(), Executors.newSingleThreadExecutor(), receiver);
 
             tryWriteWithBuffer--;
         }

@@ -51,7 +51,6 @@ public class ExportManager {
 
     @VisibleForTesting static final String LOCAL_EXPORT_DIR_NAME = "export_import";
 
-    @VisibleForTesting
     static final String LOCAL_EXPORT_DATABASE_FILE_NAME = "health_connect_export.db";
 
     @VisibleForTesting static final String LOCAL_EXPORT_ZIP_FILE_NAME = "health_connect_export.zip";
@@ -112,7 +111,8 @@ public class ExportManager {
             }
 
             try {
-                Compressor.compress(localExportDbFile, localExportZipFile);
+                Compressor.compress(
+                        localExportDbFile, LOCAL_EXPORT_DATABASE_FILE_NAME, localExportZipFile);
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to compress local file for export", e);
                 ExportImportSettingsStorage.setLastExportError(

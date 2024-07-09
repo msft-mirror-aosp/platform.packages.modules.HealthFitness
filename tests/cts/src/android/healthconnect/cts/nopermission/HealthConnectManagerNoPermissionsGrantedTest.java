@@ -44,7 +44,6 @@ import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_LONG_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
-import static android.healthconnect.cts.utils.TestUtils.createMedicalDataSource;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByDuration;
@@ -66,6 +65,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.HealthConnectException;
+import android.health.connect.HealthConnectManager;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadRecordsRequestUsingFilters;
@@ -79,6 +79,7 @@ import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.DistanceRecord;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.HeartRateRecord;
+import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.SleepSessionRecord;
 import android.health.connect.datatypes.StepsRecord;
@@ -86,6 +87,7 @@ import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
 import android.healthconnect.cts.lib.MindfulnessSessionRecordFactory;
 import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 import android.platform.test.annotations.RequiresFlagsEnabled;
@@ -108,6 +110,8 @@ import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /** These test run under an environment which has no HC permissions */
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
@@ -411,13 +415,16 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void createMedicalDataSource_noPermission_expectError() throws InterruptedException {
-        try {
-            CreateMedicalDataSourceRequest request =
-                    new CreateMedicalDataSourceRequest.Builder(
-                                    DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME)
-                            .build();
+        CreateMedicalDataSourceRequest request =
+                new CreateMedicalDataSourceRequest.Builder(
+                                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME)
+                        .build();
+        HealthConnectManager manager = TestUtils.getHealthConnectManager();
+        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
 
-            createMedicalDataSource(request);
+        try {
+            manager.createMedicalDataSource(request, executor, receiver);
             Assert.fail(
                     "Create medical data source must be not allowed without correct HC PHR "
                             + "permission");
