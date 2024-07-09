@@ -71,6 +71,8 @@ import android.health.connect.datatypes.ExerciseRoute;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 
+import com.android.healthfitness.flags.Flags;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -1168,6 +1170,9 @@ public final class HealthPermissions {
         sWriteHealthPermissionToHealthDataCategoryMap.put(
                 WRITE_RESTING_HEART_RATE, HealthDataCategory.VITALS);
 
+        sWriteHealthPermissionToHealthDataCategoryMap.put(
+                WRITE_MINDFULNESS, HealthDataCategory.WELLNESS);
+
         sDataCategoryToWritePermissionsMap.put(
                 HealthDataCategory.ACTIVITY,
                 new String[] {
@@ -1227,8 +1232,10 @@ public final class HealthPermissions {
                     WRITE_RESTING_HEART_RATE
                 });
 
-        sDataCategoryToWritePermissionsMap.put(
-                HealthDataCategory.WELLNESS, new String[] {WRITE_MINDFULNESS});
+        if (Flags.mindfulness()) {
+            sDataCategoryToWritePermissionsMap.put(
+                    HealthDataCategory.WELLNESS, new String[] {WRITE_MINDFULNESS});
+        }
     }
 
     private static synchronized void populateReadMedicalPermissionCategoryToMedicalPermissionMap() {

@@ -21,6 +21,8 @@ import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR
 import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR_VERSION_MISMATCH;
 import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR_WRONG_FILE;
 
+import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DATABASE_FILE_NAME;
+
 import static java.util.Objects.requireNonNull;
 
 import android.annotation.NonNull;
@@ -63,7 +65,7 @@ public final class ImportManager {
     }
 
     /** Reads and merges the backup data from a local file. */
-    public synchronized void runImport(UserHandle userHandle, Uri file) {
+    public synchronized void runImport(UserHandle userHandle, Uri uri) {
         Slog.i(TAG, "Import started.");
         ExportImportSettingsStorage.setImportOngoing(true);
         Context userContext = mContext.createContextAsUser(userHandle, 0);
@@ -73,8 +75,13 @@ public final class ImportManager {
 
         try {
             try {
-                Compressor.decompress(file, importDbFile, userContext);
+                Compressor.decompress(
+                        uri, LOCAL_EXPORT_DATABASE_FILE_NAME, importDbFile, userContext);
                 Slog.i(TAG, "Import file unzipped: " + importDbFile.getAbsolutePath());
+            } catch (IllegalArgumentException e) {
+                Slog.e(TAG, "Failed to decompress file ", e);
+                ExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_WRONG_FILE);
+                return;
             } catch (Exception e) {
                 Slog.e(
                         TAG,

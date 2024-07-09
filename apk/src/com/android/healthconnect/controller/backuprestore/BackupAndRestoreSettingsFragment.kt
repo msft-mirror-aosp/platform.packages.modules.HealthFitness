@@ -193,7 +193,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
             val lastExportTime =
                 getString(
                     R.string.last_export_time,
-                    dateFormatter.formatLongDate(lastSuccessfulExportTime))
+                    dateFormatter.formatDateAndTime(lastSuccessfulExportTime))
             settingsCategory?.addPreference(
                 ExportStatusPreference(requireContext(), lastExportTime).also {
                     it.order = PREVIOUS_EXPORT_STATUS_ORDER
