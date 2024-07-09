@@ -23,7 +23,7 @@ flag {
     name: "export_import"
     namespace: "health_fitness_aconfig"
     description: "Flag for adding new export/import feature."
-    bug: "318484778"
+    bug: "318484000"
     is_fixed_read_only: true
 }
 
@@ -32,5 +32,13 @@ flag {
     namespace: "health_fitness_aconfig"
     description: "Enables mindfulness session data type."
     bug: "341704006"
+    is_fixed_read_only: true
+}
+
+flag {
+    name: "dependency_injection"
+    namespace: "health_fitness_aconfig"
+    description: "Enables dependency injection."
+    bug: "341654919"
     is_fixed_read_only: true
 }

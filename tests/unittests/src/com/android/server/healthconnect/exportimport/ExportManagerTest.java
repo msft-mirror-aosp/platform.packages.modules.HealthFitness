@@ -101,7 +101,7 @@ public class ExportManagerTest {
     }
 
     @Test
-    public void runExport_deletesAccessLogsTableContent() throws Exception {
+    public void deletesAccessLogsTableContent() throws Exception {
         mTransactionTestUtils.insertAccessLog();
         mTransactionTestUtils.insertAccessLog();
         HealthConnectDatabase originalDatabase =
@@ -112,6 +112,7 @@ public class ExportManagerTest {
 
         Compressor.decompress(
                 Uri.fromFile(mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME)),
+                LOCAL_EXPORT_DATABASE_FILE_NAME,
                 mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME),
                 mContext);
         try (HealthConnectDatabase remoteExportHealthConnectDatabase =
@@ -121,7 +122,7 @@ public class ExportManagerTest {
     }
 
     @Test
-    public void runExport_deletesChangeLogsTableContent() throws Exception {
+    public void deletesChangeLogsTableContent() throws Exception {
         mTransactionTestUtils.insertChangeLog();
         mTransactionTestUtils.insertChangeLog();
         HealthConnectDatabase originalDatabase =
@@ -132,6 +133,7 @@ public class ExportManagerTest {
 
         Compressor.decompress(
                 Uri.fromFile(mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME)),
+                LOCAL_EXPORT_DATABASE_FILE_NAME,
                 mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME),
                 mContext);
         try (HealthConnectDatabase remoteExportHealthConnectDatabase =
@@ -141,7 +143,7 @@ public class ExportManagerTest {
     }
 
     @Test
-    public void runExport_deletesLocalCopies() {
+    public void deletesLocalCopies() {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, "healthconnect.db");
@@ -157,7 +159,7 @@ public class ExportManagerTest {
     }
 
     @Test
-    public void runExport_makesRemoteCopyOfDatabase() throws Exception {
+    public void makesRemoteCopyOfDatabase() throws Exception {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, "healthconnect.db");
@@ -167,6 +169,7 @@ public class ExportManagerTest {
 
         Compressor.decompress(
                 Uri.fromFile(mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME)),
+                LOCAL_EXPORT_DATABASE_FILE_NAME,
                 mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME),
                 mContext);
         try (HealthConnectDatabase remoteExportHealthConnectDatabase =
@@ -176,7 +179,7 @@ public class ExportManagerTest {
     }
 
     @Test
-    public void runExport_destinationUriDoesNotExist_exportFails() {
+    public void destinationUriDoesNotExist_exportFails() {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, "healthconnect.db");
@@ -193,7 +196,7 @@ public class ExportManagerTest {
     }
 
     @Test
-    public void runExport_updatesLastSuccessfulExport_onSuccessOnly() {
+    public void updatesLastSuccessfulExport_onSuccessOnly() {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, "healthconnect.db");

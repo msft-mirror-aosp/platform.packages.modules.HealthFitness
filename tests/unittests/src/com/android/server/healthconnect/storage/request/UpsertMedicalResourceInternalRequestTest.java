@@ -20,9 +20,10 @@ import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_LONG_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceId;
-import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceType;
+import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceTypeString;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+import static com.android.server.healthconnect.phr.FhirJsonExtractor.getFhirResourceTypeInt;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -64,7 +65,9 @@ public class UpsertMedicalResourceInternalRequestTest {
         UpsertMedicalResourceInternalRequest expected =
                 new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
-                        .setFhirResourceType(getFhirResourceType(FHIR_DATA_IMMUNIZATION))
+                        .setFhirResourceType(
+                                getFhirResourceTypeInt(
+                                        getFhirResourceTypeString(FHIR_DATA_IMMUNIZATION)))
                         .setFhirResourceId(getFhirResourceId(FHIR_DATA_IMMUNIZATION))
                         .setData(FHIR_DATA_IMMUNIZATION);
 
