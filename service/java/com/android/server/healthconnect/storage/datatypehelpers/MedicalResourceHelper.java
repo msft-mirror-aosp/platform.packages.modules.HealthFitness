@@ -47,6 +47,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.health.connect.Constants;
 import android.health.connect.MedicalResourceId;
+import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.MedicalResource;
 import android.util.Pair;
 import android.util.Slog;
@@ -329,12 +330,18 @@ public final class MedicalResourceHelper {
      * UpsertMedicalResourceInternalRequest}.
      */
     private static MedicalResource buildMedicalResource(
-            @NonNull UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest) {
+            @NonNull UpsertMedicalResourceInternalRequest internalRequest) {
+        int fhirResourceType = internalRequest.getFhirResourceType();
+        FhirResource fhirResource =
+                new FhirResource.Builder(
+                                fhirResourceType,
+                                internalRequest.getFhirResourceId(),
+                                internalRequest.getData())
+                        .build();
         return new MedicalResource.Builder(
-                        getMedicalResourceType(
-                                upsertMedicalResourceInternalRequest.getFhirResourceType()),
-                        upsertMedicalResourceInternalRequest.getDataSourceId(),
-                        upsertMedicalResourceInternalRequest.getData())
+                        getMedicalResourceType(fhirResourceType),
+                        internalRequest.getDataSourceId(),
+                        fhirResource)
                 .build();
     }
 
@@ -407,10 +414,16 @@ public final class MedicalResourceHelper {
     @NonNull
     private static MedicalResource getMedicalResource(@NonNull Cursor cursor) {
         int fhirResourceTypeInt = getCursorInt(cursor, FHIR_RESOURCE_TYPE_COLUMN_NAME);
+        FhirResource fhirResource =
+                new FhirResource.Builder(
+                                fhirResourceTypeInt,
+                                getCursorString(cursor, FHIR_RESOURCE_ID_COLUMN_NAME),
+                                getCursorString(cursor, FHIR_DATA_COLUMN_NAME))
+                        .build();
         return new MedicalResource.Builder(
                         getMedicalResourceType(fhirResourceTypeInt),
                         getCursorUUID(cursor, getDataSourceUuidColumnName()).toString(),
-                        getCursorString(cursor, FHIR_DATA_COLUMN_NAME))
+                        fhirResource)
                 .build();
     }
 
