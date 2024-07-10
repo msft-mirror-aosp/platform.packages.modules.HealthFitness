@@ -18,7 +18,7 @@ package android.healthconnect.cts;
 
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
+import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceAllergy;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResource;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceBuilder;
 
@@ -70,7 +70,7 @@ public class ReadMedicalResourcesResponseTest {
                         getMedicalResourceBuilder()
                                 .setType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                                 .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
-                                .setData(FHIR_DATA_ALLERGY)
+                                .setFhirResource(getFhirResourceAllergy())
                                 .build());
         ReadMedicalResourcesResponse response = new ReadMedicalResourcesResponse(medicalResources);
 
@@ -97,7 +97,7 @@ public class ReadMedicalResourcesResponseTest {
                                 getMedicalResourceBuilder()
                                         .setType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                                         .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
-                                        .setData(FHIR_DATA_ALLERGY)
+                                        .setFhirResource(getFhirResourceAllergy())
                                         .build()));
 
         assertThat(responseDifferentList.equals(response)).isFalse();
@@ -112,7 +112,7 @@ public class ReadMedicalResourcesResponseTest {
                         getMedicalResourceBuilder()
                                 .setType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                                 .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
-                                .setData(FHIR_DATA_ALLERGY)
+                                .setFhirResource(getFhirResourceAllergy())
                                 .build());
         ReadMedicalResourcesResponse original = new ReadMedicalResourcesResponse(medicalResources);
 

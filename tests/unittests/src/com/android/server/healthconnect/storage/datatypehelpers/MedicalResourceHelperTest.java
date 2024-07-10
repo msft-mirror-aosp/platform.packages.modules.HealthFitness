@@ -25,13 +25,13 @@ import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_PACKAGE
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_BASE_URI;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_DISPLAY_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_TYPE_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.addCompletedStatus;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResource;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceAllergy;
+import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceBuilder;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceId;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceTypeString;
 
@@ -261,7 +261,7 @@ public class MedicalResourceHelperTest {
                         new MedicalResource.Builder(
                                         MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                                         dataSource.getId(),
-                                        fhirResource.getData())
+                                        fhirResource)
                                 .build());
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest =
                 new UpsertMedicalResourceInternalRequest()
@@ -304,7 +304,7 @@ public class MedicalResourceHelperTest {
                         new MedicalResource.Builder(
                                         MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                                         dataSource.getId(),
-                                        FHIR_DATA_IMMUNIZATION)
+                                        fhirResource)
                                 .build());
 
         List<MedicalResource> upsertedMedicalResources =
@@ -337,7 +337,7 @@ public class MedicalResourceHelperTest {
                 new MedicalResource.Builder(
                                 MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                                 dataSource.getId(),
-                                fhirResource1.getData())
+                                fhirResource1)
                         .build();
         MedicalResourceId medicalResourceId1 =
                 new MedicalResourceId(
@@ -353,9 +353,7 @@ public class MedicalResourceHelperTest {
                         .setDataSourceId(dataSource.getId());
         MedicalResource resource2 =
                 new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_UNKNOWN,
-                                dataSource.getId(),
-                                fhirResource2.getData())
+                                MEDICAL_RESOURCE_TYPE_UNKNOWN, dataSource.getId(), fhirResource2)
                         .build();
         List<MedicalResource> expected = List.of(resource1, resource2);
         MedicalResourceId medicalResourceId2 =
@@ -402,7 +400,7 @@ public class MedicalResourceHelperTest {
                 new MedicalResource.Builder(
                                 MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                                 dataSource1.getId(),
-                                fhirResource.getData())
+                                fhirResource)
                         .build();
         MedicalResourceId medicalResourceId1 =
                 new MedicalResourceId(
@@ -419,7 +417,7 @@ public class MedicalResourceHelperTest {
                 new MedicalResource.Builder(
                                 MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                                 dataSource2.getId(),
-                                fhirResource.getData())
+                                fhirResource)
                         .build();
         List<MedicalResource> expected = List.of(resource1, resource2);
         MedicalResourceId medicalResourceId2 =
@@ -450,6 +448,10 @@ public class MedicalResourceHelperTest {
                         DATA_SOURCE_DISPLAY_NAME,
                         DATA_SOURCE_PACKAGE_NAME);
         FhirResource fhirResource = getFhirResource();
+        FhirResource fhirResourceUpdated =
+                getFhirResourceBuilder()
+                        .setData(addCompletedStatus(getFhirResource().getData()))
+                        .build();
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest =
                 new UpsertMedicalResourceInternalRequest()
                         .setFhirResourceId(fhirResource.getId())
@@ -460,7 +462,7 @@ public class MedicalResourceHelperTest {
                 new UpsertMedicalResourceInternalRequest()
                         .setFhirResourceId(fhirResource.getId())
                         .setFhirResourceType(fhirResource.getType())
-                        .setData(addCompletedStatus(fhirResource.getData()))
+                        .setData(fhirResourceUpdated.getData())
                         .setDataSourceId(dataSource.getId());
         List<MedicalResourceId> ids =
                 List.of(
@@ -473,7 +475,7 @@ public class MedicalResourceHelperTest {
                         new MedicalResource.Builder(
                                         MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                                         dataSource.getId(),
-                                        addCompletedStatus(fhirResource.getData()))
+                                        fhirResourceUpdated)
                                 .build());
 
         mMedicalResourceHelper.upsertMedicalResources(
@@ -581,7 +583,7 @@ public class MedicalResourceHelperTest {
                         new MedicalResource.Builder(
                                         MEDICAL_RESOURCE_TYPE_UNKNOWN,
                                         dataSource.getId(),
-                                        FHIR_DATA_ALLERGY)
+                                        fhirResource2)
                                 .build());
     }
 
@@ -593,7 +595,7 @@ public class MedicalResourceHelperTest {
     }
 
     @Test
-    public void getDeleteRequest_oneId_success() throws JSONException {
+    public void getDeleteRequest_oneId_success() {
         MedicalResourceId medicalResourceId =
                 new MedicalResourceId(DATA_SOURCE_ID, FHIR_RESOURCE_TYPE_IMMUNIZATION, "anId");
         DeleteTableRequest request =

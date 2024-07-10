@@ -60,20 +60,24 @@ class TimeRangeDialogFragment : Hilt_TimeRangeDialogFragment() {
         title.text = getString(R.string.time_range_title)
 
         return AlertDialogBuilder(
-                this, DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_CONTAINER)
+                this,
+                DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_CONTAINER,
+            )
             .setView(view)
             .setNeutralButton(
                 android.R.string.cancel,
-                DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_CANCEL_BUTTON) { _, _ ->
-                }
+                DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_CANCEL_BUTTON,
+            ) { _, _ ->
+            }
             .setPositiveButton(
                 R.string.time_range_next_button,
-                DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_NEXT_BUTTON) { _, _ ->
-                    val chosenRange = getChosenRange(radioGroup)
-                    viewModel.setChosenRange(chosenRange)
-                    viewModel.setEndTime(Instant.now())
-                    setFragmentResult(TIME_RANGE_SELECTION_EVENT, Bundle())
-                }
+                DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_NEXT_BUTTON,
+            ) { _, _ ->
+                val chosenRange = getChosenRange(radioGroup)
+                viewModel.setChosenRange(chosenRange)
+                viewModel.setEndTime(Instant.now())
+                setFragmentResult(TIME_RANGE_SELECTION_EVENT, Bundle())
+            }
             .setAdditionalLogging { radioGroupLogging(radioGroup) }
             .create()
     }
@@ -85,8 +89,7 @@ class TimeRangeDialogFragment : Hilt_TimeRangeDialogFragment() {
         return when (deletionType) {
             is DeletionType.DeletionTypeAllData ->
                 resources.getString(R.string.time_range_message_all)
-            is DeletionType.DeletionTypeHealthPermissionTypeData,
-            is DeletionType.DeletionTypeHealthPermissionTypeFromApp -> {
+            is DeletionType.DeletionTypeHealthPermissionTypeData -> {
                 val permissionTypeLabel = getString(deletionParameters.getPermissionTypeLabel())
                 resources.getString(R.string.time_range_message_data_type, permissionTypeLabel)
             }
@@ -97,6 +100,15 @@ class TimeRangeDialogFragment : Hilt_TimeRangeDialogFragment() {
             is DeletionType.DeletionTypeAppData -> {
                 val appName = deletionParameters.getAppName()
                 resources.getString(R.string.time_range_message_app_data, appName)
+            }
+            is DeletionType.DeletionTypeHealthPermissionTypeFromApp -> {
+                val appName = deletionParameters.getAppName()
+                val permissionTypeLabel = getString(deletionParameters.getPermissionTypeLabel())
+                resources.getString(
+                    R.string.time_range_message_permission_type_app_data,
+                    permissionTypeLabel,
+                    appName,
+                )
             }
             else ->
                 throw UnsupportedOperationException(
