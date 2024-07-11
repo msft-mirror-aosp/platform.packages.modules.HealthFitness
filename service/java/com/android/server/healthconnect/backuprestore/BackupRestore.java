@@ -186,6 +186,7 @@ public final class BackupRestore {
     private final DatabaseMerger mDatabaseMerger;
 
     private final PreferenceHelper mPreferenceHelper;
+    private final TransactionManager mTransactionManager;
 
     private boolean mActivelyStagingRemoteData = false;
 
@@ -202,6 +203,7 @@ public final class BackupRestore {
         mCurrentForegroundUser = mContext.getUser();
         mDatabaseMerger = new DatabaseMerger(context);
         mPreferenceHelper = PreferenceHelper.getInstance();
+        mTransactionManager = TransactionManager.getInitialisedInstance();
     }
 
     public void setupForUser(UserHandle currentForegroundUser) {
@@ -579,7 +581,7 @@ public final class BackupRestore {
             return;
         }
 
-        int currentDbVersion = TransactionManager.getInitialisedInstance().getDatabaseVersion();
+        int currentDbVersion = mTransactionManager.getDatabaseVersion();
         DatabaseContext dbContext =
                 DatabaseContext.create(mContext, STAGED_DATABASE_DIR, mCurrentForegroundUser);
         File stagedDbFile = dbContext.getDatabasePath(STAGED_DATABASE_NAME);
@@ -620,7 +622,7 @@ public final class BackupRestore {
     private Map<String, File> getBackupFilesByFileNames(UserHandle userHandle) {
         ArrayMap<String, File> backupFilesByFileNames = new ArrayMap<>();
 
-        File databasePath = TransactionManager.getInitialisedInstance().getDatabasePath();
+        File databasePath = mTransactionManager.getDatabasePath();
         backupFilesByFileNames.put(STAGED_DATABASE_NAME, databasePath);
 
         File backupDataDir = getBackupDataDirectoryForUser(userHandle.getIdentifier());

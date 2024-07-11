@@ -116,6 +116,30 @@ public class PhrDataFactory {
     }
 
     /**
+     * Creates and returns a {@link FhirResource} with the status field of the {@link
+     * PhrDataFactory#FHIR_DATA_IMMUNIZATION} updated.
+     */
+    public static FhirResource getUpdatedImmunizationFhirResource() throws JSONException {
+        return new FhirResource.Builder(
+                        FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                        FHIR_RESOURCE_ID_IMMUNIZATION,
+                        addCompletedStatus(FHIR_DATA_IMMUNIZATION))
+                .build();
+    }
+
+    /**
+     * Creates and returns a {@link FhirResource} with the status field of the {@link
+     * PhrDataFactory#FHIR_DATA_ALLERGY} updated.
+     */
+    public static FhirResource getUpdatedAllergyFhirResource() throws JSONException {
+        return new FhirResource.Builder(
+                        FHIR_RESOURCE_TYPE_UNKNOWN,
+                        FHIR_RESOURCE_ID_ALLERGY,
+                        addCompletedStatus(FHIR_DATA_ALLERGY))
+                .build();
+    }
+
+    /**
      * Creates and returns a {@link FhirResource} with Allergy data.
      *
      * <p>{@code FHIR_RESOURCE_TYPE_UNKNOWN} is used here before we create a FHIR resource type for
