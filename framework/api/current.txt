@@ -192,11 +192,11 @@ package android.health.connect {
   }
 
   @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalResourceId implements android.os.Parcelable {
-    ctor public MedicalResourceId(@NonNull String, @NonNull String, @NonNull String);
+    ctor public MedicalResourceId(@NonNull String, int, @NonNull String);
     method public int describeContents();
     method @NonNull public String getDataSourceId();
     method @NonNull public String getFhirResourceId();
-    method @NonNull public String getFhirResourceType();
+    method public int getFhirResourceType();
     method public void writeToParcel(@NonNull android.os.Parcel, int);
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.MedicalResourceId> CREATOR;
   }

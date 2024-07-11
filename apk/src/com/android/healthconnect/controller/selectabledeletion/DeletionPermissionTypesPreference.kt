@@ -21,6 +21,7 @@ import android.view.View.OnClickListener
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.CheckBox
+import androidx.preference.Preference.OnPreferenceClickListener
 import androidx.preference.PreferenceViewHolder
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
@@ -47,7 +48,6 @@ class DeletionPermissionTypesPreference constructor(context: Context) : HealthPr
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
         widgetFrame = holder?.findViewById(android.R.id.widget_frame) as ViewGroup?
-
         showCheckbox(isShowCheckbox)
 
         checkBox = holder?.findViewById(R.id.checkbox_button) as CheckBox
@@ -110,6 +110,8 @@ class DeletionPermissionTypesPreference constructor(context: Context) : HealthPr
 
     fun setIsChecked(isChecked: Boolean) {
         this.isChecked = isChecked
+        checkBox?.isChecked = isChecked
+        notifyChanged()
     }
 
     fun getIsChecked(): Boolean {

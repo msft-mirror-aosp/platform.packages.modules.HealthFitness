@@ -16,6 +16,7 @@
 
 package android.healthconnect.cts.utils;
 
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 
@@ -50,7 +51,6 @@ public class PhrDataFactory {
     public static final String FHIR_DATA_IMMUNIZATION_RESOURCE_TYPE_NOT_EXISTS =
             "{\"id\" : \"Immunization1\"}";
     public static final String FHIR_DATA_IMMUNIZATION_FIELD_MISSING_INVALID = "{\"id\" : }";
-    public static final String FHIR_RESOURCE_TYPE_IMMUNIZATION = "Immunization";
     public static final String FHIR_RESOURCE_ID_IMMUNIZATION = "Immunization1";
 
     public static final String FHIR_DATA_ALLERGY =
@@ -73,8 +73,6 @@ public class PhrDataFactory {
 
     /**
      * Creates and returns a {@link MedicalResource} with default arguments.
-     *
-     * <p>By default, it contains the {@link PhrDataFactory#FHIR_DATA_IMMUNIZATION}.
      */
     public static MedicalDataSource getMedicalDataSource() {
         return getMedicalDataSourceBuilder().build();
@@ -101,7 +99,7 @@ public class PhrDataFactory {
      */
     public static FhirResource.Builder getFhirResourceBuilder() {
         return new FhirResource.Builder(
-                FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                FHIR_RESOURCE_TYPE_IMMUNIZATION,
                 FHIR_RESOURCE_ID_IMMUNIZATION,
                 FHIR_DATA_IMMUNIZATION);
     }
@@ -113,6 +111,30 @@ public class PhrDataFactory {
      */
     public static FhirResource getFhirResource() {
         return getFhirResourceBuilder().build();
+    }
+
+    /**
+     * Creates and returns a {@link FhirResource} with the status field of the {@link
+     * PhrDataFactory#FHIR_DATA_IMMUNIZATION} updated.
+     */
+    public static FhirResource getUpdatedImmunizationFhirResource() throws JSONException {
+        return new FhirResource.Builder(
+                        FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                        FHIR_RESOURCE_ID_IMMUNIZATION,
+                        addCompletedStatus(FHIR_DATA_IMMUNIZATION))
+                .build();
+    }
+
+    /**
+     * Creates and returns a {@link FhirResource} with the status field of the {@link
+     * PhrDataFactory#FHIR_DATA_ALLERGY} updated.
+     */
+    public static FhirResource getUpdatedAllergyFhirResource() throws JSONException {
+        return new FhirResource.Builder(
+                        FHIR_RESOURCE_TYPE_UNKNOWN,
+                        FHIR_RESOURCE_ID_ALLERGY,
+                        addCompletedStatus(FHIR_DATA_ALLERGY))
+                .build();
     }
 
     /**
@@ -155,7 +177,7 @@ public class PhrDataFactory {
     /**
      * Creates and returns a {@link MedicalResourceId} with default arguments.
      *
-     * <p>By default, it contains the {@link PhrDataFactory#FHIR_RESOURCE_TYPE_IMMUNIZATION} and
+     * <p>By default, it contains the {@link FhirResource#FHIR_RESOURCE_TYPE_IMMUNIZATION} and
      * {@link PhrDataFactory#FHIR_RESOURCE_ID_IMMUNIZATION}.
      */
     public static MedicalResourceId getMedicalResourceId() {

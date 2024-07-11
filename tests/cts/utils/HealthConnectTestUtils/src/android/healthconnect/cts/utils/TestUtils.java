@@ -73,7 +73,6 @@ import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissionCategory;
 import android.health.connect.InsertRecordsResponse;
-import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequest;
@@ -1247,18 +1246,6 @@ public final class TestUtils {
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager()
                 .upsertMedicalResources(requests, Executors.newSingleThreadExecutor(), receiver);
-        return receiver.getResponse();
-    }
-
-    /**
-     * Helper function to read medical resources from the DB by a list of {@link MedicalResourceId},
-     * using HealthConnectManager.
-     */
-    public static List<MedicalResource> readMedicalResourcesByIds(List<MedicalResourceId> ids)
-            throws InterruptedException {
-        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-        getHealthConnectManager()
-                .readMedicalResources(ids, Executors.newSingleThreadExecutor(), receiver);
         return receiver.getResponse();
     }
 

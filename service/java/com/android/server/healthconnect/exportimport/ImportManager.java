@@ -56,12 +56,14 @@ public final class ImportManager {
 
     private final Context mContext;
     private final DatabaseMerger mDatabaseMerger;
+    private final TransactionManager mTransactionManager;
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public ImportManager(@NonNull Context context) {
         requireNonNull(context);
         mContext = context;
         mDatabaseMerger = new DatabaseMerger(context);
+        mTransactionManager = TransactionManager.getInitialisedInstance();
     }
 
     /** Reads and merges the backup data from a local file. */
@@ -124,7 +126,7 @@ public final class ImportManager {
 
     private boolean canMerge(File importDbFile)
             throws FileNotFoundException, IllegalStateException, SQLiteException {
-        int currentDbVersion = TransactionManager.getInitialisedInstance().getDatabaseVersion();
+        int currentDbVersion = mTransactionManager.getDatabaseVersion();
         if (importDbFile.exists()) {
             try (SQLiteDatabase importDb =
                     SQLiteDatabase.openDatabase(

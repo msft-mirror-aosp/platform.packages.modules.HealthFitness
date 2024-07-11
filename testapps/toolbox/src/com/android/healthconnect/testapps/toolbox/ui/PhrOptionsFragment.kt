@@ -140,7 +140,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         val insertedResources = upsertMedicalResources(
             listOf(
                 UpsertMedicalResourceRequest.Builder(1, immunizationResource).build()))
-        val insertedResourceId = "1,Immunization,immunization_1"
+        val insertedResourceId = "1,1,immunization_1"
         view.findViewById<EditText>(R.id.phr_immunization_id_text).setText(insertedResourceId)
         return insertedResources.joinToString(separator = "\n", transform = MedicalResource::toString)
     }
@@ -179,7 +179,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         }
         val (dataSourceId, fhirResourceType, fhirResourceId) = idParts
         return readMedicalResourcesByIds(listOf(
-            MedicalResourceId(dataSourceId, fhirResourceType, fhirResourceId)))
+            MedicalResourceId(dataSourceId, Integer.valueOf(fhirResourceType), fhirResourceId)))
             .joinToString(separator = "\n", transform = MedicalResource::toString)
     }
 

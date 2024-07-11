@@ -1355,4 +1355,6 @@
     <string name="multiple_data_types_deletion_confirmation_toast" description="Message letting the user know the number of permission types deleted"><xliff:g example="2" id="number_permission_types">%s</xliff:g> items deleted</string>
     <!-- endregion -->
 
+    <string name="select_all" description="Label for a button that selects all data for deletion [CHAR_LIMIT=40]">Select all</string>
+
 </resources>

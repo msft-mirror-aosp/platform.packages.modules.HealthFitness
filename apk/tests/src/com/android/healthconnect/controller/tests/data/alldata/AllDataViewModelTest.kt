@@ -155,11 +155,11 @@ class AllDataViewModelTest {
 
     @Test
     fun addToDeleteSet_updatesDeleteSetCorrectly() = runTest {
-        assertThat(viewModel.getDeleteSet()).isEmpty()
+        assertThat(viewModel.setOfPermissionTypesToBeDeleted.value.orEmpty()).isEmpty()
 
         viewModel.addToDeleteSet(FitnessPermissionType.DISTANCE)
 
-        assertThat(viewModel.getDeleteSet()).containsExactly(FitnessPermissionType.DISTANCE)
+        assertThat(viewModel.setOfPermissionTypesToBeDeleted.value).containsExactly(FitnessPermissionType.DISTANCE)
     }
 
     @Test
@@ -168,7 +168,7 @@ class AllDataViewModelTest {
         viewModel.addToDeleteSet(FitnessPermissionType.MENSTRUATION)
         viewModel.removeFromDeleteSet(FitnessPermissionType.DISTANCE)
 
-        assertThat(viewModel.getDeleteSet()).containsExactly(FitnessPermissionType.MENSTRUATION)
+        assertThat(viewModel.setOfPermissionTypesToBeDeleted.value).containsExactly(FitnessPermissionType.MENSTRUATION)
     }
 
     @Test
@@ -191,7 +191,7 @@ class AllDataViewModelTest {
         viewModel.addToDeleteSet(FitnessPermissionType.DISTANCE)
         viewModel.resetDeleteSet()
 
-        assertThat(viewModel.getDeleteSet()).isEmpty()
+        assertThat(viewModel.setOfPermissionTypesToBeDeleted.value).isEmpty()
     }
 
     private fun prepareAnswer(
