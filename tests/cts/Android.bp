@@ -35,6 +35,7 @@ android_test {
         "cts",
         "general-tests",
         "mts-healthfitness",
+        "mcts-healthfitness",
     ],
     static_libs: [
         "androidx.test.rules",
@@ -71,6 +72,7 @@ android_test {
         "cts",
         "general-tests",
         "mts-healthfitness",
+        "mcts-healthfitness",
     ],
     static_libs: [
         "androidx.test.rules",
@@ -107,6 +109,7 @@ android_test {
         "cts",
         "general-tests",
         "mts-healthfitness",
+        "mcts-healthfitness",
     ],
     static_libs: [
         "androidx.test.rules",
