@@ -50,7 +50,6 @@ import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGrou
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByPeriod;
 import static android.healthconnect.cts.utils.TestUtils.getChangeLogToken;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
-import static android.healthconnect.cts.utils.TestUtils.readMedicalResourcesByIds;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
 import static android.healthconnect.cts.utils.TestUtils.updateRecords;
 import static android.healthconnect.cts.utils.TestUtils.upsertMedicalResources;
@@ -80,6 +79,7 @@ import android.health.connect.datatypes.DistanceRecord;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.SleepSessionRecord;
 import android.health.connect.datatypes.StepsRecord;
@@ -399,17 +399,18 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testReadMedicalResources_noPermission_expectError() throws InterruptedException {
-        try {
-            readMedicalResourcesByIds(List.of(new MedicalResourceId("123", "observation", "456")));
-            Assert.fail(
-                    "Read medical resources by ids must be not allowed without right HC PHR "
-                            + "permission");
-        } catch (HealthConnectException healthConnectException) {
-            assertThat(healthConnectException.getErrorCode())
-                    .isEqualTo(HealthConnectException.ERROR_SECURITY);
-            assertThat(healthConnectException.getMessage())
-                    .contains("Caller doesn't have permission to read or write medical data");
-        }
+        HealthConnectManager manager = TestUtils.getHealthConnectManager();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+
+        manager.readMedicalResources(
+                List.of(new MedicalResourceId("123", "observation", "456")),
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        HealthConnectException exception = receiver.assertAndGetException();
+        assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
+        assertThat(exception.getMessage())
+                .contains("Caller doesn't have permission to read or write medical data");
     }
 
     @Test

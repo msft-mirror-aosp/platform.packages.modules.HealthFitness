@@ -208,6 +208,7 @@ public class HealthConnectServiceImplTest {
                     .mockStatic(PreferenceHelper.class)
                     .mockStatic(LocalManagerRegistry.class)
                     .mockStatic(UserHandle.class)
+                    .mockStatic(TransactionManager.class)
                     .spyStatic(RateLimiter.class)
                     .setStrictness(Strictness.LENIENT)
                     .build();
@@ -265,6 +266,7 @@ public class HealthConnectServiceImplTest {
                 .thenReturn(mAppOpsManagerLocal);
         when(mServiceContext.getSystemService(PermissionManager.class))
                 .thenReturn(mPermissionManager);
+        when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
 
         mHealthConnectService =
                 new HealthConnectServiceImpl(

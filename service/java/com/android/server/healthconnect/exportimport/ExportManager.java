@@ -58,6 +58,7 @@ public class ExportManager {
     private static final String TAG = "HealthConnectExportImport";
 
     private Clock mClock;
+    private final TransactionManager mTransactionManager;
 
     // Tables to drop instead of tables to keep to avoid risk of bugs if new data types are added.
 
@@ -78,6 +79,7 @@ public class ExportManager {
         mClock = clock;
         mDatabaseContext =
                 DatabaseContext.create(context, LOCAL_EXPORT_DIR_NAME, context.getUser());
+        mTransactionManager = TransactionManager.getInitialisedInstance();
     }
 
     /**
@@ -157,7 +159,7 @@ public class ExportManager {
         }
 
         Files.copy(
-                TransactionManager.getInitialisedInstance().getDatabasePath().toPath(),
+                mTransactionManager.getDatabasePath().toPath(),
                 destination.toPath(),
                 StandardCopyOption.REPLACE_EXISTING);
 
