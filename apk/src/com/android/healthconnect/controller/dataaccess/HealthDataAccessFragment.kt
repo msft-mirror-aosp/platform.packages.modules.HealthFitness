@@ -249,8 +249,10 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
                             it.logName = DataAccessElement.DATA_ACCESS_INACTIVE_APP_BUTTON
                             it.setOnDeleteButtonClickListener {
                                 val deletionType =
-                                    DeletionType.DeletionTypeAppData(
-                                        appMetadata.packageName, appMetadata.appName)
+                                    DeletionType.DeletionTypeHealthPermissionTypeFromApp(
+                                        permissionType,
+                                        appMetadata.packageName,
+                                        appMetadata.appName)
                                 childFragmentManager.setFragmentResult(
                                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionType))
                             }
@@ -274,9 +276,12 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
         val appPermissionsType = appAccessMetadata.appPermissionsType
         val navigationId =
             when (appPermissionsType) {
-                AppPermissionsType.FITNESS_PERMISSIONS_ONLY -> R.id.action_healthDataAccessFragment_to_fitnessApp
-                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY -> R.id.action_healthDataAccessFragment_to_medicalApp
-                AppPermissionsType.COMBINED_PERMISSIONS -> R.id.action_healthDataAccessFragment_to_combinedPermissions
+                AppPermissionsType.FITNESS_PERMISSIONS_ONLY ->
+                    R.id.action_healthDataAccessFragment_to_fitnessApp
+                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY ->
+                    R.id.action_healthDataAccessFragment_to_medicalApp
+                AppPermissionsType.COMBINED_PERMISSIONS ->
+                    R.id.action_healthDataAccessFragment_to_combinedPermissions
             }
         findNavController()
             .navigate(

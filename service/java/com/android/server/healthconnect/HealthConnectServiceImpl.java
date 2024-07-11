@@ -2141,8 +2141,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     try {
                         enforceIsForegroundUser(userHandle);
                         mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
+                        final Context userContext = mContext.createContextAsUser(userHandle, 0);
                         ScheduledExportStatus status =
-                                ExportImportSettingsStorage.getScheduledExportStatus();
+                                ExportImportSettingsStorage.getScheduledExportStatus(userContext);
                         callback.onResult(status);
                     } catch (HealthConnectException healthConnectException) {
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
