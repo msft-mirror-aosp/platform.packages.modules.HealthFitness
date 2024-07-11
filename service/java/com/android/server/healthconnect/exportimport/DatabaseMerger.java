@@ -66,6 +66,9 @@ public final class DatabaseMerger {
     private static final String TAG = "HealthConnectDatabaseMerger";
 
     private final Context mContext;
+    private final TransactionManager mTransactionManager;
+    private final AppInfoHelper mAppInfoHelper;
+    private final RecordMapper mRecordMapper;
 
     /*
      * Record types in this list will always be migrated such that the ordering here is respected.
@@ -83,6 +86,9 @@ public final class DatabaseMerger {
     public DatabaseMerger(@NonNull Context context) {
         requireNonNull(context);
         mContext = context;
+        mTransactionManager = TransactionManager.getInitialisedInstance();
+        mAppInfoHelper = AppInfoHelper.getInstance();
+        mRecordMapper = RecordMapper.getInstance();
     }
 
     /** Merge data */
@@ -101,9 +107,8 @@ public final class DatabaseMerger {
                 // If this package is not installed on the target device and is not present in the
                 // health db, then fill the health db with the info from source db. According to the
                 // security review b/341253579, we should not parse the imported icon.
-                AppInfoHelper.getInstance()
-                        .addOrUpdateAppInfoIfNotInstalled(
-                                mContext, packageName, appName, false /* onlyReplace */);
+                mAppInfoHelper.addOrUpdateAppInfoIfNotInstalled(
+                        mContext, packageName, appName, false /* onlyReplace */);
             }
         }
 
@@ -115,7 +120,7 @@ public final class DatabaseMerger {
         List<Integer> recordTypesWithOrderingOverrides =
                 RECORD_TYPE_MIGRATION_ORDERING_OVERRIDES.stream().flatMap(List::stream).toList();
         List<Integer> recordTypesWithoutOrderingOverrides =
-                RecordMapper.getInstance().getRecordIdToExternalRecordClassMap().keySet().stream()
+                mRecordMapper.getRecordIdToExternalRecordClassMap().keySet().stream()
                         .filter(it -> !recordTypesWithOrderingOverrides.contains(it))
                         .toList();
 
@@ -126,7 +131,7 @@ public final class DatabaseMerger {
                         stagedDatabase,
                         stagedPackageNamesByAppIds,
                         recordTypeToMigrate,
-                        RecordMapper.getInstance()
+                        mRecordMapper
                                 .getRecordIdToExternalRecordClassMap()
                                 .get(recordTypeToMigrate));
             }
@@ -137,7 +142,7 @@ public final class DatabaseMerger {
                 deleteRecordsOfType(
                         stagedDatabase,
                         recordTypeToMigrate,
-                        RecordMapper.getInstance()
+                        mRecordMapper
                                 .getRecordIdToExternalRecordClassMap()
                                 .get(recordTypeToMigrate));
             }
@@ -145,16 +150,14 @@ public final class DatabaseMerger {
         // Migrate remaining record types in no particular order.
         for (Integer recordTypeToMigrate : recordTypesWithoutOrderingOverrides) {
             Class<? extends Record> recordClass =
-                    RecordMapper.getInstance()
-                            .getRecordIdToExternalRecordClassMap()
-                            .get(recordTypeToMigrate);
+                    mRecordMapper.getRecordIdToExternalRecordClassMap().get(recordTypeToMigrate);
             mergeRecordsOfType(
                     stagedDatabase, stagedPackageNamesByAppIds, recordTypeToMigrate, recordClass);
             deleteRecordsOfType(stagedDatabase, recordTypeToMigrate, recordClass);
         }
 
         Slog.i(TAG, "Syncing app info records after restored data merge");
-        AppInfoHelper.getInstance().syncAppInfoRecordTypesUsed();
+        mAppInfoHelper.syncAppInfoRecordTypesUsed();
 
         Slog.i(TAG, "Merging done");
     }
@@ -210,8 +213,7 @@ public final class DatabaseMerger {
                             true /* isInsertRequest */,
                             true /* useProvidedUuid */,
                             true /* skipPackageNameAndLogs */);
-            TransactionManager.getInitialisedInstance()
-                    .insertAll(upsertTransactionRequest.getUpsertRequests());
+            mTransactionManager.insertAll(upsertTransactionRequest.getUpsertRequests());
 
             currentToken = token;
         } while (!currentToken.isEmpty());

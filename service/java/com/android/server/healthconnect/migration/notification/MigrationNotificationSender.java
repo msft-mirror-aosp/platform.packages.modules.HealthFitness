@@ -54,17 +54,19 @@ public final class MigrationNotificationSender {
 
     private final Context mContext;
     private final MigrationNotificationFactory mNotificationFactory;
+    private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
 
     public MigrationNotificationSender(@NonNull Context context) {
         mContext = context;
         mNotificationFactory = new MigrationNotificationFactory(mContext);
+        mHealthConnectDeviceConfigManager =
+                HealthConnectDeviceConfigManager.getInitialisedInstance();
     }
 
     /** Sends a notification to the current user based on the notification type. */
     public void sendNotification(
             @MigrationNotificationType int notificationType, @NonNull UserHandle userHandle) {
-        if (!HealthConnectDeviceConfigManager.getInitialisedInstance()
-                .areMigrationNotificationsEnabled()) {
+        if (!mHealthConnectDeviceConfigManager.areMigrationNotificationsEnabled()) {
             return;
         }
         createNotificationChannel(userHandle);

@@ -16,19 +16,24 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.MEDICAL_RESOURCE_TABLE_NAME;
-import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.MEDICAL_RESOURCE_ID;
-import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.MEDICAL_RESOURCE_INDICES_TABLE_NAME;
-import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.MEDICAL_RESOURCE_TYPE;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getChildTableUpsertRequests;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getCreateMedicalResourceIndicesTableRequest;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getParentColumnReference;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getTableName;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.content.ContentValues;
 import android.util.Pair;
 
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
+import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 
 import org.junit.Test;
 
@@ -40,17 +45,29 @@ public class MedicalResourceIndicesHelperTest {
     public void getCreateTableRequest_correctResult() {
         List<Pair<String, String>> columnInfo =
                 List.of(
-                        Pair.create(MEDICAL_RESOURCE_ID, INTEGER_NOT_NULL),
-                        Pair.create(MEDICAL_RESOURCE_TYPE, INTEGER_NOT_NULL));
+                        Pair.create(getParentColumnReference(), INTEGER_NOT_NULL),
+                        Pair.create(getMedicalResourceTypeColumnName(), INTEGER_NOT_NULL));
         CreateTableRequest expected =
-                new CreateTableRequest(MEDICAL_RESOURCE_INDICES_TABLE_NAME, columnInfo)
+                new CreateTableRequest(getTableName(), columnInfo)
                         .addForeignKey(
                                 MEDICAL_RESOURCE_TABLE_NAME,
-                                Collections.singletonList(MEDICAL_RESOURCE_ID),
+                                Collections.singletonList(getParentColumnReference()),
                                 Collections.singletonList(PRIMARY_COLUMN_NAME));
 
         CreateTableRequest result = getCreateMedicalResourceIndicesTableRequest();
 
         assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    public void getUpsertTableRequest_correctResult() {
+        UpsertTableRequest upsertRequest =
+                getChildTableUpsertRequests(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+        ContentValues contentValues = upsertRequest.getContentValues();
+
+        assertThat(upsertRequest.getTable()).isEqualTo(getTableName());
+        assertThat(contentValues.size()).isEqualTo(1);
+        assertThat(contentValues.get(getMedicalResourceTypeColumnName()))
+                .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
     }
 }

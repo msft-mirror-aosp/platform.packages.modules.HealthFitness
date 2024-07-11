@@ -275,6 +275,7 @@
     <!-- Read permissions for personal health records -->
     <permission
         android:name="android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION"
+        android:label="@string/immunization_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 
@@ -523,6 +524,7 @@
     <!-- Write permissions for personal health records -->
     <permission
         android:name="android.permission.health.WRITE_MEDICAL_DATA"
+        android:label="@string/all_medical_data_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 
