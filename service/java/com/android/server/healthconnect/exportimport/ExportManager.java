@@ -16,6 +16,9 @@
 
 package com.android.server.healthconnect.exportimport;
 
+import static com.android.server.healthconnect.storage.ExportImportSettingsStorage.LAST_EXPORT_APP_NAME_KEY;
+import static com.android.server.healthconnect.storage.ExportImportSettingsStorage.LAST_EXPORT_FILE_NAME_KEY;
+
 import static java.util.Objects.requireNonNull;
 
 import android.annotation.NonNull;
@@ -122,8 +125,9 @@ public class ExportManager {
                 return false;
             }
 
+            Uri destinationUri = ExportImportSettingsStorage.getUri();
             try {
-                exportToUri(localExportZipFile, ExportImportSettingsStorage.getUri());
+                exportToUri(localExportZipFile, destinationUri);
             } catch (FileNotFoundException e) {
                 Slog.e(TAG, "Lost access to export location", e);
                 ExportImportSettingsStorage.setLastExportError(
@@ -135,9 +139,12 @@ public class ExportManager {
                         HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
                 return false;
             }
-
             Slog.i(TAG, "Export completed.");
             ExportImportSettingsStorage.setLastSuccessfulExport(mClock.instant());
+            ExportImportSettingsStorage.setExportAppName(
+                    mDatabaseContext, destinationUri, LAST_EXPORT_APP_NAME_KEY);
+            ExportImportSettingsStorage.setExportFileName(
+                    mDatabaseContext, destinationUri, LAST_EXPORT_FILE_NAME_KEY);
             return true;
         } finally {
             Slog.i(TAG, "Delete local export files started.");

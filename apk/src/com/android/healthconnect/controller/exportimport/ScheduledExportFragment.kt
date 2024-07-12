@@ -156,10 +156,28 @@ class ScheduledExportFragment : Hilt_ScheduledExportFragment() {
                     R.string.next_export_time,
                     dateFormatter.formatLongDate(
                         lastSuccessfulExportTime.plus(periodInDays.toLong(), ChronoUnit.DAYS)))
+            val nextExportLocation = getNextExportLocationString(scheduledExportUiState)
             preferenceScreen.addPreference(
-                ExportStatusPreference(requireContext(), nextExportTime).also {
+                ExportStatusPreference(requireContext(), nextExportTime, nextExportLocation).also {
                     it.order = EXPORT_STATUS_PREFERENCE_ORDER
                 })
         }
+    }
+
+    private fun getNextExportLocationString(
+        scheduledExportUiState: ScheduledExportUiState
+    ): String? {
+        if (scheduledExportUiState.nextExportAppName != null &&
+            scheduledExportUiState.nextExportFileName != null) {
+            return getString(
+                R.string.next_export_file_location,
+                scheduledExportUiState.nextExportAppName,
+                scheduledExportUiState.nextExportFileName)
+        } else if (scheduledExportUiState.nextExportFileName != null) {
+            return scheduledExportUiState.nextExportFileName
+        } else if (scheduledExportUiState.nextExportAppName != null) {
+            return scheduledExportUiState.nextExportAppName
+        }
+        return null
     }
 }

@@ -20,7 +20,6 @@ import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 
 import static com.android.healthfitness.flags.Flags.personalHealthRecord;
-import static com.android.server.healthconnect.phr.FhirJsonExtractor.getFhirResourceTypeInt;
 import static com.android.server.healthconnect.storage.HealthConnectDatabase.createTable;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getDataSourceUuidColumnName;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getChildTableUpsertRequests;
@@ -205,16 +204,13 @@ public final class MedicalResourceHelper {
     @NonNull
     private static List<String> medicalResourceIdsToHexUuids(
             @NonNull List<MedicalResourceId> medicalResourceIds) {
-        // TODO(b/351138955): Temp use getFhirResourceTypeInt for converting before updating
-        // MedicalResourceId to use the IntDef FhirResourceType directly.
         List<UUID> ids =
                 medicalResourceIds.stream()
                         .map(
                                 medicalResourceId ->
                                         generateMedicalResourceUUID(
                                                 medicalResourceId.getFhirResourceId(),
-                                                getFhirResourceTypeInt(
-                                                        medicalResourceId.getFhirResourceType()),
+                                                medicalResourceId.getFhirResourceType(),
                                                 medicalResourceId.getDataSourceId()))
                         .toList();
         return StorageUtils.getListOfHexStrings(ids);

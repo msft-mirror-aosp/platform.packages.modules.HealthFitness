@@ -66,6 +66,7 @@ import android.health.connect.AggregateRecordsGroupedByPeriodResponse;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.ApplicationInfoResponse;
+import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.FetchDataOriginsPriorityOrderResponse;
 import android.health.connect.HealthConnectDataState;
@@ -112,7 +113,6 @@ import android.health.connect.datatypes.HeightRecord;
 import android.health.connect.datatypes.HydrationRecord;
 import android.health.connect.datatypes.IntermenstrualBleedingRecord;
 import android.health.connect.datatypes.LeanBodyMassRecord;
-import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.MenstruationFlowRecord;
 import android.health.connect.datatypes.MenstruationPeriodRecord;
@@ -1228,15 +1228,6 @@ public final class TestUtils {
         return records.stream().map(Record::getMetadata).map(Metadata::getId).toList();
     }
 
-    /** Helper function to read medical data sources from the DB, using HealthConnectManager. */
-    public static List<MedicalDataSource> getMedicalDataSourcesByIds(List<String> ids)
-            throws InterruptedException {
-        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
-        getHealthConnectManager()
-                .getMedicalDataSources(ids, Executors.newSingleThreadExecutor(), receiver);
-        return receiver.getResponse();
-    }
-
     /**
      * Helper function to upsert medical resources into the DB by a list of {@link
      * UpsertMedicalResourceRequest}s, using HealthConnectManager.
@@ -1251,7 +1242,7 @@ public final class TestUtils {
 
     /**
      * Helper function to read medical resources from the DB by a {@link
-     * ReadMedicalResourcesResponse}, using HealthConnectManager.
+     * ReadMedicalResourcesRequest}, using HealthConnectManager.
      */
     public static ReadMedicalResourcesResponse readMedicalResourcesByRequest(
             ReadMedicalResourcesRequest request) throws InterruptedException {
@@ -1260,6 +1251,17 @@ public final class TestUtils {
         getHealthConnectManager()
                 .readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
         return receiver.getResponse();
+    }
+
+    /**
+     * Helper function to delete medical resources from the DB by a {@link
+     * DeleteMedicalResourcesRequest}, using HealthConnectManager.
+     */
+    public static void deleteMedicalResourcesByRequest(DeleteMedicalResourcesRequest request)
+            throws InterruptedException {
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
+        getHealthConnectManager()
+                .deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
     }
 
     /**
