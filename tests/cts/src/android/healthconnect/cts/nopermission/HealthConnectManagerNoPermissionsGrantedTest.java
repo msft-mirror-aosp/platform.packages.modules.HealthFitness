@@ -24,6 +24,7 @@ import static android.health.connect.HealthPermissions.READ_STEPS;
 import static android.health.connect.HealthPermissions.READ_TOTAL_CALORIES_BURNED;
 import static android.health.connect.datatypes.DistanceRecord.DISTANCE_TOTAL;
 import static android.health.connect.datatypes.ExerciseSessionRecord.EXERCISE_DURATION_TOTAL;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
 import static android.health.connect.datatypes.SleepSessionRecord.SLEEP_DURATION_TOTAL;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
@@ -403,7 +404,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
 
         manager.readMedicalResources(
-                List.of(new MedicalResourceId("123", "observation", "456")),
+                List.of(new MedicalResourceId("123", FHIR_RESOURCE_TYPE_IMMUNIZATION, "456")),
                 Executors.newSingleThreadExecutor(),
                 receiver);
 

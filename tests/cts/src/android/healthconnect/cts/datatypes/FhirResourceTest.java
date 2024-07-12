@@ -16,6 +16,7 @@
 
 package android.healthconnect.cts.datatypes;
 
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
@@ -50,12 +51,12 @@ public class FhirResourceTest {
     public void testFhirResourceBuilder() {
         FhirResource resource =
                 new FhirResource.Builder(
-                                FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
                                 FHIR_RESOURCE_ID_IMMUNIZATION,
                                 FHIR_DATA_IMMUNIZATION)
                         .build();
 
-        assertThat(resource.getType()).isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_IMMUNIZATION);
         assertThat(resource.getId()).isEqualTo(FHIR_RESOURCE_ID_IMMUNIZATION);
         assertThat(resource.getData()).isEqualTo(FHIR_DATA_IMMUNIZATION);
     }
@@ -94,14 +95,14 @@ public class FhirResourceTest {
     public void testFhirResource_toString() {
         FhirResource resource =
                 new FhirResource.Builder(
-                                FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
                                 FHIR_RESOURCE_ID_IMMUNIZATION,
                                 FHIR_DATA_IMMUNIZATION)
                         .build();
         String expectedPropertiesString =
                 String.format(
                         "type=%d,id=%s,data=%s",
-                        FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
                         FHIR_RESOURCE_ID_IMMUNIZATION,
                         FHIR_DATA_IMMUNIZATION);
 

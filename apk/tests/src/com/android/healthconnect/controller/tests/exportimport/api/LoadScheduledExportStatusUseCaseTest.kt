@@ -57,7 +57,13 @@ class LoadScheduledExportStatusUseCaseTest {
     fun invoke_callsHealthDataExportManagerSuccessfully() = runTest {
         val scheduledExportStatus =
             ScheduledExportStatus(
-                Instant.ofEpochMilli(100), HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS, 7)
+                Instant.ofEpochMilli(100),
+                HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS,
+                7,
+                "healthconnect.zip",
+                "Drive",
+                "hc.zip",
+                "Dropbox")
         (healthDataExportManager as FakeHealthDataExportManager).setScheduledExportStatus(
             scheduledExportStatus)
 
@@ -69,6 +75,10 @@ class LoadScheduledExportStatusUseCaseTest {
         assertThat(exportStatus.dataExportError)
             .isEqualTo(ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS)
         assertThat(exportStatus.periodInDays).isEqualTo(7)
+        assertThat(exportStatus.lastExportFileName).isEqualTo("healthconnect.zip")
+        assertThat(exportStatus.lastExportAppName).isEqualTo("Drive")
+        assertThat(exportStatus.nextExportFileName).isEqualTo("hc.zip")
+        assertThat(exportStatus.nextExportAppName).isEqualTo("Dropbox")
     }
 
     @Test

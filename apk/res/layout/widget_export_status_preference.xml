@@ -27,4 +27,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/export_time" />
+    <TextView
+        android:textAppearance="?attr/textAppearanceSummary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:id="@+id/export_file_location" />
 </LinearLayout>
