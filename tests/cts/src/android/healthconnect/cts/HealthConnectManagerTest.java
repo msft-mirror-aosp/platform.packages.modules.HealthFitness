@@ -40,7 +40,6 @@ import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDat
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
 import static android.healthconnect.cts.utils.TestUtils.getRecordById;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
-import static android.healthconnect.cts.utils.TestUtils.upsertMedicalResources;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
@@ -1970,10 +1969,9 @@ public class HealthConnectManagerTest {
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalDataSources_emptyIds_returnsEmptyList() throws InterruptedException {
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
         HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
 
-        manager.getMedicalDataSources(List.of(), Executors.newSingleThreadExecutor(), receiver);
+        mManager.getMedicalDataSources(List.of(), Executors.newSingleThreadExecutor(), receiver);
 
         assertThat(receiver.getResponse()).isEmpty();
     }
@@ -1981,14 +1979,13 @@ public class HealthConnectManagerTest {
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalDataSources_byId_throws() {
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
         HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
         List<String> ids = List.of("1");
 
         assertThrows(
                 UnsupportedOperationException.class,
                 () ->
-                        manager.getMedicalDataSources(
+                        mManager.getMedicalDataSources(
                                 ids, Executors.newSingleThreadExecutor(), receiver));
     }
 
@@ -1996,18 +1993,19 @@ public class HealthConnectManagerTest {
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testUpsertMedicalResources_emptyIds_returnsEmptyList() throws InterruptedException {
-        List<MedicalResource> medicalResources = upsertMedicalResources(List.of());
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
 
-        assertThat(medicalResources).isEmpty();
+        mManager.upsertMedicalResources(List.of(), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isEmpty();
     }
 
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testReadMedicalResources_emptyIds_returnsEmptyList() throws InterruptedException {
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
 
-        manager.readMedicalResources(List.of(), Executors.newSingleThreadExecutor(), receiver);
+        mManager.readMedicalResources(List.of(), Executors.newSingleThreadExecutor(), receiver);
 
         assertThat(receiver.getResponse()).isEmpty();
     }
@@ -2066,13 +2064,12 @@ public class HealthConnectManagerTest {
                             FHIR_RESOURCE_TYPE_IMMUNIZATION,
                             FHIR_RESOURCE_ID_IMMUNIZATION));
         }
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
         HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
 
         assertThrows(
                 UnsupportedOperationException.class,
                 () ->
-                        manager.deleteMedicalResources(
+                        mManager.deleteMedicalResources(
                                 ids, Executors.newSingleThreadExecutor(), receiver));
     }
 

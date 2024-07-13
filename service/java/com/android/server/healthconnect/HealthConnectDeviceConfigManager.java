@@ -20,7 +20,6 @@ import android.annotation.NonNull;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.health.connect.ratelimiter.RateLimiter;
-import android.health.connect.ratelimiter.RateLimiter.QuotaBucket;
 import android.provider.DeviceConfig;
 import android.util.ArraySet;
 
@@ -28,8 +27,6 @@ import com.android.internal.annotations.GuardedBy;
 import com.android.internal.annotations.VisibleForTesting;
 
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
