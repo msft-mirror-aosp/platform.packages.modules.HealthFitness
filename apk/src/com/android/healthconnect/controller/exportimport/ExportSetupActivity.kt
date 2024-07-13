@@ -24,11 +24,17 @@ import dagger.hilt.android.AndroidEntryPoint
 
 /** Export setup activity for Health Connect. */
 @AndroidEntryPoint(FragmentActivity::class)
-class ExportSetupActivity: Hilt_ExportSetupActivity() {
+class ExportSetupActivity : Hilt_ExportSetupActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Setting an empty string with a space avoids TalkBack announcing the app title and instead
+        // only announces the page heading.
+        title = " "
+
         // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
-        window.addSystemFlags(WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+        window.addSystemFlags(
+            WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
         setContentView(R.layout.activity_export)
     }
 }

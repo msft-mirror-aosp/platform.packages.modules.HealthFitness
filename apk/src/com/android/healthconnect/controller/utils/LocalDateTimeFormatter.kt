@@ -65,12 +65,14 @@ class LocalDateTimeFormatter @Inject constructor(@ApplicationContext private val
         val systemFormat = getBestDateTimePattern(Locale.getDefault(), "dMMMM")
         DateTimeFormatter.ofPattern(systemFormat, Locale.getDefault())
     }
-    private val monthAndYearFormat by lazy {
-        val systemFormat = getBestDateTimePattern(Locale.getDefault(), "MMMMYYYY")
+    // Example: "Aug 20, 14:06"
+    private val dateAndTime24HourFormat by lazy {
+        val systemFormat = getBestDateTimePattern(Locale.getDefault(), "MMMd Hm")
         DateTimeFormatter.ofPattern(systemFormat, Locale.getDefault())
     }
-    private val monthFormat by lazy {
-        val systemFormat = getBestDateTimePattern(Locale.getDefault(), "MMMM")
+    // Example: "Aug 20, 2:06PM"
+    private val dateAndTime12HourFormat by lazy {
+        val systemFormat = getBestDateTimePattern(Locale.getDefault(), "MMMd hm")
         DateTimeFormatter.ofPattern(systemFormat, Locale.getDefault())
     }
 
@@ -87,6 +89,17 @@ class LocalDateTimeFormatter @Inject constructor(@ApplicationContext private val
     /** Returns localized short versions of date, such as "15 August" */
     fun formatShortDate(instant: Instant): String {
         return instant.atZone(ZoneId.systemDefault()).format(shortDateFormat)
+    }
+
+    /** Returns localized short versions of date and time, such as "15 Aug, 14:06" */
+    fun formatDateAndTime(instant: Instant): String {
+        val format =
+            if (is24HourFormat(context)) {
+                dateAndTime24HourFormat
+            } else {
+                dateAndTime12HourFormat
+            }
+        return instant.atZone(ZoneId.systemDefault()).format(format)
     }
 
     /** Returns localized time range. */

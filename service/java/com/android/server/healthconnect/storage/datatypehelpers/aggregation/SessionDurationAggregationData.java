@@ -32,7 +32,11 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Helper class to aggregate Sleep and Exercise Sessions.
+ * Helper class to aggregate Sleep, Exercise, and Mindfulness sessions.
+ *
+ * <p>Calculates the duration of the overlap between the underlying session record and the requested
+ * window and subtracts the so called excluded intervals if any (e.g. AWAKE stages for sleep, PAUSE
+ * and REST segments for exercise).
  *
  * @hide
  */
@@ -88,6 +92,10 @@ public class SessionDurationAggregationData extends AggregationRecordData {
     }
 
     private void updateIntervalsToExclude(Cursor cursor, boolean useLocalTime) {
+        if (mExcludeIntervalStartTimeColumn == null || mExcludeIntervalEndTimeColumn == null) {
+            return;
+        }
+
         if (isNullValue(cursor, mExcludeIntervalStartTimeColumn)) {
             return;
         }

@@ -624,6 +624,7 @@ class MedicalAppFragmentTest {
             }
         onView(withText(R.string.additional_access_label)).perform(scrollTo()).perform(click())
 
+        onIdle()
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.additionalAccessFragment)
         verify(healthConnectLogger).logInteraction(AppAccessElement.ADDITIONAL_ACCESS_BUTTON)

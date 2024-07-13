@@ -41,8 +41,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-
-
 public class ExportImportJobsTest {
 
     private static final String ANDROID_SERVER_PACKAGE_NAME = "com.android.server";

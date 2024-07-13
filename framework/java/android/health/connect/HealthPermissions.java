@@ -71,6 +71,8 @@ import android.health.connect.datatypes.ExerciseRoute;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 
+import com.android.healthfitness.flags.Flags;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -841,6 +843,9 @@ public final class HealthPermissions {
     private static final Map<Integer, String> sMedicalCategoryToReadPermissionMap =
             new ArrayMap<>();
 
+    private static final Map<String, Integer> sMedicalReadPermissionToCategoryMap =
+            new ArrayMap<>();
+
     private HealthPermissions() {}
 
     /**
@@ -909,9 +914,22 @@ public final class HealthPermissions {
     }
 
     /** @hide */
+    public static @MedicalPermissionCategory.Type int getMedicalPermissionCategory(
+            String permission) {
+        populateReadMedicalPermissionToCategoryMap();
+
+        if (sMedicalReadPermissionToCategoryMap.containsKey(permission)) {
+            return sMedicalReadPermissionToCategoryMap.get(permission);
+        }
+
+        throw new IllegalArgumentException(
+                "Medical permission category not found for " + permission);
+    }
+
+    /** @hide */
     public static String getMedicalReadPermission(
             @MedicalPermissionCategory.Type int permissionCategory) {
-        populateReadMedicalPermissionsToMedicalPermissionCategoryMap();
+        populateReadMedicalPermissionCategoryToMedicalPermissionMap();
         String medicalReadPermission = sMedicalCategoryToReadPermissionMap.get(permissionCategory);
         Objects.requireNonNull(
                 medicalReadPermission,
@@ -930,7 +948,7 @@ public final class HealthPermissions {
             throw new UnsupportedOperationException("getAllMedicalPermissions is not supported");
         }
 
-        populateReadMedicalPermissionsToMedicalPermissionCategoryMap();
+        populateReadMedicalPermissionCategoryToMedicalPermissionMap();
         Set<String> permissions = new HashSet<>(sMedicalCategoryToReadPermissionMap.values());
         permissions.add(WRITE_MEDICAL_DATA);
         return permissions;
@@ -1152,6 +1170,9 @@ public final class HealthPermissions {
         sWriteHealthPermissionToHealthDataCategoryMap.put(
                 WRITE_RESTING_HEART_RATE, HealthDataCategory.VITALS);
 
+        sWriteHealthPermissionToHealthDataCategoryMap.put(
+                WRITE_MINDFULNESS, HealthDataCategory.WELLNESS);
+
         sDataCategoryToWritePermissionsMap.put(
                 HealthDataCategory.ACTIVITY,
                 new String[] {
@@ -1211,12 +1232,13 @@ public final class HealthPermissions {
                     WRITE_RESTING_HEART_RATE
                 });
 
-        sDataCategoryToWritePermissionsMap.put(
-                HealthDataCategory.WELLNESS, new String[] {WRITE_MINDFULNESS});
+        if (Flags.mindfulness()) {
+            sDataCategoryToWritePermissionsMap.put(
+                    HealthDataCategory.WELLNESS, new String[] {WRITE_MINDFULNESS});
+        }
     }
 
-    private static synchronized void
-            populateReadMedicalPermissionsToMedicalPermissionCategoryMap() {
+    private static synchronized void populateReadMedicalPermissionCategoryToMedicalPermissionMap() {
         if (!personalHealthRecord()) {
             throw new UnsupportedOperationException(
                     "populateReadMedicalPermissionsToMedicalPermissionCategoryMap is not"
@@ -1228,5 +1250,18 @@ public final class HealthPermissions {
         }
         // Populate permission category to read permission map
         sMedicalCategoryToReadPermissionMap.put(IMMUNIZATION, READ_MEDICAL_DATA_IMMUNIZATION);
+    }
+
+    private static synchronized void populateReadMedicalPermissionToCategoryMap() {
+        if (!sMedicalReadPermissionToCategoryMap.isEmpty()) {
+            return;
+        }
+
+        populateReadMedicalPermissionCategoryToMedicalPermissionMap();
+        sMedicalCategoryToReadPermissionMap.forEach(
+                (key, value) -> {
+                    // Populate a second map swapping values with the keys
+                    sMedicalReadPermissionToCategoryMap.put(value, key);
+                });
     }
 }
