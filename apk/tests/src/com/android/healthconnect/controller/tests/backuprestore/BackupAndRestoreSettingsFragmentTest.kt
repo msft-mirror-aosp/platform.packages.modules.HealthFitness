@@ -49,6 +49,9 @@ import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import java.time.ZoneId
+import java.util.Locale
+import java.util.TimeZone
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -63,6 +66,8 @@ class BackupAndRestoreSettingsFragmentTest {
 
     companion object {
         private const val TEST_EXPORT_PERIOD_IN_DAYS = 1
+        private const val TEST_LAST_EXPORT_APP_NAME = "Drive"
+        private const val TEST_LAST_EXPORT_FILE_NAME = "healthconnect.zip"
     }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -82,11 +87,20 @@ class BackupAndRestoreSettingsFragmentTest {
 
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
+    private var previousDefaultTimeZone: TimeZone? = null
+    private var previousLocale: Locale? = null
+
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
 
     @Before
     fun setup() {
+        previousDefaultTimeZone = TimeZone.getDefault()
+        previousLocale = Locale.getDefault()
+
+        Locale.setDefault(Locale.US)
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+
         hiltRule.inject()
         context = InstrumentationRegistry.getInstrumentation().context
         navHostController = TestNavHostController(context)
@@ -108,13 +122,19 @@ class BackupAndRestoreSettingsFragmentTest {
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
                         /** periodInDays= */
                         0,
-                    )))
+                        TEST_LAST_EXPORT_FILE_NAME,
+                        TEST_LAST_EXPORT_APP_NAME,
+                        null,
+                        null)))
         }
     }
 
     @After
     fun tearDown() {
         reset(healthConnectLogger)
+
+        TimeZone.setDefault(previousDefaultTimeZone)
+        previousLocale?.let { locale -> Locale.setDefault(locale) }
     }
 
     @Test
@@ -126,7 +146,10 @@ class BackupAndRestoreSettingsFragmentTest {
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
                         TEST_EXPORT_PERIOD_IN_DAYS,
-                    )))
+                        TEST_LAST_EXPORT_FILE_NAME,
+                        TEST_LAST_EXPORT_APP_NAME,
+                        null,
+                        null)))
         }
         whenever(exportSettingsViewModel.storedExportSettings).then {
             MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
@@ -134,15 +157,15 @@ class BackupAndRestoreSettingsFragmentTest {
 
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
-        onView(withText("Export and import")).check(matches(isDisplayed()))
         onView(withText("Scheduled export")).check(matches(isDisplayed()))
         onView(withText("Import data")).check(matches(isDisplayed()))
         onView(withText("Restore data from a previously exported file"))
             .check(matches(isDisplayed()))
-        onView(withText("Last export: October 20, 2022")).check(matches(isDisplayed()))
+        onView(withText("Last export: Oct 20, 7:06 AM")).check(matches(isDisplayed()))
         onView(withText("Export lets you save your data so you can transfer it to a new phone"))
             .check(matches(isDisplayed()))
         onView(withText("About backup and restore")).check(matches(isDisplayed()))
+        onView(withText("Drive • healthconnect.zip")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -170,11 +193,58 @@ class BackupAndRestoreSettingsFragmentTest {
                         null,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
                         TEST_EXPORT_PERIOD_IN_DAYS,
-                    )))
+                        null,
+                        null,
+                        null,
+                        null)))
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
-        onView(withText("Last export: October 20, 2022")).check(doesNotExist())
+        onView(withText("Last export: Oct 20, 7:06 AM")).check(doesNotExist())
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_whenOnlyAppNameIsAvailable_showsAppName() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        NOW,
+                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        TEST_EXPORT_PERIOD_IN_DAYS,
+                        null,
+                        TEST_LAST_EXPORT_APP_NAME,
+                        null,
+                        null)))
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Drive")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_whenOnlyFileNameIsAvailable_showsFileName() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        NOW,
+                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        TEST_EXPORT_PERIOD_IN_DAYS,
+                        TEST_LAST_EXPORT_FILE_NAME,
+                        null,
+                        null,
+                        null)))
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("healthconnect.zip")).check(matches(isDisplayed()))
     }
 
     @Test

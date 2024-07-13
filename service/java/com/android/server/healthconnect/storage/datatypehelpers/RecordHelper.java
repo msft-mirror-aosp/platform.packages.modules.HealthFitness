@@ -66,6 +66,7 @@ import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.OrderByClause;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
+import com.android.server.healthconnect.storage.utils.TableColumnPair;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.lang.reflect.InvocationTargetException;
@@ -915,24 +916,5 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     public List<ReadTableRequest> getReadRequestsForRecordsModifiedByUpsertion(
             UUID upsertedRecordId, UpsertTableRequest upsertTableRequest) {
         return Collections.emptyList();
-    }
-
-    /** Represents a table and a column within that table. */
-    public static final class TableColumnPair {
-        TableColumnPair(String tableName, String columnName) {
-            this.mTableName = tableName;
-            this.mColumnName = columnName;
-        }
-
-        public String getTableName() {
-            return mTableName;
-        }
-
-        public String getColumnName() {
-            return mColumnName;
-        }
-
-        private final String mTableName;
-        private final String mColumnName;
     }
 }

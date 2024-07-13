@@ -43,9 +43,19 @@ constructor(
 
     private val _allData = MutableLiveData<AllDataState>()
 
-    private var setOfPermissionTypesToBeDeleted: MutableSet<FitnessPermissionType> = mutableSetOf()
+    private val _setOfPermissionTypesToBeDeleted = MutableLiveData<Set<FitnessPermissionType>>()
+
+    val setOfPermissionTypesToBeDeleted : LiveData<Set<FitnessPermissionType>>
+        get() = _setOfPermissionTypesToBeDeleted
+
+    private var numOfPermissionTypes: Int = 0
 
     private var isDeletionState: Boolean = false
+
+    private val _allPermissionTypesSelected = MutableLiveData<Boolean>()
+
+    val allPermissionTypesSelected : LiveData<Boolean>
+        get() = _allPermissionTypesSelected
 
     /** Provides a list of [PermissionTypesPerCategory]s to be displayed in [AllDataFragment]. */
     val allData: LiveData<AllDataState>
@@ -57,6 +67,7 @@ constructor(
             when (val result = loadAppDataUseCase.loadAllFitnessData()) {
                 is UseCaseResults.Success -> {
                     _allData.postValue(AllDataState.WithData(result.data))
+                    numOfPermissionTypes = result.data.sumOf { it.data.size }
                 }
                 is UseCaseResults.Failed -> {
                     _allData.postValue(AllDataState.Error)
@@ -66,25 +77,32 @@ constructor(
     }
 
     fun resetDeleteSet() {
-        setOfPermissionTypesToBeDeleted.clear()
+        _setOfPermissionTypesToBeDeleted.value =(emptySet())
     }
 
     fun addToDeleteSet(permissionType: FitnessPermissionType) {
-        setOfPermissionTypesToBeDeleted.add(permissionType)
+        val deleteSet = _setOfPermissionTypesToBeDeleted.value.orEmpty().toMutableSet()
+        deleteSet.add(permissionType)
+        _setOfPermissionTypesToBeDeleted.value =(deleteSet.toSet())
+        if (numOfPermissionTypes == deleteSet.size) {
+            _allPermissionTypesSelected.postValue(true)
+        }
+
     }
 
     fun removeFromDeleteSet(permissionType: FitnessPermissionType) {
-        setOfPermissionTypesToBeDeleted.remove(permissionType)
-    }
-
-    fun getDeleteSet(): Set<FitnessPermissionType> {
-        return setOfPermissionTypesToBeDeleted.toSet()
+        val deleteSet = _setOfPermissionTypesToBeDeleted.value.orEmpty().toMutableSet()
+        deleteSet.remove(permissionType)
+        _setOfPermissionTypesToBeDeleted.value =(deleteSet.toSet())
+        if(deleteSet.size != numOfPermissionTypes) {
+            _allPermissionTypesSelected.postValue(false)
+        }
     }
 
     fun setDeletionState(boolean: Boolean) {
         isDeletionState = boolean
         if (!isDeletionState) {
-            setOfPermissionTypesToBeDeleted.clear()
+            resetDeleteSet()
         }
     }
 

@@ -30,6 +30,8 @@ import static com.android.server.healthconnect.storage.datatypehelpers.RecordHel
 import static java.util.Objects.requireNonNull;
 
 import android.annotation.NonNull;
+import android.annotation.Nullable;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -59,6 +61,7 @@ import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
+import com.android.server.healthconnect.storage.utils.TableColumnPair;
 
 import java.io.File;
 import java.time.Instant;
@@ -84,8 +87,7 @@ public final class TransactionManager {
     private static final ConcurrentHashMap<UserHandle, HealthConnectDatabase>
             mUserHandleToDatabaseMap = new ConcurrentHashMap<>();
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private static volatile TransactionManager sTransactionManager;
+    @Nullable private static volatile TransactionManager sTransactionManager;
 
     private volatile HealthConnectDatabase mHealthConnectDatabase;
     private UserHandle mUserHandle;
@@ -858,7 +860,6 @@ public final class TransactionManager {
         if (!request.requiresUpdate(cursor, request)) {
             return -1;
         }
-
         db.update(
                 request.getTable(),
                 request.getContentValues(),
@@ -880,7 +881,7 @@ public final class TransactionManager {
 
     private void deleteChildTableRequest(
             UpsertTableRequest request, long rowId, SQLiteDatabase db) {
-        for (RecordHelper.TableColumnPair childTableAndColumn :
+        for (TableColumnPair childTableAndColumn :
                 request.getChildTablesWithRowsToBeDeletedDuringUpdate()) {
             DeleteTableRequest deleteTableRequest =
                     new DeleteTableRequest(childTableAndColumn.getTableName())
@@ -892,11 +893,9 @@ public final class TransactionManager {
     private void insertChildTableRequest(
             UpsertTableRequest request, long rowId, SQLiteDatabase db) {
         for (UpsertTableRequest childTableRequest : request.getChildTableRequests()) {
-            long childRowId =
-                    db.insertOrThrow(
-                            childTableRequest.withParentKey(rowId).getTable(),
-                            null,
-                            childTableRequest.getContentValues());
+            String tableName = childTableRequest.getTable();
+            ContentValues contentValues = childTableRequest.withParentKey(rowId).getContentValues();
+            long childRowId = db.insertOrThrow(tableName, null, contentValues);
             insertChildTableRequest(childTableRequest, childRowId, db);
         }
     }
@@ -955,7 +954,6 @@ public final class TransactionManager {
     }
 
     /** Cleans up the database and this manager, so unit tests can run correctly. */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @VisibleForTesting
     public static void cleanUpForTest() {
         if (sTransactionManager != null) {

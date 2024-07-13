@@ -25,7 +25,6 @@ import static com.android.server.healthconnect.migration.MigrationBroadcastSched
 import static com.android.server.healthconnect.migration.MigrationConstants.MIGRATION_STATE_CHANGE_NAMESPACE;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atMost;
@@ -65,7 +64,7 @@ public class MigrationBroadcastSchedulingTest {
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(MigrationStateManager.class)
+                    .spyStatic(MigrationStateManager.class)
                     .mockStatic(PreferenceHelper.class)
                     .mockStatic(HealthConnectThreadScheduler.class)
                     .mockStatic(HealthConnectDeviceConfigManager.class)
@@ -107,13 +106,14 @@ public class MigrationBroadcastSchedulingTest {
                 .thenReturn(MIGRATION_STATE_IN_PROGRESS_COUNT_MOCK_VALUE);
         when(mHealthConnectDeviceConfigManager.getNonIdleStateTimeoutPeriod())
                 .thenReturn(NON_IDLE_STATE_TIMEOUT_MOCK_VALUE);
+        ExtendedMockito.doReturn(mMigrationStateManager)
+                .when(MigrationStateManager::getInitialisedInstance);
 
         mMigrationBroadcastScheduler = Mockito.spy(new MigrationBroadcastScheduler(0));
     }
 
     @Test
     public void testPrescheduleNewJobs_updateMigrationState_newJobsScheduled() {
-        when(MigrationStateManager.initializeInstance(anyInt())).thenCallRealMethod();
         when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
         when(mJobScheduler.forNamespace(MIGRATION_STATE_CHANGE_NAMESPACE))
                 .thenReturn(mJobScheduler);
@@ -126,6 +126,7 @@ public class MigrationBroadcastSchedulingTest {
                                 })
                 .when(() -> HealthConnectThreadScheduler.scheduleInternalTask(any()));
 
+        MigrationStateManager.resetInitializedInstanceForTest();
         MigrationStateManager migrationStateManager = MigrationStateManager.initializeInstance(0);
         migrationStateManager.setMigrationBroadcastScheduler(mMigrationBroadcastScheduler);
         migrationStateManager.updateMigrationState(mContext, MIGRATION_STATE_IN_PROGRESS);
@@ -136,7 +137,6 @@ public class MigrationBroadcastSchedulingTest {
     @Test
     public void
             testScheduling_migrationInProgressIntervalGreaterThanMinimum_periodicJobScheduled() {
-        when(MigrationStateManager.getInitialisedInstance()).thenReturn(mMigrationStateManager);
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_IN_PROGRESS);
         when(mMigrationBroadcastScheduler.getRequiredInterval(eq(MIGRATION_STATE_IN_PROGRESS)))
                 .thenReturn(mIntervalGreaterThanMinPeriod);
@@ -148,7 +148,6 @@ public class MigrationBroadcastSchedulingTest {
 
     @Test
     public void testScheduling_migrationInProgressIntervalEqualToMinimum_periodicJobScheduled() {
-        when(MigrationStateManager.getInitialisedInstance()).thenReturn(mMigrationStateManager);
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_IN_PROGRESS);
         when(mMigrationBroadcastScheduler.getRequiredInterval(eq(MIGRATION_STATE_IN_PROGRESS)))
                 .thenReturn(mMinPeriodMillis);
@@ -160,7 +159,6 @@ public class MigrationBroadcastSchedulingTest {
 
     @Test
     public void testScheduling_migrationInProgressIntervalLessThanMinimum_periodicJobScheduled() {
-        when(MigrationStateManager.getInitialisedInstance()).thenReturn(mMigrationStateManager);
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_IN_PROGRESS);
         when(mMigrationBroadcastScheduler.getRequiredInterval(eq(MIGRATION_STATE_IN_PROGRESS)))
                 .thenReturn(mIntervalLessThanMinPeriod);
@@ -173,7 +171,6 @@ public class MigrationBroadcastSchedulingTest {
 
     @Test
     public void testScheduling_migrationAllowedIntervalGreaterThanMinimum_periodicJobScheduled() {
-        when(MigrationStateManager.getInitialisedInstance()).thenReturn(mMigrationStateManager);
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_ALLOWED);
         when(mMigrationBroadcastScheduler.getRequiredInterval(eq(MIGRATION_STATE_ALLOWED)))
                 .thenReturn(mIntervalGreaterThanMinPeriod);
@@ -185,7 +182,6 @@ public class MigrationBroadcastSchedulingTest {
 
     @Test
     public void testScheduling_requiredCountEqualToZero_noJobScheduled() {
-        when(MigrationStateManager.getInitialisedInstance()).thenReturn(mMigrationStateManager);
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_ALLOWED);
         when(mMigrationBroadcastScheduler.getRequiredCount(eq(MIGRATION_STATE_ALLOWED)))
                 .thenReturn(0);
@@ -199,7 +195,6 @@ public class MigrationBroadcastSchedulingTest {
 
     @Test
     public void testScheduling_migrationAllowedIntervalEqualToMinimum_periodicJobScheduled() {
-        when(MigrationStateManager.getInitialisedInstance()).thenReturn(mMigrationStateManager);
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_ALLOWED);
         when(mMigrationBroadcastScheduler.getRequiredInterval(eq(MIGRATION_STATE_ALLOWED)))
                 .thenReturn(mMinPeriodMillis);
@@ -211,7 +206,8 @@ public class MigrationBroadcastSchedulingTest {
 
     @Test
     public void testScheduling_migrationAllowedIntervalLessThanMinimum_periodicJobScheduled() {
-        when(MigrationStateManager.getInitialisedInstance()).thenReturn(mMigrationStateManager);
+        ExtendedMockito.doReturn(mMigrationStateManager)
+                .when(MigrationStateManager::getInitialisedInstance);
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_ALLOWED);
         when(mMigrationBroadcastScheduler.getRequiredInterval(eq(MIGRATION_STATE_ALLOWED)))
                 .thenReturn(mIntervalLessThanMinPeriod);
@@ -225,7 +221,6 @@ public class MigrationBroadcastSchedulingTest {
     @Test
     public void
             testReinvocation_origAndNewIntervalsGreaterThanMin_previouslyScheduledJobsCancelled() {
-        when(MigrationStateManager.getInitialisedInstance()).thenReturn(mMigrationStateManager);
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_ALLOWED);
         when(mMigrationBroadcastScheduler.getRequiredInterval(eq(MIGRATION_STATE_ALLOWED)))
                 .thenReturn(mIntervalGreaterThanMinPeriod);
@@ -242,7 +237,6 @@ public class MigrationBroadcastSchedulingTest {
     @Test
     public void
             testReinvocation_origAndNewIntervalsEqualToMinimum_previouslyScheduledJobsCancelled() {
-        when(MigrationStateManager.getInitialisedInstance()).thenReturn(mMigrationStateManager);
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_ALLOWED);
         when(mMigrationBroadcastScheduler.getRequiredInterval(eq(MIGRATION_STATE_ALLOWED)))
                 .thenReturn(mMinPeriodMillis);
@@ -258,7 +252,6 @@ public class MigrationBroadcastSchedulingTest {
 
     @Test
     public void testReinvocation_previouslyScheduledJobsCancelled() {
-        when(MigrationStateManager.getInitialisedInstance()).thenReturn(mMigrationStateManager);
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_ALLOWED);
         when(mMigrationBroadcastScheduler.getRequiredInterval(eq(MIGRATION_STATE_ALLOWED)))
                 .thenReturn(mIntervalGreaterThanMinPeriod);
@@ -275,7 +268,6 @@ public class MigrationBroadcastSchedulingTest {
 
     @Test
     public void testScheduling_schedulingFails_noFurtherScheduling() {
-        when(MigrationStateManager.getInitialisedInstance()).thenReturn(mMigrationStateManager);
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_ALLOWED);
         when(mJobScheduler.schedule(any(JobInfo.class))).thenReturn(JobScheduler.RESULT_FAILURE);
 

@@ -2250,6 +2250,26 @@ public class HealthConnectManager {
     }
 
     /**
+     * Deletes {@link MedicalResource}s based on given filters in {@link
+     * DeleteMedicalResourcesRequest}. *
+     *
+     * @param request The read request.
+     * @param executor Executor on which to invoke the callback.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public void deleteMedicalResources(
+            @NonNull DeleteMedicalResourcesRequest request,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
+        Objects.requireNonNull(request);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    /**
      * Deletes a list of medical resources by id. Ids that don't exist will be ignored.
      *
      * <p>Deletions are performed in a transaction i.e. either all will be deleted or none.
@@ -2257,9 +2277,8 @@ public class HealthConnectManager {
      * @param ids The ids to delete.
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
-     * @hide
      */
-    // TODO: b/338035191 - Make this flagged Api and add CTS tests.
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public void deleteMedicalResources(
             @NonNull List<MedicalResourceId> ids,
             @NonNull Executor executor,

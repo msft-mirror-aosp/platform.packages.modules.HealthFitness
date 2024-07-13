@@ -478,12 +478,24 @@ class FakeUpdateExportSettingsUseCase : IUpdateExportSettingsUseCase {
 class FakeLoadScheduledExportStatusUseCase : ILoadScheduledExportStatusUseCase {
     private var exportState: ScheduledExportUiState =
         ScheduledExportUiState(
-            null, ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE, 0)
+            null,
+            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+            0,
+            null,
+            null,
+            null,
+            null)
 
     fun reset() {
         exportState =
             ScheduledExportUiState(
-                null, ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE, 0)
+                null,
+                ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                0,
+                null,
+                null,
+                null,
+                null)
     }
 
     fun updateExportStatus(exportState: ScheduledExportUiState) {

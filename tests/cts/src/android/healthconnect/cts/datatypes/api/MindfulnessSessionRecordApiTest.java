@@ -20,13 +20,17 @@ import android.health.connect.HealthPermissions;
 import android.health.connect.datatypes.MindfulnessSessionRecord;
 import android.healthconnect.cts.lib.MindfulnessSessionRecordFactory;
 import android.platform.test.annotations.AppModeFull;
+import android.platform.test.annotations.RequiresFlagsEnabled;
 
 import androidx.test.runner.AndroidJUnit4;
+
+import com.android.healthfitness.flags.Flags;
 
 import org.junit.runner.RunWith;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
+@RequiresFlagsEnabled(Flags.FLAG_MINDFULNESS)
 public class MindfulnessSessionRecordApiTest extends BaseApiTest<MindfulnessSessionRecord> {
     public MindfulnessSessionRecordApiTest() {
         super(

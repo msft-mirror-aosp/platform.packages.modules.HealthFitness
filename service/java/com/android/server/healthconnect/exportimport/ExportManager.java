@@ -16,6 +16,9 @@
 
 package com.android.server.healthconnect.exportimport;
 
+import static com.android.server.healthconnect.storage.ExportImportSettingsStorage.LAST_EXPORT_APP_NAME_KEY;
+import static com.android.server.healthconnect.storage.ExportImportSettingsStorage.LAST_EXPORT_FILE_NAME_KEY;
+
 import static java.util.Objects.requireNonNull;
 
 import android.annotation.NonNull;
@@ -51,7 +54,6 @@ public class ExportManager {
 
     @VisibleForTesting static final String LOCAL_EXPORT_DIR_NAME = "export_import";
 
-    @VisibleForTesting
     static final String LOCAL_EXPORT_DATABASE_FILE_NAME = "health_connect_export.db";
 
     @VisibleForTesting static final String LOCAL_EXPORT_ZIP_FILE_NAME = "health_connect_export.zip";
@@ -59,6 +61,7 @@ public class ExportManager {
     private static final String TAG = "HealthConnectExportImport";
 
     private Clock mClock;
+    private final TransactionManager mTransactionManager;
 
     // Tables to drop instead of tables to keep to avoid risk of bugs if new data types are added.
 
@@ -79,6 +82,7 @@ public class ExportManager {
         mClock = clock;
         mDatabaseContext =
                 DatabaseContext.create(context, LOCAL_EXPORT_DIR_NAME, context.getUser());
+        mTransactionManager = TransactionManager.getInitialisedInstance();
     }
 
     /**
@@ -112,7 +116,8 @@ public class ExportManager {
             }
 
             try {
-                Compressor.compress(localExportDbFile, localExportZipFile);
+                Compressor.compress(
+                        localExportDbFile, LOCAL_EXPORT_DATABASE_FILE_NAME, localExportZipFile);
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to compress local file for export", e);
                 ExportImportSettingsStorage.setLastExportError(
@@ -120,8 +125,9 @@ public class ExportManager {
                 return false;
             }
 
+            Uri destinationUri = ExportImportSettingsStorage.getUri();
             try {
-                exportToUri(localExportZipFile, ExportImportSettingsStorage.getUri());
+                exportToUri(localExportZipFile, destinationUri);
             } catch (FileNotFoundException e) {
                 Slog.e(TAG, "Lost access to export location", e);
                 ExportImportSettingsStorage.setLastExportError(
@@ -133,9 +139,12 @@ public class ExportManager {
                         HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
                 return false;
             }
-
             Slog.i(TAG, "Export completed.");
             ExportImportSettingsStorage.setLastSuccessfulExport(mClock.instant());
+            ExportImportSettingsStorage.setExportAppName(
+                    mDatabaseContext, destinationUri, LAST_EXPORT_APP_NAME_KEY);
+            ExportImportSettingsStorage.setExportFileName(
+                    mDatabaseContext, destinationUri, LAST_EXPORT_FILE_NAME_KEY);
             return true;
         } finally {
             Slog.i(TAG, "Delete local export files started.");
@@ -157,7 +166,7 @@ public class ExportManager {
         }
 
         Files.copy(
-                TransactionManager.getInitialisedInstance().getDatabasePath().toPath(),
+                mTransactionManager.getDatabasePath().toPath(),
                 destination.toPath(),
                 StandardCopyOption.REPLACE_EXISTING);
 
