@@ -38,6 +38,7 @@ import java.lang.annotation.RetentionPolicy;
  *
  * @hide
  */
+// TODO(b/352602201): Refactor to use new HealthConnectNotificationSender
 public final class MigrationNotificationSender {
 
     private static final String TAG = "HealthConnectNS";

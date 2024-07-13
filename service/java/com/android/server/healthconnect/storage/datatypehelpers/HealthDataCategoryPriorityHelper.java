@@ -66,11 +66,11 @@ import java.util.stream.Collectors;
  * @hide
  */
 public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
-    private static final String TABLE_NAME = "health_data_category_priority_table";
-    private static final String HEALTH_DATA_CATEGORY_COLUMN_NAME = "health_data_category";
+    public static final String PRIORITY_TABLE_NAME = "health_data_category_priority_table";
+    public static final String HEALTH_DATA_CATEGORY_COLUMN_NAME = "health_data_category";
     public static final List<Pair<String, Integer>> UNIQUE_COLUMN_INFO =
             Collections.singletonList(new Pair<>(HEALTH_DATA_CATEGORY_COLUMN_NAME, TYPE_STRING));
-    private static final String APP_ID_PRIORITY_ORDER_COLUMN_NAME = "app_id_priority_order";
+    public static final String APP_ID_PRIORITY_ORDER_COLUMN_NAME = "app_id_priority_order";
     private static final String TAG = "HealthConnectPrioHelper";
     private static final String DEFAULT_APP_RESOURCE_NAME =
             "android:string/config_defaultHealthConnectApp";
@@ -100,7 +100,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
      */
     @NonNull
     public static CreateTableRequest getCreateTableRequest() {
-        return new CreateTableRequest(TABLE_NAME, getColumnInfo());
+        return new CreateTableRequest(PRIORITY_TABLE_NAME, getColumnInfo());
     }
 
     /**
@@ -132,7 +132,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         }
         safelyUpdateDBAndUpdateCache(
                 new UpsertTableRequest(
-                        TABLE_NAME,
+                        PRIORITY_TABLE_NAME,
                         getContentValuesFor(dataCategory, newPriorityOrder),
                         UNIQUE_COLUMN_INFO),
                 dataCategory,
@@ -258,7 +258,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
 
         safelyUpdateDBAndUpdateCache(
                 new UpsertTableRequest(
-                        TABLE_NAME,
+                        PRIORITY_TABLE_NAME,
                         getContentValuesFor(dataCategory, newPriorityOrder),
                         UNIQUE_COLUMN_INFO),
                 dataCategory,
@@ -302,7 +302,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
 
     @Override
     protected String getMainTableName() {
-        return TABLE_NAME;
+        return PRIORITY_TABLE_NAME;
     }
 
     private Map<Integer, List<Long>> getHealthDataCategoryToAppIdPriorityMap() {
@@ -326,7 +326,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         ConcurrentHashMap<Integer, List<Long>> healthDataCategoryToAppIdPriorityMap =
                 new ConcurrentHashMap<>();
         final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        try (Cursor cursor = transactionManager.read(new ReadTableRequest(TABLE_NAME))) {
+        try (Cursor cursor = transactionManager.read(new ReadTableRequest(PRIORITY_TABLE_NAME))) {
             while (cursor.moveToNext()) {
                 int dataCategory =
                         cursor.getInt(cursor.getColumnIndex(HEALTH_DATA_CATEGORY_COLUMN_NAME));
@@ -496,7 +496,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         newPriorityList.remove(mAppInfoHelper.getAppInfoId(packageName));
         if (newPriorityList.isEmpty()) {
             safelyUpdateDBAndUpdateCache(
-                    new DeleteTableRequest(TABLE_NAME)
+                    new DeleteTableRequest(PRIORITY_TABLE_NAME)
                             .setId(HEALTH_DATA_CATEGORY_COLUMN_NAME, String.valueOf(dataCategory)),
                     dataCategory);
             return;
@@ -504,7 +504,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
 
         safelyUpdateDBAndUpdateCache(
                 new UpsertTableRequest(
-                        TABLE_NAME,
+                        PRIORITY_TABLE_NAME,
                         getContentValuesFor(dataCategory, newPriorityList),
                         UNIQUE_COLUMN_INFO),
                 dataCategory,
@@ -575,7 +575,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
                     getHealthDataCategoryToAppIdPriorityMap().get(dataCategory))) {
                 safelyUpdateDBAndUpdateCache(
                         new UpsertTableRequest(
-                                TABLE_NAME,
+                                PRIORITY_TABLE_NAME,
                                 getContentValuesFor(dataCategory, appInfoIdList),
                                 UNIQUE_COLUMN_INFO),
                         dataCategory,

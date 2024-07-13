@@ -84,7 +84,6 @@ import android.health.connect.RecordIdFilter;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.UpdateDataOriginPriorityOrderRequest;
-import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogTokenResponse;
@@ -113,7 +112,6 @@ import android.health.connect.datatypes.HeightRecord;
 import android.health.connect.datatypes.HydrationRecord;
 import android.health.connect.datatypes.IntermenstrualBleedingRecord;
 import android.health.connect.datatypes.LeanBodyMassRecord;
-import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.MenstruationFlowRecord;
 import android.health.connect.datatypes.MenstruationPeriodRecord;
 import android.health.connect.datatypes.Metadata;
@@ -1226,18 +1224,6 @@ public final class TestUtils {
     /** Extracts and returns ids of the provided records. */
     public static List<String> getRecordIds(List<? extends Record> records) {
         return records.stream().map(Record::getMetadata).map(Metadata::getId).toList();
-    }
-
-    /**
-     * Helper function to upsert medical resources into the DB by a list of {@link
-     * UpsertMedicalResourceRequest}s, using HealthConnectManager.
-     */
-    public static List<MedicalResource> upsertMedicalResources(
-            List<UpsertMedicalResourceRequest> requests) throws InterruptedException {
-        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-        getHealthConnectManager()
-                .upsertMedicalResources(requests, Executors.newSingleThreadExecutor(), receiver);
-        return receiver.getResponse();
     }
 
     /**
