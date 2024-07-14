@@ -67,6 +67,10 @@ public class HealthConnectManagerService extends SystemService {
 
     public HealthConnectManagerService(Context context) {
         super(context);
+        mCurrentForegroundUser = context.getUser();
+        HealthConnectDeviceConfigManager.initializeInstance(context);
+        MigrationStateManager migrationStateManager =
+                MigrationStateManager.initializeInstance(mCurrentForegroundUser.getIdentifier());
         HealthPermissionIntentAppsTracker permissionIntentTracker =
                 new HealthPermissionIntentAppsTracker(context);
         FirstGrantTimeManager firstGrantTimeManager =
@@ -79,7 +83,6 @@ public class HealthConnectManagerService extends SystemService {
                         HealthConnectManager.getHealthPermissions(context),
                         permissionIntentTracker,
                         firstGrantTimeManager);
-        mCurrentForegroundUser = context.getUser();
         mContext = context;
         mPermissionPackageChangesOrchestrator =
                 new PermissionPackageChangesOrchestrator(
@@ -91,11 +94,8 @@ public class HealthConnectManagerService extends SystemService {
         mTransactionManager =
                 TransactionManager.getInstance(
                         new HealthConnectUserContext(mContext, mCurrentForegroundUser));
-        HealthConnectDeviceConfigManager.initializeInstance(context);
         mMigrationBroadcastScheduler =
                 new MigrationBroadcastScheduler(mCurrentForegroundUser.getIdentifier());
-        final MigrationStateManager migrationStateManager =
-                MigrationStateManager.initializeInstance(mCurrentForegroundUser.getIdentifier());
         migrationStateManager.setMigrationBroadcastScheduler(mMigrationBroadcastScheduler);
         final MigrationCleaner migrationCleaner =
                 new MigrationCleaner(mTransactionManager, PriorityMigrationHelper.getInstance());

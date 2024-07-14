@@ -73,7 +73,6 @@ import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.RecentAccessElement
 import com.android.healthfitness.flags.Flags
-import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -153,7 +152,11 @@ class HomeFragmentTest {
                         null,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
                         /** periodInDays= */
-                        0)))
+                        0,
+                        null,
+                        null,
+                        null,
+                        null)))
         }
         (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(false)
         navHostController = TestNavHostController(context)
@@ -768,7 +771,11 @@ class HomeFragmentTest {
                     ScheduledExportUiState(
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS)))
+                        TEST_EXPORT_FREQUENCY_IN_DAYS,
+                        null,
+                        null,
+                        null,
+                        null)))
         }
         launchFragment<HomeFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
@@ -796,7 +803,11 @@ class HomeFragmentTest {
                     ScheduledExportUiState(
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS)))
+                        TEST_EXPORT_FREQUENCY_IN_DAYS,
+                        null,
+                        null,
+                        null,
+                        null)))
         }
 
         launchFragment<HomeFragment>(Bundle()) {
@@ -825,7 +836,11 @@ class HomeFragmentTest {
                     ScheduledExportUiState(
                         null,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS)))
+                        TEST_EXPORT_FREQUENCY_IN_DAYS,
+                        null,
+                        null,
+                        null,
+                        null)))
         }
 
         launchFragment<HomeFragment>(Bundle()) {
@@ -854,7 +869,11 @@ class HomeFragmentTest {
                     ScheduledExportUiState(
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_UNKNOWN,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS)))
+                        TEST_EXPORT_FREQUENCY_IN_DAYS,
+                        null,
+                        null,
+                        null,
+                        null)))
         }
         launchFragment<HomeFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
@@ -887,7 +906,11 @@ class HomeFragmentTest {
                     ScheduledExportUiState(
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS)))
+                        TEST_EXPORT_FREQUENCY_IN_DAYS,
+                        null,
+                        null,
+                        null,
+                        null)))
         }
         launchFragment<HomeFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
@@ -922,7 +945,11 @@ class HomeFragmentTest {
                     ScheduledExportUiState(
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS)))
+                        TEST_EXPORT_FREQUENCY_IN_DAYS,
+                        null,
+                        null,
+                        null,
+                        null)))
         }
         launchFragment<HomeFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)

@@ -21,7 +21,7 @@ package com.android.server.healthconnect.storage.request;
  *
  * @hide
  */
-public class DropTableRequest {
+public final class DropTableRequest {
     private final String mTableName;
     private static final String DROP_TABLE_COMMAND = "DROP TABLE IF EXISTS ";
 

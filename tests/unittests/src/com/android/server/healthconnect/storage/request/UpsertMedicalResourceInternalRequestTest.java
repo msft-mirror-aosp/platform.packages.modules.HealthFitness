@@ -16,13 +16,15 @@
 
 package com.android.server.healthconnect.storage.request;
 
+import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_LONG_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceId;
-import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceType;
+import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceTypeString;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+import static com.android.server.healthconnect.phr.FhirJsonExtractor.getFhirResourceTypeInt;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -45,7 +47,9 @@ public class UpsertMedicalResourceInternalRequestTest {
     public void testMedicalResourceInternal_convertFromUpsertRequest_flagOff() {
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
-                                DATA_SOURCE_LONG_ID, FHIR_DATA_IMMUNIZATION)
+                                DATA_SOURCE_ID,
+                                parseFhirVersion(FHIR_VERSION_R4),
+                                FHIR_DATA_IMMUNIZATION)
                         .build();
 
         assertThrows(
@@ -59,13 +63,18 @@ public class UpsertMedicalResourceInternalRequestTest {
             throws JSONException {
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
-                                DATA_SOURCE_LONG_ID, FHIR_DATA_IMMUNIZATION)
+                                DATA_SOURCE_ID,
+                                parseFhirVersion(FHIR_VERSION_R4),
+                                FHIR_DATA_IMMUNIZATION)
                         .build();
         UpsertMedicalResourceInternalRequest expected =
                 new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
-                        .setFhirResourceType(getFhirResourceType(FHIR_DATA_IMMUNIZATION))
+                        .setFhirResourceType(
+                                getFhirResourceTypeInt(
+                                        getFhirResourceTypeString(FHIR_DATA_IMMUNIZATION)))
                         .setFhirResourceId(getFhirResourceId(FHIR_DATA_IMMUNIZATION))
+                        .setFhirVersion(parseFhirVersion(FHIR_VERSION_R4))
                         .setData(FHIR_DATA_IMMUNIZATION);
 
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest =
@@ -79,7 +88,9 @@ public class UpsertMedicalResourceInternalRequestTest {
     public void testMedicalResourceInternal_convertFromUpsertRequest_invalidJson() {
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
-                                DATA_SOURCE_LONG_ID, "{\"resourceType\" : \"Immunization}")
+                                DATA_SOURCE_ID,
+                                parseFhirVersion(FHIR_VERSION_R4),
+                                "{\"resourceType\" : \"Immunization}")
                         .build();
 
         assertThrows(
