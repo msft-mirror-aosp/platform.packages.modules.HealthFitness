@@ -20,11 +20,18 @@ import static android.health.connect.Constants.DEFAULT_INT;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.content.ContentProviderClient;
+import android.content.Context;
+import android.database.Cursor;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.exportimport.ImportStatus;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
 import android.net.Uri;
+import android.os.RemoteException;
+import android.provider.DocumentsContract;
+import android.provider.OpenableColumns;
+import android.util.Slog;
 
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
@@ -44,10 +51,16 @@ public final class ExportImportSettingsStorage {
     private static final String LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY =
             "last_successful_export_key";
     private static final String LAST_EXPORT_ERROR_PREFERENCE_KEY = "last_export_error_key";
+    public static final String LAST_EXPORT_FILE_NAME_KEY = "last_export_file_name_key";
+    public static final String LAST_EXPORT_APP_NAME_KEY = "last_export_app_name_key";
+    public static final String NEXT_EXPORT_FILE_NAME_KEY = "next_export_file_name_key";
+    public static final String NEXT_EXPORT_APP_NAME_KEY = "next_export_app_name_key";
 
     // Import State
     private static final String IMPORT_ONGOING_PREFERENCE_KEY = "import_ongoing_key";
     private static final String LAST_IMPORT_ERROR_PREFERENCE_KEY = "last_import_error_key";
+
+    private static final String TAG = "HealthConnectExportImport";
 
     /**
      * Configures the settings for the scheduled export of Health Connect data.
@@ -65,9 +78,9 @@ public final class ExportImportSettingsStorage {
     /** Configures the settings for the scheduled export of Health Connect data. */
     private static void configureNonNull(@NonNull ScheduledExportSettings settings) {
         if (settings.getUri() != null) {
+            Uri uri = settings.getUri();
             PreferenceHelper.getInstance()
-                    .insertOrReplacePreference(
-                            EXPORT_URI_PREFERENCE_KEY, settings.getUri().toString());
+                    .insertOrReplacePreference(EXPORT_URI_PREFERENCE_KEY, uri.toString());
             String lastExportError =
                     PreferenceHelper.getInstance().getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY);
             if (lastExportError != null) {
@@ -86,6 +99,8 @@ public final class ExportImportSettingsStorage {
     private static void clear() {
         PreferenceHelper.getInstance().removeKey(EXPORT_URI_PREFERENCE_KEY);
         PreferenceHelper.getInstance().removeKey(EXPORT_PERIOD_PREFERENCE_KEY);
+        PreferenceHelper.getInstance().removeKey(NEXT_EXPORT_APP_NAME_KEY);
+        PreferenceHelper.getInstance().removeKey(NEXT_EXPORT_FILE_NAME_KEY);
     }
 
     /** Gets scheduled export URI for exporting Health Connect data. */
@@ -119,11 +134,22 @@ public final class ExportImportSettingsStorage {
     }
 
     /** Get the status of the currently scheduled export. */
-    public static ScheduledExportStatus getScheduledExportStatus() {
+    public static ScheduledExportStatus getScheduledExportStatus(Context context) {
         PreferenceHelper prefHelper = PreferenceHelper.getInstance();
         String lastExportTime = prefHelper.getPreference(LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY);
         String lastExportError = prefHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY);
         String periodInDays = prefHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY);
+        String lastExportFileName = prefHelper.getPreference(LAST_EXPORT_FILE_NAME_KEY);
+        String lastExportAppName = prefHelper.getPreference(LAST_EXPORT_APP_NAME_KEY);
+
+        String uriString = PreferenceHelper.getInstance().getPreference(EXPORT_URI_PREFERENCE_KEY);
+        if (uriString != null) {
+            Uri uri = Uri.parse(uriString);
+            setExportAppName(context, uri, NEXT_EXPORT_APP_NAME_KEY);
+            setExportFileName(context, uri, NEXT_EXPORT_FILE_NAME_KEY);
+        }
+        String nextExportFileName = prefHelper.getPreference(NEXT_EXPORT_FILE_NAME_KEY);
+        String nextExportAppName = prefHelper.getPreference(NEXT_EXPORT_APP_NAME_KEY);
 
         return new ScheduledExportStatus(
                 lastExportTime == null
@@ -132,7 +158,11 @@ public final class ExportImportSettingsStorage {
                 lastExportError == null
                         ? HealthConnectManager.DATA_EXPORT_ERROR_NONE
                         : Integer.parseInt(lastExportError),
-                periodInDays == null ? 0 : Integer.parseInt(periodInDays));
+                periodInDays == null ? 0 : Integer.parseInt(periodInDays),
+                lastExportFileName,
+                lastExportAppName,
+                nextExportFileName,
+                nextExportAppName);
     }
 
     /** Set to true when an import starts and to false when a data import completes */
@@ -160,5 +190,55 @@ public final class ExportImportSettingsStorage {
                         ? ImportStatus.DATA_IMPORT_ERROR_NONE
                         : Integer.parseInt(lastImportError),
                 importOngoing);
+    }
+
+    /**
+     * Set the file name of the either the last or the next export, depending on the passed
+     * preference key.
+     */
+    public static void setExportFileName(
+            Context context, Uri destinationUri, String fileNamePreferenceKey) {
+        try (Cursor cursor =
+                context.getContentResolver().query(destinationUri, null, null, null, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                String fileName =
+                        cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                PreferenceHelper.getInstance()
+                        .insertOrReplacePreference(fileNamePreferenceKey, fileName);
+            } else {
+                PreferenceHelper.getInstance()
+                        .insertOrReplacePreference(
+                                fileNamePreferenceKey, destinationUri.getLastPathSegment());
+            }
+        }
+    }
+
+    /**
+     * Set the app name of the either the last or the next export, depending on the passed
+     * preference key.
+     */
+    public static void setExportAppName(
+            Context context, Uri destinationUri, String appNamePreferenceKey) {
+        try (ContentProviderClient contentProviderClient =
+                context.getContentResolver().acquireUnstableContentProviderClient(destinationUri)) {
+            if (contentProviderClient != null) {
+                Uri rootsUri = DocumentsContract.buildRootsUri(destinationUri.getAuthority());
+                try (Cursor contentProviderCursor =
+                        contentProviderClient.query(rootsUri, null, null, null, null)) {
+                    if (contentProviderCursor != null && contentProviderCursor.moveToFirst()) {
+                        String appName =
+                                contentProviderCursor.getString(
+                                        contentProviderCursor.getColumnIndex(
+                                                DocumentsContract.Root.COLUMN_TITLE));
+                        PreferenceHelper.getInstance()
+                                .insertOrReplacePreference(appNamePreferenceKey, appName);
+                    }
+                }
+            }
+        } catch (RemoteException exception) {
+            Slog.e(TAG, "Failed to get the app name", exception);
+        } catch (SecurityException exception) {
+            Slog.e(TAG, "Failed to query the app name", exception);
+        }
     }
 }

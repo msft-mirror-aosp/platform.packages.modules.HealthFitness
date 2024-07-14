@@ -66,6 +66,8 @@ class BackupAndRestoreSettingsFragmentTest {
 
     companion object {
         private const val TEST_EXPORT_PERIOD_IN_DAYS = 1
+        private const val TEST_LAST_EXPORT_APP_NAME = "Drive"
+        private const val TEST_LAST_EXPORT_FILE_NAME = "healthconnect.zip"
     }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -120,7 +122,10 @@ class BackupAndRestoreSettingsFragmentTest {
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
                         /** periodInDays= */
                         0,
-                    )))
+                        TEST_LAST_EXPORT_FILE_NAME,
+                        TEST_LAST_EXPORT_APP_NAME,
+                        null,
+                        null)))
         }
     }
 
@@ -141,7 +146,10 @@ class BackupAndRestoreSettingsFragmentTest {
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
                         TEST_EXPORT_PERIOD_IN_DAYS,
-                    )))
+                        TEST_LAST_EXPORT_FILE_NAME,
+                        TEST_LAST_EXPORT_APP_NAME,
+                        null,
+                        null)))
         }
         whenever(exportSettingsViewModel.storedExportSettings).then {
             MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
@@ -149,7 +157,6 @@ class BackupAndRestoreSettingsFragmentTest {
 
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
-        onView(withText("Export and import")).check(matches(isDisplayed()))
         onView(withText("Scheduled export")).check(matches(isDisplayed()))
         onView(withText("Import data")).check(matches(isDisplayed()))
         onView(withText("Restore data from a previously exported file"))
@@ -158,6 +165,7 @@ class BackupAndRestoreSettingsFragmentTest {
         onView(withText("Export lets you save your data so you can transfer it to a new phone"))
             .check(matches(isDisplayed()))
         onView(withText("About backup and restore")).check(matches(isDisplayed()))
+        onView(withText("Drive • healthconnect.zip")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -185,11 +193,58 @@ class BackupAndRestoreSettingsFragmentTest {
                         null,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
                         TEST_EXPORT_PERIOD_IN_DAYS,
-                    )))
+                        null,
+                        null,
+                        null,
+                        null)))
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
         onView(withText("Last export: Oct 20, 7:06 AM")).check(doesNotExist())
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_whenOnlyAppNameIsAvailable_showsAppName() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        NOW,
+                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        TEST_EXPORT_PERIOD_IN_DAYS,
+                        null,
+                        TEST_LAST_EXPORT_APP_NAME,
+                        null,
+                        null)))
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Drive")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_whenOnlyFileNameIsAvailable_showsFileName() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        NOW,
+                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        TEST_EXPORT_PERIOD_IN_DAYS,
+                        TEST_LAST_EXPORT_FILE_NAME,
+                        null,
+                        null,
+                        null)))
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("healthconnect.zip")).check(matches(isDisplayed()))
     }
 
     @Test

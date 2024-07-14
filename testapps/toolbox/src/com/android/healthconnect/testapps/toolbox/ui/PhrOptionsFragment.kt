@@ -21,6 +21,7 @@ import android.health.connect.CreateMedicalDataSourceRequest
 import android.health.connect.HealthConnectManager
 import android.health.connect.MedicalResourceId
 import android.health.connect.UpsertMedicalResourceRequest
+import android.health.connect.datatypes.FhirVersion
 import android.health.connect.datatypes.MedicalDataSource
 import android.health.connect.datatypes.MedicalResource
 import android.os.Bundle
@@ -139,7 +140,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         Log.d("INSERT_MEDICAL_RESOURCE", "Writing immunization ${immunizationResource}")
         val insertedResources = upsertMedicalResources(
             listOf(
-                UpsertMedicalResourceRequest.Builder(1, immunizationResource).build()))
+                UpsertMedicalResourceRequest.Builder("1", FhirVersion.parseFhirVersion("4.0.1"), immunizationResource).build()))
         val insertedResourceId = "1,1,immunization_1"
         view.findViewById<EditText>(R.id.phr_immunization_id_text).setText(insertedResourceId)
         return insertedResources.joinToString(separator = "\n", transform = MedicalResource::toString)

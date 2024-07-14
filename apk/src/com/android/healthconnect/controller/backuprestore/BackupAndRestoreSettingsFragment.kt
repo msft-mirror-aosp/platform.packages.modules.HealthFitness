@@ -194,11 +194,27 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
                 getString(
                     R.string.last_export_time,
                     dateFormatter.formatDateAndTime(lastSuccessfulExportTime))
+            val exportLocation = getExportLocationString(scheduledExportUiState)
             settingsCategory?.addPreference(
-                ExportStatusPreference(requireContext(), lastExportTime).also {
+                ExportStatusPreference(requireContext(), lastExportTime, exportLocation).also {
                     it.order = PREVIOUS_EXPORT_STATUS_ORDER
                 })
         }
+    }
+
+    private fun getExportLocationString(scheduledExportUiState: ScheduledExportUiState): String? {
+        if (scheduledExportUiState.lastExportAppName != null &&
+            scheduledExportUiState.lastExportFileName != null) {
+            return getString(
+                R.string.last_export_file_location,
+                scheduledExportUiState.lastExportAppName,
+                scheduledExportUiState.lastExportFileName)
+        } else if (scheduledExportUiState.lastExportFileName != null) {
+            return scheduledExportUiState.lastExportFileName
+        } else if (scheduledExportUiState.lastExportAppName != null) {
+            return scheduledExportUiState.lastExportAppName
+        }
+        return null
     }
 
     private fun maybeShowImportErrorBanner(importUiState: ImportUiState) {

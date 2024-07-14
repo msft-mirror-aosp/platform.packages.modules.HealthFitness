@@ -15,10 +15,13 @@
  */
 package android.healthconnect.cts;
 
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_LONG_ID;
-import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_LONG_ID;
+import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4B;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -43,40 +46,50 @@ public class UpsertMedicalResourceRequestTest {
     @Test
     public void testUpsertMedicalResourceRequest_successfulCreate() {
         UpsertMedicalResourceRequest upsertMedicalResourceRequest =
-                new UpsertMedicalResourceRequest.Builder(DATA_SOURCE_LONG_ID, FHIR_DATA_ALLERGY)
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID,
+                                parseFhirVersion(FHIR_VERSION_R4),
+                                FHIR_DATA_ALLERGY)
                         .build();
 
-        assertThat(upsertMedicalResourceRequest.getDataSourceId()).isEqualTo(DATA_SOURCE_LONG_ID);
+        assertThat(upsertMedicalResourceRequest.getDataSourceId()).isEqualTo(DATA_SOURCE_ID);
+        assertThat(upsertMedicalResourceRequest.getFhirVersion())
+                .isEqualTo(parseFhirVersion(FHIR_VERSION_R4));
         assertThat(upsertMedicalResourceRequest.getData()).isEqualTo(FHIR_DATA_ALLERGY);
     }
 
     @Test
     public void testUpsertMedicalResourceRequest_fromExistingBuilder() {
         UpsertMedicalResourceRequest.Builder builder =
-                new UpsertMedicalResourceRequest.Builder(DATA_SOURCE_LONG_ID, FHIR_DATA_ALLERGY);
+                new UpsertMedicalResourceRequest.Builder(
+                        DATA_SOURCE_ID, parseFhirVersion(FHIR_VERSION_R4), FHIR_DATA_ALLERGY);
         UpsertMedicalResourceRequest copy =
                 new UpsertMedicalResourceRequest.Builder(builder).build();
 
-        assertThat(copy.getData()).isEqualTo(FHIR_DATA_ALLERGY);
-        assertThat(copy.getDataSourceId()).isEqualTo(DATA_SOURCE_LONG_ID);
+        assertThat(copy).isEqualTo(builder.build());
     }
 
     @Test
     public void testUpsertMedicalResourceRequest_fromExistingRequest() {
         UpsertMedicalResourceRequest request =
-                new UpsertMedicalResourceRequest.Builder(DATA_SOURCE_LONG_ID, FHIR_DATA_ALLERGY)
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID,
+                                parseFhirVersion(FHIR_VERSION_R4),
+                                FHIR_DATA_ALLERGY)
                         .build();
         UpsertMedicalResourceRequest copy =
                 new UpsertMedicalResourceRequest.Builder(request).build();
 
-        assertThat(copy.getData()).isEqualTo(FHIR_DATA_ALLERGY);
-        assertThat(copy.getDataSourceId()).isEqualTo(DATA_SOURCE_LONG_ID);
+        assertThat(copy).isEqualTo(request);
     }
 
     @Test
     public void testWriteToParcelThenRestore_objectsAreIdentical() {
         UpsertMedicalResourceRequest request =
-                new UpsertMedicalResourceRequest.Builder(DATA_SOURCE_LONG_ID, FHIR_DATA_ALLERGY)
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID,
+                                parseFhirVersion(FHIR_VERSION_R4),
+                                FHIR_DATA_ALLERGY)
                         .build();
 
         Parcel parcel = Parcel.obtain();
@@ -92,10 +105,16 @@ public class UpsertMedicalResourceRequestTest {
     @Test
     public void testUpsertMedicalResourceRequest_equals() {
         UpsertMedicalResourceRequest upsertMedicalResourceRequest1 =
-                new UpsertMedicalResourceRequest.Builder(DATA_SOURCE_LONG_ID, FHIR_DATA_ALLERGY)
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID,
+                                parseFhirVersion(FHIR_VERSION_R4),
+                                FHIR_DATA_ALLERGY)
                         .build();
         UpsertMedicalResourceRequest upsertMedicalResourceRequest2 =
-                new UpsertMedicalResourceRequest.Builder(DATA_SOURCE_LONG_ID, FHIR_DATA_ALLERGY)
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID,
+                                parseFhirVersion(FHIR_VERSION_R4),
+                                FHIR_DATA_ALLERGY)
                         .build();
 
         assertThat(upsertMedicalResourceRequest1.equals(upsertMedicalResourceRequest2)).isTrue();
@@ -105,27 +124,37 @@ public class UpsertMedicalResourceRequestTest {
 
     @Test
     public void testUpsertMedicalDataSource_equals_comparesAllValues() {
-        UpsertMedicalResourceRequest upsertMedicalResourceRequest1 =
-                new UpsertMedicalResourceRequest.Builder(DATA_SOURCE_LONG_ID, FHIR_DATA_ALLERGY)
-                        .build();
-        UpsertMedicalResourceRequest upsertMedicalResourceRequest2 =
+        UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
-                                DIFFERENT_DATA_SOURCE_LONG_ID, FHIR_DATA_IMMUNIZATION)
+                                DATA_SOURCE_ID,
+                                parseFhirVersion(FHIR_VERSION_R4),
+                                FHIR_DATA_IMMUNIZATION)
+                        .build();
+        UpsertMedicalResourceRequest requestDifferentId =
+                new UpsertMedicalResourceRequest.Builder(request)
+                        .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
+                        .build();
+        UpsertMedicalResourceRequest requestDifferentFhirVersion =
+                new UpsertMedicalResourceRequest.Builder(request)
+                        .setFhirVersion(parseFhirVersion(FHIR_VERSION_R4B))
+                        .build();
+        UpsertMedicalResourceRequest requestDifferentData =
+                new UpsertMedicalResourceRequest.Builder(request)
+                        .setData(FHIR_DATA_ALLERGY)
                         .build();
 
-        assertThat(upsertMedicalResourceRequest1.getDataSourceId())
-                .isNotEqualTo(upsertMedicalResourceRequest2.getDataSourceId());
-        assertThat(
-                        upsertMedicalResourceRequest1
-                                .getData()
-                                .equals(upsertMedicalResourceRequest2.getData()))
-                .isFalse();
+        assertThat(requestDifferentId.equals(request)).isFalse();
+        assertThat(requestDifferentFhirVersion.equals(request)).isFalse();
+        assertThat(requestDifferentData.equals(request)).isFalse();
+        assertThat(requestDifferentId.hashCode()).isNotEqualTo(request.hashCode());
+        assertThat(requestDifferentFhirVersion.hashCode()).isNotEqualTo(request.hashCode());
+        assertThat(requestDifferentData.hashCode()).isNotEqualTo(request.hashCode());
     }
 
     @Test
     public void testRequestBuilder_nullData_throws() {
         assertThrows(
-                IllegalArgumentException.class,
-                () -> new UpsertMedicalResourceRequest.Builder(-1L, null));
+                NullPointerException.class,
+                () -> new UpsertMedicalResourceRequest.Builder(null, null, null));
     }
 }
