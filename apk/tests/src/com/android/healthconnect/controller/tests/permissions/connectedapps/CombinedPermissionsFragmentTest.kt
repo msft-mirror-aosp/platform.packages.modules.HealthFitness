@@ -264,6 +264,7 @@ class CombinedPermissionsFragmentTest {
         }
         onView(withText("Additional access")).perform(scrollTo()).perform(click())
 
+        onIdle()
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.additionalAccessFragment)
         verify(healthConnectLogger).logInteraction(AppAccessElement.ADDITIONAL_ACCESS_BUTTON)

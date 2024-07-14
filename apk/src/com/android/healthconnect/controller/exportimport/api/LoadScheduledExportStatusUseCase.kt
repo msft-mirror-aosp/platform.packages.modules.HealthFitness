@@ -59,7 +59,11 @@ constructor(
         return ScheduledExportUiState(
             scheduledExportStatus.lastSuccessfulExportTime,
             dataExportError,
-            scheduledExportStatus.periodInDays)
+            scheduledExportStatus.periodInDays,
+            scheduledExportStatus.lastExportFileName,
+            scheduledExportStatus.lastExportAppName,
+            scheduledExportStatus.nextExportFileName,
+            scheduledExportStatus.nextExportAppName)
     }
 
     override suspend operator fun invoke(): ExportImportUseCaseResult<ScheduledExportUiState> =

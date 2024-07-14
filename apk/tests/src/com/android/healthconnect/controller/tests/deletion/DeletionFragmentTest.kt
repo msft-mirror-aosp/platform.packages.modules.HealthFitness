@@ -21,6 +21,7 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
@@ -42,9 +43,11 @@ import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -62,6 +65,12 @@ class DeletionFragmentTest {
     fun setup() {
         hiltRule.inject()
         Mockito.`when`(viewModel.isInactiveApp).then { false }
+        toggleAnimation(false)
+    }
+
+    @After
+    fun tearDown() {
+        toggleAnimation(true)
     }
 
     // Delete all data flow
@@ -80,17 +89,31 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
         }
 
-        onView(withText("Choose data to delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Choose data to delete from Health Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
         onView(
                 withText(
                     "This permanently deletes all data added to Health\u00A0Connect in the chosen" +
                         " time period"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
-        onView(withText("Delete last 24 hours")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("Delete last 7 days")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("Delete last 30 days")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("Delete all data")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete last 24 hours"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete last 7 days"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete last 30 days"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete all data"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
         onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
         onView(withText("Next")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
@@ -111,17 +134,31 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeCategory))
         }
 
-        onView(withText("Choose data to delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Choose data to delete from Health Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
         onView(
                 withText(
                     "This permanently deletes activity data added to Health\u00A0Connect in the chosen" +
                         " time period"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
-        onView(withText("Delete last 24 hours")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("Delete last 7 days")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("Delete last 30 days")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("Delete all data")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete last 24 hours"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete last 7 days"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete last 30 days"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete all data"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
         onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
         onView(withText("Next")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
@@ -141,20 +178,35 @@ class DeletionFragmentTest {
                 .parentFragmentManager
                 .setFragmentResult(
                     START_DELETION_EVENT,
-                    bundleOf(DELETION_TYPE to deletionTypeFitnessPermissionType))
+                    bundleOf(DELETION_TYPE to deletionTypeFitnessPermissionType),
+                )
         }
 
-        onView(withText("Choose data to delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Choose data to delete from Health Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
         onView(
                 withText(
                     "This permanently deletes blood glucose data added to Health\u00A0Connect in the chosen" +
                         " time period"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
-        onView(withText("Delete last 24 hours")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("Delete last 7 days")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("Delete last 30 days")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("Delete all data")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete last 24 hours"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete last 7 days"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete last 30 days"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete all data"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
         onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
         onView(withText("Next")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
@@ -176,17 +228,81 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAppData))
         }
 
-        onView(withText("Choose data to delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Choose data to delete from Health Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
         onView(
                 withText(
                     "This permanently deletes $TEST_APP_NAME data added to Health\u00A0Connect in the chosen" +
                         " time period"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
-        onView(withText("Delete last 24 hours")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("Delete last 7 days")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("Delete last 30 days")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("Delete all data")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete last 24 hours"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete last 7 days"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete last 30 days"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete all data"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Next")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deletePermissionTypeFromApp_timeRangeDialog_showsCorrectText() {
+        val deletionTypePermissionTypeFromApp =
+            DeletionType.DeletionTypeHealthPermissionTypeFromApp(
+                fitnessPermissionType = FitnessPermissionType.STEPS,
+                packageName = TEST_APP_PACKAGE_NAME,
+                appName = TEST_APP_NAME,
+            )
+        Mockito.`when`(viewModel.deletionParameters).then {
+            MutableLiveData(DeletionParameters(deletionType = deletionTypePermissionTypeFromApp))
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypePermissionTypeFromApp),
+                )
+        }
+
+        onView(withText("Choose data to delete from Health Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "This permanently deletes steps data added by $TEST_APP_NAME to Health\u00A0Connect in the chosen" +
+                        " time period"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete last 24 hours"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete last 7 days"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete last 30 days"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete all data"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
         onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
         onView(withText("Next")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
@@ -199,7 +315,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAllData,
-                    chosenRange = ChosenRange.DELETE_RANGE_LAST_24_HOURS))
+                    chosenRange = ChosenRange.DELETE_RANGE_LAST_24_HOURS,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -209,7 +326,10 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
         }
 
-        onView(withId(R.id.radio_button_one_day)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_one_day))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -232,7 +352,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAllData,
-                    chosenRange = ChosenRange.DELETE_RANGE_LAST_7_DAYS))
+                    chosenRange = ChosenRange.DELETE_RANGE_LAST_7_DAYS,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -242,7 +363,10 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
         }
 
-        onView(withId(R.id.radio_button_one_week)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_one_week))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -265,7 +389,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAllData,
-                    chosenRange = ChosenRange.DELETE_RANGE_LAST_30_DAYS))
+                    chosenRange = ChosenRange.DELETE_RANGE_LAST_30_DAYS,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -275,7 +400,10 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
         }
 
-        onView(withId(R.id.radio_button_one_month)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_one_month))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -298,7 +426,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAllData,
-                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA))
+                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -308,7 +437,10 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
         }
 
-        onView(withId(R.id.radio_button_all)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_all))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -332,7 +464,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeCategory,
-                    chosenRange = ChosenRange.DELETE_RANGE_LAST_24_HOURS))
+                    chosenRange = ChosenRange.DELETE_RANGE_LAST_24_HOURS,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -342,7 +475,10 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeCategory))
         }
 
-        onView(withId(R.id.radio_button_one_day)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_one_day))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -365,7 +501,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeCategory,
-                    chosenRange = ChosenRange.DELETE_RANGE_LAST_7_DAYS))
+                    chosenRange = ChosenRange.DELETE_RANGE_LAST_7_DAYS,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -375,7 +512,10 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeCategory))
         }
 
-        onView(withId(R.id.radio_button_one_week)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_one_week))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -399,7 +539,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeCategory,
-                    chosenRange = ChosenRange.DELETE_RANGE_LAST_30_DAYS))
+                    chosenRange = ChosenRange.DELETE_RANGE_LAST_30_DAYS,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -409,7 +550,10 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeCategory))
         }
 
-        onView(withId(R.id.radio_button_one_month)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_one_month))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -432,7 +576,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeCategory,
-                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA))
+                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -442,7 +587,10 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeCategory))
         }
 
-        onView(withId(R.id.radio_button_all)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_all))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -467,7 +615,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeFitnessPermissionType,
-                    chosenRange = ChosenRange.DELETE_RANGE_LAST_24_HOURS))
+                    chosenRange = ChosenRange.DELETE_RANGE_LAST_24_HOURS,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -475,10 +624,14 @@ class DeletionFragmentTest {
                 .parentFragmentManager
                 .setFragmentResult(
                     START_DELETION_EVENT,
-                    bundleOf(DELETION_TYPE to deletionTypeFitnessPermissionType))
+                    bundleOf(DELETION_TYPE to deletionTypeFitnessPermissionType),
+                )
         }
 
-        onView(withId(R.id.radio_button_one_day)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_one_day))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -502,7 +655,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeFitnessPermissionType,
-                    chosenRange = ChosenRange.DELETE_RANGE_LAST_7_DAYS))
+                    chosenRange = ChosenRange.DELETE_RANGE_LAST_7_DAYS,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -510,10 +664,14 @@ class DeletionFragmentTest {
                 .parentFragmentManager
                 .setFragmentResult(
                     START_DELETION_EVENT,
-                    bundleOf(DELETION_TYPE to deletionTypeFitnessPermissionType))
+                    bundleOf(DELETION_TYPE to deletionTypeFitnessPermissionType),
+                )
         }
 
-        onView(withId(R.id.radio_button_one_week)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_one_week))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -538,7 +696,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeFitnessPermissionType,
-                    chosenRange = ChosenRange.DELETE_RANGE_LAST_30_DAYS))
+                    chosenRange = ChosenRange.DELETE_RANGE_LAST_30_DAYS,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -546,10 +705,14 @@ class DeletionFragmentTest {
                 .parentFragmentManager
                 .setFragmentResult(
                     START_DELETION_EVENT,
-                    bundleOf(DELETION_TYPE to deletionTypeFitnessPermissionType))
+                    bundleOf(DELETION_TYPE to deletionTypeFitnessPermissionType),
+                )
         }
 
-        onView(withId(R.id.radio_button_one_month)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_one_month))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -573,7 +736,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeFitnessPermissionType,
-                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA))
+                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -581,10 +745,14 @@ class DeletionFragmentTest {
                 .parentFragmentManager
                 .setFragmentResult(
                     START_DELETION_EVENT,
-                    bundleOf(DELETION_TYPE to deletionTypeFitnessPermissionType))
+                    bundleOf(DELETION_TYPE to deletionTypeFitnessPermissionType),
+                )
         }
 
-        onView(withId(R.id.radio_button_all)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_all))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -609,7 +777,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAppData,
-                    chosenRange = ChosenRange.DELETE_RANGE_LAST_24_HOURS))
+                    chosenRange = ChosenRange.DELETE_RANGE_LAST_24_HOURS,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -619,7 +788,10 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAppData))
         }
 
-        onView(withId(R.id.radio_button_one_day)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_one_day))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -643,7 +815,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAppData,
-                    chosenRange = ChosenRange.DELETE_RANGE_LAST_7_DAYS))
+                    chosenRange = ChosenRange.DELETE_RANGE_LAST_7_DAYS,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -653,7 +826,10 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAppData))
         }
 
-        onView(withId(R.id.radio_button_one_week)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_one_week))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -678,7 +854,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAppData,
-                    chosenRange = ChosenRange.DELETE_RANGE_LAST_30_DAYS))
+                    chosenRange = ChosenRange.DELETE_RANGE_LAST_30_DAYS,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -688,7 +865,10 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAppData))
         }
 
-        onView(withId(R.id.radio_button_one_month)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_one_month))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -712,7 +892,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAppData,
-                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA))
+                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -722,11 +903,192 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAppData))
         }
 
-        onView(withId(R.id.radio_button_all)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_all))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
         onView(withText("Permanently delete $TEST_APP_NAME data from all time?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deletePermissionTypeFromApp_confirmationDialogForOneDay_showsCorrectText() {
+        val deletionTypePermissionTypeFromApp =
+            DeletionType.DeletionTypeHealthPermissionTypeFromApp(
+                fitnessPermissionType = FitnessPermissionType.STEPS,
+                packageName = TEST_APP_PACKAGE_NAME,
+                appName = TEST_APP_NAME,
+            )
+        Mockito.`when`(viewModel.deletionParameters).then {
+            MutableLiveData(
+                DeletionParameters(
+                    deletionType = deletionTypePermissionTypeFromApp,
+                    chosenRange = ChosenRange.DELETE_RANGE_LAST_24_HOURS,
+                ))
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypePermissionTypeFromApp),
+                )
+        }
+
+        onView(withId(R.id.radio_button_one_day))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
+
+        onView(withText("Next")).inRoot(isDialog()).perform(click())
+
+        onView(
+                withText(
+                    "Permanently delete steps data added by $TEST_APP_NAME from the last 24 hours?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deletePermissionTypeFromApp_confirmationDialogForOneWeek_showsCorrectText() {
+        val deletionTypePermissionTypeFromApp =
+            DeletionType.DeletionTypeHealthPermissionTypeFromApp(
+                fitnessPermissionType = FitnessPermissionType.STEPS,
+                packageName = TEST_APP_PACKAGE_NAME,
+                appName = TEST_APP_NAME,
+            )
+        Mockito.`when`(viewModel.deletionParameters).then {
+            MutableLiveData(
+                DeletionParameters(
+                    deletionType = deletionTypePermissionTypeFromApp,
+                    chosenRange = ChosenRange.DELETE_RANGE_LAST_7_DAYS,
+                ))
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypePermissionTypeFromApp),
+                )
+        }
+
+        onView(withId(R.id.radio_button_one_week))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
+
+        onView(withText("Next")).inRoot(isDialog()).perform(click())
+
+        onView(
+                withText(
+                    "Permanently delete steps data added by $TEST_APP_NAME from the last 7 days?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deletePermissionTypeFromApp_confirmationDialogForOneMonth_showsCorrectText() {
+        val deletionTypePermissionTypeFromApp =
+            DeletionType.DeletionTypeHealthPermissionTypeFromApp(
+                fitnessPermissionType = FitnessPermissionType.STEPS,
+                packageName = TEST_APP_PACKAGE_NAME,
+                appName = TEST_APP_NAME,
+            )
+        Mockito.`when`(viewModel.deletionParameters).then {
+            MutableLiveData(
+                DeletionParameters(
+                    deletionType = deletionTypePermissionTypeFromApp,
+                    chosenRange = ChosenRange.DELETE_RANGE_LAST_30_DAYS,
+                ))
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypePermissionTypeFromApp),
+                )
+        }
+
+        onView(withId(R.id.radio_button_one_month))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
+
+        onView(withText("Next")).inRoot(isDialog()).perform(click())
+
+        onView(
+                withText(
+                    "Permanently delete steps data added by $TEST_APP_NAME from the last 30 days?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deletePermissionTypeFromApp_confirmationDialogForAllTime_showsCorrectText() {
+        val deletionTypePermissionTypeFromApp =
+            DeletionType.DeletionTypeHealthPermissionTypeFromApp(
+                fitnessPermissionType = FitnessPermissionType.STEPS,
+                packageName = TEST_APP_PACKAGE_NAME,
+                appName = TEST_APP_NAME,
+            )
+        Mockito.`when`(viewModel.deletionParameters).then {
+            MutableLiveData(
+                DeletionParameters(
+                    deletionType = deletionTypePermissionTypeFromApp,
+                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
+                ))
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(
+                    START_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypePermissionTypeFromApp),
+                )
+        }
+
+        onView(withId(R.id.radio_button_all))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
+
+        onView(withText("Next")).inRoot(isDialog()).perform(click())
+
+        onView(withText("Permanently delete steps data added by $TEST_APP_NAME from all time?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
 
@@ -746,7 +1108,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAppData,
-                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA))
+                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
+                ))
         }
         Mockito.`when`(viewModel.isInactiveApp).then { true }
 
@@ -755,7 +1118,8 @@ class DeletionFragmentTest {
                 .parentFragmentManager
                 .setFragmentResult(
                     START_INACTIVE_APP_DELETION_EVENT,
-                    bundleOf(DELETION_TYPE to deletionTypeAppData))
+                    bundleOf(DELETION_TYPE to deletionTypeAppData),
+                )
         }
 
         onView(withText("Permanently delete $TEST_APP_NAME data from all time?"))
@@ -768,9 +1132,7 @@ class DeletionFragmentTest {
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
 
-        onView(
-            withText(
-                "Also remove all $TEST_APP_NAME permissions from Health\u00A0Connect"))
+        onView(withText("Also remove all $TEST_APP_NAME permissions from Health\u00A0Connect"))
             .inRoot(isDialog())
             .check(doesNotExist())
     }
@@ -783,7 +1145,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAllData,
-                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA))
+                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
+                ))
         }
 
         Mockito.`when`(viewModel.showTimeRangeDialogFragment).then { true }
@@ -795,7 +1158,10 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
         }
 
-        onView(withId(R.id.radio_button_all)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_all))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -811,17 +1177,31 @@ class DeletionFragmentTest {
 
         onView(withText("Go back")).inRoot(isDialog()).perform(click())
 
-        onView(withText("Choose data to delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Choose data to delete from Health Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
         onView(
                 withText(
                     "This permanently deletes all data added to Health\u00A0Connect in the chosen" +
                         " time period"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
-        onView(withText("Delete last 24 hours")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("Delete last 7 days")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("Delete last 30 days")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("Delete all data")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete last 24 hours"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete last 7 days"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete last 30 days"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete all data"))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
         onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
         onView(withText("Next")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
@@ -842,7 +1222,7 @@ class DeletionFragmentTest {
                 .setFragmentResult(START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionEntry))
         }
 
-        onView(withText("Permanently delete this entry?"))
+        onView(withText("Permanently delete this entry from Health Connect?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
 
@@ -870,7 +1250,8 @@ class DeletionFragmentTest {
             MutableLiveData(
                 DeletionParameters(
                     deletionType = deletionTypeAllData,
-                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA))
+                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
+                ))
         }
 
         Mockito.`when`(viewModel.showTimeRangeDialogFragment).then { false }
@@ -882,7 +1263,10 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
         }
 
-        onView(withId(R.id.radio_button_all)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_all))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -910,7 +1294,8 @@ class DeletionFragmentTest {
                 DeletionParameters(
                     deletionState = DeletionState.STATE_PROGRESS_INDICATOR_STARTED,
                     deletionType = deletionTypeAllData,
-                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA))
+                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -920,7 +1305,10 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
         }
 
-        onView(withId(R.id.radio_button_all)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_all))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -948,7 +1336,8 @@ class DeletionFragmentTest {
                 DeletionParameters(
                     deletionState = DeletionState.STATE_PROGRESS_INDICATOR_CAN_END,
                     deletionType = deletionTypeAllData,
-                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA))
+                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -958,7 +1347,10 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
         }
 
-        onView(withId(R.id.radio_button_all)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_all))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -986,7 +1378,8 @@ class DeletionFragmentTest {
                 DeletionParameters(
                     deletionState = DeletionState.STATE_DELETION_SUCCESSFUL,
                     deletionType = deletionTypeAllData,
-                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA))
+                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -996,7 +1389,10 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
         }
 
-        onView(withId(R.id.radio_button_all)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_all))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
@@ -1013,10 +1409,16 @@ class DeletionFragmentTest {
         onView(withText("Delete")).inRoot(isDialog()).perform(click())
 
         onView(withText("Deleting your data")).inRoot(isDialog()).check(doesNotExist())
-        onView(withText("Data deleted")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("This data is no longer stored in Health\u00A0Connect."))
+        onView(withText("Data deleted from Health Connect"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "If you want to completely delete the data from your connected apps, check each app where your data may be saved."))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("See connected apps")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Done")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
 
     @Test
@@ -1028,7 +1430,8 @@ class DeletionFragmentTest {
                 DeletionParameters(
                     deletionState = DeletionState.STATE_DELETION_FAILED,
                     deletionType = deletionTypeAllData,
-                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA))
+                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA,
+                ))
         }
 
         launchFragment<DeletionFragment>(Bundle()) {
@@ -1038,7 +1441,10 @@ class DeletionFragmentTest {
                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
         }
 
-        onView(withId(R.id.radio_button_all)).inRoot(isDialog()).perform(click())
+        onView(withId(R.id.radio_button_all))
+            .inRoot(isDialog())
+            .perform(scrollTo())
+            .perform(click())
 
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
