@@ -31,7 +31,8 @@ class FakeHealthDataExportManager : HealthDataExportManager {
     companion object {
         private const val DEFAULT_EXPORT_PERIOD_IN_DAYS = 0
         private val DEFAULT_SCHEDULED_EXPORT_STATUS =
-            ScheduledExportStatus(null, HealthConnectManager.DATA_EXPORT_ERROR_NONE, 1)
+            ScheduledExportStatus(
+                null, HealthConnectManager.DATA_EXPORT_ERROR_NONE, 1, null, null, null, null)
     }
 
     private var scheduledExportPeriodInDays = DEFAULT_EXPORT_PERIOD_IN_DAYS

@@ -43,6 +43,7 @@ import androidx.annotation.VisibleForTesting;
  *
  * @hide
  */
+// TODO(b/352602201): Refactor to use new HealthConnectNotificationFactory
 public class MigrationNotificationFactory {
     private final Context mContext;
     private final HealthConnectResourcesContext mResContext;

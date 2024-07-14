@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,25 @@
 
 package com.android.server.healthconnect.storage.utils;
 
-/** @hide */
-public final class DropTableRequest {
+/**
+ * Represents a table and a column within that table.
+ *
+ * @hide
+ */
+public final class TableColumnPair {
+    public TableColumnPair(String tableName, String columnName) {
+        this.mTableName = tableName;
+        this.mColumnName = columnName;
+    }
+
+    public String getTableName() {
+        return mTableName;
+    }
+
+    public String getColumnName() {
+        return mColumnName;
+    }
+
     private final String mTableName;
-
-    public DropTableRequest(String tableName) {
-        mTableName = tableName;
-    }
-
-    public String getCommand() {
-        return "DROP TABLE IF EXISTS '" + mTableName + "'";
-    }
+    private final String mColumnName;
 }

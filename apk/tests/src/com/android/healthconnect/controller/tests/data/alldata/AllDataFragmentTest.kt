@@ -44,10 +44,12 @@ import com.android.healthconnect.controller.data.alldata.AllDataViewModel
 import com.android.healthconnect.controller.data.appdata.AppDataUseCase
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionPermissionTypesPreference
+import com.android.healthconnect.controller.selectabledeletion.SelectAllCheckboxPreference
 import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.getDataOrigin
 import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -81,6 +83,8 @@ class AllDataFragmentTest {
     @Before
     fun setup() {
         hiltRule.inject()
+        toggleAnimation(false)
+
     }
 
     @Test
@@ -159,7 +163,6 @@ class AllDataFragmentTest {
 
         val scenario = launchFragment<AllDataFragment>()
 
-        // check checkboxes are not shown
         onView(withId(androidx.preference.R.id.recycler_view))
             .check(
                 matches(
@@ -183,21 +186,8 @@ class AllDataFragmentTest {
             (fragment as AllDataFragment).triggerDeletionState(true)
         }
 
-        // check checkboxes are shown
-        onView(withId(androidx.preference.R.id.recycler_view))
-            .check(
-                matches(
-                    allOf(
-                        hasDescendant(withText("Distance")),
-                        hasDescendant(
-                            withTagValue(`is`("checkbox"))))))
-        onView(withId(androidx.preference.R.id.recycler_view))
-            .check(
-                matches(
-                    allOf(
-                        hasDescendant(withText("Menstruation")),
-                        hasDescendant(
-                            withTagValue(`is`("checkbox"))))))
+        assertCheckboxShown("Distance")
+        assertCheckboxShown("Menstruation")
     }
 
     @Test
@@ -226,11 +216,9 @@ class AllDataFragmentTest {
 
         onView(withText("Distance")).perform(click())
         onIdle()
-        assertThat(allDataViewModel.getDeleteSet())
-            .containsExactlyElementsIn(setOf(FitnessPermissionType.DISTANCE))
-
+        assertThat(allDataViewModel.setOfPermissionTypesToBeDeleted.value).containsExactlyElementsIn(setOf(FitnessPermissionType.DISTANCE))
         onView(withText("Distance")).perform(click())
-        assertThat(allDataViewModel.getDeleteSet()).isEmpty()
+        assertThat(allDataViewModel.setOfPermissionTypesToBeDeleted.value).isEmpty()
     }
 
     @Test
@@ -260,27 +248,15 @@ class AllDataFragmentTest {
 
         advanceUntilIdle()
 
-        // check if checkboxes show
-        onView(withId(androidx.preference.R.id.recycler_view))
-            .check(
-                matches(
-                    allOf(
-                        hasDescendant(withText("Distance")),
-                        hasDescendant(
-                            withTagValue(`is`("checkbox"))))))
-        onView(withId(androidx.preference.R.id.recycler_view))
-            .check(
-                matches(
-                    allOf(
-                        hasDescendant(withText("Heart rate")),
-                        hasDescendant(
-                            withTagValue(`is`("checkbox"))))))
+        assertCheckboxShown("Distance")
+        assertCheckboxShown("Heart rate")
         onView(withText("Distance")).perform(click())
 
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             val fragment = activity.supportFragmentManager.findFragmentByTag("") as AllDataFragment
-            fragment.preferenceScreen.children.forEach { preference ->
+            val fitnessCategoryPreference = fragment.preferenceScreen.findPreference("key_permission_type") as PreferenceCategory?
+            fitnessCategoryPreference?.children?.forEach { preference ->
                 if (preference is PreferenceCategory) {
                     preference.children.forEach { permissionTypePreference ->
                         if (permissionTypePreference is DeletionPermissionTypesPreference) {
@@ -297,24 +273,247 @@ class AllDataFragmentTest {
             }
         }
 
-        onView(withId(androidx.preference.R.id.recycler_view))
-            .check(
-                matches(
-                    allOf(
-                        hasDescendant(withText("Distance")),
-                        hasDescendant(
-                            withTagValue(`is`("checkbox"))))))
-        onView(withId(androidx.preference.R.id.recycler_view))
-            .check(
-                matches(
-                    allOf(
-                        hasDescendant(withText("Heart rate")),
-                        hasDescendant(
-                            withTagValue(`is`("checkbox"))))))
+        assertCheckboxShown("Distance")
+        assertCheckboxShown("Heart rate")
 
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
+    }
+
+    @Test
+    fun triggerDeletionState_displaysSelectAllButton(){
+        val recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse> =
+                mapOf(
+                        StepsRecord::class.java to
+                                RecordTypeInfoResponse(
+                                        HealthPermissionCategory.DISTANCE,
+                                        HealthDataCategory.ACTIVITY,
+                                        listOf(getDataOrigin(TEST_APP_PACKAGE_NAME))),
+                        MenstruationPeriodRecord::class.java to
+                                RecordTypeInfoResponse(
+                                        HealthPermissionCategory.MENSTRUATION,
+                                        HealthDataCategory.CYCLE_TRACKING,
+                                        listOf(getDataOrigin(TEST_APP_PACKAGE_NAME))))
+        doAnswer(prepareAnswer(recordTypeInfoMap))
+                .`when`(manager)
+                .queryAllRecordTypesInfo(any(), any())
+
+        val scenario = launchFragment<AllDataFragment>()
+
+        // trigger deletion state
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as AllDataFragment).triggerDeletionState(true)
+        }
+
+        assertCheckboxShown("Select all")
+    }
+
+    @Test
+    fun triggerDeletionState_onSelectAllChecked_allPermissionTypesChecked() = runTest{
+        val recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse> =
+                mapOf(
+                        StepsRecord::class.java to
+                                RecordTypeInfoResponse(
+                                        HealthPermissionCategory.DISTANCE,
+                                        HealthDataCategory.ACTIVITY,
+                                        listOf(getDataOrigin(TEST_APP_PACKAGE_NAME))),
+                        MenstruationPeriodRecord::class.java to
+                                RecordTypeInfoResponse(
+                                        HealthPermissionCategory.MENSTRUATION,
+                                        HealthDataCategory.CYCLE_TRACKING,
+                                        listOf(getDataOrigin(TEST_APP_PACKAGE_NAME))))
+        doAnswer(prepareAnswer(recordTypeInfoMap))
+                .`when`(manager)
+                .queryAllRecordTypesInfo(any(), any())
+
+        val scenario = launchFragment<AllDataFragment>()
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as AllDataFragment).triggerDeletionState(true)
+        }
+
+        advanceUntilIdle()
+
+        assertCheckboxShown("Select all")
+        onView(withText("Select all")).perform(click())
+        assertThat(allDataViewModel.setOfPermissionTypesToBeDeleted.value)
+                .containsExactlyElementsIn(setOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.MENSTRUATION))
+    }
+
+    @Test
+    fun triggerDeletionState_onSelectAllUnchecked_allPermissionTypesUnChecked() = runTest {
+        val recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse> =
+                mapOf(
+                        StepsRecord::class.java to
+                                RecordTypeInfoResponse(
+                                        HealthPermissionCategory.DISTANCE,
+                                        HealthDataCategory.ACTIVITY,
+                                        listOf(getDataOrigin(TEST_APP_PACKAGE_NAME))),
+                        MenstruationPeriodRecord::class.java to
+                                RecordTypeInfoResponse(
+                                        HealthPermissionCategory.MENSTRUATION,
+                                        HealthDataCategory.CYCLE_TRACKING,
+                                        listOf(getDataOrigin(TEST_APP_PACKAGE_NAME))))
+        doAnswer(prepareAnswer(recordTypeInfoMap))
+                .`when`(manager)
+                .queryAllRecordTypesInfo(any(), any())
+
+        val scenario = launchFragment<AllDataFragment>()
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as AllDataFragment).triggerDeletionState(true)
+        }
+
+        advanceUntilIdle()
+
+        assertCheckboxShown("Select all")
+        onView(withText("Select all")).perform(click())
+        assertThat(allDataViewModel.setOfPermissionTypesToBeDeleted.value)
+                .containsExactlyElementsIn(setOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.MENSTRUATION))
+        onView(withText("Select all")).perform(click())
+        assertThat(allDataViewModel.setOfPermissionTypesToBeDeleted.value).isEmpty()
+    }
+
+    @Test
+    fun triggerDeletionState_allPermissionTypesChecked_selectAllShouldBeChecked(){
+        val recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse> =
+                mapOf(
+                        StepsRecord::class.java to
+                                RecordTypeInfoResponse(
+                                        HealthPermissionCategory.DISTANCE,
+                                        HealthDataCategory.ACTIVITY,
+                                        listOf(getDataOrigin(TEST_APP_PACKAGE_NAME))),
+                        MenstruationPeriodRecord::class.java to
+                                RecordTypeInfoResponse(
+                                        HealthPermissionCategory.MENSTRUATION,
+                                        HealthDataCategory.CYCLE_TRACKING,
+                                        listOf(getDataOrigin(TEST_APP_PACKAGE_NAME))))
+        doAnswer(prepareAnswer(recordTypeInfoMap))
+                .`when`(manager)
+                .queryAllRecordTypesInfo(any(), any())
+
+        val scenario = launchFragment<AllDataFragment>()
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as AllDataFragment).triggerDeletionState(true)
+        }
+
+        assertCheckboxShown("Distance")
+        assertCheckboxShown("Menstruation")
+        onView(withText("Distance")).perform(click())
+        onView(withText("Menstruation")).perform(click())
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("") as AllDataFragment
+            val selectAllCheckboxPreference = fragment.preferenceScreen.findPreference("key_select_all") as SelectAllCheckboxPreference?
+            assertThat(selectAllCheckboxPreference?.getIsChecked()).isTrue()
+        }
+
+    }
+
+    @Test
+    fun triggerDeletionState_selectAllChecked_stepsUnchecked_selectAllUnchecked() = runTest {
+        val recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse> =
+                mapOf(
+                        StepsRecord::class.java to
+                                RecordTypeInfoResponse(
+                                        HealthPermissionCategory.DISTANCE,
+                                        HealthDataCategory.ACTIVITY,
+                                        listOf(getDataOrigin(TEST_APP_PACKAGE_NAME))),
+                        MenstruationPeriodRecord::class.java to
+                                RecordTypeInfoResponse(
+                                        HealthPermissionCategory.MENSTRUATION,
+                                        HealthDataCategory.CYCLE_TRACKING,
+                                        listOf(getDataOrigin(TEST_APP_PACKAGE_NAME))))
+        doAnswer(prepareAnswer(recordTypeInfoMap))
+                .`when`(manager)
+                .queryAllRecordTypesInfo(any(), any())
+
+        val scenario = launchFragment<AllDataFragment>()
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as AllDataFragment).triggerDeletionState(true)
+        }
+
+        advanceUntilIdle()
+
+        assertCheckboxShown("Select all")
+        onView(withText("Select all")).perform(click())
+        onView(withText("Distance")).perform(click())
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("") as AllDataFragment
+            val selectAllCheckboxPreference = fragment.preferenceScreen.findPreference("key_select_all") as SelectAllCheckboxPreference?
+            assertThat(selectAllCheckboxPreference?.getIsChecked()).isFalse()
+        }
+    }
+
+    @Test
+    fun triggerDeletionState_selectAllChecked_checkboxesRemainOnOrientationChange() = runTest {
+        val recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse> =
+                mapOf(
+                        StepsRecord::class.java to
+                                RecordTypeInfoResponse(
+                                        HealthPermissionCategory.DISTANCE,
+                                        HealthDataCategory.ACTIVITY,
+                                        listOf(getDataOrigin(TEST_APP_PACKAGE_NAME))),
+                        HeartRateRecord::class.java to
+                                RecordTypeInfoResponse(
+                                        HealthPermissionCategory.HEART_RATE,
+                                        HealthDataCategory.VITALS,
+                                        listOf(getDataOrigin(TEST_APP_PACKAGE_NAME))))
+        doAnswer(prepareAnswer(recordTypeInfoMap))
+                .`when`(manager)
+                .queryAllRecordTypesInfo(any(), any())
+
+        val scenario = launchFragment<AllDataFragment>()
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as AllDataFragment).triggerDeletionState(true)
+        }
+
+        advanceUntilIdle()
+
+        assertCheckboxShown("Select all")
+        onView(withText("Select all")).perform(click())
+
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        }
+
+        onView(withText("Select all")).perform(scrollTo())
+        onIdle()
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("") as AllDataFragment
+            val selectAllCheckboxPreference = fragment.preferenceScreen.findPreference("key_select_all") as SelectAllCheckboxPreference?
+            assertThat(selectAllCheckboxPreference?.getIsChecked()).isTrue()
+            fragment.preferenceScreen.children.forEach { preference ->
+                if (preference is PreferenceCategory) {
+                    preference.children.forEach { permissionTypePreference ->
+                        if(permissionTypePreference is DeletionPermissionTypesPreference){
+                            assertThat(permissionTypePreference.getIsChecked()).isTrue()
+                        }
+                    }
+                }
+            }
+        }
+        assertCheckboxShown("Distance")
+        assertCheckboxShown("Heart rate")
+
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+    }
+
+    private fun assertCheckboxShown(title: String, tag: String = "checkbox"){
+        onView(withId(androidx.preference.R.id.recycler_view))
+                .check(
+                        matches(
+                                allOf(
+                                        hasDescendant(withText(title)),
+                                        hasDescendant(
+                                                withTagValue(`is`(tag))))))
     }
 
     private fun prepareAnswer(
