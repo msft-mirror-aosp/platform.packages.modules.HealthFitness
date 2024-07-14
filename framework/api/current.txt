@@ -221,7 +221,7 @@ package android.health.connect {
     method public int describeContents();
     method public int getMedicalResourceType();
     method @IntRange(from=android.health.connect.Constants.MINIMUM_PAGE_SIZE, to=android.health.connect.Constants.MAXIMUM_PAGE_SIZE) public int getPageSize();
-    method public long getPageToken();
+    method @Nullable public String getPageToken();
     method public void writeToParcel(@NonNull android.os.Parcel, int);
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.ReadMedicalResourcesRequest> CREATOR;
   }
@@ -233,13 +233,14 @@ package android.health.connect {
     method @NonNull public android.health.connect.ReadMedicalResourcesRequest build();
     method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder setMedicalResourceType(int);
     method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder setPageSize(@IntRange(from=android.health.connect.Constants.MINIMUM_PAGE_SIZE, to=android.health.connect.Constants.MAXIMUM_PAGE_SIZE) int);
-    method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder setPageToken(long);
+    method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder setPageToken(@Nullable String);
   }
 
   @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class ReadMedicalResourcesResponse implements android.os.Parcelable {
-    ctor public ReadMedicalResourcesResponse(@NonNull java.util.List<android.health.connect.datatypes.MedicalResource>);
+    ctor public ReadMedicalResourcesResponse(@NonNull java.util.List<android.health.connect.datatypes.MedicalResource>, @Nullable String);
     method public int describeContents();
     method @NonNull public java.util.List<android.health.connect.datatypes.MedicalResource> getMedicalResources();
+    method @Nullable public String getNextPageToken();
     method public void writeToParcel(@NonNull android.os.Parcel, int);
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.ReadMedicalResourcesResponse> CREATOR;
   }
