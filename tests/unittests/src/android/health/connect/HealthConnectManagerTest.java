@@ -26,13 +26,12 @@ import static org.mockito.Mockito.when;
 
 import android.content.Context;
 import android.health.connect.aidl.IHealthConnectService;
-import android.os.OutcomeReceiver;
+import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.os.RemoteException;
 
 import androidx.test.core.app.ApplicationProvider;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.util.concurrent.MoreExecutors;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -44,12 +43,12 @@ import org.mockito.junit.MockitoRule;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 @RunWith(JUnit4.class)
 public class HealthConnectManagerTest {
 
-    @Rule public final MockitoRule mockito = MockitoJUnit.rule();
+    @Rule public final MockitoRule mMockitoRule = MockitoJUnit.rule();
 
     @Mock IHealthConnectService mService;
 
@@ -101,17 +100,15 @@ public class HealthConnectManagerTest {
     public void testHealthConnectManager_deleteResources_notImplemented() throws Exception {
         Context context = ApplicationProvider.getApplicationContext();
         HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
-        Executor executor = MoreExecutors.directExecutor();
-        OutcomeReceiver<Void, HealthConnectException> callback =
-                new OutcomeReceiver<>() {
-                    @Override
-                    public void onResult(Void result) {}
-                };
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
         assertThrows(
                 UnsupportedOperationException.class,
                 () ->
                         healthConnectManager.deleteMedicalResources(
-                                ImmutableList.of(getMedicalResourceId()), executor, callback));
+                                ImmutableList.of(getMedicalResourceId()),
+                                Executors.newSingleThreadExecutor(),
+                                callback));
     }
 
     /**

@@ -2382,4 +2382,21 @@ public class HealthConnectManager {
 
         throw new UnsupportedOperationException("Not implemented");
     }
+
+    /**
+     * Deletes a {@link MedicalDataSource} and all data contained within it.
+     *
+     * @param id The id of the data source to delete.
+     * @param executor Executor on which to invoke the callback.
+     * @param callback Callback to receive result of performing this operation.
+     * @throws IllegalArgumentException if the datasource does not exist.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public void deleteMedicalDataSourceWithData(
+            @NonNull String id,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
+
+        throw new UnsupportedOperationException("Not implemented");
+    }
 }
