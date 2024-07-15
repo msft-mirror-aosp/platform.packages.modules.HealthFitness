@@ -51,10 +51,8 @@ public final class ExportImportSettingsStorage {
     private static final String LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY =
             "last_successful_export_key";
     private static final String LAST_EXPORT_ERROR_PREFERENCE_KEY = "last_export_error_key";
-    public static final String LAST_EXPORT_FILE_NAME_KEY = "last_export_file_name_key";
-    public static final String LAST_EXPORT_APP_NAME_KEY = "last_export_app_name_key";
-    public static final String NEXT_EXPORT_FILE_NAME_KEY = "next_export_file_name_key";
-    public static final String NEXT_EXPORT_APP_NAME_KEY = "next_export_app_name_key";
+    private static final String LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY =
+            "last_successful_export_uri_key";
 
     // Import State
     private static final String IMPORT_ONGOING_PREFERENCE_KEY = "import_ongoing_key";
@@ -99,8 +97,6 @@ public final class ExportImportSettingsStorage {
     private static void clear() {
         PreferenceHelper.getInstance().removeKey(EXPORT_URI_PREFERENCE_KEY);
         PreferenceHelper.getInstance().removeKey(EXPORT_PERIOD_PREFERENCE_KEY);
-        PreferenceHelper.getInstance().removeKey(NEXT_EXPORT_APP_NAME_KEY);
-        PreferenceHelper.getInstance().removeKey(NEXT_EXPORT_FILE_NAME_KEY);
     }
 
     /** Gets scheduled export URI for exporting Health Connect data. */
@@ -139,17 +135,28 @@ public final class ExportImportSettingsStorage {
         String lastExportTime = prefHelper.getPreference(LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY);
         String lastExportError = prefHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY);
         String periodInDays = prefHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY);
-        String lastExportFileName = prefHelper.getPreference(LAST_EXPORT_FILE_NAME_KEY);
-        String lastExportAppName = prefHelper.getPreference(LAST_EXPORT_APP_NAME_KEY);
 
-        String uriString = PreferenceHelper.getInstance().getPreference(EXPORT_URI_PREFERENCE_KEY);
-        if (uriString != null) {
-            Uri uri = Uri.parse(uriString);
-            setExportAppName(context, uri, NEXT_EXPORT_APP_NAME_KEY);
-            setExportFileName(context, uri, NEXT_EXPORT_FILE_NAME_KEY);
+        String lastExportFileName = null;
+        String lastExportAppName = null;
+        String nextExportFileName = null;
+        String nextExportAppName = null;
+
+        String nextExportUriString =
+                PreferenceHelper.getInstance().getPreference(EXPORT_URI_PREFERENCE_KEY);
+        if (nextExportUriString != null) {
+            Uri uri = Uri.parse(nextExportUriString);
+            nextExportAppName = getExportAppName(context, uri);
+            nextExportFileName = getExportFileName(context, uri);
         }
-        String nextExportFileName = prefHelper.getPreference(NEXT_EXPORT_FILE_NAME_KEY);
-        String nextExportAppName = prefHelper.getPreference(NEXT_EXPORT_APP_NAME_KEY);
+
+        String lastSuccessfulExportUriString =
+                PreferenceHelper.getInstance()
+                        .getPreference(LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY);
+        if (lastSuccessfulExportUriString != null) {
+            Uri uri = Uri.parse(lastSuccessfulExportUriString);
+            lastExportAppName = getExportAppName(context, uri);
+            lastExportFileName = getExportFileName(context, uri);
+        }
 
         return new ScheduledExportStatus(
                 lastExportTime == null
@@ -192,33 +199,27 @@ public final class ExportImportSettingsStorage {
                 importOngoing);
     }
 
-    /**
-     * Set the file name of the either the last or the next export, depending on the passed
-     * preference key.
-     */
-    public static void setExportFileName(
-            Context context, Uri destinationUri, String fileNamePreferenceKey) {
+    /** Get the file name of the either the last or the next export, depending on the passed uri. */
+    private static @Nullable String getExportFileName(Context context, Uri destinationUri) {
         try (Cursor cursor =
                 context.getContentResolver().query(destinationUri, null, null, null, null)) {
             if (cursor != null && cursor.moveToFirst()) {
-                String fileName =
-                        cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                PreferenceHelper.getInstance()
-                        .insertOrReplacePreference(fileNamePreferenceKey, fileName);
+                return cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
             } else {
-                PreferenceHelper.getInstance()
-                        .insertOrReplacePreference(
-                                fileNamePreferenceKey, destinationUri.getLastPathSegment());
+                return destinationUri.getLastPathSegment();
             }
         }
     }
 
-    /**
-     * Set the app name of the either the last or the next export, depending on the passed
-     * preference key.
-     */
-    public static void setExportAppName(
-            Context context, Uri destinationUri, String appNamePreferenceKey) {
+    /** Set the uri of the last successful export. */
+    public static void setLastSuccessfulExportUri(Uri uri) {
+        PreferenceHelper.getInstance()
+                .insertOrReplacePreference(
+                        LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY, uri.toString());
+    }
+
+    /** Get the app name of the either the last or the next export, depending on the passed uri. */
+    private static @Nullable String getExportAppName(Context context, Uri destinationUri) {
         try (ContentProviderClient contentProviderClient =
                 context.getContentResolver().acquireUnstableContentProviderClient(destinationUri)) {
             if (contentProviderClient != null) {
@@ -230,8 +231,7 @@ public final class ExportImportSettingsStorage {
                                 contentProviderCursor.getString(
                                         contentProviderCursor.getColumnIndex(
                                                 DocumentsContract.Root.COLUMN_TITLE));
-                        PreferenceHelper.getInstance()
-                                .insertOrReplacePreference(appNamePreferenceKey, appName);
+                        return appName;
                     }
                 }
             }
@@ -240,5 +240,6 @@ public final class ExportImportSettingsStorage {
         } catch (SecurityException exception) {
             Slog.e(TAG, "Failed to query the app name", exception);
         }
+        return null;
     }
 }

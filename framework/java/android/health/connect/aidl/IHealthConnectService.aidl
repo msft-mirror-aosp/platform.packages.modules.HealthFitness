@@ -425,4 +425,16 @@ interface IHealthConnectService {
         in AttributionSource attributionSource,
         in List<MedicalResourceId> medicalResourceIds,
         in IReadMedicalResourcesResponseCallback callback);
+
+    /**
+     * Delete from the HealthConnect database.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param medicalResourceIds represents the ids to be deleted.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void deleteMedicalResources(
+        in AttributionSource attributionSource,
+        in List<MedicalResourceId> medicalResourceIds,
+        in IEmptyResponseCallback callback);
 }
