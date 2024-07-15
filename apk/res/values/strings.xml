@@ -472,6 +472,7 @@
     <string name="automatic_export_status" description="Label to indicate whether the automatic export is enabled or not and if enabled, what the export frequency is. [CHAR_LIMIT=NONE]"><xliff:g example="On" id="export_on_or_off">%1$s</xliff:g> • <xliff:g example="Daily" id="export_frequency">%2$s</xliff:g></string>
     <string name="automatic_export_on" description="Text indicates the state of the automatic export is on. [CHAR_LIMIT=40]">On</string>
     <string name="automatic_export_off" description="Text indicates the state of the automatic export is off. [CHAR_LIMIT=40]">Off</string>
+    <string name="automatic_export_switch_text" description="Text label for a switch indicating whether the user has automatic export enabled. [CHAR_LIMIT=40]">Use scheduled export</string>
 
     <string name="next_export_file_location" description="Label to indicate the file location of the next export. [CHAR_LIMIT=NONE]"><xliff:g example="Drive" id="export_app_name">%1$s</xliff:g> • <xliff:g example="healthconnect.zip" id="export_file_name">%2$s</xliff:g></string>
     <string name="choose_frequency_category" description="Category name to indicate that customers can update the scheduled export frequency below. [CHAR_LIMIT=40]">Change frequency</string>

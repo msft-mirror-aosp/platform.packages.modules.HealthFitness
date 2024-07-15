@@ -1023,33 +1023,18 @@ public final class TestUtils {
                                                 .build())
                         .collect(Collectors.toList());
 
-        CountDownLatch latch = new CountDownLatch(1);
-        AtomicReference<HealthConnectException> healthConnectExceptionAtomicReference =
-                new AtomicReference<>();
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
         UpdateDataOriginPriorityOrderRequest updateDataOriginPriorityOrderRequest =
                 new UpdateDataOriginPriorityOrderRequest(dataOrigins, permissionCategory);
         service.updateDataOriginPriorityOrder(
                 updateDataOriginPriorityOrderRequest,
                 Executors.newSingleThreadExecutor(),
-                new OutcomeReceiver<>() {
-                    @Override
-                    public void onResult(Void result) {
-                        latch.countDown();
-                    }
+                receiver);
 
-                    @Override
-                    public void onError(HealthConnectException exception) {
-                        healthConnectExceptionAtomicReference.set(exception);
-                        latch.countDown();
-                    }
-                });
         assertThat(updateDataOriginPriorityOrderRequest.getDataCategory())
                 .isEqualTo(permissionCategory);
         assertThat(updateDataOriginPriorityOrderRequest.getDataOriginInOrder()).isNotNull();
-        assertThat(latch.await(3, TimeUnit.SECONDS)).isTrue();
-        if (healthConnectExceptionAtomicReference.get() != null) {
-            throw healthConnectExceptionAtomicReference.get();
-        }
+        receiver.verifyNoExceptionOrThrow(3);
     }
 
     public static boolean isHardwareSupported() {

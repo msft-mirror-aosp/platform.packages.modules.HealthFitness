@@ -228,7 +228,7 @@ public class ExportManagerTest {
                 new HealthConnectDatabase(mContext, "healthconnect.db");
         assertTableSize(originalDatabase, "steps_record_table", 1);
 
-        // running a successful export records a "last successful export"
+        // Running a successful export records a "last successful export".
         assertThat(mExportManager.runExport()).isTrue();
         String lastExportFileName =
                 ExportImportSettingsStorage.getScheduledExportStatus(mContext)

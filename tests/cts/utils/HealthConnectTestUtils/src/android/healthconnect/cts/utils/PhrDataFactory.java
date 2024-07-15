@@ -64,6 +64,7 @@ public class PhrDataFactory {
     public static final String RESOURCE_ID_FIELD_NAME = "id";
     public static final String FHIR_VERSION_R4 = "4.0.1";
     public static final String FHIR_VERSION_R4B = "4.3.0";
+    public static final String PAGE_TOKEN = "111";
 
     /** Creates and returns a {@link MedicalDataSource.Builder} with default arguments. */
     public static MedicalDataSource.Builder getMedicalDataSourceBuilder() {
@@ -169,7 +170,10 @@ public class PhrDataFactory {
      */
     public static MedicalResource.Builder getMedicalResourceBuilder() {
         return new MedicalResource.Builder(
-                MEDICAL_RESOURCE_TYPE_IMMUNIZATION, DATA_SOURCE_ID, getFhirResource());
+                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                DATA_SOURCE_ID,
+                parseFhirVersion(FHIR_VERSION_R4),
+                getFhirResource());
     }
 
     /**
