@@ -1989,6 +1989,19 @@ public class HealthConnectManagerTest {
                                 ids, Executors.newSingleThreadExecutor(), receiver));
     }
 
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testHealthConnectManager_deleteMedicalDataSourceWithData_notImplemented() {
+        HealthConnectManager healthConnectManager = TestUtils.getHealthConnectManager();
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        assertThrows(
+                UnsupportedOperationException.class,
+                () ->
+                        healthConnectManager.deleteMedicalDataSourceWithData(
+                                "foo", Executors.newSingleThreadExecutor(), callback));
+    }
+
     // TODO(b/343923754): Add more upsert/readMedicalResources tests once deleteAll can be called.
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
@@ -2066,11 +2079,38 @@ public class HealthConnectManagerTest {
         }
         HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
 
-        assertThrows(
-                UnsupportedOperationException.class,
-                () ->
-                        mManager.deleteMedicalResources(
-                                ids, Executors.newSingleThreadExecutor(), receiver));
+        mManager.deleteMedicalResources(ids, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException())
+                .hasMessageThat()
+                .contains("not yet implemented");
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalResources_anId_notImplemented() throws InterruptedException {
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
+        MedicalResourceId id =
+                new MedicalResourceId(
+                        Integer.toString(1),
+                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                        FHIR_RESOURCE_ID_IMMUNIZATION);
+
+        mManager.deleteMedicalResources(List.of(id), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException())
+                .hasMessageThat()
+                .contains("not yet implemented");
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalResources_emptyIds_succeeds() throws InterruptedException {
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalResources(List.of(), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isNull();
     }
 
     @Test

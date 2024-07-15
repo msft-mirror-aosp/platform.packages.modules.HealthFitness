@@ -170,7 +170,10 @@ public class PhrDataFactory {
      */
     public static MedicalResource.Builder getMedicalResourceBuilder() {
         return new MedicalResource.Builder(
-                MEDICAL_RESOURCE_TYPE_IMMUNIZATION, DATA_SOURCE_ID, getFhirResource());
+                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                DATA_SOURCE_ID,
+                parseFhirVersion(FHIR_VERSION_R4),
+                getFhirResource());
     }
 
     /**
