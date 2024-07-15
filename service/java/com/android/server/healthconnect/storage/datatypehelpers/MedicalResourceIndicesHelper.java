@@ -20,10 +20,11 @@ import static com.android.server.healthconnect.storage.datatypehelpers.RecordHel
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
 
 import android.annotation.NonNull;
+import android.content.ContentValues;
 import android.util.Pair;
 
-import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
+import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 
 import java.util.Collections;
 import java.util.List;
@@ -36,11 +37,25 @@ import java.util.List;
  * @hide
  */
 public class MedicalResourceIndicesHelper {
-    @VisibleForTesting
-    static final String MEDICAL_RESOURCE_INDICES_TABLE_NAME = "medical_resource_indices_table";
+    private static final String MEDICAL_RESOURCE_INDICES_TABLE_NAME =
+            "medical_resource_indices_table";
+    private static final String MEDICAL_RESOURCE_TYPE = "medical_resource_type";
+    private static final String MEDICAL_RESOURCE_ID = "medical_resource_id";
 
-    @VisibleForTesting static final String MEDICAL_RESOURCE_TYPE = "medical_resource_type";
-    @VisibleForTesting static final String MEDICAL_RESOURCE_ID = "medical_resource_id";
+    @NonNull
+    public static String getTableName() {
+        return MEDICAL_RESOURCE_INDICES_TABLE_NAME;
+    }
+
+    @NonNull
+    public static String getParentColumnReference() {
+        return MEDICAL_RESOURCE_ID;
+    }
+
+    @NonNull
+    public static String getMedicalResourceTypeColumnName() {
+        return MEDICAL_RESOURCE_TYPE;
+    }
 
     @NonNull
     public static CreateTableRequest getCreateMedicalResourceIndicesTableRequest() {
@@ -51,6 +66,15 @@ public class MedicalResourceIndicesHelper {
                         MedicalResourceHelper.getMainTableName(),
                         Collections.singletonList(MEDICAL_RESOURCE_ID),
                         Collections.singletonList(PRIMARY_COLUMN_NAME));
+    }
+
+    /** Creates {@link UpsertTableRequest} for medical_resource_indices table. */
+    @NonNull
+    public static UpsertTableRequest getChildTableUpsertRequests(int medicalResourceType) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MEDICAL_RESOURCE_TYPE, medicalResourceType);
+        return new UpsertTableRequest(MEDICAL_RESOURCE_INDICES_TABLE_NAME, contentValues)
+                .setParentColumnForChildTables(MEDICAL_RESOURCE_ID);
     }
 
     @NonNull

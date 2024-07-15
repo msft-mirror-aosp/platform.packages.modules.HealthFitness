@@ -21,6 +21,7 @@ import static com.android.server.healthconnect.TestUtils.TEST_USER;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
+import android.health.connect.HealthConnectManager;
 import android.os.Environment;
 
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -46,6 +47,7 @@ public class HealthConnectDatabaseTestRule extends ExternalResource {
     public void before() {
         mStaticMockSession =
                 ExtendedMockito.mockitoSession()
+                        .mockStatic(HealthConnectManager.class)
                         .mockStatic(Environment.class)
                         .strictness(Strictness.LENIENT)
                         .startMocking();

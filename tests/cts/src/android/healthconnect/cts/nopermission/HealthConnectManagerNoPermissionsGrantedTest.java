@@ -24,6 +24,8 @@ import static android.health.connect.HealthPermissions.READ_STEPS;
 import static android.health.connect.HealthPermissions.READ_TOTAL_CALORIES_BURNED;
 import static android.health.connect.datatypes.DistanceRecord.DISTANCE_TOTAL;
 import static android.health.connect.datatypes.ExerciseSessionRecord.EXERCISE_DURATION_TOTAL;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
 import static android.health.connect.datatypes.SleepSessionRecord.SLEEP_DURATION_TOTAL;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
@@ -42,23 +44,24 @@ import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_LONG_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByDuration;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByPeriod;
 import static android.healthconnect.cts.utils.TestUtils.getChangeLogToken;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
-import static android.healthconnect.cts.utils.TestUtils.readMedicalResourcesByIds;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
 import static android.healthconnect.cts.utils.TestUtils.updateRecords;
-import static android.healthconnect.cts.utils.TestUtils.upsertMedicalResources;
 import static android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import static com.google.common.truth.Truth.assertThat;
+
+import static org.junit.Assert.assertThrows;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -80,6 +83,7 @@ import android.health.connect.datatypes.DistanceRecord;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.SleepSessionRecord;
 import android.health.connect.datatypes.StepsRecord;
@@ -399,17 +403,18 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testReadMedicalResources_noPermission_expectError() throws InterruptedException {
-        try {
-            readMedicalResourcesByIds(List.of(new MedicalResourceId("123", "observation", "456")));
-            Assert.fail(
-                    "Read medical resources by ids must be not allowed without right HC PHR "
-                            + "permission");
-        } catch (HealthConnectException healthConnectException) {
-            assertThat(healthConnectException.getErrorCode())
-                    .isEqualTo(HealthConnectException.ERROR_SECURITY);
-            assertThat(healthConnectException.getMessage())
-                    .contains("Caller doesn't have permission to read or write medical data");
-        }
+        HealthConnectManager manager = TestUtils.getHealthConnectManager();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+
+        manager.readMedicalResources(
+                List.of(new MedicalResourceId("123", FHIR_RESOURCE_TYPE_IMMUNIZATION, "456")),
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        HealthConnectException exception = receiver.assertAndGetException();
+        assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
+        assertThat(exception.getMessage())
+                .contains("Caller doesn't have permission to read or write medical data");
     }
 
     @Test
@@ -423,34 +428,33 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
         HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
-        try {
-            manager.createMedicalDataSource(request, executor, receiver);
-            Assert.fail(
-                    "Create medical data source must be not allowed without correct HC PHR "
-                            + "permission");
-        } catch (HealthConnectException healthConnectException) {
-            assertThat(healthConnectException.getErrorCode())
-                    .isEqualTo(HealthConnectException.ERROR_SECURITY);
-        }
+        manager.createMedicalDataSource(request, executor, receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_SECURITY);
     }
 
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
-    public void upsertMedicalResources_noPermission_expectError() throws InterruptedException {
-        try {
-            UpsertMedicalResourceRequest request =
-                    new UpsertMedicalResourceRequest.Builder(
-                                    DATA_SOURCE_LONG_ID, FHIR_DATA_IMMUNIZATION)
-                            .build();
+    public void upsertMedicalResources_noPermission_expectError() {
+        HealthConnectManager manager = TestUtils.getHealthConnectManager();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID,
+                                parseFhirVersion(FHIR_VERSION_R4),
+                                FHIR_DATA_IMMUNIZATION)
+                        .build();
 
-            upsertMedicalResources(List.of(request));
-            Assert.fail(
-                    "Upsert medical resources must be not allowed without correct HC PHR"
-                            + " permission");
-        } catch (HealthConnectException healthConnectException) {
-            assertThat(healthConnectException.getErrorCode())
-                    .isEqualTo(HealthConnectException.ERROR_SECURITY);
-        }
+        HealthConnectException exception =
+                assertThrows(
+                        HealthConnectException.class,
+                        () ->
+                                manager.upsertMedicalResources(
+                                        List.of(request),
+                                        Executors.newSingleThreadExecutor(),
+                                        receiver));
+        assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
     }
 
     private static List<Record> getTestRecords() {

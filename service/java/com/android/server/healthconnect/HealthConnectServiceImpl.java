@@ -135,6 +135,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.LocalManagerRegistry;
 import com.android.server.appop.AppOpsManagerLocal;
@@ -205,6 +206,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private static final String HEALTH_CONNECT_BACKUP_INTER_AGENT_PERMISSION =
             "android.permission.HEALTH_CONNECT_BACKUP_INTER_AGENT";
 
+    @Nullable private final ImportManager mImportManager;
+
     private final TransactionManager mTransactionManager;
     private final HealthConnectDeviceConfigManager mDeviceConfigManager;
     private final HealthConnectPermissionHelper mPermissionHelper;
@@ -221,7 +224,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     private final AppOpsManagerLocal mAppOpsManagerLocal;
     private final MigrationUiStateManager mMigrationUiStateManager;
-    private final ImportManager mImportManager;
 
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     private final AppInfoHelper mAppInfoHelper;
@@ -285,7 +287,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mBackupRestore =
                 new BackupRestore(mFirstGrantTimeManager, mMigrationStateManager, mContext);
         mMigrationUiStateManager = migrationUiStateManager;
-        mImportManager = new ImportManager(mContext);
+        mImportManager = Flags.exportImport() ? new ImportManager(mContext) : null;
         migrationCleaner.attachTo(migrationStateManager);
         mMigrationUiStateManager.attachTo(migrationStateManager);
         mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
@@ -2141,8 +2143,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     try {
                         enforceIsForegroundUser(userHandle);
                         mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
+                        final Context userContext = mContext.createContextAsUser(userHandle, 0);
                         ScheduledExportStatus status =
-                                ExportImportSettingsStorage.getScheduledExportStatus();
+                                ExportImportSettingsStorage.getScheduledExportStatus(userContext);
                         callback.onResult(status);
                     } catch (HealthConnectException healthConnectException) {
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
@@ -2206,6 +2209,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     public void runImport(@NonNull UserHandle user, @NonNull Uri file) {
+        if (mImportManager == null) return;
+        checkParamsNonNull(file);
+
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
@@ -2544,7 +2550,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                         // TODO(b/343921816): Creates access log.
 
-                        callback.onResult(new ReadMedicalResourcesResponse(medicalResources));
+                        callback.onResult(new ReadMedicalResourcesResponse(medicalResources, null));
                         logger.setHealthDataServiceApiStatusSuccess();
                     } catch (SQLiteException sqLiteException) {
                         logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);

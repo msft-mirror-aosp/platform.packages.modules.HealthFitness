@@ -16,6 +16,7 @@
 
 package healthconnect.storage.utils;
 
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceId;
@@ -26,8 +27,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.genera
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getSingleByteArray;
 
 import static com.google.common.truth.Truth.assertThat;
-
-import android.health.connect.datatypes.FhirResource;
 
 import org.json.JSONException;
 import org.junit.Test;
@@ -61,7 +60,7 @@ public class StorageUtilsTest {
                 ByteBuffer.allocate(
                                 resourceIdBytes.length + Integer.BYTES + dataSourceIdBytes.length)
                         .put(resourceIdBytes)
-                        .putInt(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
+                        .putInt(FHIR_RESOURCE_TYPE_IMMUNIZATION)
                         .put(dataSourceIdBytes)
                         .array();
         UUID expected = UUID.nameUUIDFromBytes(bytes);
@@ -69,7 +68,7 @@ public class StorageUtilsTest {
         UUID result =
                 generateMedicalResourceUUID(
                         getFhirResourceId(FHIR_DATA_IMMUNIZATION),
-                        FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
                         DATA_SOURCE_ID);
 
         assertThat(result).isEqualTo(expected);

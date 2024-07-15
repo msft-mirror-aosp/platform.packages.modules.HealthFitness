@@ -24,7 +24,11 @@ import java.time.Instant
 data class ScheduledExportUiState(
     val lastSuccessfulExportTime: Instant?,
     val dataExportError: DataExportError,
-    val periodInDays: Int
+    val periodInDays: Int,
+    val lastExportFileName: String?,
+    val lastExportAppName: String?,
+    val nextExportFileName: String?,
+    val nextExportAppName: String?
 ) {
     enum class DataExportError {
         DATA_EXPORT_ERROR_UNKNOWN,

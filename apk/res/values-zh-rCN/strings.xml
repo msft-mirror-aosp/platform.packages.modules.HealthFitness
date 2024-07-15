@@ -23,8 +23,7 @@
     <!-- no translation found for home_subtitle (2154213430054477787) -->
     <skip />
     <string name="data_title" msgid="4456619761533380816">"数据和访问权限"</string>
-    <!-- no translation found for browse_medical_data (6963802956096683273) -->
-    <skip />
+    <string name="browse_medical_data" msgid="6963802956096683273">"浏览健康记录"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"所有类别"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"查看所有类别"</string>
     <string name="no_data" msgid="1906986019249068659">"无数据"</string>
@@ -378,28 +377,52 @@
     <string name="frequency_monthly" msgid="729674398053825938">"每月"</string>
     <!-- no translation found for export_destination_title (8352929396306002479) -->
     <skip />
-    <!-- no translation found for export_invalid_storage (1459055934301871321) -->
-    <skip />
+    <string name="export_invalid_storage" msgid="1459055934301871321">"请选择一款云端存储空间应用来导出您的数据"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"健康数据共享"</string>
     <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"要导入此文件吗？"</string>
-    <!-- no translation found for import_confirmation_dialog_text (7274564242039735667) -->
-    <skip />
+    <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"“<xliff:g id="FILE_NAME">%1$s</xliff:g>”会导入到“健康数据共享”中"</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"取消"</string>
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"导入"</string>
+    <!-- no translation found for import_notification_import_in_progress_title (4657602436278942808) -->
+    <skip />
+    <!-- no translation found for import_notification_import_complete_title (7493223782222480412) -->
+    <skip />
+    <!-- no translation found for import_complete_toast_text (7730872919621230959) -->
+    <skip />
+    <!-- no translation found for import_notification_error_generic_error_title (19162830551127433) -->
+    <skip />
+    <!-- no translation found for import_notification_error_more_space_needed_title (240259612132385794) -->
+    <skip />
+    <!-- no translation found for import_notification_error_invalid_file_body_text (8877884063398886772) -->
+    <skip />
+    <!-- no translation found for import_notification_error_more_space_needed_body_text (7577564968089566232) -->
+    <skip />
+    <!-- no translation found for import_notification_error_generic_error_body_text (6562162452820282874) -->
+    <skip />
+    <!-- no translation found for import_notification_error_version_mismatch_body_text (9186785816764607620) -->
+    <skip />
+    <!-- no translation found for import_notification_update_now_intent_button (2808579294292956628) -->
+    <skip />
+    <!-- no translation found for import_notification_try_again_intent_button (3833062670098674999) -->
+    <skip />
+    <!-- no translation found for import_notification_open_intent_button (2739924648846724969) -->
+    <skip />
+    <!-- no translation found for import_notification_choose_file_intent_button (2249671128440758769) -->
+    <skip />
+    <!-- no translation found for import_notification_free_up_space_intent_button (4665571334602539807) -->
+    <skip />
     <string name="export_back_button" msgid="3550795479165524982">"返回"</string>
     <string name="export_next_button" msgid="657930567137105172">"继续"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"取消"</string>
     <string name="import_next_button" msgid="5706322508691854289">"继续"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"导入来源"</string>
-    <!-- no translation found for import_invalid_storage (341798262315495399) -->
-    <skip />
+    <string name="import_invalid_storage" msgid="341798262315495399">"请选择一款云端存储空间应用来导入您的数据"</string>
     <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
     <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"选择账号"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"取消"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"完成"</string>
-    <!-- no translation found for export_import_no_apps_text (6403119325024893690) -->
-    <skip />
+    <string name="export_import_no_apps_text" msgid="6403119325024893690">"没有可用的应用。安装云端存储空间应用即可在此处查看您的数据"</string>
     <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
     <skip />
     <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->

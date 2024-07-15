@@ -23,12 +23,13 @@ import static android.health.connect.HealthConnectException.ERROR_UNSUPPORTED_OP
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 import static android.health.connect.ratelimiter.RateLimiter.QuotaCategory.QUOTA_CATEGORY_WRITE;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_LONG_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalDataSource;
 
@@ -208,6 +209,7 @@ public class HealthConnectServiceImplTest {
                     .mockStatic(PreferenceHelper.class)
                     .mockStatic(LocalManagerRegistry.class)
                     .mockStatic(UserHandle.class)
+                    .mockStatic(TransactionManager.class)
                     .spyStatic(RateLimiter.class)
                     .setStrictness(Strictness.LENIENT)
                     .build();
@@ -265,6 +267,7 @@ public class HealthConnectServiceImplTest {
                 .thenReturn(mAppOpsManagerLocal);
         when(mServiceContext.getSystemService(PermissionManager.class))
                 .thenReturn(mPermissionManager);
+        when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
 
         mHealthConnectService =
                 new HealthConnectServiceImpl(
@@ -590,7 +593,9 @@ public class HealthConnectServiceImplTest {
                 mAttributionSource,
                 List.of(
                         new UpsertMedicalResourceRequest.Builder(
-                                        DATA_SOURCE_LONG_ID, FHIR_DATA_IMMUNIZATION)
+                                        DATA_SOURCE_ID,
+                                        parseFhirVersion(FHIR_VERSION_R4),
+                                        FHIR_DATA_IMMUNIZATION)
                                 .build()),
                 callback);
 
@@ -632,7 +637,9 @@ public class HealthConnectServiceImplTest {
                 mAttributionSource,
                 List.of(
                         new UpsertMedicalResourceRequest.Builder(
-                                        DATA_SOURCE_LONG_ID, FHIR_DATA_IMMUNIZATION)
+                                        DATA_SOURCE_ID,
+                                        parseFhirVersion(FHIR_VERSION_R4),
+                                        FHIR_DATA_IMMUNIZATION)
                                 .build()),
                 callback);
 
@@ -654,7 +661,9 @@ public class HealthConnectServiceImplTest {
                 mAttributionSource,
                 List.of(
                         new UpsertMedicalResourceRequest.Builder(
-                                        DATA_SOURCE_LONG_ID, FHIR_DATA_IMMUNIZATION)
+                                        DATA_SOURCE_ID,
+                                        parseFhirVersion(FHIR_VERSION_R4),
+                                        FHIR_DATA_IMMUNIZATION)
                                 .build()),
                 callback);
 
