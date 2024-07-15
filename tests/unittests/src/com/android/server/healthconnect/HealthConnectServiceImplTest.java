@@ -54,6 +54,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
@@ -68,6 +69,7 @@ import android.health.connect.MedicalResourceId;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.aidl.HealthConnectExceptionParcel;
 import android.health.connect.aidl.IDataStagingFinishedCallback;
+import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
@@ -177,6 +179,8 @@ public class HealthConnectServiceImplTest {
                     "getImportStatus",
                     "runImport",
                     "createMedicalDataSource",
+                    "deleteMedicalDataSource",
+                    "deleteMedicalResources",
                     "upsertMedicalResources",
                     "readMedicalResources");
 
@@ -728,6 +732,55 @@ public class HealthConnectServiceImplTest {
         verify(mMedicalDataSourceCallback, timeout(5000)).onError(mErrorCaptor.capture());
         HealthConnectException exception = mErrorCaptor.getValue().getHealthConnectException();
         assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalResources_byIds_flagOff_throws() throws Exception {
+        IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
+
+        mHealthConnectService.deleteMedicalResources(
+                mAttributionSource,
+                List.of(
+                        new MedicalResourceId(
+                                DATA_SOURCE_ID,
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                FHIR_RESOURCE_ID_IMMUNIZATION)),
+                callback);
+
+        verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
+        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
+                .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalResources_noIds_returns() throws RemoteException {
+        IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
+
+        mHealthConnectService.deleteMedicalResources(mAttributionSource, List.of(), callback);
+
+        verify(callback, timeout(5000).times(1)).onResult();
+        verifyNoMoreInteractions(callback);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalResources_someIds_unsupported() throws RemoteException {
+        IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
+
+        mHealthConnectService.deleteMedicalResources(
+                mAttributionSource,
+                List.of(
+                        new MedicalResourceId(
+                                DATA_SOURCE_ID,
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                FHIR_RESOURCE_ID_IMMUNIZATION)),
+                callback);
+
+        verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
+        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
+                .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
     }
 
     private void setUpCreateMedicalDataSourceDefaultMocks() {

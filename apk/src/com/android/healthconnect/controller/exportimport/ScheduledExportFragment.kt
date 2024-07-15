@@ -97,8 +97,6 @@ class ScheduledExportFragment : Hilt_ScheduledExportFragment() {
                 is ExportSettings.WithData -> {
                     if (exportSettings.frequency != ExportFrequency.EXPORT_FREQUENCY_NEVER) {
                         scheduledExportControlPreference?.isChecked = true
-                        scheduledExportControlPreference?.title =
-                            getString(R.string.automatic_export_on)
                         chooseFrequencyPreferenceGroup?.setVisible(true)
                         preferenceScreen
                             .findPreference<Preference>(
@@ -106,8 +104,6 @@ class ScheduledExportFragment : Hilt_ScheduledExportFragment() {
                             ?.setVisible(true)
                     } else {
                         scheduledExportControlPreference?.isChecked = false
-                        scheduledExportControlPreference?.title =
-                            getString(R.string.automatic_export_off)
                         chooseFrequencyPreferenceGroup?.setVisible(false)
                         preferenceScreen
                             .findPreference<Preference>(

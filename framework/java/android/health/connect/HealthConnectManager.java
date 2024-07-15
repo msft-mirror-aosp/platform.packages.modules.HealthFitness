@@ -2283,7 +2283,33 @@ public class HealthConnectManager {
             @NonNull List<MedicalResourceId> ids,
             @NonNull Executor executor,
             @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
-        throw new UnsupportedOperationException("Not implemented");
+        Objects.requireNonNull(ids);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        if (ids.isEmpty()) {
+            returnResult(executor, null, callback);
+            return;
+        }
+
+        try {
+            mService.deleteMedicalResources(
+                    mContext.getAttributionSource(),
+                    ids,
+                    new IEmptyResponseCallback.Stub() {
+                        @Override
+                        public void onResult() {
+                            returnResult(executor, null, callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
     }
 
     /**
@@ -2379,6 +2405,23 @@ public class HealthConnectManager {
             returnResult(executor, List.of(), callback);
             return;
         }
+
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    /**
+     * Deletes a {@link MedicalDataSource} and all data contained within it.
+     *
+     * @param id The id of the data source to delete.
+     * @param executor Executor on which to invoke the callback.
+     * @param callback Callback to receive result of performing this operation.
+     * @throws IllegalArgumentException if the datasource does not exist.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public void deleteMedicalDataSourceWithData(
+            @NonNull String id,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
 
         throw new UnsupportedOperationException("Not implemented");
     }
