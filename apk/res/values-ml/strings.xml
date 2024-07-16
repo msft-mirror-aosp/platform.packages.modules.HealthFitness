@@ -20,8 +20,7 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"നിങ്ങളുടെ ആരോഗ്യം സംബന്ധിച്ച ഡാറ്റയിലേക്കുള്ള ആപ്പ് ആക്‌സസ് മാനേജ് ചെയ്യുക"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"അനുമതികളും ഡാറ്റയും"</string>
-    <!-- no translation found for home_subtitle (2154213430054477787) -->
-    <skip />
+    <string name="home_subtitle" msgid="2154213430054477787">"നിങ്ങളുടെ ഉപകരണത്തിൽ ആരോഗ്യ, ഫിറ്റ്നസ് ഡാറ്റ മാനേജ് ചെയ്യൂ, ഏതെല്ലാം ആപ്പുകൾക്ക് അത് ആക്‌സസ് ചെയ്യാനാകുമെന്ന് നിയന്ത്രിക്കുകയും ചെയ്യൂ"</string>
     <string name="data_title" msgid="4456619761533380816">"ഡാറ്റയും ആക്‌സസും"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"ആരോഗ്യ റെക്കോർഡുകൾ ബ്രൗസ് ചെയ്യുക"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"എല്ലാ വിഭാഗങ്ങളും"</string>
@@ -36,6 +35,8 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{ഒരു ആപ്പിന് ആക്സസ് ഉണ്ട്}other{# ആപ്പുകൾക്ക് ആക്‌സസ് ഉണ്ട്}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"ഒന്നുമില്ല"</string>
     <string name="entry_details_title" msgid="590184849040247850">"എൻട്രിയുടെ വിശദാംശങ്ങൾ"</string>
+    <!-- no translation found for manage_data_summary (8537870912521944449) -->
+    <skip />
     <string name="backup_title" msgid="211503191266235085">"ബാക്കപ്പ് ചെയ്യുക"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"ഡാറ്റ ഉറവിടങ്ങളും മുൻഗണനയും"</string>
     <string name="set_units_title" msgid="2657822539603758029">"യൂണിറ്റുകൾ സജ്ജീകരിക്കുക"</string>
@@ -325,12 +326,9 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"നിലവിൽ നിങ്ങൾ അനുയോജ്യമായ ആപ്പുകളൊന്നും ഇൻസ്റ്റാൾ ചെയ്തിട്ടില്ല"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"അധിക ആക്‌സസ്"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"ഈ ആപ്പിനുള്ള അധിക അനുമതികൾ നീക്കം ചെയ്തു"</string>
-    <!-- no translation found for permissions_header (6519976063360071569) -->
-    <skip />
-    <!-- no translation found for manage_fitness_permissions (1001729292172461314) -->
-    <skip />
-    <!-- no translation found for manage_medical_permissions (7658181359096889932) -->
-    <skip />
+    <string name="permissions_header" msgid="6519976063360071569">"അനുമതികൾ"</string>
+    <string name="manage_fitness_permissions" msgid="1001729292172461314">"ഫിറ്റ്നസ് അനുമതികൾ മാനേജ് ചെയ്യുക"</string>
+    <string name="manage_medical_permissions" msgid="7658181359096889932">"ആരോഗ്യ റെക്കോർഡ് അനുമതികൾ മാനേജ് ചെയ്യുക"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"നീക്കം ചെയ്ത ആപ്പ് അനുമതികൾ"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"<xliff:g id="APP_DATA">%s</xliff:g> ആപ്പിനുള്ള അനുമതികൾ Health Connect നീക്കം ചെയ്തു"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"<xliff:g id="APP_DATA_0">%1$s</xliff:g>, <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> എന്നീ ആപ്പുകൾക്കുള്ള അനുമതികൾ Health Connect നീക്കം ചെയ്തു"</string>
@@ -346,90 +344,70 @@
     <string name="next_export_time" msgid="3138247220014510213">"അടുത്ത എക്‌സ്‌പോർട്ട്: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ബാക്കപ്പ് ചെയ്ത് പുനഃസ്ഥാപിക്കൂ"</string>
     <string name="last_export_time" msgid="9205875050823594041">"അവസാനം എക്‌സ്‌പോർട്ട് ചെയ്‌തത്: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="export_and_import_title" msgid="3241901922222465397">"എക്‌സ്‌പോർട്ട് ചെയ്യൂ, ഇമ്പോർട്ട് ചെയ്യൂ"</string>
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"ഷെഡ്യൂൾ ചെയ്ത എക്‌സ്‌പോർട്ട്"</string>
     <string name="import_data" msgid="404502315533233094">"ഡാറ്റ ഇമ്പോർട്ട് ചെയ്യുക"</string>
     <string name="import_data_description" msgid="4040178599441724296">"മുമ്പ് എക്‌സ്‌പോർട്ട് ചെയ്ത ഫയലിൽ നിന്ന് ഡാറ്റ പുനഃസ്ഥാപിക്കുക"</string>
     <string name="import_error_banner_title" msgid="1480977889067027790">"ഡാറ്റ പുനഃസ്ഥാപിക്കാനായില്ല"</string>
-    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
-    <skip />
-    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
-    <skip />
+    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"ഫയൽ തിരഞ്ഞെടുക്കുക"</string>
+    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"നിങ്ങൾ തിരഞ്ഞെടുത്ത ഫയൽ പുനഃസ്ഥാപിക്കാനാകില്ല. എക്‌സ്പോർട്ട് ചെയ്ത, ശരിയായ ഫയലാണ് തിരഞ്ഞെടുക്കുന്നതെന്ന് ഉറപ്പാക്കുക."</string>
     <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"ഇപ്പോൾ അപ്ഡേറ്റ് ചെയ്യുക"</string>
     <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"നിങ്ങളുടെ സിസ്റ്റം അപ്ഡേറ്റ് ചെയ്യുക, അതുവഴി Health Connect-ന് നിങ്ങളുടെ ഡാറ്റ പുനഃസ്ഥാപിക്കാനാകും, തുടർന്ന് വീണ്ടും ശ്രമിക്കുക."</string>
     <string name="import_other_error_banner_button" msgid="8006947649520909176">"വീണ്ടും ശ്രമിക്കുക"</string>
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"നിങ്ങൾ എക്സ്പോർട്ട് ചെയ്തവയിൽ നിന്ന് ഡാറ്റ പുനഃസ്ഥാപിക്കുന്നതിൽ ഒരു പ്രശ്നമുണ്ടായി."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ഡാറ്റ സംരക്ഷിക്കാൻ \'എക്‌സ്‌പോർട്ട് ചെയ്യുക\' നിങ്ങളെ അനുവദിക്കുന്നതിനാൽ നിങ്ങൾക്കത് ഒരു പുതിയ ഫോണിലേക്ക് കൈമാറാനാകും"</string>
-    <!-- no translation found for backup_and_restore_footer_link_text (9075133737244288876) -->
-    <skip />
+    <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"ബാക്കപ്പ് ചെയ്യലും പുനഃസ്ഥാപിക്കലും"</string>
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ഓണാണ്"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ഓഫാണ്"</string>
-    <!-- no translation found for choose_frequency_category (9094154407387676553) -->
+    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
     <skip />
-    <!-- no translation found for scheduled_export_settings_footer_text (8488483803782086291) -->
-    <skip />
-    <!-- no translation found for choose_frequency (8119085390857180221) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (7698155810053504157) -->
-    <skip />
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
+    <string name="choose_frequency_category" msgid="9094154407387676553">"ആവൃത്തി മാറ്റുക"</string>
+    <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"ഷെഡ്യൂൾ ചെയ്ത എക്സ്പോർട്ട് നിങ്ങൾ ഓഫാക്കുകയാണെങ്കിൽ, മുമ്പ് എക്സ്പോർട്ട് ചെയ്ത ഡാറ്റ സംരക്ഷിച്ചയിടത്ത് നിന്ന് അത് ഇല്ലാതാക്കില്ല"</string>
+    <string name="choose_frequency" msgid="8119085390857180221">"ഷെഡ്യൂൾ ചെയ്ത എക്സ്പോർട്ട് സജ്ജീകരിക്കുക"</string>
+    <string name="choose_frequency_description" msgid="7698155810053504157">"എത്ര ഇടവിട്ടാണ് നിങ്ങളുടെ ഡാറ്റ എക്സ്പോർട്ട് ചെയ്യേണ്ടതെന്ന് തിരഞ്ഞെടുക്കുക"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"എല്ലാ ദിവസവും"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"പ്രതിവാരം"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"പ്രതിമാസം"</string>
-    <!-- no translation found for export_destination_title (8352929396306002479) -->
-    <skip />
+    <string name="export_destination_title" msgid="8352929396306002479">"എക്സ്പോർട്ട് സംരക്ഷിക്കേണ്ട ഇടം"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"നിങ്ങളുടെ ഡാറ്റ എക്സ്പോർട്ട് ചെയ്യാൻ ഒരു ക്ലൗഡ് സ്‌റ്റോറേജ് തിരഞ്ഞെടുക്കുക"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
     <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"ഈ ഫയൽ ഇമ്പോർട്ട് ചെയ്യണോ?"</string>
     <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"<xliff:g id="FILE_NAME">%1$s</xliff:g>, Health Connect-ലേക്ക് ഇമ്പോർട്ട് ചെയ്യും"</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"റദ്ദാക്കുക"</string>
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"ഇമ്പോർട്ട് ചെയ്യുക"</string>
-    <!-- no translation found for import_notification_import_in_progress_title (4657602436278942808) -->
-    <skip />
-    <!-- no translation found for import_notification_import_complete_title (7493223782222480412) -->
-    <skip />
-    <!-- no translation found for import_complete_toast_text (7730872919621230959) -->
-    <skip />
-    <!-- no translation found for import_notification_error_generic_error_title (19162830551127433) -->
-    <skip />
-    <!-- no translation found for import_notification_error_more_space_needed_title (240259612132385794) -->
-    <skip />
-    <!-- no translation found for import_notification_error_invalid_file_body_text (8877884063398886772) -->
-    <skip />
-    <!-- no translation found for import_notification_error_more_space_needed_body_text (7577564968089566232) -->
-    <skip />
-    <!-- no translation found for import_notification_error_generic_error_body_text (6562162452820282874) -->
-    <skip />
-    <!-- no translation found for import_notification_error_version_mismatch_body_text (9186785816764607620) -->
-    <skip />
-    <!-- no translation found for import_notification_update_now_intent_button (2808579294292956628) -->
-    <skip />
-    <!-- no translation found for import_notification_try_again_intent_button (3833062670098674999) -->
-    <skip />
-    <!-- no translation found for import_notification_open_intent_button (2739924648846724969) -->
-    <skip />
-    <!-- no translation found for import_notification_choose_file_intent_button (2249671128440758769) -->
-    <skip />
-    <!-- no translation found for import_notification_free_up_space_intent_button (4665571334602539807) -->
-    <skip />
+    <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect ഡാറ്റ പുനഃസ്ഥാപിക്കുന്നത് പുരോഗമിക്കുന്നു"</string>
+    <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect ഡാറ്റ പുനഃസ്ഥാപിക്കുന്നത് പൂർത്തിയാക്കി"</string>
+    <string name="import_complete_toast_text" msgid="7730872919621230959">"ഡാറ്റ പുനഃസ്ഥാപിക്കുന്നത് പൂർത്തിയായി"</string>
+    <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect-ന് ഡാറ്റ പുനഃസ്ഥാപിക്കാനായില്ല"</string>
+    <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"കൂടുതൽ സ്‌പെയ്‌സ് ആവശ്യമാണ്"</string>
+    <string name="import_notification_error_invalid_file_body_text" msgid="8877884063398886772">"നിങ്ങൾ തിരഞ്ഞെടുത്ത ഫയൽ, പുനഃസ്ഥാപിക്കുന്നതിന് അനുയോജ്യമല്ല. എക്‌സ്‌പോർട്ട് ചെയ്ത, ശരിയായ ഫയലാണ് തിരഞ്ഞെടുക്കുന്നതെന്ന് ഉറപ്പാക്കുക."</string>
+    <string name="import_notification_error_more_space_needed_body_text" msgid="7577564968089566232">"നിങ്ങളുടെ ഡാറ്റ പുനഃസ്ഥാപിക്കുന്നത് തുടരാൻ, Health Connect-ന് നിങ്ങളുടെ ഫോണിൽ <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> സ്‌റ്റോറേജ് സ്‌പെയ്‌സ് ആവശ്യമാണ്."</string>
+    <string name="import_notification_error_generic_error_body_text" msgid="6562162452820282874">"നിങ്ങൾ എക്സ്പോർട്ട് ചെയ്തവയിൽ നിന്ന് ഡാറ്റ പുനഃസ്ഥാപിക്കുന്നതിൽ ഒരു പ്രശ്നമുണ്ടായി."</string>
+    <string name="import_notification_error_version_mismatch_body_text" msgid="9186785816764607620">"നിങ്ങളുടെ സിസ്റ്റം അപ്ഡേറ്റ് ചെയ്യുക, അപ്പോൾ Health Connect-ന് നിങ്ങളുടെ ഡാറ്റ പുനഃസ്ഥാപിക്കാനാകും, തുടർന്ന് വീണ്ടും ശ്രമിക്കുക."</string>
+    <string name="import_notification_update_now_intent_button" msgid="2808579294292956628">"ഇപ്പോൾ അപ്‌ഡേറ്റ് ചെയ്യുക"</string>
+    <string name="import_notification_try_again_intent_button" msgid="3833062670098674999">"വീണ്ടും ശ്രമിക്കുക"</string>
+    <string name="import_notification_open_intent_button" msgid="2739924648846724969">"തുറക്കുക"</string>
+    <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"ഫയൽ തിരഞ്ഞെടുക്കുക"</string>
+    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"സ്‌റ്റോറേജ് സ്‌പെയ്‌സ് സൃഷ്ടിക്കുക"</string>
     <string name="export_back_button" msgid="3550795479165524982">"മടങ്ങുക"</string>
+    <!-- no translation found for export_cancel_button (1952360582645412410) -->
+    <skip />
     <string name="export_next_button" msgid="657930567137105172">"അടുത്തത്"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"റദ്ദാക്കുക"</string>
     <string name="import_next_button" msgid="5706322508691854289">"അടുത്തത്"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"ഇനിപ്പറയുന്നതിൽ നിന്ന് ഇമ്പോർട്ട് ചെയ്യൂ"</string>
     <string name="import_invalid_storage" msgid="341798262315495399">"നിങ്ങളുടെ ഡാറ്റ ഇമ്പോർട്ട് ചെയ്യാൻ ഒരു ക്ലൗഡ് സ്‌റ്റോറേജ് തിരഞ്ഞെടുക്കുക"</string>
-    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
-    <skip />
+    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"അക്കൗണ്ട് തിരഞ്ഞെടുക്കാൻ ടാപ്പ് ചെയ്യുക"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"അക്കൗണ്ട് തിരഞ്ഞെടുക്കുക"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"റദ്ദാക്കുക"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"പൂർത്തിയായി"</string>
     <string name="export_import_no_apps_text" msgid="6403119325024893690">"ആപ്പുകൾ ലഭ്യമല്ല. ക്ലൗഡ് സ്‌റ്റോറേജ് ഇവിടെ കാണാൻ അവ ഇൻസ്റ്റാൾ ചെയ്യുക"</string>
-    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
-    <skip />
-    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
-    <skip />
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"കൂടുതൽ ഓപ്ഷനുകൾക്ക്, ക്ലൗഡ് സ്‌റ്റോറേജ് ആപ്പുകൾ ഇൻസ്റ്റാൾ ചെയ്ത് അവ ഇവിടെ കാണുക"</string>
+    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Store-ലേക്ക് പോകുക"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ഉപയോഗിച്ച് തുടങ്ങൂ"</string>
-    <!-- no translation found for onboarding_description (3479157507808350452) -->
-    <skip />
+    <string name="onboarding_description" msgid="3479157507808350452">"നിങ്ങളുടെ ആരോഗ്യവും ഫിറ്റ്നസും സംബന്ധിച്ച ഡാറ്റ Health Connect സംഭരിക്കുന്നു, ഇതിലൂടെ നിങ്ങളുടെ ഉപകരണത്തിലെ വ്യത്യസ്ത ആപ്പുകൾ എളുപ്പത്തിൽ സമന്വയിപ്പിക്കാനാകും"</string>
     <string name="share_data" msgid="3481932156368883946">"നിങ്ങളുടെ ആപ്പുകളുമായി ഡാറ്റ പങ്കിടുക"</string>
     <string name="share_data_description" msgid="2919871301634375092">"ഓരോ ആപ്പിനും റീഡ് ചെയ്യാനോ Health Connect-ലേക്ക് റൈറ്റ് ചെയ്യാനോ കഴിയുന്ന ഡാറ്റ തിരഞ്ഞെടുക്കുക"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"നിങ്ങളുടെ ക്രമീകരണവും സ്വകാര്യതയും മാനേജ് ചെയ്യുക"</string>
@@ -439,12 +417,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"ഡാറ്റ ഇല്ലാതാക്കുക"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"ഇല്ലാതാക്കലിലേക്ക് പോകുക"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"ഇല്ലാതാക്കലിൽ നിന്ന് പുറത്തുകടക്കുക"</string>
-    <string name="time_range_title" msgid="6831605283322600165">"ഇല്ലാതാക്കേണ്ട ഡാറ്റ തിരഞ്ഞെടുക്കുക"</string>
+    <string name="time_range_title" msgid="5777596779865648336">"Health Connect-ൽ നിന്ന് ഇല്ലാതാക്കാനുള്ള ഡാറ്റ തിരഞ്ഞെടുക്കൂ"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"അടുത്തത്"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"തിരഞ്ഞെടുത്ത കാലയളവിൽ Health Connect-ലേക്ക് ചേർത്തിട്ടുള്ള എല്ലാ ഡാറ്റയും ഇത് ശാശ്വതമായി ഇല്ലാതാക്കും"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"തിരഞ്ഞെടുത്ത കാലയളവിൽ Health Connect-ലേക്ക് ചേർത്തിട്ടുള്ള <xliff:g id="DATA_TYPE">%s</xliff:g> ഡാറ്റ ഇത് ശാശ്വതമായി ഇല്ലാതാക്കും"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"തിരഞ്ഞെടുത്ത കാലയളവിൽ Health Connect-ലേക്ക് ചേർത്തിട്ടുള്ള <xliff:g id="CATEGORY">%s</xliff:g> ഡാറ്റ ഇത് ശാശ്വതമായി ഇല്ലാതാക്കും"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"തിരഞ്ഞെടുത്ത കാലയളവിൽ Health Connect-ലേക്ക് ചേർത്തിട്ടുള്ള <xliff:g id="APP_DATA">%s</xliff:g> ഡാറ്റ ഇത് ശാശ്വതമായി ഇല്ലാതാക്കും"</string>
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"തിരഞ്ഞെടുത്ത കാലയളവിൽ Health Connect-ലേക്ക് <xliff:g id="APP_DATA">%2$s</xliff:g> ചേർത്തിട്ടുള്ള <xliff:g id="DATA_TYPE">%1$s</xliff:g> ഡാറ്റ ഇത് ശാശ്വതമായി ഇല്ലാതാക്കും"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"കഴിഞ്ഞ 24 മണിക്കൂറിലെ ഡാറ്റ ഇല്ലാതാക്കുക"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"കഴിഞ്ഞ 7 ദിവസത്തെ ഡാറ്റ ഇല്ലാതാക്കുക"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"കഴിഞ്ഞ 30 ദിവസത്തെ ഡാറ്റ ഇല്ലാതാക്കുക"</string>
@@ -465,17 +444,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"കഴിഞ്ഞ 24 മണിക്കൂറിലെ <xliff:g id="APP_DATA">%s</xliff:g> ഡാറ്റ ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"കഴിഞ്ഞ 7 ദിവസത്തെ <xliff:g id="APP_DATA">%s</xliff:g> ഡാറ്റ ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"കഴിഞ്ഞ 30 ദിവസത്തെ <xliff:g id="APP_DATA">%s</xliff:g> ഡാറ്റ ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"<xliff:g id="APP_DATA">%2$s</xliff:g> ചേർത്ത, എല്ലാ സമയത്തെയും <xliff:g id="DATA_TYPE">%1$s</xliff:g> ഡാറ്റ ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"<xliff:g id="APP_DATA">%2$s</xliff:g>, കഴിഞ്ഞ 24 മണിക്കൂറിൽ ചേർത്ത <xliff:g id="DATA_TYPE">%1$s</xliff:g> ഡാറ്റ ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"<xliff:g id="APP_DATA">%2$s</xliff:g>, കഴിഞ്ഞ 7 ദിവസത്തിൽ ചേർത്ത <xliff:g id="DATA_TYPE">%1$s</xliff:g> ഡാറ്റ ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"<xliff:g id="APP_DATA">%2$s</xliff:g>, കഴിഞ്ഞ 30 ദിവസത്തിൽ ചേർത്ത <xliff:g id="DATA_TYPE">%1$s</xliff:g> ഡാറ്റ ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"കൂടാതെ, Health Connect-ൽ നിന്ന് എല്ലാ <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> അനുമതികളും നീക്കം ചെയ്യുക"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"<xliff:g id="APP_DATA">%2$s</xliff:g> ചേർത്ത എല്ലാ <xliff:g id="DATA_TYPE">%1$s</xliff:g> ഡാറ്റയും ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
-    <string name="confirming_question_single_entry" msgid="330919962071369305">"ഈ എൻട്രി ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"Health Connect-ൽ നിന്ന് ഈ എൻട്രി ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"കണക്‌റ്റ് ചെയ്‌തിട്ടുള്ള ആപ്പുകൾക്ക് ഇനി Health Connect-ൽ നിന്ന് ഈ ഡാറ്റ ആക്‌സസ് ചെയ്യാനാകില്ല"</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"ആർത്തവ സംബന്ധമായി <xliff:g id="START_DATE">%1$s</xliff:g> മുതൽ <xliff:g id="END_DATE">%2$s</xliff:g> വരെയുള്ള എല്ലാ എൻട്രികളും ഇത് ഇല്ലാതാക്കും."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"ഇല്ലാതാക്കുക"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"മടങ്ങുക"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"പൂർത്തിയായി"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"അടയ്ക്കുക"</string>
-    <string name="delete_dialog_success_title" msgid="5009733262743173477">"ഡാറ്റ ഇല്ലാതാക്കി"</string>
-    <string name="delete_dialog_success_message" msgid="2451953113522118128">"ഈ ഡാറ്റ ഇനി Health Connect-ൽ ലഭ്യമല്ല."</string>
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"Health Connect-ൽ നിന്ന് ഡാറ്റ ഇല്ലാതാക്കി"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"കണക്റ്റ് ചെയ്ത ആപ്പുകളിൽ നിന്നുള്ള ഡാറ്റ പൂർണ്ണമായി ഇല്ലാതാക്കണമെന്നുണ്ടെങ്കിൽ, നിങ്ങളുടെ ഡാറ്റ സംരക്ഷിക്കപ്പെടാനിടയുള്ള ഓരോ ആപ്പും പരിശോധിക്കുക."</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"പൂർത്തിയായി"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"കണക്റ്റ് ചെയ്ത ആപ്പുകൾ കാണുക"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"നിങ്ങളുടെ ഡാറ്റ ഇല്ലാതാക്കുന്നു"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"ഡാറ്റ ഇല്ലാതാക്കാനായില്ല"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"എന്തോ കുഴപ്പമുണ്ടായതിനാൽ Health Connect-ന് നിങ്ങളുടെ ഡാറ്റ ഇല്ലാതാക്കാനായില്ല"</string>
@@ -862,12 +847,14 @@
     <string name="range_off" msgid="8178520557618184215">"ഓഫാണ്"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"നിങ്ങൾ ഈ ക്രമീകരണം മാറ്റുമ്പോൾ, പുതിയ മുൻഗണനകൾ പ്രതിഫലിപ്പിക്കുന്ന വിധത്തിൽ നിലവിലുള്ള ഡാറ്റ Health Connect ഇല്ലാതാക്കുന്നു"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{# മാസത്തിന് ശേഷം ഡാറ്റ സ്വയമേവ ഇല്ലാതാക്കണോ?}other{# മാസത്തിന് ശേഷം ഡാറ്റ സ്വയമേവ ഇല്ലാതാക്കണോ?}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{പുതിയ ഡാറ്റ # മാസത്തിന് ശേഷം Health Connect സ്വയമേവ ഇല്ലാതാക്കും. ഇത് സജ്ജീകരിക്കുന്നത് നിലവിലുള്ള # മാസത്തിൽ കൂടുതൽ പഴക്കമുള്ള ഡാറ്റയേയും ഇല്ലാതാക്കും.}other{പുതിയ ഡാറ്റ # മാസത്തിന് ശേഷം Health Connect സ്വയമേവ ഇല്ലാതാക്കും. ഇത് സജ്ജീകരിക്കുന്നത് നിലവിലുള്ള # മാസത്തിൽ കൂടുതൽ പഴക്കമുള്ള ഡാറ്റയേയും ഇല്ലാതാക്കും.}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{# മാസത്തിലധികം പഴക്കമുള്ള Health Connect-ൽ നിന്നുള്ള ഡാറ്റയും ഇത് ഇല്ലാതാക്കും.\n\nകണക്റ്റ് ചെയ്ത ആപ്പുകളിൽ നിന്നുള്ള ഡാറ്റ പൂർണ്ണമായി ഇല്ലാതാക്കണമെന്നുണ്ടെങ്കിൽ, നിങ്ങളുടെ ഡാറ്റ സംരക്ഷിക്കപ്പെടാനിടയുള്ള ഓരോ ആപ്പും പരിശോധിക്കുക.}other{# മാസത്തിലധികം പഴക്കമുള്ള Health Connect-ൽ നിന്നുള്ള ഡാറ്റയും ഇത് ഇല്ലാതാക്കും.\n\nകണക്റ്റ് ചെയ്ത ആപ്പുകളിൽ നിന്നുള്ള ഡാറ്റ പൂർണ്ണമായി ഇല്ലാതാക്കണമെന്നുണ്ടെങ്കിൽ, നിങ്ങളുടെ ഡാറ്റ സംരക്ഷിക്കപ്പെടാനിടയുള്ള ഓരോ ആപ്പും പരിശോധിക്കുക.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"സ്വയമേവ ഇല്ലാതാക്കൽ സജ്ജീകരിക്കുക"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"നിലവിലുള്ള ഡാറ്റ ഇല്ലാതാക്കും"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{# മാസത്തിൽ കൂടുതൽ പഴക്കമുള്ള ഡാറ്റ Health Connect ഇല്ലാതാക്കും. ഈ മാറ്റങ്ങൾ നിങ്ങളുടെ കണക്റ്റ് ചെയ്ത ആപ്പുകളിൽ ദൃശ്യമാകാൻ ഒരു ദിവസം എടുത്തേക്കാം.}other{# മാസത്തിൽ കൂടുതൽ പഴക്കമുള്ള ഡാറ്റ Health Connect ഇല്ലാതാക്കും. ഈ മാറ്റങ്ങൾ നിങ്ങളുടെ കണക്റ്റ് ചെയ്ത ആപ്പുകളിൽ ദൃശ്യമാകാൻ ഒരു ദിവസം എടുത്തേക്കാം.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"ഇവയിൽ നിന്ന് ഡാറ്റ ഇല്ലാതാക്കും"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"പൂർത്തിയായി"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{സ്വയമേവ-ഇല്ലാതാക്കൽ ഓണാണ്. # മാസത്തിലധികം പഴക്കമുള്ള ഡാറ്റ ഇല്ലാതാക്കും}other{സ്വയമേവ-ഇല്ലാതാക്കൽ ഓണാണ്. # മാസത്തിലധികം പഴക്കമുള്ള ഡാറ്റ ഇല്ലാതാക്കും}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"സ്വയമേവ-ഇല്ലാതാക്കൽ ഓഫാണ്"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"ആപ്പ് മുൻഗണന സജ്ജീകരിക്കുക"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"ഒന്നിലധികം ആപ്പ് <xliff:g id="DATA_TYPE">%s</xliff:g> ഡാറ്റ ചേർക്കുകയാണെങ്കിൽ, ഈ ലിസ്റ്റിലെ ഏറ്റവും മുകളിലുള്ള ആപ്പിന് Health Connect മുൻഗണന നൽകുന്നു. ആപ്പുകൾ പുനഃക്രമീകരിക്കാൻ അവ വലിച്ചിടുക."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"സംരക്ഷിക്കുക"</string>
@@ -1003,4 +990,5 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"എല്ലാ ഡാറ്റയും ഇല്ലാതാക്കി"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ഡാറ്റ ഇല്ലാതാക്കി"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> ഇനങ്ങൾ ഇല്ലാതാക്കി"</string>
+    <string name="select_all" msgid="837499881590001166">"എല്ലാം തിരഞ്ഞെടുക്കുക"</string>
 </resources>
