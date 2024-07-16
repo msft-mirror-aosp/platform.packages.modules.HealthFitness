@@ -91,7 +91,7 @@ class ExportFrequencyFragmentTest {
         onView(withText("Weekly")).check(matches(isDisplayed()))
         onView(withText("Monthly")).check(matches(isDisplayed()))
 
-        onView(withText("Cancel")).check(matches(isDisplayed()))
+        onView(withText("Back")).check(matches(isDisplayed()))
         onView(withText("Next")).check(matches(isDisplayed()))
     }
 
