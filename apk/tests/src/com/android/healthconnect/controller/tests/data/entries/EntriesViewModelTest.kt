@@ -18,7 +18,7 @@ package com.android.healthconnect.controller.tests.data.entries
 import com.android.healthconnect.controller.data.entries.EntriesViewModel
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
@@ -119,7 +119,7 @@ class EntriesViewModelTest {
         val testObserver = TestObserver<EntriesViewModel.EntriesFragmentState>()
         viewModel.entries.observeForever(testObserver)
         viewModel.loadEntries(
-            HealthPermissionType.STEPS,
+            FitnessPermissionType.STEPS,
             Instant.ofEpochMilli(timeSource.currentTimeMillis()),
             DateNavigationPeriod.PERIOD_WEEK)
         advanceUntilIdle()
@@ -138,7 +138,7 @@ class EntriesViewModelTest {
         val testObserver = TestObserver<EntriesViewModel.EntriesFragmentState>()
         viewModel.entries.observeForever(testObserver)
         viewModel.loadEntries(
-            HealthPermissionType.STEPS,
+            FitnessPermissionType.STEPS,
             Instant.ofEpochMilli(timeSource.currentTimeMillis()),
             DateNavigationPeriod.PERIOD_WEEK)
         advanceUntilIdle()
@@ -156,7 +156,7 @@ class EntriesViewModelTest {
         val testObserver = TestObserver<EntriesViewModel.EntriesFragmentState>()
         viewModel.entries.observeForever(testObserver)
         viewModel.loadEntries(
-            HealthPermissionType.MENSTRUATION,
+            FitnessPermissionType.MENSTRUATION,
             Instant.ofEpochMilli(timeSource.currentTimeMillis()),
             DateNavigationPeriod.PERIOD_WEEK)
         advanceUntilIdle()

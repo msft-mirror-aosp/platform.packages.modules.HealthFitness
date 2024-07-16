@@ -54,6 +54,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -110,8 +111,14 @@ public final class AppInfoHelper extends DatabaseHelper {
      */
     private volatile ConcurrentHashMap<String, AppInfoInternal> mAppInfoMap;
 
+    private final TransactionManager mTransactionManager;
+    private final RecordMapper mRecordMapper;
+
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private AppInfoHelper() {}
+    private AppInfoHelper() {
+        mTransactionManager = TransactionManager.getInitialisedInstance();
+        mRecordMapper = RecordMapper.getInstance();
+    }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
@@ -158,6 +165,22 @@ public final class AppInfoHelper extends DatabaseHelper {
 
         record.setAppInfoId(appInfo.getId());
         record.setPackageName(appInfo.getPackageName());
+    }
+
+    /**
+     * Inserts or replaces (based on the passed param onlyUpdate) the application info of the
+     * specified {@code packageName} with the specified {@code name}, only if the corresponding
+     * application is not currently installed.
+     *
+     * <p>{@code icon} is retrieved from the package
+     */
+    public void addOrUpdateAppInfoIfNotInstalled(
+            @NonNull Context context,
+            @NonNull String packageName,
+            @Nullable String name,
+            boolean onlyUpdate) {
+        byte[] icon = getIconFromPackageName(context, packageName);
+        addOrUpdateAppInfoIfNotInstalled(context, packageName, name, icon, onlyUpdate);
     }
 
     /**
@@ -298,8 +321,7 @@ public final class AppInfoHelper extends DatabaseHelper {
         }
         ConcurrentHashMap<String, AppInfoInternal> appInfoMap = new ConcurrentHashMap<>();
         ConcurrentHashMap<Long, String> idPackageNameMap = new ConcurrentHashMap<>();
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        try (Cursor cursor = transactionManager.read(new ReadTableRequest(TABLE_NAME))) {
+        try (Cursor cursor = mTransactionManager.read(new ReadTableRequest(TABLE_NAME))) {
             while (cursor.moveToNext()) {
                 long rowId = getCursorLong(cursor, RecordHelper.PRIMARY_COLUMN_NAME);
                 String packageName = getCursorString(cursor, PACKAGE_COLUMN_NAME);
@@ -403,17 +425,19 @@ public final class AppInfoHelper extends DatabaseHelper {
         Set<Integer> recordTypesToBeUpdated =
                 Objects.requireNonNullElseGet(
                         recordTypesToBeSynced,
-                        () ->
-                                RecordMapper.getInstance()
-                                        .getRecordIdToExternalRecordClassMap()
-                                        .keySet());
+                        () -> mRecordMapper.getRecordIdToExternalRecordClassMap().keySet());
 
-        HashMap<Integer, HashSet<String>> recordTypeToContributingPackagesMap =
-                TransactionManager.getInitialisedInstance()
-                        .getDistinctPackageNamesForRecordsTable(recordTypesToBeUpdated);
+        Map<Integer, Set<Long>> recordTypeToContributingPackageIdsMap =
+                mTransactionManager.getDistinctPackageIdsForRecordsTable(recordTypesToBeUpdated);
+
+        Map<Integer, Set<String>> recordTypeToContributingPackageNamesMap = new HashMap<>();
+        recordTypeToContributingPackageIdsMap.forEach(
+                (recordType, packageIds) ->
+                        recordTypeToContributingPackageNamesMap.put(
+                                recordType, convertPackageIdsToPackageName(packageIds)));
 
         if (recordTypesToBeSynced == null) {
-            syncAppInfoMapRecordTypesUsed(recordTypeToContributingPackagesMap);
+            syncAppInfoMapRecordTypesUsed(recordTypeToContributingPackageNamesMap);
         } else {
             getAppInfoMap()
                     .keySet()
@@ -421,7 +445,7 @@ public final class AppInfoHelper extends DatabaseHelper {
                             (packageName) -> {
                                 deleteRecordTypesForPackagesIfRequiredInternal(
                                         recordTypesToBeUpdated,
-                                        recordTypeToContributingPackagesMap,
+                                        recordTypeToContributingPackageNamesMap,
                                         packageName);
                             });
         }
@@ -434,7 +458,7 @@ public final class AppInfoHelper extends DatabaseHelper {
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @SuppressLint("LongLogTag")
     private synchronized void syncAppInfoMapRecordTypesUsed(
-            @NonNull Map<Integer, HashSet<String>> recordTypeToContributingPackagesMap) {
+            @NonNull Map<Integer, Set<String>> recordTypeToContributingPackagesMap) {
         HashMap<String, List<Integer>> packageToRecordTypesMap =
                 getPackageToRecordTypesMap(recordTypeToContributingPackagesMap);
         getAppInfoMap()
@@ -462,7 +486,7 @@ public final class AppInfoHelper extends DatabaseHelper {
     }
 
     private HashMap<String, List<Integer>> getPackageToRecordTypesMap(
-            @NonNull Map<Integer, HashSet<String>> recordTypeToContributingPackagesMap) {
+            @NonNull Map<Integer, Set<String>> recordTypeToContributingPackagesMap) {
         HashMap<String, List<Integer>> packageToRecordTypesMap = new HashMap<>();
         recordTypeToContributingPackagesMap.forEach(
                 (recordType, packageList) -> {
@@ -471,13 +495,9 @@ public final class AppInfoHelper extends DatabaseHelper {
                                 if (packageToRecordTypesMap.containsKey(packageName)) {
                                     packageToRecordTypesMap.get(packageName).add(recordType);
                                 } else {
-                                    packageToRecordTypesMap.put(
-                                            packageName,
-                                            new ArrayList<>() {
-                                                {
-                                                    add(recordType);
-                                                }
-                                            });
+                                    ArrayList<Integer> types = new ArrayList<>();
+                                    types.add(recordType);
+                                    packageToRecordTypesMap.put(packageName, types);
                                 }
                             });
                 });
@@ -492,7 +512,7 @@ public final class AppInfoHelper extends DatabaseHelper {
     @SuppressLint("LongLogTag")
     private synchronized void deleteRecordTypesForPackagesIfRequiredInternal(
             Set<Integer> recordTypesToBeDeleted,
-            HashMap<Integer, HashSet<String>> currentRecordTypePackageMap,
+            Map<Integer, Set<String>> currentRecordTypePackageMap,
             String packageName) {
         AppInfoInternal appInfo = getAppInfoMap().get(packageName);
         if (appInfo == null) {
@@ -541,7 +561,7 @@ public final class AppInfoHelper extends DatabaseHelper {
         UpsertTableRequest upsertRequestForAppInfoUpdate =
                 new UpsertTableRequest(
                         TABLE_NAME, getContentValues(packageName, appInfo), UNIQUE_COLUMN_INFO);
-        TransactionManager.getInitialisedInstance().update(upsertRequestForAppInfoUpdate);
+        mTransactionManager.update(upsertRequestForAppInfoUpdate);
 
         // update locally stored maps to keep data in sync.
         getAppInfoMap().put(packageName, appInfo);
@@ -610,6 +630,19 @@ public final class AppInfoHelper extends DatabaseHelper {
         return new AppInfoInternal(DEFAULT_LONG, packageName, appName, bitmap, null);
     }
 
+    private @Nullable byte[] getIconFromPackageName(@NonNull Context context, String packageName) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            Drawable drawable = packageManager.getApplicationIcon(packageName);
+            Bitmap bitmap = getBitmapFromDrawable(drawable);
+            return encodeBitmap(bitmap);
+        } catch (PackageManager.NameNotFoundException e) {
+            Drawable drawable = packageManager.getDefaultActivityIcon();
+            Bitmap bitmap = getBitmapFromDrawable(drawable);
+            return encodeBitmap(bitmap);
+        }
+    }
+
     private synchronized void insertIfNotPresent(
             @NonNull String packageName, @NonNull AppInfoInternal appInfo) {
         if (getAppInfoMap().containsKey(packageName)) {
@@ -617,12 +650,11 @@ public final class AppInfoHelper extends DatabaseHelper {
         }
 
         long rowId =
-                TransactionManager.getInitialisedInstance()
-                        .insert(
-                                new UpsertTableRequest(
-                                        TABLE_NAME,
-                                        getContentValues(packageName, appInfo),
-                                        UNIQUE_COLUMN_INFO));
+                mTransactionManager.insert(
+                        new UpsertTableRequest(
+                                TABLE_NAME,
+                                getContentValues(packageName, appInfo),
+                                UNIQUE_COLUMN_INFO));
         appInfo.setId(rowId);
         getAppInfoMap().put(packageName, appInfo);
         getIdPackageNameMap().put(appInfo.getId(), packageName);
@@ -639,7 +671,7 @@ public final class AppInfoHelper extends DatabaseHelper {
                         getContentValues(packageName, appInfoInternal),
                         UNIQUE_COLUMN_INFO);
 
-        TransactionManager.getInitialisedInstance().updateTable(upsertTableRequest);
+        mTransactionManager.updateTable(upsertTableRequest);
         getAppInfoMap().put(packageName, appInfoInternal);
     }
 
@@ -721,5 +753,23 @@ public final class AppInfoHelper extends DatabaseHelper {
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
         return bmp;
+    }
+
+    private Set<String> convertPackageIdsToPackageName(Set<Long> packageIds) {
+        Set<String> packageNames = new HashSet<>();
+        for (Long packageId : packageIds) {
+            String packageName = getPackageName(packageId);
+            if (packageName != null && !packageName.isEmpty()) {
+                packageNames.add(packageName);
+            }
+        }
+        return packageNames;
+    }
+
+    /** Used in testing to clear the instance to clear and re-reference the mocks. */
+    @VisibleForTesting
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    public static synchronized void clearInstanceForTest() {
+        sAppInfoHelper = null;
     }
 }

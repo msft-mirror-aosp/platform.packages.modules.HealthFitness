@@ -38,6 +38,8 @@ import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.whenever
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.ScheduledExportElement
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -51,6 +53,8 @@ import org.mockito.Mockito
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 
 @HiltAndroidTest
 @UninstallModules(HealthDataExportManagerModule::class)
@@ -58,6 +62,8 @@ import org.mockito.kotlin.doAnswer
 class ScheduledExportFragmentTest {
     companion object {
         private const val TEST_EXPORT_PERIOD_IN_DAYS = 1
+        private const val TEST_NEXT_EXPORT_FILE_NAME = "hc.zip"
+        private const val TEST_NEXT_EXPORT_APP_NAME = "Dropbox"
     }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -68,6 +74,8 @@ class ScheduledExportFragmentTest {
     val healthDataExportManager: HealthDataExportManager =
         Mockito.mock(HealthDataExportManager::class.java)
 
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
+
     @Before
     fun setup() {
         hiltRule.inject()
@@ -75,7 +83,14 @@ class ScheduledExportFragmentTest {
             ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays
         }
         val scheduledExportStatus =
-            ScheduledExportStatus(null, HealthConnectManager.DATA_EXPORT_ERROR_NONE, 0)
+            ScheduledExportStatus(
+                null,
+                HealthConnectManager.DATA_EXPORT_ERROR_NONE,
+                0,
+                null,
+                null,
+                TEST_NEXT_EXPORT_FILE_NAME,
+                TEST_NEXT_EXPORT_APP_NAME)
         doAnswer(prepareAnswer(scheduledExportStatus))
             .`when`(healthDataExportManager)
             .getScheduledExportStatus(any(), any())
@@ -88,25 +103,105 @@ class ScheduledExportFragmentTest {
                     ScheduledExportStatus(
                         NOW,
                         HealthConnectManager.DATA_EXPORT_ERROR_NONE,
-                        TEST_EXPORT_PERIOD_IN_DAYS)))
+                        TEST_EXPORT_PERIOD_IN_DAYS,
+                        null,
+                        null,
+                        TEST_NEXT_EXPORT_FILE_NAME,
+                        TEST_NEXT_EXPORT_APP_NAME)))
             .`when`(healthDataExportManager)
             .getScheduledExportStatus(any(), any())
         launchFragment<ScheduledExportFragment>(Bundle())
 
-        onView(withText("On")).check(matches(isDisplayed()))
-        onView(withText("Choose frequency")).check(matches(isDisplayed()))
+        onView(withText("Use scheduled export")).check(matches(isDisplayed()))
+        onView(withText("Change frequency")).check(matches(isDisplayed()))
         onView(withText("Daily")).check(matches(isDisplayed()))
         onView(withText("Weekly")).check(matches(isDisplayed()))
         onView(withText("Monthly")).check(matches(isDisplayed()))
-
         onView(withText("Next export: October 21, 2022")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "If you turn off scheduled export, this won't delete previously exported data from where it was saved"))
+            .check(matches(isDisplayed()))
+        onView(withText("Dropbox • hc.zip")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun scheduledExportFragment_impressionsLogged() {
+        doAnswer(
+                prepareAnswer(
+                    ScheduledExportStatus(
+                        NOW,
+                        HealthConnectManager.DATA_EXPORT_ERROR_NONE,
+                        TEST_EXPORT_PERIOD_IN_DAYS,
+                        null,
+                        null,
+                        null,
+                        null)))
+            .`when`(healthDataExportManager)
+            .getScheduledExportStatus(any(), any())
+        launchFragment<ScheduledExportFragment>(Bundle())
+
+        onView(withText("Use scheduled export")).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger)
+            .logImpression(ScheduledExportElement.EXPORT_SETTINGS_FREQUENCY_DAILY)
+        verify(healthConnectLogger)
+            .logImpression(ScheduledExportElement.EXPORT_SETTINGS_FREQUENCY_WEEKLY)
+        verify(healthConnectLogger)
+            .logImpression(ScheduledExportElement.EXPORT_SETTINGS_FREQUENCY_MONTHLY)
+    }
+
+    @Test
+    fun scheduledExportFragment_whenOnlyAppNameIsAvailable_showsAppName() {
+        doAnswer(
+                prepareAnswer(
+                    ScheduledExportStatus(
+                        NOW,
+                        HealthConnectManager.DATA_EXPORT_ERROR_NONE,
+                        TEST_EXPORT_PERIOD_IN_DAYS,
+                        null,
+                        null,
+                        null,
+                        TEST_NEXT_EXPORT_APP_NAME)))
+            .`when`(healthDataExportManager)
+            .getScheduledExportStatus(any(), any())
+
+        launchFragment<ScheduledExportFragment>(Bundle())
+
+        onView(withText("Dropbox")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun scheduledExportFragment_whenOnlyFileNameIsAvailable_showsFileName() {
+        doAnswer(
+                prepareAnswer(
+                    ScheduledExportStatus(
+                        NOW,
+                        HealthConnectManager.DATA_EXPORT_ERROR_NONE,
+                        TEST_EXPORT_PERIOD_IN_DAYS,
+                        null,
+                        null,
+                        TEST_NEXT_EXPORT_FILE_NAME,
+                        null)))
+            .`when`(healthDataExportManager)
+            .getScheduledExportStatus(any(), any())
+
+        launchFragment<ScheduledExportFragment>(Bundle())
+
+        onView(withText("hc.zip")).check(matches(isDisplayed()))
     }
 
     @Test
     fun scheduledExportFragment_whenLastSuccessfulExportDateIsNull_doesNotShowNextExportStatus() {
         val scheduledExportStatus =
             ScheduledExportStatus(
-                null, HealthConnectManager.DATA_EXPORT_ERROR_NONE, TEST_EXPORT_PERIOD_IN_DAYS)
+                null,
+                HealthConnectManager.DATA_EXPORT_ERROR_NONE,
+                TEST_EXPORT_PERIOD_IN_DAYS,
+                null,
+                null,
+                null,
+                null)
         doAnswer(prepareAnswer(scheduledExportStatus))
             .`when`(healthDataExportManager)
             .getScheduledExportStatus(any(), any())
@@ -150,9 +245,8 @@ class ScheduledExportFragmentTest {
     fun scheduledExportFragment_turnsOffControl_offIsDisplayed() = runTest {
         launchFragment<ScheduledExportFragment>(Bundle())
 
-        onView(withText("On")).perform(click())
+        onView(withText("Use scheduled export")).perform(click())
 
-        onView(withText("Off")).check(matches(isDisplayed()))
         advanceUntilIdle()
         Mockito.verify(healthDataExportManager)
             .configureScheduledExport(
@@ -164,9 +258,9 @@ class ScheduledExportFragmentTest {
     fun scheduledExportFragment_turnsOffControl_exportFrequencySectionDoesNotExist() {
         launchFragment<ScheduledExportFragment>(Bundle())
 
-        onView(withText("On")).perform(click())
+        onView(withText("Use scheduled export")).perform(click())
 
-        onView(withText("Off")).check(matches(isDisplayed()))
+        onView(withText("Use scheduled export")).check(matches(isDisplayed()))
         onView(withText("Choose frequency")).check(doesNotExist())
         onView(withText("Daily")).check(doesNotExist())
         onView(withText("Weekly")).check(doesNotExist())
@@ -174,16 +268,36 @@ class ScheduledExportFragmentTest {
     }
 
     @Test
+    fun scheduledExportFragment_turnsOffControl_doesNotShowExportStatus() {
+        doAnswer(
+                prepareAnswer(
+                    ScheduledExportStatus(
+                        NOW,
+                        HealthConnectManager.DATA_EXPORT_ERROR_NONE,
+                        TEST_EXPORT_PERIOD_IN_DAYS,
+                        null,
+                        null,
+                        null,
+                        null)))
+            .`when`(healthDataExportManager)
+            .getScheduledExportStatus(any(), any())
+        launchFragment<ScheduledExportFragment>(Bundle())
+
+        onView(withText("Use scheduled export")).perform(click())
+
+        onView(withText("Next export: October 21, 2022")).check(doesNotExist())
+    }
+
+    @Test
     fun scheduledExportFragment_turnsOffControlAndOnAgain_exportFrequencyNotChanged() = runTest {
         launchFragment<ScheduledExportFragment>(Bundle())
 
-        onView(withText("On")).perform(click())
-        onView(withText("Off")).check(matches(isDisplayed()))
+        onView(withText("Use scheduled export")).perform(click())
         Mockito.verify(healthDataExportManager)
             .configureScheduledExport(
                 ScheduledExportSettings.withPeriodInDays(
                     ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays))
-        onView(withText("Off")).perform(click())
+        onView(withText("Use scheduled export")).perform(click())
 
         advanceUntilIdle()
         Mockito.verify(healthDataExportManager)
@@ -206,6 +320,8 @@ class ScheduledExportFragmentTest {
             .configureScheduledExport(
                 ScheduledExportSettings.withPeriodInDays(
                     ExportFrequency.EXPORT_FREQUENCY_MONTHLY.periodInDays))
+        verify(healthConnectLogger)
+            .logInteraction(ScheduledExportElement.EXPORT_SETTINGS_FREQUENCY_MONTHLY)
     }
 
     private fun prepareAnswer(

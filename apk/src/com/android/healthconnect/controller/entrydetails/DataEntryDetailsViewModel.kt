@@ -19,7 +19,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.data.entries.FormattedEntry
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -39,7 +39,7 @@ constructor(private val loadEntryDetailsUseCase: LoadEntryDetailsUseCase) : View
         get() = _sessionData
 
     fun loadEntryData(
-        permissionType: HealthPermissionType,
+        permissionType: FitnessPermissionType,
         entryId: String,
         showDataOrigin: Boolean
     ) {

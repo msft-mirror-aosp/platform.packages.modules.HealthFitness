@@ -46,34 +46,35 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+
         val alertDialogBuilder =
             AlertDialogBuilder(
-                    this, DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_CONTAINER)
+                    this,
+                    DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_CONTAINER,
+                )
                 .setTitle(buildTitle())
                 .setIcon(R.attr.deleteIcon)
                 .setMessage(buildMessage())
                 .setPositiveButton(
                     R.string.confirming_question_delete_button,
-                    DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_DELETE_BUTTON) {
-                        _,
-                        _ ->
-                        setFragmentResult(CONFIRMATION_EVENT, Bundle())
-                    }
+                    DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_DELETE_BUTTON,
+                ) { _, _ ->
+                    setFragmentResult(CONFIRMATION_EVENT, Bundle())
+                }
 
         if (viewModel.showTimeRangeDialogFragment) {
             alertDialogBuilder.setNeutralButton(
                 R.string.confirming_question_go_back_button,
-                DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_GO_BACK_BUTTON) {
-                    _,
-                    _ ->
-                    setFragmentResult(GO_BACK_EVENT, Bundle())
-                }
+                DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_GO_BACK_BUTTON,
+            ) { _, _ ->
+                setFragmentResult(GO_BACK_EVENT, Bundle())
+            }
         } else {
             alertDialogBuilder.setNeutralButton(
                 android.R.string.cancel,
-                DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_CANCEL_BUTTON) { _, _
-                    ->
-                }
+                DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_CANCEL_BUTTON,
+            ) { _, _ ->
+            }
         }
 
         return alertDialogBuilder.create()
@@ -141,8 +142,37 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                         getString(R.string.confirming_question_app_data_all, appName)
                 }
             }
+            is DeletionType.DeletionTypeHealthPermissionTypeFromApp -> {
+                val appName = deletionParameters.getAppName()
+                val permissionTypeLabel = getString(deletionParameters.getPermissionTypeLabel())
+                return when (chosenRange) {
+                    ChosenRange.DELETE_RANGE_LAST_24_HOURS ->
+                        getString(
+                            R.string.confirming_question_permission_type_app_data_one_day,
+                            permissionTypeLabel,
+                            appName,
+                        )
+                    ChosenRange.DELETE_RANGE_LAST_7_DAYS ->
+                        getString(
+                            R.string.confirming_question_permission_type_app_data_one_week,
+                            permissionTypeLabel,
+                            appName,
+                        )
+                    ChosenRange.DELETE_RANGE_LAST_30_DAYS ->
+                        getString(
+                            R.string.confirming_question_permission_type_app_data_one_month,
+                            permissionTypeLabel,
+                            appName,
+                        )
+                    ChosenRange.DELETE_RANGE_ALL_DATA ->
+                        getString(
+                            R.string.confirming_question_permission_type_app_data_all,
+                            permissionTypeLabel,
+                            appName,
+                        )
+                }
+            }
             else -> {
-                // TODO implement other flows
                 throw UnsupportedOperationException("")
             }
         }
@@ -159,9 +189,8 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                 getString(
                     R.string.confirming_question_message_menstruation,
                     dateFormatter.formatLongDate(deletionParameters.startTimeMs.toInstant()),
-                    dateFormatter.formatLongDate(deletionParameters.endTimeMs.toInstant())) +
-                    separator +
-                    message
+                    dateFormatter.formatLongDate(deletionParameters.endTimeMs.toInstant()),
+                ) + separator + message
         }
 
         return message

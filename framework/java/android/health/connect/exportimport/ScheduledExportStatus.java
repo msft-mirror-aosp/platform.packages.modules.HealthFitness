@@ -52,14 +52,26 @@ public final class ScheduledExportStatus implements Parcelable {
 
     @HealthConnectManager.DataExportError private final int mDataExportError;
     private final int mPeriodInDays;
+    @Nullable private final String mLastExportFileName;
+    @Nullable private final String mLastExportAppName;
+    @Nullable private final String mNextExportFileName;
+    @Nullable private final String mNextExportAppName;
 
     public ScheduledExportStatus(
             @Nullable Instant lastSuccessfulExportTime,
             @HealthConnectManager.DataExportError int dataExportError,
-            int periodInDays) {
+            int periodInDays,
+            @Nullable String lastExportFileName,
+            @Nullable String lastExportAppName,
+            @Nullable String nextExportFileName,
+            @Nullable String nextExportAppName) {
         mLastSuccessfulExportTime = lastSuccessfulExportTime;
         mDataExportError = dataExportError;
         mPeriodInDays = periodInDays;
+        mLastExportFileName = lastExportFileName;
+        mLastExportAppName = lastExportAppName;
+        mNextExportFileName = nextExportFileName;
+        mNextExportAppName = nextExportAppName;
     }
 
     /**
@@ -86,6 +98,30 @@ public final class ScheduledExportStatus implements Parcelable {
         return mPeriodInDays;
     }
 
+    /** Returns the file name of the last successful export. */
+    @Nullable
+    public String getLastExportFileName() {
+        return mLastExportFileName;
+    }
+
+    /** Returns the app name of the last successful export. */
+    @Nullable
+    public String getLastExportAppName() {
+        return mLastExportAppName;
+    }
+
+    /** Returns the file name of the next export. */
+    @Nullable
+    public String getNextExportFileName() {
+        return mNextExportFileName;
+    }
+
+    /** Returns the app name of the last successful export. */
+    @Nullable
+    public String getNextExportAppName() {
+        return mNextExportAppName;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -96,6 +132,10 @@ public final class ScheduledExportStatus implements Parcelable {
         mLastSuccessfulExportTime = timestamp == 0 ? null : Instant.ofEpochMilli(timestamp);
         mDataExportError = in.readInt();
         mPeriodInDays = in.readInt();
+        mLastExportFileName = in.readString();
+        mLastExportAppName = in.readString();
+        mNextExportFileName = in.readString();
+        mNextExportAppName = in.readString();
     }
 
     @Override
@@ -104,5 +144,9 @@ public final class ScheduledExportStatus implements Parcelable {
                 mLastSuccessfulExportTime == null ? 0 : mLastSuccessfulExportTime.toEpochMilli());
         dest.writeInt(mDataExportError);
         dest.writeInt(mPeriodInDays);
+        dest.writeString(mLastExportFileName);
+        dest.writeString(mLastExportAppName);
+        dest.writeString(mNextExportFileName);
+        dest.writeString(mNextExportAppName);
     }
 }

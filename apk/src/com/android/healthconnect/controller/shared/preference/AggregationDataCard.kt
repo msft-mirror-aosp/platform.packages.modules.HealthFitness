@@ -52,7 +52,7 @@ constructor(
         val cardDate = findViewById<TextView>(R.id.card_date)
         val titleAndDateContainer = findViewById<ConstraintLayout>(R.id.title_date_container)
 
-        cardIcon.background = fromHealthPermissionType(cardInfo.healthPermissionType).icon(context)
+        cardIcon.background = fromHealthPermissionType(cardInfo.fitnessPermissionType).icon(context)
         cardTitle.text = cardInfo.aggregation.aggregation
         cardTitle.contentDescription = cardInfo.aggregation.aggregationA11y
 

@@ -34,18 +34,14 @@ import static java.time.Duration.ofMinutes;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.health.connect.aidl.MedicalIdFiltersParcel;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.datatypes.BloodPressureRecord;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.internal.datatypes.BloodPressureRecordInternal;
 import android.health.connect.internal.datatypes.ExerciseRouteInternal;
 import android.health.connect.internal.datatypes.ExerciseSessionRecordInternal;
-import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
-
-import androidx.annotation.NonNull;
 
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -81,7 +77,7 @@ public final class TransactionTestUtils {
         mTransactionManager.insert(
                 new UpsertTableRequest(
                         AppInfoHelper.TABLE_NAME, contentValues, UNIQUE_COLUMN_INFO));
-        AppInfoHelper.getInstance().clearCache();
+        AppInfoHelper.clearInstanceForTest();
         assertThat(AppInfoHelper.getInstance().getAppInfoId(packageName))
                 .isNotEqualTo(DEFAULT_LONG);
     }
@@ -113,13 +109,6 @@ public final class TransactionTestUtils {
                 /* isInForeground= */ true);
     }
 
-    /** Creates {@link ReadTransactionRequest} for the given {@code medicalIdFiltersParcel}. */
-    @NonNull
-    public static ReadTransactionRequest getReadTransactionRequest(
-            @NonNull MedicalIdFiltersParcel medicalIdFiltersParcel) {
-        return new ReadTransactionRequest(medicalIdFiltersParcel);
-    }
-
     public static ReadTransactionRequest getReadTransactionRequest(
             ReadRecordsRequestParcel request) {
         return new ReadTransactionRequest(
@@ -129,13 +118,6 @@ public final class TransactionTestUtils {
                 /* enforceSelfRead= */ false,
                 NO_EXTRA_PERMS,
                 /* isInForeground= */ true);
-    }
-
-    /** Creates {@link UpsertTransactionRequest} for the given medicalResourceInternals. */
-    @NonNull
-    public static UpsertTransactionRequest getUpsertTransactionRequest(
-            @NonNull List<MedicalResourceInternal> medicalResourcesInternal) {
-        return new UpsertTransactionRequest(TEST_PACKAGE_NAME, medicalResourcesInternal);
     }
 
     public static RecordInternal<StepsRecord> createStepsRecord(

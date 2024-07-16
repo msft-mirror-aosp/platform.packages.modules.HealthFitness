@@ -45,15 +45,6 @@ public final class MigrationEntityHelper extends DatabaseHelper {
 
     @VisibleForTesting public static final String TABLE_NAME = "migration_entity_table";
     private static final String COLUMN_ENTITY_ID = "entity_id";
-    public static final List<Pair<String, Integer>> UNIQUE_COLUMN_INFO =
-            Collections.singletonList(new Pair<>(COLUMN_ENTITY_ID, TYPE_STRING));
-    private static final Object sGetInstanceLock = new Object();
-    private static final int DB_VERSION_TABLE_CREATED = 3;
-
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private static volatile MigrationEntityHelper sInstance;
-
-    private MigrationEntityHelper() {}
 
     /** Clears all data related to this helper. */
     public void clearData(@NonNull TransactionManager transactionManager) {
@@ -81,23 +72,12 @@ public final class MigrationEntityHelper extends DatabaseHelper {
 
     /** Returns a request to insert the provided {@code entityId}. */
     @NonNull
-    public UpsertTableRequest getInsertRequest(@NonNull String entityId) {
+    public static UpsertTableRequest getInsertRequest(@NonNull String entityId) {
         final ContentValues values = new ContentValues();
         values.put(COLUMN_ENTITY_ID, entityId);
-        return new UpsertTableRequest(TABLE_NAME, values, UNIQUE_COLUMN_INFO);
-    }
-
-    /** Returns a shared instance of {@link MigrationEntityHelper}. */
-    @NonNull
-    public static MigrationEntityHelper getInstance() {
-        if (sInstance == null) {
-            synchronized (sGetInstanceLock) {
-                if (sInstance == null) {
-                    sInstance = new MigrationEntityHelper();
-                }
-            }
-        }
-
-        return sInstance;
+        return new UpsertTableRequest(
+                TABLE_NAME,
+                values,
+                Collections.singletonList(new Pair<>(COLUMN_ENTITY_ID, TYPE_STRING)));
     }
 }

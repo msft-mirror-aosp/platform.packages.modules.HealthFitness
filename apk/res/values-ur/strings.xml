@@ -20,8 +20,9 @@
     <string name="app_label" msgid="4768580772453324183">"‫Health Connect ایپ"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"صحت کے ڈیٹا تک ایپ کی رسائی کا نظم کریں"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"اجازتیں اور ڈیٹا"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"اپنے فون پر صحت اور تندرستی کے ڈیٹا کا نظم کریں، اور کنٹرول کریں کہ کون سی ایپس اس تک رسائی حاصل کر سکتی ہیں"</string>
+    <string name="home_subtitle" msgid="2154213430054477787">"اپنے آلہ پر صحت اور تندرستی کے ڈیٹا کا نظم کریں اور کنٹرول کریں کہ کون سی ایپس اس تک رسائی حاصل کر سکتی ہیں"</string>
     <string name="data_title" msgid="4456619761533380816">"ڈیٹا اور رسائی"</string>
+    <string name="browse_medical_data" msgid="6963802956096683273">"صحت کے ریکارڈز کو براؤز کریں"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"سبھی زمرے"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"سبھی زمروں کو دیکھیں"</string>
     <string name="no_data" msgid="1906986019249068659">"کوئی ڈیٹا نہیں ہے"</string>
@@ -34,15 +35,14 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 ایپ کو رسائی حاصل ہے}other{# ایپس کو رسائی حاصل ہے}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"کوئی نہیں"</string>
     <string name="entry_details_title" msgid="590184849040247850">"اندراج کی تفصیلات"</string>
+    <!-- no translation found for manage_data_summary (8537870912521944449) -->
+    <skip />
     <string name="backup_title" msgid="211503191266235085">"بیک اپ لیں"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"ڈیٹا کے ماخذات اور ترجیح"</string>
     <string name="set_units_title" msgid="2657822539603758029">"یونٹس سیٹ کریں"</string>
-    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
-    <skip />
-    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
-    <skip />
-    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
-    <skip />
+    <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"ترجیحات"</string>
+    <string name="manage_data_category_title" msgid="6328886061582616519">"ڈیٹا کا نظم کریں"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"ڈیٹا امپورٹ اور ایکسپورٹ کریں"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"حالیہ رسائی"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"فی الحال کسی بھی ایپ نے Health Connect تک رسائی حاصل نہیں کی"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"تمام حالیہ رسائی دیکھیں"</string>
@@ -270,6 +270,10 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"امیونائزیشن"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"امیونائزیشن"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"امیونائزیشن کو پڑھیں"</string>
+    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"ارتکازِ توجہ"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"ارتکازِ توجہ"</string>
+    <string name="mindfulness_read_content_description" msgid="739187536826062524">"ارتکازِ توجہ کے ڈیٹا کو پڑھیں"</string>
+    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"ارتکاز توجہ کے ڈیٹا کو لکھیں"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"\"<xliff:g id="APP_NAME">%1$s</xliff:g>\" کو پڑھنے کی اجازت دیں"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"\"<xliff:g id="APP_NAME">%1$s</xliff:g>\" کو لکھنے کی اجازت دیں"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"منسوخ کریں"</string>
@@ -322,6 +326,9 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"آپ کے پاس فی الحال کوئی موافق ایپ انسٹال نہیں ہے"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"اضافی رسائی"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"اس ایپ کے لیے اضافی اجازتیں ہٹا دی گئیں"</string>
+    <string name="permissions_header" msgid="6519976063360071569">"اجازتیں"</string>
+    <string name="manage_fitness_permissions" msgid="1001729292172461314">"تندرستی کی اجازتوں کا نظم کریں"</string>
+    <string name="manage_medical_permissions" msgid="7658181359096889932">"صحت کے ریکارڈ کی اجازتوں کا نظم کریں"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"ایپ کی اجازتیں ہٹا دی گئیں"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect نے <xliff:g id="APP_DATA">%s</xliff:g> کے لیے اجازتیں ہٹا دیں"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect نے <xliff:g id="APP_DATA_0">%1$s</xliff:g> اور <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> کے لیے اجازتیں ہٹا دیں"</string>
@@ -337,38 +344,70 @@
     <string name="next_export_time" msgid="3138247220014510213">"اگلا ایکسپورٹ: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"بیک اپ اور بحالی"</string>
     <string name="last_export_time" msgid="9205875050823594041">"آخری ایکسپورٹ: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="export_and_import_title" msgid="3241901922222465397">"برآمد اور درآمد کریں"</string>
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"شیڈول کردہ برآمد"</string>
     <string name="import_data" msgid="404502315533233094">"ڈیٹا درآمد کریں"</string>
     <string name="import_data_description" msgid="4040178599441724296">"کسی گزشتہ برآمد کردہ فائل سے ڈیٹا کو بحال کریں"</string>
+    <string name="import_error_banner_title" msgid="1480977889067027790">"ڈیٹا کو بحال نہیں کیا جا سکا"</string>
+    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"فائل منتخب کریں"</string>
+    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"آپ کی منتخب کردہ فائل بحالی کے لیے موافق نہیں ہے۔ درست برآمد شدہ فائل کا انتخاب یقینی بنائیں۔"</string>
+    <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"ابھی اپ ڈیٹ کریں"</string>
+    <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"اپنا سسٹم اپ ڈیٹ کریں تاکہ Health Connect آپ کا ڈیٹا بحال کر سکے، پھر دوبارہ کوشش کریں۔"</string>
+    <string name="import_other_error_banner_button" msgid="8006947649520909176">"دوبارہ کوشش کریں"</string>
+    <string name="import_other_error_banner_summary" msgid="4378957063605649197">"آپ کے ایکسپورٹ سے ڈیٹا کو بحال کرنے میں ایک مسئلہ تھا۔"</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"\'برآمد کریں\' خصوصیت آپ کو اپنے ڈیٹا کو محفوظ کرنے کی سہولت دیتی ہے تاکہ آپ اسے نئے فون میں منتقل کر سکیں"</string>
-    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"مزید جانیں"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"بیک اپ اور بحالی کے بارے میں"</string>
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"آن ہے"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"آف ہے"</string>
-    <string name="choose_frequency_category" msgid="2230821549715237663">"فریکوئنسی منتخب کریں"</string>
-    <string name="choose_frequency" msgid="1077467424225083246">"فریکوئنسی منتخب کریں"</string>
-    <string name="choose_frequency_description" msgid="752601326653048254">"ڈیٹا کو ایک بار محفوظ کرنے کا انتخاب کریں یا اسے ریگولر اوقات میں خودکار طور پر محفوظ کرنے کے لیے سیٹ کریں۔"</string>
+    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
+    <skip />
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
+    <string name="choose_frequency_category" msgid="9094154407387676553">"فریکوئنسی کو تبدیل کریں"</string>
+    <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"اگر آپ شیڈول کردہ برآمدگی کو بند کرتے ہیں تو یہ پہلے سے برآمد شدہ ڈیٹا کو حذف نہیں کرے گا جہاں سے اسے محفوظ کیا گیا تھا"</string>
+    <string name="choose_frequency" msgid="8119085390857180221">"شیڈول کردہ برآمدگی سیٹ اپ کریں"</string>
+    <string name="choose_frequency_description" msgid="7698155810053504157">"منتخب کریں کہ آپ کے ڈیٹا کو کتنی فریکوئنسی سے برآمد کیا جائے"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"روزانہ"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"ہفتہ وار"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"ماہانہ"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"منتخب کریں کہ کہاں برآمد کرنا ہے"</string>
-    <string name="export_invalid_storage" msgid="3945266169513895950">"براہ کرم اپنا ڈیٹا برآمد کرنے کے لیے اسٹوریج ایپ کا انتخاب کریں"</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"پاس ورڈ ٹائپ کریں"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"آپ کے Health Connect ڈیٹا کو درآمد کرنے کیلئے، آپ کا اینکرپشن پاس ورڈ درکار ہے"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"پاس ورڈ بھول گئے؟"</string>
-    <string name="import_password_hint" msgid="5158553589723883063">"پاس ورڈ"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"اگر آپ کے پاس اب بھی اپنا پرانا فون ہے تو آپ ایک نئے پاس ورڈ کی مدد سے اپنا ڈیٹا دوبارہ برآمد کر سکتے ہیں"</string>
+    <string name="export_destination_title" msgid="8352929396306002479">"شیڈول شدہ برآمدگی محفوظ کرنے کی جگہ چنیں"</string>
+    <string name="export_invalid_storage" msgid="1459055934301871321">"براہ کرم اپنا ڈیٹا ایکسپورٹ کرنے کے لیے کلاؤڈ اسٹوریج ایپ کا انتخاب کریں"</string>
+    <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
+    <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"اس فائل کو درآمد کریں؟"</string>
+    <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"<xliff:g id="FILE_NAME">%1$s</xliff:g> کو Health Connect میں درآمد کیا جائے گا"</string>
+    <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"منسوخ کریں"</string>
+    <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"درآمد کریں"</string>
+    <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"‫Health Connect کی بحالی پیشرفت میں ہے"</string>
+    <string name="import_notification_import_complete_title" msgid="7493223782222480412">"‫Health Connect کی بحالی مکمل ہو گئی"</string>
+    <string name="import_complete_toast_text" msgid="7730872919621230959">"ڈیٹا کی بحالی مکمل ہو گئی"</string>
+    <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"‫Health Connect ڈیٹا کو بحال نہیں کر سکی"</string>
+    <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"مزید جگہ درکار ہے"</string>
+    <string name="import_notification_error_invalid_file_body_text" msgid="8877884063398886772">"آپ کی منتخب کردہ فائل بحالی کے لیے موافق نہیں ہے۔ درست برآمد شدہ فائل کا انتخاب یقینی بنائیں۔"</string>
+    <string name="import_notification_error_more_space_needed_body_text" msgid="7577564968089566232">"‫Health Connect کو آپ کے ڈیٹا کی بحالی جاری رکھنے کے لیے آپ کے فون پر <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> اسٹوریج کی جگہ درکار ہے۔"</string>
+    <string name="import_notification_error_generic_error_body_text" msgid="6562162452820282874">"آپ کے ایکسپورٹ سے ڈیٹا کو بحال کرنے میں ایک مسئلہ تھا۔"</string>
+    <string name="import_notification_error_version_mismatch_body_text" msgid="9186785816764607620">"اپنا سسٹم اپ ڈیٹ کریں تاکہ Health Connect آپ کا ڈیٹا بحال کر سکے، پھر دوبارہ کوشش کریں۔"</string>
+    <string name="import_notification_update_now_intent_button" msgid="2808579294292956628">"ابھی اپ ڈیٹ کریں"</string>
+    <string name="import_notification_try_again_intent_button" msgid="3833062670098674999">"دوبارہ کوشش کریں"</string>
+    <string name="import_notification_open_intent_button" msgid="2739924648846724969">"کھولیں"</string>
+    <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"فائل منتخب کریں"</string>
+    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"جگہ خالی کریں"</string>
     <string name="export_back_button" msgid="3550795479165524982">"واپس جائیں"</string>
+    <!-- no translation found for export_cancel_button (1952360582645412410) -->
+    <skip />
     <string name="export_next_button" msgid="657930567137105172">"آگے جائیں"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"منسوخ کریں"</string>
     <string name="import_next_button" msgid="5706322508691854289">"آگے جائیں"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"یہاں سے درآمد کریں"</string>
-    <string name="import_invalid_storage" msgid="4873640088459948487">"براہ کرم اپنا ڈیٹا درآمد کرنے کے لیے اسٹوریج ایپ کا انتخاب کریں"</string>
+    <string name="import_invalid_storage" msgid="341798262315495399">"براہ کرم اپنا ڈیٹا درآمد کرنے کے لیے کلاؤڈ اسٹوریج ایپ کا انتخاب کریں"</string>
+    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"اکاؤنٹ منتخب کرنے کے لئے تھپتھپائیں"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"ایک اکاؤنٹ منتخب کریں"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"منسوخ کریں"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"ہو گیا"</string>
+    <string name="export_import_no_apps_text" msgid="6403119325024893690">"کوئی ایپ دستیاب نہیں۔ کلاؤڈ اسٹوریج ایپس کو یہاں دیکھنے کے لیے انسٹال کریں"</string>
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"مزید اختیارات کے لئے، کلاؤڈ اسٹوریج ایپس کو یہاں دیکھنے کے لیے انسٹال کریں"</string>
+    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"‫Play اسٹور پر جائیں"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect کے ساتھ شروع کریں"</string>
-    <string name="onboarding_description" msgid="4873129122057931161">"‫Health Connect ایپ آپ کے صحت اور تندرستی کے ڈیٹا کو اسٹور کرتی ہے جو آپ کے فون پر مختلف ایپس کو سِنک کرنے کا ایک آسان طریقہ فراہم کرتا ہے"</string>
+    <string name="onboarding_description" msgid="3479157507808350452">"‫Health Connect ایپ آپ کے صحت اور تندرستی کے ڈیٹا کو اسٹور کرتی ہے جو آپ کے آلہ پر مختلف ایپس کو سِنک کرنے کا ایک آسان طریقہ فراہم کرتا ہے"</string>
     <string name="share_data" msgid="3481932156368883946">"اپنی ایپس کے ساتھ ڈیٹا کا اشتراک کریں"</string>
     <string name="share_data_description" msgid="2919871301634375092">"وہ ڈیٹا منتخب کریں جسے ہر ایپ Health Connect پر پڑھ یا لکھ سکتی ہے"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"اپنی ترتیبات اور رازداری کا نظم کریں"</string>
@@ -378,12 +417,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"ڈیٹا حذف کریں"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"حذف کے عمل میں داخل ہوں"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"حذف کے عمل سے باہر نکلیں"</string>
-    <string name="time_range_title" msgid="6831605283322600165">"حذف کرنے کے لیے ڈیٹا کا انتخاب کریں"</string>
+    <string name="time_range_title" msgid="5777596779865648336">"حذف کرنے کے لیے Health Connect سے ڈیٹا منتخب کریں"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"آگے جائیں"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"اس سے منتخب کردہ وقت کے دوران Health Connect میں شامل کردہ تمام ڈیٹا مستقل طور پر حذف ہو جاتا ہے"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"اس سے منتخب کردہ وقت کے دوران Health Connect میں شامل کردہ <xliff:g id="DATA_TYPE">%s</xliff:g> ڈیٹا مستقل طور پر حذف ہو جاتا ہے"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"اس سے منتخب کردہ وقت کے دوران Health Connect میں شامل کردہ <xliff:g id="CATEGORY">%s</xliff:g> ڈیٹا مستقل طور پر حذف ہو جاتا ہے"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"اس سے منتخب کردہ وقت کے دوران Health Connect میں شامل کردہ <xliff:g id="APP_DATA">%s</xliff:g> ڈیٹا مستقل طور پر حذف ہو جاتا ہے"</string>
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"منتخب کردہ وقت کے دوران Health Connect میں <xliff:g id="APP_DATA">%2$s</xliff:g> کے ذریعے شامل کردہ <xliff:g id="DATA_TYPE">%1$s</xliff:g> ڈیٹا کو یہ مستقل طور پر حذف کر دیتا ہے"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"گزشتہ 24 گھنٹے کا ڈیٹا حذف کریں"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"گزشتہ 7 دن کا ڈیٹا حذف کریں"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"گزشتہ 30 دن کا ڈیٹا حذف کریں"</string>
@@ -404,17 +444,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"گزشتہ 24 گھنٹوں کا <xliff:g id="APP_DATA">%s</xliff:g> کا ڈیٹا مستقل طور پر حذف کریں؟"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"گزشتہ 7 دن کا <xliff:g id="APP_DATA">%s</xliff:g> ڈیٹا مستقل طور پر حذف کریں؟"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"گزشتہ 30 دن کا <xliff:g id="APP_DATA">%s</xliff:g> ڈیٹا مستقل طور پر حذف کریں؟"</string>
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"<xliff:g id="APP_DATA">%2$s</xliff:g> کے ذریعے شامل کیا گیا ہمہ وقت کا <xliff:g id="DATA_TYPE">%1$s</xliff:g> ڈیٹا مستقل طور پر حذف کریں؟"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"<xliff:g id="APP_DATA">%2$s</xliff:g> کے ذریعے شامل کیا گیا گزشتہ 24 گھنٹوں کا <xliff:g id="DATA_TYPE">%1$s</xliff:g> ڈیٹا مستقل طور پر حذف کریں؟"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"<xliff:g id="APP_DATA">%2$s</xliff:g> کے ذریعے شامل کیا گیا گزشتہ 7 دن کا <xliff:g id="DATA_TYPE">%1$s</xliff:g> ڈیٹا مستقل طور پر حذف کریں؟"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"<xliff:g id="APP_DATA">%2$s</xliff:g> کے ذریعے شامل کیا گیا گزشتہ 30 دن کا <xliff:g id="DATA_TYPE">%1$s</xliff:g> ڈیٹا مستقل طور پر حذف کریں؟"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Health Connect ایپ سے <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> کی تمام اجازتیں بھی ہٹا دیں"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"<xliff:g id="APP_DATA">%2$s</xliff:g> کے ذریعے شامل کردہ تمام <xliff:g id="DATA_TYPE">%1$s</xliff:g> ڈیٹا کو مستقل طور پر حذف کریں؟"</string>
-    <string name="confirming_question_single_entry" msgid="330919962071369305">"مستقل طور پر اس اندراج کو حذف کریں؟"</string>
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"اس اندراج کو Health Connect سے مستقل طور پر حذف کریں؟"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"منسلک ایپس Health Connect سے اس ڈیٹا تک مزید رسائی حاصل نہیں کر سکیں گی"</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"یہ <xliff:g id="START_DATE">%1$s</xliff:g> سے <xliff:g id="END_DATE">%2$s</xliff:g> تک حیض سے متعلق ڈیٹا کے تمام اندراجات کو حذف کر دے گا۔"</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"حذف کریں"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"واپس جائیں"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"ہو گیا"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"بند کریں"</string>
-    <string name="delete_dialog_success_title" msgid="5009733262743173477">"ڈیٹا حذف ہو گیا"</string>
-    <string name="delete_dialog_success_message" msgid="2451953113522118128">"یہ ڈیٹا Health Connect میں مزید اسٹور نہیں ہے۔"</string>
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"‫Health Connect سے ڈیٹا حذف ہو گیا"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"اگر آپ اپنے منسلک ایپس سے ڈیٹا کو مکمل طور پرحذف کرنا چاہتے ہیں تو ہر ایپ کو جہاں بھی آپ کا ڈیٹا محفوظ ہو سکتا ہے چیک کریں۔"</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"ہو گیا"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"منسلک ایپس دیکھیں"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"آپ کا ڈیٹا حذف کیا جا رہا ہے"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"ڈیٹا حذف نہیں ہو سکا"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"کچھ غلط ہو گیا اور Health Connect ایپ آپ کا ڈیٹا حذف نہیں کر سکی"</string>
@@ -801,12 +847,14 @@
     <string name="range_off" msgid="8178520557618184215">"آف ہے"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"جب آپ ان ترتیبات کو تبدیل کرتے ہیں تو Health Connect ایپ آپ کی نئی ترجیحات کی عکاسی کرنے کے لیے موجودہ ڈیٹا کو حذف کر دیتی ہے"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{# ماہ بعد ڈیٹا کو خودکار طور پر حذف کریں؟}other{# ماہ بعد ڈیٹا کو خودکار طور پر حذف کریں؟}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{‫Health Connect ایپ # ماہ بعد نئے ڈیٹا کو خودکار طور پر حذف کر دے گی۔ اس کو ترتیب دینے سے # ماہ سے زیادہ پرانا موجودہ ڈیٹا بھی حذف ہو جائے گا۔}other{‫Health Connect ایپ # ماہ بعد نئے ڈیٹا کو خودکار طور پر حذف کر دے گی۔ اس کو ترتیب دینے سے # ماہ سے زیادہ پرانا موجودہ ڈیٹا بھی حذف ہو جائے گا۔}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{اس سے # ماہ سے زیادہ پرانا ڈیٹا Health Connect سے حذف ہو جاتا ہے۔\n\nاگر آپ اپنے منسلک ایپس سے مکمل طور پر ڈیٹا حذف کرنا چاہتے ہیں تو ہر ایپ کو جہاں بھی آپ کا ڈیٹا محفوظ ہو سکتا ہے چیک کریں۔}other{اس سے # ماہ سے زیادہ پرانا ڈیٹا Health Connect سے حذف ہو جاتا ہے۔\n\nاگر آپ اپنے منسلک ایپس سے مکمل طور پر ڈیٹا حذف کرنا چاہتے ہیں تو ہر ایپ کو جہاں بھی آپ کا ڈیٹا محفوظ ہو سکتا ہے چیک کریں۔}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"خودکار طور پر حذف کرنا سیٹ کریں"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"موجودہ ڈیٹا حذف کر دیا جائے گا"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{‫Health Connect ایپ # ماہ سے زیادہ پرانا سبھی ڈیٹا حذف کر دے گی۔ آپ کی منسلک ایپس میں ان تبدیلیوں کے ظاہر ہونے میں ایک دن لگ سکتا ہے۔}other{‫Health Connect ایپ # ماہ سے زیادہ پرانا سبھی ڈیٹا حذف کر دے گی۔ آپ کی منسلک ایپس میں ان تبدیلیوں کے ظاہر ہونے میں ایک دن لگ سکتا ہے۔}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"ان سے ڈیٹا کو حذف کر دیا جائے گا"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"ہو گیا"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{خودکار طور پر حذف کرنا آن ہے۔ # ماہ سے زیادہ پرانا ڈیٹا حذف کردیا جائے گا}other{خودکار طور پر حذف کرنا آن ہے۔ # ماہ سے زیادہ پرانا ڈیٹا حذف کردیا جائے گا}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"خودکار طور پر حذف کرنا آف ہے"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"ایپ کی ترجیح سیٹ کریں"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"اگر ایک سے زیادہ ایپ <xliff:g id="DATA_TYPE">%s</xliff:g> ڈیٹا شامل کرتی ہیں تو Health Connect اس فہرست میں بالکل اوپر ایپ کو ترجیح دیتی ہے۔ ایپس کو دوبارہ ترتیب دینے کے لیے انہیں گھسیٹیں۔"</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"محفوظ کریں"</string>
@@ -942,4 +990,5 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"تمام ڈیٹا حذف کر دیا گیا"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ڈیٹا حذف ہو گیا"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> آئٹمز حذف ہو گئے"</string>
+    <string name="select_all" msgid="837499881590001166">"سبھی کو منتخب کریں"</string>
 </resources>

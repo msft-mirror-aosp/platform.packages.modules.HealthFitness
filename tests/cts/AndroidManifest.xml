@@ -51,6 +51,7 @@
         <package android:name="android.healthconnect.cts.app"/>
         <package android:name="android.healthconnect.cts.app2"/>
         <package android:name="android.healthconnect.test.app"/>
+        <package android:name="android.healthconnect.cts.testapp.readWritePerms.A"/>
     </queries>
 
     <uses-permission android:name="android.permission.health.READ_ACTIVE_CALORIES_BURNED"/>
@@ -75,6 +76,7 @@
     <uses-permission android:name="android.permission.health.READ_HYDRATION"/>
     <uses-permission android:name="android.permission.health.READ_LEAN_BODY_MASS"/>
     <uses-permission android:name="android.permission.health.READ_MENSTRUATION"/>
+    <uses-permission android:name="android.permission.health.READ_MINDFULNESS"/>
     <uses-permission android:name="android.permission.health.READ_NUTRITION"/>
     <uses-permission android:name="android.permission.health.READ_OVULATION_TEST"/>
     <uses-permission android:name="android.permission.health.READ_OXYGEN_SATURATION"/>
@@ -113,6 +115,7 @@
     <uses-permission android:name="android.permission.health.WRITE_HYDRATION"/>
     <uses-permission android:name="android.permission.health.WRITE_LEAN_BODY_MASS"/>
     <uses-permission android:name="android.permission.health.WRITE_MENSTRUATION"/>
+    <uses-permission android:name="android.permission.health.WRITE_MINDFULNESS"/>
     <uses-permission android:name="android.permission.health.WRITE_NUTRITION"/>
     <uses-permission android:name="android.permission.health.WRITE_OVULATION_TEST"/>
     <uses-permission android:name="android.permission.health.WRITE_OXYGEN_SATURATION"/>
@@ -128,6 +131,7 @@
     <uses-permission android:name="android.permission.health.WRITE_VO2_MAX"/>
     <uses-permission android:name="android.permission.health.WRITE_WEIGHT"/>
     <uses-permission android:name="android.permission.health.WRITE_WHEELCHAIR_PUSHES"/>
+    <uses-permission android:name="android.permission.health.WRITE_MEDICAL_DATA"/>
 
     <!--  self-instrumenting test package. -->
 </manifest>
