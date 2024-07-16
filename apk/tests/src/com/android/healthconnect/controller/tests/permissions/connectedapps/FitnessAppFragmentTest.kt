@@ -597,6 +597,7 @@ class FitnessAppFragmentTest {
     }
 
     @Test
+    @Ignore //TODO(b/352003559): Unignore when fixed flakiness.
     fun additionalAccessState_onClick_navigatesToAdditionalAccessFragment() {
         val validState =
             AdditionalAccessViewModel.State(

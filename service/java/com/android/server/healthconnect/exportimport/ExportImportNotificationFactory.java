@@ -27,8 +27,12 @@ import static com.android.server.healthconnect.exportimport.ExportImportNotifica
 import android.annotation.FlaggedApi;
 import android.annotation.Nullable;
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Icon;
+import android.os.Binder;
 import android.util.Slog;
 
 import androidx.annotation.NonNull;
@@ -74,6 +78,13 @@ public class ExportImportNotificationFactory implements HealthConnectNotificatio
             "import_notification_error_invalid_file_body_text";
     private static final String IMPORT_UNSUCCESSFUL_VERSION_MISMATCH_TEXT =
             "import_notification_error_version_mismatch_body_text";
+
+    public static final String IMPORT_NOTIFICATION_COMPLETE_INTENT_BUTTON =
+            "import_notification_open_intent_button";
+
+    private static final String HEALTH_CONNECT_HOME_ACTION =
+            "android.health.connect.action.HEALTH_HOME_SETTINGS";
+    private static final Intent FALLBACK_INTENT = new Intent(HEALTH_CONNECT_HOME_ACTION);
 
     @VisibleForTesting static final String APP_ICON_DRAWABLE_NAME = "health_connect_logo";
 
@@ -137,10 +148,20 @@ public class ExportImportNotificationFactory implements HealthConnectNotificatio
 
     @NonNull
     private Notification getImportCompleteNotification(@NonNull String channelId) {
+        PendingIntent pendingIntent = getImportCompletePendingIntent();
         String notificationTitle = getStringResource(IMPORT_COMPLETE_NOTIFICATION_TITLE);
+
+        Notification.Action openAction =
+                new Notification.Action.Builder(
+                                getAppIcon().get(),
+                                getStringResource(IMPORT_NOTIFICATION_COMPLETE_INTENT_BUTTON),
+                                pendingIntent)
+                        .build();
+
         Notification.Builder notificationBuilder =
                 new Notification.Builder(mContext, channelId)
                         .setContentTitle(notificationTitle)
+                        .setActions(openAction)
                         .setAutoCancel(true);
         if (getAppIcon().isPresent()) {
             notificationBuilder.setSmallIcon(getAppIcon().get());
@@ -208,6 +229,26 @@ public class ExportImportNotificationFactory implements HealthConnectNotificatio
             notificationBuilder.setSmallIcon(getAppIcon().get());
         }
         return notificationBuilder.build();
+    }
+
+    @NonNull
+    private PendingIntent getPendingIntent(@NonNull Intent intent) {
+        final long callingId = Binder.clearCallingIdentity();
+        try {
+            return PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        } finally {
+            Binder.restoreCallingIdentity(callingId);
+        }
+    }
+
+    @NonNull
+    private PendingIntent getImportCompletePendingIntent() {
+        Intent intent = new Intent(HEALTH_CONNECT_HOME_ACTION);
+        ResolveInfo result = mContext.getPackageManager().resolveActivity(intent, 0);
+        if (result == null) {
+            return getPendingIntent(FALLBACK_INTENT);
+        }
+        return getPendingIntent(intent);
     }
 
     @NonNull
