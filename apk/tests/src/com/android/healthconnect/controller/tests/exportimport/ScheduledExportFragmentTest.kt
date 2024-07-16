@@ -112,7 +112,7 @@ class ScheduledExportFragmentTest {
             .getScheduledExportStatus(any(), any())
         launchFragment<ScheduledExportFragment>(Bundle())
 
-        onView(withText("On")).check(matches(isDisplayed()))
+        onView(withText("Use scheduled export")).check(matches(isDisplayed()))
         onView(withText("Change frequency")).check(matches(isDisplayed()))
         onView(withText("Daily")).check(matches(isDisplayed()))
         onView(withText("Weekly")).check(matches(isDisplayed()))
@@ -141,7 +141,7 @@ class ScheduledExportFragmentTest {
             .getScheduledExportStatus(any(), any())
         launchFragment<ScheduledExportFragment>(Bundle())
 
-        onView(withText("On")).check(matches(isDisplayed()))
+        onView(withText("Use scheduled export")).check(matches(isDisplayed()))
         verify(healthConnectLogger).logPageImpression()
         verify(healthConnectLogger)
             .logImpression(ScheduledExportElement.EXPORT_SETTINGS_FREQUENCY_DAILY)
@@ -245,9 +245,8 @@ class ScheduledExportFragmentTest {
     fun scheduledExportFragment_turnsOffControl_offIsDisplayed() = runTest {
         launchFragment<ScheduledExportFragment>(Bundle())
 
-        onView(withText("On")).perform(click())
+        onView(withText("Use scheduled export")).perform(click())
 
-        onView(withText("Off")).check(matches(isDisplayed()))
         advanceUntilIdle()
         Mockito.verify(healthDataExportManager)
             .configureScheduledExport(
@@ -259,9 +258,9 @@ class ScheduledExportFragmentTest {
     fun scheduledExportFragment_turnsOffControl_exportFrequencySectionDoesNotExist() {
         launchFragment<ScheduledExportFragment>(Bundle())
 
-        onView(withText("On")).perform(click())
+        onView(withText("Use scheduled export")).perform(click())
 
-        onView(withText("Off")).check(matches(isDisplayed()))
+        onView(withText("Use scheduled export")).check(matches(isDisplayed()))
         onView(withText("Choose frequency")).check(doesNotExist())
         onView(withText("Daily")).check(doesNotExist())
         onView(withText("Weekly")).check(doesNotExist())
@@ -284,9 +283,8 @@ class ScheduledExportFragmentTest {
             .getScheduledExportStatus(any(), any())
         launchFragment<ScheduledExportFragment>(Bundle())
 
-        onView(withText("On")).perform(click())
+        onView(withText("Use scheduled export")).perform(click())
 
-        onView(withText("Off")).check(matches(isDisplayed()))
         onView(withText("Next export: October 21, 2022")).check(doesNotExist())
     }
 
@@ -294,13 +292,12 @@ class ScheduledExportFragmentTest {
     fun scheduledExportFragment_turnsOffControlAndOnAgain_exportFrequencyNotChanged() = runTest {
         launchFragment<ScheduledExportFragment>(Bundle())
 
-        onView(withText("On")).perform(click())
-        onView(withText("Off")).check(matches(isDisplayed()))
+        onView(withText("Use scheduled export")).perform(click())
         Mockito.verify(healthDataExportManager)
             .configureScheduledExport(
                 ScheduledExportSettings.withPeriodInDays(
                     ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays))
-        onView(withText("Off")).perform(click())
+        onView(withText("Use scheduled export")).perform(click())
 
         advanceUntilIdle()
         Mockito.verify(healthDataExportManager)

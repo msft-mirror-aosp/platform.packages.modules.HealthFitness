@@ -74,8 +74,6 @@ import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissionCategory;
 import android.health.connect.InsertRecordsResponse;
-import android.health.connect.ReadMedicalResourcesRequest;
-import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequest;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
@@ -179,7 +177,6 @@ import java.util.stream.IntStream;
 
 public final class TestUtils {
     private static final String TAG = "HCTestUtils";
-    private static final int TIMEOUT_SECONDS = 5;
 
     public static final String PKG_TEST_APP = "android.healthconnect.test.app";
     private static final String TEST_APP_RECEIVER =
@@ -1023,33 +1020,18 @@ public final class TestUtils {
                                                 .build())
                         .collect(Collectors.toList());
 
-        CountDownLatch latch = new CountDownLatch(1);
-        AtomicReference<HealthConnectException> healthConnectExceptionAtomicReference =
-                new AtomicReference<>();
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
         UpdateDataOriginPriorityOrderRequest updateDataOriginPriorityOrderRequest =
                 new UpdateDataOriginPriorityOrderRequest(dataOrigins, permissionCategory);
         service.updateDataOriginPriorityOrder(
                 updateDataOriginPriorityOrderRequest,
                 Executors.newSingleThreadExecutor(),
-                new OutcomeReceiver<>() {
-                    @Override
-                    public void onResult(Void result) {
-                        latch.countDown();
-                    }
+                receiver);
 
-                    @Override
-                    public void onError(HealthConnectException exception) {
-                        healthConnectExceptionAtomicReference.set(exception);
-                        latch.countDown();
-                    }
-                });
         assertThat(updateDataOriginPriorityOrderRequest.getDataCategory())
                 .isEqualTo(permissionCategory);
         assertThat(updateDataOriginPriorityOrderRequest.getDataOriginInOrder()).isNotNull();
-        assertThat(latch.await(3, TimeUnit.SECONDS)).isTrue();
-        if (healthConnectExceptionAtomicReference.get() != null) {
-            throw healthConnectExceptionAtomicReference.get();
-        }
+        receiver.verifyNoExceptionOrThrow(3);
     }
 
     public static boolean isHardwareSupported() {
@@ -1224,19 +1206,6 @@ public final class TestUtils {
     /** Extracts and returns ids of the provided records. */
     public static List<String> getRecordIds(List<? extends Record> records) {
         return records.stream().map(Record::getMetadata).map(Metadata::getId).toList();
-    }
-
-    /**
-     * Helper function to read medical resources from the DB by a {@link
-     * ReadMedicalResourcesRequest}, using HealthConnectManager.
-     */
-    public static ReadMedicalResourcesResponse readMedicalResourcesByRequest(
-            ReadMedicalResourcesRequest request) throws InterruptedException {
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        getHealthConnectManager()
-                .readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-        return receiver.getResponse();
     }
 
     /**

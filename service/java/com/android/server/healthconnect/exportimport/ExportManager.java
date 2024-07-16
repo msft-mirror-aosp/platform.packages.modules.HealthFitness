@@ -16,9 +16,6 @@
 
 package com.android.server.healthconnect.exportimport;
 
-import static com.android.server.healthconnect.storage.ExportImportSettingsStorage.LAST_EXPORT_APP_NAME_KEY;
-import static com.android.server.healthconnect.storage.ExportImportSettingsStorage.LAST_EXPORT_FILE_NAME_KEY;
-
 import static java.util.Objects.requireNonNull;
 
 import android.annotation.NonNull;
@@ -141,10 +138,7 @@ public class ExportManager {
             }
             Slog.i(TAG, "Export completed.");
             ExportImportSettingsStorage.setLastSuccessfulExport(mClock.instant());
-            ExportImportSettingsStorage.setExportAppName(
-                    mDatabaseContext, destinationUri, LAST_EXPORT_APP_NAME_KEY);
-            ExportImportSettingsStorage.setExportFileName(
-                    mDatabaseContext, destinationUri, LAST_EXPORT_FILE_NAME_KEY);
+            ExportImportSettingsStorage.setLastSuccessfulExportUri(destinationUri);
             return true;
         } finally {
             Slog.i(TAG, "Delete local export files started.");

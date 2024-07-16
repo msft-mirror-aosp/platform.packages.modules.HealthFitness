@@ -52,24 +52,29 @@ public final class MedicalResource implements Parcelable {
 
     @MedicalResourceType private final int mType;
     @NonNull private final String mDataSourceId;
+    @NonNull private final FhirVersion mFhirVersion;
     @NonNull private final FhirResource mFhirResource;
 
     /**
      * @param type The medical resource type assigned by the Android Health Platform at insertion
      *     time.
      * @param dataSourceId Where the data comes from.
+     * @param fhirVersion The {@link FhirVersion} object that represents the FHIR version.
      * @param fhirResource The enclosed {@link FhirResource} object.
      */
     private MedicalResource(
             @MedicalResourceType int type,
             @NonNull String dataSourceId,
+            @NonNull FhirVersion fhirVersion,
             @NonNull FhirResource fhirResource) {
         requireNonNull(dataSourceId);
+        requireNonNull(fhirVersion);
         requireNonNull(fhirResource);
         validateMedicalResourceType(type);
 
         mType = type;
         mDataSourceId = dataSourceId;
+        mFhirVersion = fhirVersion;
         mFhirResource = fhirResource;
     }
 
@@ -81,6 +86,9 @@ public final class MedicalResource implements Parcelable {
         requireNonNull(in);
         mType = in.readInt();
         mDataSourceId = requireNonNull(in.readString());
+        mFhirVersion =
+                requireNonNull(
+                        in.readParcelable(FhirVersion.class.getClassLoader(), FhirVersion.class));
         mFhirResource =
                 requireNonNull(
                         in.readParcelable(FhirResource.class.getClassLoader(), FhirResource.class));
@@ -116,6 +124,12 @@ public final class MedicalResource implements Parcelable {
         return mDataSourceId;
     }
 
+    /** Returns the {@link FhirVersion} object that represents the FHIR version. */
+    @NonNull
+    public FhirVersion getFhirVersion() {
+        return mFhirVersion;
+    }
+
     /** Returns the enclosed {@link FhirResource} object. */
     @NonNull
     public FhirResource getFhirResource() {
@@ -133,6 +147,7 @@ public final class MedicalResource implements Parcelable {
         requireNonNull(dest);
         dest.writeInt(getType());
         dest.writeString(getDataSourceId());
+        dest.writeParcelable(getFhirVersion(), 0);
         dest.writeParcelable(getFhirResource(), 0);
     }
 
@@ -163,13 +178,14 @@ public final class MedicalResource implements Parcelable {
         if (!(o instanceof MedicalResource that)) return false;
         return getType() == that.getType()
                 && getDataSourceId().equals(that.getDataSourceId())
+                && getFhirVersion().equals(that.getFhirVersion())
                 && getFhirResource().equals(that.getFhirResource());
     }
 
     /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
-        return hash(getType(), getDataSourceId(), getFhirResource());
+        return hash(getType(), getDataSourceId(), getFhirVersion(), getFhirResource());
     }
 
     /** Returns a string representation of this {@link MedicalResource}. */
@@ -179,6 +195,7 @@ public final class MedicalResource implements Parcelable {
         sb.append(this.getClass().getSimpleName()).append("{");
         sb.append("type=").append(getType());
         sb.append(",dataSourceId=").append(getDataSourceId());
+        sb.append(",fhirVersion=").append(getFhirVersion());
         sb.append(",fhirResource=").append(getFhirResource());
         sb.append("}");
         return sb.toString();
@@ -188,24 +205,29 @@ public final class MedicalResource implements Parcelable {
     public static final class Builder {
         @MedicalResourceType private int mType;
         @NonNull private String mDataSourceId;
+        @NonNull private FhirVersion mFhirVersion;
         @NonNull private FhirResource mFhirResource;
 
         /**
          * @param type The medical resource type assigned by the Android Health Platform at
          *     insertion time.
          * @param dataSourceId Where the data comes from.
+         * @param fhirVersion The enclosed {@link FhirVersion} object.
          * @param fhirResource The enclosed {@link FhirResource} object.
          */
         public Builder(
                 @MedicalResourceType int type,
                 @NonNull String dataSourceId,
+                @NonNull FhirVersion fhirVersion,
                 @NonNull FhirResource fhirResource) {
             requireNonNull(dataSourceId);
+            requireNonNull(fhirVersion);
             requireNonNull(fhirResource);
             validateMedicalResourceType(type);
 
             mType = type;
             mDataSourceId = dataSourceId;
+            mFhirVersion = fhirVersion;
             mFhirResource = fhirResource;
         }
 
@@ -217,6 +239,7 @@ public final class MedicalResource implements Parcelable {
             requireNonNull(original);
             mType = original.mType;
             mDataSourceId = original.mDataSourceId;
+            mFhirVersion = original.mFhirVersion;
             mFhirResource = original.mFhirResource;
         }
 
@@ -228,6 +251,7 @@ public final class MedicalResource implements Parcelable {
             requireNonNull(original);
             mType = original.getType();
             mDataSourceId = original.getDataSourceId();
+            mFhirVersion = original.getFhirVersion();
             mFhirResource = original.getFhirResource();
         }
 
@@ -250,6 +274,14 @@ public final class MedicalResource implements Parcelable {
             return this;
         }
 
+        /** Sets the {@link FhirVersion} object that represents the FHIR version. */
+        @NonNull
+        public Builder setFhirVersion(@NonNull FhirVersion fhirVersion) {
+            requireNonNull(fhirVersion);
+            mFhirVersion = fhirVersion;
+            return this;
+        }
+
         /** Sets the enclosed {@link FhirResource} object */
         @NonNull
         public Builder setFhirResource(@NonNull FhirResource fhirResource) {
@@ -261,7 +293,7 @@ public final class MedicalResource implements Parcelable {
         /** Returns a new instance of {@link MedicalResource} with the specified parameters. */
         @NonNull
         public MedicalResource build() {
-            return new MedicalResource(mType, mDataSourceId, mFhirResource);
+            return new MedicalResource(mType, mDataSourceId, mFhirVersion, mFhirResource);
         }
     }
 }

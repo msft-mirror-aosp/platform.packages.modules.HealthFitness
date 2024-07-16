@@ -158,7 +158,8 @@ class HomeFragmentTest {
                         null,
                         null)))
         }
-        (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(false)
+        // Reflects that IsNewAppPriorityEnabled is always true in the configuration.
+        (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(true)
         navHostController = TestNavHostController(context)
 
         // disable animations
@@ -406,7 +407,7 @@ class HomeFragmentTest {
         onView(withText("App permissions")).check(matches(isDisplayed()))
         onView(withText("None")).check(matches(isDisplayed()))
         onView(withText("Data and access")).check(matches(isDisplayed()))
-        onView(withText("Manage data")).check(doesNotExist())
+        onView(withText("Manage data")).check(matches(isDisplayed()))
 
         onView(withText("Recent access")).check(matches(isDisplayed()))
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
@@ -468,7 +469,7 @@ class HomeFragmentTest {
         onView(withText("App permissions")).check(matches(isDisplayed()))
         onView(withText("2 apps have access")).check(matches(isDisplayed()))
         onView(withText("Data and access")).check(matches(isDisplayed()))
-        onView(withText("Manage data")).check(doesNotExist())
+        onView(withText("Manage data")).check(matches(isDisplayed()))
 
         onView(withText("Recent access")).check(matches(isDisplayed()))
         onView(withText("No apps recently accessed Health\u00A0Connect"))
@@ -493,7 +494,7 @@ class HomeFragmentTest {
         onView(withText("App permissions")).check(matches(isDisplayed()))
         onView(withText("1 app has access")).check(matches(isDisplayed()))
         onView(withText("Data and access")).check(matches(isDisplayed()))
-        onView(withText("Manage data")).check(doesNotExist())
+        onView(withText("Manage data")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -517,12 +518,11 @@ class HomeFragmentTest {
         onView(withText("App permissions")).check(matches(isDisplayed()))
         onView(withText("1 of 2 apps has access")).check(matches(isDisplayed()))
         onView(withText("Data and access")).check(matches(isDisplayed()))
-        onView(withText("Manage data")).check(doesNotExist())
+        onView(withText("Manage data")).check(matches(isDisplayed()))
     }
 
     @Test
     fun whenNewAppPriorityFlagOn_showsManageDataButton() {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(true)
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
@@ -786,6 +786,38 @@ class HomeFragmentTest {
     }
 
     @Test
+    @DisableFlags(Flags.FLAG_EXPORT_IMPORT)
+    fun whenExportImportFlagIsDisabled_doesNotShowManageDataSummary() {
+        whenever(recentAccessViewModel.recentAccessApps).then {
+            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
+        }
+        whenever(homeFragmentViewModel.connectedApps).then {
+            MutableLiveData(
+                listOf(
+                    ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
+                    ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED)))
+        }
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        NOW,
+                        ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
+                        TEST_EXPORT_FREQUENCY_IN_DAYS,
+                        null,
+                        null,
+                        null,
+                        null)))
+        }
+        launchFragment<HomeFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText("Auto-delete, data sources, backup and restore")).check(doesNotExist())
+    }
+
+    @Test
     @EnableFlags(Flags.FLAG_EXPORT_IMPORT)
     fun whenExportImportFlagIsEnabled_noError_exportFileAccessErrorBannerIsNotShown() {
         whenever(recentAccessViewModel.recentAccessApps).then {
@@ -885,6 +917,40 @@ class HomeFragmentTest {
         onView(
                 withText(
                     "There was a problem with the export for October 21, 2022. Please set up a new scheduled export and try again."))
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_EXPORT_IMPORT)
+    fun whenExportImportFlagIsEnabled_showsManageDataSummary() {
+        whenever(recentAccessViewModel.recentAccessApps).then {
+            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
+        }
+        whenever(homeFragmentViewModel.connectedApps).then {
+            MutableLiveData(
+                listOf(
+                    ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
+                    ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED)))
+        }
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        NOW,
+                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        TEST_EXPORT_FREQUENCY_IN_DAYS,
+                        null,
+                        null,
+                        null,
+                        null)))
+        }
+        launchFragment<HomeFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText("Auto-delete, data sources, backup and restore"))
+            .perform(scrollTo())
             .check(matches(isDisplayed()))
     }
 
