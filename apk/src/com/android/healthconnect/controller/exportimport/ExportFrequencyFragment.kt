@@ -50,10 +50,10 @@ class ExportFrequencyFragment : Hilt_ExportFrequencyFragment() {
         logger.setPageId(PageName.EXPORT_FREQUENCY_PAGE)
         val view = inflater.inflate(R.layout.export_frequency_screen, container, false)
 
-        val backButton = view.findViewById<Button>(R.id.export_import_cancel_button)
+        val cancelButton = view.findViewById<Button>(R.id.export_import_cancel_button)
         val nextButton = view.findViewById<Button>(R.id.export_import_next_button)
 
-        backButton.text = getString(R.string.export_cancel_button)
+        cancelButton.text = getString(R.string.export_cancel_button)
         nextButton.text = getString(R.string.export_next_button)
 
         logger.logImpression(ExportFrequencyElement.EXPORT_FREQUENCY_BACK_BUTTON)
@@ -62,7 +62,7 @@ class ExportFrequencyFragment : Hilt_ExportFrequencyFragment() {
         logger.logImpression(ExportFrequencyElement.EXPORT_FREQUENCY_WEEKLY_BUTTON)
         logger.logImpression(ExportFrequencyElement.EXPORT_FREQUENCY_MONTHLY_BUTTON)
 
-        backButton.setOnClickListener {
+        cancelButton.setOnClickListener {
             logger.logInteraction(ExportFrequencyElement.EXPORT_FREQUENCY_BACK_BUTTON)
             requireActivity().finish()
         }

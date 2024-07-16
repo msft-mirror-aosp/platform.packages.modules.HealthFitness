@@ -71,6 +71,7 @@ import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesRequest;
+import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.TimeInstantRangeFilter;
@@ -2056,14 +2057,16 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testReadMedicalResources_byRequest_throws() {
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byRequest_noData_returnsEmptyList()
+            throws InterruptedException {
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
         ReadMedicalResourcesRequest request =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
 
-        assertThrows(
-                UnsupportedOperationException.class,
-                () -> TestUtils.readMedicalResourcesByRequest(request));
+        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+        assertThat(receiver.getResponse().getMedicalResources()).isEmpty();
     }
 
     @Test

@@ -2187,7 +2187,7 @@ public class HealthConnectManager {
         }
 
         try {
-            mService.readMedicalResources(
+            mService.readMedicalResourcesByIds(
                     mContext.getAttributionSource(),
                     ids,
                     new IReadMedicalResourcesResponseCallback.Stub() {
@@ -2245,6 +2245,25 @@ public class HealthConnectManager {
         Objects.requireNonNull(request);
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
+
+        try {
+            mService.readMedicalResourcesByRequest(
+                    mContext.getAttributionSource(),
+                    request,
+                    new IReadMedicalResourcesResponseCallback.Stub() {
+                        @Override
+                        public void onResult(ReadMedicalResourcesResponse response) {
+                            returnResult(executor, response, callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
 
         throw new UnsupportedOperationException("Not implemented");
     }

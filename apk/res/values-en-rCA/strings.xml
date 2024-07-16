@@ -35,6 +35,8 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 app has access}other{# apps have access}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"None"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Entry details"</string>
+    <!-- no translation found for manage_data_summary (8537870912521944449) -->
+    <skip />
     <string name="backup_title" msgid="211503191266235085">"Backup"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Data sources and priority"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Set units"</string>
@@ -342,7 +344,7 @@
     <string name="next_export_time" msgid="3138247220014510213">"Next export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Backup and restore"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Last export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="export_and_import_title" msgid="3241901922222465397">"Export and import"</string>
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Scheduled export"</string>
     <string name="import_data" msgid="404502315533233094">"Import data"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Restore data from a previously exported file"</string>
@@ -355,8 +357,11 @@
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"There was a problem with restoring data from your export."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Export lets you save your data so you can transfer it to a new phone"</string>
     <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"About backup and restore"</string>
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"On"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Off"</string>
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"Use scheduled export"</string>
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"Change frequency"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"If you turn off scheduled export, this won\'t delete previously exported data from where it was saved"</string>
     <string name="choose_frequency" msgid="8119085390857180221">"Set up scheduled export"</string>
@@ -371,35 +376,23 @@
     <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"<xliff:g id="FILE_NAME">%1$s</xliff:g> will be imported into Health Connect"</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Cancel"</string>
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Import"</string>
-    <!-- no translation found for import_notification_import_in_progress_title (4657602436278942808) -->
-    <skip />
-    <!-- no translation found for import_notification_import_complete_title (7493223782222480412) -->
-    <skip />
-    <!-- no translation found for import_complete_toast_text (7730872919621230959) -->
-    <skip />
-    <!-- no translation found for import_notification_error_generic_error_title (19162830551127433) -->
-    <skip />
-    <!-- no translation found for import_notification_error_more_space_needed_title (240259612132385794) -->
-    <skip />
-    <!-- no translation found for import_notification_error_invalid_file_body_text (8877884063398886772) -->
-    <skip />
-    <!-- no translation found for import_notification_error_more_space_needed_body_text (7577564968089566232) -->
-    <skip />
-    <!-- no translation found for import_notification_error_generic_error_body_text (6562162452820282874) -->
-    <skip />
-    <!-- no translation found for import_notification_error_version_mismatch_body_text (9186785816764607620) -->
-    <skip />
-    <!-- no translation found for import_notification_update_now_intent_button (2808579294292956628) -->
-    <skip />
-    <!-- no translation found for import_notification_try_again_intent_button (3833062670098674999) -->
-    <skip />
-    <!-- no translation found for import_notification_open_intent_button (2739924648846724969) -->
-    <skip />
-    <!-- no translation found for import_notification_choose_file_intent_button (2249671128440758769) -->
-    <skip />
-    <!-- no translation found for import_notification_free_up_space_intent_button (4665571334602539807) -->
-    <skip />
+    <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect restore in progress"</string>
+    <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect restore complete"</string>
+    <string name="import_complete_toast_text" msgid="7730872919621230959">"Finished restoring data"</string>
+    <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect couldn\'t restore data"</string>
+    <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"More space needed"</string>
+    <string name="import_notification_error_invalid_file_body_text" msgid="8877884063398886772">"The file you selected isn\'t compatible for restore. Make sure to select the correct exported file."</string>
+    <string name="import_notification_error_more_space_needed_body_text" msgid="7577564968089566232">"Health Connect needs <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> of storage space on your phone to continue restoring your data."</string>
+    <string name="import_notification_error_generic_error_body_text" msgid="6562162452820282874">"There was a problem with restoring data from your export."</string>
+    <string name="import_notification_error_version_mismatch_body_text" msgid="9186785816764607620">"Update your system so that Health Connect can restore your data, then try again."</string>
+    <string name="import_notification_update_now_intent_button" msgid="2808579294292956628">"Update now"</string>
+    <string name="import_notification_try_again_intent_button" msgid="3833062670098674999">"Try again"</string>
+    <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Open"</string>
+    <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Choose file"</string>
+    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Free up space"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Back"</string>
+    <!-- no translation found for export_cancel_button (1952360582645412410) -->
+    <skip />
     <string name="export_next_button" msgid="657930567137105172">"Next"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Cancel"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Next"</string>
@@ -423,12 +416,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"Delete data"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Enter deletion"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Exit deletion"</string>
-    <string name="time_range_title" msgid="6831605283322600165">"Choose data to delete"</string>
+    <string name="time_range_title" msgid="5777596779865648336">"Choose data to delete from Health Connect"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Next"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"This permanently deletes all data added to Health Connect in the chosen time period"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"This permanently deletes <xliff:g id="DATA_TYPE">%s</xliff:g> data added to Health Connect in the chosen time period"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"This permanently deletes <xliff:g id="CATEGORY">%s</xliff:g> data added to Health Connect in the chosen time period"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"This permanently deletes <xliff:g id="APP_DATA">%s</xliff:g> data added to Health Connect in the chosen time period"</string>
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"This permanently deletes <xliff:g id="DATA_TYPE">%1$s</xliff:g> data added by <xliff:g id="APP_DATA">%2$s</xliff:g> to Health Connect in the chosen time period"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"Delete last 24 hours"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"Delete last 7 days"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"Delete last 30 days"</string>
@@ -449,17 +443,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"Permanently delete <xliff:g id="APP_DATA">%s</xliff:g> data from the last 24 hours?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"Permanently delete <xliff:g id="APP_DATA">%s</xliff:g> data from the last 7 days?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"Permanently delete <xliff:g id="APP_DATA">%s</xliff:g> data from the last 30 days?"</string>
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"Permanently delete <xliff:g id="DATA_TYPE">%1$s</xliff:g> data added by <xliff:g id="APP_DATA">%2$s</xliff:g> from all time?"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"Permanently delete <xliff:g id="DATA_TYPE">%1$s</xliff:g> data added by <xliff:g id="APP_DATA">%2$s</xliff:g> from the last 24 hours?"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"Permanently delete <xliff:g id="DATA_TYPE">%1$s</xliff:g> data added by <xliff:g id="APP_DATA">%2$s</xliff:g> from the last 7 days?"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"Permanently delete <xliff:g id="DATA_TYPE">%1$s</xliff:g> data added by <xliff:g id="APP_DATA">%2$s</xliff:g> from the last 30 days?"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Also remove all <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> permissions from Health Connect"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Permanently delete all <xliff:g id="DATA_TYPE">%1$s</xliff:g> data added by <xliff:g id="APP_DATA">%2$s</xliff:g>?"</string>
-    <string name="confirming_question_single_entry" msgid="330919962071369305">"Permanently delete this entry?"</string>
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"Permanently delete this entry from Health Connect?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Connected apps will no longer be able to access this data from Health Connect"</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"This will delete all menstruation entries from <xliff:g id="START_DATE">%1$s</xliff:g> to <xliff:g id="END_DATE">%2$s</xliff:g>."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Delete"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Go back"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Done"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"Close"</string>
-    <string name="delete_dialog_success_title" msgid="5009733262743173477">"Data deleted"</string>
-    <string name="delete_dialog_success_message" msgid="2451953113522118128">"This data is no longer stored in Health Connect."</string>
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"Data deleted from Health Connect"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"If you want to completely delete the data from your connected apps, check each app where your data may be saved."</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"Done"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"See connected apps"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"Deleting your data"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"Couldn\'t delete data"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"Something went wrong and Health Connect couldn\'t delete your data"</string>
@@ -846,12 +846,14 @@
     <string name="range_off" msgid="8178520557618184215">"Off"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"When you change these settings, Health Connect deletes existing data to reflect your new preferences"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Auto-delete data after # month?}other{Auto-delete data after # months?}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect will auto-delete new data after # month. Setting this will also delete existing data older than # month.}other{Health Connect will auto-delete new data after # months. Setting this will also delete existing data older than # months.}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{This also deletes data older than # month from Health Connect.\n\nIf you want to completely delete the data from your connected apps, check each app where your data may be saved.}other{This also deletes data older than # months from Health Connect.\n\nIf you want to completely delete the data from your connected apps, check each app where your data may be saved.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Set auto-delete"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Existing data will be deleted"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect will delete all data older than # months. It may take a day for these changes to appear in your connected apps.}other{Health Connect will delete all data older than # months. It may take a day for these changes to appear in your connected apps.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Data to be deleted from these"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Done"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Auto-delete is on. Data older than # month will be deleted}other{Auto-delete is on. Data older than # months will be deleted}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"Auto-delete is off"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Set app priority"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"If more than one app adds <xliff:g id="DATA_TYPE">%s</xliff:g> data, Health Connect prioritizes the app highest in this list. Drag apps to reorder them."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"Save"</string>
@@ -987,4 +989,5 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"All data deleted"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> data deleted"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> items deleted"</string>
+    <string name="select_all" msgid="837499881590001166">"Select all"</string>
 </resources>
