@@ -144,13 +144,17 @@ class HomeFragment : Hilt_HomeFragment() {
                 findNavController().navigate(R.id.action_homeFragment_to_manageDataFragment)
                 true
             }
+            if (exportImport()) {
+                mManageDataPreference?.summary = getString(R.string.manage_data_summary)
+            }
         } else {
             preferenceScreen.removePreferenceRecursively(MANAGE_DATA_PREFERENCE_KEY)
         }
 
-        //TODO(b/343148212): Change condition to whether there is any medical data stored in HC when the API is ready.
+        // TODO(b/343148212): Change condition to whether there is any medical data stored in HC
+        // when the API is ready.
         if (featureUtils.isPersonalHealthRecordEnabled()) {
-            //TODO(b/343148212): Add logname.
+            // TODO(b/343148212): Add logname.
             mBrowseMedicalDataPreference?.setOnPreferenceClickListener {
                 findNavController().navigate(R.id.action_homeFragment_to_medicalDataFragment)
                 true
