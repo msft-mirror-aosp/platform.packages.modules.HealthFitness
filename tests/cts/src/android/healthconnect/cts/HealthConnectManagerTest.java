@@ -71,6 +71,7 @@ import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesRequest;
+import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.TimeInstantRangeFilter;
@@ -2058,12 +2059,16 @@ public class HealthConnectManagerTest {
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testReadMedicalResources_byRequest_throws() {
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
         ReadMedicalResourcesRequest request =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
 
         assertThrows(
                 UnsupportedOperationException.class,
-                () -> TestUtils.readMedicalResourcesByRequest(request));
+                () ->
+                        mManager.readMedicalResources(
+                                request, Executors.newSingleThreadExecutor(), receiver));
     }
 
     @Test
@@ -2079,11 +2084,38 @@ public class HealthConnectManagerTest {
         }
         HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
 
-        assertThrows(
-                UnsupportedOperationException.class,
-                () ->
-                        mManager.deleteMedicalResources(
-                                ids, Executors.newSingleThreadExecutor(), receiver));
+        mManager.deleteMedicalResources(ids, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException())
+                .hasMessageThat()
+                .contains("not yet implemented");
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalResources_anId_notImplemented() throws InterruptedException {
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
+        MedicalResourceId id =
+                new MedicalResourceId(
+                        Integer.toString(1),
+                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                        FHIR_RESOURCE_ID_IMMUNIZATION);
+
+        mManager.deleteMedicalResources(List.of(id), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException())
+                .hasMessageThat()
+                .contains("not yet implemented");
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalResources_emptyIds_succeeds() throws InterruptedException {
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalResources(List.of(), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isNull();
     }
 
     @Test

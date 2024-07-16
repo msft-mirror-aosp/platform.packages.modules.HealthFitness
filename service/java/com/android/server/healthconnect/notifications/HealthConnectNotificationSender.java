@@ -153,6 +153,8 @@ public final class HealthConnectNotificationSender {
     public void sendNotificationAsUser(
             @HealthConnectNotificationType int notificationType, @NonNull UserHandle userHandle) {
 
+        Slog.i(TAG, "Sending notification as user.");
+
         if (!mIsEnabled) {
             Slog.i(TAG, "Notifications have been disabled.");
             return;

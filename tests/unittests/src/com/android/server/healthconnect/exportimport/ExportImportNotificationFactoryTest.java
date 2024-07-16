@@ -22,7 +22,9 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Icon;
 
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -40,6 +42,9 @@ public class ExportImportNotificationFactoryTest {
     @Mock private Context mContext;
 
     private static final String NOTIFICATION_CHANNEL_ID = "healthconnect-channel";
+
+    private static final String HEALTH_CONNECT_HOME_ACTION =
+            "android.health.connect.action.HEALTH_HOME_SETTINGS";
 
     private ExportImportNotificationFactory mFactory;
 
@@ -71,9 +76,23 @@ public class ExportImportNotificationFactoryTest {
         Notification result =
                 mFactory.createNotification(
                         NOTIFICATION_TYPE_IMPORT_COMPLETE, NOTIFICATION_CHANNEL_ID);
+        Intent expectedIntent = new Intent(HEALTH_CONNECT_HOME_ACTION);
+        PendingIntent expectedPendingIntent =
+                PendingIntent.getActivity(
+                        mContext, 0, expectedIntent, PendingIntent.FLAG_IMMUTABLE);
+
         String failMessage = "Notification could not be created";
         assertWithMessage(failMessage).that(result).isNotNull();
+
         assertThat(result.getChannelId()).isEqualTo(NOTIFICATION_CHANNEL_ID);
         assertThat(result.extras.getString(Notification.EXTRA_TITLE)).isNotNull();
+
+        assertThat(result.actions).hasLength(1);
+
+        Notification.Action action = result.actions[0];
+        assertThat(action.title).isEqualTo("Open");
+
+        PendingIntent pendingIntent = action.actionIntent;
+        assertThat(pendingIntent).isEqualTo(expectedPendingIntent);
     }
 }

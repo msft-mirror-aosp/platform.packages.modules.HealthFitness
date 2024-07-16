@@ -34,6 +34,7 @@
     <string name="connected_apps_connected_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens when all possible apps are connected. [ICU SYNTAX][CHAR_LIMIT=NONE]">{count, plural, =1 {1 app has access} other {# apps have access}}</string>
     <string name="connected_apps_button_no_permissions_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens, when no apps are connected. [CHAR_LIMIT=NONE]">None</string>
     <string name="entry_details_title" description="Label for a screen that list an entry details. [CHAR_LIMIT=40]">Entry details</string>
+    <string name="manage_data_summary" description="Summary for the manage data preference. [CHAR_LIMIT=NONE]">Auto-delete, data sources, backup and restore</string>
     <!--  endregion -->
 
     <!-- region Manage data -->
@@ -472,6 +473,7 @@
     <string name="automatic_export_status" description="Label to indicate whether the automatic export is enabled or not and if enabled, what the export frequency is. [CHAR_LIMIT=NONE]"><xliff:g example="On" id="export_on_or_off">%1$s</xliff:g> • <xliff:g example="Daily" id="export_frequency">%2$s</xliff:g></string>
     <string name="automatic_export_on" description="Text indicates the state of the automatic export is on. [CHAR_LIMIT=40]">On</string>
     <string name="automatic_export_off" description="Text indicates the state of the automatic export is off. [CHAR_LIMIT=40]">Off</string>
+    <string name="automatic_export_switch_text" description="Text label for a switch indicating whether the user has automatic export enabled. [CHAR_LIMIT=40]">Use scheduled export</string>
 
     <string name="next_export_file_location" description="Label to indicate the file location of the next export. [CHAR_LIMIT=NONE]"><xliff:g example="Drive" id="export_app_name">%1$s</xliff:g> • <xliff:g example="healthconnect.zip" id="export_file_name">%2$s</xliff:g></string>
     <string name="choose_frequency_category" description="Category name to indicate that customers can update the scheduled export frequency below. [CHAR_LIMIT=40]">Change frequency</string>
@@ -512,6 +514,7 @@
     <string name="import_notification_free_up_space_intent_button" description="Button text on notification that lets the user open their cloud storage provider to delete/move files to create space. [CHAR_LIMIT=40]">Free up space</string>
 
     <string name="export_back_button" descrption="Text on a button that navigates back to the previous screen of the data saving setup flow. [CHAR_LIMIT=40]">Back</string>
+    <string name="export_cancel_button" descrption="Text on a button that cancels the data export setup flow. [CHAR_LIMIT=40]">Cancel</string>
     <string name="export_next_button" descrption="Text on a button that navigates to the next screen of the data saving setup flow. [CHAR_LIMIT=40]">Next</string>
     <string name="import_cancel_button" description="Text on a button that navigates back to the backup and restore home page. [CHAR_LIMIT=40]">Cancel</string>
     <string name="import_next_button" descrption="Text on a button that navigates to the next screen of the data restoration flow. [CHAR_LIMIT=40]">Next</string>
