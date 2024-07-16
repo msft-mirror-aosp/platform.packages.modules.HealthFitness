@@ -2585,6 +2585,58 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 holdsDataManagementPermission);
     }
 
+    @Override
+    public void deleteMedicalResources(
+            AttributionSource attributionSource,
+            List<MedicalResourceId> medicalResourceIds,
+            IEmptyResponseCallback callback) {
+        if (!personalHealthRecord()) {
+            HealthConnectException unsupportedException =
+                    new HealthConnectException(
+                            ERROR_UNSUPPORTED_OPERATION,
+                            "Deleting MedicalResources by ids is not supported.");
+            Slog.e(TAG, "HealthConnectException: ", unsupportedException);
+            tryAndThrowException(
+                    callback, unsupportedException, unsupportedException.getErrorCode());
+            return;
+        }
+
+        checkParamsNonNull(attributionSource, medicalResourceIds, callback);
+
+        final int uid = Binder.getCallingUid();
+        final int pid = Binder.getCallingPid();
+        final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
+        final String callingPackageName =
+                Objects.requireNonNull(attributionSource.getPackageName());
+        final HealthConnectServiceLogger.Builder logger =
+                new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, DELETE_DATA)
+                        .setPackageName(callingPackageName);
+
+        HealthConnectThreadScheduler.schedule(
+                mContext,
+                () -> {
+                    try {
+                        if (medicalResourceIds.isEmpty()) {
+                            tryAndReturnResult(callback, logger);
+                            return;
+                        }
+                        UnsupportedOperationException unsupportedException =
+                                new UnsupportedOperationException(
+                                        "Deleting MedicalResources by ids is not yet implemented.");
+                        tryAndThrowException(
+                                callback, unsupportedException, ERROR_UNSUPPORTED_OPERATION);
+                    } catch (Exception e) {
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        Slog.e(TAG, "Exception: ", e);
+                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                    } finally {
+                        logger.build().log();
+                    }
+                },
+                uid,
+                holdsDataManagementPermission);
+    }
+
     // Cancel BR timeouts - this might be needed when a user is going into background.
     void cancelBackupRestoreTimeouts() {
         mBackupRestore.cancelAllJobs();
