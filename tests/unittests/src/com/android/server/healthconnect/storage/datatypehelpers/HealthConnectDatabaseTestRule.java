@@ -58,7 +58,7 @@ public class HealthConnectDatabaseTestRule extends ExternalResource {
         File mockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
         when(Environment.getDataDirectory()).thenReturn(mockDataDirectory);
         TransactionManager.cleanUpForTest();
-        mTransactionManager = TransactionManager.getInstance(mContext);
+        mTransactionManager = TransactionManager.initializeInstance(mContext);
     }
 
     @Override

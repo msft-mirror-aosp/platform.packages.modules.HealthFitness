@@ -36,6 +36,8 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{Unha aplicación ten acceso}other{# aplicacións teñen acceso}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Ningunha"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Detalles da entrada"</string>
+    <!-- no translation found for manage_data_summary (8537870912521944449) -->
+    <skip />
     <string name="backup_title" msgid="211503191266235085">"Copia de seguranza"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Prioridade e fontes de datos"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Configurar unidades"</string>
@@ -346,7 +348,7 @@
     <string name="next_export_time" msgid="3138247220014510213">"Próxima exportación: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Copia de seguranza e restauración"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Última exportación: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="export_and_import_title" msgid="3241901922222465397">"Exportación e importación"</string>
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Exportación programada"</string>
     <string name="import_data" msgid="404502315533233094">"Importar datos"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Restaura os datos desde un ficheiro exportado previamente"</string>
@@ -362,8 +364,12 @@
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"A exportación permíteche gardar os datos para transferilos a outro teléfono"</string>
     <!-- no translation found for backup_and_restore_footer_link_text (9075133737244288876) -->
     <skip />
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Opción activada"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Opción desactivada"</string>
+    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
+    <skip />
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <!-- no translation found for choose_frequency_category (9094154407387676553) -->
     <skip />
     <!-- no translation found for scheduled_export_settings_footer_text (8488483803782086291) -->
@@ -383,35 +389,23 @@
     <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"<xliff:g id="FILE_NAME">%1$s</xliff:g> importarase a Saúde conectada"</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Cancelar"</string>
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Importar"</string>
-    <!-- no translation found for import_notification_import_in_progress_title (4657602436278942808) -->
-    <skip />
-    <!-- no translation found for import_notification_import_complete_title (7493223782222480412) -->
-    <skip />
-    <!-- no translation found for import_complete_toast_text (7730872919621230959) -->
-    <skip />
-    <!-- no translation found for import_notification_error_generic_error_title (19162830551127433) -->
-    <skip />
-    <!-- no translation found for import_notification_error_more_space_needed_title (240259612132385794) -->
-    <skip />
-    <!-- no translation found for import_notification_error_invalid_file_body_text (8877884063398886772) -->
-    <skip />
-    <!-- no translation found for import_notification_error_more_space_needed_body_text (7577564968089566232) -->
-    <skip />
-    <!-- no translation found for import_notification_error_generic_error_body_text (6562162452820282874) -->
-    <skip />
-    <!-- no translation found for import_notification_error_version_mismatch_body_text (9186785816764607620) -->
-    <skip />
-    <!-- no translation found for import_notification_update_now_intent_button (2808579294292956628) -->
-    <skip />
-    <!-- no translation found for import_notification_try_again_intent_button (3833062670098674999) -->
-    <skip />
-    <!-- no translation found for import_notification_open_intent_button (2739924648846724969) -->
-    <skip />
-    <!-- no translation found for import_notification_choose_file_intent_button (2249671128440758769) -->
-    <skip />
-    <!-- no translation found for import_notification_free_up_space_intent_button (4665571334602539807) -->
-    <skip />
+    <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"A restauración dos datos de Saúde conectada está en curso"</string>
+    <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Completouse a restauración dos datos de Saúde conectada"</string>
+    <string name="import_complete_toast_text" msgid="7730872919621230959">"Completouse a restauración dos datos"</string>
+    <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Saúde conectada non puido restaurar os datos"</string>
+    <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Precísase máis espazo"</string>
+    <string name="import_notification_error_invalid_file_body_text" msgid="8877884063398886772">"O ficheiro que seleccionaches non se pode restaurar. Asegúrate de que elixes o ficheiro exportado correcto."</string>
+    <string name="import_notification_error_more_space_needed_body_text" msgid="7577564968089566232">"Saúde conectada precisa <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> de espazo de almacenamento no teu teléfono para seguir restaurando os datos."</string>
+    <string name="import_notification_error_generic_error_body_text" msgid="6562162452820282874">"Produciuse un problema coa restauración dos datos da túa exportación."</string>
+    <string name="import_notification_error_version_mismatch_body_text" msgid="9186785816764607620">"Actualiza o sistema para que Saúde conectada poida restaurar os teus datos e téntao de novo."</string>
+    <string name="import_notification_update_now_intent_button" msgid="2808579294292956628">"Actualizar agora"</string>
+    <string name="import_notification_try_again_intent_button" msgid="3833062670098674999">"Tentar de novo"</string>
+    <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Abrir"</string>
+    <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Escoller ficheiro"</string>
+    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Liberar espazo"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Atrás"</string>
+    <!-- no translation found for export_cancel_button (1952360582645412410) -->
+    <skip />
     <string name="export_next_button" msgid="657930567137105172">"Seguinte"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Cancelar"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Seguinte"</string>
@@ -439,12 +433,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"Elimina os datos"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Acceder á eliminación"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Saír da eliminación"</string>
-    <string name="time_range_title" msgid="6831605283322600165">"Escolle os datos que queres eliminar"</string>
+    <string name="time_range_title" msgid="5777596779865648336">"Escoller datos para eliminar de Saúde conectada"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Seguinte"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Ao realizar esta acción, eliminaranse de forma permanente todos os datos que se engadisen a Saúde conectada no período de tempo seleccionado"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"Ao realizar esta acción, eliminaranse de forma permanente os datos de <xliff:g id="DATA_TYPE">%s</xliff:g> que se engadisen a Saúde conectada no período de tempo seleccionado"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"Ao realizar esta acción, eliminaranse de forma permanente os datos de <xliff:g id="CATEGORY">%s</xliff:g> que se engadisen a Saúde conectada no período de tempo seleccionado"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"Ao realizar esta acción, eliminaranse de forma permanente os datos de <xliff:g id="APP_DATA">%s</xliff:g> que se engadisen a Saúde conectada no período de tempo seleccionado"</string>
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"Eliminaranse de forma permanente os datos de <xliff:g id="DATA_TYPE">%1$s</xliff:g> engadidos por <xliff:g id="APP_DATA">%2$s</xliff:g> a Saúde conectada no período de tempo seleccionado"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"Eliminar datos das últimas 24 horas"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"Eliminar datos dos últimos 7 días"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"Eliminar datos dos últimos 30 días"</string>
@@ -465,17 +460,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"Queres eliminar de forma permanente os datos de <xliff:g id="APP_DATA">%s</xliff:g> das últimas 24 horas?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"Queres eliminar de forma permanente os datos de <xliff:g id="APP_DATA">%s</xliff:g> dos últimos 7 días?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"Queres eliminar de forma permanente os datos de <xliff:g id="APP_DATA">%s</xliff:g> dos últimos 30 días?"</string>
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"Queres eliminar de forma permanente todos os datos de <xliff:g id="DATA_TYPE">%1$s</xliff:g> engadidos por <xliff:g id="APP_DATA">%2$s</xliff:g>?"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"Queres eliminar de forma permanente os datos de <xliff:g id="DATA_TYPE">%1$s</xliff:g> engadidos por <xliff:g id="APP_DATA">%2$s</xliff:g> nas últimas 24 horas?"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"Queres eliminar de forma permanente os datos de <xliff:g id="DATA_TYPE">%1$s</xliff:g> engadidos por <xliff:g id="APP_DATA">%2$s</xliff:g> nos últimos 7 días?"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"Queres eliminar de forma permanente os datos de <xliff:g id="DATA_TYPE">%1$s</xliff:g> engadidos por <xliff:g id="APP_DATA">%2$s</xliff:g> nos últimos 30 días?"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Quitar tamén de Saúde conectada todos os permisos de <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g>"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Queres eliminar de forma permanente todos os datos de <xliff:g id="DATA_TYPE">%1$s</xliff:g> que engadiu <xliff:g id="APP_DATA">%2$s</xliff:g>?"</string>
-    <string name="confirming_question_single_entry" msgid="330919962071369305">"Queres eliminar permanentemente esta entrada?"</string>
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"Queres eliminar de forma permanente esta entrada de Saúde conectada?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"As aplicacións conectadas deixarán de ter acceso a estes datos de Saúde conectada"</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"Con esta acción eliminaranse todos os datos de menstruación desde o <xliff:g id="START_DATE">%1$s</xliff:g> ata o <xliff:g id="END_DATE">%2$s</xliff:g>."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Eliminar"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Atrás"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Feito"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"Pechar"</string>
-    <string name="delete_dialog_success_title" msgid="5009733262743173477">"Elimináronse os datos"</string>
-    <string name="delete_dialog_success_message" msgid="2451953113522118128">"Estes datos xa non se almacenan en Saúde conectada."</string>
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"Os datos elimináronse de Saúde conectada"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"Se queres eliminar completamente os datos das aplicacións conectadas, revisa cada unha na que poida estar gardada a túa información."</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"Feito"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"Ver aplicacións conectadas"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"Eliminando datos"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"Non se puideron eliminar os datos"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"Produciuse un erro e Saúde conectada non puido eliminar os teus datos"</string>
@@ -862,12 +863,14 @@
     <string name="range_off" msgid="8178520557618184215">"Desactivada"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Cando cambias esta opción de configuración, Saúde conectada elimina os datos que teñas almacenados segundo as túas novas preferencias"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Queres que os datos se eliminen de forma automática tras # mes?}other{Queres que os datos se eliminen de forma automática tras # meses?}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Saúde conectada eliminará automaticamente os datos novos tras # mes. Con esta configuración tamén se eliminarán os datos que xa teñas almacenados desde hai máis de # mes.}other{Saúde conectada eliminará automaticamente os datos novos tras # meses. Con esta configuración tamén se eliminarán os datos que xa teñas almacenados desde hai máis de # meses.}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Esta acción tamén elimina os datos que teñan máis de # mes de Saúde conectada.\n\nSe queres eliminar completamente os datos das aplicacións conectadas, revisa cada unha na que poida estar gardada a túa información.}other{Esta acción tamén elimina os datos que teñan máis de # meses de Saúde conectada.\n\nSe queres eliminar completamente os datos das aplicacións conectadas, revisa cada unha na que poida estar gardada a túa información.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Fixar eliminación automática"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Eliminaranse os datos que xa teñas"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Saúde conectada eliminará todos os datos que teñan máis de # mes. Pode que estes cambios tarden un día en aplicarse nas túas aplicacións conectadas.}other{Saúde conectada eliminará todos os datos que teñan máis de # meses. Pode que estes cambios tarden un día en aplicarse nas túas aplicacións conectadas.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Os datos eliminaranse das seguintes categorías"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Feito"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{A función Eliminación automática está activada. Eliminaranse os datos que teñan máis de # mes}other{A función Eliminación automática está activada. Eliminaranse os datos que teñan máis de # meses}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"A función Eliminación automática está desactivada"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Definir prioridade de aplicacións"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"No caso de que máis dunha aplicación engada datos de <xliff:g id="DATA_TYPE">%s</xliff:g>, Saúde conectada daralle prioridade á que apareza primeiro nesta lista. Arrastra as aplicacións para reordenalas."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"Gardar"</string>
@@ -1003,4 +1006,5 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Elimináronse todos os datos"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Elimináronse os datos de <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Elementos eliminados: <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>"</string>
+    <string name="select_all" msgid="837499881590001166">"Seleccionar todo"</string>
 </resources>

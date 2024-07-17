@@ -115,7 +115,7 @@ class ExportFrequencyFragmentTest {
     }
 
     @Test
-    fun exportFrequencyFragment_backButton_isClickable() {
+    fun exportFrequencyFragment_cancelButton_isClickable() {
         launchFragment<ExportFrequencyFragment>(Bundle())
 
         // TODO: b/330484311 - Add check for activity state and use export activity if possible

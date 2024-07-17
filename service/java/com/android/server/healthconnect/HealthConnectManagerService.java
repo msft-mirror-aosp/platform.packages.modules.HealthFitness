@@ -67,10 +67,15 @@ public class HealthConnectManagerService extends SystemService {
 
     public HealthConnectManagerService(Context context) {
         super(context);
+        mContext = context;
         mCurrentForegroundUser = context.getUser();
-        HealthConnectDeviceConfigManager.initializeInstance(context);
+        HealthConnectDeviceConfigManager healthConnectDeviceConfigManager =
+                HealthConnectDeviceConfigManager.initializeInstance(context);
         MigrationStateManager migrationStateManager =
                 MigrationStateManager.initializeInstance(mCurrentForegroundUser.getIdentifier());
+        mTransactionManager =
+                TransactionManager.initializeInstance(
+                        new HealthConnectUserContext(mContext, mCurrentForegroundUser));
         HealthPermissionIntentAppsTracker permissionIntentTracker =
                 new HealthPermissionIntentAppsTracker(context);
         FirstGrantTimeManager firstGrantTimeManager =
@@ -83,7 +88,6 @@ public class HealthConnectManagerService extends SystemService {
                         HealthConnectManager.getHealthPermissions(context),
                         permissionIntentTracker,
                         firstGrantTimeManager);
-        mContext = context;
         mPermissionPackageChangesOrchestrator =
                 new PermissionPackageChangesOrchestrator(
                         permissionIntentTracker,
@@ -91,9 +95,6 @@ public class HealthConnectManagerService extends SystemService {
                         permissionHelper,
                         mCurrentForegroundUser);
         mUserManager = context.getSystemService(UserManager.class);
-        mTransactionManager =
-                TransactionManager.getInstance(
-                        new HealthConnectUserContext(mContext, mCurrentForegroundUser));
         mMigrationBroadcastScheduler =
                 new MigrationBroadcastScheduler(mCurrentForegroundUser.getIdentifier());
         migrationStateManager.setMigrationBroadcastScheduler(mMigrationBroadcastScheduler);
@@ -111,7 +112,7 @@ public class HealthConnectManagerService extends SystemService {
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mTransactionManager,
-                        HealthConnectDeviceConfigManager.getInitialisedInstance(),
+                        healthConnectDeviceConfigManager,
                         permissionHelper,
                         migrationCleaner,
                         firstGrantTimeManager,
