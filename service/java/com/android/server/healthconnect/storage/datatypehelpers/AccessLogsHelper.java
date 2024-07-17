@@ -60,11 +60,6 @@ public final class AccessLogsHelper extends DatabaseHelper {
     private static final int NUM_COLS = 5;
     private static final int DEFAULT_ACCESS_LOG_TIME_PERIOD_IN_DAYS = 7;
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private static volatile AccessLogsHelper sAccessLogsHelper;
-
-    private AccessLogsHelper() {}
-
     @NonNull
     public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
@@ -73,7 +68,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
     /**
      * @return AccessLog list
      */
-    public List<AccessLog> queryAccessLogs() {
+    public static List<AccessLog> queryAccessLogs() {
         final ReadTableRequest readTableRequest = new ReadTableRequest(TABLE_NAME);
 
         List<AccessLog> accessLogsList = new ArrayList<>();
@@ -82,9 +77,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
         try (Cursor cursor = transactionManager.read(readTableRequest)) {
             while (cursor.moveToNext()) {
                 String packageName =
-                        String.valueOf(
-                                appInfoHelper.getPackageName(
-                                        getCursorLong(cursor, APP_ID_COLUMN_NAME)));
+                        appInfoHelper.getPackageName(getCursorLong(cursor, APP_ID_COLUMN_NAME));
                 @RecordTypeIdentifier.RecordType
                 List<Integer> recordTypes =
                         getCursorIntegerList(cursor, RECORD_TYPE_COLUMN_NAME, DELIMITER);
@@ -100,10 +93,10 @@ public final class AccessLogsHelper extends DatabaseHelper {
     }
 
     /**
-     * Returns the timestamp of the latest access log and {@link Long.MIN_VALUE} if there is no
+     * Returns the timestamp of the latest access log and {@link Long#MIN_VALUE} if there is no
      * access log.
      */
-    public long getLatestAccessLogTimeStamp() {
+    public static long getLatestAccessLogTimeStamp() {
 
         final ReadTableRequest readTableRequest =
                 new ReadTableRequest(TABLE_NAME)
@@ -124,7 +117,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
     }
 
     /** Adds an entry in to the access logs table for every insert or read operation request */
-    public void addAccessLog(
+    public static void addAccessLog(
             String packageName,
             @RecordTypeIdentifier.RecordType List<Integer> recordTypeList,
             @OperationType.OperationTypes int operationType) {
@@ -134,7 +127,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
     }
 
     @NonNull
-    public UpsertTableRequest getUpsertTableRequest(
+    public static UpsertTableRequest getUpsertTableRequest(
             String packageName, List<Integer> recordTypeList, int operationType) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(
@@ -152,7 +145,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
      * Returns an instance of {@link DeleteTableRequest} to delete entries in access logs table
      * older than a week.
      */
-    public DeleteTableRequest getDeleteRequestForAutoDelete() {
+    public static DeleteTableRequest getDeleteRequestForAutoDelete() {
         return new DeleteTableRequest(TABLE_NAME)
                 .setTimeFilter(
                         ACCESS_TIME_COLUMN_NAME,
@@ -177,13 +170,5 @@ public final class AccessLogsHelper extends DatabaseHelper {
     @Override
     protected String getMainTableName() {
         return TABLE_NAME;
-    }
-
-    public static synchronized AccessLogsHelper getInstance() {
-        if (sAccessLogsHelper == null) {
-            sAccessLogsHelper = new AccessLogsHelper();
-        }
-
-        return sAccessLogsHelper;
     }
 }

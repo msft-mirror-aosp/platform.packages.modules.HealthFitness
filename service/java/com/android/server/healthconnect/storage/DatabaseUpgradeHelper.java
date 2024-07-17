@@ -17,6 +17,7 @@
 package com.android.server.healthconnect.storage;
 
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_UNKNOWN;
@@ -37,14 +38,16 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsReques
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ExerciseSessionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MindfulnessSessionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.SkinTemperatureRecordHelper;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
-import com.android.server.healthconnect.storage.utils.DropTableRequest;
+import com.android.server.healthconnect.storage.request.DropTableRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import java.util.ArrayList;
@@ -60,6 +63,9 @@ final class DatabaseUpgradeHelper {
     public static final int DB_VERSION_PLANNED_EXERCISE_SESSIONS = 12;
     // No schema changes between version 12 and 13. See ag/26747988 for more details.
     public static final int DB_VERSION_PLANNED_EXERCISE_SESSIONS_FLAG_RELEASE = 13;
+    public static final int DB_VERSION_MINDFULNESS_SESSION = 14;
+
+    // TODO(b/346981687): increment db version for PHR, once done with development.
 
     /**
      * A shared DB version to guard all schema changes of under development features in HC.
@@ -81,7 +87,7 @@ final class DatabaseUpgradeHelper {
     static int getDatabaseVersion() {
         return Flags.personalHealthRecordDatabase()
                 ? DB_VERSION_UNDER_DEVELOPMENT
-                : DB_VERSION_PLANNED_EXERCISE_SESSIONS_FLAG_RELEASE;
+                : DB_VERSION_MINDFULNESS_SESSION;
     }
 
     /**
@@ -115,10 +121,17 @@ final class DatabaseUpgradeHelper {
         if (oldVersion < DB_VERSION_PLANNED_EXERCISE_SESSIONS) {
             applyPlannedExerciseDatabaseUpgrade(db);
         }
+        if (oldVersion < DB_VERSION_MINDFULNESS_SESSION) {
+            MindfulnessSessionRecordHelper mindfulnessRecordHelper =
+                    getRecordHelper(RECORD_TYPE_MINDFULNESS_SESSION);
+            mindfulnessRecordHelper.applyMindfulnessSessionUpgrade(db);
+        }
+
         if (oldVersion < DB_VERSION_UNDER_DEVELOPMENT
                 && DB_VERSION_UNDER_DEVELOPMENT <= newVersion) {
             if (Flags.personalHealthRecordDatabase()) {
-                new MedicalResourceHelper().onInitialUpgrade(db);
+                MedicalDataSourceHelper.onInitialUpgrade(db);
+                MedicalResourceHelper.onInitialUpgrade(db);
             }
         }
     }
@@ -135,7 +148,7 @@ final class DatabaseUpgradeHelper {
                         .map(CreateTableRequest::getTableName)
                         .toList();
         for (String table : allTables) {
-            db.execSQL(new DropTableRequest(table).getCommand());
+            db.execSQL(new DropTableRequest(table).getDropTableCommand());
         }
     }
 

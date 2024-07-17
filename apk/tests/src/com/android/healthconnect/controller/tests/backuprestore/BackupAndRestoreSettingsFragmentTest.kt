@@ -17,6 +17,7 @@
 package com.android.healthconnect.controller.tests.backuprestore
 
 import android.content.Context
+import android.health.connect.exportimport.ImportStatus.*
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
@@ -34,29 +35,44 @@ import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.ExportSettings
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
 import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
+import com.android.healthconnect.controller.exportimport.api.ImportStatusViewModel
+import com.android.healthconnect.controller.exportimport.api.ImportUiState
+import com.android.healthconnect.controller.exportimport.api.ImportUiStatus
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.whenever
+import com.android.healthconnect.controller.utils.logging.BackupAndRestoreElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import java.time.ZoneId
+import java.util.Locale
+import java.util.TimeZone
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.verify
 
 @HiltAndroidTest
 class BackupAndRestoreSettingsFragmentTest {
 
     companion object {
         private const val TEST_EXPORT_PERIOD_IN_DAYS = 1
+        private const val TEST_LAST_EXPORT_APP_NAME = "Drive"
+        private const val TEST_LAST_EXPORT_FILE_NAME = "healthconnect.zip"
     }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
+    // TODO: b/330484311 - Replace the mock with a fake.
     @BindValue
     val exportSettingsViewModel: ExportSettingsViewModel =
         Mockito.mock(ExportSettingsViewModel::class.java)
@@ -65,15 +81,39 @@ class BackupAndRestoreSettingsFragmentTest {
     val exportStatusViewModel: ExportStatusViewModel =
         Mockito.mock(ExportStatusViewModel::class.java)
 
+    @BindValue
+    val importStatusViewModel: ImportStatusViewModel =
+        Mockito.mock(ImportStatusViewModel::class.java)
+
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
+
+    private var previousDefaultTimeZone: TimeZone? = null
+    private var previousLocale: Locale? = null
+
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
 
     @Before
     fun setup() {
+        previousDefaultTimeZone = TimeZone.getDefault()
+        previousLocale = Locale.getDefault()
+
+        Locale.setDefault(Locale.US)
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+
         hiltRule.inject()
         context = InstrumentationRegistry.getInstrumentation().context
         navHostController = TestNavHostController(context)
 
+        whenever(importStatusViewModel.storedImportStatus).then {
+            MutableLiveData(
+                ImportUiStatus.WithData(
+                    ImportUiState(
+                        ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
+                        /** isImportOngoing= */
+                        false,
+                    )))
+        }
         whenever(exportStatusViewModel.storedScheduledExportStatus).then {
             MutableLiveData(
                 ScheduledExportUiStatus.WithData(
@@ -81,8 +121,20 @@ class BackupAndRestoreSettingsFragmentTest {
                         null,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
                         /** periodInDays= */
-                        0)))
+                        0,
+                        TEST_LAST_EXPORT_FILE_NAME,
+                        TEST_LAST_EXPORT_APP_NAME,
+                        null,
+                        null)))
         }
+    }
+
+    @After
+    fun tearDown() {
+        reset(healthConnectLogger)
+
+        TimeZone.setDefault(previousDefaultTimeZone)
+        previousLocale?.let { locale -> Locale.setDefault(locale) }
     }
 
     @Test
@@ -93,7 +145,11 @@ class BackupAndRestoreSettingsFragmentTest {
                     ScheduledExportUiState(
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-                        TEST_EXPORT_PERIOD_IN_DAYS)))
+                        TEST_EXPORT_PERIOD_IN_DAYS,
+                        TEST_LAST_EXPORT_FILE_NAME,
+                        TEST_LAST_EXPORT_APP_NAME,
+                        null,
+                        null)))
         }
         whenever(exportSettingsViewModel.storedExportSettings).then {
             MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
@@ -101,15 +157,28 @@ class BackupAndRestoreSettingsFragmentTest {
 
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
-        onView(withText("Export and import")).check(matches(isDisplayed()))
-
         onView(withText("Scheduled export")).check(matches(isDisplayed()))
-
         onView(withText("Import data")).check(matches(isDisplayed()))
         onView(withText("Restore data from a previously exported file"))
             .check(matches(isDisplayed()))
+        onView(withText("Last export: Oct 20, 7:06 AM")).check(matches(isDisplayed()))
+        onView(withText("Export lets you save your data so you can transfer it to a new phone"))
+            .check(matches(isDisplayed()))
+        onView(withText("About backup and restore")).check(matches(isDisplayed()))
+        onView(withText("Drive • healthconnect.zip")).check(matches(isDisplayed()))
+    }
 
-        onView(withText("Last export: October 20, 2022")).check(matches(isDisplayed()))
+    @Test
+    fun backupAndRestoreSettingsFragment_impressionsLogged() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_DAILY))
+        }
+
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(BackupAndRestoreElement.SCHEDULED_EXPORT_BUTTON)
+        verify(healthConnectLogger).logImpression(BackupAndRestoreElement.RESTORE_DATA_BUTTON)
     }
 
     @Test
@@ -123,11 +192,76 @@ class BackupAndRestoreSettingsFragmentTest {
                     ScheduledExportUiState(
                         null,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-                        TEST_EXPORT_PERIOD_IN_DAYS)))
+                        TEST_EXPORT_PERIOD_IN_DAYS,
+                        null,
+                        null,
+                        null,
+                        null)))
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
-        onView(withText("Last export: October 20, 2022")).check(doesNotExist())
+        onView(withText("Last export: Oct 20, 7:06 AM")).check(doesNotExist())
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_whenOnlyAppNameIsAvailable_showsAppName() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        NOW,
+                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        TEST_EXPORT_PERIOD_IN_DAYS,
+                        null,
+                        TEST_LAST_EXPORT_APP_NAME,
+                        null,
+                        null)))
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Drive")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_whenOnlyFileNameIsAvailable_showsFileName() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        NOW,
+                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        TEST_EXPORT_PERIOD_IN_DAYS,
+                        TEST_LAST_EXPORT_FILE_NAME,
+                        null,
+                        null,
+                        null)))
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("healthconnect.zip")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_clicksImportData_navigatesToImportFlowActivity() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            navHostController.setCurrentDestination(R.id.backupAndRestoreSettingsFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText("Import data")).perform(click())
+
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.importFlowActivity)
+        verify(healthConnectLogger).logInteraction(BackupAndRestoreElement.RESTORE_DATA_BUTTON)
     }
 
     @Test
@@ -144,6 +278,7 @@ class BackupAndRestoreSettingsFragmentTest {
         onView(withText("Scheduled export")).perform(click())
 
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.exportSetupActivity)
+        verify(healthConnectLogger).logInteraction(BackupAndRestoreElement.SCHEDULED_EXPORT_BUTTON)
     }
 
     @Test
@@ -200,5 +335,106 @@ class BackupAndRestoreSettingsFragmentTest {
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
         onView(withText("On • Monthly")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_whenImportErrorIsWrongFile_showsImportErrorBanner() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
+        }
+        whenever(importStatusViewModel.storedImportStatus).then {
+            MutableLiveData(
+                ImportUiStatus.WithData(
+                    ImportUiState(
+                        ImportUiState.DataImportError.DATA_IMPORT_ERROR_WRONG_FILE,
+                        /** isImportOngoing= */
+                        false,
+                    )))
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Choose file")).check(matches(isDisplayed()))
+        onView(withText("Couldn't restore data")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "The file you selected isn't compatible for restore. Make sure to select the correct exported file."))
+            .check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(BackupAndRestoreElement.IMPORT_WRONG_FILE_ERROR_BANNER)
+        verify(healthConnectLogger)
+            .logImpression(BackupAndRestoreElement.IMPORT_WRONG_FILE_ERROR_BANNER_BUTTON)
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_whenImportErrorIsVersionMismatch_showsImportErrorBanner() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
+        }
+        whenever(importStatusViewModel.storedImportStatus).then {
+            MutableLiveData(
+                ImportUiStatus.WithData(
+                    ImportUiState(
+                        ImportUiState.DataImportError.DATA_IMPORT_ERROR_VERSION_MISMATCH,
+                        /** isImportOngoing= */
+                        false,
+                    )))
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Update now")).check(matches(isDisplayed()))
+        onView(withText("Couldn't restore data")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Update your system so that Health\u00A0Connect can restore your data, then try again."))
+            .check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(BackupAndRestoreElement.IMPORT_VERSION_MISMATCH_ERROR_BANNER)
+        verify(healthConnectLogger)
+            .logImpression(BackupAndRestoreElement.IMPORT_VERSION_MISMATCH_ERROR_BANNER_BUTTON)
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_whenImportErrorIsUnknown_showsImportErrorBanner() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
+        }
+        whenever(importStatusViewModel.storedImportStatus).then {
+            MutableLiveData(
+                ImportUiStatus.WithData(
+                    ImportUiState(
+                        ImportUiState.DataImportError.DATA_IMPORT_ERROR_UNKNOWN,
+                        /** isImportOngoing= */
+                        false,
+                    )))
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Try again")).check(matches(isDisplayed()))
+        onView(withText("Couldn't restore data")).check(matches(isDisplayed()))
+        onView(withText("There was a problem with restoring data from your export."))
+            .check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(BackupAndRestoreElement.IMPORT_GENERAL_ERROR_BANNER)
+        verify(healthConnectLogger)
+            .logImpression(BackupAndRestoreElement.IMPORT_GENERAL_ERROR_BANNER_BUTTON)
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_whenImportErrorIsNone_doesNotShowImportErrorBanner() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
+        }
+        whenever(importStatusViewModel.storedImportStatus).then {
+            MutableLiveData(
+                ImportUiStatus.WithData(
+                    ImportUiState(
+                        ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
+                        /** isImportOngoing= */
+                        false,
+                    )))
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Couldn't restore data")).check(doesNotExist())
     }
 }

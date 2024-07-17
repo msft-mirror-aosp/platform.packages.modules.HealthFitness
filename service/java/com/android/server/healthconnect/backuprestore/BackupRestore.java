@@ -185,6 +185,9 @@ public final class BackupRestore {
 
     private final DatabaseMerger mDatabaseMerger;
 
+    private final PreferenceHelper mPreferenceHelper;
+    private final TransactionManager mTransactionManager;
+
     private boolean mActivelyStagingRemoteData = false;
 
     private volatile UserHandle mCurrentForegroundUser;
@@ -199,6 +202,8 @@ public final class BackupRestore {
         mContext = context;
         mCurrentForegroundUser = mContext.getUser();
         mDatabaseMerger = new DatabaseMerger(context);
+        mPreferenceHelper = PreferenceHelper.getInstance();
+        mTransactionManager = TransactionManager.getInitialisedInstance();
     }
 
     public void setupForUser(UserHandle currentForegroundUser) {
@@ -420,8 +425,7 @@ public final class BackupRestore {
     /** Get the current data restore error. */
     public @HealthConnectDataState.DataRestoreError int getDataRestoreError() {
         @HealthConnectDataState.DataRestoreError int dataRestoreError = RESTORE_ERROR_NONE;
-        String restoreErrorOnDisk =
-                PreferenceHelper.getInstance().getPreference(DATA_RESTORE_ERROR_KEY);
+        String restoreErrorOnDisk = mPreferenceHelper.getPreference(DATA_RESTORE_ERROR_KEY);
 
         if (restoreErrorOnDisk == null) {
             return dataRestoreError;
@@ -495,9 +499,8 @@ public final class BackupRestore {
                                 + dataRestoreState);
                 return;
             }
-            PreferenceHelper.getInstance()
-                    .insertOrReplacePreference(
-                            DATA_RESTORE_STATE_KEY, String.valueOf(dataRestoreState));
+            mPreferenceHelper.insertOrReplacePreference(
+                    DATA_RESTORE_STATE_KEY, String.valueOf(dataRestoreState));
 
             if (dataRestoreState == INTERNAL_RESTORE_STATE_WAITING_FOR_STAGING
                     || dataRestoreState == INTERNAL_RESTORE_STATE_STAGING_IN_PROGRESS) {
@@ -514,8 +517,7 @@ public final class BackupRestore {
     int getInternalRestoreState() {
         mStatesLock.readLock().lock();
         try {
-            String restoreStateOnDisk =
-                    PreferenceHelper.getInstance().getPreference(DATA_RESTORE_STATE_KEY);
+            String restoreStateOnDisk = mPreferenceHelper.getPreference(DATA_RESTORE_STATE_KEY);
             @InternalRestoreState int currentRestoreState = INTERNAL_RESTORE_STATE_UNKNOWN;
             if (restoreStateOnDisk == null) {
                 return currentRestoreState;
@@ -579,7 +581,7 @@ public final class BackupRestore {
             return;
         }
 
-        int currentDbVersion = TransactionManager.getInitialisedInstance().getDatabaseVersion();
+        int currentDbVersion = mTransactionManager.getDatabaseVersion();
         DatabaseContext dbContext =
                 DatabaseContext.create(mContext, STAGED_DATABASE_DIR, mCurrentForegroundUser);
         File stagedDbFile = dbContext.getDatabasePath(STAGED_DATABASE_NAME);
@@ -620,7 +622,7 @@ public final class BackupRestore {
     private Map<String, File> getBackupFilesByFileNames(UserHandle userHandle) {
         ArrayMap<String, File> backupFilesByFileNames = new ArrayMap<>();
 
-        File databasePath = TransactionManager.getInitialisedInstance().getDatabasePath();
+        File databasePath = mTransactionManager.getDatabasePath();
         backupFilesByFileNames.put(STAGED_DATABASE_NAME, databasePath);
 
         File backupDataDir = getBackupDataDirectoryForUser(userHandle.getIdentifier());
@@ -642,8 +644,7 @@ public final class BackupRestore {
     private int getDataDownloadState() {
         mStatesLock.readLock().lock();
         try {
-            String downloadStateOnDisk =
-                    PreferenceHelper.getInstance().getPreference(DATA_DOWNLOAD_STATE_KEY);
+            String downloadStateOnDisk = mPreferenceHelper.getPreference(DATA_DOWNLOAD_STATE_KEY);
             @DataDownloadState int currentDownloadState = DATA_DOWNLOAD_STATE_UNKNOWN;
             if (downloadStateOnDisk == null) {
                 return currentDownloadState;
@@ -669,15 +670,12 @@ public final class BackupRestore {
                 Slog.w(TAG, "HC data download already in terminal state.");
                 return;
             }
-            PreferenceHelper.getInstance()
-                    .insertOrReplacePreference(
-                            DATA_DOWNLOAD_STATE_KEY, String.valueOf(downloadState));
+            mPreferenceHelper.insertOrReplacePreference(
+                    DATA_DOWNLOAD_STATE_KEY, String.valueOf(downloadState));
 
             if (downloadState == DATA_DOWNLOAD_STARTED || downloadState == DATA_DOWNLOAD_RETRY) {
-                PreferenceHelper.getInstance()
-                        .insertOrReplacePreference(
-                                DATA_DOWNLOAD_TIMEOUT_KEY,
-                                Long.toString(Instant.now().toEpochMilli()));
+                mPreferenceHelper.insertOrReplacePreference(
+                        DATA_DOWNLOAD_TIMEOUT_KEY, Long.toString(Instant.now().toEpochMilli()));
                 scheduleDownloadStateTimeoutJob();
             }
         } finally {
@@ -689,9 +687,8 @@ public final class BackupRestore {
     // uses PreferenceHelper to keep data on the disk.
     private void setDataRestoreError(
             @HealthConnectDataState.DataRestoreError int dataRestoreError) {
-        PreferenceHelper.getInstance()
-                .insertOrReplacePreference(
-                        DATA_RESTORE_ERROR_KEY, String.valueOf(dataRestoreError));
+        mPreferenceHelper.insertOrReplacePreference(
+                DATA_RESTORE_ERROR_KEY, String.valueOf(dataRestoreError));
     }
 
     /** Schedule timeout for data download state so that we are not stuck in the current state. */
@@ -731,9 +728,8 @@ public final class BackupRestore {
         BackupRestoreJobService.schedule(mContext, jobInfoBuilder.build(), this);
 
         // Set the start time
-        PreferenceHelper.getInstance()
-                .insertOrReplacePreference(
-                        DATA_DOWNLOAD_TIMEOUT_KEY, Long.toString(Instant.now().toEpochMilli()));
+        mPreferenceHelper.insertOrReplacePreference(
+                DATA_DOWNLOAD_TIMEOUT_KEY, Long.toString(Instant.now().toEpochMilli()));
     }
 
     private void executeDownloadStateTimeoutJob() {
@@ -744,9 +740,8 @@ public final class BackupRestore {
             setDataDownloadState(DATA_DOWNLOAD_FAILED, false);
             setDataRestoreError(RESTORE_ERROR_FETCHING_DATA);
             // Remove the remaining timeouts from the disk
-            PreferenceHelper.getInstance().insertOrReplacePreference(DATA_DOWNLOAD_TIMEOUT_KEY, "");
-            PreferenceHelper.getInstance()
-                    .insertOrReplacePreference(DATA_DOWNLOAD_TIMEOUT_CANCELLED_KEY, "");
+            mPreferenceHelper.insertOrReplacePreference(DATA_DOWNLOAD_TIMEOUT_KEY, "");
+            mPreferenceHelper.insertOrReplacePreference(DATA_DOWNLOAD_TIMEOUT_CANCELLED_KEY, "");
         } else {
             Slog.i(TAG, "Download state timeout job fired in state: " + currentDownloadState);
         }
@@ -787,9 +782,8 @@ public final class BackupRestore {
         BackupRestoreJobService.schedule(mContext, jobInfoBuilder.build(), this);
 
         // Set the start time
-        PreferenceHelper.getInstance()
-                .insertOrReplacePreference(
-                        DATA_STAGING_TIMEOUT_KEY, Long.toString(Instant.now().toEpochMilli()));
+        mPreferenceHelper.insertOrReplacePreference(
+                DATA_STAGING_TIMEOUT_KEY, Long.toString(Instant.now().toEpochMilli()));
     }
 
     private void executeStagingTimeoutJob() {
@@ -800,9 +794,8 @@ public final class BackupRestore {
             setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_DONE, false);
             setDataRestoreError(RESTORE_ERROR_UNKNOWN);
             // Remove the remaining timeouts from the disk
-            PreferenceHelper.getInstance().insertOrReplacePreference(DATA_STAGING_TIMEOUT_KEY, "");
-            PreferenceHelper.getInstance()
-                    .insertOrReplacePreference(DATA_STAGING_TIMEOUT_CANCELLED_KEY, "");
+            mPreferenceHelper.insertOrReplacePreference(DATA_STAGING_TIMEOUT_KEY, "");
+            mPreferenceHelper.insertOrReplacePreference(DATA_STAGING_TIMEOUT_CANCELLED_KEY, "");
         } else {
             Slog.i(TAG, "Staging timeout job fired in state: " + internalRestoreState);
         }
@@ -842,9 +835,8 @@ public final class BackupRestore {
         BackupRestoreJobService.schedule(mContext, jobInfoBuilder.build(), this);
 
         // Set the start time
-        PreferenceHelper.getInstance()
-                .insertOrReplacePreference(
-                        DATA_MERGING_TIMEOUT_KEY, Long.toString(Instant.now().toEpochMilli()));
+        mPreferenceHelper.insertOrReplacePreference(
+                DATA_MERGING_TIMEOUT_KEY, Long.toString(Instant.now().toEpochMilli()));
     }
 
     private void executeMergingTimeoutJob() {
@@ -854,9 +846,8 @@ public final class BackupRestore {
             setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_DONE, false);
             setDataRestoreError(RESTORE_ERROR_UNKNOWN);
             // Remove the remaining timeouts from the disk
-            PreferenceHelper.getInstance().insertOrReplacePreference(DATA_MERGING_TIMEOUT_KEY, "");
-            PreferenceHelper.getInstance()
-                    .insertOrReplacePreference(DATA_MERGING_TIMEOUT_CANCELLED_KEY, "");
+            mPreferenceHelper.insertOrReplacePreference(DATA_MERGING_TIMEOUT_KEY, "");
+            mPreferenceHelper.insertOrReplacePreference(DATA_MERGING_TIMEOUT_CANCELLED_KEY, "");
         } else {
             Slog.i(TAG, "Merging timeout job fired in state: " + internalRestoreState);
         }
@@ -895,9 +886,8 @@ public final class BackupRestore {
         BackupRestoreJobService.schedule(mContext, jobInfoBuilder.build(), this);
 
         // Set the start time
-        PreferenceHelper.getInstance()
-                .insertOrReplacePreference(
-                        DATA_MERGING_RETRY_KEY, Long.toString(Instant.now().toEpochMilli()));
+        mPreferenceHelper.insertOrReplacePreference(
+                DATA_MERGING_RETRY_KEY, Long.toString(Instant.now().toEpochMilli()));
     }
 
     private void executeRetryMergingJob() {
@@ -908,10 +898,8 @@ public final class BackupRestore {
 
             if (getInternalRestoreState() == INTERNAL_RESTORE_STATE_MERGING_DONE) {
                 // Remove the remaining timeouts from the disk
-                PreferenceHelper.getInstance()
-                        .insertOrReplacePreference(DATA_MERGING_RETRY_KEY, "");
-                PreferenceHelper.getInstance()
-                        .insertOrReplacePreference(DATA_MERGING_RETRY_CANCELLED_KEY, "");
+                mPreferenceHelper.insertOrReplacePreference(DATA_MERGING_RETRY_KEY, "");
+                mPreferenceHelper.insertOrReplacePreference(DATA_MERGING_RETRY_CANCELLED_KEY, "");
             }
         } else {
             Slog.i(TAG, "Merging retry job fired in state: " + internalRestoreState);
@@ -931,12 +919,12 @@ public final class BackupRestore {
 
     private long getRemainingTimeoutMillis(
             String startTimeKey, String cancelledTimeKey, long stdTimeout) {
-        String startTimeStr = PreferenceHelper.getInstance().getPreference(startTimeKey);
+        String startTimeStr = mPreferenceHelper.getPreference(startTimeKey);
         if (startTimeStr == null || startTimeStr.trim().isEmpty()) {
             return stdTimeout;
         }
         long currTime = Instant.now().toEpochMilli();
-        String cancelledTimeStr = PreferenceHelper.getInstance().getPreference(cancelledTimeKey);
+        String cancelledTimeStr = mPreferenceHelper.getPreference(cancelledTimeKey);
         if (cancelledTimeStr == null || cancelledTimeStr.trim().isEmpty()) {
             return Math.max(0, stdTimeout - (currTime - Long.parseLong(startTimeStr)));
         }
@@ -945,10 +933,9 @@ public final class BackupRestore {
     }
 
     private void setJobCancelledTimeIfExists(String startTimeKey, String cancelTimeKey) {
-        if (PreferenceHelper.getInstance().getPreference(startTimeKey) != null) {
-            PreferenceHelper.getInstance()
-                    .insertOrReplacePreference(
-                            cancelTimeKey, Long.toString(Instant.now().toEpochMilli()));
+        if (mPreferenceHelper.getPreference(startTimeKey) != null) {
+            mPreferenceHelper.insertOrReplacePreference(
+                    cancelTimeKey, Long.toString(Instant.now().toEpochMilli()));
         }
     }
 

@@ -21,32 +21,26 @@ import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.getReadTransactionRequest;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.getUUID;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
 
 import android.health.connect.DeleteUsingFiltersRequest;
-import android.health.connect.MedicalIdFilter;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.aidl.DeleteUsingFiltersRequestParcel;
-import android.health.connect.aidl.MedicalIdFiltersParcel;
 import android.health.connect.aidl.RecordIdFiltersParcel;
 import android.health.connect.datatypes.BloodPressureRecord;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsRecord;
-import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
-import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -269,17 +263,5 @@ public class TransactionManagerTest {
 
         List<UUID> uuidList = mTransactionTestUtils.getAllDeletedUuids();
         assertThat(uuidList).hasSize(DEFAULT_PAGE_SIZE + 1);
-    }
-
-    @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
-    public void readMedicalResourcesByIds_returnsEmpty() {
-        MedicalIdFiltersParcel parcel =
-                new MedicalIdFiltersParcel(List.of(MedicalIdFilter.fromId(getUUID())));
-
-        List<MedicalResourceInternal> resources =
-                mTransactionManager.readMedicalResourcesByIds(parcel);
-
-        assertThat(resources).isEmpty();
     }
 }

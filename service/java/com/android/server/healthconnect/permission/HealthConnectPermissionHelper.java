@@ -62,6 +62,7 @@ public final class HealthConnectPermissionHelper {
     private final Set<String> mHealthPermissions;
     private final HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
     private final FirstGrantTimeManager mFirstGrantTimeManager;
+    private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
 
     /**
      * Constructs a {@link HealthConnectPermissionHelper}.
@@ -85,6 +86,7 @@ public final class HealthConnectPermissionHelper {
         mHealthPermissions = healthPermissions;
         mPermissionIntentAppsTracker = permissionIntentTracker;
         mFirstGrantTimeManager = firstGrantTimeManager;
+        mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
     }
 
     /**
@@ -289,25 +291,21 @@ public final class HealthConnectPermissionHelper {
 
     private void addToPriorityListIfRequired(String packageName, String permissionName) {
         if (HealthPermissions.isWritePermission(permissionName)) {
-            HealthDataCategoryPriorityHelper.getInstance()
-                    .appendToPriorityList(
-                            packageName,
-                            HealthPermissions.getHealthDataCategoryForWritePermission(
-                                    permissionName),
-                            mContext,
-                            /* isInactiveApp= */ false);
+            mHealthDataCategoryPriorityHelper.appendToPriorityList(
+                    packageName,
+                    HealthPermissions.getHealthDataCategoryForWritePermission(permissionName),
+                    mContext,
+                    /* isInactiveApp= */ false);
         }
     }
 
     private void removeFromPriorityListIfRequired(String packageName, String permissionName) {
         if (HealthPermissions.isWritePermission(permissionName)) {
-            HealthDataCategoryPriorityHelper.getInstance()
-                    .maybeRemoveAppFromPriorityList(
-                            packageName,
-                            HealthPermissions.getHealthDataCategoryForWritePermission(
-                                    permissionName),
-                            this,
-                            mContext.getUser());
+            mHealthDataCategoryPriorityHelper.maybeRemoveAppFromPriorityList(
+                    packageName,
+                    HealthPermissions.getHealthDataCategoryForWritePermission(permissionName),
+                    this,
+                    mContext.getUser());
         }
     }
 

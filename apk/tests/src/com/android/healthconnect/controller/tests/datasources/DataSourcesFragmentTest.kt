@@ -39,7 +39,7 @@ import com.android.healthconnect.controller.datasources.DataSourcesViewModel.Agg
 import com.android.healthconnect.controller.datasources.DataSourcesViewModel.DataSourcesAndAggregationsInfo
 import com.android.healthconnect.controller.datasources.DataSourcesViewModel.PotentialAppSourcesState
 import com.android.healthconnect.controller.datasources.DataSourcesViewModel.PriorityListState
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.app.AppUtils
 import com.android.healthconnect.controller.shared.app.AppUtilsModule
 import com.android.healthconnect.controller.tests.utils.TEST_APP
@@ -121,7 +121,7 @@ class DataSourcesFragmentTest {
                             true,
                             listOf(
                                 AggregationCardInfo(
-                                    HealthPermissionType.STEPS,
+                                    FitnessPermissionType.STEPS,
                                     FormattedEntry.FormattedAggregation(
                                         "1234 steps", "1234 steps", "TestApp"),
                                     Instant.parse("2022-10-19T07:06:05.432Z"))))))
@@ -135,7 +135,7 @@ class DataSourcesFragmentTest {
                     true,
                     listOf(
                         AggregationCardInfo(
-                            HealthPermissionType.STEPS,
+                            FitnessPermissionType.STEPS,
                             FormattedEntry.FormattedAggregation(
                                 "1234 steps", "1234 steps", "TestApp"),
                             Instant.parse("2022-10-19T07:06:05.432Z")))))
@@ -212,7 +212,7 @@ class DataSourcesFragmentTest {
                             true,
                             listOf(
                                 AggregationCardInfo(
-                                    HealthPermissionType.STEPS,
+                                    FitnessPermissionType.STEPS,
                                     FormattedEntry.FormattedAggregation(
                                         "1234 steps", "1234 steps", "TestApp"),
                                     Instant.parse("2022-10-19T07:06:05.432Z"))))))
@@ -226,7 +226,7 @@ class DataSourcesFragmentTest {
                     true,
                     listOf(
                         AggregationCardInfo(
-                            HealthPermissionType.STEPS,
+                            FitnessPermissionType.STEPS,
                             FormattedEntry.FormattedAggregation(
                                 "1234 steps", "1234 steps", "TestApp"),
                             Instant.parse("2022-10-19T07:06:05.432Z")))))
@@ -276,7 +276,7 @@ class DataSourcesFragmentTest {
                             true,
                             listOf(
                                 AggregationCardInfo(
-                                    HealthPermissionType.STEPS,
+                                    FitnessPermissionType.STEPS,
                                     FormattedEntry.FormattedAggregation(
                                         "1234 steps", "1234 steps", "TestApp"),
                                     Instant.parse("2020-10-19T07:06:05.432Z"))))))
@@ -290,7 +290,7 @@ class DataSourcesFragmentTest {
                     true,
                     listOf(
                         AggregationCardInfo(
-                            HealthPermissionType.STEPS,
+                            FitnessPermissionType.STEPS,
                             FormattedEntry.FormattedAggregation(
                                 "1234 steps", "1234 steps", "TestApp"),
                             Instant.parse("2020-10-19T07:06:05.432Z")))))
@@ -315,7 +315,7 @@ class DataSourcesFragmentTest {
                             true,
                             listOf(
                                 AggregationCardInfo(
-                                    HealthPermissionType.SLEEP,
+                                    FitnessPermissionType.SLEEP,
                                     FormattedEntry.FormattedAggregation(
                                         "11h 5m", "11h 5m", "TestApp"),
                                     Instant.parse("2022-10-18T21:00:00.00Z"),
@@ -330,7 +330,7 @@ class DataSourcesFragmentTest {
                     true,
                     listOf(
                         AggregationCardInfo(
-                            HealthPermissionType.SLEEP,
+                            FitnessPermissionType.SLEEP,
                             FormattedEntry.FormattedAggregation("11h 5m", "11h 5m", "TestApp"),
                             Instant.parse("2022-10-18T21:00:00.00Z"),
                             Instant.parse("2022-10-19T08:05:00.00Z")))))
@@ -382,7 +382,7 @@ class DataSourcesFragmentTest {
                             true,
                             listOf(
                                 AggregationCardInfo(
-                                    HealthPermissionType.SLEEP,
+                                    FitnessPermissionType.SLEEP,
                                     FormattedEntry.FormattedAggregation(
                                         "11h 5m", "11h 5m", "TestApp"),
                                     Instant.parse("2020-10-18T21:00:00.00Z"),
@@ -397,7 +397,7 @@ class DataSourcesFragmentTest {
                     true,
                     listOf(
                         AggregationCardInfo(
-                            HealthPermissionType.SLEEP,
+                            FitnessPermissionType.SLEEP,
                             FormattedEntry.FormattedAggregation("11h 5m", "11h 5m", "TestApp"),
                             Instant.parse("2020-10-18T21:00:00.00Z"),
                             Instant.parse("2020-10-19T08:05:00.00Z")))))
@@ -449,7 +449,7 @@ class DataSourcesFragmentTest {
                             true,
                             listOf(
                                 AggregationCardInfo(
-                                    HealthPermissionType.SLEEP,
+                                    FitnessPermissionType.SLEEP,
                                     FormattedEntry.FormattedAggregation(
                                         "11h 5m", "11h 5m", "TestApp"),
                                     Instant.parse("2020-12-31T21:00:00.00Z"),
@@ -464,7 +464,7 @@ class DataSourcesFragmentTest {
                     true,
                     listOf(
                         AggregationCardInfo(
-                            HealthPermissionType.SLEEP,
+                            FitnessPermissionType.SLEEP,
                             FormattedEntry.FormattedAggregation("11h 5m", "11h 5m", "TestApp"),
                             Instant.parse("2020-12-31T21:00:00.00Z"),
                             Instant.parse("2021-01-01T08:05:00.00Z")))))

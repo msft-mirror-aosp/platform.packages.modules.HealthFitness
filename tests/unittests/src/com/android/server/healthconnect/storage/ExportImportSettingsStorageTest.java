@@ -20,11 +20,19 @@ import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
+import android.content.ContentProviderClient;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
+import android.health.connect.HealthConnectManager;
 import android.health.connect.exportimport.ImportStatus;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.net.Uri;
+import android.os.RemoteException;
 
 import androidx.test.runner.AndroidJUnit4;
 
@@ -36,24 +44,40 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+
+import java.time.Instant;
 
 @RunWith(AndroidJUnit4.class)
 public final class ExportImportSettingsStorageTest {
     private static final String EXPORT_URI_PREFERENCE_KEY = "export_uri_key";
     private static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
     private static final String IMPORT_ONGOING_PREFERENCE_KEY = "import_ongoing_key";
+    private static final String LAST_EXPORT_ERROR_PREFERENCE_KEY = "last_export_error_key";
     private static final String LAST_IMPORT_ERROR_PREFERENCE_KEY = "last_import_error_key";
+    private static final String LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY =
+            "last_successful_export_uri_key";
     private static final String TEST_URI = "content://com.android.server.healthconnect/testuri";
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this).mockStatic(PreferenceHelper.class).build();
 
+    @Mock Context mContext;
+    @Mock ContentResolver mContentResolver;
+    @Mock ContentProviderClient mContentProviderClient;
+    @Mock Cursor mCursor;
+
     private final PreferenceHelper mFakePreferenceHelper = new FakePreferenceHelper();
 
     @Before
-    public void setUp() {
+    public void setUp() throws RemoteException {
         when(PreferenceHelper.getInstance()).thenReturn(mFakePreferenceHelper);
+        when(mContext.getContentResolver()).thenReturn(mContentResolver);
+        when(mContentResolver.acquireUnstableContentProviderClient(any(Uri.class)))
+                .thenReturn(mContentProviderClient);
+        when(mContentProviderClient.query(any(Uri.class), any(), any(), any(), any()))
+                .thenReturn(mCursor);
     }
 
     @Test
@@ -72,6 +96,26 @@ public final class ExportImportSettingsStorageTest {
 
         assertThat(mFakePreferenceHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY))
                 .isEqualTo(String.valueOf(7));
+    }
+
+    @Test
+    public void testConfigure_uri_removeExportLostFileAccessError() {
+        ExportImportSettingsStorage.setLastExportError(
+                HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS);
+        ExportImportSettingsStorage.configure(ScheduledExportSettings.withUri(Uri.parse(TEST_URI)));
+
+        assertThat(mFakePreferenceHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY))
+                .isEqualTo(null);
+    }
+
+    @Test
+    public void testConfigure_uri_removeUnknownError() {
+        ExportImportSettingsStorage.setLastExportError(
+                HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
+        ExportImportSettingsStorage.configure(ScheduledExportSettings.withUri(Uri.parse(TEST_URI)));
+
+        assertThat(mFakePreferenceHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY))
+                .isEqualTo(null);
     }
 
     @Test
@@ -132,5 +176,116 @@ public final class ExportImportSettingsStorageTest {
         assertThat(importStatus.getDataImportError()).isEqualTo(DATA_IMPORT_ERROR_NONE);
         assertThat(mFakePreferenceHelper.getPreference(IMPORT_ONGOING_PREFERENCE_KEY))
                 .isEqualTo(String.valueOf(true));
+    }
+
+    @Test
+    public void
+            testSetLastSuccessfulExportTime_callsGetScheduledExportStatus_returnsLastExportTime() {
+        Instant now = Instant.now();
+        ExportImportSettingsStorage.setLastSuccessfulExport(now);
+
+        assertThat(
+                        ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                                .getLastSuccessfulExportTime())
+                .isEqualTo(Instant.ofEpochMilli(now.toEpochMilli()));
+    }
+
+    @Test
+    public void testSetLastExportError_callsGetScheduledExportStatus_returnsExportError() {
+        ExportImportSettingsStorage.setLastExportError(
+                HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
+
+        assertThat(
+                        ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                                .getDataExportError())
+                .isEqualTo(HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
+    }
+
+    @Test
+    public void testLastExportFileName_callsGetScheduledExportStatus_returnsLastExportFileName() {
+        ExportImportSettingsStorage.setLastSuccessfulExportUri(Uri.parse(TEST_URI));
+
+        assertThat(
+                        ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                                .getLastExportFileName())
+                .isEqualTo("testuri");
+    }
+
+    @Test
+    public void testLastExportFileName_withNoLastSuccessfulExportUri_returnsNull() {
+        mFakePreferenceHelper.removeKey(LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY);
+
+        assertThat(
+                        ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                                .getLastExportFileName())
+                .isNull();
+    }
+
+    @Test
+    public void testNextExportFileName_withNoConfiguredUri_returnsNull() {
+        mFakePreferenceHelper.removeKey(EXPORT_URI_PREFERENCE_KEY);
+
+        assertThat(
+                        ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                                .getNextExportFileName())
+                .isNull();
+    }
+
+    @Test
+    public void testNextExportFileName_callsGetScheduledExportStatus_returnsNextExportFileName() {
+        ExportImportSettingsStorage.configure(ScheduledExportSettings.withUri(Uri.parse(TEST_URI)));
+
+        assertThat(
+                        ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                                .getNextExportFileName())
+                .isEqualTo("testuri");
+    }
+
+    @Test
+    public void testLastExportAppName_withNoSuccessfulExportUri_returnsNull() {
+        when(mCursor.moveToFirst()).thenReturn(true);
+        when(mCursor.getString(anyInt())).thenReturn("Drive");
+        mFakePreferenceHelper.removeKey(LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY);
+
+        assertThat(
+                        ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                                .getLastExportAppName())
+                .isNull();
+    }
+
+    @Test
+    public void testLastExportAppName_withLastSuccessfulExportUri_returnsLastExportAppName() {
+        when(mCursor.moveToFirst()).thenReturn(true);
+        when(mCursor.getString(anyInt())).thenReturn("Drive");
+        ExportImportSettingsStorage.setLastSuccessfulExportUri(Uri.parse(TEST_URI));
+
+        assertThat(
+                        ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                                .getLastExportAppName())
+                .isEqualTo("Drive");
+    }
+
+    @Test
+    public void testNextExportAppName_withNoUriConfigured_returnsNull() {
+        when(mCursor.moveToFirst()).thenReturn(true);
+        when(mCursor.getString(anyInt())).thenReturn("Dropbox");
+        mFakePreferenceHelper.removeKey(EXPORT_URI_PREFERENCE_KEY);
+
+        assertThat(
+                        ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                                .getLastExportAppName())
+                .isNull();
+    }
+
+    @Test
+    public void testNextExportAppName_callsGetScheduledExportStatus_returnsNextExportAppName() {
+        when(mCursor.moveToFirst()).thenReturn(true);
+        when(mCursor.getString(anyInt())).thenReturn("Dropbox");
+        ExportImportSettingsStorage.configure(ScheduledExportSettings.withUri(Uri.parse(TEST_URI)));
+
+        assertThat(
+                        ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                                .getNextExportAppName())
+                .isEqualTo("Dropbox");
     }
 }

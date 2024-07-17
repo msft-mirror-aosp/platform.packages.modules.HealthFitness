@@ -22,6 +22,10 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
+import com.android.healthconnect.controller.utils.logging.ScheduledExportElement
+import dagger.hilt.android.EntryPointAccessors
 
 /** Preference for updating export frequency. */
 class ExportFrequencyRadioGroupPreference(
@@ -29,7 +33,8 @@ class ExportFrequencyRadioGroupPreference(
     private var exportFrequency: ExportFrequency,
     private val updateExportFrequency: (frequency: ExportFrequency) -> Unit
 ) : Preference(context) {
-    // TODO: b/325914485 - Add proper logging for this preference.
+
+    private var logger: HealthConnectLogger
 
     companion object {
         const val EXPORT_FREQUENCY_RADIO_GROUP_PREFERENCE =
@@ -39,6 +44,11 @@ class ExportFrequencyRadioGroupPreference(
     init {
         layoutResource = R.layout.widget_export_frequency_radio_group_preference
         key = EXPORT_FREQUENCY_RADIO_GROUP_PREFERENCE
+
+        val hiltEntryPoint =
+            EntryPointAccessors.fromApplication(
+                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
+        logger = hiltEntryPoint.logger()
     }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
@@ -60,16 +70,26 @@ class ExportFrequencyRadioGroupPreference(
                 R.id.radio_button_daily -> {
                     exportFrequency = ExportFrequency.EXPORT_FREQUENCY_DAILY
                     updateExportFrequency(ExportFrequency.EXPORT_FREQUENCY_DAILY)
+                    logger.logInteraction(ScheduledExportElement.EXPORT_SETTINGS_FREQUENCY_DAILY)
                 }
                 R.id.radio_button_weekly -> {
                     exportFrequency = ExportFrequency.EXPORT_FREQUENCY_WEEKLY
                     updateExportFrequency(ExportFrequency.EXPORT_FREQUENCY_WEEKLY)
+                    logger.logInteraction(ScheduledExportElement.EXPORT_SETTINGS_FREQUENCY_WEEKLY)
                 }
                 R.id.radio_button_monthly -> {
                     exportFrequency = ExportFrequency.EXPORT_FREQUENCY_MONTHLY
                     updateExportFrequency(ExportFrequency.EXPORT_FREQUENCY_MONTHLY)
+                    logger.logInteraction(ScheduledExportElement.EXPORT_SETTINGS_FREQUENCY_MONTHLY)
                 }
             }
         }
+    }
+
+    override fun onAttached() {
+        super.onAttached()
+        logger.logImpression(ScheduledExportElement.EXPORT_SETTINGS_FREQUENCY_DAILY)
+        logger.logImpression(ScheduledExportElement.EXPORT_SETTINGS_FREQUENCY_WEEKLY)
+        logger.logImpression(ScheduledExportElement.EXPORT_SETTINGS_FREQUENCY_MONTHLY)
     }
 }

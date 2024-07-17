@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.APP_ID_PRIORITY_ORDER_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.HEALTH_DATA_CATEGORY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.flattenLongList;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -64,7 +66,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.quality.Strictness;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,8 +86,6 @@ public class HealthDataCategoryPriorityHelperTest {
     private static final String APP_PACKAGE_NAME_2 = "android.healthconnect.mocked.app2";
     private static final String APP_PACKAGE_NAME_3 = "android.healthconnect.mocked.app3";
     private static final String APP_PACKAGE_NAME_4 = "android.healthconnect.mocked.app4";
-    private static final String APP_ID_PRIORITY_ORDER_COLUMN_NAME = "app_id_priority_order";
-    private static final String HEALTH_DATA_CATEGORY_COLUMN_NAME = "health_data_category";
     private static final int APP_ID_PRIORITY_ORDER_COLUMN_INDEX = 2;
     private static final int HEALTH_DATA_CATEGORY_COLUMN_INDEX = 1;
 
@@ -99,7 +98,6 @@ public class HealthDataCategoryPriorityHelperTest {
                     .mockStatic(PackageInfoUtils.class)
                     .mockStatic(PreferenceHelper.class)
                     .mockStatic(HealthConnectManager.class)
-                    .setStrictness(Strictness.LENIENT)
                     .build();
 
     @Mock private Cursor mCursor;
@@ -145,6 +143,7 @@ public class HealthDataCategoryPriorityHelperTest {
         when(HealthConnectDeviceConfigManager.getInitialisedInstance())
                 .thenReturn(mHealthConnectDeviceConfigManager);
         when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
+        HealthDataCategoryPriorityHelper.clearInstanceForTest();
         mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
         // Clear data in case the singleton is already initialised.
         mHealthDataCategoryPriorityHelper.clearData(mTransactionManager);

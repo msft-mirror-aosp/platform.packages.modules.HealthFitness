@@ -20,8 +20,9 @@
     <string name="app_label" msgid="4768580772453324183">"Conexão Saúde"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Gerenciar o acesso de apps aos dados de saúde"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Permissões e dados"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Gerencie os dados de saúde e condicionamento físico no seu smartphone e controle quais apps podem ter acesso a eles"</string>
+    <string name="home_subtitle" msgid="2154213430054477787">"Gerencie os dados de saúde e condicionamento físico no seu dispositivo e controle quais apps podem ter acesso a eles"</string>
     <string name="data_title" msgid="4456619761533380816">"Dados e acesso"</string>
+    <string name="browse_medical_data" msgid="6963802956096683273">"Procurar histórico de saúde"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Todas as categorias"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Acessar todas as categorias"</string>
     <string name="no_data" msgid="1906986019249068659">"Não há dados"</string>
@@ -34,15 +35,14 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 app tem acesso}one{# app tem acesso}other{# apps têm acesso}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Nenhuma"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Detalhes da entrada"</string>
+    <!-- no translation found for manage_data_summary (8537870912521944449) -->
+    <skip />
     <string name="backup_title" msgid="211503191266235085">"Backup"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Fontes de dados e prioridade"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Definir unidades"</string>
-    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
-    <skip />
-    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
-    <skip />
-    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
-    <skip />
+    <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Preferências"</string>
+    <string name="manage_data_category_title" msgid="6328886061582616519">"Gerenciar dados"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Exportar e importar dados"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Acessos recentes"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Nenhum app acessou a plataforma Conexão Saúde recentemente"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Mostrar todos os acessos recentes"</string>
@@ -264,18 +264,16 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura da pele"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Ler temperatura da pele"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Gravar temperatura da pele"</string>
-    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
-    <skip />
-    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
-    <skip />
-    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
-    <skip />
-    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
-    <skip />
-    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
-    <skip />
-    <!-- no translation found for immunization_content_description (2910674919337229803) -->
-    <skip />
+    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Todos os dados de saúde"</string>
+    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"todos os dados de saúde"</string>
+    <string name="all_medical_data_content_description" msgid="6103488863059447886">"Gravar todos os dados de saúde"</string>
+    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Imunização"</string>
+    <string name="immunization_lowercase_label" msgid="6464922369026887687">"imunização"</string>
+    <string name="immunization_content_description" msgid="2910674919337229803">"Ler dados de imunização"</string>
+    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Mindfulness"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"mindfulness"</string>
+    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Ler dados de mindfulness"</string>
+    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Gravar dados de mindfulness"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Permitir a leitura pelo app <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Permitir gravação pelo app <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Cancelar"</string>
@@ -328,6 +326,9 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Não há apps compatíveis instalados no momento"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Acesso adicional"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Outras permissões foram removidas desse app"</string>
+    <string name="permissions_header" msgid="6519976063360071569">"Permissões"</string>
+    <string name="manage_fitness_permissions" msgid="1001729292172461314">"Gerenciar permissões fitness"</string>
+    <string name="manage_medical_permissions" msgid="7658181359096889932">"Gerenciar permissões do histórico de saúde"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Permissões de apps removidas"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"A plataforma Conexão Saúde removeu as permissões do app <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"A plataforma Conexão Saúde removeu as permissões dos apps <xliff:g id="APP_DATA_0">%1$s</xliff:g> e <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -343,38 +344,70 @@
     <string name="next_export_time" msgid="3138247220014510213">"Próxima exportação: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Backup e restauração"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Última exportação: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="export_and_import_title" msgid="3241901922222465397">"Exportação e importação"</string>
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Exportação programada"</string>
     <string name="import_data" msgid="404502315533233094">"Importar dados"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Restaurar dados de um arquivo exportado anteriormente"</string>
+    <string name="import_error_banner_title" msgid="1480977889067027790">"Não foi possível restaurar os dados"</string>
+    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"Escolher arquivo"</string>
+    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"O arquivo selecionado não é compatível com a restauração. Selecione o arquivo exportado correto."</string>
+    <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"Atualizar agora"</string>
+    <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Atualize o sistema para que a Conexão Saúde possa restaurar seus dados e tente de novo."</string>
+    <string name="import_other_error_banner_button" msgid="8006947649520909176">"Tentar de novo"</string>
+    <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Ocorreu um problema ao restaurar os dados do arquivo exportado."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Ao exportar, é possível salvar e transferir seus dados para outro smartphone"</string>
-    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Saiba mais"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"Sobre o backup e a restauração"</string>
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Ativada"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Desativada"</string>
-    <string name="choose_frequency_category" msgid="2230821549715237663">"Escolha a frequência"</string>
-    <string name="choose_frequency" msgid="1077467424225083246">"Escolha a frequência"</string>
-    <string name="choose_frequency_description" msgid="752601326653048254">"Escolha salvar os dados uma vez ou configurar para serem salvos automaticamente em horários regulares."</string>
+    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
+    <skip />
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
+    <string name="choose_frequency_category" msgid="9094154407387676553">"Mudar frequência"</string>
+    <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Se você desativar a exportação programada, os dados exportados anteriormente não serão excluídos do local onde foram salvos"</string>
+    <string name="choose_frequency" msgid="8119085390857180221">"Configurar exportação programada"</string>
+    <string name="choose_frequency_description" msgid="7698155810053504157">"Escolha a frequência com que quer exportar seus dados"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Diariamente"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Semanalmente"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Mensalmente"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"Escolha para onde exportar"</string>
-    <string name="export_invalid_storage" msgid="3945266169513895950">"Escolha um app de armazenamento para exportar seus dados"</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"Digite a senha"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Sua senha de criptografia é necessária para importar dados do app Conexão Saúde"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Esqueceu a senha?"</string>
-    <string name="import_password_hint" msgid="5158553589723883063">"Senha"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Se ainda tiver o smartphone antigo, é possível reexportar seus dados com uma nova senha"</string>
+    <string name="export_destination_title" msgid="8352929396306002479">"Escolha onde salvar a exportação programada"</string>
+    <string name="export_invalid_storage" msgid="1459055934301871321">"Escolha um app de armazenamento em nuvem para exportar seus dados"</string>
+    <string name="export_default_file_name" msgid="1146984404965754445">"Conexão Saúde"</string>
+    <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Importar arquivo?"</string>
+    <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"O arquivo <xliff:g id="FILE_NAME">%1$s</xliff:g> será importado para o app Conexão Saúde"</string>
+    <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Cancelar"</string>
+    <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Importar"</string>
+    <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Restauração do app Conexão Saúde em andamento"</string>
+    <string name="import_notification_import_complete_title" msgid="7493223782222480412">"A restauração do app Conexão Saúde foi concluída"</string>
+    <string name="import_complete_toast_text" msgid="7730872919621230959">"Dados restaurados"</string>
+    <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"O app Conexão Saúde não conseguiu restaurar os dados"</string>
+    <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Espaço insuficiente"</string>
+    <string name="import_notification_error_invalid_file_body_text" msgid="8877884063398886772">"O arquivo selecionado não é compatível com a restauração. Selecione o arquivo exportado correto."</string>
+    <string name="import_notification_error_more_space_needed_body_text" msgid="7577564968089566232">"O app Conexão Saúde precisa de <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> de espaço de armazenamento no smartphone para continuar restaurando os dados."</string>
+    <string name="import_notification_error_generic_error_body_text" msgid="6562162452820282874">"Ocorreu um problema ao restaurar os dados do arquivo exportado."</string>
+    <string name="import_notification_error_version_mismatch_body_text" msgid="9186785816764607620">"Atualize o sistema para que o app Conexão Saúde possa restaurar seus dados e tente de novo."</string>
+    <string name="import_notification_update_now_intent_button" msgid="2808579294292956628">"Atualizar agora"</string>
+    <string name="import_notification_try_again_intent_button" msgid="3833062670098674999">"Tentar de novo"</string>
+    <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Abrir"</string>
+    <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Escolher arquivo"</string>
+    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Liberar espaço"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Voltar"</string>
+    <!-- no translation found for export_cancel_button (1952360582645412410) -->
+    <skip />
     <string name="export_next_button" msgid="657930567137105172">"Próxima"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Cancelar"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Avançar"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Importar de"</string>
-    <string name="import_invalid_storage" msgid="4873640088459948487">"Escolha um app de armazenamento para importar seus dados"</string>
+    <string name="import_invalid_storage" msgid="341798262315495399">"Escolha um app de armazenamento em nuvem para importar seus dados"</string>
+    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"Toque para selecionar uma conta"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Escolha uma conta"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Cancelar"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Concluir"</string>
+    <string name="export_import_no_apps_text" msgid="6403119325024893690">"Nenhum app disponível. Instale apps de armazenamento em nuvem para os acessar aqui."</string>
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"Para mais opções, instale apps de armazenamento em nuvem, que vão aparecer aqui"</string>
+    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Acessar a Google Play Store"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Comece a usar o app Conexão Saúde"</string>
-    <string name="onboarding_description" msgid="4873129122057931161">"A plataforma Conexão Saúde armazena seus dados de saúde e condicionamento físico, oferecendo uma maneira simples de sincronizar os diferentes apps no smartphone"</string>
+    <string name="onboarding_description" msgid="3479157507808350452">"O app Conexão Saúde armazena seus dados de saúde e condicionamento físico, oferecendo uma maneira simples de sincronizar os diferentes apps no dispositivo"</string>
     <string name="share_data" msgid="3481932156368883946">"Compartilhar dados com seus apps"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Escolha os dados que cada app pode ler ou gravar na plataforma Conexão Saúde"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Gerenciar suas configurações e privacidade"</string>
@@ -384,12 +417,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"Excluir dados"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Entrar no estado de exclusão"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Sair do estado de exclusão"</string>
-    <string name="time_range_title" msgid="6831605283322600165">"Escolha os dados para excluir"</string>
+    <string name="time_range_title" msgid="5777596779865648336">"Escolha os dados para excluir do app Conexão Saúde"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Próxima"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Esta ação exclui permanentemente todos os dados adicionados à plataforma Conexão Saúde no período escolhido"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"Esta ação exclui permanentemente os dados de <xliff:g id="DATA_TYPE">%s</xliff:g> adicionados à plataforma Conexão Saúde no período escolhido"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"Esta ação exclui permanentemente os dados de <xliff:g id="CATEGORY">%s</xliff:g> adicionados à plataforma Conexão Saúde no período escolhido"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"Esta ação exclui permanentemente os dados do app <xliff:g id="APP_DATA">%s</xliff:g> adicionados à plataforma Conexão Saúde no período escolhido"</string>
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"Esta ação exclui permanentemente os dados de <xliff:g id="DATA_TYPE">%1$s</xliff:g> adicionados pelo app <xliff:g id="APP_DATA">%2$s</xliff:g> à plataforma Conexão Saúde no período escolhido"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"Excluir últimas 24 horas"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"Excluir últimos 7 dias"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"Excluir últimos 30 dias"</string>
@@ -410,17 +444,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"Excluir permanentemente os dados das últimas 24 horas do app <xliff:g id="APP_DATA">%s</xliff:g>?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"Excluir permanentemente os dados dos últimos 7 dias do app <xliff:g id="APP_DATA">%s</xliff:g>?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"Excluir permanentemente os dados dos últimos 30 dias do app <xliff:g id="APP_DATA">%s</xliff:g>?"</string>
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"Excluir permanentemente todos os dados de <xliff:g id="DATA_TYPE">%1$s</xliff:g> adicionados pelo app <xliff:g id="APP_DATA">%2$s</xliff:g>?"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"Excluir permanentemente os dados de <xliff:g id="DATA_TYPE">%1$s</xliff:g> adicionados pelo app <xliff:g id="APP_DATA">%2$s</xliff:g> nas últimas 24 horas?"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"Excluir permanentemente os dados de <xliff:g id="DATA_TYPE">%1$s</xliff:g> adicionados pelo app <xliff:g id="APP_DATA">%2$s</xliff:g> nos últimos 7 dias?"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"Excluir permanentemente os dados de <xliff:g id="DATA_TYPE">%1$s</xliff:g> adicionados pelo app <xliff:g id="APP_DATA">%2$s</xliff:g> nos últimos 30 dias?"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Também remover todas as permissões do app <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> da plataforma Conexão Saúde"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Excluir permanentemente todos os dados de <xliff:g id="DATA_TYPE">%1$s</xliff:g> adicionados pelo app <xliff:g id="APP_DATA">%2$s</xliff:g>?"</string>
-    <string name="confirming_question_single_entry" msgid="330919962071369305">"Excluir permanentemente esta entrada?"</string>
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"Excluir permanentemente esta entrada do app Conexão Saúde?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Os apps conectados não vão mais poder acessar esses dados da plataforma Conexão Saúde"</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"Essa ação vai excluir todos os dados de menstruação inseridos de <xliff:g id="START_DATE">%1$s</xliff:g> a <xliff:g id="END_DATE">%2$s</xliff:g>."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Excluir"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Voltar"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Concluído"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"Fechar"</string>
-    <string name="delete_dialog_success_title" msgid="5009733262743173477">"Dados excluídos"</string>
-    <string name="delete_dialog_success_message" msgid="2451953113522118128">"Esses dados não estão mais armazenados no app Conexão Saúde."</string>
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"Dados excluídos do app Conexão Saúde"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"Se você quiser excluir completamente os dados dos seus apps conectados, confira cada aplicativo onde seus dados podem estar salvos."</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"Concluído"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"Ver apps conectados"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"Excluindo seus dados"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"Não foi possível excluir os dados"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"Ocorreu um erro. O app Conexão Saúde não conseguiu excluir seus dados."</string>
@@ -807,12 +847,14 @@
     <string name="range_off" msgid="8178520557618184215">"Desativada"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Quando você muda essas configurações, o app Conexão Saúde exclui os dados para refletir suas novas preferências"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Excluir os dados automaticamente depois de # mês?}one{Excluir os dados automaticamente depois de # mês?}other{Excluir os dados automaticamente depois de # meses?}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{O app Conexão Saúde vai excluir dados novos automaticamente depois de # mês. Definir essa opção também vai excluir os dados atuais com mais de # mês.}one{O app Conexão Saúde vai excluir dados novos automaticamente depois de # mês. Definir essa opção também vai excluir os dados atuais com mais de # mês.}other{O app Conexão Saúde vai excluir dados novos automaticamente depois de # meses. Definir essa opção também vai excluir os dados atuais com mais de # meses.}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Isso também exclui dados com mais de # mês do app Conexão Saúde.\n\nSe você quiser excluir completamente os dados dos seus apps conectados, confira cada aplicativo onde seus dados podem estar salvos.}one{Isso também exclui dados com mais de # mês do app Conexão Saúde.\n\nSe você quiser excluir completamente os dados dos seus apps conectados, confira cada aplicativo onde seus dados podem estar salvos.}other{Isso também exclui dados com mais de # meses do app Conexão Saúde.\n\nSe você quiser excluir completamente os dados dos seus apps conectados, confira cada aplicativo onde seus dados podem estar salvos.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Ativar exclusão automática"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Alguns dados vão ser excluídos"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{O app Conexão Saúde vai excluir automaticamente todos os dados com mais de # mês. Pode levar um dia até que essas mudanças apareçam nos apps conectados.}one{O app Conexão Saúde vai excluir automaticamente todos os dados com mais de # mês. Pode levar um dia até que essas mudanças apareçam nos apps conectados.}other{O app Conexão Saúde vai excluir automaticamente todos os dados com mais de # meses. Pode levar um dia até que essas mudanças apareçam nos apps conectados.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Os dados das seguintes categorias vão ser excluídos"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Concluído"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{A exclusão automática está ativada. Dados com mais de # mês serão excluídos.}one{A exclusão automática está ativada. Dados com mais de # meses serão excluídos.}other{A exclusão automática está ativada. Dados com mais de # meses serão excluídos.}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"A exclusão automática está desativada"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Definir prioridade dos apps"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Se mais de um app adicionar dados de <xliff:g id="DATA_TYPE">%s</xliff:g>, a plataforma Conexão Saúde vai priorizar aquele que estiver mais no início da lista. Arraste os apps para reordenar."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"Salvar"</string>
@@ -948,4 +990,5 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Todos os dados foram excluídos"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Dados de <xliff:g id="PERMISSION_TYPE">%s</xliff:g> excluídos"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> itens excluídos"</string>
+    <string name="select_all" msgid="837499881590001166">"Selecionar tudo"</string>
 </resources>

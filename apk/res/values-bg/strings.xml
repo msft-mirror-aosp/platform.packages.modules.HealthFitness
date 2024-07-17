@@ -20,8 +20,9 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Управлявайте достъпа на приложенията до данните за здравословното състояние"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Разрешения и данни"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Управлявайте данните за здравословното състояние и физическата активност, съхранявани на телефона ви, и контролирайте кои приложения да имат достъп до тях"</string>
+    <string name="home_subtitle" msgid="2154213430054477787">"Управлявайте данните за здравословното състояние и физическата активност, съхранявани на устройството ви, и контролирайте кои приложения да имат достъп до тях"</string>
     <string name="data_title" msgid="4456619761533380816">"Данни и достъп"</string>
+    <string name="browse_medical_data" msgid="6963802956096683273">"Преглед на здравните картони"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Всички категории"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Преглед на всички категории"</string>
     <string name="no_data" msgid="1906986019249068659">"Няма данни"</string>
@@ -34,15 +35,14 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 приложение има достъп}other{# приложения имат достъп}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Няма"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Подробности за записа"</string>
+    <!-- no translation found for manage_data_summary (8537870912521944449) -->
+    <skip />
     <string name="backup_title" msgid="211503191266235085">"Създаване на резервни копия"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Източници на данни и приоритет"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Задаване на мерни единици"</string>
-    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
-    <skip />
-    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
-    <skip />
-    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
-    <skip />
+    <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Предпочитания"</string>
+    <string name="manage_data_category_title" msgid="6328886061582616519">"Управление на данните"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Експортиране и импортиране на данни"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Скорошен достъп"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Няма приложения, наскоро осъществили достъп до Health Connect"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Преглед на скорошния достъп"</string>
@@ -264,18 +264,16 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"температура на кожата"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Четене на температурата на кожата"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Записване на температурата на кожата"</string>
-    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
-    <skip />
-    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
-    <skip />
-    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
-    <skip />
-    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
-    <skip />
-    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
-    <skip />
-    <!-- no translation found for immunization_content_description (2910674919337229803) -->
-    <skip />
+    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Всички медицински данни"</string>
+    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"всички медицински данни"</string>
+    <string name="all_medical_data_content_description" msgid="6103488863059447886">"Записване на всички медицински данни"</string>
+    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Имунизации"</string>
+    <string name="immunization_lowercase_label" msgid="6464922369026887687">"имунизации"</string>
+    <string name="immunization_content_description" msgid="2910674919337229803">"Четене на данните за имунизациите"</string>
+    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Осъзнатост"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"осъзнатост"</string>
+    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Четене на данните за осъзнатост"</string>
+    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Запис на данните за осъзнатост"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Разрешаване на <xliff:g id="APP_NAME">%1$s</xliff:g> да чете"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Разрешаване на <xliff:g id="APP_NAME">%1$s</xliff:g> да записва"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Отказ"</string>
@@ -328,6 +326,9 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Понастоящем нямате инсталирани съвместими приложения"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Допълнителен достъп"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Допълнителните разрешения са премахнати за това приложение"</string>
+    <string name="permissions_header" msgid="6519976063360071569">"Разрешения"</string>
+    <string name="manage_fitness_permissions" msgid="1001729292172461314">"Управление на разрешенията за фитнес"</string>
+    <string name="manage_medical_permissions" msgid="7658181359096889932">"Управление на разреш. за здравен картон"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Премахнати разрешения за приложенията"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect премахна разрешенията за <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect премахна разрешенията за <xliff:g id="APP_DATA_0">%1$s</xliff:g> и <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -343,38 +344,73 @@
     <string name="next_export_time" msgid="3138247220014510213">"Следващо експортиране: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Резервно копие и възстановяване"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Последно експортиране: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="export_and_import_title" msgid="3241901922222465397">"Експортиране и импортиране"</string>
+    <!-- no translation found for last_export_file_location (4069435932524304633) -->
+    <skip />
     <string name="scheduled_export" msgid="8737660963687364370">"Експортиране по график"</string>
     <string name="import_data" msgid="404502315533233094">"Импортиране на данни"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Възстановяване на данни от по-рано експортиран файл"</string>
+    <string name="import_error_banner_title" msgid="1480977889067027790">"Данните не бяха възстановени"</string>
+    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"Избор на файл"</string>
+    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"Избраният от вас файл не е съвместим за възстановяване. Изберете правилния експортиран файл."</string>
+    <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"Актуализиране сега"</string>
+    <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Актуализирайте системата си, за да може Health Connect да възстанови данните ви, и опитайте отново."</string>
+    <string name="import_other_error_banner_button" msgid="8006947649520909176">"Нов опит"</string>
+    <string name="import_other_error_banner_summary" msgid="4378957063605649197">"При възстановяването на данните от експортирания файл възникна проблем."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Експортирането ви дава възможност да запазвате данните си, за да можете да ги прехвърлите на нов телефон"</string>
-    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Научете повече"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"Всичко за създ./възстанов. на рез. копия"</string>
+    <!-- no translation found for automatic_export_status (4407131306281440230) -->
+    <skip />
     <string name="automatic_export_on" msgid="6972389773963624315">"Вкл."</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Изкл."</string>
-    <string name="choose_frequency_category" msgid="2230821549715237663">"Избиране на честота"</string>
-    <string name="choose_frequency" msgid="1077467424225083246">"Избиране на честота"</string>
-    <string name="choose_frequency_description" msgid="752601326653048254">"Изберете еднократно запазване на данните или задайте да се запазват автоматично през редовни интервали."</string>
+    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
+    <skip />
+    <!-- no translation found for next_export_file_location (2117071837862240540) -->
+    <skip />
+    <string name="choose_frequency_category" msgid="9094154407387676553">"Промяна на честотата"</string>
+    <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Ако изключите експортирането по график, експортираните по-рано данни няма да бъдат изтрити от мястото, на което са запазени"</string>
+    <string name="choose_frequency" msgid="8119085390857180221">"Настройване на експортиране по график"</string>
+    <string name="choose_frequency_description" msgid="7698155810053504157">"Изберете колко често да се експортират данните ви"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Ежедневно"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Ежеседмично"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Ежемесечно"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"Изберете къде да експортирате"</string>
-    <string name="export_invalid_storage" msgid="3945266169513895950">"Изберете приложение за хранилище, към което да експортирате данните си"</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"Въведете парола"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Необходимо е шифроване с паролата ви, за да импортирате данните си в Health Connect"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Забравихте паролата си?"</string>
-    <string name="import_password_hint" msgid="5158553589723883063">"Парола"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Ако още разполагате със стария си телефон, можете да експортирате отново данните си с нова парола"</string>
+    <string name="export_destination_title" msgid="8352929396306002479">"Изберете място за експортиране по график"</string>
+    <string name="export_invalid_storage" msgid="1459055934301871321">"Изберете приложение за хранилище в облака, в което да експортирате данните си"</string>
+    <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
+    <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Искате ли да импортирате този файл?"</string>
+    <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"Файлът <xliff:g id="FILE_NAME">%1$s</xliff:g> ще бъде импортиран в Health Connect"</string>
+    <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Отказ"</string>
+    <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Импортиране"</string>
+    <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Възстановяването на Health Connect е в ход"</string>
+    <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Възстановяването на Health Connect завърши"</string>
+    <string name="import_complete_toast_text" msgid="7730872919621230959">"Възстановяването на данните завърши"</string>
+    <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect не възстанови данните"</string>
+    <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Необходимо е още място"</string>
+    <string name="import_notification_error_invalid_file_body_text" msgid="8877884063398886772">"Избраният от вас файл не е съвместим за възстановяване. Изберете правилния експортиран файл."</string>
+    <string name="import_notification_error_more_space_needed_body_text" msgid="7577564968089566232">"За да продължи възстановяването на данните ви, Health Connect се нуждае от <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> свободно място в хранилището на телефона ви."</string>
+    <string name="import_notification_error_generic_error_body_text" msgid="6562162452820282874">"При възстановяването на данните от експортирания файл възникна проблем."</string>
+    <string name="import_notification_error_version_mismatch_body_text" msgid="9186785816764607620">"Актуализирайте системата си, за да може Health Connect да възстанови данните ви, и опитайте отново."</string>
+    <string name="import_notification_update_now_intent_button" msgid="2808579294292956628">"Актуализиране сега"</string>
+    <string name="import_notification_try_again_intent_button" msgid="3833062670098674999">"Нов опит"</string>
+    <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Отваряне"</string>
+    <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Избор на файл"</string>
+    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Освобождаване на място"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
+    <!-- no translation found for export_cancel_button (1952360582645412410) -->
+    <skip />
     <string name="export_next_button" msgid="657930567137105172">"Напред"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Отказ"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Напред"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Импортиране от"</string>
-    <string name="import_invalid_storage" msgid="4873640088459948487">"Изберете приложение за хранилище, от което да импортирате данните си"</string>
+    <string name="import_invalid_storage" msgid="341798262315495399">"Изберете приложение за хранилище в облака, от което да импортирате данните си"</string>
+    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"Докоснете, за да изберете профил"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Избиране на профил"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Отказ"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Готово"</string>
+    <string name="export_import_no_apps_text" msgid="6403119325024893690">"Няма приложения. Инсталирайте приложения за хранилище в облака. Те ще се показват тук"</string>
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"За още опции инсталирайте приложения за хранилище в облака. Те ще се показват тук"</string>
+    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Към Google Play Магазин"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Първи стъпки с Health Connect"</string>
-    <string name="onboarding_description" msgid="4873129122057931161">"Health Connect съхранява данните за здравословното ви състояние и физическата ви активност и ви предоставя лесен начин да синхронизирате различните приложения на телефона си"</string>
+    <string name="onboarding_description" msgid="3479157507808350452">"Health Connect съхранява данните за здравословното ви състояние и физическата ви активност и ви предоставя лесен начин да синхронизирате различните приложения на устройството си"</string>
     <string name="share_data" msgid="3481932156368883946">"Споделяне на данни с приложенията ви"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Изберете типовете данни, които отделните приложения да четат или записват в Health Connect"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Настройки и поверителност"</string>
@@ -384,12 +420,15 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"Изтриване на данните"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Стартиране на изтриването"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Изход от изтриването"</string>
-    <string name="time_range_title" msgid="6831605283322600165">"Изберете данните, които да се изтрият"</string>
+    <!-- no translation found for time_range_title (5777596779865648336) -->
+    <skip />
     <string name="time_range_next_button" msgid="5849096934896557888">"Напред"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Това действие ще изтрие за постоянно всички данни, добавени към Health Connect през избрания период от време"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"Това действие ще изтрие за постоянно данните от типа „<xliff:g id="DATA_TYPE">%s</xliff:g>“, добавени към Health Connect през избрания период от време"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"Това действие ще изтрие за постоянно данните от „<xliff:g id="CATEGORY">%s</xliff:g>“, добавени към Health Connect през избрания период от време"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"Това действие ще изтрие за постоянно данните от <xliff:g id="APP_DATA">%s</xliff:g>, добавени към Health Connect през избрания период от време"</string>
+    <!-- no translation found for time_range_message_permission_type_app_data (1613568925588480588) -->
+    <skip />
     <string name="time_range_one_day" msgid="7162709826595446727">"Изтриване на данните от последните 24 часа"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"Изтриване на данните от последните 7 дни"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"Изтриване на данните от последните 30 дни"</string>
@@ -410,17 +449,32 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"Да се изтрият ли за постоянно данните от <xliff:g id="APP_DATA">%s</xliff:g> от последните 24 часа?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"Да се изтрият ли за постоянно данните от <xliff:g id="APP_DATA">%s</xliff:g> от последните 7 дни?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"Да се изтрият ли за постоянно данните от <xliff:g id="APP_DATA">%s</xliff:g> от последните 30 дни?"</string>
+    <!-- no translation found for confirming_question_permission_type_app_data_all (1210052631467085849) -->
+    <skip />
+    <!-- no translation found for confirming_question_permission_type_app_data_one_day (4377296923865256246) -->
+    <skip />
+    <!-- no translation found for confirming_question_permission_type_app_data_one_week (2253468260502709170) -->
+    <skip />
+    <!-- no translation found for confirming_question_permission_type_app_data_one_month (1656927839079630144) -->
+    <skip />
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Всички разрешения за <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> също да се премахнат от Health Connect"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Да се изтрият ли за постоянно данните от типа „<xliff:g id="DATA_TYPE">%1$s</xliff:g>“, добавени от <xliff:g id="APP_DATA">%2$s</xliff:g>?"</string>
-    <string name="confirming_question_single_entry" msgid="330919962071369305">"Искате ли да изтриете този запис за постоянно?"</string>
+    <!-- no translation found for confirming_question_single_entry (2064578008447638932) -->
+    <skip />
     <string name="confirming_question_message" msgid="2934249835529079545">"Свързаните приложения вече няма да могат да осъществяват достъп до тези данни от Health Connect"</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"Това ще изтрие всички записи за менструацията от <xliff:g id="START_DATE">%1$s</xliff:g> до <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Изтриване"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Назад"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Готово"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"Затваряне"</string>
-    <string name="delete_dialog_success_title" msgid="5009733262743173477">"Данните бяха изтрити"</string>
-    <string name="delete_dialog_success_message" msgid="2451953113522118128">"Тези данни вече не се съхраняват в Health Connect."</string>
+    <!-- no translation found for delete_dialog_success_title (900884533930984889) -->
+    <skip />
+    <!-- no translation found for delete_dialog_success_message (7454086333205881294) -->
+    <skip />
+    <!-- no translation found for delete_dialog_done_button (1371340030947835493) -->
+    <skip />
+    <!-- no translation found for delete_dialog_see_connected_apps_button (2975631672738138716) -->
+    <skip />
     <string name="delete_progress_indicator" msgid="5799502879065833417">"Данните ви се изтриват"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"Данните не бяха изтрити"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"Нещо се обърка и Health Connect не успя да изтрие данните ви"</string>
@@ -807,12 +861,17 @@
     <string name="range_off" msgid="8178520557618184215">"Изкл."</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Когато промените тези настройки, Health Connect ще изтрие част от съществуващите данни, така че да бъдат отразени новите ви предпочитания"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Данните да се изтриват ли автоматично след # месец?}other{Данните да се изтриват ли автоматично след # месеца?}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect ще изтрива автоматично новите данни след # месец. Ако зададете тази опция, ще се изтрият и съществуващите данни, които са по-стари от # месец.}other{Health Connect ще изтрива автоматично новите данни след # месеца. Ако зададете тази опция, ще се изтрият и съществуващите данни, които са по-стари от # месеца.}}"</string>
+    <!-- no translation found for confirming_message_x_months (986840333220382321) -->
+    <skip />
     <string name="set_auto_delete_button" msgid="268450418318199197">"Настройване на автоматичното изтриване"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Съществуващи данни ще бъдат изтрити"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect ще изтрие всички данни, които са по-стари от # месец. Може да мине един ден, преди тези промени да се покажат в свързаните ви приложения.}other{Health Connect ще изтрие всички данни, които са по-стари от # месеца. Може да мине един ден, преди тези промени да се покажат в свързаните ви приложения.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Данни, които ще бъдат изтрити от тези"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Готово"</string>
+    <!-- no translation found for auto_delete_confirmation_toast (7161651426400701306) -->
+    <skip />
+    <!-- no translation found for auto_delete_off_toast (6530926709108821768) -->
+    <skip />
     <string name="priority_dialog_title" msgid="7360654442596118085">"Задаване на приоритет за приложенията"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Ако повече от едно приложение добави данни от типа „<xliff:g id="DATA_TYPE">%s</xliff:g>“, Health Connect дава приоритет на това, което е най-напред в списъка. Можете да промените реда на приложенията чрез преместване с плъзгане."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"Запазване"</string>
@@ -948,4 +1007,6 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Всички данни са изтрити"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Данните от типа „<xliff:g id="PERMISSION_TYPE">%s</xliff:g>“ са изтрити"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Изтрихте <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> елемента"</string>
+    <!-- no translation found for select_all (837499881590001166) -->
+    <skip />
 </resources>

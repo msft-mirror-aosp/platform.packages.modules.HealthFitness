@@ -21,6 +21,7 @@ import static com.android.server.healthconnect.TestUtils.TEST_USER;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
+import android.health.connect.HealthConnectManager;
 import android.os.Environment;
 
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -46,6 +47,7 @@ public class HealthConnectDatabaseTestRule extends ExternalResource {
     public void before() {
         mStaticMockSession =
                 ExtendedMockito.mockitoSession()
+                        .mockStatic(HealthConnectManager.class)
                         .mockStatic(Environment.class)
                         .strictness(Strictness.LENIENT)
                         .startMocking();
@@ -56,12 +58,7 @@ public class HealthConnectDatabaseTestRule extends ExternalResource {
         File mockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
         when(Environment.getDataDirectory()).thenReturn(mockDataDirectory);
         TransactionManager.cleanUpForTest();
-        mTransactionManager = TransactionManager.getInstance(mContext);
-        // Init any needed helpers here.
-        // Helpers are initialised during database onCreate(). When running a test in case the
-        // database is already initialised, not all helpers might be initialised.
-        // In this case, DatabaseHelper.clearAllData() may not clear all data as expected.
-        ChangeLogsHelper.getInstance();
+        mTransactionManager = TransactionManager.initializeInstance(mContext);
     }
 
     @Override

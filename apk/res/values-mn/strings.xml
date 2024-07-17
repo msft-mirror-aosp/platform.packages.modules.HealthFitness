@@ -20,8 +20,9 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Эрүүл мэндийн өгөгдлийн аппын хандалтыг удирдах"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Зөвшөөрөл болон өгөгдөл"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Утсан дээрээ эрүүл мэнд, фитнесийн өгөгдлөө удирдаж, үүнд ямар аппууд хандаж болохыг хянана уу"</string>
+    <string name="home_subtitle" msgid="2154213430054477787">"Төхөөрөмж дээрээ эрүүл мэнд, фитнесийн өгөгдлийг удирдаж, үүнд ямар апп хандаж болохыг хянана уу"</string>
     <string name="data_title" msgid="4456619761533380816">"Өгөгдөл, хандалт"</string>
+    <string name="browse_medical_data" msgid="6963802956096683273">"Эрүүл мэндийн түүхийг үзэх"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Бүх ангилал"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Бүх ангиллыг харах"</string>
     <string name="no_data" msgid="1906986019249068659">"Өгөгдөл байхгүй байна"</string>
@@ -34,15 +35,14 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 апп хандах эрхтэй байна}other{# aпп хандах эрхтэй байна}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Байхгүй"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Орсон мэдээллийн дэлгэрэнгүй"</string>
+    <!-- no translation found for manage_data_summary (8537870912521944449) -->
+    <skip />
     <string name="backup_title" msgid="211503191266235085">"Нөөцлөх"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Өгөгдлийн сурвалж болон чухалчлал"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Нэгжүүд тохируулах"</string>
-    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
-    <skip />
-    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
-    <skip />
-    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
-    <skip />
+    <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Сонголт"</string>
+    <string name="manage_data_category_title" msgid="6328886061582616519">"Өгөгдлийг удирдах"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Өгөгдлийг экспорт, импорт хийх"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Саяхны хандалт"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Сүүлийн үед ямар ч апп Health Connect-д хандаагүй байна"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Саяхны бүх хандалтыг харах"</string>
@@ -89,7 +89,7 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"таны эрүүл мэндийн өгөгдөлд хандах"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Шатаасан калорийг унших"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Аппад шатаасан калори уншихыг зөвшөөрөх"</string>
-    <string name="background_read_title" msgid="5061383169517186234">"Дэвсгэрт өгөгдөлд хандах"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"Ард өгөгдөлд хандах"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"<xliff:g id="APP_NAME">%1$s</xliff:g>-д дэвсгэрт өгөгдөлд хандахыг зөвшөөрөх үү?"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Та аппыг ашиглаагүй үедээ энэ аппад Health Connect-н өгөгдөлд хандахыг зөвшөөрөх"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"Хэрэв та зөвшөөрвөл таныг аппыг ашиглаагүй үед энэ апп Health Connect-н өгөгдөлд хандах боломжтой."</string>
@@ -264,18 +264,16 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"арьсны температур"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Арьсны температурыг унших"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Арьсны температурыг бичих"</string>
-    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
-    <skip />
-    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
-    <skip />
-    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
-    <skip />
-    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
-    <skip />
-    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
-    <skip />
-    <!-- no translation found for immunization_content_description (2910674919337229803) -->
-    <skip />
+    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Эрүүл мэндийн бүх өгөгдөл"</string>
+    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"эрүүл мэндийн бүх өгөгдөл"</string>
+    <string name="all_medical_data_content_description" msgid="6103488863059447886">"Эрүүл мэндийн бүх өгөгдлийг бичих"</string>
+    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Дархлаажуулалт"</string>
+    <string name="immunization_lowercase_label" msgid="6464922369026887687">"дархлаажуулалт"</string>
+    <string name="immunization_content_description" msgid="2910674919337229803">"Дархлаажуулалтын өгөгдлийг унших"</string>
+    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Анхаарал төвлөрөл"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"анхаарал төвлөрөл"</string>
+    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Анхаарал төвлөрлийн өгөгдлийг унших"</string>
+    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Анхаарал төвлөрлийн өгөгдлийг бичих"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"“<xliff:g id="APP_NAME">%1$s</xliff:g>” г уншихыг зөвшөөрөх"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"“<xliff:g id="APP_NAME">%1$s</xliff:g>” г бичихийг зөвшөөрөх"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Цуцлах"</string>
@@ -328,6 +326,9 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Та одоогоор ямар ч тохирох апп суулгаагүй байна"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Нэмэлт хандах эрх"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Энэ аппын нэмэлт зөвшөөрлүүдийг хассан"</string>
+    <string name="permissions_header" msgid="6519976063360071569">"Зөвшөөрөл"</string>
+    <string name="manage_fitness_permissions" msgid="1001729292172461314">"Фитнесийн зөвшөөрлийг удирдах"</string>
+    <string name="manage_medical_permissions" msgid="7658181359096889932">"Эрүүл мэндийн түүхийн зөвшөөрлийг удирдах"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Аппын зөвшөөрлийг хассан"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect <xliff:g id="APP_DATA">%s</xliff:g>-н зөвшөөрлийг хассан"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect <xliff:g id="APP_DATA_0">%1$s</xliff:g> болон <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>-н зөвшөөрлийг хассан"</string>
@@ -343,38 +344,73 @@
     <string name="next_export_time" msgid="3138247220014510213">"Дараагийн экспорт хийх огноо: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Нөөцлөх болон сэргээх"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Сүүлд экспорт хийсэн огноо: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="export_and_import_title" msgid="3241901922222465397">"Экспорт хийх болон импорт хийх"</string>
+    <!-- no translation found for last_export_file_location (4069435932524304633) -->
+    <skip />
     <string name="scheduled_export" msgid="8737660963687364370">"Хуваарьт экспорт"</string>
     <string name="import_data" msgid="404502315533233094">"Өгөгдөл импорт хийх"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Өмнө нь экспорт хийсэн файлаас өгөгдөл сэргээнэ үү"</string>
+    <string name="import_error_banner_title" msgid="1480977889067027790">"Өгөгдлийг сэргээж чадсангүй"</string>
+    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"Файл сонгох"</string>
+    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"Таны сонгосон файл сэргээхэд тохиромжгүй байна. Экспорт хийсэн зөв файлыг сонгоно уу."</string>
+    <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"Одоо шинэчлэх"</string>
+    <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Системээ шинэчилснээр Health Connect таны өгөгдлийг сэргээх боломжтой болох ба дараа нь дахин оролдоно уу."</string>
+    <string name="import_other_error_banner_button" msgid="8006947649520909176">"Дахин оролдох"</string>
+    <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Таны экспортоос өгөгдлийг сэргээхэд асуудал гарлаа."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Экспорт танд өгөгдлөө хадгалах боломжийг олгох тул та өгөгдлөө шинэ утас руу шилжүүлэх боломжтой"</string>
-    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Нэмэлт мэдээлэл авах"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"Нөөцлөх болон сэргээх тухай"</string>
+    <!-- no translation found for automatic_export_status (4407131306281440230) -->
+    <skip />
     <string name="automatic_export_on" msgid="6972389773963624315">"Асаалттай"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Унтраалттай"</string>
-    <string name="choose_frequency_category" msgid="2230821549715237663">"Давтамж сонгох"</string>
-    <string name="choose_frequency" msgid="1077467424225083246">"Давтамж сонгох"</string>
-    <string name="choose_frequency_description" msgid="752601326653048254">"Өгөгдлийг нэг удаа хадгалахаар сонгох эсвэл үүнийг тогтмол цагуудад автоматаар хадгалахаар тохируулна уу."</string>
+    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
+    <skip />
+    <!-- no translation found for next_export_file_location (2117071837862240540) -->
+    <skip />
+    <string name="choose_frequency_category" msgid="9094154407387676553">"Давтамжийг өөрчлөх"</string>
+    <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Хэрэв та хуваарьт экспортыг унтраавал энэ нь өмнө нь экспорт хийсэн өгөгдлийг хадгалсан газраас нь устгахгүй"</string>
+    <string name="choose_frequency" msgid="8119085390857180221">"Хуваарьт экспорт тохируулах"</string>
+    <string name="choose_frequency_description" msgid="7698155810053504157">"Өгөгдлөө хэр давтамжтай экспорт хийхийг сонгоно уу"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Өдөр бүр"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Долоо хоног бүр"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Сар бүр"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"Хаана экспорт хийхээ сонгох"</string>
-    <string name="export_invalid_storage" msgid="3945266169513895950">"Өгөгдлөө экспорт хийх хадгалах сангийн аппыг сонгоно уу"</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"Нууц үгээ бичиж оруулах"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Health Connect-н өгөгдлөө импорт хийхэд таны шифрлэлтийн нууц үг шаардлагатай"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Нууц үгээ мартсан уу?"</string>
-    <string name="import_password_hint" msgid="5158553589723883063">"Нууц үг"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Хэрэв танд хуучин утас тань байгаа бол та шинэ нууц үгээр өгөгдлөө дахин экспорт хийх боломжтой"</string>
+    <string name="export_destination_title" msgid="8352929396306002479">"Хаана хуваарьт экспорт хадгалахыг сонгох"</string>
+    <string name="export_invalid_storage" msgid="1459055934301871321">"Өгөгдлөө экспорт хийхэд зориулсан үүлэн хадгалах сангийн аппыг сонгоно уу"</string>
+    <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
+    <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Энэ файлыг импорт хийх үү?"</string>
+    <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"<xliff:g id="FILE_NAME">%1$s</xliff:g>-г Health Connect руу импорт хийнэ"</string>
+    <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Цуцлах"</string>
+    <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Импорт хийх"</string>
+    <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect сэргээж байна"</string>
+    <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect сэргээж дууслаа"</string>
+    <string name="import_complete_toast_text" msgid="7730872919621230959">"Өгөгдлийг сэргээж дууссан"</string>
+    <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect өгөгдлийг сэргээж чадсангүй"</string>
+    <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Илүү их зай шаардлагатай"</string>
+    <string name="import_notification_error_invalid_file_body_text" msgid="8877884063398886772">"Таны сонгосон файл сэргээхэд тохиромжгүй байна. Экспорт хийсэн зөв файлыг сонгоно уу."</string>
+    <string name="import_notification_error_more_space_needed_body_text" msgid="7577564968089566232">"Таны өгөгдлийг үргэлжлүүлэн сэргээхэд Health Connect-д таны утсан дээр <xliff:g id="SPACE_NEEDED">%1$s</xliff:g>-н хадгалах сангийн зай шаардлагатай."</string>
+    <string name="import_notification_error_generic_error_body_text" msgid="6562162452820282874">"Таны экспортоос өгөгдөл сэргээхэд асуудал гарлаа."</string>
+    <string name="import_notification_error_version_mismatch_body_text" msgid="9186785816764607620">"Системээ шинэчилснээр Health Connect таны өгөгдлийг сэргээх боломжтой болох ба дараа нь дахин оролдоно уу."</string>
+    <string name="import_notification_update_now_intent_button" msgid="2808579294292956628">"Одоо шинэчлэх"</string>
+    <string name="import_notification_try_again_intent_button" msgid="3833062670098674999">"Дахин оролдох"</string>
+    <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Нээх"</string>
+    <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Файл сонгох"</string>
+    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Сул зай гаргах"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Буцах"</string>
+    <!-- no translation found for export_cancel_button (1952360582645412410) -->
+    <skip />
     <string name="export_next_button" msgid="657930567137105172">"Дараах"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Цуцлах"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Дараах"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Дараахаас импорт хийх"</string>
-    <string name="import_invalid_storage" msgid="4873640088459948487">"Өгөгдлөө импорт хийх хадгалах сангийн аппыг сонгоно уу"</string>
+    <string name="import_invalid_storage" msgid="341798262315495399">"Өгөгдлөө импорт хийхэд зориулж үүлэн хадгалах сангийн апп сонгоно уу"</string>
+    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"Бүртгэл сонгохын тулд товшино уу"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Бүртгэл сонгоно уу"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Цуцлах"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Болсон"</string>
+    <string name="export_import_no_apps_text" msgid="6403119325024893690">"Боломжтой апп алга. Үүлэн хадгалах сангийн аппуудыг энд харахын тулд суулгана уу"</string>
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"Бусад сонголтыг авах бол энд харах үүлэн хадгалах сангийн аппуудыг суулгана уу"</string>
+    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Store луу очих"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect-г ашиглаж эхлээрэй"</string>
-    <string name="onboarding_description" msgid="4873129122057931161">"Health Connect таны эрүүл мэнд, фитнесийн өгөгдлийг хадгалснаар та утсан дээрээ байгаа өөр өөр аппуудыг энгийн аргаар синк хийх боломжтой болно"</string>
+    <string name="onboarding_description" msgid="3479157507808350452">"Health Connect таны эрүүл мэнд, фитнесийн өгөгдлийг хадгалснаар та төхөөрөмж дээрээ байгаа өөр өөр аппуудыг энгийн аргаар синк хийх боломжтой"</string>
     <string name="share_data" msgid="3481932156368883946">"Аппуудтайгаа өгөгдөл хуваалцаарай"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Апп бүрийн Health Connect-с унших болон түүнд бичих боломжтой өгөгдлийг сонгоно уу"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Тохиргоо болон нууцлалаа удирдаарай"</string>
@@ -384,12 +420,15 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"Өгөгдлийг устгах"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Устгах төлөвт орох"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Устгах төлөвөөс гарах"</string>
-    <string name="time_range_title" msgid="6831605283322600165">"Устгах өгөгдлийг сонгоно уу"</string>
+    <!-- no translation found for time_range_title (5777596779865648336) -->
+    <skip />
     <string name="time_range_next_button" msgid="5849096934896557888">"Дараах"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Энэ нь сонгосон хугацаанд Health Connect-д нэмсэн бүх өгөгдлийг бүрмөсөн устгана"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"Энэ нь сонгосон хугацаанд Health Connect-д нэмсэн <xliff:g id="DATA_TYPE">%s</xliff:g>-н бүх өгөгдлийг бүрмөсөн устгана"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"Энэ нь сонгосон хугацаанд Health Connect-д нэмсэн <xliff:g id="CATEGORY">%s</xliff:g>-н бүх өгөгдлийг бүрмөсөн устгана"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"Энэ нь сонгосон хугацаанд Health Connect-д нэмсэн <xliff:g id="APP_DATA">%s</xliff:g>-н бүх өгөгдлийг бүрмөсөн устгана"</string>
+    <!-- no translation found for time_range_message_permission_type_app_data (1613568925588480588) -->
+    <skip />
     <string name="time_range_one_day" msgid="7162709826595446727">"Сүүлийн 24 цагийн өгөгдлийг устгах"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"Сүүлийн 7 хоногийн өгөгдлийг устгах"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"Сүүлийн 30 хоногийн өгөгдлийг устгах"</string>
@@ -410,17 +449,32 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"<xliff:g id="APP_DATA">%s</xliff:g>-н сүүлийн 24 цагийн өгөгдлийг бүрмөсөн устгах уу?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"<xliff:g id="APP_DATA">%s</xliff:g>-н сүүлийн 7 хоногийн өгөгдлийг бүрмөсөн устгах уу?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"<xliff:g id="APP_DATA">%s</xliff:g>-н сүүлийн 30 хоногийн өгөгдлийг бүрмөсөн устгах уу?"</string>
+    <!-- no translation found for confirming_question_permission_type_app_data_all (1210052631467085849) -->
+    <skip />
+    <!-- no translation found for confirming_question_permission_type_app_data_one_day (4377296923865256246) -->
+    <skip />
+    <!-- no translation found for confirming_question_permission_type_app_data_one_week (2253468260502709170) -->
+    <skip />
+    <!-- no translation found for confirming_question_permission_type_app_data_one_month (1656927839079630144) -->
+    <skip />
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Мөн <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g>-н бүх зөвшөөрлийг Health Connect-с хасах"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"<xliff:g id="APP_DATA">%2$s</xliff:g>-с нэмсэн бүх <xliff:g id="DATA_TYPE">%1$s</xliff:g>-н өгөгдлийг бүрмөсөн устгах уу?"</string>
-    <string name="confirming_question_single_entry" msgid="330919962071369305">"Энэ оруулгыг бүрмөсөн устгах уу?"</string>
+    <!-- no translation found for confirming_question_single_entry (2064578008447638932) -->
+    <skip />
     <string name="confirming_question_message" msgid="2934249835529079545">"Холбогдсон аппууд цаашид энэ өгөгдөлд Health Connect-с хандах боломжгүй болно"</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"Энэ нь сарын тэмдгийн <xliff:g id="START_DATE">%1$s</xliff:g>-с <xliff:g id="END_DATE">%2$s</xliff:g>-ны хоорондох бүх оролтыг устгана."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Устгах"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Буцах"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Болсон"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"Хаах"</string>
-    <string name="delete_dialog_success_title" msgid="5009733262743173477">"Өгөгдлийг устгасан"</string>
-    <string name="delete_dialog_success_message" msgid="2451953113522118128">"Энэ өгөгдлийг Health Connect-д хадгалахаа больсон."</string>
+    <!-- no translation found for delete_dialog_success_title (900884533930984889) -->
+    <skip />
+    <!-- no translation found for delete_dialog_success_message (7454086333205881294) -->
+    <skip />
+    <!-- no translation found for delete_dialog_done_button (1371340030947835493) -->
+    <skip />
+    <!-- no translation found for delete_dialog_see_connected_apps_button (2975631672738138716) -->
+    <skip />
     <string name="delete_progress_indicator" msgid="5799502879065833417">"Таны өгөгдлийг устгаж байна"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"Өгөгдлийг устгаж чадсангүй"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"Алдаа гарсан бөгөөд Health Connect таны өгөгдлийг устгаж чадсангүй"</string>
@@ -807,12 +861,17 @@
     <string name="range_off" msgid="8178520557618184215">"Унтраалттай"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Таныг эдгээр тохиргоог өөрчилсөн үед Health Connect таны шинэ сонголтыг тусгахын тулд одоо байгаа өгөгдлийг устгана"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Өгөгдлийг # сарын дараа автоматаар устгах уу?}other{Өгөгдлийг # сарын дараа автоматаар устгах уу?}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect шинэ өгөгдлийг # сарын дараа автоматаар устгана. Үүнийг тохируулснаар # сараас дээш хугацаатай хадгалсан одоо байгаа өгөгдлийг мөн устгана.}other{Health Connect шинэ өгөгдлийг # сарын дараа автоматаар устгана. Үүнийг тохируулснаар # сараас дээш хугацаатай хадгалсан одоо байгаа өгөгдлийг мөн устгана.}}"</string>
+    <!-- no translation found for confirming_message_x_months (986840333220382321) -->
+    <skip />
     <string name="set_auto_delete_button" msgid="268450418318199197">"Автоматаар устгах онцлогийг тохируулах"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Одоо байгаа өгөгдлийг устгана"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect # сараас дээш хугацаатай хадгалсан бүх өгөгдлийг устгана. Эдгээр өөрчлөлт таны холбогдсон аппуудад гарч ирэхэд нэг өдөр зарцуулж магадгүй.}other{Health Connect # сараас дээш хугацаатай хадгалсан бүх өгөгдлийг устгана. Эдгээр өөрчлөлт таны холбогдсон аппуудад гарч ирэхэд нэг өдөр зарцуулж магадгүй.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Эдгээрээс устгах өгөгдөл"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Болсон"</string>
+    <!-- no translation found for auto_delete_confirmation_toast (7161651426400701306) -->
+    <skip />
+    <!-- no translation found for auto_delete_off_toast (6530926709108821768) -->
+    <skip />
     <string name="priority_dialog_title" msgid="7360654442596118085">"Аппын чухал байдлын эрэмбэ тохируулах"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Хэрэв нэгээс олон апп <xliff:g id="DATA_TYPE">%s</xliff:g>-н өгөгдөл нэмбэл Health Connect нь уг жагсаалт дахь хамгийн дээр байх аппыг чухалчилна. Аппуудыг дахин эрэмбэлэхийн тулд чирнэ үү."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"Хадгалах"</string>
@@ -948,4 +1007,6 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Бүх өгөгдлийг устгасан"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>-н өгөгдлийг устгасан"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> зүйл устгасан"</string>
+    <!-- no translation found for select_all (837499881590001166) -->
+    <skip />
 </resources>

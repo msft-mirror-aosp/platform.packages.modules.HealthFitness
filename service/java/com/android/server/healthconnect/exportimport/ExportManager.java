@@ -33,17 +33,13 @@ import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.Clock;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /**
  * Class that manages export related tasks. In this context, export means to make an encrypted copy
@@ -55,7 +51,6 @@ public class ExportManager {
 
     @VisibleForTesting static final String LOCAL_EXPORT_DIR_NAME = "export_import";
 
-    @VisibleForTesting
     static final String LOCAL_EXPORT_DATABASE_FILE_NAME = "health_connect_export.db";
 
     @VisibleForTesting static final String LOCAL_EXPORT_ZIP_FILE_NAME = "health_connect_export.zip";
@@ -63,6 +58,7 @@ public class ExportManager {
     private static final String TAG = "HealthConnectExportImport";
 
     private Clock mClock;
+    private final TransactionManager mTransactionManager;
 
     // Tables to drop instead of tables to keep to avoid risk of bugs if new data types are added.
 
@@ -83,6 +79,7 @@ public class ExportManager {
         mClock = clock;
         mDatabaseContext =
                 DatabaseContext.create(context, LOCAL_EXPORT_DIR_NAME, context.getUser());
+        mTransactionManager = TransactionManager.getInitialisedInstance();
     }
 
     /**
@@ -107,7 +104,7 @@ public class ExportManager {
             }
 
             try {
-                deleteLogTablesContent(LOCAL_EXPORT_DATABASE_FILE_NAME);
+                deleteLogTablesContent();
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to prepare local file for export", e);
                 ExportImportSettingsStorage.setLastExportError(
@@ -116,7 +113,8 @@ public class ExportManager {
             }
 
             try {
-                compress(localExportDbFile, localExportZipFile);
+                Compressor.compress(
+                        localExportDbFile, LOCAL_EXPORT_DATABASE_FILE_NAME, localExportZipFile);
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to compress local file for export", e);
                 ExportImportSettingsStorage.setLastExportError(
@@ -124,8 +122,9 @@ public class ExportManager {
                 return false;
             }
 
+            Uri destinationUri = ExportImportSettingsStorage.getUri();
             try {
-                exportToUri(localExportZipFile, ExportImportSettingsStorage.getUri());
+                exportToUri(localExportZipFile, destinationUri);
             } catch (FileNotFoundException e) {
                 Slog.e(TAG, "Lost access to export location", e);
                 ExportImportSettingsStorage.setLastExportError(
@@ -137,9 +136,9 @@ public class ExportManager {
                         HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
                 return false;
             }
-
             Slog.i(TAG, "Export completed.");
             ExportImportSettingsStorage.setLastSuccessfulExport(mClock.instant());
+            ExportImportSettingsStorage.setLastSuccessfulExportUri(destinationUri);
             return true;
         } finally {
             Slog.i(TAG, "Delete local export files started.");
@@ -156,12 +155,12 @@ public class ExportManager {
     private void exportLocally(File destination) throws IOException {
         Slog.i(TAG, "Local export started.");
 
-        if (!destination.mkdirs()) {
+        if (!destination.exists() && !destination.mkdirs()) {
             throw new IOException("Unable to create directory for local export.");
         }
 
         Files.copy(
-                TransactionManager.getInitialisedInstance().getDatabasePath().toPath(),
+                mTransactionManager.getDatabasePath().toPath(),
                 destination.toPath(),
                 StandardCopyOption.REPLACE_EXISTING);
 
@@ -180,39 +179,16 @@ public class ExportManager {
         }
     }
 
-    private void compress(File source, File destination) throws IOException {
-        destination.mkdirs();
-        destination.delete();
-        try {
-            ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(destination));
-            outputStream.putNextEntry(new ZipEntry(source.getName()));
-            FileInputStream inputStream = new FileInputStream(source);
-            byte[] bytes = new byte[1024];
-            int length;
-            while ((length = inputStream.read(bytes)) >= 0) {
-                outputStream.write(bytes, 0, length);
-            }
-            outputStream.close();
-            inputStream.close();
-            Slog.i(TAG, "Export file zipped: " + destination.getAbsolutePath());
-        } catch (Exception e) {
-            Slog.e(TAG, "Failed to create zip file for export", e);
-            destination.delete();
-            throw e;
-        }
-    }
-
     // TODO(b/325599879): Double check if we need to vacuum the database after clearing the tables.
-    private void deleteLogTablesContent(String dbName) throws IOException {
+    private void deleteLogTablesContent() {
+        // Throwing a exception when calling this method implies that it was not possible to
+        // create a HC database from the file and, therefore, most probably the database was
+        // corrupted during the file copy.
         try (HealthConnectDatabase exportDatabase =
-                new HealthConnectDatabase(mDatabaseContext, dbName)) {
+                new HealthConnectDatabase(mDatabaseContext, LOCAL_EXPORT_DATABASE_FILE_NAME)) {
             for (String tableName : TABLES_TO_CLEAR) {
                 exportDatabase.getWritableDatabase().execSQL("DELETE FROM " + tableName + ";");
             }
-        } catch (Exception e) {
-            // This exception is not passed up the stack for error handling, because it has no
-            // user visible effect other than the data being larger.
-            Slog.e(TAG, "Unable to drop log tables for export database.");
         }
         Slog.i(TAG, "Drop log tables completed.");
     }
