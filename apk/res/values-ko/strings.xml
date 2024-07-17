@@ -20,8 +20,7 @@
     <string name="app_label" msgid="4768580772453324183">"헬스 커넥트"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"건강 데이터에 대한 앱 액세스 제어"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"권한 및 데이터"</string>
-    <!-- no translation found for home_subtitle (2154213430054477787) -->
-    <skip />
+    <string name="home_subtitle" msgid="2154213430054477787">"기기에서 건강 및 피트니스 데이터를 관리하고 이러한 데이터에 액세스할 수 있는 앱을 제어하세요."</string>
     <string name="data_title" msgid="4456619761533380816">"데이터 및 액세스"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"건강 기록 살펴보기"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"모든 카테고리"</string>
@@ -36,6 +35,8 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{앱 1개에 액세스 권한이 있음}other{앱 #개에 액세스 권한이 있음}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"없음"</string>
     <string name="entry_details_title" msgid="590184849040247850">"항목 세부정보"</string>
+    <!-- no translation found for manage_data_summary (8537870912521944449) -->
+    <skip />
     <string name="backup_title" msgid="211503191266235085">"백업"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"데이터 소스 및 우선순위"</string>
     <string name="set_units_title" msgid="2657822539603758029">"단위 설정"</string>
@@ -325,12 +326,9 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"현재 설치되어 있는 호환 앱이 없습니다"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"추가 액세스"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"이 앱의 추가 권한이 삭제되었습니다."</string>
-    <!-- no translation found for permissions_header (6519976063360071569) -->
-    <skip />
-    <!-- no translation found for manage_fitness_permissions (1001729292172461314) -->
-    <skip />
-    <!-- no translation found for manage_medical_permissions (7658181359096889932) -->
-    <skip />
+    <string name="permissions_header" msgid="6519976063360071569">"권한"</string>
+    <string name="manage_fitness_permissions" msgid="1001729292172461314">"피트니스 권한 관리"</string>
+    <string name="manage_medical_permissions" msgid="7658181359096889932">"건강 기록 권한 관리"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"앱 권한 삭제됨"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"헬스 커넥트에서 <xliff:g id="APP_DATA">%s</xliff:g>의 권한을 삭제했습니다."</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"헬스 커넥트에서 <xliff:g id="APP_DATA_0">%1$s</xliff:g> 및 <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>의 권한을 삭제했습니다."</string>
@@ -346,90 +344,70 @@
     <string name="next_export_time" msgid="3138247220014510213">"다음 내보낼 날짜: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"백업 및 복원"</string>
     <string name="last_export_time" msgid="9205875050823594041">"마지막으로 내보낸 날짜: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="export_and_import_title" msgid="3241901922222465397">"내보내기 및 가져오기"</string>
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"예약된 내보내기"</string>
     <string name="import_data" msgid="404502315533233094">"데이터 가져오기"</string>
     <string name="import_data_description" msgid="4040178599441724296">"이전에 내보낸 파일에서 데이터를 복원합니다."</string>
     <string name="import_error_banner_title" msgid="1480977889067027790">"데이터를 복원할 수 없습니다"</string>
-    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
-    <skip />
-    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
-    <skip />
+    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"파일 선택"</string>
+    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"선택한 파일은 복원 기능과 호환되지 않습니다. 내보낸 파일을 올바르게 선택했는지 확인하세요."</string>
     <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"지금 업데이트"</string>
     <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"헬스 커넥트가 데이터를 복원할 수 있도록 시스템을 업데이트한 다음 다시 시도하세요."</string>
     <string name="import_other_error_banner_button" msgid="8006947649520909176">"다시 시도"</string>
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"내보내기에서 데이터를 복원하는 동안 문제가 발생했습니다."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"내보내기를 사용하면 데이터를 저장하여 새 휴대전화로 데이터를 전송할 수 있습니다."</string>
-    <!-- no translation found for backup_and_restore_footer_link_text (9075133737244288876) -->
-    <skip />
+    <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"백업 및 복원 정보"</string>
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"사용"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"사용 안함"</string>
-    <!-- no translation found for choose_frequency_category (9094154407387676553) -->
+    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
     <skip />
-    <!-- no translation found for scheduled_export_settings_footer_text (8488483803782086291) -->
-    <skip />
-    <!-- no translation found for choose_frequency (8119085390857180221) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (7698155810053504157) -->
-    <skip />
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
+    <string name="choose_frequency_category" msgid="9094154407387676553">"빈도 변경"</string>
+    <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"예약된 내보내기를 사용 중지해도 이전에 내보낸 데이터가 저장된 위치에서 삭제되지 않습니다."</string>
+    <string name="choose_frequency" msgid="8119085390857180221">"예약된 내보내기 설정"</string>
+    <string name="choose_frequency_description" msgid="7698155810053504157">"데이터를 내보낼 빈도를 선택합니다."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"매일"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"매주"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"매달"</string>
-    <!-- no translation found for export_destination_title (8352929396306002479) -->
-    <skip />
+    <string name="export_destination_title" msgid="8352929396306002479">"예약된 내보내기를 저장할 위치 선택"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"데이터를 내보내기 위한 클라우드 스토리지 앱을 선택하세요."</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"헬스 커넥트"</string>
     <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"이 파일을 가져올까요?"</string>
     <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"<xliff:g id="FILE_NAME">%1$s</xliff:g> 파일을 헬스 커넥트로 가져옵니다."</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"취소"</string>
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"가져오기"</string>
-    <!-- no translation found for import_notification_import_in_progress_title (4657602436278942808) -->
-    <skip />
-    <!-- no translation found for import_notification_import_complete_title (7493223782222480412) -->
-    <skip />
-    <!-- no translation found for import_complete_toast_text (7730872919621230959) -->
-    <skip />
-    <!-- no translation found for import_notification_error_generic_error_title (19162830551127433) -->
-    <skip />
-    <!-- no translation found for import_notification_error_more_space_needed_title (240259612132385794) -->
-    <skip />
-    <!-- no translation found for import_notification_error_invalid_file_body_text (8877884063398886772) -->
-    <skip />
-    <!-- no translation found for import_notification_error_more_space_needed_body_text (7577564968089566232) -->
-    <skip />
-    <!-- no translation found for import_notification_error_generic_error_body_text (6562162452820282874) -->
-    <skip />
-    <!-- no translation found for import_notification_error_version_mismatch_body_text (9186785816764607620) -->
-    <skip />
-    <!-- no translation found for import_notification_update_now_intent_button (2808579294292956628) -->
-    <skip />
-    <!-- no translation found for import_notification_try_again_intent_button (3833062670098674999) -->
-    <skip />
-    <!-- no translation found for import_notification_open_intent_button (2739924648846724969) -->
-    <skip />
-    <!-- no translation found for import_notification_choose_file_intent_button (2249671128440758769) -->
-    <skip />
-    <!-- no translation found for import_notification_free_up_space_intent_button (4665571334602539807) -->
-    <skip />
+    <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"헬스 커넥트 복원 진행 중"</string>
+    <string name="import_notification_import_complete_title" msgid="7493223782222480412">"헬스 커넥트 복원 완료"</string>
+    <string name="import_complete_toast_text" msgid="7730872919621230959">"데이터 복원 완료됨"</string>
+    <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"헬스 커넥트에서 데이터를 복원할 수 없음"</string>
+    <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"추가 저장용량 필요"</string>
+    <string name="import_notification_error_invalid_file_body_text" msgid="8877884063398886772">"선택한 파일은 복원 기능과 호환되지 않습니다. 내보낸 파일을 올바르게 선택했는지 확인하세요."</string>
+    <string name="import_notification_error_more_space_needed_body_text" msgid="7577564968089566232">"데이터 복원을 계속하기 위해 헬스 커넥트에 <xliff:g id="SPACE_NEEDED">%1$s</xliff:g>의 휴대전화 저장용량이 필요합니다."</string>
+    <string name="import_notification_error_generic_error_body_text" msgid="6562162452820282874">"내보내기에서 데이터를 복원하는 동안 문제가 발생했습니다."</string>
+    <string name="import_notification_error_version_mismatch_body_text" msgid="9186785816764607620">"헬스 커넥트가 데이터를 복원할 수 있도록 시스템을 업데이트한 다음 다시 시도하세요."</string>
+    <string name="import_notification_update_now_intent_button" msgid="2808579294292956628">"지금 업데이트"</string>
+    <string name="import_notification_try_again_intent_button" msgid="3833062670098674999">"다시 시도"</string>
+    <string name="import_notification_open_intent_button" msgid="2739924648846724969">"열기"</string>
+    <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"파일 선택"</string>
+    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"여유 공간 확보"</string>
     <string name="export_back_button" msgid="3550795479165524982">"뒤로"</string>
+    <!-- no translation found for export_cancel_button (1952360582645412410) -->
+    <skip />
     <string name="export_next_button" msgid="657930567137105172">"다음"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"취소"</string>
     <string name="import_next_button" msgid="5706322508691854289">"다음"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"다음 위치에서 가져오기"</string>
     <string name="import_invalid_storage" msgid="341798262315495399">"데이터를 가져오기 위한 클라우드 스토리지 앱을 선택하세요."</string>
-    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
-    <skip />
+    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"탭하여 계정 선택"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"계정 선택하기"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"취소"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"완료"</string>
     <string name="export_import_no_apps_text" msgid="6403119325024893690">"사용 가능한 앱이 없습니다. 클라우드 스토리지 앱을 설치하여 여기에서 확인하세요."</string>
-    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
-    <skip />
-    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
-    <skip />
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"더 많은 옵션을 보려면 클라우드 스토리지 앱을 설치하여 여기에서 확인하세요."</string>
+    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play 스토어로 이동"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"헬스 커넥트 시작하기"</string>
-    <!-- no translation found for onboarding_description (3479157507808350452) -->
-    <skip />
+    <string name="onboarding_description" msgid="3479157507808350452">"헬스 커넥트는 건강 및 피트니스 데이터를 저장하여 기기에 설치된 다른 앱과 간편하게 동기화하도록 지원합니다."</string>
     <string name="share_data" msgid="3481932156368883946">"앱과 데이터 공유"</string>
     <string name="share_data_description" msgid="2919871301634375092">"각 앱이 헬스 커넥트에서 읽거나 쓸 수 있는 데이터를 선택하세요."</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"설정 및 개인 정보 보호 관리"</string>
@@ -439,12 +417,15 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"데이터 삭제"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"삭제 시작"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"삭제 종료"</string>
-    <string name="time_range_title" msgid="6831605283322600165">"삭제할 데이터 선택"</string>
+    <!-- no translation found for time_range_title (5777596779865648336) -->
+    <skip />
     <string name="time_range_next_button" msgid="5849096934896557888">"다음"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"선택한 기간 동안 헬스 커넥트에 추가된 모든 데이터를 완전히 삭제합니다."</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"선택한 기간 동안 헬스 커넥트에 추가된 <xliff:g id="DATA_TYPE">%s</xliff:g> 데이터를 완전히 삭제합니다."</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"선택한 기간 동안 헬스 커넥트에 추가된 <xliff:g id="CATEGORY">%s</xliff:g> 데이터를 완전히 삭제합니다."</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"선택한 기간 동안 헬스 커넥트에 추가된 <xliff:g id="APP_DATA">%s</xliff:g> 데이터를 완전히 삭제합니다."</string>
+    <!-- no translation found for time_range_message_permission_type_app_data (1613568925588480588) -->
+    <skip />
     <string name="time_range_one_day" msgid="7162709826595446727">"지난 24시간 데이터 삭제"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"지난 7일 데이터 삭제"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"지난 30일 데이터 삭제"</string>
@@ -465,17 +446,32 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"지난 24시간의 <xliff:g id="APP_DATA">%s</xliff:g> 데이터를 완전히 삭제하시겠습니까?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"지난 7일의 <xliff:g id="APP_DATA">%s</xliff:g> 데이터를 완전히 삭제하시겠습니까?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"지난 30일의 <xliff:g id="APP_DATA">%s</xliff:g> 데이터를 완전히 삭제하시겠습니까?"</string>
+    <!-- no translation found for confirming_question_permission_type_app_data_all (1210052631467085849) -->
+    <skip />
+    <!-- no translation found for confirming_question_permission_type_app_data_one_day (4377296923865256246) -->
+    <skip />
+    <!-- no translation found for confirming_question_permission_type_app_data_one_week (2253468260502709170) -->
+    <skip />
+    <!-- no translation found for confirming_question_permission_type_app_data_one_month (1656927839079630144) -->
+    <skip />
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"헬스 커넥트에서 모든 <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> 권한도 삭제"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"<xliff:g id="APP_DATA">%2$s</xliff:g>에서 추가한 모든 <xliff:g id="DATA_TYPE">%1$s</xliff:g> 데이터를 완전히 삭제하시겠습니까?"</string>
-    <string name="confirming_question_single_entry" msgid="330919962071369305">"이 항목을 완전히 삭제하시겠습니까?"</string>
+    <!-- no translation found for confirming_question_single_entry (2064578008447638932) -->
+    <skip />
     <string name="confirming_question_message" msgid="2934249835529079545">"연결된 앱에서 더 이상 이 헬스 커넥트 데이터에 액세스할 수 없게 됩니다."</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"<xliff:g id="START_DATE">%1$s</xliff:g>~<xliff:g id="END_DATE">%2$s</xliff:g> 기간의 모든 월경 관련 항목이 삭제됩니다."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"삭제"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"뒤로"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"완료"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"닫기"</string>
-    <string name="delete_dialog_success_title" msgid="5009733262743173477">"데이터 삭제됨"</string>
-    <string name="delete_dialog_success_message" msgid="2451953113522118128">"헬스 커넥트에 더 이상 이 데이터가 저장되어 있지 않습니다."</string>
+    <!-- no translation found for delete_dialog_success_title (900884533930984889) -->
+    <skip />
+    <!-- no translation found for delete_dialog_success_message (7454086333205881294) -->
+    <skip />
+    <!-- no translation found for delete_dialog_done_button (1371340030947835493) -->
+    <skip />
+    <!-- no translation found for delete_dialog_see_connected_apps_button (2975631672738138716) -->
+    <skip />
     <string name="delete_progress_indicator" msgid="5799502879065833417">"데이터 삭제 중"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"데이터를 삭제할 수 없음"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"문제가 발생하여 헬스 커넥트에서 데이터를 삭제할 수 없습니다."</string>
@@ -862,12 +858,17 @@
     <string name="range_off" msgid="8178520557618184215">"사용 안함"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"설정을 변경하면 헬스 커넥트가 새로운 환경설정을 반영하여 기존 데이터를 삭제합니다."</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{#개월 후 데이터를 자동 삭제하시겠습니까?}other{#개월 후 데이터를 자동 삭제하시겠습니까?}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{#개월이 지나면 헬스 커넥트에서 새로운 데이터를 자동으로 삭제합니다. 이렇게 설정하면 #개월이 넘은 기존 데이터도 삭제됩니다.}other{#개월이 지나면 헬스 커넥트에서 새로운 데이터를 자동으로 삭제합니다. 이렇게 설정하면 #개월이 넘은 기존 데이터도 삭제됩니다.}}"</string>
+    <!-- no translation found for confirming_message_x_months (986840333220382321) -->
+    <skip />
     <string name="set_auto_delete_button" msgid="268450418318199197">"자동 삭제 설정"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"기존 데이터가 삭제됩니다"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{헬스 커넥트에서 #개월이 넘은 데이터를 모두 삭제합니다. 연결된 앱에 변경사항이 표시되려면 하루 정도 걸릴 수 있습니다.}other{헬스 커넥트에서 #개월이 넘은 데이터를 모두 삭제합니다. 연결된 앱에 변경사항이 표시되려면 하루 정도 걸릴 수 있습니다.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"다음 카테고리의 데이터가 삭제됩니다"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"완료"</string>
+    <!-- no translation found for auto_delete_confirmation_toast (7161651426400701306) -->
+    <skip />
+    <!-- no translation found for auto_delete_off_toast (6530926709108821768) -->
+    <skip />
     <string name="priority_dialog_title" msgid="7360654442596118085">"앱 우선순위 설정"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"두 개 이상의 앱이 <xliff:g id="DATA_TYPE">%s</xliff:g> 데이터를 추가할 경우 헬스 커넥트에서 목록의 가장 위에 있는 앱에 우선순위를 부여합니다. 순서를 변경하려면 앱을 드래그하세요."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"저장"</string>
@@ -1003,4 +1004,5 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"모든 데이터가 삭제됨"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> 데이터 삭제됨"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>개 항목이 삭제됨"</string>
+    <string name="select_all" msgid="837499881590001166">"모두 선택"</string>
 </resources>

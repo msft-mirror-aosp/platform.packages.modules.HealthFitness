@@ -49,7 +49,6 @@ import android.util.Slog;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.server.healthconnect.HealthConnectUserContext;
-import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
@@ -564,13 +563,13 @@ public final class TransactionManager {
      * @return list of distinct packageNames corresponding to the input table name after querying
      *     the table.
      */
-    public Map<Integer, Set<String>> getDistinctPackageNamesForRecordsTable(
-            Set<Integer> recordTypes) throws SQLiteException {
+    public Map<Integer, Set<Long>> getDistinctPackageIdsForRecordsTable(Set<Integer> recordTypes)
+            throws SQLiteException {
         final SQLiteDatabase db = getReadableDb();
-        HashMap<Integer, Set<String>> packagesForRecordTypeMap = new HashMap<>();
+        HashMap<Integer, Set<Long>> recordTypeToPackageIdsMap = new HashMap<>();
         for (Integer recordType : recordTypes) {
             RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordType);
-            HashSet<String> packageNamesForDatatype = new HashSet<>();
+            HashSet<Long> packageIds = new HashSet<>();
             try (Cursor cursorForDistinctPackageNames =
                     db.rawQuery(
                             /* sql query */
@@ -579,22 +578,18 @@ public final class TransactionManager {
                                     .getReadCommand(),
                             /* selectionArgs */ null)) {
                 if (cursorForDistinctPackageNames.getCount() > 0) {
-                    AppInfoHelper appInfoHelper = AppInfoHelper.getInstance();
                     while (cursorForDistinctPackageNames.moveToNext()) {
-                        String packageName =
-                                appInfoHelper.getPackageName(
-                                        cursorForDistinctPackageNames.getLong(
-                                                cursorForDistinctPackageNames.getColumnIndex(
-                                                        APP_INFO_ID_COLUMN_NAME)));
-                        if (!packageName.isEmpty()) {
-                            packageNamesForDatatype.add(packageName);
-                        }
+                        packageIds.add(
+                                cursorForDistinctPackageNames.getLong(
+                                        cursorForDistinctPackageNames.getColumnIndex(
+                                                APP_INFO_ID_COLUMN_NAME)));
                     }
                 }
             }
-            packagesForRecordTypeMap.put(recordType, packageNamesForDatatype);
+            recordTypeToPackageIdsMap.put(recordType, packageIds);
         }
-        return packagesForRecordTypeMap;
+
+        return recordTypeToPackageIdsMap;
     }
 
     /**
@@ -937,7 +932,7 @@ public final class TransactionManager {
     }
 
     @NonNull
-    public static synchronized TransactionManager getInstance(
+    public static synchronized TransactionManager initializeInstance(
             @NonNull HealthConnectUserContext context) {
         if (sTransactionManager == null) {
             sTransactionManager = new TransactionManager(context);
@@ -951,6 +946,13 @@ public final class TransactionManager {
         requireNonNull(sTransactionManager);
 
         return sTransactionManager;
+    }
+
+    /** Used in testing to clear the instance to clear and re-reference the mocks. */
+    @com.android.internal.annotations.VisibleForTesting
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    public static synchronized void clearInstanceForTest() {
+        sTransactionManager = null;
     }
 
     /** Cleans up the database and this manager, so unit tests can run correctly. */

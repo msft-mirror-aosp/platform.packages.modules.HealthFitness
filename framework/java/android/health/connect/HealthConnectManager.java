@@ -2187,7 +2187,7 @@ public class HealthConnectManager {
         }
 
         try {
-            mService.readMedicalResources(
+            mService.readMedicalResourcesByIds(
                     mContext.getAttributionSource(),
                     ids,
                     new IReadMedicalResourcesResponseCallback.Stub() {
@@ -2246,6 +2246,25 @@ public class HealthConnectManager {
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
 
+        try {
+            mService.readMedicalResourcesByRequest(
+                    mContext.getAttributionSource(),
+                    request,
+                    new IReadMedicalResourcesResponseCallback.Stub() {
+                        @Override
+                        public void onResult(ReadMedicalResourcesResponse response) {
+                            returnResult(executor, response, callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+
         throw new UnsupportedOperationException("Not implemented");
     }
 
@@ -2283,7 +2302,33 @@ public class HealthConnectManager {
             @NonNull List<MedicalResourceId> ids,
             @NonNull Executor executor,
             @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
-        throw new UnsupportedOperationException("Not implemented");
+        Objects.requireNonNull(ids);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        if (ids.isEmpty()) {
+            returnResult(executor, null, callback);
+            return;
+        }
+
+        try {
+            mService.deleteMedicalResources(
+                    mContext.getAttributionSource(),
+                    ids,
+                    new IEmptyResponseCallback.Stub() {
+                        @Override
+                        public void onResult() {
+                            returnResult(executor, null, callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
     }
 
     /**

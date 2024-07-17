@@ -3,6 +3,7 @@ package android.health.connect.aidl;
 import android.content.AttributionSource;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.UpsertMedicalResourceRequest;
+import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.aidl.ActivityDatesRequestParcel;
 import android.health.connect.aidl.AggregateDataRequestParcel;
 import android.health.connect.aidl.IAggregateRecordsResponseCallback;
@@ -421,8 +422,32 @@ interface IHealthConnectService {
      * @param medicalResourceIds represents the ids to be read.
      * @param callback Callback to receive result of performing this operation.
      */
-    void readMedicalResources(
+    void readMedicalResourcesByIds(
         in AttributionSource attributionSource,
         in List<MedicalResourceId> medicalResourceIds,
         in IReadMedicalResourcesResponseCallback callback);
+
+    /**
+     * Reads from the HealthConnect database.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param request Read request.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void readMedicalResourcesByRequest(
+        in AttributionSource attributionSource,
+        in ReadMedicalResourcesRequest request,
+        in IReadMedicalResourcesResponseCallback callback);
+
+    /**
+     * Delete from the HealthConnect database.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param medicalResourceIds represents the ids to be deleted.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void deleteMedicalResources(
+        in AttributionSource attributionSource,
+        in List<MedicalResourceId> medicalResourceIds,
+        in IEmptyResponseCallback callback);
 }
