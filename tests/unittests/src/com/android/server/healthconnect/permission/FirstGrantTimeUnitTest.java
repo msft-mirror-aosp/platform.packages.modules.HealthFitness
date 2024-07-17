@@ -51,13 +51,21 @@ import android.util.Pair;
 
 import androidx.test.InstrumentationRegistry;
 
+import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.migration.MigrationStateManager;
+import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.quality.Strictness;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -73,12 +81,22 @@ import java.util.concurrent.atomic.AtomicReference;
 // TODO(b/261432978): add test for sharedUser backup
 public class FirstGrantTimeUnitTest {
 
+    @Rule
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(MigrationStateManager.class)
+                    .spyStatic(HealthDataCategoryPriorityHelper.class)
+                    .setStrictness(Strictness.LENIENT)
+                    .build();
+
     private static final String SELF_PACKAGE_NAME = "com.android.healthconnect.unittests";
     private static final UserHandle CURRENT_USER = Process.myUserHandle();
 
     private static final int DEFAULT_VERSION = 1;
 
     @Mock private HealthPermissionIntentAppsTracker mTracker;
+    @Mock private MigrationStateManager mMigrationStateManager;
+    @Mock private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     @Mock private PackageManager mPackageManager;
     @Mock private UserManager mUserManager;
     @Mock private Context mContext;
@@ -94,6 +112,9 @@ public class FirstGrantTimeUnitTest {
     public void setUp() {
         Context context = InstrumentationRegistry.getContext();
         MockitoAnnotations.initMocks(this);
+        TransactionManager.initializeInstance(new HealthConnectUserContext(context, CURRENT_USER));
+        when(MigrationStateManager.getInitialisedInstance()).thenReturn(mMigrationStateManager);
+        when(mMigrationStateManager.isMigrationInProgress()).thenReturn(false);
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_CURRENT))
                 .thenReturn(new UserGrantTimeState(DEFAULT_VERSION));
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_STAGED))
@@ -127,6 +148,8 @@ public class FirstGrantTimeUnitTest {
         List<Pair<String, Integer>> packageNameAndUidPairs =
                 Arrays.asList(new Pair<>(SELF_PACKAGE_NAME, 0), new Pair<>(anotherPackage, 1));
         PackageInfoUtils.setInstanceForTest(mPackageInfoUtils);
+        // Need to re-initialize so that it uses the PackageInfoUtils mock
+        mGrantTimeManager = new FirstGrantTimeManager(mContext, mTracker, mDatastore);
         List<PackageInfo> packageInfos = new ArrayList<>();
         for (Pair<String, Integer> pair : packageNameAndUidPairs) {
             String packageName = pair.first;
@@ -220,6 +243,10 @@ public class FirstGrantTimeUnitTest {
         when(mPackageManager.getPackagesForUid(uid)).thenReturn(packageNames);
         when(mTracker.supportsPermissionUsageIntent(eq(packageNames[0]), ArgumentMatchers.any()))
                 .thenReturn(true);
+        when(HealthDataCategoryPriorityHelper.getInstance())
+                .thenReturn(mHealthDataCategoryPriorityHelper);
+        // Need to re-initialize so that it uses the HealthDataCategoryPriorityHelper mock
+        mGrantTimeManager = new FirstGrantTimeManager(mContext, mTracker, mDatastore);
 
         mGrantTimeManager.onPermissionsChanged(uid);
         waitForAllScheduledTasksToComplete();
@@ -238,6 +265,10 @@ public class FirstGrantTimeUnitTest {
         when(mPackageManager.getPackagesForUid(uid)).thenReturn(packageNames);
         when(mTracker.supportsPermissionUsageIntent(eq(packageNames[0]), ArgumentMatchers.any()))
                 .thenReturn(false);
+        when(HealthDataCategoryPriorityHelper.getInstance())
+                .thenReturn(mHealthDataCategoryPriorityHelper);
+        // Need to re-initialize so that it uses the HealthDataCategoryPriorityHelper mock
+        mGrantTimeManager = new FirstGrantTimeManager(mContext, mTracker, mDatastore);
 
         mGrantTimeManager.onPermissionsChanged(uid);
         waitForAllScheduledTasksToComplete();

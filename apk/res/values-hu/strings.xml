@@ -20,8 +20,7 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Az egészségügyi adatokhoz való alkalmazás-hozzáférés kezelése"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Engedélyek és adatok"</string>
-    <!-- no translation found for home_subtitle (2154213430054477787) -->
-    <skip />
+    <string name="home_subtitle" msgid="2154213430054477787">"Kezelheti az egészségével és a fitnesztevékenységeivel kapcsolatos adatokat az eszközén, és szabályozhatja, hogy mely alkalmazások férhetnek hozzájuk."</string>
     <string name="data_title" msgid="4456619761533380816">"Adatok és hozzáférés"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Az egészségügyi nyilvántartás böngészése"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Minden kategória"</string>
@@ -36,6 +35,8 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 alkalmazás rendelkezik hozzáféréssel}other{# alkalmazás rendelkezik hozzáféréssel}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Nincs"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Bejegyzés részletei"</string>
+    <!-- no translation found for manage_data_summary (8537870912521944449) -->
+    <skip />
     <string name="backup_title" msgid="211503191266235085">"Biztonsági mentés"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Adatforrások és prioritás"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Egységek beállítása"</string>
@@ -325,12 +326,9 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Jelenleg nincs kompatibilis alkalmazás telepítve"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"További hozzáférés"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Az alkalmazásra vonatkozó további engedélyek visszavonva"</string>
-    <!-- no translation found for permissions_header (6519976063360071569) -->
-    <skip />
-    <!-- no translation found for manage_fitness_permissions (1001729292172461314) -->
-    <skip />
-    <!-- no translation found for manage_medical_permissions (7658181359096889932) -->
-    <skip />
+    <string name="permissions_header" msgid="6519976063360071569">"Engedélyek"</string>
+    <string name="manage_fitness_permissions" msgid="1001729292172461314">"Fitneszengedélyek kezelése"</string>
+    <string name="manage_medical_permissions" msgid="7658181359096889932">"Egészségügyi nyilvántartási engedélyek"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Eltávolított alkalmazásengedélyek"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"A Health Connect eltávolította a következőnek megadott engedélyeket: <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"A Health Connect eltávolította a következőknek megadott engedélyeket: <xliff:g id="APP_DATA_0">%1$s</xliff:g> és <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -346,90 +344,73 @@
     <string name="next_export_time" msgid="3138247220014510213">"Következő exportálás: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Biztonsági mentés és visszaállítás"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Legutóbbi exportálás: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="export_and_import_title" msgid="3241901922222465397">"Exportálás és importálás"</string>
+    <!-- no translation found for last_export_file_location (4069435932524304633) -->
+    <skip />
     <string name="scheduled_export" msgid="8737660963687364370">"Ütemezett exportálás"</string>
     <string name="import_data" msgid="404502315533233094">"Adatok importálása"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Visszaállíthat adatokat korábban exportált fájlból"</string>
     <string name="import_error_banner_title" msgid="1480977889067027790">"Nem sikerült visszaállítani az adatokat"</string>
-    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
-    <skip />
-    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
-    <skip />
+    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"Fájl kiválasztása"</string>
+    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"A kiválasztott fájl nem alkalmas a visszaállításra. Ellenőrizze, hogy a megfelelő exportált fájlt választotta-e ki."</string>
     <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"Frissítés most"</string>
     <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Frissítse a rendszert, hogy a Health Connect vissza tudja állítani az adatokat, majd próbálkozzon újra."</string>
     <string name="import_other_error_banner_button" msgid="8006947649520909176">"Újra"</string>
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Probléma merült fel az exportálásból származó adatok visszaállításával kapcsolatban."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Az exportálással elmentheti adatait, hogy át tudja vinni őket egy új telefonra"</string>
-    <!-- no translation found for backup_and_restore_footer_link_text (9075133737244288876) -->
+    <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"Biztonsági mentés és visszaállítás"</string>
+    <!-- no translation found for automatic_export_status (4407131306281440230) -->
     <skip />
     <string name="automatic_export_on" msgid="6972389773963624315">"Be"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Ki"</string>
-    <!-- no translation found for choose_frequency_category (9094154407387676553) -->
+    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
     <skip />
-    <!-- no translation found for scheduled_export_settings_footer_text (8488483803782086291) -->
+    <!-- no translation found for next_export_file_location (2117071837862240540) -->
     <skip />
-    <!-- no translation found for choose_frequency (8119085390857180221) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (7698155810053504157) -->
-    <skip />
+    <string name="choose_frequency_category" msgid="9094154407387676553">"Gyakoriság módosítása"</string>
+    <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Ha kikapcsolja az ütemezett exportálást, azzal nem törli a korábban exportált adatokat onnan, ahova mentette őket."</string>
+    <string name="choose_frequency" msgid="8119085390857180221">"Ütemezett jelentés beállítása"</string>
+    <string name="choose_frequency_description" msgid="7698155810053504157">"Kiválaszthatja, hogy milyen gyakran szeretné exportálni az adatait."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Naponta"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Hetente"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Havonta"</string>
-    <!-- no translation found for export_destination_title (8352929396306002479) -->
-    <skip />
+    <string name="export_destination_title" msgid="8352929396306002479">"Ütemezett exportálás helyének megadása"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"Válassza ki azt a felhőtárhely-alkalmazást, amelybe exportálni szeretné az adatait"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
     <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Importálja a fájlt!"</string>
     <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"A(z) <xliff:g id="FILE_NAME">%1$s</xliff:g> importálva lesz a Health Connect alkalmazásba"</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Mégse"</string>
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Importálás"</string>
-    <!-- no translation found for import_notification_import_in_progress_title (4657602436278942808) -->
-    <skip />
-    <!-- no translation found for import_notification_import_complete_title (7493223782222480412) -->
-    <skip />
-    <!-- no translation found for import_complete_toast_text (7730872919621230959) -->
-    <skip />
-    <!-- no translation found for import_notification_error_generic_error_title (19162830551127433) -->
-    <skip />
-    <!-- no translation found for import_notification_error_more_space_needed_title (240259612132385794) -->
-    <skip />
-    <!-- no translation found for import_notification_error_invalid_file_body_text (8877884063398886772) -->
-    <skip />
-    <!-- no translation found for import_notification_error_more_space_needed_body_text (7577564968089566232) -->
-    <skip />
-    <!-- no translation found for import_notification_error_generic_error_body_text (6562162452820282874) -->
-    <skip />
-    <!-- no translation found for import_notification_error_version_mismatch_body_text (9186785816764607620) -->
-    <skip />
-    <!-- no translation found for import_notification_update_now_intent_button (2808579294292956628) -->
-    <skip />
-    <!-- no translation found for import_notification_try_again_intent_button (3833062670098674999) -->
-    <skip />
-    <!-- no translation found for import_notification_open_intent_button (2739924648846724969) -->
-    <skip />
-    <!-- no translation found for import_notification_choose_file_intent_button (2249671128440758769) -->
-    <skip />
-    <!-- no translation found for import_notification_free_up_space_intent_button (4665571334602539807) -->
-    <skip />
+    <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Folyamatban van a Health Connect visszaállítása"</string>
+    <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Befejeződött a Health Connect visszaállítása"</string>
+    <string name="import_complete_toast_text" msgid="7730872919621230959">"Befejeződött az adatok visszaállítása"</string>
+    <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"A Health Connect nem tudta visszaállítani az adatokat"</string>
+    <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Több tárhely szükséges"</string>
+    <string name="import_notification_error_invalid_file_body_text" msgid="8877884063398886772">"A kiválasztott fájl nem alkalmas a visszaállításra. Ellenőrizze, hogy a megfelelő exportált fájlt választotta-e ki."</string>
+    <string name="import_notification_error_more_space_needed_body_text" msgid="7577564968089566232">"A Health Connectnek <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> tárhelyre van szüksége a telefonon az adatok visszaállításának folytatásához."</string>
+    <string name="import_notification_error_generic_error_body_text" msgid="6562162452820282874">"Probléma merült fel az exportálásból származó adatok visszaállításával kapcsolatban."</string>
+    <string name="import_notification_error_version_mismatch_body_text" msgid="9186785816764607620">"Frissítse a rendszert, hogy a Health Connect vissza tudja állítani az adatokat, majd próbálkozzon újra."</string>
+    <string name="import_notification_update_now_intent_button" msgid="2808579294292956628">"Frissítés most"</string>
+    <string name="import_notification_try_again_intent_button" msgid="3833062670098674999">"Újra"</string>
+    <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Megnyitás"</string>
+    <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Fájl kiválasztása"</string>
+    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Tárhely felszabadítása"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Vissza"</string>
+    <!-- no translation found for export_cancel_button (1952360582645412410) -->
+    <skip />
     <string name="export_next_button" msgid="657930567137105172">"Következő"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Mégse"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Következő"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Importálás innen:"</string>
     <string name="import_invalid_storage" msgid="341798262315495399">"Válasza ki azt a felhőtárhely-alkalmazást, amelyből importálni szeretné az adatait"</string>
-    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
-    <skip />
+    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"Koppintson a kívánt fiók kiválasztásához"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Fiók kiválasztása"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Mégse"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Kész"</string>
     <string name="export_import_no_apps_text" msgid="6403119325024893690">"Nem található alkalmazás. Telepítsen felhőtárhely-alkalmazásokat, hogy megjelenjenek itt."</string>
-    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
-    <skip />
-    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
-    <skip />
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"Ha további lehetőséget szeretne itt látni, telepítsen felhőtárhely-alkalmazásokat."</string>
+    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"A Play Áruház megnyitása"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Kezdő lépések a Health Connect szolgáltatással"</string>
-    <!-- no translation found for onboarding_description (3479157507808350452) -->
-    <skip />
+    <string name="onboarding_description" msgid="3479157507808350452">"A Health Connect tárolja az egészségével és a fitnesztevékenységeivel kapcsolatos adatokat, így könnyedén szinkronizálhatja az eszközén lévő különböző alkalmazásokat."</string>
     <string name="share_data" msgid="3481932156368883946">"Megoszthat adatokat az alkalmazásaival"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Beállíthatja, hogy az egyes alkalmazások milyen adatokat olvashatnak/írhatnak a Health Connectben"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Kezelheti a beállításokat és az adatvédelmet"</string>
@@ -439,12 +420,15 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"Adatok törlése"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Belépés a törlésbe"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Kilépés a törlésből"</string>
-    <string name="time_range_title" msgid="6831605283322600165">"Válassza ki a törölni kívánt adatokat"</string>
+    <!-- no translation found for time_range_title (5777596779865648336) -->
+    <skip />
     <string name="time_range_next_button" msgid="5849096934896557888">"Következő"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Ezzel véglegesen törli a Health Connect szolgáltatáshoz a kiválasztott időszakban hozzáadott adatokat"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"Ezzel véglegesen törli a Health Connect szolgáltatáshoz a kiválasztott időszakban hozzáadott, <xliff:g id="DATA_TYPE">%s</xliff:g> típusú adatokat"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"Ezzel véglegesen törli a Health Connect szolgáltatáshoz a kiválasztott időszakban hozzáadott, <xliff:g id="CATEGORY">%s</xliff:g> kategóriájú adatokat"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"Ezzel véglegesen törli a(z) <xliff:g id="APP_DATA">%s</xliff:g> alkalmazásnak a Health Connect szolgáltatáshoz a kiválasztott időszakban hozzáadott adatait"</string>
+    <!-- no translation found for time_range_message_permission_type_app_data (1613568925588480588) -->
+    <skip />
     <string name="time_range_one_day" msgid="7162709826595446727">"Előző 24 óra törlése"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"Előző 7 nap törlése"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"Előző 30 nap törlése"</string>
@@ -465,17 +449,32 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"Véglegesen törli a(z) <xliff:g id="APP_DATA">%s</xliff:g> alkalmazás összes adatát a legutóbbi 24 órából?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"Véglegesen törli a(z) <xliff:g id="APP_DATA">%s</xliff:g> alkalmazás összes adatát a legutóbbi 7 napból?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"Véglegesen törli a(z) <xliff:g id="APP_DATA">%s</xliff:g> alkalmazás összes adatát a legutóbbi 30 napból?"</string>
+    <!-- no translation found for confirming_question_permission_type_app_data_all (1210052631467085849) -->
+    <skip />
+    <!-- no translation found for confirming_question_permission_type_app_data_one_day (4377296923865256246) -->
+    <skip />
+    <!-- no translation found for confirming_question_permission_type_app_data_one_week (2253468260502709170) -->
+    <skip />
+    <!-- no translation found for confirming_question_permission_type_app_data_one_month (1656927839079630144) -->
+    <skip />
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Az összes <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g>-engedély is legyen eltávolítva a Health Connect szolgáltatásból"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Véglegesen törli a(z) <xliff:g id="APP_DATA">%2$s</xliff:g> által hozzáadott, <xliff:g id="DATA_TYPE">%1$s</xliff:g> típusú összes adatot?"</string>
-    <string name="confirming_question_single_entry" msgid="330919962071369305">"Véglegesen törli ezt a bejegyzést?"</string>
+    <!-- no translation found for confirming_question_single_entry (2064578008447638932) -->
+    <skip />
     <string name="confirming_question_message" msgid="2934249835529079545">"A társított alkalmazások többé nem fognak hozzáférni ezekhez az adatokhoz a Health Connect szolgáltatásból"</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"Ezzel törli a(z) <xliff:g id="START_DATE">%1$s</xliff:g> és <xliff:g id="END_DATE">%2$s</xliff:g> közötti összes menstruációval kapcsolatos bejegyzést."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Törlés"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Vissza"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Kész"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"Bezárás"</string>
-    <string name="delete_dialog_success_title" msgid="5009733262743173477">"Adatok törölve"</string>
-    <string name="delete_dialog_success_message" msgid="2451953113522118128">"Ezeket az adatokat többé nem tárolja a Health Connect."</string>
+    <!-- no translation found for delete_dialog_success_title (900884533930984889) -->
+    <skip />
+    <!-- no translation found for delete_dialog_success_message (7454086333205881294) -->
+    <skip />
+    <!-- no translation found for delete_dialog_done_button (1371340030947835493) -->
+    <skip />
+    <!-- no translation found for delete_dialog_see_connected_apps_button (2975631672738138716) -->
+    <skip />
     <string name="delete_progress_indicator" msgid="5799502879065833417">"Adatok törlése"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"Nem sikerült törölni az adatokat"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"Hiba történt, ezért a Health Connect nem tudta törölni az adatokat"</string>
@@ -862,12 +861,17 @@
     <string name="range_off" msgid="8178520557618184215">"Ki"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Amikor módosítja ezeket a beállításokat, a Health Connect törli a meglévő adatokat az új beállításainak megfelelően."</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Automatikusan törli a(z) # hónapnál régebbi adatokat?}other{Automatikusan törli a(z) # hónapnál régebbi adatokat?}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{A Health Connect automatikusan törölni fogja az új adatokat # hónap elteltével. Ennek a beállításnak a választásával a(z) # hónapnál régebbi, meglévő adatokat is törli.}other{A Health Connect automatikusan törölni fogja az új adatokat # hónap elteltével. Ennek a beállításnak a választásával a(z) # hónapnál régebbi, meglévő adatokat is törli.}}"</string>
+    <!-- no translation found for confirming_message_x_months (986840333220382321) -->
+    <skip />
     <string name="set_auto_delete_button" msgid="268450418318199197">"Automatikus törlés beállítása"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Meglévő adatok is törlődnek"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{A Health Connect a(z) # hónapnál régebbi összes adatot törli. Szükség lehet egy napra ahhoz, hogy ezek a változások tükröződjenek a társított alkalmazásokban.}other{A Health Connect a(z) # hónapnál régebbi összes adatot törli. Szükség lehet egy napra ahhoz, hogy ezek a változások tükröződjenek a társított alkalmazásokban.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Ezekből a kategóriákból lesznek törölve adatok"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Kész"</string>
+    <!-- no translation found for auto_delete_confirmation_toast (7161651426400701306) -->
+    <skip />
+    <!-- no translation found for auto_delete_off_toast (6530926709108821768) -->
+    <skip />
     <string name="priority_dialog_title" msgid="7360654442596118085">"Alkalmazások elsőbbségének beállítása"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Ha egynél több alkalmazás ad hozzá <xliff:g id="DATA_TYPE">%s</xliff:g> típusú adatokat, a Health Connect a listában legelöl szereplő alkalmazást részesíti előnyben. Húzással átrendezheti az alkalmazásokat."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"Mentés"</string>
@@ -1003,4 +1007,6 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Minden adat törölve"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> típusú adatok törölve"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> elem törölve"</string>
+    <!-- no translation found for select_all (837499881590001166) -->
+    <skip />
 </resources>

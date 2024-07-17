@@ -20,8 +20,7 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"ຈັດການສິດເຂົ້າເຖິງຂໍ້ມູນສຸຂະພາບຂອງແອັບ"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"ການອະນຸຍາດ ແລະ ຂໍ້ມູນ"</string>
-    <!-- no translation found for home_subtitle (2154213430054477787) -->
-    <skip />
+    <string name="home_subtitle" msgid="2154213430054477787">"ຈັດການຂໍ້ມູນສຸຂະພາບ ແລະ ການອອກກຳລັງກາຍຢູ່ອຸປະກອນຂອງທ່ານ ແລະ ຄວບຄຸມວ່າແອັບໃດສາມາດເຂົ້າເຖິງຂໍ້ມູນໄດ້"</string>
     <string name="data_title" msgid="4456619761533380816">"ຂໍ້ມູນ ແລະ ສິດເຂົ້າເຖິງ"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"ເລືອກເບິ່ງຂໍ້ມູນສຸຂະພາບ"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"ໝວດໝູ່ທັງໝົດ"</string>
@@ -36,6 +35,8 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 ແອັບມີສິດເຂົ້າເຖິງ}other{# ແອັບມີສິດເຂົ້າເຖິງ}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"ບໍ່ມີ"</string>
     <string name="entry_details_title" msgid="590184849040247850">"ລາຍລະອຽດລາຍການ"</string>
+    <!-- no translation found for manage_data_summary (8537870912521944449) -->
+    <skip />
     <string name="backup_title" msgid="211503191266235085">"ສຳຮອງຂໍ້ມູນ"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"ແຫຼ່ງຂໍ້ມູນ ແລະ ລຳດັບຄວາມສຳຄັນ"</string>
     <string name="set_units_title" msgid="2657822539603758029">"ຕັ້ງຫົວໜ່ວຍ"</string>
@@ -325,12 +326,9 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"ຕອນນີ້ທ່ານບໍ່ມີແອັບໃດທີ່ເຂົ້າກັນໄດ້ຕິດຕັ້ງໄວ້ເລີຍ"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"ສິດເຂົ້າເຖິງເພີ່ມເຕີມ"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"ລຶບການອະນຸຍາດເພີ່ມເຕີມສຳລັບແອັບນີ້ອອກແລ້ວ"</string>
-    <!-- no translation found for permissions_header (6519976063360071569) -->
-    <skip />
-    <!-- no translation found for manage_fitness_permissions (1001729292172461314) -->
-    <skip />
-    <!-- no translation found for manage_medical_permissions (7658181359096889932) -->
-    <skip />
+    <string name="permissions_header" msgid="6519976063360071569">"ການອະນຸຍາດ"</string>
+    <string name="manage_fitness_permissions" msgid="1001729292172461314">"ຈັດການການອະນຸຍາດການອອກກຳລັງກາຍ"</string>
+    <string name="manage_medical_permissions" msgid="7658181359096889932">"ຈັດການການອະນຸຍາດຂໍ້ມູນສຸຂະພາບ"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"ລຶບການອະນຸຍາດແອັບອອກແລ້ວ"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect ລຶບການອະນຸຍາດສຳລັບ <xliff:g id="APP_DATA">%s</xliff:g> ອອກແລ້ວ"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect ລຶບການອະນຸຍາດສຳລັບ <xliff:g id="APP_DATA_0">%1$s</xliff:g> ແລະ <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> ອອກແລ້ວ"</string>
@@ -346,90 +344,70 @@
     <string name="next_export_time" msgid="3138247220014510213">"ການສົ່ງອອກເທື່ອຕໍ່ໄປ: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ການສຳຮອງຂໍ້ມູນ ແລະ ກູ້ຄືນ"</string>
     <string name="last_export_time" msgid="9205875050823594041">"ການສົ່ງອອກເທື່ອຫຼ້າສຸດ: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="export_and_import_title" msgid="3241901922222465397">"ສົ່ງອອກ ແລະ ນຳເຂົ້າ"</string>
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"ການສົ່ງອອກຕາມກຳນົດເວລາ"</string>
     <string name="import_data" msgid="404502315533233094">"ນຳເຂົ້າຂໍ້ມູນ"</string>
     <string name="import_data_description" msgid="4040178599441724296">"ກູ້ຄືນຂໍ້ມູນຈາກໄຟລ໌ທີ່ສົ່ງອອກກ່ອນໜ້ານີ້"</string>
     <string name="import_error_banner_title" msgid="1480977889067027790">"ບໍ່ສາມາດກູ້ຄືນຂໍ້ມູນໄດ້"</string>
-    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
-    <skip />
-    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
-    <skip />
+    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"ເລືອກໄຟລ໌"</string>
+    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"ໄຟລ໌ທີ່ທ່ານເລືອກບໍ່ຮອງຮັບການກູ້ຄືນ. ກວດສອບວ່າມີການເລືອກໄຟລ໌ທີ່ສົ່ງອອກຖືກຕ້ອງ."</string>
     <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"ອັບເດດຕອນນີ້"</string>
     <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"ກະລຸນາອັບເດດລະບົບຂອງທ່ານເພື່ອໃຫ້ Health Connect ສາມາດກູ້ຄືນຂໍ້ມູນຂອງທ່ານໄດ້, ຈາກນັ້ນລອງໃໝ່."</string>
     <string name="import_other_error_banner_button" msgid="8006947649520909176">"ລອງໃໝ່"</string>
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"ເກີດບັນຫາກັບການກູ້ຄືນຂໍ້ມູນຈາກການສົ່ງອອກຂອງທ່ານ."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ການສົ່ງອອກຊ່ວຍໃຫ້ທ່ານບັນທຶກຂໍ້ມູນຂອງທ່ານເພື່ອໃຫ້ທ່ານສາມາດໂອນຍ້າຍໄປຫາໂທລະສັບເຄື່ອງໃໝ່ໄດ້"</string>
-    <!-- no translation found for backup_and_restore_footer_link_text (9075133737244288876) -->
-    <skip />
+    <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"ກ່ຽວກັບການສຳຮອງ ແລະ ກູ້ຄືນຂໍ້ມູນ"</string>
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ເປີດ"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ປິດ"</string>
-    <!-- no translation found for choose_frequency_category (9094154407387676553) -->
+    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
     <skip />
-    <!-- no translation found for scheduled_export_settings_footer_text (8488483803782086291) -->
-    <skip />
-    <!-- no translation found for choose_frequency (8119085390857180221) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (7698155810053504157) -->
-    <skip />
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
+    <string name="choose_frequency_category" msgid="9094154407387676553">"ປ່ຽນຄວາມຖີ່"</string>
+    <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"ຫາກທ່ານປິດການສົ່ງອອກທີ່ກຳນົດເວລາໄວ້, ການດຳເນີນການນີ້ຈະບໍ່ລຶບຂໍ້ມູນທີ່ສົ່ງອອກກ່ອນໜ້ານີ້ອອກຈາກຕຳແໜ່ງທີ່ມີການບັນທຶກໄວ້"</string>
+    <string name="choose_frequency" msgid="8119085390857180221">"ຕັ້ງຄ່າການສົ່ງອອກທີ່ກຳນົດເວລາໄວ້"</string>
+    <string name="choose_frequency_description" msgid="7698155810053504157">"ເລືອກຄວາມຖີ່ໃນການສົ່ງອອກຂໍ້ມູນຂອງທ່ານ"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"ປະຈຳວັນ"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"ປະຈຳອາທິດ"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"ທຸກເດືອນ"</string>
-    <!-- no translation found for export_destination_title (8352929396306002479) -->
-    <skip />
+    <string name="export_destination_title" msgid="8352929396306002479">"ເລືອກຕຳແໜ່ງບັນທຶກການສົ່ງອອກທີ່ກຳນົດເວລາ"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"ກະລຸນາເລືອກແອັບບ່ອນຈັດເກັບຂໍ້ມູນຄລາວເພື່ອສົ່ງອອກຂໍ້ມູນຂອງທ່ານ"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
     <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"ນຳເຂົ້າໄຟລ໌ນີ້ບໍ?"</string>
     <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"ລະບົບຈະນຳເຂົ້າ <xliff:g id="FILE_NAME">%1$s</xliff:g> ໄປໃສ່ Health Connect"</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"ຍົກເລີກ"</string>
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"ນຳເຂົ້າ"</string>
-    <!-- no translation found for import_notification_import_in_progress_title (4657602436278942808) -->
-    <skip />
-    <!-- no translation found for import_notification_import_complete_title (7493223782222480412) -->
-    <skip />
-    <!-- no translation found for import_complete_toast_text (7730872919621230959) -->
-    <skip />
-    <!-- no translation found for import_notification_error_generic_error_title (19162830551127433) -->
-    <skip />
-    <!-- no translation found for import_notification_error_more_space_needed_title (240259612132385794) -->
-    <skip />
-    <!-- no translation found for import_notification_error_invalid_file_body_text (8877884063398886772) -->
-    <skip />
-    <!-- no translation found for import_notification_error_more_space_needed_body_text (7577564968089566232) -->
-    <skip />
-    <!-- no translation found for import_notification_error_generic_error_body_text (6562162452820282874) -->
-    <skip />
-    <!-- no translation found for import_notification_error_version_mismatch_body_text (9186785816764607620) -->
-    <skip />
-    <!-- no translation found for import_notification_update_now_intent_button (2808579294292956628) -->
-    <skip />
-    <!-- no translation found for import_notification_try_again_intent_button (3833062670098674999) -->
-    <skip />
-    <!-- no translation found for import_notification_open_intent_button (2739924648846724969) -->
-    <skip />
-    <!-- no translation found for import_notification_choose_file_intent_button (2249671128440758769) -->
-    <skip />
-    <!-- no translation found for import_notification_free_up_space_intent_button (4665571334602539807) -->
-    <skip />
+    <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect ກຳລັງດຳເນີນການກູ້ຄືນ"</string>
+    <string name="import_notification_import_complete_title" msgid="7493223782222480412">"ກູ້ຄືນ Health Connect ສຳເລັດແລ້ວ"</string>
+    <string name="import_complete_toast_text" msgid="7730872919621230959">"ການກູ້ຄືນຂໍ້ມູນສຳເລັດແລ້ວ"</string>
+    <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"ບໍ່ສາມາດກູ້ຄືນຂໍ້ມູນ Health Connect ໄດ້"</string>
+    <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"ຕ້ອງການພື້ນທີ່ເພີ່ມເຕີມ"</string>
+    <string name="import_notification_error_invalid_file_body_text" msgid="8877884063398886772">"ໄຟລ໌ທີ່ທ່ານເລືອກບໍ່ມີຄວາມເຂົ້າກັນສຳລັບການກູ້ຄືນ. ໃຫ້ແນ່ໃຈວ່າເລືອກໄຟລ໌ທີ່ສົ່ງອອກຖືກຕ້ອງ."</string>
+    <string name="import_notification_error_more_space_needed_body_text" msgid="7577564968089566232">"Health Connect ຕ້ອງການພື້ນທີ່ຈັດເກັບຂໍ້ມູນ <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> ຢູ່ໂທລະສັບຂອງທ່ານ ເພື່ອສືບຕໍ່ການກູ້ຄືນຂໍ້ມູນຂອງທ່ານ."</string>
+    <string name="import_notification_error_generic_error_body_text" msgid="6562162452820282874">"ເກີດບັນຫາກັບການກູ້ຄືນຂໍ້ມູນຈາກການສົ່ງອອກຂອງທ່ານ."</string>
+    <string name="import_notification_error_version_mismatch_body_text" msgid="9186785816764607620">"ກະລຸນາອັບເດດລະບົບຂອງທ່ານເພື່ອໃຫ້ Health Connect ສາມາດກູ້ຄືນຂໍ້ມູນຂອງທ່ານໄດ້, ຈາກນັ້ນລອງໃໝ່."</string>
+    <string name="import_notification_update_now_intent_button" msgid="2808579294292956628">"ອັບເດດຕອນນີ້"</string>
+    <string name="import_notification_try_again_intent_button" msgid="3833062670098674999">"ລອງໃໝ່"</string>
+    <string name="import_notification_open_intent_button" msgid="2739924648846724969">"ເປີດ"</string>
+    <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"ເລືອກໄຟລ໌"</string>
+    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"ສ້າງພື້ນທີ່ຫວ່າງ"</string>
     <string name="export_back_button" msgid="3550795479165524982">"ກັບຄືນ"</string>
+    <!-- no translation found for export_cancel_button (1952360582645412410) -->
+    <skip />
     <string name="export_next_button" msgid="657930567137105172">"ຕໍ່ໄປ"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"ຍົກເລີກ"</string>
     <string name="import_next_button" msgid="5706322508691854289">"ຕໍ່ໄປ"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"ນໍາເຂົ້າຈາກ"</string>
     <string name="import_invalid_storage" msgid="341798262315495399">"ກະລຸນາເລືອກແອັບບ່ອນຈັດເກັບຂໍ້ມູນຄລາວເພື່ອນຳເຂົ້າຂໍ້ມູນຂອງທ່ານ"</string>
-    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
-    <skip />
+    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"ແຕະເພື່ອເລືອກບັນຊີ"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"ເລືອກບັນຊີ"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"ຍົກເລີກ"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"ແລ້ວໆ"</string>
     <string name="export_import_no_apps_text" msgid="6403119325024893690">"ບໍ່ມີແອັບ. ຕິດຕັ້ງແອັບບ່ອນຈັດເກັບຂໍ້ມູນຄລາວເພື່ອເບິ່ງຂໍ້ມູນຢູ່ບ່ອນນີ້"</string>
-    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
-    <skip />
-    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
-    <skip />
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"ຕິດຕັ້ງແອັບບ່ອນຈັດເກັບຂໍ້ມູນຄລາວເພື່ອເບິ່ງຕົວເລືອກເພີ່ມເຕີມຢູ່ບ່ອນນີ້"</string>
+    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"ເຂົ້າໄປ Play Store"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"ເລີ່ມຕົ້ນການນຳໃຊ້ Health Connect"</string>
-    <!-- no translation found for onboarding_description (3479157507808350452) -->
-    <skip />
+    <string name="onboarding_description" msgid="3479157507808350452">"Health Connect ຈະຈັດເກັບຂໍ້ມູນສຸຂະພາບ ແລະ ການອອກກຳລັງກາຍຂອງທ່ານ, ເຊິ່ງເຮັດໃຫ້ທ່ານຊິ້ງຂໍ້ມູນແອັບຕ່າງໆຢູ່ອຸປະກອນຂອງທ່ານໄດ້ຢ່າງງ່າຍດາຍ"</string>
     <string name="share_data" msgid="3481932156368883946">"ແບ່ງປັນຂໍ້ມູນກັບແອັບຂອງທ່ານ"</string>
     <string name="share_data_description" msgid="2919871301634375092">"ເລືອກຂໍ້ມູນທີ່ແຕ່ລະແອັບສາມາດອ່ານ ຫຼື ຂຽນລົງໃສ່ Health Connect ໄດ້"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"ຈັດການການຕັ້ງຄ່າ ແລະ ຄວາມເປັນສ່ວນຕົວຂອງທ່ານ"</string>
@@ -439,12 +417,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"ລຶບຂໍ້ມູນ"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"ເລີ່ມການລຶບ"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"ອອກຈາກການລຶບ"</string>
-    <string name="time_range_title" msgid="6831605283322600165">"ເລືອກຂໍ້ມູນເພື່ອລຶບ"</string>
+    <string name="time_range_title" msgid="5777596779865648336">"ເລືອກຂໍ້ມູນທີ່ຈະລຶບອອກຈາກ Health Connect"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"ຕໍ່ໄປ"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"ການດຳເນີນການນີ້ຈະເປັນການລຶບຂໍ້ມູນທັງໝົດທີ່ເພີ່ມລົງໃສ່ Health Connect ໃນໄລຍະເວລາທີ່ເລືອກໄວ້ອອກຢ່າງຖາວອນ"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"ການດຳເນີນການນີ້ຈະເປັນການລຶບຂໍ້ມູນ <xliff:g id="DATA_TYPE">%s</xliff:g> ທີ່ເພີ່ມລົງໃສ່ Health Connect ໃນໄລຍະເວລາທີ່ເລືອກໄວ້ອອກຢ່າງຖາວອນ"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"ການດຳເນີນການນີ້ຈະເປັນການລຶບຂໍ້ມູນ <xliff:g id="CATEGORY">%s</xliff:g> ທີ່ເພີ່ມລົງໃສ່ Health Connect ໃນໄລຍະເວລາທີ່ເລືອກໄວ້ອອກຢ່າງຖາວອນ"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"ການດຳເນີນການນີ້ຈະເປັນການລຶບຂໍ້ມູນ <xliff:g id="APP_DATA">%s</xliff:g> ທີ່ເພີ່ມລົງໃສ່ Health Connect ໃນໄລຍະເວລາທີ່ເລືອກໄວ້ອອກຢ່າງຖາວອນ"</string>
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"ການດຳເນີນການນີ້ຈະເປັນການລຶບຂໍ້ມູນ <xliff:g id="DATA_TYPE">%1$s</xliff:g> ທີ່ <xliff:g id="APP_DATA">%2$s</xliff:g> ເພີ່ມໃສ່ Health Connect ໃນໄລຍະເວລາທີ່ເລືອກໄວ້ອອກຢ່າງຖາວອນ"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"ລຶບຂໍ້ມູນໃນ 24 ຊົ່ວໂມງທີ່ຜ່ານມາ"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"ລຶບຂໍ້ມູນໃນ 7 ມື້ທີ່ຜ່ານມາ"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"ລຶບຂໍ້ມູນໃນ 30 ມື້ທີ່ຜ່ານມາ"</string>
@@ -465,17 +444,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"ລຶບຂໍ້ມູນ <xliff:g id="APP_DATA">%s</xliff:g> ຈາກ 24 ຊົ່ວໂມງຫຼ້າສຸດອອກຢ່າງຖາວອນບໍ?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"ລຶບຂໍ້ມູນ <xliff:g id="APP_DATA">%s</xliff:g> ຈາກ 7 ມື້ຫຼ້າສຸດອອກຢ່າງຖາວອນບໍ?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"ລຶບຂໍ້ມູນ <xliff:g id="APP_DATA">%s</xliff:g> ຈາກ 30 ມື້ຫຼ້າສຸດອອກຢ່າງຖາວອນບໍ?"</string>
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"ລຶບຂໍ້ມູນ <xliff:g id="DATA_TYPE">%1$s</xliff:g> ທີ່ເພີ່ມໂດຍ <xliff:g id="APP_DATA">%2$s</xliff:g> ໃນທຸກໄລຍະເວລາຢ່າງຖາວອນບໍ?"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"ລຶບຂໍ້ມູນ <xliff:g id="DATA_TYPE">%1$s</xliff:g> ທີ່ເພີ່ມໂດຍ <xliff:g id="APP_DATA">%2$s</xliff:g> ໃນ 24 ຊົ່ວໂມງທີ່ຜ່ານມາຢ່າງຖາວອນບໍ?"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"ລຶບຂໍ້ມູນ <xliff:g id="DATA_TYPE">%1$s</xliff:g> ທີ່ເພີ່ມໂດຍ <xliff:g id="APP_DATA">%2$s</xliff:g> ໃນ 7 ມື້ທີ່ຜ່ານມາຢ່າງຖາວອນບໍ?"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"ລຶບຂໍ້ມູນ <xliff:g id="DATA_TYPE">%1$s</xliff:g> ທີ່ເພີ່ມໂດຍ <xliff:g id="APP_DATA">%2$s</xliff:g> ໃນ 30 ມື້ທີ່ຜ່ານມາຢ່າງຖາວອນບໍ?"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"ລຶບການອະນຸຍາດທັງໝົດຂອງ <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> ອອກຈາກ Health Connect ນຳ"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"ລຶບຂໍ້ມູນ <xliff:g id="DATA_TYPE">%1$s</xliff:g> ທັງໝົດທີ່ເພີ່ມໂດຍ <xliff:g id="APP_DATA">%2$s</xliff:g> ອອກຢ່າງຖາວອນບໍ?"</string>
-    <string name="confirming_question_single_entry" msgid="330919962071369305">"ລຶບລາຍການຂໍ້ມູນນີ້ອອກຢ່າງຖາວອນບໍ?"</string>
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"ລຶບລາຍການຂໍ້ມູນນີ້ອອກຈາກ Health Connect ຢ່າງຖາວອນບໍ?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"ແອັບທີ່ເຊື່ອມຕໍ່ໄວ້ຈະບໍ່ສາມາດເຂົ້າເຖິງຂໍ້ມູນນີ້ຈາກ Health Connect ໄດ້ອີກຕໍ່ໄປ"</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"ການດຳເນີນການນີ້ຈະລຶບລາຍການຂໍ້ມູນການມີປະຈຳເດືອນອອກຕັ້ງແຕ່ວັນທີ <xliff:g id="START_DATE">%1$s</xliff:g> ຈົນຮອດວັນທີ <xliff:g id="END_DATE">%2$s</xliff:g>."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"ລຶບ"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"ກັບຄືນ"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"ແລ້ວໆ"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"ປິດ"</string>
-    <string name="delete_dialog_success_title" msgid="5009733262743173477">"ລຶບຂໍ້ມູນແລ້ວ"</string>
-    <string name="delete_dialog_success_message" msgid="2451953113522118128">"ຂໍ້ມູນນີ້ບໍ່ໄດ້ຖືກຈັດເກັບໄວ້ໃນ Health Connect ອີກຕໍ່ໄປແລ້ວ."</string>
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"ລຶບຂໍ້ມູນອອກຈາກ Health Connect ແລ້ວ"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"ຫາກທ່ານຕ້ອງການລຶບຂໍ້ມູນອອກຈາກແອັບທີ່ເຊື່ອມຕໍ່ຂອງທ່ານໂດຍສົມບູນ, ໃຫ້ກວດສອບແອັບແຕ່ລະລາຍການທີ່ອາດບັນທຶກຂໍ້ມູນຂອງທ່ານໄວ້."</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"ແລ້ວໆ"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"ເບິ່ງແອັບທີ່ເຊື່ອມຕໍ່"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"ກຳລັງລຶບຂໍ້ມູນຂອງທ່ານ"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"ບໍ່ສາມາດລຶບຂໍ້ມູນໄດ້"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"ມີບາງຢ່າງຜິດພາດເກີດຂຶ້ນ ແລະ Health Connect ບໍ່ສາມາດລຶບຂໍ້ມູນຂອງທ່ານໄດ້"</string>
@@ -862,12 +847,14 @@
     <string name="range_off" msgid="8178520557618184215">"ປິດ"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"ເມື່ອທ່ານປ່ຽນການຕັ້ງຄ່າເຫຼົ່ານີ້, Health Connect ຈະລຶບຂໍ້ມູນທີ່ມີຢູ່ເພື່ອສະແດງການຕັ້ງຄ່າໃໝ່ຂອງທ່ານ"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{ລຶບຂໍ້ມູນອັດຕະໂນມັດຫຼັງຈາກ # ເດືອນບໍ?}other{ລຶບຂໍ້ມູນອັດຕະໂນມັດຫຼັງຈາກ # ເດືອນບໍ?}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect ຈະລຶບຂໍ້ມູນໃໝ່ໂດຍອັດຕະໂນມັດຫຼັງຈາກ # ເດືອນ. ການຕັ້ງຄ່ານີ້ຈະລຶບຂໍ້ມູນທີ່ເກົ່າກວ່າ # ເດືອນອອກນຳ.}other{Health Connect ຈະລຶບຂໍ້ມູນໃໝ່ໂດຍອັດຕະໂນມັດຫຼັງຈາກ # ເດືອນ. ການຕັ້ງຄ່ານີ້ຈະລຶບຂໍ້ມູນທີ່ເກົ່າກວ່າ # ເດືອນອອກນຳ.}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{ນອກຈາກນີ້, ການດຳເນີນການນີ້ຍັງຈະລຶບຂໍ້ມູນທີ່ເກົ່າກວ່າ # ເດືອນອອກຈາກ Health Connect ນຳ.\n\nຫາກທ່ານຕ້ອງການລຶບຂໍ້ມູນອອກຈາກແອັບທີ່ເຊື່ອມຕໍ່ຂອງທ່ານໂດຍສົມບູນ, ໃຫ້ກວດສອບແອັບແຕ່ລະລາຍການທີ່ອາດບັນທຶກຂໍ້ມູນຂອງທ່ານໄວ້.}other{ນອກຈາກນີ້, ການດຳເນີນການນີ້ຍັງຈະລຶບຂໍ້ມູນທີ່ເກົ່າກວ່າ # ເດືອນອອກຈາກ Health Connect ນຳ.\n\nຫາກທ່ານຕ້ອງການລຶບຂໍ້ມູນອອກຈາກແອັບທີ່ເຊື່ອມຕໍ່ຂອງທ່ານໂດຍສົມບູນ, ໃຫ້ກວດສອບແອັບແຕ່ລະລາຍການທີ່ອາດບັນທຶກຂໍ້ມູນຂອງທ່ານໄວ້.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"ຕັ້ງຄ່າການລຶບອັດຕະໂນມັດ"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"ຂໍ້ມູນເກົ່າຈະຖືກລຶບອອກ"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect ຈະລຶບຂໍ້ມູນທັງໝົດທີ່ເກົ່າກວ່າ # ເດືອນອອກ. ມັນອາດໃຊ້ເວລາໜຶ່ງມື້ເພື່ອໃຫ້ການປ່ຽນແປງເຫຼົ່ານີ້ປາກົດໃນແອັບທີ່ເຊື່ອມຕໍ່ຂອງທ່ານ.}other{Health Connect ຈະລຶບຂໍ້ມູນທັງໝົດທີ່ເກົ່າກວ່າ # ເດືອນອອກ. ມັນອາດໃຊ້ເວລາໜຶ່ງມື້ເພື່ອໃຫ້ການປ່ຽນແປງເຫຼົ່ານີ້ປາກົດໃນແອັບທີ່ເຊື່ອມຕໍ່ຂອງທ່ານ.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"ຂໍ້ມູນທີ່ຈະຖືກລຶບອອກຈາກໝວດໝູ່ເຫຼົ່ານີ້"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"ແລ້ວໆ"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{ການລຶບອັດຕະໂນມັດເປີດຢູ່. ຂໍ້ມູນທີ່ເກົ່າກວ່າ # ເດືອນຈະຖືກລຶບອອກ}other{ການລຶບອັດຕະໂນມັດເປີດຢູ່. ຂໍ້ມູນທີ່ເກົ່າກວ່າ # ເດືອນຈະຖືກລຶບອອກ}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"ການລຶບອັດຕະໂນມັດປິດຢູ່"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"ຕັ້ງລຳດັບຄວາມສຳຄັນຂອງແອັບ"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"ຫາກມີຫຼາຍກວ່າໜຶ່ງແອັບເພີ່ມຂໍ້ມູນ <xliff:g id="DATA_TYPE">%s</xliff:g>, Health Connect ຈະໃຫ້ຄວາມສຳຄັນກັບແອັບທີ່ຢູ່ສູງສຸດໃນລາຍຊື່ນີ້. ລາກແອັບເພື່ອຈັດຮຽງພວກມັນຄືນໃໝ່."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"ບັນທຶກ"</string>
@@ -1003,4 +990,5 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"ລຶບຂໍ້ມູນທັງໝົດແລ້ວ"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"ລຶບຂໍ້ມູນ <xliff:g id="PERMISSION_TYPE">%s</xliff:g> ແລ້ວ"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"ລຶບ <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> ລາຍການແລ້ວ"</string>
+    <string name="select_all" msgid="837499881590001166">"ເລືອກທັງໝົດ"</string>
 </resources>
