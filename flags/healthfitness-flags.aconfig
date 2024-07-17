@@ -1,3 +1,4 @@
+# Use this file to add new flags to the HealthFitness module instead of flags.aconfig.
 package: "com.android.healthfitness.flags"
 container: "com.android.healthfitness"
 
@@ -40,5 +41,13 @@ flag {
     namespace: "health_fitness_aconfig"
     description: "Enables dependency injection."
     bug: "341654919"
+    is_fixed_read_only: true
+}
+
+flag {
+    name: "new_information_architecture"
+    namespace: "health_fitness_aconfig"
+    description: "Enables new information architecture."
+    bug: "291249677"
     is_fixed_read_only: true
 }

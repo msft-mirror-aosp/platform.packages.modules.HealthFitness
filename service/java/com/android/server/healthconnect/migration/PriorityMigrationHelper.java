@@ -219,7 +219,7 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
     /** Used in testing to clear the instance to clear and re-reference the mocks. */
     @VisibleForTesting
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    static synchronized void clearInstanceForTest() {
+    static void clearInstanceForTest() {
         synchronized (sPriorityMigrationHelperLock) {
             sPriorityMigrationHelper = null;
         }
