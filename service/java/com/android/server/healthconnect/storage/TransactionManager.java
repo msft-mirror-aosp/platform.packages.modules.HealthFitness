@@ -511,8 +511,22 @@ public final class TransactionManager {
         return context.getDatabasePath(getReadableDb().getPath()).length();
     }
 
+    /**
+     * Delete data using the given request.
+     *
+     * @param request the request specifying what to delete
+     */
     public void delete(DeleteTableRequest request) {
-        final SQLiteDatabase db = getWritableDb();
+        delete(getWritableDb(), request);
+    }
+
+    /**
+     * Delete data using the given request on the DB.
+     *
+     * @param db the database to delete from
+     * @param request the request specifying what to delete
+     */
+    public void delete(SQLiteDatabase db, DeleteTableRequest request) {
         db.execSQL(request.getDeleteCommand());
     }
 

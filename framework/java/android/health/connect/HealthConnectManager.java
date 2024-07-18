@@ -601,7 +601,6 @@ public class HealthConnectManager {
      * @param callback Callback to receive result of performing this operation.
      * @see AggregateRecordsResponse#get
      */
-    @NonNull
     @SuppressWarnings("unchecked")
     public <T> void aggregate(
             @NonNull AggregateRecordsRequest<T> request,
@@ -1325,7 +1324,6 @@ public class HealthConnectManager {
      * @param callback Callback to receive result of performing this operation.
      * @hide
      */
-    @NonNull
     @SystemApi
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
     public void getContributorApplicationsInfo(
@@ -1540,7 +1538,6 @@ public class HealthConnectManager {
      */
     @UserHandleAware
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
-    @NonNull
     public void getHealthConnectMigrationUiState(
             @NonNull Executor executor,
             @NonNull
@@ -1589,7 +1586,6 @@ public class HealthConnectManager {
                 MANAGE_HEALTH_DATA_PERMISSION,
                 Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA
             })
-    @NonNull
     public void getHealthConnectDataState(
             @NonNull Executor executor,
             @NonNull OutcomeReceiver<HealthConnectDataState, HealthConnectException> callback) {
@@ -1625,7 +1621,6 @@ public class HealthConnectManager {
      * @throws java.lang.IllegalArgumentException If the record types list is empty.
      * @hide
      */
-    @NonNull
     @SystemApi
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
     public void queryActivityDates(
@@ -1973,7 +1968,7 @@ public class HealthConnectManager {
         int i = 0;
         List<Record> records = new ArrayList<>();
 
-        for (RecordInternal recordInternal : recordInternals) {
+        for (RecordInternal<?> recordInternal : recordInternals) {
             recordInternal.setUuid(uuids.get(i++));
             records.add(recordInternal.toExternalRecord());
         }
@@ -2264,8 +2259,6 @@ public class HealthConnectManager {
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
-
-        throw new UnsupportedOperationException("Not implemented");
     }
 
     /**
@@ -2431,10 +2424,12 @@ public class HealthConnectManager {
     /**
      * Deletes a {@link MedicalDataSource} and all data contained within it.
      *
+     * <p>If the datasource does not exist, {@code callback.onError()} is passed an exception with
+     * code {@link HealthConnectException#ERROR_INVALID_ARGUMENT}.
+     *
      * @param id The id of the data source to delete.
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
-     * @throws IllegalArgumentException if the datasource does not exist.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public void deleteMedicalDataSourceWithData(
@@ -2442,6 +2437,27 @@ public class HealthConnectManager {
             @NonNull Executor executor,
             @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
 
-        throw new UnsupportedOperationException("Not implemented");
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        try {
+            mService.deleteMedicalDataSourceWithData(
+                    mContext.getAttributionSource(),
+                    id,
+                    new IEmptyResponseCallback.Stub() {
+                        @Override
+                        public void onResult() {
+                            returnResult(executor, null, callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
     }
 }

@@ -21,6 +21,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.Constants.READ;
 import static android.health.connect.HealthConnectException.ERROR_INTERNAL;
+import static android.health.connect.HealthConnectException.ERROR_INVALID_ARGUMENT;
 import static android.health.connect.HealthConnectException.ERROR_SECURITY;
 import static android.health.connect.HealthConnectException.ERROR_UNSUPPORTED_OPERATION;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
@@ -2329,6 +2330,85 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                         request, packageName);
 
                         tryAndReturnResult(callback, dataSource, logger);
+                    } catch (SQLiteException sqLiteException) {
+                        logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
+                        Slog.e(TAG, "SQLiteException: ", sqLiteException);
+                        tryAndThrowException(
+                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                    } catch (SecurityException securityException) {
+                        logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
+                        Slog.e(TAG, "SecurityException: ", securityException);
+                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                    } catch (HealthConnectException healthConnectException) {
+                        logger.setHealthDataServiceApiStatusError(
+                                healthConnectException.getErrorCode());
+                        Slog.e(TAG, "HealthConnectException: ", healthConnectException);
+                        tryAndThrowException(
+                                callback,
+                                healthConnectException,
+                                healthConnectException.getErrorCode());
+                    } catch (Exception e) {
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        Slog.e(TAG, "Exception: ", e);
+                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                    } finally {
+                        logger.build().log();
+                    }
+                },
+                uid,
+                holdsDataManagementPermission);
+    }
+
+    /** Service implementation of {@link HealthConnectManager#createMedicalDataSource} */
+    @Override
+    public void deleteMedicalDataSourceWithData(
+            @NonNull AttributionSource attributionSource,
+            @NonNull String id,
+            @NonNull IEmptyResponseCallback callback) {
+        // TODO: b/350010046 - add permission check, rate-limiting and package name check
+        if (!personalHealthRecord()) {
+            HealthConnectException unsupportedException =
+                    new HealthConnectException(
+                            ERROR_UNSUPPORTED_OPERATION,
+                            "Deleting MedicalDataSource is not supported.");
+            Slog.e(TAG, "HealthConnectException: ", unsupportedException);
+            tryAndThrowException(
+                    callback, unsupportedException, unsupportedException.getErrorCode());
+            return;
+        }
+
+        checkParamsNonNull(attributionSource, id, callback);
+
+        final int uid = Binder.getCallingUid();
+        final int pid = Binder.getCallingPid();
+        final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
+        final String callingPackageName =
+                Objects.requireNonNull(attributionSource.getPackageName());
+        final HealthConnectServiceLogger.Builder logger =
+                new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, DELETE_DATA)
+                        .setPackageName(callingPackageName);
+
+        HealthConnectThreadScheduler.schedule(
+                mContext,
+                () -> {
+                    try {
+                        if (id.trim().isEmpty()) {
+                            tryAndThrowException(
+                                    callback,
+                                    new IllegalArgumentException("Empty datasource id"),
+                                    ERROR_INVALID_ARGUMENT);
+                            return;
+                        }
+                        // First try to see if the id exists, and if not give an exception
+                        try {
+                            // This also deletes the contained data, because they are referenced
+                            // by foreign key, and so are handled by ON DELETE CASCADE in the db.
+                            mMedicalDataSourceHelper.deleteMedicalDataSource(id);
+                        } catch (IllegalArgumentException e) {
+                            // The datasource did not exist
+                            tryAndThrowException(callback, e, ERROR_INVALID_ARGUMENT);
+                        }
+                        tryAndReturnResult(callback, logger);
                     } catch (SQLiteException sqLiteException) {
                         logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);

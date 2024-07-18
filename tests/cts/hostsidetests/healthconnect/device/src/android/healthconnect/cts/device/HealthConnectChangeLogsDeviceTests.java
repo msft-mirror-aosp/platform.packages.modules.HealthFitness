@@ -35,7 +35,7 @@ import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.google.common.truth.Correspondence;
 

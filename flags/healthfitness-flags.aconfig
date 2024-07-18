@@ -37,6 +37,17 @@ flag {
 }
 
 flag {
+    name: "d2d_file_deletion_bug_fix"
+    namespace: "health_fitness_aconfig"
+    description: "Fixes bugs that prevents file deletion during d2d."
+    bug: "301926710"
+    is_fixed_read_only: true
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
     name: "dependency_injection"
     namespace: "health_fitness_aconfig"
     description: "Enables dependency injection."

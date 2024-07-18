@@ -34,6 +34,7 @@
     <string name="connected_apps_connected_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens when all possible apps are connected. [ICU SYNTAX][CHAR_LIMIT=NONE]">{count, plural, =1 {1 app has access} other {# apps have access}}</string>
     <string name="connected_apps_button_no_permissions_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens, when no apps are connected. [CHAR_LIMIT=NONE]">None</string>
     <string name="entry_details_title" description="Label for a screen that list an entry details. [CHAR_LIMIT=40]">Entry details</string>
+    <string name="manage_data_summary" description="Summary for the manage data preference. [CHAR_LIMIT=NONE]">Auto-delete, data sources, backup and restore</string>
     <!--  endregion -->
 
     <!-- region Manage data -->
