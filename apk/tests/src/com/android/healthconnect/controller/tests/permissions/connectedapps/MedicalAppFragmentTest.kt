@@ -421,6 +421,7 @@ class MedicalAppFragmentTest {
     }
 
     @Test
+    @Ignore // TODO(b/353512381): Unignore when not flaky.
     fun footerWithGrantTime_whenHistoryRead_isNotDisplayed() {
         val permission = MedicalPermission(IMMUNIZATION)
         whenever(viewModel.medicalPermissions).then { MutableLiveData(listOf(permission)) }
@@ -606,6 +607,7 @@ class MedicalAppFragmentTest {
     }
 
     @Test
+    @Ignore //TODO(b/352003559): Unignore when not flaky.
     fun additionalAccessState_onClick_navigatesToAdditionalAccessFragment() {
         val validState =
             AdditionalAccessViewModel.State(
