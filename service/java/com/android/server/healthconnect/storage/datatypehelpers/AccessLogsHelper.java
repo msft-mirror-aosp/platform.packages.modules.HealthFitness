@@ -93,7 +93,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
     }
 
     /**
-     * Returns the timestamp of the latest access log and {@link Long.MIN_VALUE} if there is no
+     * Returns the timestamp of the latest access log and {@link Long#MIN_VALUE} if there is no
      * access log.
      */
     public static long getLatestAccessLogTimeStamp() {

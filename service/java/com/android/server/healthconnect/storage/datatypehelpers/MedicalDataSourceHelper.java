@@ -33,6 +33,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.health.connect.Constants;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.util.Pair;
@@ -126,7 +127,7 @@ public class MedicalDataSourceHelper {
 
     /**
      * Returns List of {@link MedicalDataSource}s from the cursor. If the cursor contains more than
-     * {@link MAXIMUM_ALLOWED_CURSOR_COUNT} data sources, it throws {@link
+     * {@link Constants#MAXIMUM_ALLOWED_CURSOR_COUNT} data sources, it throws {@link
      * IllegalArgumentException}.
      */
     @NonNull
