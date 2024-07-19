@@ -31,11 +31,11 @@ import static android.health.connect.HealthPermissions.READ_DISTANCE;
 import static android.health.connect.HealthPermissions.READ_ELEVATION_GAINED;
 import static android.health.connect.HealthPermissions.READ_EXERCISE;
 import static android.health.connect.HealthPermissions.READ_FLOORS_CLIMBED;
+import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.READ_HEART_RATE;
 import static android.health.connect.HealthPermissions.READ_HEART_RATE_VARIABILITY;
 import static android.health.connect.HealthPermissions.READ_HEIGHT;
-import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY;
 import static android.health.connect.HealthPermissions.READ_HYDRATION;
 import static android.health.connect.HealthPermissions.READ_INTERMENSTRUAL_BLEEDING;
 import static android.health.connect.HealthPermissions.READ_LEAN_BODY_MASS;
@@ -102,7 +102,7 @@ import android.content.pm.PermissionInfo;
 import android.health.connect.HealthConnectManager;
 
 import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -122,7 +122,7 @@ public class HealthConnectManagerTest {
                                     return null;
                                 })
                 .when(mService)
-                .deleteMedicalResources(any(), any(), any());
+                .deleteMedicalResourcesByIds(any(), any(), any());
 
         healthConnectManager.deleteMedicalResources(
                 ImmutableList.of(getMedicalResourceId()),
@@ -134,7 +134,8 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    public void testHealthConnectManager_deleteResources_usesResultFromService() throws Exception {
+    public void testHealthConnectManager_deleteResourcesByIds_usesResultFromService()
+            throws Exception {
         Context context = ApplicationProvider.getApplicationContext();
         HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
         TestOutcomeReceiver<Void> receiver = new TestOutcomeReceiver<>();
@@ -146,7 +147,7 @@ public class HealthConnectManagerTest {
                                     return null;
                                 })
                 .when(mService)
-                .deleteMedicalResources(any(), any(), any());
+                .deleteMedicalResourcesByIds(any(), any(), any());
 
         healthConnectManager.deleteMedicalResources(
                 ImmutableList.of(getMedicalResourceId()),
@@ -157,13 +158,67 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    public void testHealthConnectManager_deleteResources_shortcutsEmptyRequest() throws Exception {
+    public void testHealthConnectManager_deleteResourcesByIds_shortcutsEmptyRequest()
+            throws Exception {
         Context context = ApplicationProvider.getApplicationContext();
         HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
         TestOutcomeReceiver<Void> receiver = new TestOutcomeReceiver<>();
 
         healthConnectManager.deleteMedicalResources(
                 ImmutableList.of(), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isNull();
+    }
+
+    @Test
+    public void testHealthConnectManager_deleteResourcesByRequest_usesExceptionFromService()
+            throws Exception {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
+        TestOutcomeReceiver<Void> receiver = new TestOutcomeReceiver<>();
+        doAnswer(
+                        (Answer<Void>)
+                                invocation -> {
+                                    IEmptyResponseCallback callback = invocation.getArgument(2);
+                                    callback.onError(
+                                            new HealthConnectExceptionParcel(
+                                                    new HealthConnectException(
+                                                            HealthConnectException
+                                                                    .ERROR_UNSUPPORTED_OPERATION)));
+                                    return null;
+                                })
+                .when(mService)
+                .deleteMedicalResourcesByRequest(any(), any(), any());
+        DeleteMedicalResourcesRequest request =
+                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
+
+        healthConnectManager.deleteMedicalResources(
+                request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    public void testHealthConnectManager_deleteResourcesByRequest_usesResultFromService()
+            throws Exception {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
+        TestOutcomeReceiver<Void> receiver = new TestOutcomeReceiver<>();
+        doAnswer(
+                        (Answer<Void>)
+                                invocation -> {
+                                    IEmptyResponseCallback callback = invocation.getArgument(2);
+                                    callback.onResult();
+                                    return null;
+                                })
+                .when(mService)
+                .deleteMedicalResourcesByRequest(any(), any(), any());
+        DeleteMedicalResourcesRequest request =
+                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
+
+        healthConnectManager.deleteMedicalResources(
+                request, Executors.newSingleThreadExecutor(), receiver);
 
         assertThat(receiver.getResponse()).isNull();
     }

@@ -1,9 +1,10 @@
 package android.health.connect.aidl;
 
 import android.content.AttributionSource;
+import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.MedicalResourceId;
-import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.ReadMedicalResourcesRequest;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.aidl.ActivityDatesRequestParcel;
 import android.health.connect.aidl.AggregateDataRequestParcel;
 import android.health.connect.aidl.IAggregateRecordsResponseCallback;
@@ -394,6 +395,7 @@ interface IHealthConnectService {
     /**
      * Creates a {@code MedicalDataSource} in HealthConnect based on the {@code request} values.
      *
+     * @param attributionSource attribution source for the data.
      * @param request Creation request.
      * @param callback Callback to receive result of performing this operation.
      */
@@ -401,6 +403,20 @@ interface IHealthConnectService {
             in AttributionSource attributionSource,
             in CreateMedicalDataSourceRequest request,
             in IMedicalDataSourceResponseCallback callback);
+
+    /**
+     * Deletes a {@code MedicalDataSource} in HealthConnect including all the data contained in it.
+     *
+     * <p>If the datasource does not exist, the operation will fail.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param id the datasource to delete, returned earlier from {@code createMedicalDataSource}
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void deleteMedicalDataSourceWithData(
+            in AttributionSource attributionSource,
+            in String id,
+            in IEmptyResponseCallback callback);
 
     /**
      * Upserts {@link MedicalResource}s in HealthConnect based on a list of {@link
@@ -446,8 +462,20 @@ interface IHealthConnectService {
      * @param medicalResourceIds represents the ids to be deleted.
      * @param callback Callback to receive result of performing this operation.
      */
-    void deleteMedicalResources(
+    void deleteMedicalResourcesByIds(
         in AttributionSource attributionSource,
         in List<MedicalResourceId> medicalResourceIds,
+        in IEmptyResponseCallback callback);
+
+    /**
+     * Delete from the HealthConnect database.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param request represents a request specifying what to delete.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void deleteMedicalResourcesByRequest(
+        in AttributionSource attributionSource,
+        in DeleteMedicalResourcesRequest request,
         in IEmptyResponseCallback callback);
 }
