@@ -16,6 +16,8 @@
 package com.android.healthconnect.controller.tests.selectabledeletion
 
 import android.content.Context
+import android.health.connect.datatypes.StepsCadenceRecord
+import android.health.connect.datatypes.StepsRecord
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
@@ -33,7 +35,6 @@ import com.android.healthconnect.controller.selectabledeletion.DeletionConstants
 import com.android.healthconnect.controller.selectabledeletion.DeletionFragment
 import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.ClearTimeFormatRule
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -44,16 +45,16 @@ import com.android.healthconnect.controller.utils.TimeSource
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.mockito.Mockito
-import org.mockito.kotlin.whenever
 import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.mockito.Mockito
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class DeletionFragmentTest {
@@ -294,7 +295,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS),
+                mapOf("test_id_1" to StepsRecord::class),
                 totalEntries = 10,
                 period = DateNavigationPeriod.PERIOD_DAY,
                 startTime = selectedDay,
@@ -331,7 +332,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 10,
                 period = DateNavigationPeriod.PERIOD_DAY,
                 startTime = selectedDay,
@@ -368,7 +369,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 10,
                 period = DateNavigationPeriod.PERIOD_DAY,
                 startTime = selectedDay,
@@ -405,7 +406,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 2,
                 period = DateNavigationPeriod.PERIOD_DAY,
                 startTime = selectedDay,
@@ -442,7 +443,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 2,
                 period = DateNavigationPeriod.PERIOD_DAY,
                 startTime = selectedDay,
@@ -482,7 +483,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS),
+                mapOf("test_id_1" to StepsRecord::class),
                 totalEntries = 10,
                 period = DateNavigationPeriod.PERIOD_WEEK,
                 startTime = selectedDay,
@@ -521,7 +522,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 10,
                 period = DateNavigationPeriod.PERIOD_WEEK,
                 startTime = selectedDay,
@@ -560,7 +561,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 10,
                 period = DateNavigationPeriod.PERIOD_WEEK,
                 startTime = selectedDay,
@@ -599,7 +600,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 2,
                 period = DateNavigationPeriod.PERIOD_WEEK,
                 startTime = selectedDay,
@@ -638,7 +639,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 2,
                 period = DateNavigationPeriod.PERIOD_WEEK,
                 startTime = selectedDay,
@@ -678,7 +679,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS),
+                mapOf("test_id_1" to StepsRecord::class),
                 totalEntries = 10,
                 period = DateNavigationPeriod.PERIOD_MONTH,
                 startTime = selectedDay,
@@ -715,7 +716,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 10,
                 period = DateNavigationPeriod.PERIOD_MONTH,
                 startTime = selectedDay,
@@ -752,7 +753,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 10,
                 period = DateNavigationPeriod.PERIOD_MONTH,
                 startTime = selectedDay,
@@ -789,7 +790,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 2,
                 period = DateNavigationPeriod.PERIOD_MONTH,
                 startTime = selectedDay,
@@ -826,7 +827,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntries(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 totalEntries = 2,
                 period = DateNavigationPeriod.PERIOD_MONTH,
                 startTime = selectedDay,
@@ -870,7 +871,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS),
+                mapOf("test_id_1" to StepsRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 10,
@@ -909,7 +910,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 10,
@@ -948,7 +949,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 10,
@@ -987,7 +988,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 2,
@@ -1026,7 +1027,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 2,
@@ -1068,7 +1069,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS),
+                mapOf("test_id_1" to StepsRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 10,
@@ -1109,7 +1110,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 10,
@@ -1155,7 +1156,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 10,
@@ -1200,7 +1201,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 2,
@@ -1245,7 +1246,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 2,
@@ -1291,7 +1292,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS),
+                mapOf("test_id_1" to StepsRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 10,
@@ -1330,7 +1331,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 10,
@@ -1369,7 +1370,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 10,
@@ -1408,7 +1409,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 2,
@@ -1447,7 +1448,7 @@ class DeletionFragmentTest {
         }
         whenever(viewModel.getDeletionType()).then {
             DeletionType.DeleteEntriesFromApp(
-                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                mapOf("test_id_1" to StepsRecord::class, "test_id_2" to StepsCadenceRecord::class),
                 TEST_APP_PACKAGE_NAME,
                 TEST_APP_NAME,
                 totalEntries = 2,

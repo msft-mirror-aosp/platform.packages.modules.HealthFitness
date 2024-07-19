@@ -16,6 +16,11 @@
 package com.android.healthconnect.controller.tests.data.entries
 
 import android.content.Context
+import android.health.connect.datatypes.ExerciseSessionRecord
+import android.health.connect.datatypes.HeartRateRecord
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
+import android.health.connect.datatypes.SleepSessionRecord
+import android.health.connect.datatypes.StepsRecord
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onIdle
@@ -45,7 +50,6 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionTy
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.SLEEP
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -85,6 +89,7 @@ class AllEntriesFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @BindValue val viewModel: EntriesViewModel = Mockito.mock(EntriesViewModel::class.java)
+
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     private lateinit var context: Context
@@ -363,7 +368,7 @@ class AllEntriesFragmentTest {
 
         onView(withText("12 steps")).perform(click())
         onIdle()
-        verify(viewModel).addToDeleteMap("test_id", DataType.STEPS)
+        verify(viewModel).addToDeleteMap("test_id", StepsRecord::class)
     }
 
     @Test
@@ -404,8 +409,8 @@ class AllEntriesFragmentTest {
 
         onView(withText("Select all")).perform(click())
         onIdle()
-        verify(viewModel).addToDeleteMap("test_id", DataType.STEPS)
-        verify(viewModel).addToDeleteMap("test_id_2", DataType.STEPS)
+        verify(viewModel).addToDeleteMap("test_id", StepsRecord::class)
+        verify(viewModel).addToDeleteMap("test_id_2", StepsRecord::class)
     }
 
     @Test
@@ -416,7 +421,9 @@ class AllEntriesFragmentTest {
             .thenReturn(FORMATTED_STEPS_LIST_WITH_AGGREGATION.toMutableList())
         whenever(viewModel.mapOfEntriesToBeDeleted)
             .thenReturn(
-                MutableLiveData(mapOf("test_id" to DataType.STEPS, "test_id_2" to DataType.STEPS))
+                MutableLiveData(
+                    mapOf("test_id" to StepsRecord::class, "test_id_2" to StepsRecord::class)
+                )
             )
         whenever(viewModel.allEntriesSelected).thenReturn(MutableLiveData(true))
 
@@ -444,7 +451,7 @@ private val FORMATTED_STEPS_LIST =
             headerA11y = "from 7:06 to 7:06",
             title = "12 steps",
             titleA11y = "12 steps",
-            dataType = DataType.STEPS,
+            dataType = StepsRecord::class,
         ),
         FormattedDataEntry(
             uuid = "test_id_2",
@@ -452,7 +459,7 @@ private val FORMATTED_STEPS_LIST =
             headerA11y = "from 8:06 to 8:06",
             title = "15 steps",
             titleA11y = "15 steps",
-            dataType = DataType.STEPS,
+            dataType = StepsRecord::class,
         ),
     )
 
@@ -464,7 +471,7 @@ private val FORMATTED_SLEEP_LIST =
             headerA11y = "from 7:06 to 7:06",
             title = "7 hours",
             titleA11y = "7 hours",
-            dataType = DataType.SLEEP,
+            dataType = SleepSessionRecord::class,
             notes = "",
         )
     )
@@ -476,7 +483,7 @@ private val FORMATTED_HEART_RATE_LIST =
             headerA11y = "from 7:06 to 7:06",
             title = "128 - 140 bpm",
             titleA11y = "128 - 140 bpm",
-            dataType = DataType.HEART_RATE,
+            dataType = HeartRateRecord::class,
         )
     )
 private val FORMATTED_PLANNED_EXERCISE_LIST =
@@ -487,7 +494,7 @@ private val FORMATTED_PLANNED_EXERCISE_LIST =
             headerA11y = "from 7:06 to 7:06",
             title = "Workout",
             titleA11y = "Workout",
-            dataType = DataType.PLANNED_EXERCISE,
+            dataType = PlannedExerciseSessionRecord::class,
             notes = "",
         )
     )
@@ -499,7 +506,7 @@ private val FORMATTED_EXERCISE_SESSION_LIST =
             headerA11y = "from 7:06 to 7:06",
             title = "Biking",
             titleA11y = "Biking",
-            dataType = DataType.EXERCISE,
+            dataType = ExerciseSessionRecord::class,
             notes = "",
         )
     )
@@ -542,7 +549,7 @@ private val FORMATTED_STEPS_LIST_WITH_AGGREGATION =
             headerA11y = "from 7:06 to 7:06",
             title = "12 steps",
             titleA11y = "12 steps",
-            dataType = DataType.STEPS,
+            dataType = StepsRecord::class,
         ),
         FormattedDataEntry(
             uuid = "test_id_2",
@@ -550,6 +557,6 @@ private val FORMATTED_STEPS_LIST_WITH_AGGREGATION =
             headerA11y = "from 8:06 to 8:06",
             title = "15 steps",
             titleA11y = "15 steps",
-            dataType = DataType.STEPS,
+            dataType = StepsRecord::class,
         ),
     )

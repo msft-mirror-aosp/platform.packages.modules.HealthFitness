@@ -16,13 +16,14 @@
 package com.android.healthconnect.controller.tests.data.entries
 
 import android.content.Context
+import android.health.connect.datatypes.MenstruationPeriodRecord
+import android.health.connect.datatypes.StepsRecord
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.entries.EntriesViewModel
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION
@@ -69,7 +70,7 @@ class EntriesViewModelTest {
                 headerA11y = "from 7:06 to 7:06",
                 title = "12 steps",
                 titleA11y = "12 steps",
-                dataType = DataType.STEPS,
+                dataType = StepsRecord::class,
             )
         private val FORMATTED_STEPS_2 =
             FormattedEntry.FormattedDataEntry(
@@ -78,7 +79,7 @@ class EntriesViewModelTest {
                 headerA11y = "from 8:06 to 8:06",
                 title = "15 steps",
                 titleA11y = "15 steps",
-                dataType = DataType.STEPS,
+                dataType = StepsRecord::class,
             )
         private val FORMATTED_MENSTRUATION_PERIOD =
             FormattedEntry.FormattedDataEntry(
@@ -87,7 +88,7 @@ class EntriesViewModelTest {
                 headerA11y = "from 8:06 to 8:06",
                 title = "15 steps",
                 titleA11y = "15 steps",
-                dataType = DataType.MENSTRUATION_PERIOD,
+                dataType = MenstruationPeriodRecord::class,
             )
         private val FORMATTED_IMMUNIZATION =
             FormattedEntry.FormattedMedicalDataEntry(

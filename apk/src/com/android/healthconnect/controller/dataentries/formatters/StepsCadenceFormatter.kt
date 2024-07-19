@@ -39,7 +39,7 @@ class StepsCadenceFormatter @Inject constructor(@ApplicationContext private val 
         record: StepsCadenceRecord,
         header: String,
         headerA11y: String,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): FormattedEntry {
         return FormattedEntry.SeriesDataEntry(
             uuid = record.metadata.id,
@@ -47,13 +47,14 @@ class StepsCadenceFormatter @Inject constructor(@ApplicationContext private val 
             headerA11y = headerA11y,
             title = formatValue(record, unitPreferences),
             titleA11y = formatA11yValue(record, unitPreferences),
-            dataType = getDataType(record))
+            dataType = record::class,
+        )
     }
 
     /** Returns localized average StepsCadence from multiple data points. */
     override suspend fun formatValue(
         record: StepsCadenceRecord,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): String {
         return formatRange(R.string.steps_per_minute, record.samples)
     }
@@ -61,7 +62,7 @@ class StepsCadenceFormatter @Inject constructor(@ApplicationContext private val 
     /** Returns localized StepsCadence value. */
     override suspend fun formatA11yValue(
         record: StepsCadenceRecord,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): String {
         return formatRange(R.string.steps_per_minute_long, record.samples)
     }
@@ -72,7 +73,7 @@ class StepsCadenceFormatter @Inject constructor(@ApplicationContext private val 
 
     private fun formatSample(
         id: String,
-        sample: StepsCadenceRecordSample
+        sample: StepsCadenceRecordSample,
     ): FormattedEntry.FormattedSessionDetail {
         return FormattedEntry.FormattedSessionDetail(
             uuid = id,
@@ -80,11 +81,15 @@ class StepsCadenceFormatter @Inject constructor(@ApplicationContext private val 
             headerA11y = timeFormatter.formatTime(sample.time),
             title =
                 MessageFormat.format(
-                    context.getString(R.string.steps_per_minute), mapOf("value" to sample.rate)),
+                    context.getString(R.string.steps_per_minute),
+                    mapOf("value" to sample.rate),
+                ),
             titleA11y =
                 MessageFormat.format(
                     context.getString(R.string.steps_per_minute_long),
-                    mapOf("value" to sample.rate)))
+                    mapOf("value" to sample.rate),
+                ),
+        )
     }
 
     private fun formatRange(@StringRes res: Int, samples: List<StepsCadenceRecordSample>): String {

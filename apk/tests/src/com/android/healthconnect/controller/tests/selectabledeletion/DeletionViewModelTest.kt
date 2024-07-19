@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.tests.selectabledeletion
 
+import android.health.connect.datatypes.StepsRecord
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
@@ -25,7 +26,6 @@ import com.android.healthconnect.controller.selectabledeletion.api.DeleteAppData
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteEntriesUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesFromAppUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesUseCase
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.google.common.truth.Truth.assertThat
@@ -272,7 +272,7 @@ private val FORMATTED_STEPS =
         headerA11y = "from 7:06 to 7:06",
         title = "12 steps",
         titleA11y = "12 steps",
-        dataType = DataType.STEPS,
+        dataType = StepsRecord::class,
     )
 private val FORMATTED_STEPS_2 =
     FormattedEntry.FormattedDataEntry(
@@ -281,5 +281,5 @@ private val FORMATTED_STEPS_2 =
         headerA11y = "from 8:06 to 8:06",
         title = "15 steps",
         titleA11y = "15 steps",
-        dataType = DataType.STEPS,
+        dataType = StepsRecord::class,
     )
