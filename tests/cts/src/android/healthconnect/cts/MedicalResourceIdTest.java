@@ -32,7 +32,7 @@ import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 

@@ -37,7 +37,7 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
 import android.util.Pair;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.TransactionManager;

@@ -31,7 +31,7 @@ import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.net.Uri;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
