@@ -21,8 +21,11 @@ import static java.util.Objects.requireNonNull;
 import android.annotation.NonNull;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.UserHandle;
+import android.util.Slog;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.utils.FilesUtil;
 
 import java.io.File;
@@ -33,6 +36,8 @@ import java.io.File;
  * @hide
  */
 public final class DatabaseContext extends ContextWrapper {
+
+    private static final String TAG = "HealthConnectDatabaseContext";
 
     private final String mDatabaseDirName;
 
@@ -57,6 +62,21 @@ public final class DatabaseContext extends ContextWrapper {
     /** Returns the directory of the staged database */
     public File getDatabaseDir() {
         return mDatabaseDir;
+    }
+
+    @Override
+    public boolean deleteDatabase(String name) {
+        if (Flags.d2dFileDeletionBugFix()) {
+            try {
+                File f = getDatabasePath(name);
+                return SQLiteDatabase.deleteDatabase(f);
+            } catch (Exception e) {
+                Slog.e(TAG, "Failed to delete database = " + getDatabasePath(name));
+            }
+            return false;
+        } else {
+            return super.deleteDatabase(name);
+        }
     }
 
     /** Returns the file of the staged database with the given name */
