@@ -54,6 +54,7 @@ public class ExportImportNotificationSender {
                 .setChannelId(CHANNEL_ID)
                 .setFixedNotificationId(FIXED_NOTIFICATION_ID)
                 .setNotificationTag(NOTIFICATION_TAG)
+                .setIsEnabled(true)
                 .build();
     }
 

@@ -20,7 +20,7 @@ import android.health.connect.HealthDataCategory;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.migration.PriorityMigrationPayload;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.google.common.truth.Expect;
 
