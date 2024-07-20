@@ -97,7 +97,8 @@
 
     <activity
         android:id="@+id/importFlowActivity"
-        android:name="com.android.healthconnect.controller.exportimport.ImportFlowActivity"/>
+        android:name="com.android.healthconnect.controller.exportimport.ImportFlowActivity"
+        app:action="android.health.connect.action.START_IMPORT_FLOW" />
 
     <activity
         android:id="@+id/systemUpdateActivity"

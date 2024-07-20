@@ -51,7 +51,8 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
-        window.addSystemFlags(WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+        window.addSystemFlags(
+            WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
         // Handles unsupported devices and user profiles.
         if (!deviceInfoUtils.isHealthConnectAvailable(this)) {
             Log.e(TAG, "Health connect is not available for this user or hardware, finishing!")
@@ -95,7 +96,6 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
                     }
                 }
             }
-
             else -> {
                 // Default to open Health Connect MainActivity
                 Intent(this, MainActivity::class.java)
