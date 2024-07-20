@@ -74,6 +74,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
     private final Context mContext;
 
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private final MigrationStateManager mMigrationStateManager;
 
     public FirstGrantTimeManager(
             @NonNull Context context,
@@ -87,6 +88,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
         mContext = context;
         mPackageInfoHelper = PackageInfoUtils.getInstance();
         mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
+        mMigrationStateManager = MigrationStateManager.getInitialisedInstance();
         mPackageManager.addOnPermissionsChangeListener(this);
     }
 
@@ -225,7 +227,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
                     mUidToGrantTimeCache.remove(uid);
                     // Update priority table only if migration is not in progress as it should
                     // already take care of merging permissions.
-                    if (!MigrationStateManager.getInitialisedInstance().isMigrationInProgress()) {
+                    if (!mMigrationStateManager.isMigrationInProgress()) {
                         HealthConnectThreadScheduler.scheduleInternalTask(
                                 () -> removeAppsFromPriorityList(packageNames));
                     }
@@ -244,7 +246,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
             } else {
                 // Update priority table only if migration is not in progress as it should already
                 // take care of merging permissions
-                if (!MigrationStateManager.getInitialisedInstance().isMigrationInProgress()) {
+                if (!mMigrationStateManager.isMigrationInProgress()) {
                     HealthConnectThreadScheduler.scheduleInternalTask(
                             () ->
                                     mHealthDataCategoryPriorityHelper.updateHealthDataPriority(

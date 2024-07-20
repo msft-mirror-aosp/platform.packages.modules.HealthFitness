@@ -27,8 +27,12 @@ import static com.android.server.healthconnect.exportimport.ExportImportNotifica
 import android.annotation.FlaggedApi;
 import android.annotation.Nullable;
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Icon;
+import android.os.Binder;
 import android.util.Slog;
 
 import androidx.annotation.NonNull;
@@ -74,6 +78,23 @@ public class ExportImportNotificationFactory implements HealthConnectNotificatio
             "import_notification_error_invalid_file_body_text";
     private static final String IMPORT_UNSUCCESSFUL_VERSION_MISMATCH_TEXT =
             "import_notification_error_version_mismatch_body_text";
+
+    private static final String IMPORT_NOTIFICATION_COMPLETE_INTENT_BUTTON =
+            "import_notification_open_intent_button";
+    private static final String IMPORT_NOTIFICATION_TRY_AGAIN_INTENT_BUTTON =
+            "import_notification_try_again_intent_button";
+    private static final String IMPORT_NOTIFICATION_CHOOSE_FILE_INTENT_BUTTON =
+            "import_notification_choose_file_intent_button";
+    private static final String IMPORT_NOTIFICATION_UPDATE_NOW_INTENT_BUTTON =
+            "import_notification_update_now_intent_button";
+
+    private static final String HEALTH_CONNECT_HOME_ACTION =
+            "android.health.connect.action.HEALTH_HOME_SETTINGS";
+    private static final String HEALTH_CONNECT_RESTART_IMPORT_ACTION =
+            "android.health.connect.action.START_IMPORT_FLOW";
+    private static final String HEALTH_CONNECT_UPDATE_ACTION =
+            "android.settings.SYSTEM_UPDATE_SETTINGS";
+    private static final Intent FALLBACK_INTENT = new Intent(HEALTH_CONNECT_HOME_ACTION);
 
     @VisibleForTesting static final String APP_ICON_DRAWABLE_NAME = "health_connect_logo";
 
@@ -137,10 +158,20 @@ public class ExportImportNotificationFactory implements HealthConnectNotificatio
 
     @NonNull
     private Notification getImportCompleteNotification(@NonNull String channelId) {
+        PendingIntent pendingIntent = getImportCompletePendingIntent();
         String notificationTitle = getStringResource(IMPORT_COMPLETE_NOTIFICATION_TITLE);
+
+        Notification.Action openAction =
+                new Notification.Action.Builder(
+                                getAppIcon().get(),
+                                getStringResource(IMPORT_NOTIFICATION_COMPLETE_INTENT_BUTTON),
+                                pendingIntent)
+                        .build();
+
         Notification.Builder notificationBuilder =
                 new Notification.Builder(mContext, channelId)
                         .setContentTitle(notificationTitle)
+                        .setActions(openAction)
                         .setAutoCancel(true);
         if (getAppIcon().isPresent()) {
             notificationBuilder.setSmallIcon(getAppIcon().get());
@@ -150,13 +181,24 @@ public class ExportImportNotificationFactory implements HealthConnectNotificatio
 
     @NonNull
     private Notification getImportUnsuccessfulInvalidFileNotification(@NonNull String channelId) {
+        PendingIntent pendingIntent = getRestartImportFlowPendingIntent();
         String notificationTitle = getStringResource(IMPORT_UNSUCCESSFUL_GENERIC_ERROR_TITLE);
         String notificationTextBody = getStringResource(IMPORT_UNSUCCESSFUL_INVALID_FILE_TEXT);
+
+        Notification.Action restartAction =
+                new Notification.Action.Builder(
+                                getAppIcon().get(),
+                                getStringResource(IMPORT_NOTIFICATION_CHOOSE_FILE_INTENT_BUTTON),
+                                pendingIntent)
+                        .build();
+
         Notification.Builder notificationBuilder =
                 new Notification.Builder(mContext, channelId)
                         .setContentTitle(notificationTitle)
                         .setStyle(new Notification.BigTextStyle().bigText(notificationTextBody))
+                        .setActions(restartAction)
                         .setAutoCancel(true);
+
         if (getAppIcon().isPresent()) {
             notificationBuilder.setSmallIcon(getAppIcon().get());
         }
@@ -181,12 +223,22 @@ public class ExportImportNotificationFactory implements HealthConnectNotificatio
 
     @NonNull
     private Notification getImportUnsuccessfulGenericErrorNotification(@NonNull String channelId) {
+        PendingIntent pendingIntent = getRestartImportFlowPendingIntent();
         String notificationTitle = getStringResource(IMPORT_UNSUCCESSFUL_GENERIC_ERROR_TITLE);
         String notificationTextBody = getStringResource(IMPORT_UNSUCCESSFUL_GENERIC_ERROR_TEXT);
+
+        Notification.Action restartAction =
+                new Notification.Action.Builder(
+                                getAppIcon().get(),
+                                getStringResource(IMPORT_NOTIFICATION_TRY_AGAIN_INTENT_BUTTON),
+                                pendingIntent)
+                        .build();
+
         Notification.Builder notificationBuilder =
                 new Notification.Builder(mContext, channelId)
                         .setContentTitle(notificationTitle)
                         .setStyle(new Notification.BigTextStyle().bigText(notificationTextBody))
+                        .setActions(restartAction)
                         .setAutoCancel(true);
         if (getAppIcon().isPresent()) {
             notificationBuilder.setSmallIcon(getAppIcon().get());
@@ -197,12 +249,22 @@ public class ExportImportNotificationFactory implements HealthConnectNotificatio
     @NonNull
     private Notification getImportUnsuccessfulVersionMismatchNotification(
             @NonNull String channelId) {
+        PendingIntent pendingIntent = getUpgradeVersionPendingIntent();
         String notificationTitle = getStringResource(IMPORT_UNSUCCESSFUL_GENERIC_ERROR_TITLE);
         String notificationTextBody = getStringResource(IMPORT_UNSUCCESSFUL_VERSION_MISMATCH_TEXT);
+
+        Notification.Action updateNowAction =
+                new Notification.Action.Builder(
+                                getAppIcon().get(),
+                                getStringResource(IMPORT_NOTIFICATION_UPDATE_NOW_INTENT_BUTTON),
+                                pendingIntent)
+                        .build();
+
         Notification.Builder notificationBuilder =
                 new Notification.Builder(mContext, channelId)
                         .setContentTitle(notificationTitle)
                         .setStyle(new Notification.BigTextStyle().bigText(notificationTextBody))
+                        .setActions(updateNowAction)
                         .setAutoCancel(true);
         if (getAppIcon().isPresent()) {
             notificationBuilder.setSmallIcon(getAppIcon().get());
@@ -211,15 +273,42 @@ public class ExportImportNotificationFactory implements HealthConnectNotificatio
     }
 
     @NonNull
+    private PendingIntent getPendingIntent(@NonNull Intent intent) {
+        final long callingId = Binder.clearCallingIdentity();
+        try {
+            return PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        } finally {
+            Binder.restoreCallingIdentity(callingId);
+        }
+    }
+
+    @NonNull
+    private PendingIntent getImportCompletePendingIntent() {
+        Intent intent = new Intent(HEALTH_CONNECT_HOME_ACTION);
+        ResolveInfo result = mContext.getPackageManager().resolveActivity(intent, 0);
+        return result == null ? getPendingIntent(FALLBACK_INTENT) : getPendingIntent(intent);
+    }
+
+    @NonNull
+    private PendingIntent getRestartImportFlowPendingIntent() {
+        Intent intent = new Intent(HEALTH_CONNECT_RESTART_IMPORT_ACTION);
+        ResolveInfo result = mContext.getPackageManager().resolveActivity(intent, 0);
+        return result == null ? getPendingIntent(FALLBACK_INTENT) : getPendingIntent(intent);
+    }
+
+    @NonNull
+    private PendingIntent getUpgradeVersionPendingIntent() {
+        Intent intent = new Intent(HEALTH_CONNECT_UPDATE_ACTION);
+        ResolveInfo result = mContext.getPackageManager().resolveActivity(intent, 0);
+        return result == null ? getPendingIntent(FALLBACK_INTENT) : getPendingIntent(intent);
+    }
+
+    @NonNull
     @Override
     public Optional<Icon> getAppIcon() {
         if (mAppIcon.isEmpty()) {
             Icon maybeIcon = mResContext.getIconByDrawableName(APP_ICON_DRAWABLE_NAME);
-            if (maybeIcon == null) {
-                mAppIcon = Optional.empty();
-            } else {
-                mAppIcon = Optional.of(maybeIcon);
-            }
+            mAppIcon = maybeIcon == null ? Optional.empty() : Optional.of(maybeIcon);
         }
         return mAppIcon;
     }

@@ -53,7 +53,7 @@ import android.content.Context;
 import android.os.PersistableBundle;
 import android.os.UserHandle;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectDailyService;
