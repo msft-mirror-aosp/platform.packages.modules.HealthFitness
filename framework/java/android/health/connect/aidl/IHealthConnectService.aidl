@@ -1,9 +1,10 @@
 package android.health.connect.aidl;
 
 import android.content.AttributionSource;
+import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.MedicalResourceId;
-import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.ReadMedicalResourcesRequest;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.aidl.ActivityDatesRequestParcel;
 import android.health.connect.aidl.AggregateDataRequestParcel;
 import android.health.connect.aidl.IAggregateRecordsResponseCallback;
@@ -461,8 +462,20 @@ interface IHealthConnectService {
      * @param medicalResourceIds represents the ids to be deleted.
      * @param callback Callback to receive result of performing this operation.
      */
-    void deleteMedicalResources(
+    void deleteMedicalResourcesByIds(
         in AttributionSource attributionSource,
         in List<MedicalResourceId> medicalResourceIds,
+        in IEmptyResponseCallback callback);
+
+    /**
+     * Delete from the HealthConnect database.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param request represents a request specifying what to delete.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void deleteMedicalResourcesByRequest(
+        in AttributionSource attributionSource,
+        in DeleteMedicalResourcesRequest request,
         in IEmptyResponseCallback callback);
 }

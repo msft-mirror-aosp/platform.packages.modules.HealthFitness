@@ -2278,7 +2278,24 @@ public class HealthConnectManager {
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
 
-        throw new UnsupportedOperationException("Not implemented");
+        try {
+            mService.deleteMedicalResourcesByRequest(
+                    mContext.getAttributionSource(),
+                    request,
+                    new IEmptyResponseCallback.Stub() {
+                        @Override
+                        public void onResult() {
+                            returnResult(executor, null, callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
     }
 
     /**
@@ -2305,7 +2322,7 @@ public class HealthConnectManager {
         }
 
         try {
-            mService.deleteMedicalResources(
+            mService.deleteMedicalResourcesByIds(
                     mContext.getAttributionSource(),
                     ids,
                     new IEmptyResponseCallback.Stub() {

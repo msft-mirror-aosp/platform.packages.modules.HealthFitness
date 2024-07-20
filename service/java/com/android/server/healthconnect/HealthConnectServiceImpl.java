@@ -48,6 +48,7 @@ import android.content.pm.ResolveInfo;
 import android.database.sqlite.SQLiteException;
 import android.health.connect.Constants;
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.FetchDataOriginsPriorityOrderResponse;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
@@ -2774,7 +2775,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     @Override
-    public void deleteMedicalResources(
+    public void deleteMedicalResourcesByIds(
             AttributionSource attributionSource,
             List<MedicalResourceId> medicalResourceIds,
             IEmptyResponseCallback callback) {
@@ -2830,6 +2831,27 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 },
                 uid,
                 holdsDataManagementPermission);
+    }
+
+    @Override
+    public void deleteMedicalResourcesByRequest(
+            AttributionSource attributionSource,
+            DeleteMedicalResourcesRequest request,
+            IEmptyResponseCallback callback) {
+        if (!personalHealthRecord()) {
+            HealthConnectException unsupportedException =
+                    new HealthConnectException(
+                            ERROR_UNSUPPORTED_OPERATION,
+                            "Deleting MedicalResources by request is not supported.");
+            Slog.e(TAG, "HealthConnectException: ", unsupportedException);
+            tryAndThrowException(
+                    callback, unsupportedException, unsupportedException.getErrorCode());
+            return;
+        }
+        UnsupportedOperationException unsupportedException =
+                new UnsupportedOperationException(
+                        "Deleting MedicalResources by request is not yet implemented.");
+        tryAndThrowException(callback, unsupportedException, ERROR_UNSUPPORTED_OPERATION);
     }
 
     // Cancel BR timeouts - this might be needed when a user is going into background.

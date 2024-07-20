@@ -68,6 +68,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.sqlite.SQLiteException;
+import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesRequest;
@@ -186,7 +187,8 @@ public class HealthConnectServiceImplTest {
                     "runImport",
                     "createMedicalDataSource",
                     "deleteMedicalDataSourceWithData",
-                    "deleteMedicalResources",
+                    "deleteMedicalResourcesByIds",
+                    "deleteMedicalResourcesByRequest",
                     "upsertMedicalResources",
                     "readMedicalResourcesByIds",
                     "readMedicalResourcesByRequest");
@@ -806,7 +808,7 @@ public class HealthConnectServiceImplTest {
     public void testDeleteMedicalResources_byIds_flagOff_throws() throws Exception {
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
 
-        mHealthConnectService.deleteMedicalResources(
+        mHealthConnectService.deleteMedicalResourcesByIds(
                 mAttributionSource,
                 List.of(
                         new MedicalResourceId(
@@ -825,7 +827,7 @@ public class HealthConnectServiceImplTest {
     public void testDeleteMedicalResources_noIds_returns() throws RemoteException {
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
 
-        mHealthConnectService.deleteMedicalResources(mAttributionSource, List.of(), callback);
+        mHealthConnectService.deleteMedicalResourcesByIds(mAttributionSource, List.of(), callback);
 
         verify(callback, timeout(5000).times(1)).onResult();
         verifyNoMoreInteractions(callback);
@@ -836,7 +838,7 @@ public class HealthConnectServiceImplTest {
     public void testDeleteMedicalResources_someIds_unsupported() throws RemoteException {
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
 
-        mHealthConnectService.deleteMedicalResources(
+        mHealthConnectService.deleteMedicalResourcesByIds(
                 mAttributionSource,
                 List.of(
                         new MedicalResourceId(
@@ -858,7 +860,7 @@ public class HealthConnectServiceImplTest {
                 .thenReturn(PermissionManager.PERMISSION_HARD_DENIED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
 
-        mHealthConnectService.deleteMedicalResources(
+        mHealthConnectService.deleteMedicalResourcesByIds(
                 mAttributionSource,
                 List.of(
                         new MedicalResourceId(
@@ -879,7 +881,7 @@ public class HealthConnectServiceImplTest {
                 .thenReturn(PERMISSION_GRANTED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
 
-        mHealthConnectService.deleteMedicalResources(
+        mHealthConnectService.deleteMedicalResourcesByIds(
                 mAttributionSource,
                 List.of(
                         new MedicalResourceId(
@@ -887,6 +889,37 @@ public class HealthConnectServiceImplTest {
                                 FHIR_RESOURCE_TYPE_IMMUNIZATION,
                                 FHIR_RESOURCE_ID_IMMUNIZATION)),
                 callback);
+
+        verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
+        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
+                .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalResourcesByRequest_flagOff_throws() throws Exception {
+        IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
+        DeleteMedicalResourcesRequest request =
+                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
+
+        mHealthConnectService.deleteMedicalResourcesByRequest(
+                mAttributionSource, request, callback);
+
+        verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
+        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
+                .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalResourcesByRequest_nonExistentRequest_notImplemented()
+            throws RemoteException {
+        IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
+        DeleteMedicalResourcesRequest request =
+                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
+
+        mHealthConnectService.deleteMedicalResourcesByRequest(
+                mAttributionSource, request, callback);
 
         verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
         assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())

@@ -2187,13 +2187,15 @@ public class HealthConnectManagerTest {
 
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testDeleteMedicalResources_byRequest_throws() {
+    public void testDeleteMedicalResources_byRequest_throws() throws Exception {
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
 
-        assertThrows(
-                UnsupportedOperationException.class,
-                () -> TestUtils.deleteMedicalResourcesByRequest(request));
+        mManager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_UNSUPPORTED_OPERATION);
     }
 
     private boolean isEmptyContributingPackagesForAll(
