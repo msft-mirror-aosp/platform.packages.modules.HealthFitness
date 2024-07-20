@@ -25,10 +25,10 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 
 import android.content.Context;
-import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
+import android.health.connect.RecordIdFilter;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogTokenResponse;
@@ -439,6 +439,8 @@ public class SleepSessionRecordTest {
 
         List<Record> testRecord =
                 TestUtils.insertRecords(Collections.singletonList(buildSleepSession()));
+        List<String> insertedIds =
+                testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList();
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -446,16 +448,18 @@ public class SleepSessionRecordTest {
                                 .map(Record::getMetadata)
                                 .map(Metadata::getId)
                                 .toList())
-                .containsExactlyElementsIn(
-                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
+                .containsExactlyElementsIn(insertedIds);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
         TestUtils.verifyDeleteRecords(
-                new DeleteUsingFiltersRequest.Builder()
-                        .addRecordType(SleepSessionRecord.class)
-                        .build());
+                List.of(RecordIdFilter.fromId(SleepSessionRecord.class, insertedIds.get(0))));
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getDeletedLogs()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(testRecord.size());
+        assertThat(
+                        response.getDeletedLogs().stream()
+                                .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                                .toList())
+                .containsExactlyElementsIn(insertedIds);
     }
 
     private void assertRecordsAreEqual(List<Record> records, List<SleepSessionRecord> result) {
