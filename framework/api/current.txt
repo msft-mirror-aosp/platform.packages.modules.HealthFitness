@@ -81,7 +81,7 @@ package android.health.connect {
   }
 
   public class HealthConnectManager {
-    method @NonNull public <T> void aggregate(@NonNull android.health.connect.AggregateRecordsRequest<T>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.AggregateRecordsResponse<T>,android.health.connect.HealthConnectException>);
+    method public <T> void aggregate(@NonNull android.health.connect.AggregateRecordsRequest<T>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.AggregateRecordsResponse<T>,android.health.connect.HealthConnectException>);
     method public <T> void aggregateGroupByDuration(@NonNull android.health.connect.AggregateRecordsRequest<T>, @NonNull java.time.Duration, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<android.health.connect.AggregateRecordsGroupedByDurationResponse<T>>,android.health.connect.HealthConnectException>);
     method public <T> void aggregateGroupByPeriod(@NonNull android.health.connect.AggregateRecordsRequest<T>, @NonNull java.time.Period, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<android.health.connect.AggregateRecordsGroupedByPeriodResponse<T>>,android.health.connect.HealthConnectException>);
     method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public void createMedicalDataSource(@NonNull android.health.connect.CreateMedicalDataSourceRequest, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.datatypes.MedicalDataSource,android.health.connect.HealthConnectException>);

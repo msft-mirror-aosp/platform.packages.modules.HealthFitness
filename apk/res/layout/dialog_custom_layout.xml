@@ -47,7 +47,7 @@
             android:id="@+id/dialog_custom_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="start"
+            android:gravity="center"
             android:layout_marginTop="@dimen/spacing_normal"
             android:textDirection="locale"
             style="?attr/textAppearanceSummary" />

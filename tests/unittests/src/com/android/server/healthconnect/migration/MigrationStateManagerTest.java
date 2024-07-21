@@ -68,7 +68,7 @@ import android.os.Build;
 import android.os.UserHandle;
 import android.os.ext.SdkExtensions;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
