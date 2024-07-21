@@ -33,6 +33,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.health.connect.Constants;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.util.Pair;
@@ -51,7 +52,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 /**
  * Helper class for MedicalDataSource.
@@ -126,7 +126,7 @@ public class MedicalDataSourceHelper {
 
     /**
      * Returns List of {@link MedicalDataSource}s from the cursor. If the cursor contains more than
-     * {@link MAXIMUM_ALLOWED_CURSOR_COUNT} data sources, it throws {@link
+     * {@link Constants#MAXIMUM_ALLOWED_CURSOR_COUNT} data sources, it throws {@link
      * IllegalArgumentException}.
      */
     @NonNull
@@ -211,34 +211,43 @@ public class MedicalDataSourceHelper {
      *
      * <p>Note that this deletes without producing change logs, or access logs.
      *
-     * @param ids a list of {@link MedicalDataSource} ids.
+     * @param id the id to delete.
+     * @throws IllegalArgumentException if the id does not exist
      */
     @NonNull
-    public static void deleteMedicalDataSources(@NonNull List<String> ids) throws SQLiteException {
-        List<UUID> uuids =
-                ids.stream()
-                        .flatMap(
-                                s -> {
-                                    try {
-                                        return Stream.of(UUID.fromString(s));
-                                    } catch (IllegalArgumentException ex) {
-                                        return Stream.empty();
-                                    }
-                                })
-                        .toList();
-        // If you set an empty list of ids on a DeleteTableRequest, it is silently ignored then
-        // everything is deleted. Handle that here. Don't handle before UUID conversion, as
-        // if an id is silently ignored to create an empty list then again everything will be
-        // deleted.
-        if (uuids.isEmpty()) {
-            return;
+    public static void deleteMedicalDataSource(@NonNull String id) throws SQLiteException {
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(id);
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Id " + id + " does not exist");
         }
         DeleteTableRequest request =
                 new DeleteTableRequest(MEDICAL_DATA_SOURCE_TABLE_NAME)
                         .setIds(
                                 DATA_SOURCE_UUID_COLUMN_NAME,
-                                StorageUtils.getListOfHexStrings(uuids));
-        TransactionManager.getInitialisedInstance().delete(request);
+                                StorageUtils.getListOfHexStrings(List.of(uuid)));
+        ReadTableRequest readTableRequest = getReadTableRequest(List.of(id));
+        TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
+        boolean success =
+                transactionManager.runAsTransaction(
+                        (TransactionManager.TransactionRunnableWithReturn<Boolean, SQLiteException>)
+                                db -> {
+                                    try (Cursor cursor =
+                                            transactionManager.read(db, readTableRequest)) {
+                                        if (cursor.getCount() != 1) {
+                                            return false;
+                                        }
+                                    }
+                                    // This also deletes the contained data, because they are
+                                    // referenced by foreign key, and so are handled by ON DELETE
+                                    // CASCADE in the db.
+                                    transactionManager.delete(db, request);
+                                    return true;
+                                });
+        if (!success) {
+            throw new IllegalArgumentException("Id " + id + " does not exist");
+        }
     }
 
     /**
