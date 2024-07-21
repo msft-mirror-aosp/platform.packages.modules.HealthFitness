@@ -99,7 +99,7 @@ import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 import android.util.Pair;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Assert;
 import org.junit.Rule;
@@ -455,6 +455,20 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
                                         Executors.newSingleThreadExecutor(),
                                         receiver));
         assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void deleteMedicalResourcesByIds_noPermission_expectError() throws InterruptedException {
+        HealthConnectManager manager = TestUtils.getHealthConnectManager();
+        List<MedicalResourceId> ids =
+                List.of(new MedicalResourceId("123", FHIR_RESOURCE_TYPE_IMMUNIZATION, "456"));
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
+
+        manager.deleteMedicalResources(ids, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_SECURITY);
     }
 
     private static List<Record> getTestRecords() {

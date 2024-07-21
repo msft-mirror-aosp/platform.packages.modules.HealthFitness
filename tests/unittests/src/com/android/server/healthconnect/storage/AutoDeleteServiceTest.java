@@ -25,7 +25,7 @@ import android.content.Context;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.util.ArrayMap;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;

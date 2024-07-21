@@ -1,3 +1,4 @@
+# Use this file to add new flags to the HealthFitness module instead of flags.aconfig.
 package: "com.android.healthfitness.flags"
 container: "com.android.healthfitness"
 
@@ -36,9 +37,28 @@ flag {
 }
 
 flag {
+    name: "d2d_file_deletion_bug_fix"
+    namespace: "health_fitness_aconfig"
+    description: "Fixes bugs that prevents file deletion during d2d."
+    bug: "301926710"
+    is_fixed_read_only: true
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
     name: "dependency_injection"
     namespace: "health_fitness_aconfig"
     description: "Enables dependency injection."
     bug: "341654919"
+    is_fixed_read_only: true
+}
+
+flag {
+    name: "new_information_architecture"
+    namespace: "health_fitness_aconfig"
+    description: "Enables new information architecture."
+    bug: "291249677"
     is_fixed_read_only: true
 }

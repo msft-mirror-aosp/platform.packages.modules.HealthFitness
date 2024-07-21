@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
 
 import android.health.connect.HealthConnectDataState;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.server.healthconnect.migration.MigrationStateManager.StateChangedListener;
 import com.android.server.healthconnect.storage.TransactionManager;
