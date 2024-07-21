@@ -39,6 +39,8 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getHex
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
 import android.content.ContentValues;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.datatypes.MedicalDataSource;
@@ -59,7 +61,6 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -186,14 +187,12 @@ public class MedicalDataSourceHelperTest {
 
     @Test
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
-    public void delete_noIds_success() {
-        MedicalDataSourceHelper.deleteMedicalDataSources(Collections.emptyList());
-    }
-
-    @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
-    public void delete_badId_success() {
-        MedicalDataSourceHelper.deleteMedicalDataSources(List.of("foo"));
+    public void delete_badId_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    MedicalDataSourceHelper.deleteMedicalDataSource("foo");
+                });
     }
 
     @Test
@@ -207,25 +206,11 @@ public class MedicalDataSourceHelperTest {
                 mMedicalDataSourceHelper.createMedicalDataSource(
                         createMedicalDataSourceRequest, DATA_SOURCE_PACKAGE_NAME);
 
-        MedicalDataSourceHelper.deleteMedicalDataSources(List.of("foo"));
-
-        List<MedicalDataSource> result =
-                mMedicalDataSourceHelper.getMedicalDataSources(List.of(existing.getId()));
-        assertThat(result).containsExactly(existing);
-    }
-
-    @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
-    public void delete_noIds_existingDataUnaffected() {
-        CreateMedicalDataSourceRequest createMedicalDataSourceRequest =
-                new CreateMedicalDataSourceRequest.Builder(
-                                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME)
-                        .build();
-        MedicalDataSource existing =
-                mMedicalDataSourceHelper.createMedicalDataSource(
-                        createMedicalDataSourceRequest, DATA_SOURCE_PACKAGE_NAME);
-
-        MedicalDataSourceHelper.deleteMedicalDataSources(Collections.emptyList());
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    MedicalDataSourceHelper.deleteMedicalDataSource("foo");
+                });
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSources(List.of(existing.getId()));
@@ -243,37 +228,10 @@ public class MedicalDataSourceHelperTest {
                 mMedicalDataSourceHelper.createMedicalDataSource(
                         createMedicalDataSourceRequest, DATA_SOURCE_PACKAGE_NAME);
 
-        MedicalDataSourceHelper.deleteMedicalDataSources(List.of(existing.getId()));
+        MedicalDataSourceHelper.deleteMedicalDataSource(existing.getId());
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSources(List.of(existing.getId()));
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
-    public void delete_multipleIds_existingDataDeleted() {
-        CreateMedicalDataSourceRequest createMedicalDataSourceRequest1 =
-                new CreateMedicalDataSourceRequest.Builder(
-                                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME)
-                        .build();
-        CreateMedicalDataSourceRequest createMedicalDataSourceRequest2 =
-                new CreateMedicalDataSourceRequest.Builder(
-                                DIFFERENT_DATA_SOURCE_BASE_URI, DIFFERENT_DATA_SOURCE_DISPLAY_NAME)
-                        .build();
-        MedicalDataSource dataSource1 =
-                mMedicalDataSourceHelper.createMedicalDataSource(
-                        createMedicalDataSourceRequest1, DATA_SOURCE_PACKAGE_NAME);
-        MedicalDataSource dataSource2 =
-                mMedicalDataSourceHelper.createMedicalDataSource(
-                        createMedicalDataSourceRequest2, DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-
-        MedicalDataSourceHelper.deleteMedicalDataSources(
-                List.of(dataSource1.getId(), dataSource2.getId()));
-
-        List<MedicalDataSource> result =
-                mMedicalDataSourceHelper.getMedicalDataSources(
-                        List.of(dataSource1.getId(), dataSource2.getId()));
         assertThat(result).isEmpty();
     }
 
@@ -295,7 +253,7 @@ public class MedicalDataSourceHelperTest {
                 mMedicalDataSourceHelper.createMedicalDataSource(
                         createMedicalDataSourceRequest2, DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
-        MedicalDataSourceHelper.deleteMedicalDataSources(List.of(dataSource1.getId()));
+        MedicalDataSourceHelper.deleteMedicalDataSource(dataSource1.getId());
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSources(

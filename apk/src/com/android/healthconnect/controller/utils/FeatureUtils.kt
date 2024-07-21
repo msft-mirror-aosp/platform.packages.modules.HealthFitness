@@ -36,16 +36,12 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
 
     companion object {
         private const val HEALTH_FITNESS_FLAGS_NAMESPACE = DeviceConfig.NAMESPACE_HEALTH_FITNESS
-        private const val PROPERTY_EXERCISE_ROUTE_ENABLED = "exercise_routes_enable"
         private const val PROPERTY_EXERCISE_ROUTE_READ_ALL_ENABLED =
             "exercise_routes_read_all_enable"
         private const val PROPERTY_SESSIONS_TYPE_ENABLED = "session_types_enable"
         private const val PROPERTY_ENTRY_POINTS_ENABLED = "entry_points_enable"
         private const val PROPERTY_AGGREGATION_SOURCE_CONTROL_ENABLED =
             "aggregation_source_controls_enable"
-        private const val PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED =
-            "new_information_architecture_enable"
-        private const val PROPERTY_PERSONAL_HEALTH_RECORD_ENABLED = "personal_health_record_enable"
     }
 
     private val lock = Any()
@@ -66,9 +62,7 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
 
     private var isNewAppPriorityEnabled = true
 
-    private var isNewInformationArchitectureEnabled =
-        DeviceConfig.getBoolean(
-            HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED, false)
+    private var isNewInformationArchitectureEnabled = Flags.newInformationArchitecture()
 
     private var isPersonalHealthRecordEnabled = Flags.personalHealthRecord()
 
@@ -151,12 +145,6 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
                         isEntryPointsEnabled =
                             properties.getBoolean(PROPERTY_ENTRY_POINTS_ENABLED, true)
                     PROPERTY_AGGREGATION_SOURCE_CONTROL_ENABLED -> isNewAppPriorityEnabled = true
-                    PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED ->
-                        isNewInformationArchitectureEnabled =
-                            properties.getBoolean(
-                                PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED, false)
-                    PROPERTY_PERSONAL_HEALTH_RECORD_ENABLED ->
-                        properties.getBoolean(PROPERTY_PERSONAL_HEALTH_RECORD_ENABLED, false)
                 }
             }
         }

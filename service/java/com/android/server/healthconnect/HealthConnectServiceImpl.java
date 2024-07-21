@@ -21,6 +21,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.Constants.READ;
 import static android.health.connect.HealthConnectException.ERROR_INTERNAL;
+import static android.health.connect.HealthConnectException.ERROR_INVALID_ARGUMENT;
 import static android.health.connect.HealthConnectException.ERROR_SECURITY;
 import static android.health.connect.HealthConnectException.ERROR_UNSUPPORTED_OPERATION;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
@@ -47,6 +48,7 @@ import android.content.pm.ResolveInfo;
 import android.database.sqlite.SQLiteException;
 import android.health.connect.Constants;
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.FetchDataOriginsPriorityOrderResponse;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
@@ -56,6 +58,7 @@ import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.PageTokenWrapper;
+import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.UpsertMedicalResourceRequest;
@@ -1664,8 +1667,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     /**
-     * Changes migration state to {@link MIGRATION_STATE_IN_PROGRESS} if the current state allows
-     * migration to be started.
+     * Changes migration state to {@link HealthConnectDataState#MIGRATION_STATE_IN_PROGRESS} if the
+     * current state allows migration to be started.
      *
      * @param packageName calling package name
      * @param callback Callback to receive a result or an error encountered while performing this
@@ -1710,8 +1713,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     /**
-     * Changes migration state to {@link MIGRATION_STATE_COMPLETE} if migration is not already
-     * complete.
+     * Changes migration state to {@link HealthConnectDataState#MIGRATION_STATE_COMPLETE} if
+     * migration is not already complete.
      *
      * @param packageName calling package name
      * @param callback Callback to receive a result or an error encountered while performing this
@@ -1746,8 +1749,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     /**
-     * Write data to module storage. The migration state must be {@link MIGRATION_STATE_IN_PROGRESS}
-     * to be able to write data.
+     * Write data to module storage. The migration state must be {@link
+     * HealthConnectDataState#MIGRATION_STATE_IN_PROGRESS} to be able to write data.
      *
      * @param packageName calling package name
      * @param parcel Migration entity containing the data being migrated.
@@ -2357,6 +2360,85 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 holdsDataManagementPermission);
     }
 
+    /** Service implementation of {@link HealthConnectManager#createMedicalDataSource} */
+    @Override
+    public void deleteMedicalDataSourceWithData(
+            @NonNull AttributionSource attributionSource,
+            @NonNull String id,
+            @NonNull IEmptyResponseCallback callback) {
+        // TODO: b/350010046 - add permission check, rate-limiting and package name check
+        if (!personalHealthRecord()) {
+            HealthConnectException unsupportedException =
+                    new HealthConnectException(
+                            ERROR_UNSUPPORTED_OPERATION,
+                            "Deleting MedicalDataSource is not supported.");
+            Slog.e(TAG, "HealthConnectException: ", unsupportedException);
+            tryAndThrowException(
+                    callback, unsupportedException, unsupportedException.getErrorCode());
+            return;
+        }
+
+        checkParamsNonNull(attributionSource, id, callback);
+
+        final int uid = Binder.getCallingUid();
+        final int pid = Binder.getCallingPid();
+        final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
+        final String callingPackageName =
+                Objects.requireNonNull(attributionSource.getPackageName());
+        final HealthConnectServiceLogger.Builder logger =
+                new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, DELETE_DATA)
+                        .setPackageName(callingPackageName);
+
+        HealthConnectThreadScheduler.schedule(
+                mContext,
+                () -> {
+                    try {
+                        if (id.trim().isEmpty()) {
+                            tryAndThrowException(
+                                    callback,
+                                    new IllegalArgumentException("Empty datasource id"),
+                                    ERROR_INVALID_ARGUMENT);
+                            return;
+                        }
+                        // First try to see if the id exists, and if not give an exception
+                        try {
+                            // This also deletes the contained data, because they are referenced
+                            // by foreign key, and so are handled by ON DELETE CASCADE in the db.
+                            mMedicalDataSourceHelper.deleteMedicalDataSource(id);
+                        } catch (IllegalArgumentException e) {
+                            // The datasource did not exist
+                            tryAndThrowException(callback, e, ERROR_INVALID_ARGUMENT);
+                        }
+                        tryAndReturnResult(callback, logger);
+                    } catch (SQLiteException sqLiteException) {
+                        logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
+                        Slog.e(TAG, "SQLiteException: ", sqLiteException);
+                        tryAndThrowException(
+                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                    } catch (SecurityException securityException) {
+                        logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
+                        Slog.e(TAG, "SecurityException: ", securityException);
+                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                    } catch (HealthConnectException healthConnectException) {
+                        logger.setHealthDataServiceApiStatusError(
+                                healthConnectException.getErrorCode());
+                        Slog.e(TAG, "HealthConnectException: ", healthConnectException);
+                        tryAndThrowException(
+                                callback,
+                                healthConnectException,
+                                healthConnectException.getErrorCode());
+                    } catch (Exception e) {
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        Slog.e(TAG, "Exception: ", e);
+                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                    } finally {
+                        logger.build().log();
+                    }
+                },
+                uid,
+                holdsDataManagementPermission);
+    }
+
     @Override
     public void upsertMedicalResources(
             @NonNull AttributionSource attributionSource,
@@ -2469,7 +2551,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     @Override
-    public void readMedicalResources(
+    public void readMedicalResourcesByIds(
             @NonNull AttributionSource attributionSource,
             @NonNull List<MedicalResourceId> medicalResourceIds,
             @NonNull IReadMedicalResourcesResponseCallback callback) {
@@ -2542,7 +2624,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             }
                         }
 
-                        // TODO(b/340204629): Pass extra fields to DB to perform permission check.
+                        // TODO(b/353258694): Pass extra fields to DB to perform permission check.
                         List<MedicalResource> medicalResources =
                                 mMedicalResourceHelper.readMedicalResourcesByIds(
                                         medicalResourceIds);
@@ -2550,7 +2632,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                         // TODO(b/343921816): Creates access log.
 
-                        callback.onResult(new ReadMedicalResourcesResponse(medicalResources));
+                        callback.onResult(new ReadMedicalResourcesResponse(medicalResources, null));
                         logger.setHealthDataServiceApiStatusSuccess();
                     } catch (SQLiteException sqLiteException) {
                         logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
@@ -2583,6 +2665,193 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 },
                 uid,
                 holdsDataManagementPermission);
+    }
+
+    @Override
+    public void readMedicalResourcesByRequest(
+            @NonNull AttributionSource attributionSource,
+            @NonNull ReadMedicalResourcesRequest request,
+            @NonNull IReadMedicalResourcesResponseCallback callback) {
+        if (!personalHealthRecord()) {
+            HealthConnectException unsupportedException =
+                    new HealthConnectException(
+                            ERROR_UNSUPPORTED_OPERATION,
+                            "Reading MedicalResources by request is not supported.");
+            Slog.e(TAG, "HealthConnectException: ", unsupportedException);
+            tryAndThrowException(
+                    callback, unsupportedException, unsupportedException.getErrorCode());
+            return;
+        }
+
+        checkParamsNonNull(attributionSource, request, callback);
+
+        final int uid = Binder.getCallingUid();
+        final int pid = Binder.getCallingPid();
+        final UserHandle userHandle = Binder.getCallingUserHandle();
+        final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
+        final String callingPackageName =
+                Objects.requireNonNull(attributionSource.getPackageName());
+        final HealthConnectServiceLogger.Builder logger =
+                new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, READ_DATA)
+                        .setPackageName(callingPackageName);
+
+        HealthConnectThreadScheduler.schedule(
+                mContext,
+                () -> {
+                    try {
+                        enforceIsForegroundUser(userHandle);
+                        verifyPackageNameFromUid(uid, attributionSource);
+                        throwExceptionIfDataSyncInProgress();
+
+                        boolean enforceSelfRead = false;
+
+                        boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
+
+                        if (!holdsDataManagementPermission) {
+                            logger.setCallerForegroundState(isInForeground);
+
+                            tryAcquireApiCallQuota(
+                                    uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, logger);
+
+                            // TODO(b/350436655): Implement permission enforcement.
+                            if (!isInForeground) {
+                                // If Background Read feature is disabled or
+                                // READ_HEALTH_DATA_IN_BACKGROUND permission is not granted, then
+                                // enforce self read.
+                                enforceSelfRead = isOnlySelfReadInBackgroundAllowed(uid, pid);
+                            }
+
+                            if (Constants.DEBUG) {
+                                Slog.d(
+                                        TAG,
+                                        "Enforce self read for package "
+                                                + callingPackageName
+                                                + ":"
+                                                + enforceSelfRead);
+                            }
+                        }
+
+                        // TODO(b/353258694): Pass callingPackageName, enforceSelfRead and
+                        // isInForeground to DB.
+                        List<MedicalResource> medicalResources =
+                                mMedicalResourceHelper.readMedicalResourcesByRequest(request);
+                        logger.setNumberOfRecords(medicalResources.size());
+
+                        // TODO(b/343921816): Creates access log.
+                        // TODO(b/351817943): Use page token returned by the storage.
+                        callback.onResult(new ReadMedicalResourcesResponse(medicalResources, null));
+                        logger.setHealthDataServiceApiStatusSuccess();
+                    } catch (SQLiteException sqLiteException) {
+                        logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
+                        Slog.e(TAG, "SQLiteException: ", sqLiteException);
+                        tryAndThrowException(
+                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                    } catch (SecurityException securityException) {
+                        logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
+                        Slog.e(TAG, "SecurityException: ", securityException);
+                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                    } catch (IllegalStateException illegalStateException) {
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        Slog.e(TAG, "IllegalStateException: ", illegalStateException);
+                        tryAndThrowException(callback, illegalStateException, ERROR_INTERNAL);
+                    } catch (HealthConnectException healthConnectException) {
+                        logger.setHealthDataServiceApiStatusError(
+                                healthConnectException.getErrorCode());
+                        Slog.e(TAG, "HealthConnectException: ", healthConnectException);
+                        tryAndThrowException(
+                                callback,
+                                healthConnectException,
+                                healthConnectException.getErrorCode());
+                    } catch (Exception e) {
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        Slog.e(TAG, "Exception: ", e);
+                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                    } finally {
+                        logger.build().log();
+                    }
+                },
+                uid,
+                holdsDataManagementPermission);
+    }
+
+    @Override
+    public void deleteMedicalResourcesByIds(
+            AttributionSource attributionSource,
+            List<MedicalResourceId> medicalResourceIds,
+            IEmptyResponseCallback callback) {
+        if (!personalHealthRecord()) {
+            HealthConnectException unsupportedException =
+                    new HealthConnectException(
+                            ERROR_UNSUPPORTED_OPERATION,
+                            "Deleting MedicalResources by ids is not supported.");
+            Slog.e(TAG, "HealthConnectException: ", unsupportedException);
+            tryAndThrowException(
+                    callback, unsupportedException, unsupportedException.getErrorCode());
+            return;
+        }
+
+        checkParamsNonNull(attributionSource, medicalResourceIds, callback);
+
+        final int uid = Binder.getCallingUid();
+        final int pid = Binder.getCallingPid();
+        final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
+        final String callingPackageName =
+                Objects.requireNonNull(attributionSource.getPackageName());
+        final HealthConnectServiceLogger.Builder logger =
+                new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, DELETE_DATA)
+                        .setPackageName(callingPackageName);
+
+        HealthConnectThreadScheduler.schedule(
+                mContext,
+                () -> {
+                    try {
+                        if (medicalResourceIds.isEmpty()) {
+                            tryAndReturnResult(callback, logger);
+                            return;
+                        }
+                        mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
+                                attributionSource);
+
+                        UnsupportedOperationException unsupportedException =
+                                new UnsupportedOperationException(
+                                        "Deleting MedicalResources by ids is not yet implemented.");
+                        tryAndThrowException(
+                                callback, unsupportedException, ERROR_UNSUPPORTED_OPERATION);
+                    } catch (SecurityException securityException) {
+                        logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
+                        Slog.e(TAG, "SecurityException: ", securityException);
+                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                    } catch (Exception e) {
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        Slog.e(TAG, "Exception: ", e);
+                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                    } finally {
+                        logger.build().log();
+                    }
+                },
+                uid,
+                holdsDataManagementPermission);
+    }
+
+    @Override
+    public void deleteMedicalResourcesByRequest(
+            AttributionSource attributionSource,
+            DeleteMedicalResourcesRequest request,
+            IEmptyResponseCallback callback) {
+        if (!personalHealthRecord()) {
+            HealthConnectException unsupportedException =
+                    new HealthConnectException(
+                            ERROR_UNSUPPORTED_OPERATION,
+                            "Deleting MedicalResources by request is not supported.");
+            Slog.e(TAG, "HealthConnectException: ", unsupportedException);
+            tryAndThrowException(
+                    callback, unsupportedException, unsupportedException.getErrorCode());
+            return;
+        }
+        UnsupportedOperationException unsupportedException =
+                new UnsupportedOperationException(
+                        "Deleting MedicalResources by request is not yet implemented.");
+        tryAndThrowException(callback, unsupportedException, ERROR_UNSUPPORTED_OPERATION);
     }
 
     // Cancel BR timeouts - this might be needed when a user is going into background.

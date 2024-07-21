@@ -20,8 +20,7 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Salomatlik maʼlumotlariga ilova ruxsatini boshqaring"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Ruxsatlar va maʼlumotlar"</string>
-    <!-- no translation found for home_subtitle (2154213430054477787) -->
-    <skip />
+    <string name="home_subtitle" msgid="2154213430054477787">"Qurilmadagi jismoniy va salomatlik maʼlumotlarini tekshirish va boshqarish hamda buni koʻrishga qaysi ilovalarga ruxsat berilishi"</string>
     <string name="data_title" msgid="4456619761533380816">"Maʼlumotlar va ruxsat"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Salomatlik qaydlarini varaqlash"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Barcha turkumlar"</string>
@@ -36,6 +35,8 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 ta ilovaga ruxsat berilgan}other{# ta ilovaga ruxsat berilgan}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Hech biri"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Qayd tafsilotlari"</string>
+    <!-- no translation found for manage_data_summary (8537870912521944449) -->
+    <skip />
     <string name="backup_title" msgid="211503191266235085">"Zaxiralash"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Axborot manbalari va tartiblanishi"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Birliklarni belgilash"</string>
@@ -325,12 +326,9 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Mos ilovalar oʻrnatilmagan"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Kengaytirilgan ruxsat"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Bu ilova uchun qoʻshimcha ruxsatlar olib tashlandi"</string>
-    <!-- no translation found for permissions_header (6519976063360071569) -->
-    <skip />
-    <!-- no translation found for manage_fitness_permissions (1001729292172461314) -->
-    <skip />
-    <!-- no translation found for manage_medical_permissions (7658181359096889932) -->
-    <skip />
+    <string name="permissions_header" msgid="6519976063360071569">"Ruxsatlar"</string>
+    <string name="manage_fitness_permissions" msgid="1001729292172461314">"Fitnes ruxsatlarini boshqarish"</string>
+    <string name="manage_medical_permissions" msgid="7658181359096889932">"Tibbiy qayd ruxsatlarini boshqarish"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Ilovadan olingan ruxsatlar"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect <xliff:g id="APP_DATA">%s</xliff:g> ruxsatlarini olib tashladi"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect <xliff:g id="APP_DATA_0">%1$s</xliff:g> va <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> ruxsatlarini olib tashladi"</string>
@@ -346,90 +344,73 @@
     <string name="next_export_time" msgid="3138247220014510213">"Keyingi eksport: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Zaxiralash va tiklash"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Oxirgi eksport: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="export_and_import_title" msgid="3241901922222465397">"Eksport va import"</string>
+    <!-- no translation found for last_export_file_location (4069435932524304633) -->
+    <skip />
     <string name="scheduled_export" msgid="8737660963687364370">"Reja asosida eksport"</string>
     <string name="import_data" msgid="404502315533233094">"Maʼlumotlarni import qilish"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Maʼlumotlarni avvalgi eksport qilingan fayldan tiklang"</string>
     <string name="import_error_banner_title" msgid="1480977889067027790">"Maʼlumotlar tiklanmadi"</string>
-    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
-    <skip />
-    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
-    <skip />
+    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"Faylni tanlang"</string>
+    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"Siz tanlagan fayl tiklashga mos kelmaydi. Eksport qilingan tegishli faylni tanlang."</string>
     <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"Hoziroq yangilash"</string>
     <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Health Connect maʼlumotlaringizni tiklashi uchun tizimni yangilang va qayta urining."</string>
     <string name="import_other_error_banner_button" msgid="8006947649520909176">"Qayta urinish"</string>
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Eksport faylidan maʼlumotlarni tiklashda xatolik yuz berdi."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Eksport qilish orqali maʼlumotlarni saqlab qolib, yangi telefonga koʻchirish mumkin"</string>
-    <!-- no translation found for backup_and_restore_footer_link_text (9075133737244288876) -->
+    <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"Zaxiralash va qayta tiklash haqida"</string>
+    <!-- no translation found for automatic_export_status (4407131306281440230) -->
     <skip />
     <string name="automatic_export_on" msgid="6972389773963624315">"Yoniq"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Oʻchiq"</string>
-    <!-- no translation found for choose_frequency_category (9094154407387676553) -->
+    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
     <skip />
-    <!-- no translation found for scheduled_export_settings_footer_text (8488483803782086291) -->
+    <!-- no translation found for next_export_file_location (2117071837862240540) -->
     <skip />
-    <!-- no translation found for choose_frequency (8119085390857180221) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (7698155810053504157) -->
-    <skip />
+    <string name="choose_frequency_category" msgid="9094154407387676553">"Takrorlanishni oʻzgartirish"</string>
+    <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Rejadagi eksport faolsizlantirilsa, avvalgi eksport qilingan maʼlumotlar saqlanishiga taʼsir qilmaydi"</string>
+    <string name="choose_frequency" msgid="8119085390857180221">"Rejadagi eksportni sozlash"</string>
+    <string name="choose_frequency_description" msgid="7698155810053504157">"Maʼlumotlar eksport qilinishi qanday takrorlanishini tanlang"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Kunlik"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Har hafta"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Oylik"</string>
-    <!-- no translation found for export_destination_title (8352929396306002479) -->
-    <skip />
+    <string name="export_destination_title" msgid="8352929396306002479">"Rejadagi eksport qayerga saqlansin"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"Maʼlumotlarni eksport qilish uchun bulutli xotira ilovasini tanlang"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
     <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Bu fayl import qilinsinmi?"</string>
     <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"<xliff:g id="FILE_NAME">%1$s</xliff:g> fayli Health Connect xizmatiga import qilinadi"</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Bekor qilish"</string>
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Import qilish"</string>
-    <!-- no translation found for import_notification_import_in_progress_title (4657602436278942808) -->
-    <skip />
-    <!-- no translation found for import_notification_import_complete_title (7493223782222480412) -->
-    <skip />
-    <!-- no translation found for import_complete_toast_text (7730872919621230959) -->
-    <skip />
-    <!-- no translation found for import_notification_error_generic_error_title (19162830551127433) -->
-    <skip />
-    <!-- no translation found for import_notification_error_more_space_needed_title (240259612132385794) -->
-    <skip />
-    <!-- no translation found for import_notification_error_invalid_file_body_text (8877884063398886772) -->
-    <skip />
-    <!-- no translation found for import_notification_error_more_space_needed_body_text (7577564968089566232) -->
-    <skip />
-    <!-- no translation found for import_notification_error_generic_error_body_text (6562162452820282874) -->
-    <skip />
-    <!-- no translation found for import_notification_error_version_mismatch_body_text (9186785816764607620) -->
-    <skip />
-    <!-- no translation found for import_notification_update_now_intent_button (2808579294292956628) -->
-    <skip />
-    <!-- no translation found for import_notification_try_again_intent_button (3833062670098674999) -->
-    <skip />
-    <!-- no translation found for import_notification_open_intent_button (2739924648846724969) -->
-    <skip />
-    <!-- no translation found for import_notification_choose_file_intent_button (2249671128440758769) -->
-    <skip />
-    <!-- no translation found for import_notification_free_up_space_intent_button (4665571334602539807) -->
-    <skip />
+    <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect tiklash jarayoni davom etmoqda"</string>
+    <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect tiklashni tugalladi"</string>
+    <string name="import_complete_toast_text" msgid="7730872919621230959">"Maʼlumotlarni tiklash yakunlandi"</string>
+    <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect maʼlumotlarni tiklay olmadi"</string>
+    <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Xotirada koʻproq joy kerak"</string>
+    <string name="import_notification_error_invalid_file_body_text" msgid="8877884063398886772">"Siz tanlagan fayl tiklashga mos kelmaydi. Eksport qilingan tegishli faylni tanlang."</string>
+    <string name="import_notification_error_more_space_needed_body_text" msgid="7577564968089566232">"Health Connect maʼlumotlarni tiklashi uchun telefonda <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> joy kerak."</string>
+    <string name="import_notification_error_generic_error_body_text" msgid="6562162452820282874">"Eksport faylidan maʼlumotlarni tiklashda xatolik yuz berdi."</string>
+    <string name="import_notification_error_version_mismatch_body_text" msgid="9186785816764607620">"Health Connect maʼlumotlaringizni tiklashi uchun tizimni yangilang va qayta urining."</string>
+    <string name="import_notification_update_now_intent_button" msgid="2808579294292956628">"Hoziroq yangilash"</string>
+    <string name="import_notification_try_again_intent_button" msgid="3833062670098674999">"Qayta urinish"</string>
+    <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Ochish"</string>
+    <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Faylni tanlash"</string>
+    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Xotiradan joy ochish"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Orqaga"</string>
+    <!-- no translation found for export_cancel_button (1952360582645412410) -->
+    <skip />
     <string name="export_next_button" msgid="657930567137105172">"Keyingisi"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Bekor qilish"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Keyingisi"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Import qilish"</string>
     <string name="import_invalid_storage" msgid="341798262315495399">"Maʼlumotlarni import qilish uchun bulutli xotira ilovasini tanlang"</string>
-    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
-    <skip />
+    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"Hisobni tanlash uchun bosing"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Hisobni tanlang"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Bekor qilish"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Tayyor"</string>
     <string name="export_import_no_apps_text" msgid="6403119325024893690">"Mos ilova topilmadi. Bu yerda chiqishi uchun bulutli xotira ilovalarini oʻrnating"</string>
-    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
-    <skip />
-    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
-    <skip />
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"Boshqa amallar, bu yerda chiqishi uchun bulutli xotira ilovalarini oʻrnating"</string>
+    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Google Play Marketni ochish"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect bilan ishlashni boshlash"</string>
-    <!-- no translation found for onboarding_description (3479157507808350452) -->
-    <skip />
+    <string name="onboarding_description" msgid="3479157507808350452">"Health Connect salomatlik va fitnes maʼlumotlaringizni xavfsiz saqlaydi va qurilmadagi boshqa ilovalarga oson sinxronlash imkonini beradi"</string>
     <string name="share_data" msgid="3481932156368883946">"Ilovalarga axborot ulashish"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Har bir ilova Health Connect xizmatining qaysi axborotlarni oʻqishi va yozishini tanlang."</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Sozlamalar va maxfiylikni boshqarish"</string>
@@ -439,12 +420,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"Maʼlumotlarni oʻchirib tashlash"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Oʻchirishga kirish"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Oʻchirishdan chiqish"</string>
-    <string name="time_range_title" msgid="6831605283322600165">"Oʻchiriladigan axborotni tanlang"</string>
+    <string name="time_range_title" msgid="5777596779865648336">"Health Connectdan oʻchadigan vaqt orasini tanlang"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Keyingisi"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Bunda tanlangan vaqt orasida Health Connect xizmatiga kiritilgan barcha maʼlumotlar butunlay oʻchib ketadi"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"Bunda tanlangan vaqt orasida Health Connect xizmatiga kiritilgan <xliff:g id="DATA_TYPE">%s</xliff:g> maʼlumotlari butunlay oʻchib ketadi"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"Bunda tanlangan vaqt orasida Health Connect xizmatiga kiritilgan <xliff:g id="CATEGORY">%s</xliff:g> maʼlumotlari butunlay oʻchib ketadi"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"Bunda tanlangan vaqt orasida Health Connect xizmatiga kiritilgan <xliff:g id="APP_DATA">%s</xliff:g> maʼlumotlari butunlay oʻchib ketadi"</string>
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"Bunda tanlangan vaqt orasida <xliff:g id="APP_DATA">%2$s</xliff:g> orqali Health Connect xizmatiga kiritilgan <xliff:g id="DATA_TYPE">%1$s</xliff:g> maʼlumotlari butunlay oʻchib ketadi"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"Oxirgi 24 soatlik axborotni oʻchirish"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"Oxirgi 7 kunlik axborotni oʻchirish"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"Oxirgi 30 kunlik axborotni oʻchirish"</string>
@@ -465,17 +447,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"Oxirgi 24 soatlik <xliff:g id="APP_DATA">%s</xliff:g> maʼlumotlari butunlay tozalansinmi?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"Oxirgi 7 kunlik <xliff:g id="APP_DATA">%s</xliff:g> maʼlumotlari butunlay tozalansinmi?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"Oxirgi 30 kunlik <xliff:g id="APP_DATA">%s</xliff:g> maʼlumotlari butunlay tozalansinmi?"</string>
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"Boshidan beri <xliff:g id="APP_DATA">%2$s</xliff:g> orqali kiritilgan <xliff:g id="DATA_TYPE">%1$s</xliff:g> maʼlumotlari butunlay oʻchirilsinmi?"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"Oxirgi 24 soatda <xliff:g id="APP_DATA">%2$s</xliff:g> orqali kiritilgan <xliff:g id="DATA_TYPE">%1$s</xliff:g> maʼlumotlari butunlay oʻchirilsinmi?"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"Oxirgi 7 kunda <xliff:g id="APP_DATA">%2$s</xliff:g> orqali kiritilgan <xliff:g id="DATA_TYPE">%1$s</xliff:g> maʼlumotlari butunlay oʻchirilsinmi?"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"Oxirgi 30 kunda <xliff:g id="APP_DATA">%2$s</xliff:g> orqali kiritilgan <xliff:g id="DATA_TYPE">%1$s</xliff:g> maʼlumotlari butunlay oʻchirilsinmi?"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Shuningdek, Health Connect xizmatidan barcha <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> ruxsatlarini olib tashlash"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"<xliff:g id="APP_DATA">%2$s</xliff:g> ilovasi kiritgan barcha <xliff:g id="DATA_TYPE">%1$s</xliff:g> maʼlumotlari butunlay oʻchirilsinmi?"</string>
-    <string name="confirming_question_single_entry" msgid="330919962071369305">"Bu yozuv butunlay oʻchirib tashlansinmi?"</string>
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"Bu qayd Health Connect xizmatidan butunlay oʻchirilsinmi?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Ulangan ilovalar keyin Health Connect xizmatidan ushbu axborotni ololmaydi"</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"Bunda <xliff:g id="START_DATE">%1$s</xliff:g> dan <xliff:g id="END_DATE">%2$s</xliff:g> gacha boʻlgan hayz qaydlari oʻchirib tashlanadi."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"O‘chirish"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Orqaga"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Tayyor"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"Yopish"</string>
-    <string name="delete_dialog_success_title" msgid="5009733262743173477">"Axborot oʻchirildi"</string>
-    <string name="delete_dialog_success_message" msgid="2451953113522118128">"Bu axborot endi Health Connect xizmatida saqlanmaydi."</string>
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"Maʼlumotlar Health Connect xizmatidan oʻchirildi"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"Maʼlumotlarni ulangan ilovalardan butunlay oʻchirishni istasangiz, axborot saqlanishi mumkin har bir ilovani tekshiring."</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"Tayyor"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"Ulangan ilovalar"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"Maʼlumotlar oʻchirib tashlanmoqda"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"Maʼlumotlar oʻchirib tashlanmadi"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"Nimadir xato ketdi va Health Connect maʼlumotlaringizni oʻchira olmadi"</string>
@@ -862,12 +850,14 @@
     <string name="range_off" msgid="8178520557618184215">"Oʻchiq"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Bu sozlama oʻzgartirilganda Health Connect mavjud maʼlumotlaringizni yangi sozlamalar asosida oʻchiradi"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Maʼlumotlar # oydan keyin avtomatik oʻchirilsinmi?}other{Maʼlumotlar # oydan keyin avtomatik oʻchirilsinmi?}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect maʼlumotlarni # oydan keyin avtomatik oʻchiradi. Sozlama oʻzgartirilganda # oydan beri saqlangan maʼlumotlar ham oʻchib ketadi.}other{Health Connect maʼlumotlarni # oydan keyin avtomatik oʻchiradi. Sozlama oʻzgartirilganda # oydan beri saqlangan maʼlumotlar ham oʻchib ketadi.}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Bunda # oydan beri saqlangan maʼlumotlar ham Health Connect xizmatidan oʻchib ketadi.\n\nMaʼlumotlarni ulangan ilovalardan butunlay oʻchirishni istasangiz, axborot saqlanishi mumkin har bir ilovani tekshiring.}other{Bunda # oydan beri saqlangan maʼlumotlar ham Health Connect xizmatidan oʻchib ketadi.\n\nMaʼlumotlarni ulangan ilovalardan butunlay oʻchirishni istasangiz, axborot saqlanishi mumkin har bir ilovani tekshiring.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Avtomatik tozalanishini sozlash"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Mavjud axborotlar tozalab tashlanadi"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect # oydan beri saqlangan maʼlumotlarni oʻchiradi. Bu oʻzgarishlarning ulangan ilovalarda bajarilishi bir kun vaqt olishi mumkin.}other{Health Connect # oydan beri saqlangan maʼlumotlarni oʻchiradi. Bu oʻzgarishlarning ulangan ilovalarda bajarilishi bir kun vaqt olishi mumkin.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Quyidagi turdagi maʼlumotlar tozalanadi"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Tayyor"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Avtomatik oʻchirish yoniq. # oydan beri saqlangan maʼlumotlar oʻchiriladi.}other{Avtomatik oʻchirish yoniq. # oydan beri saqlangan maʼlumotlar oʻchiriladi.}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"Avtomatik oʻchirish oʻchiq"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Ilova muhimligini belgilash"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Agar <xliff:g id="DATA_TYPE">%s</xliff:g> axborotini bir nechta ilova kiritsa, Health Connect ularning muhimligini quyidagi roʻyxat orqali ajratadi. Ilovalarni tortib tartiblash mumkin."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"Saqlash"</string>
@@ -1003,4 +993,6 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Barcha maʼlumotlar oʻchirildi"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> axboroti oʻchirildi"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> ruxsatlari oʻchirildi"</string>
+    <!-- no translation found for select_all (837499881590001166) -->
+    <skip />
 </resources>

@@ -31,8 +31,8 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.ExerciseSessionRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;

@@ -18,6 +18,7 @@ package android.healthconnect.cts;
 
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.PAGE_TOKEN;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceAllergy;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResource;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceBuilder;
@@ -31,7 +32,7 @@ import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 
@@ -49,17 +50,20 @@ public class ReadMedicalResourcesResponseTest {
 
     @Test
     public void testReadMedicalResourcesResponse_constructor_emptyList() {
-        ReadMedicalResourcesResponse response = new ReadMedicalResourcesResponse(List.of());
+        ReadMedicalResourcesResponse response = new ReadMedicalResourcesResponse(List.of(), null);
 
         assertThat(response.getMedicalResources()).isEqualTo(List.of());
+        assertThat(response.getNextPageToken()).isNull();
     }
 
     @Test
     public void testReadMedicalResourcesResponse_constructor_singleton() {
         List<MedicalResource> medicalResources = List.of(getMedicalResource());
-        ReadMedicalResourcesResponse response = new ReadMedicalResourcesResponse(medicalResources);
+        ReadMedicalResourcesResponse response =
+                new ReadMedicalResourcesResponse(medicalResources, null);
 
         assertThat(response.getMedicalResources()).isEqualTo(medicalResources);
+        assertThat(response.getNextPageToken()).isNull();
     }
 
     @Test
@@ -72,16 +76,30 @@ public class ReadMedicalResourcesResponseTest {
                                 .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                                 .setFhirResource(getFhirResourceAllergy())
                                 .build());
-        ReadMedicalResourcesResponse response = new ReadMedicalResourcesResponse(medicalResources);
+        ReadMedicalResourcesResponse response =
+                new ReadMedicalResourcesResponse(medicalResources, null);
 
         assertThat(response.getMedicalResources()).isEqualTo(medicalResources);
+        assertThat(response.getNextPageToken()).isNull();
+    }
+
+    @Test
+    public void testReadMedicalResourcesResponse_constructor_withPageToken() {
+        List<MedicalResource> medicalResources = List.of(getMedicalResource());
+        ReadMedicalResourcesResponse response =
+                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN);
+
+        assertThat(response.getMedicalResources()).isEqualTo(medicalResources);
+        assertThat(response.getNextPageToken()).isEqualTo(PAGE_TOKEN);
     }
 
     @Test
     public void testReadMedicalResourcesResponse_equals() {
         List<MedicalResource> medicalResources = List.of(getMedicalResource());
-        ReadMedicalResourcesResponse response1 = new ReadMedicalResourcesResponse(medicalResources);
-        ReadMedicalResourcesResponse response2 = new ReadMedicalResourcesResponse(medicalResources);
+        ReadMedicalResourcesResponse response1 =
+                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN);
+        ReadMedicalResourcesResponse response2 =
+                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN);
 
         assertThat(response1.equals(response2)).isTrue();
         assertThat(response1.hashCode()).isEqualTo(response2.hashCode());
@@ -90,7 +108,8 @@ public class ReadMedicalResourcesResponseTest {
     @Test
     public void testReadMedicalResourcesResponse_equals_comparesAllValues() {
         List<MedicalResource> medicalResources = List.of(getMedicalResource());
-        ReadMedicalResourcesResponse response = new ReadMedicalResourcesResponse(medicalResources);
+        ReadMedicalResourcesResponse response =
+                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN);
         ReadMedicalResourcesResponse responseDifferentList =
                 new ReadMedicalResourcesResponse(
                         List.of(
@@ -98,10 +117,15 @@ public class ReadMedicalResourcesResponseTest {
                                         .setType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                                         .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                                         .setFhirResource(getFhirResourceAllergy())
-                                        .build()));
+                                        .build()),
+                        PAGE_TOKEN);
+        ReadMedicalResourcesResponse responseDifferentPageToken =
+                new ReadMedicalResourcesResponse(medicalResources, null);
 
         assertThat(responseDifferentList.equals(response)).isFalse();
+        assertThat(responseDifferentPageToken.equals(response)).isFalse();
         assertThat(responseDifferentList.hashCode()).isNotEqualTo(response.hashCode());
+        assertThat(responseDifferentPageToken.hashCode()).isNotEqualTo(response.hashCode());
     }
 
     @Test
@@ -114,7 +138,8 @@ public class ReadMedicalResourcesResponseTest {
                                 .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                                 .setFhirResource(getFhirResourceAllergy())
                                 .build());
-        ReadMedicalResourcesResponse original = new ReadMedicalResourcesResponse(medicalResources);
+        ReadMedicalResourcesResponse original =
+                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN);
 
         Parcel parcel = Parcel.obtain();
         original.writeToParcel(parcel, 0);

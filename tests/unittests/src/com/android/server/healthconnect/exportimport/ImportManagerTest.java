@@ -42,8 +42,8 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.net.Uri;
 import android.os.UserHandle;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
@@ -107,9 +107,12 @@ public class ImportManagerTest {
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(mContext, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
+        mTransactionTestUtils.insertApp("other.app");
         mNotificationSender = mock(HealthConnectNotificationSender.class);
         mImportManager = new ImportManager(mContext, mNotificationSender);
         HealthConnectDeviceConfigManager.initializeInstance(mContext);
+        HealthDataCategoryPriorityHelper.clearInstanceForTest();
+
         mPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
         mPriorityHelper.setPriorityOrder(HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME));
     }
@@ -172,7 +175,6 @@ public class ImportManagerTest {
     @Test
     public void mergesPriorityList() throws Exception {
         // Insert data so that getPriorityOrder doesn't remove apps from priority list.
-        mTransactionTestUtils.insertApp("other.app");
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 345, 100));
         mTransactionTestUtils.insertRecords("other.app", createStepsRecord(234, 432, 200));
         AppInfoHelper.getInstance().syncAppInfoRecordTypesUsed();

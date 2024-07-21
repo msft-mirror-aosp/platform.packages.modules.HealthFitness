@@ -16,10 +16,13 @@
 
 package android.healthconnect.cts.datatypes;
 
+import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4B;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResource;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceAllergy;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResource;
@@ -28,13 +31,14 @@ import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceB
 import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.datatypes.FhirResource;
+import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalResource;
 import android.os.Parcel;
 import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 
@@ -50,29 +54,37 @@ public class MedicalResourceTest {
 
     @Test
     public void testMedicalResourceBuilder_requiredFieldsOnly() {
+        FhirVersion fhirVersion = parseFhirVersion(FHIR_VERSION_R4);
         FhirResource fhirResource = getFhirResource();
         MedicalResource resource =
                 new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION, DATA_SOURCE_ID, fhirResource)
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                                DATA_SOURCE_ID,
+                                fhirVersion,
+                                fhirResource)
                         .build();
 
         assertThat(resource.getType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
         assertThat(resource.getDataSourceId()).isEqualTo(DATA_SOURCE_ID);
+        assertThat(resource.getFhirVersion()).isEqualTo(fhirVersion);
         assertThat(resource.getFhirResource()).isEqualTo(fhirResource);
     }
 
     @Test
     public void testMedicalResourceBuilder_setAllFields() {
+        FhirVersion differentFhirVersion = parseFhirVersion(FHIR_VERSION_R4B);
         FhirResource differentFhirResource = getFhirResourceAllergy();
         MedicalResource resource =
                 getMedicalResourceBuilder()
                         .setType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                         .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
+                        .setFhirVersion(differentFhirVersion)
                         .setFhirResource(differentFhirResource)
                         .build();
 
         assertThat(resource.getType()).isEqualTo(MEDICAL_RESOURCE_TYPE_UNKNOWN);
         assertThat(resource.getDataSourceId()).isEqualTo(DIFFERENT_DATA_SOURCE_ID);
+        assertThat(resource.getFhirVersion()).isEqualTo(differentFhirVersion);
         assertThat(resource.getFhirResource()).isEqualTo(differentFhirResource);
     }
 
@@ -94,15 +106,22 @@ public class MedicalResourceTest {
 
     @Test
     public void testMedicalResource_toString() {
+        FhirVersion fhirVersion = parseFhirVersion(FHIR_VERSION_R4);
         FhirResource fhirResource = getFhirResource();
         MedicalResource resource =
                 new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION, DATA_SOURCE_ID, fhirResource)
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                                DATA_SOURCE_ID,
+                                fhirVersion,
+                                fhirResource)
                         .build();
         String expectedPropertiesString =
                 String.format(
-                        "type=%d,dataSourceId=%s,fhirResource=%s",
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, DATA_SOURCE_ID, fhirResource);
+                        "type=%d,dataSourceId=%s,fhirVersion=%s,fhirResource=%s",
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                        DATA_SOURCE_ID,
+                        fhirVersion,
+                        fhirResource);
 
         assertThat(resource.toString())
                 .isEqualTo(String.format("MedicalResource{%s}", expectedPropertiesString));
@@ -128,6 +147,10 @@ public class MedicalResourceTest {
                 new MedicalResource.Builder(resource)
                         .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .build();
+        MedicalResource resourceDifferentVersion =
+                new MedicalResource.Builder(resource)
+                        .setFhirVersion(parseFhirVersion(FHIR_VERSION_R4B))
+                        .build();
         MedicalResource resourceDifferentFhirResource =
                 new MedicalResource.Builder(resource)
                         .setFhirResource(getFhirResourceAllergy())
@@ -135,9 +158,11 @@ public class MedicalResourceTest {
 
         assertThat(resourceDifferentType.equals(resource)).isFalse();
         assertThat(resourceDifferentDataSourceId.equals(resource)).isFalse();
+        assertThat(resourceDifferentVersion.equals(resource)).isFalse();
         assertThat(resourceDifferentFhirResource.equals(resource)).isFalse();
         assertThat(resourceDifferentType.hashCode()).isNotEqualTo(resource.hashCode());
         assertThat(resourceDifferentDataSourceId.hashCode()).isNotEqualTo(resource.hashCode());
+        assertThat(resourceDifferentVersion.hashCode()).isNotEqualTo(resource.hashCode());
         assertThat(resourceDifferentFhirResource.hashCode()).isNotEqualTo(resource.hashCode());
     }
 

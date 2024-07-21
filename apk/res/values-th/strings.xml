@@ -20,10 +20,9 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"จัดการสิทธิ์ของแอปในการเข้าถึงข้อมูลสุขภาพ"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"สิทธิ์และข้อมูล"</string>
-    <!-- no translation found for home_subtitle (2154213430054477787) -->
-    <skip />
+    <string name="home_subtitle" msgid="2154213430054477787">"จัดการข้อมูลสุขภาพและการออกกำลังกายในอุปกรณ์ และควบคุมว่าแอปใดบ้างที่เข้าถึงข้อมูลได้"</string>
     <string name="data_title" msgid="4456619761533380816">"ข้อมูลและการเข้าถึง"</string>
-    <string name="browse_medical_data" msgid="6963802956096683273">"เรียกดูข้อมูลสุขภาพ"</string>
+    <string name="browse_medical_data" msgid="6963802956096683273">"เรียกดูบันทึกข้อมูลสุขภาพ"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"หมวดหมู่ทั้งหมด"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"ดูหมวดหมู่ทั้งหมด"</string>
     <string name="no_data" msgid="1906986019249068659">"ไม่มีข้อมูล"</string>
@@ -36,6 +35,8 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 แอปมีสิทธิ์เข้าถึง}other{# แอปมีสิทธิ์เข้าถึง}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"ไม่มี"</string>
     <string name="entry_details_title" msgid="590184849040247850">"รายละเอียดรายการ"</string>
+    <!-- no translation found for manage_data_summary (8537870912521944449) -->
+    <skip />
     <string name="backup_title" msgid="211503191266235085">"การสำรองข้อมูล"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"แหล่งข้อมูลและลำดับความสำคัญ"</string>
     <string name="set_units_title" msgid="2657822539603758029">"ตั้งค่าหน่วย"</string>
@@ -325,12 +326,9 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"ตอนนี้คุณยังไม่ได้ติดตั้งแอปที่เข้ากันได้"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"การเข้าถึงเพิ่มเติม"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"นำสิทธิ์เพิ่มเติมสำหรับแอปนี้ออกแล้ว"</string>
-    <!-- no translation found for permissions_header (6519976063360071569) -->
-    <skip />
-    <!-- no translation found for manage_fitness_permissions (1001729292172461314) -->
-    <skip />
-    <!-- no translation found for manage_medical_permissions (7658181359096889932) -->
-    <skip />
+    <string name="permissions_header" msgid="6519976063360071569">"สิทธิ์"</string>
+    <string name="manage_fitness_permissions" msgid="1001729292172461314">"จัดการสิทธิ์ด้านการออกกำลังกาย"</string>
+    <string name="manage_medical_permissions" msgid="7658181359096889932">"จัดการสิทธิ์ด้านบันทึกข้อมูลสุขภาพ"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"สิทธิ์ของแอปที่ถูกนำออก"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect นำสิทธิ์สำหรับ <xliff:g id="APP_DATA">%s</xliff:g> ออกแล้ว"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect นำสิทธิ์สำหรับ <xliff:g id="APP_DATA_0">%1$s</xliff:g> และ <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> ออกแล้ว"</string>
@@ -346,90 +344,70 @@
     <string name="next_export_time" msgid="3138247220014510213">"การส่งออกครั้งถัดไป: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"การสำรองและคืนค่า"</string>
     <string name="last_export_time" msgid="9205875050823594041">"การส่งออกครั้งล่าสุด: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="export_and_import_title" msgid="3241901922222465397">"ส่งออกและนำเข้า"</string>
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"การส่งออกที่กำหนดเวลาไว้"</string>
     <string name="import_data" msgid="404502315533233094">"นำเข้าข้อมูล"</string>
     <string name="import_data_description" msgid="4040178599441724296">"กู้คืนข้อมูลจากไฟล์ที่ส่งออกก่อนหน้านี้"</string>
     <string name="import_error_banner_title" msgid="1480977889067027790">"กู้คืนข้อมูลไม่ได้"</string>
-    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
-    <skip />
-    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
-    <skip />
+    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"เลือกไฟล์"</string>
+    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"ไฟล์ที่คุณเลือกไม่รองรับการกู้คืน โปรดเลือกไฟล์ที่ส่งออกถูกต้อง"</string>
     <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"อัปเดตเลย"</string>
     <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"โปรดอัปเดตระบบเพื่อให้ Health Connect กู้คืนข้อมูลได้ แล้วลองอีกครั้ง"</string>
     <string name="import_other_error_banner_button" msgid="8006947649520909176">"ลองอีกครั้ง"</string>
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"เกิดปัญหากับการกู้คืนข้อมูลจากการส่งออก"</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"การส่งออกช่วยให้คุณบันทึกข้อมูลเพื่อโอนไปยังโทรศัพท์เครื่องใหม่ได้"</string>
-    <!-- no translation found for backup_and_restore_footer_link_text (9075133737244288876) -->
-    <skip />
+    <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"เกี่ยวกับการสำรองและกู้คืนข้อมูล"</string>
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"เปิด"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ปิด"</string>
-    <!-- no translation found for choose_frequency_category (9094154407387676553) -->
+    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
     <skip />
-    <!-- no translation found for scheduled_export_settings_footer_text (8488483803782086291) -->
-    <skip />
-    <!-- no translation found for choose_frequency (8119085390857180221) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (7698155810053504157) -->
-    <skip />
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
+    <string name="choose_frequency_category" msgid="9094154407387676553">"เปลี่ยนความถี่"</string>
+    <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"การปิดการส่งออกที่กำหนดเวลาไว้จะไม่ลบข้อมูลที่ส่งออกก่อนหน้านี้จากตำแหน่งที่บันทึกไว้"</string>
+    <string name="choose_frequency" msgid="8119085390857180221">"ตั้งค่าการส่งออกที่กำหนดเวลาไว้"</string>
+    <string name="choose_frequency_description" msgid="7698155810053504157">"เลือกความถี่ในการส่งออกข้อมูล"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"ทุกวัน"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"ทุกสัปดาห์"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"ทุกเดือน"</string>
-    <!-- no translation found for export_destination_title (8352929396306002479) -->
-    <skip />
+    <string name="export_destination_title" msgid="8352929396306002479">"เลือกตำแหน่งบันทึกการส่งออกที่กำหนดเวลา"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"โปรดเลือกแอปพื้นที่เก็บข้อมูลระบบคลาวด์เพื่อส่งออกข้อมูล"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
     <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"นำเข้าไฟล์นี้ใช่ไหม"</string>
     <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"ระบบจะนำเข้า <xliff:g id="FILE_NAME">%1$s</xliff:g> ไปยัง Health Connect"</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"ยกเลิก"</string>
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"นำเข้า"</string>
-    <!-- no translation found for import_notification_import_in_progress_title (4657602436278942808) -->
-    <skip />
-    <!-- no translation found for import_notification_import_complete_title (7493223782222480412) -->
-    <skip />
-    <!-- no translation found for import_complete_toast_text (7730872919621230959) -->
-    <skip />
-    <!-- no translation found for import_notification_error_generic_error_title (19162830551127433) -->
-    <skip />
-    <!-- no translation found for import_notification_error_more_space_needed_title (240259612132385794) -->
-    <skip />
-    <!-- no translation found for import_notification_error_invalid_file_body_text (8877884063398886772) -->
-    <skip />
-    <!-- no translation found for import_notification_error_more_space_needed_body_text (7577564968089566232) -->
-    <skip />
-    <!-- no translation found for import_notification_error_generic_error_body_text (6562162452820282874) -->
-    <skip />
-    <!-- no translation found for import_notification_error_version_mismatch_body_text (9186785816764607620) -->
-    <skip />
-    <!-- no translation found for import_notification_update_now_intent_button (2808579294292956628) -->
-    <skip />
-    <!-- no translation found for import_notification_try_again_intent_button (3833062670098674999) -->
-    <skip />
-    <!-- no translation found for import_notification_open_intent_button (2739924648846724969) -->
-    <skip />
-    <!-- no translation found for import_notification_choose_file_intent_button (2249671128440758769) -->
-    <skip />
-    <!-- no translation found for import_notification_free_up_space_intent_button (4665571334602539807) -->
-    <skip />
+    <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect กำลังดำเนินการกู้คืน"</string>
+    <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect ดำเนินการกู้คืนเสร็จสมบูรณ์แล้ว"</string>
+    <string name="import_complete_toast_text" msgid="7730872919621230959">"กู้คืนข้อมูลเสร็จแล้ว"</string>
+    <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect กู้คืนข้อมูลไม่ได้"</string>
+    <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"ต้องมีพื้นที่มากขึ้น"</string>
+    <string name="import_notification_error_invalid_file_body_text" msgid="8877884063398886772">"ไฟล์ที่คุณเลือกไม่รองรับการกู้คืน โปรดเลือกไฟล์ที่ส่งออกถูกต้อง"</string>
+    <string name="import_notification_error_more_space_needed_body_text" msgid="7577564968089566232">"Health Connect ต้องใช้พื้นที่เก็บข้อมูลในโทรศัพท์ <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> เพื่อกู้คืนข้อมูลต่อ"</string>
+    <string name="import_notification_error_generic_error_body_text" msgid="6562162452820282874">"เกิดปัญหากับการกู้คืนข้อมูลจากการส่งออก"</string>
+    <string name="import_notification_error_version_mismatch_body_text" msgid="9186785816764607620">"โปรดอัปเดตระบบเพื่อให้ Health Connect กู้คืนข้อมูลได้ แล้วลองอีกครั้ง"</string>
+    <string name="import_notification_update_now_intent_button" msgid="2808579294292956628">"อัปเดตเลย"</string>
+    <string name="import_notification_try_again_intent_button" msgid="3833062670098674999">"ลองอีกครั้ง"</string>
+    <string name="import_notification_open_intent_button" msgid="2739924648846724969">"เปิด"</string>
+    <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"เลือกไฟล์"</string>
+    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"เพิ่มพื้นที่ว่าง"</string>
     <string name="export_back_button" msgid="3550795479165524982">"กลับ"</string>
+    <!-- no translation found for export_cancel_button (1952360582645412410) -->
+    <skip />
     <string name="export_next_button" msgid="657930567137105172">"ถัดไป"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"ยกเลิก"</string>
     <string name="import_next_button" msgid="5706322508691854289">"ถัดไป"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"นำเข้าจาก"</string>
     <string name="import_invalid_storage" msgid="341798262315495399">"โปรดเลือกแอปพื้นที่เก็บข้อมูลระบบคลาวด์เพื่อนำเข้าข้อมูล"</string>
-    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
-    <skip />
+    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"แตะเพื่อเลือกบัญชี"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"เลือกบัญชี"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"ยกเลิก"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"เสร็จสิ้น"</string>
     <string name="export_import_no_apps_text" msgid="6403119325024893690">"ไม่มีแอป ติดตั้งแอปพื้นที่เก็บข้อมูลระบบคลาวด์เพื่อดูข้อมูลที่นี่"</string>
-    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
-    <skip />
-    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
-    <skip />
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"ติดตั้งแอปพื้นที่เก็บข้อมูลระบบคลาวด์เพื่อดูตัวเลือกเพิ่มเติมที่นี่"</string>
+    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"ไปที่ Play Store"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"เริ่มต้นใช้งาน Health Connect"</string>
-    <!-- no translation found for onboarding_description (3479157507808350452) -->
-    <skip />
+    <string name="onboarding_description" msgid="3479157507808350452">"Health Connect จะจัดเก็บข้อมูลสุขภาพและการออกกำลังกาย พร้อมให้คุณซิงค์แอปต่างๆ ในอุปกรณ์ได้โดยง่าย"</string>
     <string name="share_data" msgid="3481932156368883946">"แชร์ข้อมูลกับแอปต่างๆ"</string>
     <string name="share_data_description" msgid="2919871301634375092">"เลือกข้อมูลที่แต่ละแอปจะอ่านหรือเขียนลงใน Health Connect ได้"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"จัดการการตั้งค่าและความเป็นส่วนตัว"</string>
@@ -439,12 +417,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"ลบข้อมูล"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"เข้าไปที่การลบ"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"ออกจากการลบ"</string>
-    <string name="time_range_title" msgid="6831605283322600165">"เลือกข้อมูลที่ต้องการลบ"</string>
+    <string name="time_range_title" msgid="5777596779865648336">"เลือกข้อมูลที่จะลบออกจาก Health Connect"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"ถัดไป"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"การดำเนินการนี้จะลบข้อมูลทั้งหมดที่เพิ่มลงใน Health Connect อย่างถาวรตามระยะเวลาที่เลือก"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"การดำเนินการนี้จะลบข้อมูล<xliff:g id="DATA_TYPE">%s</xliff:g>ที่เพิ่มลงใน Health Connect อย่างถาวรตามระยะเวลาที่เลือก"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"การดำเนินการนี้จะลบข้อมูล<xliff:g id="CATEGORY">%s</xliff:g>ที่เพิ่มลงใน Health Connect อย่างถาวรตามระยะเวลาที่เลือก"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"การดำเนินการนี้จะลบข้อมูลจาก <xliff:g id="APP_DATA">%s</xliff:g> ที่เพิ่มลงใน Health Connect อย่างถาวรตามระยะเวลาที่เลือก"</string>
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"การดำเนินการนี้จะลบข้อมูล <xliff:g id="DATA_TYPE">%1$s</xliff:g> ที่ <xliff:g id="APP_DATA">%2$s</xliff:g> เพิ่มลงใน Health Connect อย่างถาวรตามระยะเวลาที่เลือก"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"ลบข้อมูลในช่วง 24 ชั่วโมงที่ผ่านมา"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"ลบข้อมูลในช่วง 7 วันที่ผ่านมา"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"ลบข้อมูลในช่วง 30 วันที่ผ่านมา"</string>
@@ -465,17 +444,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"ลบข้อมูลจาก <xliff:g id="APP_DATA">%s</xliff:g> ในช่วง 24 ชั่วโมงที่ผ่านมาอย่างถาวรใช่ไหม"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"ลบข้อมูลจาก <xliff:g id="APP_DATA">%s</xliff:g> ในช่วง 7 วันที่ผ่านมาอย่างถาวรใช่ไหม"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"ลบข้อมูลจาก <xliff:g id="APP_DATA">%s</xliff:g> ในช่วง 30 วันที่ผ่านมาอย่างถาวรใช่ไหม"</string>
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"ลบข้อมูล <xliff:g id="DATA_TYPE">%1$s</xliff:g> ที่ <xliff:g id="APP_DATA">%2$s</xliff:g> เพิ่มในทุกช่วงเวลาอย่างถาวรใช่ไหม"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"ลบข้อมูล <xliff:g id="DATA_TYPE">%1$s</xliff:g> ที่ <xliff:g id="APP_DATA">%2$s</xliff:g> เพิ่มในช่วง 24 ชั่วโมงที่ผ่านมาอย่างถาวรใช่ไหม"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"ลบข้อมูล <xliff:g id="DATA_TYPE">%1$s</xliff:g> ที่ <xliff:g id="APP_DATA">%2$s</xliff:g> เพิ่มในช่วง 7 วันที่ผ่านมาอย่างถาวรใช่ไหม"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"ลบข้อมูล <xliff:g id="DATA_TYPE">%1$s</xliff:g> ที่ <xliff:g id="APP_DATA">%2$s</xliff:g> เพิ่มในช่วง 30 วันที่ผ่านมาอย่างถาวรใช่ไหม"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"นำสิทธิ์ของ <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> ทั้งหมดออกจาก Health Connect ด้วย"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"ลบข้อมูล<xliff:g id="DATA_TYPE">%1$s</xliff:g>ทั้งหมดที่ <xliff:g id="APP_DATA">%2$s</xliff:g> เพิ่มเข้ามาอย่างถาวรใช่ไหม"</string>
-    <string name="confirming_question_single_entry" msgid="330919962071369305">"ลบรายการข้อมูลนี้อย่างถาวรใช่ไหม"</string>
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"ลบรายการนี้ออกจาก Health Connect อย่างถาวรใช่ไหม"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"แอปที่เชื่อมต่อจะเข้าถึงข้อมูลนี้จาก Health Connect ไม่ได้อีก"</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"การดำเนินการนี้จะลบรายการข้อมูลประจำเดือนทั้งหมดตั้งแต่วันที่ <xliff:g id="START_DATE">%1$s</xliff:g> ถึง <xliff:g id="END_DATE">%2$s</xliff:g>"</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"ลบ"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"ย้อนกลับ"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"เสร็จสิ้น"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"ปิด"</string>
-    <string name="delete_dialog_success_title" msgid="5009733262743173477">"ลบข้อมูลแล้ว"</string>
-    <string name="delete_dialog_success_message" msgid="2451953113522118128">"ข้อมูลนี้ไม่ได้จัดเก็บอยู่ใน Health Connect แล้ว"</string>
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"ลบข้อมูลออกจาก Health Connect แล้ว"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"หากคุณต้องการลบข้อมูลออกจากแอปที่เชื่อมต่ออย่างสมบูรณ์ ให้ตรวจสอบแต่ละแอปที่อาจบันทึกข้อมูลของคุณไว้"</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"เสร็จสิ้น"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"ดูแอปที่เชื่อมต่อ"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"กำลังลบข้อมูล"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"ลบข้อมูลไม่ได้"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"เกิดข้อผิดพลาดและ Health Connect ลบข้อมูลของคุณไม่ได้"</string>
@@ -862,12 +847,14 @@
     <string name="range_off" msgid="8178520557618184215">"ปิดอยู่"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"เมื่อเปลี่ยนการตั้งค่าเหล่านี้ Health Connect จะลบข้อมูลที่มีอยู่เพื่อแสดงค่ากำหนดใหม่ของคุณ"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{ลบข้อมูลอัตโนมัติหลังผ่านไป # เดือนใช่ไหม}other{ลบข้อมูลอัตโนมัติหลังผ่านไป # เดือนใช่ไหม}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect จะลบข้อมูลใหม่อัตโนมัติหลังผ่านไป # เดือน การตั้งค่านี้จะลบข้อมูลที่มีอยู่นานเกินกว่า # เดือนด้วย}other{Health Connect จะลบข้อมูลใหม่อัตโนมัติหลังผ่านไป # เดือน การตั้งค่านี้จะลบข้อมูลที่มีอยู่นานเกินกว่า # เดือนด้วย}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{การดำเนินการนี้จะลบข้อมูลที่เก่ากว่า # เดือนออกจาก Health Connect ด้วย\n\nหากคุณต้องการลบข้อมูลออกจากแอปที่เชื่อมต่ออย่างสมบูรณ์ ให้ตรวจสอบแต่ละแอปที่อาจบันทึกข้อมูลของคุณไว้}other{การดำเนินการนี้จะลบข้อมูลที่เก่ากว่า # เดือนออกจาก Health Connect ด้วย\n\nหากคุณต้องการลบข้อมูลออกจากแอปที่เชื่อมต่ออย่างสมบูรณ์ ให้ตรวจสอบแต่ละแอปที่อาจบันทึกข้อมูลของคุณไว้}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"ตั้งค่าการลบอัตโนมัติ"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"ระบบจะลบข้อมูลที่มีอยู่"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect จะลบข้อมูลทั้งหมดที่เก่ากว่า # เดือน อาจใช้เวลา 1 วันเพื่อให้การเปลี่ยนแปลงเหล่านี้ปรากฏในแอปที่เชื่อมต่อ}other{Health Connect จะลบข้อมูลทั้งหมดที่เก่ากว่า # เดือน อาจใช้เวลา 1 วันเพื่อให้การเปลี่ยนแปลงเหล่านี้ปรากฏในแอปที่เชื่อมต่อ}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"ข้อมูลที่จะลบออกจากฟีเจอร์เหล่านี้"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"เสร็จสิ้น"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{การลบอัตโนมัติเปิดอยู่ ระบบจะลบข้อมูลที่เก่ากว่า # เดือน}other{การลบอัตโนมัติเปิดอยู่ ระบบจะลบข้อมูลที่เก่ากว่า # เดือน}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"การลบอัตโนมัติปิดอยู่"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"ตั้งค่าลำดับความสำคัญของแอป"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"หากมีแอปที่เพิ่มข้อมูล<xliff:g id="DATA_TYPE">%s</xliff:g>มากกว่า 1 แอป Health Connect จะให้ความสำคัญกับแอปที่อยู่สูงสุดในรายการนี้ ลากแอปเพื่อจัดเรียงลำดับใหม่"</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"บันทึก"</string>
@@ -1003,4 +990,5 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"ลบข้อมูลทั้งหมดแล้ว"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"ลบข้อมูล <xliff:g id="PERMISSION_TYPE">%s</xliff:g> แล้ว"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"ลบแล้ว <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> รายการ"</string>
+    <string name="select_all" msgid="837499881590001166">"เลือกทั้งหมด"</string>
 </resources>

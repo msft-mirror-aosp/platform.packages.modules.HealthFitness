@@ -31,7 +31,7 @@ import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.net.Uri;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
@@ -228,7 +228,7 @@ public class ExportManagerTest {
                 new HealthConnectDatabase(mContext, "healthconnect.db");
         assertTableSize(originalDatabase, "steps_record_table", 1);
 
-        // running a successful export records a "last successful export"
+        // Running a successful export records a "last successful export".
         assertThat(mExportManager.runExport()).isTrue();
         String lastExportFileName =
                 ExportImportSettingsStorage.getScheduledExportStatus(mContext)

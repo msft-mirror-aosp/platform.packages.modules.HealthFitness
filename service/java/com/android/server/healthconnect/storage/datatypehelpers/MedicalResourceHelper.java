@@ -18,6 +18,7 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 
 import static com.android.healthfitness.flags.Flags.personalHealthRecord;
 import static com.android.server.healthconnect.storage.HealthConnectDatabase.createTable;
@@ -50,6 +51,7 @@ import android.health.connect.Constants;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.datatypes.FhirResource;
+import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalResource;
 import android.util.Pair;
 import android.util.Slog;
@@ -418,6 +420,7 @@ public final class MedicalResourceHelper {
         return new MedicalResource.Builder(
                         getMedicalResourceType(fhirResourceType),
                         internalRequest.getDataSourceId(),
+                        parseFhirVersion(internalRequest.getFhirVersion()),
                         fhirResource)
                 .build();
     }
@@ -497,9 +500,12 @@ public final class MedicalResourceHelper {
                                 getCursorString(cursor, FHIR_RESOURCE_ID_COLUMN_NAME),
                                 getCursorString(cursor, FHIR_DATA_COLUMN_NAME))
                         .build();
+        FhirVersion fhirVersion =
+                parseFhirVersion(getCursorString(cursor, FHIR_VERSION_COLUMN_NAME));
         return new MedicalResource.Builder(
                         getCursorInt(cursor, getMedicalResourceTypeColumnName()),
                         getCursorUUID(cursor, getDataSourceUuidColumnName()).toString(),
+                        fhirVersion,
                         fhirResource)
                 .build();
     }

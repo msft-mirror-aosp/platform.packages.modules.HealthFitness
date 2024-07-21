@@ -221,14 +221,6 @@
     </style>
     <!-- END REGION -->
 
-    <style name="Widget.HealthConnect.CheckBox" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
-        <item name="android:textAppearance">?attr/textAppearanceSummary</item>
-        <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:paddingStart">@dimen/spacing_normal</item>
-        <item name="android:minHeight">?android:attr/listPreferredItemHeight</item>
-        <item name="android:button">@drawable/checkbox_button</item>
-    </style>
-
     <style name="Widget.HealthConnect.CalendarSpinner" parent="android:style/Widget.Material.Spinner">
         <item name="android:background">@drawable/settingslib_spinner_background</item>
         <item name="android:popupBackground">@drawable/settingslib_spinner_dropdown_background
