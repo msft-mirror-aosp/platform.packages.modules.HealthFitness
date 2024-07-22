@@ -62,3 +62,11 @@ flag {
     bug: "291249677"
     is_fixed_read_only: true
 }
+
+flag {
+    name: "health_connect_mappings"
+    namespace: "health_fitness_aconfig"
+    description: "Uses new mappings for convenient data type maintenance."
+    bug: "353283052"
+    is_fixed_read_only: true
+}

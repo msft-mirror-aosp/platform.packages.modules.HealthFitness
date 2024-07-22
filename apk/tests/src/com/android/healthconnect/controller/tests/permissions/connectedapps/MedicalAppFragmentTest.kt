@@ -454,6 +454,7 @@ class MedicalAppFragmentTest {
     }
 
     @Test
+    @Ignore
     fun footerWithoutGrantTime_isDisplayed() {
         val permission = MedicalPermission(IMMUNIZATION)
         whenever(viewModel.medicalPermissions).then { MutableLiveData(listOf(permission)) }

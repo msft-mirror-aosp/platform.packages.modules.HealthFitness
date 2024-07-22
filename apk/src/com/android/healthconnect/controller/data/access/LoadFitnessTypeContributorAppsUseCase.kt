@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,13 +31,13 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
 @Singleton
-class LoadPermissionTypeContributorAppsUseCase
+class LoadFitnessTypeContributorAppsUseCase
 @Inject
 constructor(
     private val appInfoReader: AppInfoReader,
     private val healthConnectManager: HealthConnectManager,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
-) : ILoadPermissionTypeContributorAppsUseCase {
+) : ILoadFitnessTypeContributorAppsUseCase {
 
     /** Returns a list of [AppMetadata]s that have data in this [FitnessPermissionType]. */
     override suspend operator fun invoke(permissionType: FitnessPermissionType): List<AppMetadata> =
@@ -65,6 +65,6 @@ constructor(
         }
 }
 
-interface ILoadPermissionTypeContributorAppsUseCase {
+interface ILoadFitnessTypeContributorAppsUseCase {
     suspend fun invoke(permissionType: FitnessPermissionType): List<AppMetadata>
 }
