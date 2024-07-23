@@ -192,6 +192,7 @@ constructor(
     fun enableExercisePermission(packageName: String) {
         grantHealthPermissionUseCase(packageName, READ_EXERCISE_ROUTES)
         grantHealthPermissionUseCase(packageName, READ_EXERCISE)
+        loadAdditionalAccessPreferences(packageName)
     }
 
     fun hideExercisePermissionRequestDialog() {
