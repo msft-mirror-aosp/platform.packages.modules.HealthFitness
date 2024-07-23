@@ -129,7 +129,13 @@ open class MedicalAllDataFragment : Hilt_MedicalAllDataFragment() {
                             it.setTitle(getString(MedicalPermissionStrings.fromPermissionType(permissionType).uppercaseLabel))
                             // TODO(b/343148212): Add icon.
                             // TODO(b/342159144): Add logName
-                            // TODO(b/343148212): Add preference click listener.
+                            it.setOnPreferenceClickListener {
+                                findNavController()
+                                        .navigate(
+                                                R.id.action_medicalAllData_to_entriesAndAccess,
+                                                bundleOf(PERMISSION_TYPE_KEY to permissionType.name))
+                                true
+                            }
                         })
                 }
 

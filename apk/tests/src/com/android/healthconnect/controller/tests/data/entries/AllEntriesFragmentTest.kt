@@ -36,9 +36,11 @@ import com.android.healthconnect.controller.data.entries.EntriesViewModel.Entrie
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.Loading
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.LoadingFailed
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.With
+import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedDataEntry
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.app.AppMetadata
@@ -47,6 +49,8 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.withIndex
+import com.android.healthconnect.controller.utils.toInstantAtStartOfDay
+import com.android.healthconnect.controller.utils.toLocalDate
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -57,6 +61,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import java.time.Instant
 
 @HiltAndroidTest
 class AllEntriesFragmentTest {
@@ -92,7 +97,7 @@ class AllEntriesFragmentTest {
 
         val scenario =
                 launchFragment<AllEntriesFragment>(
-                        bundleOf(PERMISSION_TYPE_KEY to STEPS))
+                        bundleOf(PERMISSION_TYPE_KEY to STEPS.name))
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -106,7 +111,7 @@ class AllEntriesFragmentTest {
 
         val scenario =
                 launchFragment<AllEntriesFragment>(
-                        bundleOf(PERMISSION_TYPE_KEY to STEPS))
+                        bundleOf(PERMISSION_TYPE_KEY to STEPS.name))
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -120,7 +125,7 @@ class AllEntriesFragmentTest {
 
         val scenario =
                 launchFragment<AllEntriesFragment>(
-                        bundleOf(PERMISSION_TYPE_KEY to STEPS))
+                        bundleOf(PERMISSION_TYPE_KEY to STEPS.name))
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -134,7 +139,7 @@ class AllEntriesFragmentTest {
 
         val scenario =
                 launchFragment<AllEntriesFragment>(
-                        bundleOf(PERMISSION_TYPE_KEY to STEPS))
+                        bundleOf(PERMISSION_TYPE_KEY to STEPS.name))
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -148,7 +153,7 @@ class AllEntriesFragmentTest {
 
         val scenario =
                 launchFragment<AllEntriesFragment>(
-                        bundleOf(PERMISSION_TYPE_KEY to STEPS))
+                        bundleOf(PERMISSION_TYPE_KEY to STEPS.name))
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -165,7 +170,7 @@ class AllEntriesFragmentTest {
 
         val scenario =
                 launchFragment<AllEntriesFragment>(
-                        bundleOf(PERMISSION_TYPE_KEY to STEPS))
+                        bundleOf(PERMISSION_TYPE_KEY to STEPS.name))
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -180,7 +185,7 @@ class AllEntriesFragmentTest {
 
         val scenario =
                 launchFragment<AllEntriesFragment>(
-                        bundleOf(PERMISSION_TYPE_KEY to STEPS))
+                        bundleOf(PERMISSION_TYPE_KEY to STEPS.name))
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -201,6 +206,63 @@ class AllEntriesFragmentTest {
         onView(withText("15 steps")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
+    @Test
+    fun allEntriesInit_noMedicalData_showsNoData() {
+        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Empty))
+
+        val scenario =
+                launchFragment<AllEntriesFragment>(
+                        bundleOf(PERMISSION_TYPE_KEY to MedicalPermissionType.IMMUNIZATION.name))
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+
+        onView(withId(R.id.no_data_view)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun allEntriesInit_medicalError_showsErrorView() {
+        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(LoadingFailed))
+
+        val scenario =
+                launchFragment<AllEntriesFragment>(
+                        bundleOf(PERMISSION_TYPE_KEY to MedicalPermissionType.IMMUNIZATION.name))
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+
+        onView(withId(R.id.error_view)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun allEntriesInit_medicalLoading_showsLoading() {
+        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Loading))
+
+        val scenario =
+                launchFragment<AllEntriesFragment>(
+                        bundleOf(PERMISSION_TYPE_KEY to MedicalPermissionType.IMMUNIZATION.name))
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+
+        onView(withId(R.id.loading)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun allEntriesInit_withMedicalData_showsListOfEntries() {
+        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_IMMUNIZATION_LIST)))
+
+        val scenario =
+                launchFragment<AllEntriesFragment>(
+                        bundleOf(PERMISSION_TYPE_KEY to MedicalPermissionType.IMMUNIZATION.name))
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+
+        onView(withText("02 May 2023 • Health Connect Toolbox")).check(matches(isDisplayed()))
+        onView(withText("12 Aug 2022 • Health Connect Toolbox")).check(matches(isDisplayed()))
+        onView(withText("25 Sep 2021 • Health Connect Toolbox")).check(matches(isDisplayed()))
+    }
 }
 
 private val FORMATTED_STEPS_LIST =
@@ -219,3 +281,24 @@ private val FORMATTED_STEPS_LIST =
             title = "15 steps",
             titleA11y = "15 steps",
             dataType = DataType.STEPS))
+
+private val FORMATTED_IMMUNIZATION_LIST =
+    listOf(
+        FormattedEntry.FormattedMedicalDataEntry(
+            header = "02 May 2023 • Health Connect Toolbox",
+            headerA11y = "02 May 2023 • Health Connect Toolbox",
+            title = "Covid vaccine",
+            titleA11y = "important vaccination",
+            time = Instant.now().toLocalDate().minusMonths(4).toInstantAtStartOfDay()),
+        FormattedEntry.FormattedMedicalDataEntry(
+            header = "12 Aug 2022 • Health Connect Toolbox",
+            headerA11y = "12 Aug 2022 • Health Connect Toolbox",
+            title = "Covid vaccine",
+            titleA11y = "important vaccination",
+            time = Instant.now().toLocalDate().minusMonths(2).minusDays(4).toInstantAtStartOfDay()),
+        FormattedEntry.FormattedMedicalDataEntry(
+            header = "25 Sep 2021 • Health Connect Toolbox",
+            headerA11y = "25 Sep 2021 • Health Connect Toolbox",
+            title = "Covid vaccine",
+            titleA11y = "important vaccination",
+            time = Instant.now().toLocalDate().minusMonths(1).plusDays(5).toInstantAtStartOfDay()))
