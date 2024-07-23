@@ -17,6 +17,7 @@
 package com.android.server.healthconnect.permission;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.health.connect.HealthPermissions.READ_HEART_RATE;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -24,10 +25,12 @@ import android.content.AttributionSource;
 import android.content.Context;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
+import android.os.UserHandle;
 import android.permission.PermissionManager;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
@@ -227,6 +230,28 @@ public class DataPermissionEnforcer {
                             + mHealthConnectMappings
                                     .getRecordIdToExternalRecordClassMap()
                                     .get(recordTypeId));
+        }
+
+        // Deny access to HealthConnect API if READ_HEART_RATE is a split permission.
+        if (Flags.replaceBodySensorPermissionEnabled() && permissionName.equals(READ_HEART_RATE)) {
+            String packageName = attributionSource.getPackageName();
+            if (packageName == null) {
+                throw new SecurityException("Caller packageName is null");
+            }
+
+            UserHandle user = UserHandle.getUserHandleForUid(attributionSource.getUid());
+            int permissionFlags =
+                    mContext.getPackageManager()
+                            .getPermissionFlags(permissionName, packageName, user);
+            if (HealthConnectPermissionHelper.isFromSplitPermission(permissionFlags)) {
+                throw new SecurityException(
+                        "Caller is requesting HealthConnect API access from "
+                                + "an implicitly granted split permission: "
+                                + permissionName
+                                + mHealthConnectMappings
+                                        .getRecordIdToExternalRecordClassMap()
+                                        .get(recordTypeId));
+            }
         }
     }
 
