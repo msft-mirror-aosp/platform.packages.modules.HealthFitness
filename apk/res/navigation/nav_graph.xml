@@ -99,6 +99,11 @@
         android:id="@+id/importFlowActivity"
         android:name="com.android.healthconnect.controller.exportimport.ImportFlowActivity"/>
 
+    <activity
+        android:id="@+id/systemUpdateActivity"
+        app:action="android.settings.SYSTEM_UPDATE_SETTINGS"
+        android:label="systemUpdateActivity"/>
+
     <fragment
         android:id="@+id/backupAndRestoreSettingsFragment"
         android:name="com.android.healthconnect.controller.backuprestore.BackupAndRestoreSettingsFragment"
