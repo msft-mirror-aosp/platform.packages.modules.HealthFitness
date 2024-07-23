@@ -18,7 +18,7 @@ package com.android.healthconnect.controller.permissions.data
 import android.health.connect.HealthPermissionCategory
 
 // TODO (b/299880830) possibly rename "category" to something else
-enum class FitnessPermissionType(val category: Int) {
+enum class FitnessPermissionType(val category: Int) : HealthPermissionType {
     // ACTIVITY
     ACTIVE_CALORIES_BURNED(HealthPermissionCategory.ACTIVE_CALORIES_BURNED),
     DISTANCE(HealthPermissionCategory.DISTANCE),
@@ -70,10 +70,25 @@ enum class FitnessPermissionType(val category: Int) {
     SKIN_TEMPERATURE(HealthPermissionCategory.SKIN_TEMPERATURE),
 
     // WELLNESS
-    MINDFULNESS(HealthPermissionCategory.MINDFULNESS),
+    MINDFULNESS(HealthPermissionCategory.MINDFULNESS);
+
+    override fun lowerCaseLabel() : Int =
+        FitnessPermissionStrings.fromPermissionType(this).lowercaseLabel
+
+    override fun upperCaseLabel() : Int =
+        FitnessPermissionStrings.fromPermissionType(this).uppercaseLabel
 }
 
-fun fromHealthPermissionCategory(healthPermissionCategory: Int): FitnessPermissionType {
+fun isValidFitnessPermissionType(permissionTypeString: String) : Boolean {
+    try {
+        FitnessPermissionType.valueOf(permissionTypeString)
+    } catch (e: IllegalArgumentException) {
+        return false
+    }
+    return true
+}
+
+fun fromHealthPermissionCategory(healthPermissionCategory: Int): HealthPermissionType {
     return when (healthPermissionCategory) {
         HealthPermissionCategory.UNKNOWN ->
             throw IllegalArgumentException("PermissionType is UNKNOWN.")

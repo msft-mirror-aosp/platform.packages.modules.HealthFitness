@@ -22,7 +22,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.data.access.AccessViewModel.AccessScreenState.Error
 import com.android.healthconnect.controller.data.access.AccessViewModel.AccessScreenState.WithData
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.utils.postValueIfUpdated
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,7 +42,7 @@ class AccessViewModel @Inject constructor(private val loadAccessUseCase: ILoadAc
     val appMetadataMap: LiveData<AccessScreenState>
         get() = _appMetadataMap
 
-    fun loadAppMetaDataMap(permissionType: FitnessPermissionType) {
+    fun loadAppMetaDataMap(permissionType: HealthPermissionType) {
         val appsMap = _appMetadataMap.value
         if (appsMap is WithData && appsMap.appMetadata.isEmpty()) {
             _appMetadataMap.postValue(AccessScreenState.Loading)

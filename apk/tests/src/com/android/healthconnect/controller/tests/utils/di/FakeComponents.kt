@@ -22,13 +22,16 @@ import android.health.connect.exportimport.ScheduledExportSettings
 import com.android.healthconnect.controller.data.access.AppAccessMetadata
 import com.android.healthconnect.controller.data.access.AppAccessState
 import com.android.healthconnect.controller.data.access.ILoadAccessUseCase
-import com.android.healthconnect.controller.data.access.ILoadPermissionTypeContributorAppsUseCase
+import com.android.healthconnect.controller.data.access.ILoadFitnessTypeContributorAppsUseCase
+import com.android.healthconnect.controller.data.access.ILoadMedicalTypeContributorAppsUseCase
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.api.ILoadDataAggregationsUseCase
 import com.android.healthconnect.controller.data.entries.api.ILoadDataEntriesUseCase
+import com.android.healthconnect.controller.data.entries.api.ILoadMedicalEntriesUseCase
 import com.android.healthconnect.controller.data.entries.api.ILoadMenstruationDataUseCase
 import com.android.healthconnect.controller.data.entries.api.LoadAggregationInput
 import com.android.healthconnect.controller.data.entries.api.LoadDataEntriesInput
+import com.android.healthconnect.controller.data.entries.api.LoadMedicalEntriesInput
 import com.android.healthconnect.controller.data.entries.api.LoadMenstruationDataInput
 import com.android.healthconnect.controller.datasources.AggregationCardInfo
 import com.android.healthconnect.controller.datasources.api.ILoadLastDateWithPriorityDataUseCase
@@ -54,6 +57,8 @@ import com.android.healthconnect.controller.permissions.additionalaccess.Permiss
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.shared.IQueryRecentAccessLogsUseCase
 import com.android.healthconnect.controller.permissiontypes.api.ILoadPriorityListUseCase
 import com.android.healthconnect.controller.recentaccess.ILoadRecentAccessUseCase
@@ -194,6 +199,22 @@ class FakeLoadMostRecentAggregationsUseCase : ILoadMostRecentAggregationsUseCase
     }
 }
 
+class FakeLoadMedicalEntriesUseCase : ILoadMedicalEntriesUseCase {
+    private var formattedList = listOf<FormattedEntry>()
+
+    fun updateList(list: List<FormattedEntry>) {
+        formattedList = list
+    }
+
+    override suspend fun invoke(input: LoadMedicalEntriesInput): UseCaseResults<List<FormattedEntry>> {
+        return UseCaseResults.Success(formattedList)
+    }
+
+    override suspend fun execute(input: LoadMedicalEntriesInput): List<FormattedEntry> {
+        return formattedList
+    }
+}
+
 class FakeSleepSessionHelper : ISleepSessionHelper {
 
     private var forceFail = false
@@ -327,7 +348,7 @@ class FakeLoadAccessUseCase : ILoadAccessUseCase {
     private var appDataMap: Map<AppAccessState, List<AppAccessMetadata>> = mutableMapOf()
 
     override suspend fun invoke(
-        permissionType: FitnessPermissionType
+        permissionType: HealthPermissionType
     ): UseCaseResults<Map<AppAccessState, List<AppAccessMetadata>>> {
         return UseCaseResults.Success(appDataMap)
     }
@@ -341,11 +362,28 @@ class FakeLoadAccessUseCase : ILoadAccessUseCase {
     }
 }
 
-class FakeLoadPermissionTypeContributorAppsUseCase : ILoadPermissionTypeContributorAppsUseCase {
+class FakeLoadFitnessTypeContributorAppsUseCase : ILoadFitnessTypeContributorAppsUseCase {
 
     private var contributorApps: List<AppMetadata> = listOf()
 
     override suspend fun invoke(permissionType: FitnessPermissionType): List<AppMetadata> {
+        return contributorApps
+    }
+
+    fun updateList(list: List<AppMetadata>) {
+        contributorApps = list
+    }
+
+    fun reset() {
+        this.contributorApps = listOf()
+    }
+}
+
+class FakeLoadMedicalTypeContributorAppsUseCase : ILoadMedicalTypeContributorAppsUseCase {
+
+    private var contributorApps: List<AppMetadata> = listOf()
+
+    override suspend fun invoke(permissionType: MedicalPermissionType): List<AppMetadata> {
         return contributorApps
     }
 

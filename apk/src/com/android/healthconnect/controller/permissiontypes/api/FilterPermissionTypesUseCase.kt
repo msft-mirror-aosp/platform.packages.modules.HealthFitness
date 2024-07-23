@@ -71,7 +71,7 @@ constructor(
             }
         return filteredRecordTypeInfos
             .map { recordTypeInfo ->
-                fromHealthPermissionCategory(recordTypeInfo.permissionCategory)
+                fromHealthPermissionCategory(recordTypeInfo.permissionCategory) as FitnessPermissionType
             }
             .toSet()
             .toList()
