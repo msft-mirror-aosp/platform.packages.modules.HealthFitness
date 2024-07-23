@@ -17,12 +17,27 @@ package com.android.healthconnect.controller.permissions.data
 
 import android.health.connect.MedicalPermissionCategory
 
-enum class MedicalPermissionType(val category: Int)  {
+enum class MedicalPermissionType(val category: Int) : HealthPermissionType {
     ALL_MEDICAL_DATA(MedicalPermissionCategory.ALL_MEDICAL_DATA),
-    IMMUNIZATION(MedicalPermissionCategory.IMMUNIZATION),
+    IMMUNIZATION(MedicalPermissionCategory.IMMUNIZATION);
+
+    override fun lowerCaseLabel() : Int =
+            MedicalPermissionStrings.fromPermissionType(this).lowercaseLabel
+
+    override fun upperCaseLabel() : Int =
+            MedicalPermissionStrings.fromPermissionType(this).uppercaseLabel
 }
 
-fun fromMedicalPermissionCategory(medicalPermissionCategory: Int): MedicalPermissionType {
+fun isValidMedicalPermissionType(permissionTypeString: String) : Boolean {
+    try {
+        MedicalPermissionType.valueOf(permissionTypeString)
+    } catch (e: IllegalArgumentException) {
+        return false
+    }
+    return true
+}
+
+fun fromMedicalPermissionCategory(medicalPermissionCategory: Int): HealthPermissionType {
     return when (medicalPermissionCategory) {
         MedicalPermissionCategory.UNKNOWN ->
             throw IllegalArgumentException("MedicalPermissionType is UNKNOWN.")

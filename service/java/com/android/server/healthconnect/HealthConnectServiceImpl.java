@@ -412,6 +412,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 new HealthConnectServiceLogger.Builder(false, INSERT_DATA)
                         .setPackageName(attributionSource.getPackageName());
 
+        ErrorCallback errorCallback = callback::onError;
+
         HealthConnectThreadScheduler.schedule(
                 mContext,
                 () -> {
@@ -460,23 +462,23 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                errorCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
                     } catch (HealthConnectException healthConnectException) {
                         logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception e) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "Exception: ", e);
-                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     } finally {
                         logger.build().log();
                     }
@@ -519,6 +521,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 holdsDataManagementPermission, READ_AGGREGATED_DATA)
                         .setPackageName(attributionSource.getPackageName());
 
+        ErrorCallback errorCallback = callback::onError;
         HealthConnectThreadScheduler.schedule(
                 mContext,
                 () -> {
@@ -588,23 +591,23 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                errorCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
                     } catch (HealthConnectException healthConnectException) {
                         logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception e) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "Exception: ", e);
-                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     } finally {
                         logger.build().log();
                     }
@@ -629,6 +632,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull ReadRecordsRequestParcel request,
             @NonNull IReadRecordsResponseCallback callback) {
         checkParamsNonNull(attributionSource, request, callback);
+
+        ErrorCallback wrappedCallback = error -> callback.onError(error);
 
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -795,27 +800,28 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                wrappedCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(wrappedCallback, securityException, ERROR_SECURITY);
                     } catch (IllegalStateException illegalStateException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "IllegalStateException: ", illegalStateException);
-                        tryAndThrowException(callback, illegalStateException, ERROR_INTERNAL);
+                        tryAndThrowException(
+                                wrappedCallback, illegalStateException, ERROR_INTERNAL);
                     } catch (HealthConnectException healthConnectException) {
                         logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                wrappedCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception e) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "Exception: ", e);
-                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                        tryAndThrowException(wrappedCallback, e, ERROR_INTERNAL);
                     } finally {
                         logger.build().log();
                     }
@@ -853,6 +859,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull RecordsParcel recordsParcel,
             @NonNull IEmptyResponseCallback callback) {
         checkParamsNonNull(attributionSource, recordsParcel, callback);
+        ErrorCallback wrappedCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -909,19 +916,19 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                         .toList()));
                     } catch (SecurityException securityException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(wrappedCallback, securityException, ERROR_SECURITY);
                     } catch (SQLiteException sqLiteException) {
                         logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "SqlException: ", sqLiteException);
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                wrappedCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (IllegalArgumentException illegalArgumentException) {
                         logger.setHealthDataServiceApiStatusError(
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
 
                         Slog.e(TAG, "IllegalArgumentException: ", illegalArgumentException);
                         tryAndThrowException(
-                                callback,
+                                wrappedCallback,
                                 illegalArgumentException,
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
                     } catch (HealthConnectException healthConnectException) {
@@ -929,14 +936,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                wrappedCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception e) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
-
                         Slog.e(TAG, "Exception: ", e);
-                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                        tryAndThrowException(wrappedCallback, e, ERROR_INTERNAL);
                     } finally {
                         logger.build().log();
                     }
@@ -954,6 +960,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull ChangeLogTokenRequest request,
             @NonNull IGetChangeLogTokenCallback callback) {
         checkParamsNonNull(attributionSource, request, callback);
+
+        ErrorCallback errorCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
@@ -987,17 +995,17 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                errorCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
                     } catch (IllegalArgumentException illegalArgumentException) {
                         logger.setHealthDataServiceApiStatusError(
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
                         Slog.e(TAG, "IllegalArgumentException: ", illegalArgumentException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 illegalArgumentException,
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
                     } catch (HealthConnectException healthConnectException) {
@@ -1005,12 +1013,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception e) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
-                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     } finally {
                         logger.build().log();
                     }
@@ -1029,6 +1037,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull ChangeLogsRequest request,
             @NonNull IChangeLogsResponseCallback callback) {
         checkParamsNonNull(attributionSource, request, callback);
+
+        ErrorCallback errorCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -1114,34 +1124,34 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
                         Slog.e(TAG, "IllegalArgumentException: ", illegalArgumentException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 illegalArgumentException,
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
                     } catch (SQLiteException sqLiteException) {
                         logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                errorCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
                     } catch (IllegalStateException illegalStateException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "IllegalStateException: ", illegalStateException);
-                        tryAndThrowException(callback, illegalStateException, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, illegalStateException, ERROR_INTERNAL);
                     } catch (HealthConnectException healthConnectException) {
                         logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception exception) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "Exception: ", exception);
-                        tryAndThrowException(callback, exception, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, exception, ERROR_INTERNAL);
                     } finally {
                         logger.build().log();
                     }
@@ -1164,6 +1174,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull DeleteUsingFiltersRequestParcel request,
             @NonNull IEmptyResponseCallback callback) {
         checkParamsNonNull(attributionSource, request, callback);
+        ErrorCallback wrappedCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -1213,31 +1224,31 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     } catch (SQLiteException sqLiteException) {
                         logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                wrappedCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (IllegalArgumentException illegalArgumentException) {
                         logger.setHealthDataServiceApiStatusError(
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
                         Slog.e(TAG, "IllegalArgumentException: ", illegalArgumentException);
                         tryAndThrowException(
-                                callback,
+                                wrappedCallback,
                                 illegalArgumentException,
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
                     } catch (SecurityException securityException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(wrappedCallback, securityException, ERROR_SECURITY);
                     } catch (HealthConnectException healthConnectException) {
                         logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                wrappedCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception exception) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "Exception: ", exception);
-                        tryAndThrowException(callback, exception, ERROR_INTERNAL);
+                        tryAndThrowException(wrappedCallback, exception, ERROR_INTERNAL);
                     } finally {
                         logger.build().log();
                     }
@@ -1259,6 +1270,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull DeleteUsingFiltersRequestParcel request,
             @NonNull IEmptyResponseCallback callback) {
         checkParamsNonNull(attributionSource, request, callback);
+
+        ErrorCallback errorCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -1295,31 +1308,31 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     } catch (SQLiteException sqLiteException) {
                         logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                errorCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (IllegalArgumentException illegalArgumentException) {
                         logger.setHealthDataServiceApiStatusError(
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
                         Slog.e(TAG, "IllegalArgumentException: ", illegalArgumentException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 illegalArgumentException,
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
                     } catch (SecurityException securityException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
                     } catch (HealthConnectException healthConnectException) {
                         logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception exception) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "Exception: ", exception);
-                        tryAndThrowException(callback, exception, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, exception, ERROR_INTERNAL);
                     } finally {
                         logger.build().log();
                     }
@@ -1360,6 +1373,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @HealthDataCategory.Type int dataCategory,
             @NonNull IGetPriorityResponseCallback callback) {
         checkParamsNonNull(packageName, callback);
+        ErrorCallback errorCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -1387,19 +1401,19 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     } catch (SQLiteException sqLiteException) {
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                errorCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
                     } catch (HealthConnectException healthConnectException) {
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception exception) {
                         Slog.e(TAG, "Exception: ", exception);
-                        tryAndThrowException(callback, exception, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, exception, ERROR_INTERNAL);
                     }
                 });
     }
@@ -1411,6 +1425,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull UpdatePriorityRequestParcel updatePriorityRequest,
             @NonNull IEmptyResponseCallback callback) {
         checkParamsNonNull(packageName, updatePriorityRequest, callback);
+        ErrorCallback errorCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -1428,19 +1443,19 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     } catch (SQLiteException sqLiteException) {
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                errorCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
                     } catch (HealthConnectException healthConnectException) {
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception exception) {
                         Slog.e(TAG, "Exception: ", exception);
-                        tryAndThrowException(callback, exception, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, exception, ERROR_INTERNAL);
                     }
                 });
     }
@@ -1449,6 +1464,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     public void setRecordRetentionPeriodInDays(
             int days, @NonNull UserHandle user, @NonNull IEmptyResponseCallback callback) {
         checkParamsNonNull(user, callback);
+        ErrorCallback wrappedCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -1464,19 +1480,19 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     } catch (SQLiteException sqLiteException) {
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                wrappedCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(wrappedCallback, securityException, ERROR_SECURITY);
                     } catch (HealthConnectException healthConnectException) {
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                wrappedCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception exception) {
                         Slog.e(TAG, "Exception: ", exception);
-                        tryAndThrowException(callback, exception, ERROR_INTERNAL);
+                        tryAndThrowException(wrappedCallback, exception, ERROR_INTERNAL);
                     }
                 });
     }
@@ -1511,6 +1527,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Override
     public void getContributorApplicationsInfo(@NonNull IApplicationInfoResponseCallback callback) {
         checkParamsNonNull(callback);
+        ErrorCallback errorCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -1528,19 +1545,19 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     } catch (SQLiteException sqLiteException) {
                         Slog.e(TAG, "SqlException: ", sqLiteException);
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                errorCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
                     } catch (HealthConnectException healthConnectException) {
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception e) {
                         Slog.e(TAG, "Exception: ", e);
-                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     }
                 });
     }
@@ -1549,6 +1566,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Override
     public void queryAllRecordTypesInfo(@NonNull IRecordTypeInfoResponseCallback callback) {
         checkParamsNonNull(callback);
+        ErrorCallback errorCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -1564,18 +1582,18 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                         getPopulatedRecordTypeInfoResponses()));
                     } catch (SQLiteException sqLiteException) {
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                errorCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
                     } catch (HealthConnectException healthConnectException) {
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception exception) {
-                        tryAndThrowException(callback, exception, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, exception, ERROR_INTERNAL);
                     }
                 });
     }
@@ -1587,6 +1605,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     public void queryAccessLogs(
             @NonNull String packageName, @NonNull IAccessLogsResponseCallback callback) {
         checkParamsNonNull(packageName, callback);
+        ErrorCallback errorCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -1602,16 +1621,16 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         callback.onResult(new AccessLogsResponseParcel(accessLogsList));
                     } catch (SecurityException securityException) {
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
                     } catch (HealthConnectException healthConnectException) {
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception exception) {
                         Slog.e(TAG, "Exception: ", exception);
-                        tryAndThrowException(callback, exception, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, exception, ERROR_INTERNAL);
                     }
                 });
     }
@@ -1630,6 +1649,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull ActivityDatesRequestParcel activityDatesRequestParcel,
             @NonNull IActivityDatesResponseCallback callback) {
         checkParamsNonNull(activityDatesRequestParcel, callback);
+        ErrorCallback errorCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -1649,19 +1669,19 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     } catch (SQLiteException sqLiteException) {
                         Slog.e(TAG, "SqlException: ", sqLiteException);
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                errorCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
                     } catch (HealthConnectException healthConnectException) {
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception e) {
                         Slog.e(TAG, "Exception: ", e);
-                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     }
                 });
     }
@@ -2137,7 +2157,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     public void getScheduledExportStatus(
             @NonNull UserHandle user, @NonNull IScheduledExportStatusCallback callback) {
         checkParamsNonNull(user, callback);
-
+        ErrorCallback errorCallback = callback::onError;
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
@@ -2153,12 +2173,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     } catch (HealthConnectException healthConnectException) {
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception exception) {
                         Slog.e(TAG, "Exception: ", exception);
-                        tryAndThrowException(callback, exception, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, exception, ERROR_INTERNAL);
                     }
                 });
     }
@@ -2186,6 +2206,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Override
     public void getImportStatus(@NonNull UserHandle user, @NonNull IImportStatusCallback callback) {
         checkParamsNonNull(user, callback);
+        ErrorCallback errorCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -2200,12 +2221,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     } catch (HealthConnectException healthConnectException) {
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception exception) {
                         Slog.e(TAG, "Exception: ", exception);
-                        tryAndThrowException(callback, exception, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, exception, ERROR_INTERNAL);
                     }
                 });
     }
@@ -2236,6 +2257,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     public void queryDocumentProviders(
             @NonNull UserHandle user, @NonNull IQueryDocumentProvidersCallback callback) {
         checkParamsNonNull(user, callback);
+        ErrorCallback errorCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -2257,12 +2279,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     } catch (HealthConnectException healthConnectException) {
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception exception) {
                         Slog.e(TAG, "Exception: ", exception);
-                        tryAndThrowException(callback, exception, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, exception, ERROR_INTERNAL);
                     }
                 });
     }
@@ -2273,6 +2295,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull AttributionSource attributionSource,
             @NonNull CreateMedicalDataSourceRequest request,
             @NonNull IMedicalDataSourceResponseCallback callback) {
+        ErrorCallback errorCallback = callback::onError;
         if (!personalHealthRecord()) {
             HealthConnectException unsupportedException =
                     new HealthConnectException(
@@ -2280,7 +2303,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             "Creating MedicalDataSource is not supported.");
             Slog.e(TAG, "HealthConnectException: ", unsupportedException);
             tryAndThrowException(
-                    callback, unsupportedException, unsupportedException.getErrorCode());
+                    errorCallback, unsupportedException, unsupportedException.getErrorCode());
             return;
         }
 
@@ -2328,30 +2351,30 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         // TODO(b/344560623) - Enforce uniqueness constraint on fhir base uri.
                         MedicalDataSource dataSource =
                                 mMedicalDataSourceHelper.createMedicalDataSource(
-                                        request, packageName);
+                                        mContext, request, packageName);
 
                         tryAndReturnResult(callback, dataSource, logger);
                     } catch (SQLiteException sqLiteException) {
                         logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                errorCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
                     } catch (HealthConnectException healthConnectException) {
                         logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception e) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "Exception: ", e);
-                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     } finally {
                         logger.build().log();
                     }
@@ -2366,6 +2389,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull AttributionSource attributionSource,
             @NonNull String id,
             @NonNull IEmptyResponseCallback callback) {
+        ErrorCallback errorCallback = callback::onError;
         // TODO: b/350010046 - add permission check, rate-limiting and package name check
         if (!personalHealthRecord()) {
             HealthConnectException unsupportedException =
@@ -2374,7 +2398,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             "Deleting MedicalDataSource is not supported.");
             Slog.e(TAG, "HealthConnectException: ", unsupportedException);
             tryAndThrowException(
-                    callback, unsupportedException, unsupportedException.getErrorCode());
+                    errorCallback, unsupportedException, unsupportedException.getErrorCode());
             return;
         }
 
@@ -2395,7 +2419,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     try {
                         if (id.trim().isEmpty()) {
                             tryAndThrowException(
-                                    callback,
+                                    errorCallback,
                                     new IllegalArgumentException("Empty datasource id"),
                                     ERROR_INVALID_ARGUMENT);
                             return;
@@ -2407,30 +2431,30 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             mMedicalDataSourceHelper.deleteMedicalDataSource(id);
                         } catch (IllegalArgumentException e) {
                             // The datasource did not exist
-                            tryAndThrowException(callback, e, ERROR_INVALID_ARGUMENT);
+                            tryAndThrowException(errorCallback, e, ERROR_INVALID_ARGUMENT);
                         }
                         tryAndReturnResult(callback, logger);
                     } catch (SQLiteException sqLiteException) {
                         logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                errorCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
                     } catch (HealthConnectException healthConnectException) {
                         logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception e) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "Exception: ", e);
-                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     } finally {
                         logger.build().log();
                     }
@@ -2444,6 +2468,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull AttributionSource attributionSource,
             @NonNull List<UpsertMedicalResourceRequest> requests,
             @NonNull IMedicalResourcesResponseCallback callback) {
+        ErrorCallback errorCallback = callback::onError;
         if (!personalHealthRecord()) {
             HealthConnectException unsupportedException =
                     new HealthConnectException(
@@ -2451,7 +2476,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             "Upsert MedicalResources is not supported.");
             Slog.e(TAG, "HealthConnectException: ", unsupportedException);
             tryAndThrowException(
-                    callback, unsupportedException, unsupportedException.getErrorCode());
+                    errorCallback, unsupportedException, unsupportedException.getErrorCode());
             return;
         }
 
@@ -2516,32 +2541,32 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "JSONException: ", jsonException);
                         tryAndThrowException(
-                                callback, jsonException, HealthConnectException.ERROR_IO);
+                                errorCallback, jsonException, HealthConnectException.ERROR_IO);
                     } catch (SQLiteException sqLiteException) {
                         logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                errorCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
                     } catch (IllegalStateException illegalStateException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "IllegalStateException: ", illegalStateException);
-                        tryAndThrowException(callback, illegalStateException, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, illegalStateException, ERROR_INTERNAL);
                     } catch (HealthConnectException healthConnectException) {
                         logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception e) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "Exception: ", e);
-                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     } finally {
                         logger.build().log();
                     }
@@ -2555,6 +2580,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull AttributionSource attributionSource,
             @NonNull List<MedicalResourceId> medicalResourceIds,
             @NonNull IReadMedicalResourcesResponseCallback callback) {
+        ErrorCallback errorCallback = callback::onError;
         if (!personalHealthRecord()) {
             HealthConnectException unsupportedException =
                     new HealthConnectException(
@@ -2562,7 +2588,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             "Reading MedicalResources by ids is not supported.");
             Slog.e(TAG, "HealthConnectException: ", unsupportedException);
             tryAndThrowException(
-                    callback, unsupportedException, unsupportedException.getErrorCode());
+                    errorCallback, unsupportedException, unsupportedException.getErrorCode());
             return;
         }
 
@@ -2638,27 +2664,27 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                errorCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
                     } catch (IllegalStateException illegalStateException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "IllegalStateException: ", illegalStateException);
-                        tryAndThrowException(callback, illegalStateException, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, illegalStateException, ERROR_INTERNAL);
                     } catch (HealthConnectException healthConnectException) {
                         logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception e) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "Exception: ", e);
-                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     } finally {
                         logger.build().log();
                     }
@@ -2672,6 +2698,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull AttributionSource attributionSource,
             @NonNull ReadMedicalResourcesRequest request,
             @NonNull IReadMedicalResourcesResponseCallback callback) {
+        ErrorCallback errorCallback = callback::onError;
         if (!personalHealthRecord()) {
             HealthConnectException unsupportedException =
                     new HealthConnectException(
@@ -2679,7 +2706,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             "Reading MedicalResources by request is not supported.");
             Slog.e(TAG, "HealthConnectException: ", unsupportedException);
             tryAndThrowException(
-                    callback, unsupportedException, unsupportedException.getErrorCode());
+                    errorCallback, unsupportedException, unsupportedException.getErrorCode());
             return;
         }
 
@@ -2745,27 +2772,27 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
                         tryAndThrowException(
-                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                                errorCallback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
                     } catch (IllegalStateException illegalStateException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "IllegalStateException: ", illegalStateException);
-                        tryAndThrowException(callback, illegalStateException, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, illegalStateException, ERROR_INTERNAL);
                     } catch (HealthConnectException healthConnectException) {
                         logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
-                                callback,
+                                errorCallback,
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception e) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "Exception: ", e);
-                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     } finally {
                         logger.build().log();
                     }
@@ -2779,6 +2806,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             AttributionSource attributionSource,
             List<MedicalResourceId> medicalResourceIds,
             IEmptyResponseCallback callback) {
+        ErrorCallback errorCallback = callback::onError;
         if (!personalHealthRecord()) {
             HealthConnectException unsupportedException =
                     new HealthConnectException(
@@ -2786,7 +2814,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             "Deleting MedicalResources by ids is not supported.");
             Slog.e(TAG, "HealthConnectException: ", unsupportedException);
             tryAndThrowException(
-                    callback, unsupportedException, unsupportedException.getErrorCode());
+                    errorCallback, unsupportedException, unsupportedException.getErrorCode());
             return;
         }
 
@@ -2816,15 +2844,15 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 new UnsupportedOperationException(
                                         "Deleting MedicalResources by ids is not yet implemented.");
                         tryAndThrowException(
-                                callback, unsupportedException, ERROR_UNSUPPORTED_OPERATION);
+                                errorCallback, unsupportedException, ERROR_UNSUPPORTED_OPERATION);
                     } catch (SecurityException securityException) {
                         logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
-                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
                     } catch (Exception e) {
                         logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "Exception: ", e);
-                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     } finally {
                         logger.build().log();
                     }
@@ -2838,6 +2866,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             AttributionSource attributionSource,
             DeleteMedicalResourcesRequest request,
             IEmptyResponseCallback callback) {
+        ErrorCallback errorCallback = callback::onError;
         if (!personalHealthRecord()) {
             HealthConnectException unsupportedException =
                     new HealthConnectException(
@@ -2845,13 +2874,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             "Deleting MedicalResources by request is not supported.");
             Slog.e(TAG, "HealthConnectException: ", unsupportedException);
             tryAndThrowException(
-                    callback, unsupportedException, unsupportedException.getErrorCode());
+                    errorCallback, unsupportedException, unsupportedException.getErrorCode());
             return;
         }
         UnsupportedOperationException unsupportedException =
                 new UnsupportedOperationException(
                         "Deleting MedicalResources by request is not yet implemented.");
-        tryAndThrowException(callback, unsupportedException, ERROR_UNSUPPORTED_OPERATION);
+        tryAndThrowException(errorCallback, unsupportedException, ERROR_UNSUPPORTED_OPERATION);
     }
 
     // Cancel BR timeouts - this might be needed when a user is going into background.
@@ -3187,149 +3216,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     private static void tryAndThrowException(
-            @NonNull IInsertRecordsResponseCallback callback,
-            @NonNull Exception exception,
-            @HealthConnectException.ErrorCode int errorCode) {
-        try {
-            callback.onError(
-                    new HealthConnectExceptionParcel(
-                            new HealthConnectException(errorCode, exception.toString())));
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to send result to the callback", e);
-        }
-    }
-
-    private static void tryAndThrowException(
-            @NonNull IAggregateRecordsResponseCallback callback,
-            @NonNull Exception exception,
-            @HealthConnectException.ErrorCode int errorCode) {
-        try {
-            callback.onError(
-                    new HealthConnectExceptionParcel(
-                            new HealthConnectException(errorCode, exception.toString())));
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to send result to the callback", e);
-        }
-    }
-
-    private static void tryAndThrowException(
-            @NonNull IReadRecordsResponseCallback callback,
-            @NonNull Exception exception,
-            @HealthConnectException.ErrorCode int errorCode) {
-        try {
-            callback.onError(
-                    new HealthConnectExceptionParcel(
-                            new HealthConnectException(errorCode, exception.toString())));
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to send result to the callback", e);
-        }
-    }
-
-    private static void tryAndThrowException(
-            @NonNull IActivityDatesResponseCallback callback,
-            @NonNull Exception exception,
-            @HealthConnectException.ErrorCode int errorCode) {
-        try {
-            callback.onError(
-                    new HealthConnectExceptionParcel(
-                            new HealthConnectException(errorCode, exception.toString())));
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to send result to the callback", e);
-        }
-    }
-
-    private static void tryAndThrowException(
-            @NonNull IGetChangeLogTokenCallback callback,
-            @NonNull Exception exception,
-            @HealthConnectException.ErrorCode int errorCode) {
-        try {
-            callback.onError(
-                    new HealthConnectExceptionParcel(
-                            new HealthConnectException(errorCode, exception.toString())));
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to send result to the callback", e);
-        }
-    }
-
-    private static void tryAndThrowException(
-            @NonNull IAccessLogsResponseCallback callback,
-            @NonNull Exception exception,
-            @HealthConnectException.ErrorCode int errorCode) {
-        try {
-            callback.onError(
-                    new HealthConnectExceptionParcel(
-                            new HealthConnectException(errorCode, exception.toString())));
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to send result to the callback", e);
-        }
-    }
-
-    private static void tryAndThrowException(
-            @NonNull IEmptyResponseCallback callback,
-            @NonNull Exception exception,
-            @HealthConnectException.ErrorCode int errorCode) {
-        try {
-            callback.onError(
-                    new HealthConnectExceptionParcel(
-                            new HealthConnectException(errorCode, exception.toString())));
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to send result to the callback", e);
-        }
-    }
-
-    private static void tryAndThrowException(
-            @NonNull IApplicationInfoResponseCallback callback,
-            @NonNull Exception exception,
-            @HealthConnectException.ErrorCode int errorCode) {
-        try {
-            callback.onError(
-                    new HealthConnectExceptionParcel(
-                            new HealthConnectException(errorCode, exception.toString())));
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to send result to the callback", e);
-        }
-    }
-
-    private static void tryAndThrowException(
-            @NonNull IChangeLogsResponseCallback callback,
-            @NonNull Exception exception,
-            @HealthConnectException.ErrorCode int errorCode) {
-        try {
-            callback.onError(
-                    new HealthConnectExceptionParcel(
-                            new HealthConnectException(errorCode, exception.toString())));
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to send result to the callback", e);
-        }
-    }
-
-    private static void tryAndThrowException(
-            @NonNull IRecordTypeInfoResponseCallback callback,
-            @NonNull Exception exception,
-            @HealthConnectException.ErrorCode int errorCode) {
-        try {
-            callback.onError(
-                    new HealthConnectExceptionParcel(
-                            new HealthConnectException(errorCode, exception.toString())));
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to send result to the callback", e);
-        }
-    }
-
-    private static void tryAndThrowException(
-            @NonNull IGetPriorityResponseCallback callback,
-            @NonNull Exception exception,
-            @HealthConnectException.ErrorCode int errorCode) {
-        try {
-            callback.onError(
-                    new HealthConnectExceptionParcel(
-                            new HealthConnectException(errorCode, exception.toString())));
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to send result to the callback", e);
-        }
-    }
-
-    private static void tryAndThrowException(
             @NonNull IMigrationCallback callback,
             @NonNull Exception exception,
             @MigrationException.ErrorCode int errorCode,
@@ -3343,7 +3229,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     private static void tryAndThrowException(
-            @NonNull IQueryDocumentProvidersCallback callback,
+            ErrorCallback callback,
             @NonNull Exception exception,
             @HealthConnectException.ErrorCode int errorCode) {
         try {
@@ -3352,71 +3238,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             new HealthConnectException(errorCode, exception.toString())));
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to send result to the callback", e);
-        }
-    }
-
-    private static void tryAndThrowException(
-            @NonNull IScheduledExportStatusCallback callback,
-            @NonNull Exception exception,
-            @HealthConnectException.ErrorCode int errorCode) {
-        try {
-            callback.onError(
-                    new HealthConnectExceptionParcel(
-                            new HealthConnectException(errorCode, exception.toString())));
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to send result to the callback", e);
-        }
-    }
-
-    private static void tryAndThrowException(
-            @NonNull IImportStatusCallback callback,
-            @NonNull Exception exception,
-            @HealthConnectException.ErrorCode int errorCode) {
-        try {
-            callback.onError(
-                    new HealthConnectExceptionParcel(
-                            new HealthConnectException(errorCode, exception.toString())));
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to send result to the callback", e);
-        }
-    }
-
-    private static void tryAndThrowException(
-            @NonNull IMedicalResourcesResponseCallback callback,
-            @NonNull Exception exception,
-            @HealthConnectException.ErrorCode int errorCode) {
-        try {
-            callback.onError(
-                    new HealthConnectExceptionParcel(
-                            new HealthConnectException(errorCode, exception.toString())));
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to send UpsertMedicalResourcesResponse to the callback", e);
-        }
-    }
-
-    private static void tryAndThrowException(
-            @NonNull IReadMedicalResourcesResponseCallback callback,
-            @NonNull Exception exception,
-            @HealthConnectException.ErrorCode int errorCode) {
-        try {
-            callback.onError(
-                    new HealthConnectExceptionParcel(
-                            new HealthConnectException(errorCode, exception.toString())));
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to send ReadMedicalResourcesResponse to the callback", e);
-        }
-    }
-
-    private static void tryAndThrowException(
-            @NonNull IMedicalDataSourceResponseCallback callback,
-            @NonNull Exception exception,
-            @MigrationException.ErrorCode int errorCode) {
-        try {
-            callback.onError(
-                    new HealthConnectExceptionParcel(
-                            new HealthConnectException(errorCode, exception.toString())));
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to send result to the callback for MedicalDataSource", e);
         }
     }
 
@@ -3424,5 +3245,15 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         for (Object param : params) {
             Objects.requireNonNull(param);
         }
+    }
+
+    /**
+     * A wrapper interface to put around a callback to HealthConnect. It allows very similar code to
+     * be written for multiple similar AIDL interfaces.
+     */
+    private interface ErrorCallback {
+
+        /** Sends an error to the caller. */
+        void onError(HealthConnectExceptionParcel error) throws RemoteException;
     }
 }

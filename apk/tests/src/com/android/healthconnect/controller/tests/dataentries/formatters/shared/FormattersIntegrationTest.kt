@@ -19,11 +19,30 @@
 package com.android.healthconnect.controller.tests.dataentries.formatters.shared
 
 import android.health.connect.internal.datatypes.utils.RecordMapper
+import android.platform.test.annotations.DisableFlags
+import android.platform.test.annotations.EnableFlags
+import android.platform.test.flag.junit.SetFlagsRule
 import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
+import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
+import org.junit.Rule
 import org.junit.Test
 
 class FormattersIntegrationTest {
+
+    @JvmField @Rule val mSetFlagsRule = SetFlagsRule()
+
+    @EnableFlags(Flags.FLAG_MINDFULNESS)
+    @Test
+    fun allRecordsHaveFormatters() {
+        val recordClasses =
+            RecordMapper.getInstance().recordIdToExternalRecordClassMap.values.sortedBy { it.name }
+        val supportedUIRecords =
+            HealthPermissionToDatatypeMapper.getAllDataTypes().values.flatten().sortedBy { it.name }
+        assertThat(recordClasses).isEqualTo(supportedUIRecords)
+    }
+
+    @DisableFlags(Flags.FLAG_MINDFULNESS)
     @Test
     fun allRecordsHaveFormatters_exceptUnreleasedDataTypes() {
         val recordClasses =

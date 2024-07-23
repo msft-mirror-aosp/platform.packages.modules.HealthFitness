@@ -79,14 +79,7 @@ constructor(
      */
     fun getAppsWithHealthPermissions(): List<String> {
         return try {
-            val appsWithDeclaredIntent =
-                context.packageManager
-                    .queryIntentActivities(
-                        getRationaleIntent(), ResolveInfoFlags.of(RESOLVE_INFO_FLAG))
-                    .map { it.activityInfo.packageName }
-                    .distinct()
-
-            appsWithDeclaredIntent.filter { getValidHealthPermissions(it).isNotEmpty() }
+            appsWithDeclaredIntent().filter { getValidHealthPermissions(it).isNotEmpty() }
         } catch (e: Exception) {
             emptyList()
         }
@@ -94,14 +87,7 @@ constructor(
 
     fun getAppsWithFitnessPermissions(): List<String> {
         return try {
-            val appsWithDeclaredIntent =
-                context.packageManager
-                    .queryIntentActivities(
-                        getRationaleIntent(), ResolveInfoFlags.of(RESOLVE_INFO_FLAG))
-                    .map { it.activityInfo.packageName }
-                    .distinct()
-
-            appsWithDeclaredIntent.filter {
+            appsWithDeclaredIntent().filter {
                 getValidHealthPermissions(it)
                     .filterIsInstance<HealthPermission.FitnessPermission>()
                     .isNotEmpty()
@@ -109,6 +95,26 @@ constructor(
         } catch (e: Exception) {
             emptyList()
         }
+    }
+
+    fun getAppsWithMedicalPermissions(): List<String> {
+        return try {
+            appsWithDeclaredIntent().filter {
+                getValidHealthPermissions(it)
+                        .filterIsInstance<HealthPermission.MedicalPermission>()
+                        .isNotEmpty()
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    private fun appsWithDeclaredIntent(): List<String> {
+        return context.packageManager
+                        .queryIntentActivities(
+                                getRationaleIntent(), ResolveInfoFlags.of(RESOLVE_INFO_FLAG))
+                        .map { it.activityInfo.packageName }
+                        .distinct()
     }
 
     /**

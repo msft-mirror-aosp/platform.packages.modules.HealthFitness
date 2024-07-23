@@ -632,7 +632,6 @@ class HomeFragmentTest {
     }
 
     @Test
-    @Ignore("b/327170886")
     fun whenDataRestoreStatePending_showsRestoreBanner() {
         Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
         whenever(migrationViewModel.migrationState).then {
