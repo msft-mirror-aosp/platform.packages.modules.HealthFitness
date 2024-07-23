@@ -24,6 +24,8 @@ import android.content.Context;
 import android.health.connect.HealthConnectManager;
 import android.os.Environment;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
@@ -39,14 +41,22 @@ import java.io.File;
 /** A test rule that deals with ground work of setting up a mock Health Connect database. */
 public class HealthConnectDatabaseTestRule extends ExternalResource {
     private static final String TAG = "HealthConnectDatabaseTestRule";
+    @Nullable private Object mTestClassInstance = null;
     private MockitoSession mStaticMockSession;
     private HealthConnectUserContext mContext;
     private TransactionManager mTransactionManager;
+
+    public HealthConnectDatabaseTestRule() {}
+
+    public HealthConnectDatabaseTestRule(@NonNull Object testClassInstance) {
+        mTestClassInstance = testClassInstance;
+    }
 
     @Override
     public void before() {
         mStaticMockSession =
                 ExtendedMockito.mockitoSession()
+                        .initMocks(mTestClassInstance)
                         .mockStatic(HealthConnectManager.class)
                         .mockStatic(Environment.class)
                         .strictness(Strictness.LENIENT)

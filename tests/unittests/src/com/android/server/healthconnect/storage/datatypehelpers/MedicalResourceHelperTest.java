@@ -79,6 +79,7 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
 import com.android.healthfitness.flags.Flags;
+import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -112,14 +113,21 @@ public class MedicalResourceHelperTest {
     private MedicalResourceHelper mMedicalResourceHelper;
     private MedicalDataSourceHelper mMedicalDataSourceHelper;
     private TransactionManager mTransactionManager;
+    private HealthConnectUserContext mContext;
     private static final long DATA_SOURCE_ROW_ID = 1234;
 
     @Before
     public void setup() {
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
-        mMedicalDataSourceHelper = new MedicalDataSourceHelper(mTransactionManager);
+        mMedicalDataSourceHelper =
+                new MedicalDataSourceHelper(mTransactionManager, AppInfoHelper.getInstance());
         mMedicalResourceHelper =
                 new MedicalResourceHelper(mTransactionManager, mMedicalDataSourceHelper);
+        mContext = mHealthConnectDatabaseTestRule.getUserContext();
+        TransactionTestUtils mTransactionTestUtils =
+                new TransactionTestUtils(mContext, mTransactionManager);
+        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
+        mTransactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
     }
 
     @Test
@@ -1204,7 +1212,7 @@ public class MedicalResourceHelperTest {
         CreateMedicalDataSourceRequest createMedicalDataSourceRequest =
                 new CreateMedicalDataSourceRequest.Builder(fhirBaseURI, displayName).build();
         return mMedicalDataSourceHelper.createMedicalDataSource(
-                createMedicalDataSourceRequest, packageName);
+                mContext, createMedicalDataSourceRequest, packageName);
     }
 
     private List<Integer> readEntriesInMedicalResourceIndicesTable() {
