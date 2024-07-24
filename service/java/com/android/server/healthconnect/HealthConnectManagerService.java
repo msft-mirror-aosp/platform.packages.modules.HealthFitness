@@ -26,8 +26,11 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.Slog;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.server.SystemService;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
 import com.android.server.healthconnect.migration.MigrationCleaner;
 import com.android.server.healthconnect.migration.MigrationStateManager;
@@ -79,9 +82,24 @@ public class HealthConnectManagerService extends SystemService {
                         new HealthConnectUserContext(mContext, mCurrentForegroundUser));
         HealthPermissionIntentAppsTracker permissionIntentTracker =
                 new HealthPermissionIntentAppsTracker(context);
-        FirstGrantTimeManager firstGrantTimeManager =
-                new FirstGrantTimeManager(
-                        context, permissionIntentTracker, FirstGrantTimeDatastore.createInstance());
+        FirstGrantTimeManager firstGrantTimeManager;
+
+        if (Flags.dependencyInjection()) {
+            HealthConnectInjector healthConnectInjector = new HealthConnectInjectorImpl();
+            firstGrantTimeManager =
+                    new FirstGrantTimeManager(
+                            context,
+                            permissionIntentTracker,
+                            FirstGrantTimeDatastore.createInstance(),
+                            healthConnectInjector.getPackageInfoUtils());
+        } else {
+            firstGrantTimeManager =
+                    new FirstGrantTimeManager(
+                            context,
+                            permissionIntentTracker,
+                            FirstGrantTimeDatastore.createInstance());
+        }
+
         HealthConnectPermissionHelper permissionHelper =
                 new HealthConnectPermissionHelper(
                         context,

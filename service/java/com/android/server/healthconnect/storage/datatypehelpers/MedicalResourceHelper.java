@@ -17,10 +17,8 @@
 package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
-import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 
-import static com.android.healthfitness.flags.Flags.personalHealthRecord;
 import static com.android.server.healthconnect.storage.HealthConnectDatabase.createTable;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getDataSourceUuidColumnName;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getChildTableUpsertRequests;
@@ -72,7 +70,6 @@ import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -92,9 +89,6 @@ public final class MedicalResourceHelper {
     @VisibleForTesting static final String FHIR_RESOURCE_ID_COLUMN_NAME = "fhir_resource_id";
     private static final List<Pair<String, Integer>> UNIQUE_COLUMNS_INFO =
             List.of(new Pair<>(UUID_COLUMN_NAME, UpsertTableRequest.TYPE_BLOB));
-
-    private static final Map<Integer, Integer> FHIR_RESOURCE_TYPE_TO_MEDICAL_RESOURCE_TYPE =
-            new HashMap<>();
 
     private final TransactionManager mTransactionManager;
     private final MedicalDataSourceHelper mMedicalDataSourceHelper;
@@ -369,8 +363,7 @@ public final class MedicalResourceHelper {
             @NonNull UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest) {
         ContentValues contentValues =
                 getContentValues(uuid, dataSourceRowId, upsertMedicalResourceInternalRequest);
-        int medicalResourceType =
-                getMedicalResourceType(upsertMedicalResourceInternalRequest.getFhirResourceType());
+        int medicalResourceType = upsertMedicalResourceInternalRequest.getMedicalResourceType();
         return new UpsertTableRequest(getMainTableName(), contentValues, UNIQUE_COLUMNS_INFO)
                 .setChildTableRequests(List.of(getChildTableUpsertRequests(medicalResourceType)))
                 .setChildTablesWithRowsToBeDeletedDuringUpdate(getChildTableColumnPairs());
@@ -411,15 +404,14 @@ public final class MedicalResourceHelper {
      */
     private static MedicalResource buildMedicalResource(
             @NonNull UpsertMedicalResourceInternalRequest internalRequest) {
-        int fhirResourceType = internalRequest.getFhirResourceType();
         FhirResource fhirResource =
                 new FhirResource.Builder(
-                                fhirResourceType,
+                                internalRequest.getFhirResourceType(),
                                 internalRequest.getFhirResourceId(),
                                 internalRequest.getData())
                         .build();
         return new MedicalResource.Builder(
-                        getMedicalResourceType(fhirResourceType),
+                        internalRequest.getMedicalResourceType(),
                         internalRequest.getDataSourceId(),
                         parseFhirVersion(internalRequest.getFhirVersion()),
                         fhirResource)
@@ -513,23 +505,6 @@ public final class MedicalResourceHelper {
         mTransactionManager.delete(deleteRequest);
     }
 
-    /**
-     * Returns the {@link MedicalResource.MedicalResourceType} integer representation of the given
-     * {@code fhirResourceTypeInt}.
-     */
-    private static int getMedicalResourceType(int fhirResourceTypeInt) {
-        // TODO(b/342574702): remove the default value once we have validation and it is more
-        // clear what resources should through to the database.
-        if (personalHealthRecord()) {
-            return initIfNecessaryAndGetFhirResourceToMedicalResourceMap()
-                    .getOrDefault(
-                            fhirResourceTypeInt, MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN);
-        }
-        throw new UnsupportedOperationException(
-                "this case should never happen because we have a check at the top of the API impl"
-                        + " in HealthConnectServiceImpl");
-    }
-
     @NonNull
     private static MedicalResource getMedicalResource(@NonNull Cursor cursor) {
         int fhirResourceTypeInt = getCursorInt(cursor, FHIR_RESOURCE_TYPE_COLUMN_NAME);
@@ -547,15 +522,5 @@ public final class MedicalResourceHelper {
                         fhirVersion,
                         fhirResource)
                 .build();
-    }
-
-    private static Map<Integer, Integer> initIfNecessaryAndGetFhirResourceToMedicalResourceMap() {
-        if (personalHealthRecord()) {
-            FHIR_RESOURCE_TYPE_TO_MEDICAL_RESOURCE_TYPE.put(
-                    FHIR_RESOURCE_TYPE_IMMUNIZATION,
-                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
-            return FHIR_RESOURCE_TYPE_TO_MEDICAL_RESOURCE_TYPE;
-        }
-        return new HashMap<>();
     }
 }

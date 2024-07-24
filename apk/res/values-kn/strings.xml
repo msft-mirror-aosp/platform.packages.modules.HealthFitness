@@ -35,8 +35,7 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 ಆ್ಯಪ್ ಆ್ಯಕ್ಸೆಸ್ ಅನ್ನು ಹೊಂದಿದೆ}one{# ಆ್ಯಪ್‌ಗಳು ಆ್ಯಕ್ಸೆಸ್ ಅನ್ನು ಹೊಂದಿವೆ}other{# ಆ್ಯಪ್‌ಗಳು ಆ್ಯಕ್ಸೆಸ್ ಅನ್ನು ಹೊಂದಿವೆ}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"ಯಾವುದೂ ಇಲ್ಲ"</string>
     <string name="entry_details_title" msgid="590184849040247850">"ಪ್ರವೇಶದ ವಿವರಗಳು"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
-    <skip />
+    <string name="manage_data_summary" msgid="8537870912521944449">"ಸ್ವಯಂ-ಅಳಿಸುವಿಕೆ, ಡೇಟಾ ಮೂಲಗಳು, ಬ್ಯಾಕಪ್ ಮತ್ತು ಮರುಸ್ಥಾಪನೆ"</string>
     <string name="backup_title" msgid="211503191266235085">"ಬ್ಯಾಕಪ್"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"ಡೇಟಾ ಮೂಲಗಳು ಮತ್ತು ಆದ್ಯತೆ"</string>
     <string name="set_units_title" msgid="2657822539603758029">"ಯೂನಿಟ್‌ಗಳನ್ನು ಸೆಟ್ ಮಾಡಿ"</string>
@@ -78,7 +77,8 @@
     <string name="can_read" msgid="4568261079308309564">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ಅನ್ನು ಓದಬಹುದು"</string>
     <string name="can_write" msgid="5082414937218423823">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ಅನ್ನು ಬರೆಯಬಹುದು"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"ನಿಷ್ಕ್ರಿಯ ಆ್ಯಪ್‌ಗಳು"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"ಈ ಆ್ಯಪ್‌ಗಳು ಇನ್ನು ಮುಂದೆ <xliff:g id="DATA_TYPE">%s</xliff:g> ಅನ್ನು ಬರೆಯಲು ಆಗುವುದಿಲ್ಲ, ಆದರೆ ಈಗಲೂ Health Connect ನಲ್ಲಿ ಸಂಗ್ರಹಿಸಲಾದ ಡೇಟಾವನ್ನು ಹೊಂದಿರುತ್ತವೆ"</string>
+    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
+    <skip />
     <string name="data_access_empty_message" msgid="9084350402254264452">"ಆ್ಯಪ್‌ಗಳಿಗೆ ಇನ್ನು ಮುಂದೆ <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> ಡೇಟಾವನ್ನು ಓದಲು ಅಥವಾ ಬರೆಯಲು ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ ಹಾಗೂ Health Connect ನಲ್ಲಿ <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> ಡೇಟಾವನ್ನು ಸಂಗ್ರಹಿಸಲಾಗಿಲ್ಲ"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"ಈ ಡೇಟಾ, ಸಕ್ರಿಯವಾಗಿದ್ದ ಸಮಯ, ವ್ಯಾಯಾಮದ ಪ್ರಕಾರ, ಲ್ಯಾಪ್‌ಗಳು, ಪುನರಾವರ್ತನೆಗಳು, ಸೆಶನ್‌ಗಳು ಅಥವಾ ಈಜುವಿಕೆ ಸ್ಟ್ರೋಕ್‌ಗಳಂತಹ ಮಾಹಿತಿಯನ್ನು ಒಳಗೊಂಡಿರುತ್ತದೆ"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"ಈ ಡೇಟಾ, ನಿದ್ರೆಯ ಹಂತಗಳು ಹಾಗೂ ನಿದ್ರೆಯ ಅವಧಿಗಳಂತಹ ಮಾಹಿತಿಯನ್ನು ಒಳಗೊಂಡಿರುತ್ತದೆ"</string>
@@ -360,8 +360,7 @@
     <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ಆನ್ ಆಗಿದೆ"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ಆಫ್ ಆಗಿದೆ"</string>
-    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
-    <skip />
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"ನಿಗದಿತ ಎಕ್ಸ್‌ಪೋರ್ಟ್ ಅನ್ನು ಬಳಸಿ"</string>
     <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"ಫ್ರೀಕ್ವೆನ್ಸಿ ಬದಲಿಸಿ"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"ನೀವು ನಿಗದಿತ ರಫ್ತು ಆಫ್ ಮಾಡಿದರೆ, ಇದು ಹಿಂದೆ ರಫ್ತು ಮಾಡಿದ ಡೇಟಾವನ್ನು ಸೇವ್ ಮಾಡಿದ ಸ್ಥಳದಿಂದ ಅಳಿಸುವುದಿಲ್ಲ"</string>
@@ -392,9 +391,8 @@
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"ಫೈಲ್ ಆಯ್ಕೆ ಮಾಡಿ"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"ಸ್ಥಳಾವಕಾಶವನ್ನು ತೆರವುಗೊಳಿಸಿ"</string>
     <string name="export_back_button" msgid="3550795479165524982">"ಹಿಂದಕ್ಕೆ"</string>
-    <!-- no translation found for export_cancel_button (1952360582645412410) -->
-    <skip />
     <string name="export_next_button" msgid="657930567137105172">"ಮುಂದಿನದು"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"ರದ್ದುಮಾಡಿ"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"ರದ್ದುಮಾಡಿ"</string>
     <string name="import_next_button" msgid="5706322508691854289">"ಮುಂದಿನದು"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"ನಿಂದ ಆಮದು ಮಾಡಿಕೊಳ್ಳಿ"</string>
