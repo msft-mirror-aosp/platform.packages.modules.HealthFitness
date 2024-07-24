@@ -2383,7 +2383,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 holdsDataManagementPermission);
     }
 
-    /** Service implementation of {@link HealthConnectManager#createMedicalDataSource} */
+    /** Service implementation of {@link HealthConnectManager#deleteMedicalDataSourceWithData} */
     @Override
     public void deleteMedicalDataSourceWithData(
             @NonNull AttributionSource attributionSource,
@@ -2806,6 +2806,16 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             AttributionSource attributionSource,
             List<MedicalResourceId> medicalResourceIds,
             IEmptyResponseCallback callback) {
+
+        // Permissions expectations:
+        // - Apps with data management permissions can delete anything
+        // - Other apps can only delete data written by the calling package itself.
+        // - Background deletes are permitted
+        // - No deletion can happen while data sync is in progress
+        // - delete shares quota with write.
+        // - on multi-user devices, calls will only be allowed from the foreground user.
+        // TODO: Implement package restrictions.
+
         ErrorCallback errorCallback = callback::onError;
         if (!personalHealthRecord()) {
             HealthConnectException unsupportedException =
@@ -2822,6 +2832,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
+        final UserHandle userHandle = Binder.getCallingUserHandle();
         final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
         final String callingPackageName =
                 Objects.requireNonNull(attributionSource.getPackageName());
@@ -2837,8 +2848,19 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             tryAndReturnResult(callback, logger);
                             return;
                         }
-                        mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
-                                attributionSource);
+                        enforceIsForegroundUser(userHandle);
+                        verifyPackageNameFromUid(uid, attributionSource);
+                        throwExceptionIfDataSyncInProgress();
+                        if (!holdsDataManagementPermission) {
+                            boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
+                            tryAcquireApiCallQuota(
+                                    uid,
+                                    QuotaCategory.QUOTA_CATEGORY_WRITE,
+                                    isInForeground,
+                                    logger);
+                            mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
+                                    attributionSource);
+                        }
 
                         UnsupportedOperationException unsupportedException =
                                 new UnsupportedOperationException(
@@ -2866,6 +2888,16 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             AttributionSource attributionSource,
             DeleteMedicalResourcesRequest request,
             IEmptyResponseCallback callback) {
+
+        // Permissions expectations:
+        // - Apps with data management permissions can delete anything
+        // - Other apps can only delete data written by the calling package itself.
+        // - Background deletes are permitted
+        // - No deletion can happen while data sync is in progress
+        // - delete shares quota with write.
+        // - on multi-user devices, calls will only be allowed from the foreground user.
+        // TODO: Implement package restrictions.
+
         ErrorCallback errorCallback = callback::onError;
         if (!personalHealthRecord()) {
             HealthConnectException unsupportedException =
@@ -2877,10 +2909,59 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     errorCallback, unsupportedException, unsupportedException.getErrorCode());
             return;
         }
-        UnsupportedOperationException unsupportedException =
-                new UnsupportedOperationException(
-                        "Deleting MedicalResources by request is not yet implemented.");
-        tryAndThrowException(errorCallback, unsupportedException, ERROR_UNSUPPORTED_OPERATION);
+        checkParamsNonNull(attributionSource, request, callback);
+
+        final int uid = Binder.getCallingUid();
+        final int pid = Binder.getCallingPid();
+        final UserHandle userHandle = Binder.getCallingUserHandle();
+        final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
+        final String callingPackageName =
+                Objects.requireNonNull(attributionSource.getPackageName());
+        final HealthConnectServiceLogger.Builder logger =
+                new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, DELETE_DATA)
+                        .setPackageName(callingPackageName);
+
+        HealthConnectThreadScheduler.schedule(
+                mContext,
+                () -> {
+                    try {
+                        if (request.getDataSourceIds().isEmpty()) {
+                            tryAndReturnResult(callback, logger);
+                            return;
+                        }
+                        enforceIsForegroundUser(userHandle);
+                        verifyPackageNameFromUid(uid, attributionSource);
+                        throwExceptionIfDataSyncInProgress();
+                        if (!holdsDataManagementPermission) {
+                            boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
+                            tryAcquireApiCallQuota(
+                                    uid,
+                                    QuotaCategory.QUOTA_CATEGORY_WRITE,
+                                    isInForeground,
+                                    logger);
+                            mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
+                                    attributionSource);
+                        }
+                        UnsupportedOperationException unsupportedException =
+                                new UnsupportedOperationException(
+                                        "Deleting MedicalResources by request is not yet"
+                                                + " implemented.");
+                        tryAndThrowException(
+                                errorCallback, unsupportedException, ERROR_UNSUPPORTED_OPERATION);
+                    } catch (SecurityException securityException) {
+                        logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
+                        Slog.e(TAG, "SecurityException: ", securityException);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
+                    } catch (Exception e) {
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        Slog.e(TAG, "Exception: ", e);
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
+                    } finally {
+                        logger.build().log();
+                    }
+                },
+                uid,
+                holdsDataManagementPermission);
     }
 
     // Cancel BR timeouts - this might be needed when a user is going into background.
@@ -2926,6 +3007,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         RateLimiter.checkMaxChunkMemoryUsage(recordsChunkSize);
     }
 
+    /**
+     * On a multi-user device, enforce that the calling user handle (user account) is the same as
+     * the current foreground user (account).
+     */
     private void enforceIsForegroundUser(UserHandle callingUserHandle) {
         if (!callingUserHandle.equals(mCurrentForegroundUser)) {
             throw new IllegalStateException(

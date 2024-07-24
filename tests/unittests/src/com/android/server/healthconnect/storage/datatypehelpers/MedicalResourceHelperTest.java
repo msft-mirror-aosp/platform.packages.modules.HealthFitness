@@ -1195,6 +1195,74 @@ public class MedicalResourceHelperTest {
                                 + ")");
     }
 
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteMedicalResourcesByDataSources_noIds_succeeds() {
+        mMedicalResourceHelper.deleteMedicalResourcesByDataSources(List.of());
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteMedicalResourcesByDataSources_singleDataSource_succeeds() {
+        // Create two datasources, with one resource each.
+        MedicalDataSource dataSource1 =
+                insertMedicalDataSource(
+                        DATA_SOURCE_FHIR_BASE_URI + "1",
+                        DATA_SOURCE_DISPLAY_NAME + "1",
+                        DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2 =
+                insertMedicalDataSource(
+                        DATA_SOURCE_FHIR_BASE_URI + "2",
+                        DATA_SOURCE_DISPLAY_NAME + "2",
+                        DATA_SOURCE_PACKAGE_NAME);
+        FhirResource fhirResource1 = getFhirResource();
+        FhirResource fhirResource2 = getFhirResourceAllergy();
+        FhirVersion fhirVersion = parseFhirVersion(FHIR_VERSION_R4);
+        UpsertMedicalResourceInternalRequest dataSource1Resource1 =
+                new UpsertMedicalResourceInternalRequest()
+                        .setFhirResourceId(fhirResource1.getId())
+                        .setFhirResourceType(fhirResource1.getType())
+                        .setFhirVersion(fhirVersion)
+                        .setData(fhirResource1.getData())
+                        .setDataSourceId(dataSource1.getId());
+        UpsertMedicalResourceInternalRequest dataSource1Resource2 =
+                new UpsertMedicalResourceInternalRequest()
+                        .setFhirResourceId(fhirResource2.getId())
+                        .setFhirResourceType(fhirResource2.getType())
+                        .setFhirVersion(fhirVersion)
+                        .setData(fhirResource2.getData())
+                        .setDataSourceId(dataSource1.getId());
+        UpsertMedicalResourceInternalRequest datasource2resource =
+                new UpsertMedicalResourceInternalRequest()
+                        .setFhirResourceId(fhirResource2.getId())
+                        .setFhirResourceType(fhirResource2.getType())
+                        .setFhirVersion(fhirVersion)
+                        .setData(fhirResource2.getData())
+                        .setDataSourceId(dataSource2.getId());
+        mMedicalResourceHelper.upsertMedicalResources(
+                List.of(dataSource1Resource1, dataSource1Resource2, datasource2resource));
+
+        // Delete all of the data for just the first datasource
+        mMedicalResourceHelper.deleteMedicalResourcesByDataSources(List.of(dataSource1.getId()));
+
+        // Test that the data for data source 1 is gone, but 2 is still present
+        MedicalResourceId datasource1Resource1Id =
+                new MedicalResourceId(
+                        dataSource1.getId(), fhirResource1.getType(), fhirResource1.getId());
+        MedicalResourceId datasource1resource2Id =
+                new MedicalResourceId(
+                        dataSource1.getId(), fhirResource2.getType(), fhirResource2.getId());
+        MedicalResourceId datasource2resourceId =
+                new MedicalResourceId(
+                        dataSource2.getId(), fhirResource2.getType(), fhirResource2.getId());
+        assertThat(
+                        mMedicalResourceHelper.readMedicalResourcesByIds(
+                                List.of(datasource1Resource1Id, datasource1resource2Id)))
+                .hasSize(0);
+        assertThat(mMedicalResourceHelper.readMedicalResourcesByIds(List.of(datasource2resourceId)))
+                .hasSize(1);
+    }
+
     /**
      * Returns a UUID for the given triple {@code resourceId}, {@code resourceType} and {@code
      * dataSourceId}.
