@@ -52,6 +52,7 @@ import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.FhirVersion;
+import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.util.Pair;
 import android.util.Slog;
@@ -427,7 +428,8 @@ public final class MedicalResourceHelper {
 
     /**
      * Returns List of {@code MedicalResource}s from the cursor. If the cursor contains more than
-     * {@link MAXIMUM_ALLOWED_CURSOR_COUNT} records, it throws {@link IllegalArgumentException}.
+     * {@link Constants#MAXIMUM_ALLOWED_CURSOR_COUNT} records, it throws {@link
+     * IllegalArgumentException}.
      */
     private static List<MedicalResource> getMedicalResources(@NonNull Cursor cursor) {
         if (cursor.getCount() > MAXIMUM_ALLOWED_CURSOR_COUNT) {
@@ -472,6 +474,43 @@ public final class MedicalResourceHelper {
         }
         List<String> hexUuids = medicalResourceIdsToHexUuids(medicalResourceIds);
         return new DeleteTableRequest(getMainTableName()).setIds(UUID_COLUMN_NAME, hexUuids);
+    }
+
+    /**
+     * Deletes all {@link MedicalResource}s that are part of the given datasource.
+     *
+     * <p>No error occurs if any of the ids are not present because the ids are just a part of the filters.
+     *
+     * @param medicalDataSourceIds list of ids from {@link MedicalDataSource#getId()}.
+     */
+    public void deleteMedicalResourcesByDataSources(@NonNull List<String> medicalDataSourceIds)
+            throws SQLiteException {
+
+        if (medicalDataSourceIds.isEmpty()) {
+            return;
+        }
+
+        /*
+           This is doing the following SQL code:
+
+           DELETE FROM medical_resource_table
+           WHERE data_source_id IN (
+             SELECT row_id FROM medical_data_source_table
+             WHERE data_source_uuid IN (uuid1, uuid2, ...)
+           )
+
+           The ReadTableRequest does the inner select, and the DeleteTableRequest does the outer
+           delete. The foreign key between medical_resource_table and medical_data_source_table is
+           (datasource) PRIMARY_COLUMN_NAME = (resource) DATA_SOURCE_ID_COLUMN_NAME.
+        */
+
+        ReadTableRequest innerRead =
+                MedicalDataSourceHelper.getReadTableRequest(medicalDataSourceIds)
+                        .setColumnNames(List.of(PRIMARY_COLUMN_NAME));
+        DeleteTableRequest deleteRequest =
+                new DeleteTableRequest(getMainTableName())
+                        .setInnerSqlRequestFilter(DATA_SOURCE_ID_COLUMN_NAME, innerRead);
+        mTransactionManager.delete(deleteRequest);
     }
 
     /**

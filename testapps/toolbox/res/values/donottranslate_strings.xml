@@ -140,6 +140,7 @@
   <!-- region Phr Options screen -->
   <string name="phr_options_title">PHR Options</string>
   <string name="phr_options_create_data_source">Create data source</string>
+  <string name="phr_options_data_source_id_placeholder">Create data source to see the id</string>
   <string name="phr_options_insert_immunization">Insert immunization</string>
   <string name="phr_options_resource_id_placeholder">Insert immunization to see the id</string>
   <string name="phr_options_read_by_id">Read FHIR Resource For Id</string>
