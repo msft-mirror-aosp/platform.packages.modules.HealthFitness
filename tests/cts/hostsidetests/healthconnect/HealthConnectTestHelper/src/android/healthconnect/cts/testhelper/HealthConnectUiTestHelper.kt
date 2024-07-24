@@ -92,12 +92,12 @@ class HealthConnectUiTestHelper {
                 TestHelperUtils.getStepsRecord()),
             mHealthConnectManager)
         context.launchMainActivity {
+            UiTestUtils.skipOnboardingIfAppears()
             UiTestUtils.waitDisplayed(By.text("Data and access"))
             UiTestUtils.clickOnText("Data and access")
 
             UiTestUtils.waitDisplayed(By.text("Browse data"))
             UiTestUtils.waitDisplayed(By.text("Manage data"))
-            UiTestUtils.waitDisplayed(By.text("Auto-delete"))
 
             UiTestUtils.waitDisplayed(By.text("Delete all data"))
         }

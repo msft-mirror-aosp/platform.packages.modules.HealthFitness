@@ -25,34 +25,33 @@ import java.util.concurrent.Executor
 
 class FakeHealthMigrationManager : HealthMigrationManager {
 
-    private var state: Int = HealthConnectMigrationUiState.MIGRATION_UI_STATE_IDLE
-    private var dataRestoreError: Int = HealthConnectDataState.RESTORE_ERROR_NONE
-    private var dataMigrationState: Int = HealthConnectDataState.MIGRATION_STATE_IDLE
+    private var migrationUiState: Int = HealthConnectMigrationUiState.MIGRATION_UI_STATE_IDLE
 
-    fun setMigrationState(state: Int) {
-        this.state = state
+    private var dataState: HealthConnectDataState =
+        HealthConnectDataState(
+            HealthConnectDataState.RESTORE_STATE_IDLE,
+            HealthConnectDataState.RESTORE_ERROR_NONE,
+            HealthConnectDataState.MIGRATION_STATE_IDLE)
+
+    fun setMigrationUiState(state: Int) {
+        this.migrationUiState = state
     }
 
-    fun setDataMigrationState(error: Int, migrationState: Int) {
-        this.dataMigrationState = migrationState
-        this.dataRestoreError = error
+    fun setDataMigrationState(dataState: HealthConnectDataState) {
+        this.dataState = dataState
     }
 
     override fun getHealthDataState(
         executor: Executor,
         callback: OutcomeReceiver<HealthConnectDataState, HealthConnectException>
     ) {
-        callback.onResult(
-            HealthConnectDataState(
-                HealthConnectDataState.RESTORE_STATE_IN_PROGRESS,
-                dataRestoreError,
-                dataMigrationState))
+        callback.onResult(dataState)
     }
 
     override fun getHealthConnectMigrationUiState(
         executor: Executor,
         callback: OutcomeReceiver<HealthConnectMigrationUiState, HealthConnectException>
     ) {
-        callback.onResult(HealthConnectMigrationUiState(state))
+        callback.onResult(HealthConnectMigrationUiState(migrationUiState))
     }
 }

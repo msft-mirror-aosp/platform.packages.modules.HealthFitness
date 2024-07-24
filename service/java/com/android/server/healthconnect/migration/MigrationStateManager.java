@@ -25,7 +25,6 @@ import static android.health.connect.HealthConnectDataState.MIGRATION_STATE_MODU
 
 import static com.android.server.healthconnect.migration.MigrationConstants.ALLOWED_STATE_START_TIME_KEY;
 import static com.android.server.healthconnect.migration.MigrationConstants.CURRENT_STATE_START_TIME_KEY;
-import static com.android.server.healthconnect.migration.MigrationConstants.HAVE_CANCELED_OLD_MIGRATION_JOBS_KEY;
 import static com.android.server.healthconnect.migration.MigrationConstants.HAVE_RESET_MIGRATION_STATE_KEY;
 import static com.android.server.healthconnect.migration.MigrationConstants.HC_PACKAGE_NAME_CONFIG_NAME;
 import static com.android.server.healthconnect.migration.MigrationConstants.HC_RELEASE_CERT_CONFIG_NAME;
@@ -80,6 +79,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @hide
  */
 public final class MigrationStateManager {
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     @GuardedBy("sInstanceLock")
     private static MigrationStateManager sMigrationStateManager;
 
@@ -95,6 +95,7 @@ public final class MigrationStateManager {
     private volatile MigrationBroadcastScheduler mMigrationBroadcastScheduler;
     private int mUserId;
 
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private MigrationStateManager(@UserIdInt int userId) {
         mUserId = userId;
     }
@@ -131,11 +132,15 @@ public final class MigrationStateManager {
         }
     }
 
-    /** Clears all registered {@link StateChangedListener}. Used in testing. */
+    /**
+     * Clears the initialized instance such that {@link #initializeInstance} will create a new
+     * instance, for use in tests.
+     */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @VisibleForTesting
-    void clearListeners() {
-        synchronized (mLock) {
-            mStateChangedListeners.clear();
+    public static void resetInitializedInstanceForTest() {
+        synchronized (sInstanceLock) {
+            sMigrationStateManager = null;
         }
     }
 
@@ -190,7 +195,6 @@ public final class MigrationStateManager {
 
     public void switchToSetupForUser(@NonNull Context context) {
         synchronized (mLock) {
-            cleanupOldPersistentMigrationJobsIfNeeded(context);
             resetMigrationStateIfNeeded(context);
             MigrationStateChangeJob.cancelAllJobs(context);
             reconcilePackageChangesWithStates(context);
@@ -611,6 +615,7 @@ public final class MigrationStateManager {
         }
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     String getAllowedStateTimeout() {
         String allowedStateStartTime =
                 PreferenceHelper.getInstance().getPreference(ALLOWED_STATE_START_TIME_KEY);
@@ -794,17 +799,6 @@ public final class MigrationStateManager {
                                 PreferenceHelper.getInstance()
                                         .getPreference(MIGRATION_STARTS_COUNT_KEY))
                         .orElse("0"));
-    }
-
-    private void cleanupOldPersistentMigrationJobsIfNeeded(@NonNull Context context) {
-        PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
-
-        if (!Boolean.parseBoolean(
-                preferenceHelper.getPreference(HAVE_CANCELED_OLD_MIGRATION_JOBS_KEY))) {
-            MigrationStateChangeJob.cleanupOldPersistentMigrationJobs(context);
-            preferenceHelper.insertOrReplacePreference(
-                    HAVE_CANCELED_OLD_MIGRATION_JOBS_KEY, String.valueOf(true));
-        }
     }
 
     /**

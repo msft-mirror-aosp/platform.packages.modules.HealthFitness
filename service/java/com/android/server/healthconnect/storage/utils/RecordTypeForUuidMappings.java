@@ -46,6 +46,7 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_RESPIRATORY_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_RESTING_HEART_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SEXUAL_ACTIVITY;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SPEED;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
@@ -111,6 +112,7 @@ public final class RecordTypeForUuidMappings {
         sInternalTypeToSpecialTypeMap.put(RECORD_TYPE_ACTIVE_CALORIES_BURNED, 67);
         sInternalTypeToSpecialTypeMap.put(RECORD_TYPE_MENSTRUATION_PERIOD, 69);
         sInternalTypeToSpecialTypeMap.put(RECORD_TYPE_INTERMENSTRUAL_BLEEDING, 70);
+        sInternalTypeToSpecialTypeMap.put(RECORD_TYPE_SKIN_TEMPERATURE, 71);
     }
 
     private RecordTypeForUuidMappings() {}

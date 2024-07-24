@@ -18,22 +18,20 @@ package com.android.healthconnect.controller.tests.onboarding
 
 import android.content.ComponentName
 import android.content.Intent
-import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.platform.app.InstrumentationRegistry.*
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.onboarding.OnboardingActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -41,6 +39,7 @@ import org.junit.Test
 @HiltAndroidTest
 class OnboardingScreenTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
+
     @Before
     fun setup() {
         hiltRule.inject()
@@ -62,7 +61,7 @@ class OnboardingScreenTest {
     fun onboardingScreen_isDisplayedCorrectly() {
         startOnboardingActivity()
 
-        onView(withText("Get Started with Health\u00A0Connect")).check(matches(isDisplayed()))
+        onView(withText("Get started with Health\u00A0Connect")).check(matches(isDisplayed()))
         onView(
                 withText(
                     "Health\u00A0Connect stores your health and fitness data, giving you a simple way to sync the different apps on your phone"))
@@ -87,18 +86,9 @@ class OnboardingScreenTest {
     }
 
     @Test
-    fun onboardingScreen_goBackButton_isClickable() {
-        val scenario = startOnboardingActivity()
-        onIdle()
-        onView(withId(R.id.go_back_button)).perform(ViewActions.click())
-        Thread.sleep(4_000) // Need to wait for Activity to close before checking state
-        assertEquals(Lifecycle.State.DESTROYED, scenario.state)
-    }
-
-    @Test
-    fun onboardingScreen_getStartedButton_isClickable() {
+    fun onboardingScreen_actions_isClickable() {
         startOnboardingActivity()
-
-        onView(withId(R.id.get_started_button)).perform(ViewActions.click())
+        onView(withId(R.id.go_back_button)).check(matches(isClickable()))
+        onView(withId(R.id.get_started_button)).check(matches(isClickable()))
     }
 }

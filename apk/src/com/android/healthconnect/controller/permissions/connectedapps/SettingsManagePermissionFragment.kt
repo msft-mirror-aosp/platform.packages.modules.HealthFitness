@@ -43,13 +43,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.migration.MigrationActivity
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowWhatsNewDialog
+import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showDataRestoreInProgressDialog
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showMigrationInProgressDialog
-import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showMigrationPendingDialog
 import com.android.healthconnect.controller.migration.MigrationViewModel
-import com.android.healthconnect.controller.migration.api.MigrationState
-import com.android.healthconnect.controller.permissions.shared.Constants.EXTRA_APP_NAME
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
+import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.ALLOWED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.DENIED
@@ -113,7 +114,7 @@ class SettingsManagePermissionFragment : Hilt_SettingsManagePermissionFragment()
         migrationViewModel.migrationState.observe(viewLifecycleOwner) { migrationState ->
             when (migrationState) {
                 is MigrationViewModel.MigrationFragmentState.WithData -> {
-                    maybeShowMigrationDialog(migrationState.migrationState)
+                    maybeShowMigrationDialog(migrationState.migrationRestoreState)
                 }
                 else -> {
                     // do nothing
@@ -122,22 +123,20 @@ class SettingsManagePermissionFragment : Hilt_SettingsManagePermissionFragment()
         }
     }
 
-    private fun maybeShowMigrationDialog(migrationState: MigrationState) {
-        when (migrationState) {
-            MigrationState.IN_PROGRESS -> {
-                showMigrationInProgressDialog(
-                    requireContext(),
-                    getString(R.string.migration_in_progress_permissions_dialog_content_apps),
-                ) { _, _ ->
-                    requireActivity().finish()
-                }
+    private fun maybeShowMigrationDialog(migrationRestoreState: MigrationRestoreState) {
+        val (migrationUiState, dataRestoreUiState, dataErrorState) = migrationRestoreState
+
+        if (dataRestoreUiState == DataRestoreUiState.IN_PROGRESS) {
+            showDataRestoreInProgressDialog(requireContext()) { _, _ -> requireActivity().finish() }
+        } else if (migrationUiState == MigrationUiState.IN_PROGRESS) {
+            showMigrationInProgressDialog(
+                requireContext(),
+                getString(R.string.migration_in_progress_permissions_dialog_content_apps),
+            ) { _, _ ->
+                requireActivity().finish()
             }
-            MigrationState.COMPLETE -> {
-                maybeShowWhatsNewDialog(requireContext())
-            }
-            else -> {
-                // Show nothing
-            }
+        } else if (migrationUiState == MigrationUiState.COMPLETE) {
+            maybeShowWhatsNewDialog(requireContext())
         }
     }
 

@@ -32,39 +32,30 @@ import java.util.Objects;
  *
  * @hide
  */
-public class AggregateParams {
+public final class AggregateParams {
     private final String mTableName;
 
-    // Column used for time filtering. Start time for interval records.
+    /** Column used for time filtering. Start time for interval records. */
     private String mTimeColumnName;
+
     private final List<String> mColumnsToFetch;
     private SqlJoin mJoin;
 
     // Additional column used for time filtering. End time for interval records,
     // null for other records.
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private String mExtraTimeColumnName = null;
 
     private String mTimeOffsetColumnName;
 
     private PriorityAggregationExtraParams mPriorityAggregationExtraParams;
 
-    public AggregateParams(String tableName, List<String> columnsToFetch, String timeColumnName) {
-        this(tableName, columnsToFetch, timeColumnName, null);
-    }
-
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public AggregateParams(String tableName, List<String> columnsToFetch) {
-        this(tableName, columnsToFetch, null, null);
+        this(tableName, columnsToFetch, null);
     }
 
-    public AggregateParams(
-            String tableName,
-            List<String> columnsToFetch,
-            String timeColumnName,
-            Class<?> priorityColumnDataType) {
-        // We ignore constructor time column parameter as it's set separately.
-        this(tableName, columnsToFetch, priorityColumnDataType);
-    }
-
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     public AggregateParams(
             String tableName, List<String> columnsToFetch, Class<?> priorityColumnDataType) {
         mTableName = tableName;
@@ -129,7 +120,6 @@ public class AggregateParams {
         return mPriorityAggregationExtraParams;
     }
 
-    /** Sets params for priority aggregation. */
     public AggregateParams setExtraTimeColumn(String extraTimeColumn) {
         mExtraTimeColumnName = extraTimeColumn;
         return this;
@@ -161,12 +151,14 @@ public class AggregateParams {
         private String mExcludeIntervalEndColumnName;
         private String mExcludeIntervalStartColumnName;
 
+        @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
         public PriorityAggregationExtraParams(
                 String excludeIntervalStartColumnName, String excludeIntervalEndColumnName) {
             mExcludeIntervalStartColumnName = excludeIntervalStartColumnName;
             mExcludeIntervalEndColumnName = excludeIntervalEndColumnName;
         }
 
+        @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
         public PriorityAggregationExtraParams(
                 String columnToAggregateName, Class<?> aggregationType) {
             mColumnToAggregateName = columnToAggregateName;
@@ -191,6 +183,5 @@ public class AggregateParams {
         public String getColumnToAggregateName() {
             return mColumnToAggregateName;
         }
-
     }
 }

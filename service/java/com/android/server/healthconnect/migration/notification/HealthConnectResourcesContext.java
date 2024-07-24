@@ -83,6 +83,7 @@ public final class HealthConnectResourcesContext extends ContextWrapper {
         initialisePackageNames();
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private void initialisePackageNames() {
         ResolveInfo info = resolvePackageInfo();
 

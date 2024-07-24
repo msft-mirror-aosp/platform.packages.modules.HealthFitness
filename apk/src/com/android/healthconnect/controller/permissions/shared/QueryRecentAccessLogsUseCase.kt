@@ -33,17 +33,17 @@
  */
 package com.android.healthconnect.controller.permissions.shared
 
-import android.health.connect.accesslog.AccessLog
 import android.health.connect.HealthConnectManager
+import android.health.connect.accesslog.AccessLog
 import android.util.Log
 import androidx.core.os.asOutcomeReceiver
 import com.android.healthconnect.controller.service.IoDispatcher
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
 import java.time.Instant
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 
 /** Query recent access logs for health connect connected apps. */
 @Singleton
@@ -52,13 +52,13 @@ class QueryRecentAccessLogsUseCase
 constructor(
     private val manager: HealthConnectManager,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
-) {
+) : IQueryRecentAccessLogsUseCase {
 
     companion object {
         private const val TAG = "QueryRecentAccessLogsUseCase"
     }
 
-    suspend fun invoke(): Map<String, Instant> =
+    override suspend fun invoke(): Map<String, Instant> =
         withContext(dispatcher) {
             try {
                 val accessLogs =
@@ -71,4 +71,8 @@ constructor(
                 emptyMap()
             }
         }
+}
+
+interface IQueryRecentAccessLogsUseCase {
+    suspend fun invoke(): Map<String, Instant>
 }

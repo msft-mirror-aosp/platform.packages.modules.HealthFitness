@@ -22,6 +22,7 @@
     <attr name="dataAndAccessIcon" format="reference"/>
     <attr name="seeAllIcon" format="reference"/>
     <attr name="recentAccessTimelineDividerDrawable" format="reference" />
+    <attr name="manageDataIcon" format="reference"/>
 
     <!-- App permissions page -->
     <attr name="removeAccessForAllAppsIcon" format="reference"/>
@@ -73,6 +74,15 @@
     <!-- Migration -->
     <attr name="moreSpaceNeededIcon" format="reference"/>
     <attr name="updateNeededIcon" format="reference"/>
+    <attr name="settingsAlertIcon" format="reference"/>
+
+    <!-- Data sources & priority -->
+    <attr name="addIcon" format="reference"/>
+    <attr name="editIcon" format="reference"/>
+    <attr name="closeIcon" format="reference"/>
+
+    <!-- Export -->
+    <attr name="repeatIcon" format="reference"/>
 
     <!-- END REGION -->
 
@@ -99,7 +109,9 @@
     <attr name="textAppearanceLabelSmall" format="reference"/>
     <attr name="textAppearanceSubheader" format="reference"/>
     <attr name="textAppearanceSubheader2" format="reference"/>
+    <attr name="textAppearanceSubheader3" format="reference"/>
     <attr name="textAppearanceRouteRequest" format="reference"/>
+    <attr name="textAppearancePreferenceCategory" format="reference"/>
 
     <!-- Buttons -->
     <attr name="dialogButtonFull" format="reference"/>

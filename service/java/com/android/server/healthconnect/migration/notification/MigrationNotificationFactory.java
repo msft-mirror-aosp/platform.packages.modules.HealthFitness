@@ -102,6 +102,7 @@ public class MigrationNotificationFactory {
 
     @VisibleForTesting static final String APP_ICON_DRAWABLE_NAME = "health_connect_logo";
 
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     public MigrationNotificationFactory(@NonNull Context context) {
         mContext = context;
         mResContext = new HealthConnectResourcesContext(mContext);
@@ -152,11 +153,13 @@ public class MigrationNotificationFactory {
     }
 
     /** Retrieves a string resource by name from the Health Connect resources. */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @NonNull
     public String getStringResource(@NonNull String name) {
         return mResContext.getStringByName(name);
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @NonNull
     private String getStringResourceWithArgs(@NonNull String name, Object... formatArgs) {
         return mResContext.getStringByNameWithArgs(name, formatArgs);
@@ -377,6 +380,7 @@ public class MigrationNotificationFactory {
         return getPendingIntent(intent);
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Nullable
     private PendingIntent getAppStorePendingIntent() {
         String dataMigratorPackageName =
@@ -397,6 +401,7 @@ public class MigrationNotificationFactory {
         return getPendingIntent(intent);
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @VisibleForTesting
     @Nullable
     Icon getAppIcon() {

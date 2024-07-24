@@ -32,6 +32,7 @@ import android.annotation.SystemApi;
 import android.annotation.SystemService;
 import android.annotation.TestApi;
 import android.annotation.UserHandleAware;
+import android.annotation.WorkerThread;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -76,6 +77,7 @@ import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Record;
+import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.InternalExternalRecordConverter;
 import android.health.connect.migration.HealthConnectMigrationUiState;
@@ -88,6 +90,7 @@ import android.os.Binder;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
+import android.os.UserHandle;
 import android.util.Log;
 
 import java.lang.annotation.Retention;
@@ -250,6 +253,7 @@ public class HealthConnectManager {
     @SystemApi
     public static final String ACTION_HEALTH_CONNECT_MIGRATION_READY =
             "android.health.connect.action.HEALTH_CONNECT_MIGRATION_READY";
+
     /**
      * Unknown download state considered to be the default download state.
      *
@@ -258,6 +262,7 @@ public class HealthConnectManager {
      * @hide
      */
     @SystemApi public static final int DATA_DOWNLOAD_STATE_UNKNOWN = 0;
+
     /**
      * Indicates that the download has started.
      *
@@ -266,6 +271,7 @@ public class HealthConnectManager {
      * @hide
      */
     @SystemApi public static final int DATA_DOWNLOAD_STARTED = 1;
+
     /**
      * Indicates that the download is being retried.
      *
@@ -274,6 +280,7 @@ public class HealthConnectManager {
      * @hide
      */
     @SystemApi public static final int DATA_DOWNLOAD_RETRY = 2;
+
     /**
      * Indicates that the download has failed.
      *
@@ -282,6 +289,7 @@ public class HealthConnectManager {
      * @hide
      */
     @SystemApi public static final int DATA_DOWNLOAD_FAILED = 3;
+
     /**
      * Indicates that the download has completed.
      *
@@ -291,9 +299,30 @@ public class HealthConnectManager {
      */
     @SystemApi public static final int DATA_DOWNLOAD_COMPLETE = 4;
 
+    /**
+     * Activity action: Launch activity exported by client application that handles onboarding to
+     * Health Connect.
+     *
+     * <p>Health Connect will invoke this intent whenever the user attempts to connect an app that
+     * has exported an activity that responds to this intent. The launched activity is responsible
+     * for making permission requests and any other prerequisites for connecting to Health Connect.
+     *
+     * <p class="note">Applications exporting an activity that is launched by this intent must also
+     * guard it with {@link HealthPermissions#START_ONBOARDING} so that only the system can launch
+     * it.
+     *
+     * @hide
+     */
+    @SdkConstant(SdkConstant.SdkConstantType.ACTIVITY_INTENT_ACTION)
+    public static final String ACTION_SHOW_ONBOARDING =
+            "android.health.connect.action.SHOW_ONBOARDING";
+
     private static final String TAG = "HealthConnectManager";
     private static final String HEALTH_PERMISSION_PREFIX = "android.permission.health.";
+
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private static volatile Set<String> sHealthPermissions;
+
     private final Context mContext;
     private final IHealthConnectService mService;
     private final InternalExternalRecordConverter mInternalExternalRecordConverter;
@@ -310,6 +339,8 @@ public class HealthConnectManager {
      * permission must have been requested by the application. If the application is not allowed to
      * hold the permission, a {@link java.lang.SecurityException} is thrown. If the package or
      * permission is invalid, a {@link java.lang.IllegalArgumentException} is thrown.
+     *
+     * <p><b>Note:</b> This API sets {@code PackageManager.FLAG_PERMISSION_USER_SET}.
      *
      * @hide
      */
@@ -330,8 +361,13 @@ public class HealthConnectManager {
      * java.lang.SecurityException} is thrown. If the package or permission is invalid, a {@link
      * java.lang.IllegalArgumentException} is thrown.
      *
+     * <p><b>Note:</b> This API sets {@code PackageManager.FLAG_PERMISSION_USER_SET} or {@code
+     * PackageManager.FLAG_PERMISSION_USER_FIXED} based on the number of revocations of a particular
+     * permission for a package.
+     *
      * @hide
      */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @RequiresPermission(MANAGE_HEALTH_PERMISSIONS)
     @UserHandleAware
     public void revokeHealthPermission(
@@ -351,6 +387,7 @@ public class HealthConnectManager {
      *
      * @hide
      */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @RequiresPermission(MANAGE_HEALTH_PERMISSIONS)
     @UserHandleAware
     public void revokeAllHealthPermissions(@NonNull String packageName, @Nullable String reason) {
@@ -372,6 +409,59 @@ public class HealthConnectManager {
     public List<String> getGrantedHealthPermissions(@NonNull String packageName) {
         try {
             return mService.getGrantedHealthPermissions(packageName, mContext.getUser());
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Returns permission flags for the given package name and Health permissions.
+     *
+     * <p>This is equivalent to calling {@link PackageManager#getPermissionFlags(String, String,
+     * UserHandle)} for each provided permission except it throws an exception for non-Health or
+     * undeclared permissions. Flag masks listed in {@link PackageManager#MASK_PERMISSION_FLAGS_ALL}
+     * can be used to check the flag values.
+     *
+     * <p>Returned flags for invalid, non-Health or undeclared permissions are equal to zero.
+     *
+     * @return a map which contains all requested permissions as keys and corresponding flags as
+     *     values.
+     * @throws IllegalArgumentException if the package doesn't exist, any of the permissions are not
+     *     Health permissions or not declared by the app.
+     * @throws NullPointerException if any of the arguments is {@code null}.
+     * @throws SecurityException if the caller doesn't possess {@code
+     *     android.permission.MANAGE_HEALTH_PERMISSIONS}.
+     * @hide
+     */
+    @RequiresPermission(MANAGE_HEALTH_PERMISSIONS)
+    @UserHandleAware
+    public Map<String, Integer> getHealthPermissionsFlags(
+            @NonNull String packageName, @NonNull List<String> permissions) {
+        try {
+            return mService.getHealthPermissionsFlags(packageName, mContext.getUser(), permissions);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Sets/clears {@link PackageManager#FLAG_PERMISSION_USER_FIXED} for given health permissions.
+     *
+     * @param value whether to set or clear the flag, {@code true} means set, {@code false} - clear.
+     * @throws IllegalArgumentException if the package doesn't exist, any of the permissions are not
+     *     Health permissions or not declared by the app.
+     * @throws NullPointerException if any of the arguments is {@code null}.
+     * @throws SecurityException if the caller doesn't possess {@code
+     *     android.permission.MANAGE_HEALTH_PERMISSIONS}.
+     * @hide
+     */
+    @RequiresPermission(MANAGE_HEALTH_PERMISSIONS)
+    @UserHandleAware
+    public void setHealthPermissionsUserFixedFlagValue(
+            @NonNull String packageName, @NonNull List<String> permissions, boolean value) {
+        try {
+            mService.setHealthPermissionsUserFixedFlagValue(
+                    packageName, mContext.getUser(), permissions, value);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -538,6 +628,9 @@ public class HealthConnectManager {
                             callback) {
         Objects.requireNonNull(request);
         Objects.requireNonNull(duration);
+        if (duration.toMillis() < 1) {
+            throw new IllegalArgumentException("Duration should be at least 1 millisecond");
+        }
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
         try {
@@ -605,6 +698,9 @@ public class HealthConnectManager {
                             callback) {
         Objects.requireNonNull(request);
         Objects.requireNonNull(period);
+        if (period == Period.ZERO) {
+            throw new IllegalArgumentException("Period duration should be at least a day");
+        }
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
         try {
@@ -1599,6 +1695,46 @@ public class HealthConnectManager {
                     requiredSdkExtension,
                     wrapMigrationCallback(executor, callback));
 
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Configures the settings for the scheduled export of Health Connect data.
+     *
+     * @param settings Settings to use for the scheduled export. Use null to clear the settings.
+     * @throws RuntimeException for internal errors
+     * @hide
+     */
+    @SuppressWarnings("NullAway") // TODO: b/178748627 - fix this suppression.
+    @WorkerThread
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
+    public void configureScheduledExport(@Nullable ScheduledExportSettings settings) {
+        try {
+            mService.configureScheduledExport(settings, mContext.getUser());
+        } catch (RemoteException e) {
+            e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Returns currently set period between scheduled exports for this user.
+     *
+     * <p>If you are calling this function for the first time after a user unlock, this might take
+     * some time so consider calling this on a thread.
+     *
+     * @return Period between scheduled exports in days, 0 is returned if period between scheduled
+     *     exports is not set.
+     * @throws RuntimeException for internal errors
+     * @hide
+     */
+    @WorkerThread
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
+    @IntRange(from = 0, to = 30)
+    public int getScheduledExportPeriodInDays() {
+        try {
+            return mService.getScheduledExportPeriodInDays(mContext.getUser());
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }

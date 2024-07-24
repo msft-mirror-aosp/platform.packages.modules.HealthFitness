@@ -24,6 +24,7 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.InsertRecordsResponse;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.TimeRangeFilter;
+import android.health.connect.accesslog.AccessLog;
 import android.health.connect.datatypes.BloodPressureRecord;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.HeartRateRecord;
@@ -51,6 +52,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TestHelperUtils {
     public static final String MY_PACKAGE_NAME =
             InstrumentationRegistry.getContext().getPackageName();
+
+    public static final int TIMEOUT_SECONDS = 5;
 
     public static Metadata getMetadata() {
         return new Metadata.Builder().setDataOrigin(getDataOrigin()).build();
@@ -131,7 +134,7 @@ public class TestHelperUtils {
                     }
                 });
 
-        assertThat(latch.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
         return response.get();
     }
 
@@ -167,8 +170,34 @@ public class TestHelperUtils {
                             latch.countDown();
                         }
                     });
-            assertThat(latch.await(1, TimeUnit.SECONDS)).isTrue();
+            assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
         }
+    }
+
+    /** Query access logs */
+    public static List<AccessLog> queryAccessLogs(HealthConnectManager healthConnectManager)
+            throws InterruptedException {
+        AtomicReference<List<AccessLog>> response = new AtomicReference<>(new ArrayList<>());
+        CountDownLatch latch = new CountDownLatch(1);
+        assertThat(healthConnectManager).isNotNull();
+
+        healthConnectManager.queryAccessLogs(
+                Executors.newSingleThreadExecutor(),
+                new OutcomeReceiver<>() {
+                    @Override
+                    public void onResult(List<AccessLog> accessLogs) {
+                        response.set(accessLogs);
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(HealthConnectException exception) {
+                        latch.countDown();
+                    }
+                });
+
+        assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
+        return response.get();
     }
 
     /** Deletes the records added by the test app. */

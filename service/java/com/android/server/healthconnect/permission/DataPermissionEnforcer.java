@@ -17,6 +17,9 @@
 package com.android.server.healthconnect.permission;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
+
+import static java.util.stream.Collectors.toSet;
 
 import android.annotation.NonNull;
 import android.content.AttributionSource;
@@ -29,6 +32,7 @@ import android.permission.PermissionManager;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 
+import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
@@ -45,10 +49,15 @@ import java.util.Set;
 public class DataPermissionEnforcer {
     private final PermissionManager mPermissionManager;
     private final Context mContext;
+    private final HealthConnectDeviceConfigManager mDeviceConfigManager;
 
-    public DataPermissionEnforcer(PermissionManager permissionManager, Context context) {
+    public DataPermissionEnforcer(
+            @NonNull PermissionManager permissionManager,
+            @NonNull Context context,
+            @NonNull HealthConnectDeviceConfigManager deviceConfigManager) {
         mPermissionManager = permissionManager;
         mContext = context;
+        mDeviceConfigManager = deviceConfigManager;
     }
 
     /** Enforces default write permissions for given recordTypeIds */
@@ -90,6 +99,26 @@ public class DataPermissionEnforcer {
             } catch (SecurityException writeSecurityException) {
                 throw readSecurityException;
             }
+        }
+        return enforceSelfRead;
+    }
+
+    // TODO(b/312952346): Consider refactoring how permission enforcement is done within
+    // HealthConnectServiceImpl. This goes beyond just this method.
+    /**
+     * Enforces that the caller has either read or write permissions for all the given recordTypes,
+     * and returns {@code true} if the caller is allowed to read only records written by itself,
+     * false otherwise.
+     *
+     * @throws SecurityException if the app has neither read nor write permissions for any of the
+     *     specified record types.
+     */
+    public boolean enforceReadAccessAndGetEnforceSelfRead(
+            List<Integer> recordTypes, AttributionSource attributionSource) {
+        boolean enforceSelfRead = false;
+        for (int recordTypeId : recordTypes) {
+            enforceSelfRead |=
+                    enforceReadAccessAndGetEnforceSelfRead(recordTypeId, attributionSource);
         }
         return enforceSelfRead;
     }
@@ -146,22 +175,32 @@ public class DataPermissionEnforcer {
     }
 
     /**
-     * Collects extra read permissions to its grant state. Used to not expose extra data if caller
-     * doesn't have corresponding permission.
+     * Checks the Background Read feature flags, enforces {@link
+     * HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} permission if the flag is enabled,
+     * otherwise throws {@link SecurityException}.
      */
-    public Map<String, Boolean> collectExtraReadPermissionToStateMapping(
-            int recordTypeId, AttributionSource attributionSource) {
-        RecordHelper<?> recordHelper =
-                RecordHelperProvider.getInstance().getRecordHelper(recordTypeId);
-        if (recordHelper.getExtraReadPermissions().isEmpty()) {
-            return Collections.emptyMap();
+    public void enforceBackgroundReadRestrictions(int uid, int pid, @NonNull String errorMessage) {
+        if (mDeviceConfigManager.isBackgroundReadFeatureEnabled()) {
+            mContext.enforcePermission(READ_HEALTH_DATA_IN_BACKGROUND, pid, uid, errorMessage);
+        } else {
+            throw new SecurityException(errorMessage);
         }
+    }
 
-        Map<String, Boolean> mapping = new ArrayMap<>();
-        for (String permissionName : recordHelper.getExtraReadPermissions()) {
-            mapping.put(permissionName, isPermissionGranted(permissionName, attributionSource));
-        }
-        return mapping;
+    /**
+     * Returns granted extra read permissions.
+     *
+     * <p>Used to not expose extra data if caller doesn't have corresponding permission.
+     */
+    public Set<String> collectGrantedExtraReadPermissions(
+            Set<Integer> recordTypeIds, AttributionSource attributionSource) {
+        RecordHelperProvider recordHelperProvider = RecordHelperProvider.getInstance();
+        return recordTypeIds.stream()
+                .map(recordHelperProvider::getRecordHelper)
+                .flatMap(recordHelper -> recordHelper.getExtraReadPermissions().stream())
+                .distinct()
+                .filter(permission -> isPermissionGranted(permission, attributionSource))
+                .collect(toSet());
     }
 
     public Map<String, Boolean> collectExtraWritePermissionStateMapping(
@@ -211,7 +250,7 @@ public class DataPermissionEnforcer {
 
     private boolean isPermissionGranted(
             String permissionName, AttributionSource attributionSource) {
-        return mPermissionManager.checkPermissionForStartDataDelivery(
+        return mPermissionManager.checkPermissionForDataDelivery(
                         permissionName, attributionSource, null)
                 == PERMISSION_GRANTED;
     }

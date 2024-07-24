@@ -160,6 +160,7 @@ public class HealthPermissionIntentAppsTracker {
                 userHandle);
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private String extractPackageName(ResolveInfo info) {
         if (info == null
                 || info.activityInfo == null

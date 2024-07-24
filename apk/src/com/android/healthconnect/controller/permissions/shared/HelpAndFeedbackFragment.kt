@@ -34,7 +34,6 @@ package com.android.healthconnect.controller.permissions.shared
 import android.content.Intent
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
-import androidx.preference.Preference
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
@@ -73,7 +72,7 @@ class HelpAndFeedbackFragment : Hilt_HelpAndFeedbackFragment() {
         preferenceScreen.findPreference(SEE_ALL_COMPATIBLE_APPS)
     }
 
-    private val mSendFeedback: Preference? by lazy {
+    private val mSendFeedback: HealthPreference? by lazy {
         preferenceScreen.findPreference(SEND_FEEDBACK)
     }
 
@@ -93,6 +92,7 @@ class HelpAndFeedbackFragment : Hilt_HelpAndFeedbackFragment() {
             true
         }
 
+        mSendFeedback?.logName = AppPermissionsElement.SEND_FEEDBACK_BUTTON
         mSendFeedback?.setOnPreferenceClickListener {
             val intent = Intent(Intent.ACTION_BUG_REPORT)
             intent.putExtra("category_tag", APP_INTEGRATION_REQUEST_BUCKET_ID)

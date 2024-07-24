@@ -34,20 +34,23 @@
               <action android:name="android.health.connect.action.SHOW_MIGRATION_INFO"/>
           </intent-filter>
       </activity>
+
+      <receiver android:name="android.healthconnect.cts.utils.TestReceiver"
+          android:exported="true"/>
     </application>
 
-    <!-- To get visibility of the app with health permissions definitions,
-         required for testing defined permissions. -->
+
     <instrumentation android:name="androidx.test.runner.AndroidJUnitRunner"
                      android:label="CTS HealthConnect tests"
                      android:targetPackage="android.healthconnect.cts">
-        <meta-data android:name="listener"
-                   android:value="com.android.cts.runner.CtsTestRunListener"/>
     </instrumentation>
 
+    <!-- To get visibility of the app with health permissions definitions,
+         required for testing defined permissions. -->
     <queries>
         <package android:name="android.healthconnect.cts.app"/>
         <package android:name="android.healthconnect.cts.app2"/>
+        <package android:name="android.healthconnect.test.app"/>
     </queries>
 
     <uses-permission android:name="android.permission.health.READ_ACTIVE_CALORIES_BURNED"/>
@@ -78,6 +81,7 @@
     <uses-permission android:name="android.permission.health.READ_RESPIRATORY_RATE"/>
     <uses-permission android:name="android.permission.health.READ_RESTING_HEART_RATE"/>
     <uses-permission android:name="android.permission.health.READ_SEXUAL_ACTIVITY"/>
+    <uses-permission android:name="android.permission.health.READ_SKIN_TEMPERATURE"/>
     <uses-permission android:name="android.permission.health.READ_SLEEP"/>
     <uses-permission android:name="android.permission.health.READ_SPEED"/>
     <uses-permission android:name="android.permission.health.READ_STEPS"/>
@@ -114,6 +118,7 @@
     <uses-permission android:name="android.permission.health.WRITE_RESPIRATORY_RATE"/>
     <uses-permission android:name="android.permission.health.WRITE_RESTING_HEART_RATE"/>
     <uses-permission android:name="android.permission.health.WRITE_SEXUAL_ACTIVITY"/>
+    <uses-permission android:name="android.permission.health.WRITE_SKIN_TEMPERATURE"/>
     <uses-permission android:name="android.permission.health.WRITE_SLEEP"/>
     <uses-permission android:name="android.permission.health.WRITE_SPEED"/>
     <uses-permission android:name="android.permission.health.WRITE_STEPS"/>

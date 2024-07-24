@@ -57,7 +57,8 @@ abstract class HealthPreferenceFragment : PreferenceFragmentCompat() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setupLogger()
         super.onCreate(savedInstanceState)
-        val appBarLayout = requireActivity().findViewById<AppBarLayout>(R.id.app_bar)
+        val appBarLayout = requireActivity().findViewById<AppBarLayout>(
+            com.android.settingslib.collapsingtoolbar.R.id.app_bar)
         appBarLayout?.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
         appBarLayout?.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED)
     }

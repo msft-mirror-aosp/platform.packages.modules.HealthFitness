@@ -28,11 +28,14 @@ import android.health.connect.datatypes.IntervalRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.TestUtils;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -47,6 +50,11 @@ import java.util.stream.Collectors;
 @RunWith(AndroidJUnit4.class)
 public class GetActivityDatesTest {
     private static final String TAG = "GetActivityDatesTest";
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() {
@@ -83,17 +91,21 @@ public class GetActivityDatesTest {
     @Test
     public void testGetActivityDates_onUpdate() throws InterruptedException {
         List<Record> records = getTestRecords();
-        TestUtils.insertRecords(records);
+        List<Record> insertedRecords = TestUtils.insertRecords(records);
         // Wait for some time, as activity dates are updated in the background so might take some
         // additional time.
         Thread.sleep(500);
         List<LocalDate> activityDates =
                 TestUtils.getActivityDates(
-                        records.stream().map(Record::getClass).collect(Collectors.toList()));
+                        insertedRecords.stream()
+                                .map(Record::getClass)
+                                .collect(Collectors.toList()));
         assertThat(activityDates.size()).isGreaterThan(1);
         assertThat(activityDates)
                 .containsExactlyElementsIn(
-                        records.stream().map(this::getRecordDate).collect(Collectors.toSet()));
+                        insertedRecords.stream()
+                                .map(this::getRecordDate)
+                                .collect(Collectors.toSet()));
         List<Record> updatedRecords = getTestRecords();
 
         for (int itr = 0; itr < updatedRecords.size(); itr++) {
@@ -101,9 +113,12 @@ public class GetActivityDatesTest {
                     itr,
                     new StepsRecord.Builder(
                                     new Metadata.Builder()
-                                            .setId(records.get(itr).getMetadata().getId())
+                                            .setId(insertedRecords.get(itr).getMetadata().getId())
                                             .setDataOrigin(
-                                                    records.get(itr).getMetadata().getDataOrigin())
+                                                    insertedRecords
+                                                            .get(itr)
+                                                            .getMetadata()
+                                                            .getDataOrigin())
                                             .build(),
                                     Instant.now().minusSeconds(5000 + itr * 2L),
                                     Instant.now().minusSeconds(itr * 2L),

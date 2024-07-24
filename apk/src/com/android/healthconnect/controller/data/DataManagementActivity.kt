@@ -19,48 +19,51 @@
 package com.android.healthconnect.controller.data
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.migration.MigrationActivity
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeRedirectToMigrationActivity
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowWhatsNewDialog
 import com.android.healthconnect.controller.migration.MigrationViewModel
-import com.android.healthconnect.controller.migration.api.MigrationState
+import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.navigation.DestinationChangedListener
-import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.maybeRedirectToOnboardingActivity
-import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
+import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 /** Entry point activity for Health Connect Data Management controllers. */
 @AndroidEntryPoint(CollapsingToolbarBaseActivity::class)
 class DataManagementActivity : Hilt_DataManagementActivity() {
+
+    @Inject lateinit var featureUtils: FeatureUtils
+
     private val migrationViewModel: MigrationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
+        window.addSystemFlags(WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+
         setContentView(R.layout.activity_data_management)
-
-        if (maybeRedirectIntoTwoPaneSettings(this)) {
-            return
+        if (savedInstanceState == null && featureUtils.isNewInformationArchitectureEnabled()) {
+            updateNavGraphToNewIA()
         }
 
-        if (maybeRedirectToOnboardingActivity(this, intent)) {
-            return
-        }
-
-        val currentMigrationState = runBlocking { migrationViewModel.getCurrentMigrationUiState() }
-
+        val currentMigrationState = migrationViewModel.getCurrentMigrationUiState()
         if (maybeRedirectToMigrationActivity(this, currentMigrationState)) {
             return
         }
 
         migrationViewModel.migrationState.observe(this) { migrationState ->
             when (migrationState) {
-                is MigrationViewModel.MigrationFragmentState.WithData -> {
-                    if (migrationState.migrationState == MigrationState.COMPLETE) {
+                is MigrationFragmentState.WithData -> {
+                    if (migrationState.migrationRestoreState.migrationUiState ==
+                        MigrationUiState.COMPLETE) {
                         maybeShowWhatsNewDialog(this)
                     }
                 }
@@ -71,6 +74,16 @@ class DataManagementActivity : Hilt_DataManagementActivity() {
         }
     }
 
+    private fun updateNavGraphToNewIA() {
+        val navRes = R.navigation.data_nav_graph_new_ia
+        val finalHost = NavHostFragment.create(navRes)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.nav_host_fragment, finalHost)
+            .setPrimaryNavigationFragment(finalHost)
+            .commit()
+    }
+
     override fun onStart() {
         super.onStart()
         findNavController(R.id.nav_host_fragment)
@@ -79,9 +92,9 @@ class DataManagementActivity : Hilt_DataManagementActivity() {
 
     override fun onResume() {
         super.onResume()
-        val currentMigrationState = runBlocking { migrationViewModel.getCurrentMigrationUiState() }
+        val currentMigrationState = migrationViewModel.getCurrentMigrationUiState()
 
-        if (MigrationActivity.maybeRedirectToMigrationActivity(this, currentMigrationState)) {
+        if (maybeRedirectToMigrationActivity(this, currentMigrationState)) {
             return
         }
     }

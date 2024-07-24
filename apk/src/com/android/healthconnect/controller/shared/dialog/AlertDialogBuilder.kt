@@ -17,10 +17,10 @@ package com.android.healthconnect.controller.shared.dialog
 
 import android.content.Context
 import android.content.DialogInterface
+import android.text.SpannableString
 import android.view.Gravity.CENTER
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.AttrRes
@@ -38,26 +38,31 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEnt
 import dagger.hilt.android.EntryPointAccessors
 
 /** {@link AlertDialog.Builder} wrapper for applying theming attributes. */
-class AlertDialogBuilder(private val context: Context) {
+class AlertDialogBuilder(private val context: Context, private val containerLogName: ElementName) {
 
     private var alertDialogBuilder: AlertDialog.Builder
     private var customTitleLayout: View =
         LayoutInflater.from(context).inflate(R.layout.dialog_title, null)
     private var customMessageLayout: View =
         LayoutInflater.from(context).inflate(R.layout.dialog_message, null)
+    private var customDialogLayout: View =
+        LayoutInflater.from(context).inflate(R.layout.dialog_custom_layout, null)
     private var logger: HealthConnectLogger
 
-    constructor(fragment: Fragment) : this(fragment.requireContext())
+    constructor(
+        fragment: Fragment,
+        containerLogName: ElementName
+    ) : this(fragment.requireContext(), containerLogName)
 
-    constructor(activity: FragmentActivity) : this(activity as Context)
+    constructor(
+        activity: FragmentActivity,
+        containerLogName: ElementName
+    ) : this(activity as Context, containerLogName)
 
     private var iconView: ImageView? = null
-    private var positiveButton: Button? = null
-    private var negativeButton: Button? = null
 
     private var positiveButtonKey: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
     private var negativeButtonKey: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
-    private var elementName: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
     private var loggingAction = {}
 
     private var hasPositiveButton = false
@@ -70,6 +75,7 @@ class AlertDialogBuilder(private val context: Context) {
         logger = hiltEntryPoint.logger()
 
         alertDialogBuilder = AlertDialog.Builder(context)
+        alertDialogBuilder.setView(customDialogLayout)
     }
 
     fun setCancelable(isCancelable: Boolean): AlertDialogBuilder {
@@ -77,12 +83,18 @@ class AlertDialogBuilder(private val context: Context) {
         return this
     }
 
-    fun setLogName(elementName: ElementName): AlertDialogBuilder {
-        this.elementName = elementName
+    fun setIcon(@AttrRes iconId: Int): AlertDialogBuilder {
+        iconView = customDialogLayout.findViewById(R.id.dialog_icon)
+        val iconDrawable = AttributeResolver.getNullableDrawable(context, iconId)
+        iconDrawable?.let {
+            iconView?.setImageDrawable(it)
+            iconView?.visibility = View.VISIBLE
+        }
+
         return this
     }
 
-    fun setIcon(@AttrRes iconId: Int): AlertDialogBuilder {
+    fun setCustomIcon(@AttrRes iconId: Int): AlertDialogBuilder {
         iconView = customTitleLayout.findViewById(R.id.dialog_icon)
         val iconDrawable = AttributeResolver.getNullableDrawable(context, iconId)
         iconDrawable?.let {
@@ -94,16 +106,38 @@ class AlertDialogBuilder(private val context: Context) {
         return this
     }
 
-    /** Sets the title in the custom title layout using the given resource id. */
+    /** Sets the title in the title text view using the given resource id. */
     fun setTitle(@StringRes titleId: Int): AlertDialogBuilder {
+        val titleView: TextView = customDialogLayout.findViewById(R.id.dialog_title)
+        titleView.setText(titleId)
+        return this
+    }
+
+    /** Sets the title in the title text view using the given string. */
+    fun setTitle(titleString: String): AlertDialogBuilder {
+        val titleView: TextView = customDialogLayout.findViewById(R.id.dialog_title)
+        titleView.text = titleString
+        return this
+    }
+
+    /** Sets the title with custom view in the custom title layout using the given resource id. */
+    fun setCustomTitle(@StringRes titleId: Int): AlertDialogBuilder {
         val titleView: TextView = customTitleLayout.findViewById(R.id.dialog_title)
         titleView.setText(titleId)
         alertDialogBuilder.setCustomTitle(customTitleLayout)
         return this
     }
 
-    /** Sets the title in the custom title layout. */
-    fun setTitle(titleString: String): AlertDialogBuilder {
+    /** Sets the title with custom view in the custom title layout. */
+    fun setCustomTitle(titleString: String): AlertDialogBuilder {
+        val titleView: TextView = customTitleLayout.findViewById(R.id.dialog_title)
+        titleView.text = titleString
+        alertDialogBuilder.setCustomTitle(customTitleLayout)
+        return this
+    }
+
+    /** Sets the title with custom view in the custom title layout using a Spannable String. */
+    fun setCustomTitle(titleString: SpannableString): AlertDialogBuilder {
         val titleView: TextView = customTitleLayout.findViewById(R.id.dialog_title)
         titleView.text = titleString
         alertDialogBuilder.setCustomTitle(customTitleLayout)
@@ -112,21 +146,43 @@ class AlertDialogBuilder(private val context: Context) {
 
     /** Sets the message to be displayed in the dialog using the given resource id. */
     fun setMessage(@StringRes messageId: Int): AlertDialogBuilder {
+        val messageView: TextView = customDialogLayout.findViewById(R.id.dialog_custom_message)
+        messageView.text = context.getString(messageId)
+        return this
+    }
+
+    /** Sets the message to be displayed in the dialog. */
+    fun setMessage(message: CharSequence?): AlertDialogBuilder {
+        val messageView: TextView = customDialogLayout.findViewById(R.id.dialog_custom_message)
+        messageView.text = message
+        return this
+    }
+
+    fun setMessage(message: String): AlertDialogBuilder {
+        val messageView: TextView = customDialogLayout.findViewById(R.id.dialog_custom_message)
+        messageView.text = message
+        return this
+    }
+
+    /**
+     * Sets the message with custom view to be displayed in the dialog using the given resource id.
+     */
+    fun setCustomMessage(@StringRes messageId: Int): AlertDialogBuilder {
         val messageView: TextView = customMessageLayout.findViewById(R.id.dialog_custom_message)
         messageView.text = context.getString(messageId)
         alertDialogBuilder.setView(customMessageLayout)
         return this
     }
 
-    /** Sets the message to be displayed in the dialog. */
-    fun setMessage(message: CharSequence?): AlertDialogBuilder {
+    /** Sets the message with custom view to be displayed in the dialog. */
+    fun setCustomMessage(message: CharSequence?): AlertDialogBuilder {
         val messageView: TextView = customMessageLayout.findViewById(R.id.dialog_custom_message)
         messageView.text = message
         alertDialogBuilder.setView(customMessageLayout)
         return this
     }
 
-    fun setMessage(message: String): AlertDialogBuilder {
+    fun setCustomMessage(message: String): AlertDialogBuilder {
         val messageView: TextView = customMessageLayout.findViewById(R.id.dialog_custom_message)
         messageView.text = message
         alertDialogBuilder.setView(customMessageLayout)
@@ -156,6 +212,30 @@ class AlertDialogBuilder(private val context: Context) {
         return this
     }
 
+    /**
+     * To ensure a clear and accessible layout for all users, this button replaces a traditional
+     * negative button with a neutral button and used as a negative button when a positive button is
+     * also present. This prevents button borders from overlapping, when display and font sizes are
+     * set to their largest in accessibility settings.
+     */
+    fun setNeutralButton(
+        @StringRes textId: Int,
+        buttonId: ElementName,
+        onClickListener: DialogInterface.OnClickListener? = null
+    ): AlertDialogBuilder {
+        hasNegativeButton = true
+        negativeButtonKey = buttonId
+
+        val loggingClickListener =
+            DialogInterface.OnClickListener { dialog, which ->
+                logger.logInteraction(negativeButtonKey)
+                onClickListener?.onClick(dialog, which)
+            }
+
+        alertDialogBuilder.setNeutralButton(textId, loggingClickListener)
+        return this
+    }
+
     fun setPositiveButton(
         @StringRes textId: Int,
         buttonId: ElementName,
@@ -168,6 +248,7 @@ class AlertDialogBuilder(private val context: Context) {
                 logger.logInteraction(positiveButtonKey)
                 onClickListener?.onClick(dialog, which)
             }
+
         alertDialogBuilder.setPositiveButton(textId, loggingClickListener)
         return this
     }
@@ -190,7 +271,7 @@ class AlertDialogBuilder(private val context: Context) {
         dialog.setOnShowListener { increaseDialogTouchTargetSize(dialog) }
 
         // Dialog container
-        logger.logImpression(elementName)
+        logger.logImpression(this.containerLogName)
 
         // Dialog buttons
         if (hasPositiveButton) {

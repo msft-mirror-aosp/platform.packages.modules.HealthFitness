@@ -41,10 +41,10 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.dataentries.FormattedEntry
-import com.android.healthconnect.controller.dataentries.FormattedEntry.ExerciseSessionEntry
-import com.android.healthconnect.controller.dataentries.FormattedEntry.SeriesDataEntry
-import com.android.healthconnect.controller.dataentries.FormattedEntry.SleepSessionEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.ExerciseSessionEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.SeriesDataEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.SleepSessionEntry
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsFragment
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewModel
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewModel.DateEntryFragmentState.Loading
@@ -57,6 +57,9 @@ import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.TestData.WARSAW_ROUTE
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
+import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -64,11 +67,15 @@ import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
 import org.hamcrest.Matchers.not
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when` as whenever
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.verify
 
 @HiltAndroidTest
 class DataEntryDetailsFragmentTest {
@@ -77,6 +84,7 @@ class DataEntryDetailsFragmentTest {
     @BindValue
     val viewModel: DataEntryDetailsViewModel = mock(DataEntryDetailsViewModel::class.java)
     private lateinit var context: Context
+    @BindValue val healthConnectLogger: HealthConnectLogger = org.mockito.kotlin.mock()
 
     @Before
     fun setup() {
@@ -86,12 +94,18 @@ class DataEntryDetailsFragmentTest {
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
     }
 
+    @After
+    fun tearDown() {
+        reset(healthConnectLogger)
+    }
+
     @Test
     fun dataEntriesDetailsInit_showsFragment() {
         whenever(viewModel.sessionData).thenReturn(MutableLiveData(WithData(emptyList())))
 
         launchFragment<DataEntryDetailsFragment>(
-            DataEntryDetailsFragment.createBundle(permissionType = SLEEP, entryId = "1"))
+            DataEntryDetailsFragment.createBundle(
+                permissionType = SLEEP, entryId = "1", showDataOrigin = true))
 
         onView(withId(R.id.loading)).check(matches(not(isDisplayed())))
     }
@@ -101,7 +115,8 @@ class DataEntryDetailsFragmentTest {
         whenever(viewModel.sessionData).thenReturn(MutableLiveData(LoadingFailed))
 
         launchFragment<DataEntryDetailsFragment>(
-            DataEntryDetailsFragment.createBundle(permissionType = SLEEP, entryId = "1"))
+            DataEntryDetailsFragment.createBundle(
+                permissionType = SLEEP, entryId = "1", showDataOrigin = true))
 
         onView(withId(R.id.error_view)).check(matches(isDisplayed()))
     }
@@ -111,7 +126,8 @@ class DataEntryDetailsFragmentTest {
         whenever(viewModel.sessionData).thenReturn(MutableLiveData(Loading))
 
         launchFragment<DataEntryDetailsFragment>(
-            DataEntryDetailsFragment.createBundle(permissionType = SLEEP, entryId = "1"))
+            DataEntryDetailsFragment.createBundle(
+                permissionType = SLEEP, entryId = "1", showDataOrigin = true))
 
         onView(withId(R.id.loading)).check(matches(isDisplayed()))
     }
@@ -133,11 +149,16 @@ class DataEntryDetailsFragmentTest {
                                 notes = "notes")))))
 
         launchFragment<DataEntryDetailsFragment>(
-            DataEntryDetailsFragment.createBundle(permissionType = SLEEP, entryId = "1"))
+            DataEntryDetailsFragment.createBundle(
+                permissionType = SLEEP, entryId = "1", showDataOrigin = true))
 
         onView(withText("07:06 • TEST_APP_NAME")).check(matches(isDisplayed()))
         onView(withText("12 hour sleeping")).check(matches(isDisplayed()))
         onView(withText("notes")).check(matches(isDisplayed()))
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.ENTRY_DETAILS_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(DataEntriesElement.SLEEP_SESSION_ENTRY_BUTTON)
     }
 
     @Test
@@ -149,7 +170,8 @@ class DataEntryDetailsFragmentTest {
         whenever(viewModel.sessionData).thenReturn(MutableLiveData(WithData(list)))
 
         launchFragment<DataEntryDetailsFragment>(
-            DataEntryDetailsFragment.createBundle(permissionType = SLEEP, entryId = "1"))
+            DataEntryDetailsFragment.createBundle(
+                permissionType = SLEEP, entryId = "1", showDataOrigin = true))
 
         onView(withText("12 hour sleeping")).check(matches(isDisplayed()))
         onView(withText("6 hour light sleeping")).check(matches(isDisplayed()))
@@ -162,10 +184,12 @@ class DataEntryDetailsFragmentTest {
         whenever(viewModel.sessionData).thenReturn(MutableLiveData(WithData(list)))
 
         launchFragment<DataEntryDetailsFragment>(
-            DataEntryDetailsFragment.createBundle(permissionType = HEART_RATE, entryId = "1"))
+            DataEntryDetailsFragment.createBundle(
+                permissionType = HEART_RATE, entryId = "1", showDataOrigin = true))
 
         onView(withText("07:06 - 8:06 • TEST_APP_NAME")).check(matches(isDisplayed()))
         onView(withText("100 bpm")).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(DataEntriesElement.DATA_ENTRY_VIEW)
     }
 
     @Test
@@ -173,10 +197,13 @@ class DataEntryDetailsFragmentTest {
         val list = buildList { add(getFormattedExerciseSession(showSession = true)) }
         whenever(viewModel.sessionData).thenReturn(MutableLiveData(WithData(list)))
         launchFragment<DataEntryDetailsFragment>(
-            DataEntryDetailsFragment.createBundle(permissionType = EXERCISE, entryId = "1"))
+            DataEntryDetailsFragment.createBundle(
+                permissionType = EXERCISE, entryId = "1", showDataOrigin = true))
 
         onView(withText("12 hour running")).check(matches(isDisplayed()))
         onView(withId(R.id.map_view)).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(DataEntriesElement.EXERCISE_SESSION_ENTRY_BUTTON)
+        verify(healthConnectLogger).logImpression(DataEntriesElement.EXERCISE_SESSION_MAP_VIEW)
     }
 
     @Test
@@ -184,7 +211,8 @@ class DataEntryDetailsFragmentTest {
         val list = buildList { add(getFormattedExerciseSession(showSession = false)) }
         whenever(viewModel.sessionData).thenReturn(MutableLiveData(WithData(list)))
         launchFragment<DataEntryDetailsFragment>(
-            DataEntryDetailsFragment.createBundle(permissionType = EXERCISE, entryId = "1"))
+            DataEntryDetailsFragment.createBundle(
+                permissionType = EXERCISE, entryId = "1", showDataOrigin = true))
 
         onView(withText("12 hour running")).check(matches(isDisplayed()))
         onView(withId(R.id.map_view)).check(matches(not(isDisplayed())))

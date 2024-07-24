@@ -61,6 +61,11 @@ public class ExerciseRoutesLogger {
             @NonNull String packageName,
             int numberOfRecordsWithExerciseRoutes) {
         Objects.requireNonNull(packageName);
+
+        if (numberOfRecordsWithExerciseRoutes == 0) {
+            return;
+        }
+
         HealthFitnessStatsLog.write(
                 EXERCISE_ROUTE_API_CALLED,
                 operation,

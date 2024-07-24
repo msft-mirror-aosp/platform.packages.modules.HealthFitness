@@ -144,7 +144,8 @@ private object CategoriesMappers {
             HealthPermissionType.HEART_RATE_VARIABILITY,
             HealthPermissionType.OXYGEN_SATURATION,
             HealthPermissionType.RESPIRATORY_RATE,
-            HealthPermissionType.RESTING_HEART_RATE)
+            HealthPermissionType.RESTING_HEART_RATE,
+            HealthPermissionType.SKIN_TEMPERATURE)
 }
 
 /** List of available Health data categories. */

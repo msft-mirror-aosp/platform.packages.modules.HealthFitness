@@ -21,6 +21,7 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.preference.PreferenceViewHolder
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
 import com.android.healthconnect.controller.utils.logging.ElementName
 import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -33,7 +34,7 @@ class InactiveAppPreference constructor(context: Context) : AppPreference(contex
     private var deleteButtonListener: OnClickListener? = null
 
     private var logger: HealthConnectLogger
-    var logName : ElementName = ErrorPageElement.UNKNOWN_ELEMENT
+    var logName: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
 
     init {
         widgetLayoutResource = R.layout.widget_delete_inactive_app
@@ -47,6 +48,7 @@ class InactiveAppPreference constructor(context: Context) : AppPreference(contex
     override fun onAttached() {
         super.onAttached()
         logger.logImpression(logName)
+        logger.logImpression(AppPermissionsElement.INACTIVE_APP_DELETE_BUTTON)
     }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
@@ -54,6 +56,7 @@ class InactiveAppPreference constructor(context: Context) : AppPreference(contex
 
         val widgetFrame: ViewGroup? = holder.findViewById(android.R.id.widget_frame) as ViewGroup?
         widgetFrame?.setOnClickListener(deleteButtonListener)
+        widgetFrame?.tag = "Delete button inactive app"
 
         val widgetFrameParent: ViewGroup? = widgetFrame?.parent as ViewGroup?
         widgetFrameParent?.setPaddingRelative(
@@ -66,7 +69,7 @@ class InactiveAppPreference constructor(context: Context) : AppPreference(contex
     /** Sets the listener for delete button click. */
     fun setOnDeleteButtonClickListener(listener: OnClickListener) {
         val loggingClickListener = OnClickListener {
-            logger.logInteraction(logName)
+            logger.logInteraction(AppPermissionsElement.INACTIVE_APP_DELETE_BUTTON)
             listener.onClick(it)
         }
         deleteButtonListener = loggingClickListener

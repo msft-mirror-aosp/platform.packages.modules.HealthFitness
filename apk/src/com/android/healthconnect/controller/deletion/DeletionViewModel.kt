@@ -32,6 +32,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 class DeletionViewModel
 @Inject
 constructor(
@@ -48,6 +49,7 @@ constructor(
 
     private val _deletionParameters = MutableLiveData(DeletionParameters())
     private var _removePermissions = false
+    var isInactiveApp = false
 
     val deletionParameters: LiveData<DeletionParameters>
         get() = _deletionParameters

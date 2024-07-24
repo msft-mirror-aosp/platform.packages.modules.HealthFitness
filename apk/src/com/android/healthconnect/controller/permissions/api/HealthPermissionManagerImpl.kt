@@ -26,6 +26,21 @@ class HealthPermissionManagerImpl @Inject constructor(private val manager: Healt
         return manager.getGrantedHealthPermissions(packageName)
     }
 
+    override fun getHealthPermissionsFlags(
+        packageName: String,
+        permissions: List<String>
+    ): Map<String, Int> {
+        return manager.getHealthPermissionsFlags(packageName, permissions)
+    }
+
+    override fun setHealthPermissionsUserFixedFlagValue(
+        packageName: String,
+        permissions: List<String>,
+        value: Boolean
+    ) {
+        manager.setHealthPermissionsUserFixedFlagValue(packageName, permissions, value)
+    }
+
     override fun grantHealthPermission(packageName: String, permissionName: String) {
         manager.grantHealthPermission(packageName, permissionName)
     }

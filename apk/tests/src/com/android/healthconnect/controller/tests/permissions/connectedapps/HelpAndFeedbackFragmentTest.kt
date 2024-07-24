@@ -25,12 +25,20 @@ import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
+import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.verify
 
 @UninstallModules(DeviceInfoUtilsModule::class)
 @HiltAndroidTest
@@ -39,6 +47,12 @@ class HelpAndFeedbackFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
+
+    @After
+    fun tearDown() {
+        reset(healthConnectLogger)
+    }
 
     @Test
     fun helpAndFeedbackFragment_FeedbackAvailable_sendFeedbackIsAvailable() {
@@ -56,6 +70,9 @@ class HelpAndFeedbackFragmentTest {
                 withText(
                     "Tell us which health & fitness apps you'd like to work with Health\u00A0Connect"))
             .check(matches(isDisplayed()))
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.HELP_AND_FEEDBACK_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(AppPermissionsElement.SEND_FEEDBACK_BUTTON)
     }
 
     @Test
@@ -73,6 +90,11 @@ class HelpAndFeedbackFragmentTest {
         onView(withText("Make sure installed apps are up-to-date")).check(matches(isDisplayed()))
         onView(withText("See all compatible apps")).check(matches(isDisplayed()))
         onView(withText("Find apps on Google\u00A0Play")).check(matches(isDisplayed()))
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.HELP_AND_FEEDBACK_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(AppPermissionsElement.CHECK_FOR_UPDATES_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(AppPermissionsElement.SEE_ALL_COMPATIBLE_APPS_BUTTON)
     }
 
     @Test

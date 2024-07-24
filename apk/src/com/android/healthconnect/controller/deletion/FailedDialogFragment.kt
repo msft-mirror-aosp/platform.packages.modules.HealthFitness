@@ -26,12 +26,12 @@ import com.android.healthconnect.controller.utils.logging.FailedDialogElement
 import dagger.hilt.android.AndroidEntryPoint
 
 /** A deletion {@link DialogFragment} notifying user about a failed deletion. */
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 @AndroidEntryPoint(DialogFragment::class)
 class FailedDialogFragment : Hilt_FailedDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return AlertDialogBuilder(this)
-            .setLogName(FailedDialogElement.DELETION_DIALOG_ERROR_CONTAINER)
+        return AlertDialogBuilder(this, FailedDialogElement.DELETION_DIALOG_ERROR_CONTAINER)
             .setIcon(R.attr.failureIcon)
             .setTitle(R.string.delete_dialog_failure_title)
             .setMessage(R.string.delete_dialog_failure_message)
@@ -40,7 +40,7 @@ class FailedDialogFragment : Hilt_FailedDialogFragment() {
                 FailedDialogElement.DELETION_DIALOG_ERROR_TRY_AGAIN_BUTTON) { _, _ ->
                     setFragmentResult(TRY_AGAIN_EVENT, Bundle())
                 }
-            .setNegativeButton(
+            .setNeutralButton(
                 R.string.delete_dialog_failure_close_button,
                 FailedDialogElement.DELETION_DIALOG_ERROR_CLOSE_BUTTON)
             .create()

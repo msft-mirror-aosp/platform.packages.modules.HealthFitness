@@ -49,17 +49,18 @@ import java.util.List;
  * @hide
  */
 public class HealthConnectDatabase extends SQLiteOpenHelper {
-    public static final int DB_VERSION_UUID_BLOB = 9;
-
-    public static final int DB_VERSION_GENERATED_LOCAL_TIME = 10;
     private static final String TAG = "HealthConnectDatabase";
-    private static final int DATABASE_VERSION = 10;
-    private static final String DATABASE_NAME = "healthconnect.db";
+    private static final int DATABASE_VERSION = 11;
+    private static final String DEFAULT_DATABASE_NAME = "healthconnect.db";
     @NonNull private final Collection<RecordHelper<?>> mRecordHelpers;
     private final Context mContext;
 
     public HealthConnectDatabase(@NonNull Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this(context, DEFAULT_DATABASE_NAME);
+    }
+
+    public HealthConnectDatabase(@NonNull Context context, String databaseName) {
+        super(context, databaseName, null, DATABASE_VERSION);
         mRecordHelpers = RecordHelperProvider.getInstance().getRecordHelpers().values();
         mContext = context;
     }
@@ -73,23 +74,7 @@ public class HealthConnectDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < DB_VERSION_UUID_BLOB) {
-            dropAllTables(db);
-            onCreate(db);
-            return;
-        }
-
-        mRecordHelpers.forEach(recordHelper -> recordHelper.onUpgrade(db, oldVersion, newVersion));
-        DeviceInfoHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
-        AppInfoHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
-        ChangeLogsHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
-        ChangeLogsRequestHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
-        HealthDataCategoryPriorityHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
-        ActivityDateHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
-        MigrationEntityHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
-        PriorityMigrationHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
-        PreferenceHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
-        AccessLogsHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
+        DatabaseUpgradeHelper.onUpgrade(db, this, oldVersion);
     }
 
     @Override
@@ -105,10 +90,10 @@ public class HealthConnectDatabase extends SQLiteOpenHelper {
     }
 
     public File getDatabasePath() {
-        return mContext.getDatabasePath(DATABASE_NAME);
+        return mContext.getDatabasePath(getDatabaseName());
     }
 
-    private void dropAllTables(SQLiteDatabase db) {
+    void dropAllTables(SQLiteDatabase db) {
         List<String> allTables =
                 getCreateTableRequests().stream().map(CreateTableRequest::getTableName).toList();
         for (String table : allTables) {
@@ -119,42 +104,27 @@ public class HealthConnectDatabase extends SQLiteOpenHelper {
     private List<CreateTableRequest> getCreateTableRequests() {
         List<CreateTableRequest> requests = new ArrayList<>();
         mRecordHelpers.forEach(
-                (recordHelper) ->
-                        addCreateRequestsFor(recordHelper.getCreateTableRequest(), requests));
-        addCreateRequestsFor(DeviceInfoHelper.getInstance().getCreateTableRequest(), requests);
-        addCreateRequestsFor(AppInfoHelper.getInstance().getCreateTableRequest(), requests);
-        addCreateRequestsFor(ActivityDateHelper.getInstance().getCreateTableRequest(), requests);
-        addCreateRequestsFor(ChangeLogsHelper.getInstance().getCreateTableRequest(), requests);
-        addCreateRequestsFor(
-                ChangeLogsRequestHelper.getInstance().getCreateTableRequest(), requests);
-        addCreateRequestsFor(
-                HealthDataCategoryPriorityHelper.getInstance().getCreateTableRequest(), requests);
-        addCreateRequestsFor(PreferenceHelper.getInstance().getCreateTableRequest(), requests);
-        addCreateRequestsFor(AccessLogsHelper.getInstance().getCreateTableRequest(), requests);
-        addCreateRequestsFor(MigrationEntityHelper.getInstance().getCreateTableRequest(), requests);
-        addCreateRequestsFor(
-                PriorityMigrationHelper.getInstance().getCreateTableRequest(), requests);
+                (recordHelper) -> requests.add(recordHelper.getCreateTableRequest()));
+        requests.add(DeviceInfoHelper.getInstance().getCreateTableRequest());
+        requests.add(AppInfoHelper.getInstance().getCreateTableRequest());
+        requests.add(ActivityDateHelper.getInstance().getCreateTableRequest());
+        requests.add(ChangeLogsHelper.getInstance().getCreateTableRequest());
+        requests.add(ChangeLogsRequestHelper.getInstance().getCreateTableRequest());
+        requests.add(HealthDataCategoryPriorityHelper.getInstance().getCreateTableRequest());
+        requests.add(PreferenceHelper.getInstance().getCreateTableRequest());
+        requests.add(AccessLogsHelper.getInstance().getCreateTableRequest());
+        requests.add(MigrationEntityHelper.getInstance().getCreateTableRequest());
+        requests.add(PriorityMigrationHelper.getInstance().getCreateTableRequest());
 
         return requests;
-    }
-
-    private void addCreateRequestsFor(
-            CreateTableRequest createTableRequest, List<CreateTableRequest> tableRequests) {
-        tableRequests.add(createTableRequest);
-        createTableRequest
-                .getChildTableRequests()
-                .forEach(
-                        (childTableRequest) ->
-                                addCreateRequestsFor(childTableRequest, tableRequests));
     }
 
     /** Runs create table request on database. */
     public static void createTable(SQLiteDatabase db, CreateTableRequest createTableRequest) {
         db.execSQL(createTableRequest.getCreateCommand());
         createTableRequest.getCreateIndexStatements().forEach(db::execSQL);
-    }
-
-    public static String getName() {
-        return DATABASE_NAME;
+        for (CreateTableRequest childRequest : createTableRequest.getChildTableRequests()) {
+            createTable(db, childRequest);
+        }
     }
 }

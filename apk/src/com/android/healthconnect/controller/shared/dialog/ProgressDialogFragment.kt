@@ -53,8 +53,7 @@ class ProgressDialogFragment(@StringRes private val titleRes: Int = R.string.loa
         val view: View = layoutInflater.inflate(R.layout.dialog_progress, null)
         val title = view.findViewById<TextView>(R.id.progress_indicator_title)
         title.setText(titleRes)
-        return AlertDialogBuilder(this)
-            .setLogName(ProgressDialogElement.DELETION_DIALOG_IN_PROGRESS_CONTAINER)
+        return AlertDialogBuilder(this, ProgressDialogElement.DELETION_DIALOG_IN_PROGRESS_CONTAINER)
             .setView(view)
             .create()
     }

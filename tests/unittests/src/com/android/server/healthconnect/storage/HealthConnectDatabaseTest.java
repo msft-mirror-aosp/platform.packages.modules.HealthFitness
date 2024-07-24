@@ -35,7 +35,7 @@ import org.mockito.MockitoAnnotations;
 public class HealthConnectDatabaseTest {
     // This number can only increase, as we are not allowed to make changes that remove tables or
     // columns
-    private static final int NUM_OF_TABLES = 57;
+    private static final int NUM_OF_TABLES = 59;
 
     @Mock Context mContext;
     private HealthConnectDatabase mHealthConnectDatabase;

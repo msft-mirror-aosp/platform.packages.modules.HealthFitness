@@ -18,9 +18,12 @@ package com.android.server.healthconnect.storage.request;
 
 import static android.health.connect.Constants.UPSERT;
 
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
+
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.Context;
+import android.health.connect.Constants;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.ArrayMap;
@@ -95,6 +98,7 @@ public class UpsertTransactionRequest {
                 Collections.emptyMap());
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public UpsertTransactionRequest(
             @Nullable String packageName,
             @NonNull List<RecordInternal<?>> recordInternals,
@@ -139,12 +143,14 @@ public class UpsertTransactionRequest {
                                         packageName, new ArrayList<>(mRecordTypes), UPSERT));
             }
 
-            Slog.d(
-                    TAG,
-                    "Upserting transaction for "
-                            + packageName
-                            + " with size "
-                            + recordInternals.size());
+            if (Constants.DEBUG) {
+                Slog.d(
+                        TAG,
+                        "Upserting transaction for "
+                                + packageName
+                                + " with size "
+                                + recordInternals.size());
+            }
         }
     }
 
@@ -183,7 +189,7 @@ public class UpsertTransactionRequest {
     }
 
     private WhereClauses generateWhereClausesForUpdate(@NonNull RecordInternal<?> recordInternal) {
-        WhereClauses whereClauseForUpdateRequest = new WhereClauses();
+        WhereClauses whereClauseForUpdateRequest = new WhereClauses(AND);
         whereClauseForUpdateRequest.addWhereEqualsClause(
                 RecordHelper.UUID_COLUMN_NAME, StorageUtils.getHexString(recordInternal.getUuid()));
         whereClauseForUpdateRequest.addWhereEqualsClause(

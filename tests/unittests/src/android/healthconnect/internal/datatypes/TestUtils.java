@@ -20,11 +20,19 @@ import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.datatypes.ExerciseSegmentType;
 import android.health.connect.datatypes.ExerciseSessionType;
+import android.health.connect.datatypes.PlannedExerciseStep;
 import android.health.connect.datatypes.SleepSessionRecord;
+import android.health.connect.datatypes.units.Length;
+import android.health.connect.datatypes.units.Power;
+import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal;
 import android.health.connect.internal.datatypes.ExerciseLapInternal;
+import android.health.connect.internal.datatypes.ExercisePerformanceGoalInternal;
 import android.health.connect.internal.datatypes.ExerciseRouteInternal;
 import android.health.connect.internal.datatypes.ExerciseSegmentInternal;
 import android.health.connect.internal.datatypes.ExerciseSessionRecordInternal;
+import android.health.connect.internal.datatypes.PlannedExerciseBlockInternal;
+import android.health.connect.internal.datatypes.PlannedExerciseSessionRecordInternal;
+import android.health.connect.internal.datatypes.PlannedExerciseStepInternal;
 import android.health.connect.internal.datatypes.SleepSessionRecordInternal;
 import android.health.connect.internal.datatypes.SleepStageInternal;
 
@@ -81,6 +89,48 @@ public class TestUtils {
                         .setUuid(UUID.randomUUID())
                         .setPackageName("android.healthconnect.unittests")
                         .setModel("Pixel4a");
+    }
+    /** Returns an internal planned exercise session instance. */
+    public static PlannedExerciseSessionRecordInternal buildPlannedExerciseSessionInternal() {
+        return (PlannedExerciseSessionRecordInternal)
+                new PlannedExerciseSessionRecordInternal()
+                        .setTitle("Sunday easy run")
+                        .setNotes("Don't push yourself too hard for this one.")
+                        .setExerciseType(ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_RUNNING)
+                        .setHasExplicitTime(true)
+                        .setStartTime(START_TIME)
+                        .setEndTime(START_TIME)
+                        .setStartZoneOffset(1)
+                        .setEndZoneOffset(1)
+                        .setAppInfoId(1)
+                        .setClientRecordId("client_id")
+                        .setManufacturer("manufacturer")
+                        .setClientRecordVersion(12)
+                        .setUuid(UUID.randomUUID())
+                        .setPackageName("android.healthconnect.unittests")
+                        .setModel("Pixel4a");
+    }
+
+    /** Returns an internal exercise block instance. */
+    public static PlannedExerciseBlockInternal buildExerciseBlockInternal() {
+        PlannedExerciseBlockInternal result = new PlannedExerciseBlockInternal(1);
+        result.setDescription("Warmup");
+        return result;
+    }
+
+    /** Returns an internal exercise step instance. */
+    public static PlannedExerciseStepInternal buildExerciseStepInternal() {
+        PlannedExerciseStepInternal result =
+                new PlannedExerciseStepInternal(
+                        ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_RUNNING,
+                        PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE,
+                        new ExerciseCompletionGoalInternal.DistanceGoalInternal(
+                                Length.fromMeters(1_500)));
+        result.setPerformanceGoals(
+                Collections.singletonList(
+                        new ExercisePerformanceGoalInternal.PowerGoalInternal(
+                                Power.fromWatts(180), Power.fromWatts((220)))));
+        return result;
     }
 
     public static SleepSessionRecordInternal buildSleepSessionInternal() {

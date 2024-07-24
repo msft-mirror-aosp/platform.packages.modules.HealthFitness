@@ -51,10 +51,12 @@ import java.time.Instant
  * ```
  * } </pre>
  */
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 @AndroidEntryPoint(Fragment::class)
 class DeletionFragment : Hilt_DeletionFragment() {
 
     private val viewModel: DeletionViewModel by activityViewModels()
+    private var progressDialogFragment: ProgressDialogFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -152,7 +154,8 @@ class DeletionFragment : Hilt_DeletionFragment() {
         }
     }
 
-    private fun showAppDeleteConfirmationDialog() {
+    private fun showAppDeleteConfirmationDialog(isInactiveApp: Boolean = false) {
+        viewModel.isInactiveApp = isInactiveApp
         DeletionAppDataConfirmationDialogFragment()
             .show(childFragmentManager, DeletionAppDataConfirmationDialogFragment.TAG)
     }
@@ -162,8 +165,11 @@ class DeletionFragment : Hilt_DeletionFragment() {
     }
 
     private fun showProgressDialogFragment() {
-        ProgressDialogFragment(titleRes = R.string.delete_progress_indicator)
-            .show(childFragmentManager, ProgressDialogFragment.TAG)
+        if (progressDialogFragment == null) {
+            progressDialogFragment =
+                ProgressDialogFragment(titleRes = R.string.delete_progress_indicator)
+        }
+        progressDialogFragment?.show(childFragmentManager, ProgressDialogFragment.TAG)
     }
 
     private fun showSuccessDialogFragment() {
@@ -178,7 +184,7 @@ class DeletionFragment : Hilt_DeletionFragment() {
 
     private fun showFirstDialog(deletionType: DeletionType, isInactiveApp: Boolean) {
         if (isInactiveApp) {
-            showAppDeleteConfirmationDialog()
+            showAppDeleteConfirmationDialog(isInactiveApp)
         } else {
             when (deletionType) {
                 is DeletionType.DeleteDataEntry -> showConfirmationDialog()
@@ -188,8 +194,8 @@ class DeletionFragment : Hilt_DeletionFragment() {
     }
 
     private fun hideProgressDialog() {
-        (childFragmentManager.findFragmentByTag(ProgressDialogFragment.TAG)
-                as ProgressDialogFragment?)
-            ?.dismiss()
+        if (progressDialogFragment != null) {
+            progressDialogFragment?.dismiss()
+        }
     }
 }

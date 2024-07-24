@@ -51,6 +51,7 @@ public final class HeightRecordHelper extends InstantRecordHelper<HeightRecordIn
         super(RecordTypeIdentifier.RECORD_TYPE_HEIGHT);
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
     public AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
@@ -73,6 +74,7 @@ public final class HeightRecordHelper extends InstantRecordHelper<HeightRecordIn
         return HEIGHT_RECORD_TABLE_NAME;
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
     AggregateParams getAggregateParams(AggregationType<?> aggregateRequest) {
         List<String> columnNames;
