@@ -131,6 +131,11 @@ public class MedicalDataSourceHelper {
                 .setWhereClause(getReadTableWhereClause(ids));
     }
 
+    /**
+     * Returns a {@link WhereClauses} that limits to data sources with id in {@code ids}.
+     *
+     * @param ids the ids to limit to.
+     */
     @NonNull
     private static SqlJoin getJoinClauseWithAppInfoTable() {
         return new SqlJoin(
@@ -254,7 +259,6 @@ public class MedicalDataSourceHelper {
      * @param id the id to delete.
      * @throws IllegalArgumentException if the id does not exist
      */
-    @NonNull
     public static void deleteMedicalDataSource(@NonNull String id) throws SQLiteException {
         UUID uuid;
         try {
