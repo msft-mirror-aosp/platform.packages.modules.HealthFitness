@@ -152,11 +152,7 @@ class HomeFragmentTest {
                         null,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
                         /** periodInDays= */
-                        0,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        0)))
         }
         // Reflects that IsNewAppPriorityEnabled is always true in the configuration.
         (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(true)
@@ -786,11 +782,7 @@ class HomeFragmentTest {
                     ScheduledExportUiState(
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        TEST_EXPORT_FREQUENCY_IN_DAYS)))
         }
         launchFragment<HomeFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
@@ -818,11 +810,7 @@ class HomeFragmentTest {
                     ScheduledExportUiState(
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        TEST_EXPORT_FREQUENCY_IN_DAYS)))
         }
         launchFragment<HomeFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
@@ -850,11 +838,7 @@ class HomeFragmentTest {
                     ScheduledExportUiState(
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        TEST_EXPORT_FREQUENCY_IN_DAYS)))
         }
 
         launchFragment<HomeFragment>(Bundle()) {
@@ -883,11 +867,7 @@ class HomeFragmentTest {
                     ScheduledExportUiState(
                         null,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        TEST_EXPORT_FREQUENCY_IN_DAYS)))
         }
 
         launchFragment<HomeFragment>(Bundle()) {
@@ -916,11 +896,7 @@ class HomeFragmentTest {
                     ScheduledExportUiState(
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_UNKNOWN,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        TEST_EXPORT_FREQUENCY_IN_DAYS)))
         }
         launchFragment<HomeFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
@@ -954,10 +930,7 @@ class HomeFragmentTest {
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
                         TEST_EXPORT_FREQUENCY_IN_DAYS,
-                        null,
-                        null,
-                        null,
-                        null)))
+                    )))
         }
         launchFragment<HomeFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
@@ -987,11 +960,7 @@ class HomeFragmentTest {
                     ScheduledExportUiState(
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        TEST_EXPORT_FREQUENCY_IN_DAYS)))
         }
         launchFragment<HomeFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
@@ -1026,11 +995,7 @@ class HomeFragmentTest {
                     ScheduledExportUiState(
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        TEST_EXPORT_FREQUENCY_IN_DAYS)))
         }
         launchFragment<HomeFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)

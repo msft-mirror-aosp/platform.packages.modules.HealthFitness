@@ -78,7 +78,8 @@
     <string name="can_read" msgid="4568261079308309564">"Puwedeng tumingin ng <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"Puwedeng mag-edit ng <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Mga hindi aktibong app"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"Hindi na puwedeng i-write ng mga app na ito ang data ng <xliff:g id="DATA_TYPE">%s</xliff:g>, pero maso-store pa rin ang data ng mga ito sa Health Connect"</string>
+    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
+    <skip />
     <string name="data_access_empty_message" msgid="9084350402254264452">"Hindi na puwedeng mag-read o mag-write ng <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> ang mga app at walang naka-store na data ng <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> sa Health Connect"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Kasama sa data na ito ang impormasyon tulad ng oras na aktibo, uri ng ehersisyo, mga lap, mga pag-uulit, mga session, o mga swimming stroke"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Kasama sa data na ito ang impormasyon tulad ng mga yugto ng pagtulog at session ng pagtulog"</string>
@@ -344,8 +345,7 @@
     <string name="next_export_time" msgid="3138247220014510213">"Susunod na pag-export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Pag-back up at pag-restore"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Huling pag-export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for last_export_file_location (4069435932524304633) -->
-    <skip />
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Nakaiskedyul na pag-export"</string>
     <string name="import_data" msgid="404502315533233094">"I-import ang data"</string>
     <string name="import_data_description" msgid="4040178599441724296">"I-restore ang data mula sa dati nang na-export na file"</string>
@@ -358,14 +358,11 @@
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Nagkaproblema sa pag-restore ng data mula sa iyong export."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Binibigyang-daan ka ng pag-export na ma-save ang iyong data para mailipat mo ito sa bagong telepono"</string>
     <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"Tungkol sa pag-back up at pag-restore"</string>
-    <!-- no translation found for automatic_export_status (4407131306281440230) -->
-    <skip />
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Naka-on"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Naka-off"</string>
-    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
-    <skip />
-    <!-- no translation found for next_export_file_location (2117071837862240540) -->
-    <skip />
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"Gumamit ng naka-iskedyul na pag-export"</string>
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"Palitan ang dalas"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Kung io-off mo ang nakaiskedyul na pag-export, hindi nito ide-delete ang dating na-export na data sa kung saan ito na-save"</string>
     <string name="choose_frequency" msgid="8119085390857180221">"Mag-set up ng nakaiskedyul na pag-export"</string>
@@ -395,9 +392,8 @@
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Pumili ng file"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Magbakante ng space"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Bumalik"</string>
-    <!-- no translation found for export_cancel_button (1952360582645412410) -->
-    <skip />
     <string name="export_next_button" msgid="657930567137105172">"Susunod"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"Kanselahin"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Kanselahin"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Susunod"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Mag-import mula sa"</string>
@@ -993,6 +989,5 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Na-delete ang lahat ng data"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Na-delete ang data ng <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> (na) item ang na-delete"</string>
-    <!-- no translation found for select_all (837499881590001166) -->
-    <skip />
+    <string name="select_all" msgid="837499881590001166">"Piliin lahat"</string>
 </resources>
