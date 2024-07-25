@@ -25,10 +25,10 @@ data class ScheduledExportUiState(
     val lastSuccessfulExportTime: Instant?,
     val dataExportError: DataExportError,
     val periodInDays: Int,
-    val lastExportFileName: String?,
-    val lastExportAppName: String?,
-    val nextExportFileName: String?,
-    val nextExportAppName: String?
+    val lastExportFileName: String? = null,
+    val lastExportAppName: String? = null,
+    val nextExportFileName: String? = null,
+    val nextExportAppName: String? = null
 ) {
     enum class DataExportError {
         DATA_EXPORT_ERROR_UNKNOWN,

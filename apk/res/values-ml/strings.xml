@@ -78,7 +78,8 @@
     <string name="can_read" msgid="4568261079308309564">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> റീഡ് ചെയ്യാനാകും"</string>
     <string name="can_write" msgid="5082414937218423823">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> റൈറ്റ് ചെയ്യാനാകും"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"നിഷ്‌ക്രിയമായ ആപ്പുകൾ"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"ഈ ആപ്പുകൾക്ക് ഇനി <xliff:g id="DATA_TYPE">%s</xliff:g> റൈറ്റ് ചെയ്യാനാകില്ല, എന്നാൽ അവയുടെ ഡാറ്റ ഇപ്പോഴും Health Connect-ൽ സംഭരിച്ചിട്ടുണ്ട്"</string>
+    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
+    <skip />
     <string name="data_access_empty_message" msgid="9084350402254264452">"ആപ്പുകൾക്ക് ഇനി <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> റീഡ് ചെയ്യാനോ റൈറ്റ് ചെയ്യാനോ കഴിയില്ല, Health Connect-ൽ <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> ഡാറ്റയൊന്നും സംഭരിക്കുകയുമില്ല"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"സജീവമായ സമയം, വ്യായാമ തരം, ലാപ്പുകൾ, ആവർത്തനങ്ങൾ, സെഷനുകൾ, നീന്തൽ സ്‌ട്രോക്കുകൾ എന്നിവ പോലുള്ള വിവരങ്ങൾ ഈ ഡാറ്റയിൽ ഉൾപ്പെടുന്നു"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"ഉറക്ക ഘട്ടങ്ങൾ, ഉറക്ക സെഷനുകൾ എന്നിവ പോലുള്ള വിവരങ്ങൾ ഈ ഡാറ്റയിൽ ഉൾപ്പെടുന്നു"</string>
@@ -360,8 +361,7 @@
     <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ഓണാണ്"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ഓഫാണ്"</string>
-    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
-    <skip />
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"ഷെഡ്യൂൾ ചെയ്ത എക്‌സ്‌പോർട്ട് ഉപയോഗിക്കുക"</string>
     <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"ആവൃത്തി മാറ്റുക"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"ഷെഡ്യൂൾ ചെയ്ത എക്സ്പോർട്ട് നിങ്ങൾ ഓഫാക്കുകയാണെങ്കിൽ, മുമ്പ് എക്സ്പോർട്ട് ചെയ്ത ഡാറ്റ സംരക്ഷിച്ചയിടത്ത് നിന്ന് അത് ഇല്ലാതാക്കില്ല"</string>
@@ -392,9 +392,8 @@
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"ഫയൽ തിരഞ്ഞെടുക്കുക"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"സ്‌റ്റോറേജ് സ്‌പെയ്‌സ് സൃഷ്ടിക്കുക"</string>
     <string name="export_back_button" msgid="3550795479165524982">"മടങ്ങുക"</string>
-    <!-- no translation found for export_cancel_button (1952360582645412410) -->
-    <skip />
     <string name="export_next_button" msgid="657930567137105172">"അടുത്തത്"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"റദ്ദാക്കുക"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"റദ്ദാക്കുക"</string>
     <string name="import_next_button" msgid="5706322508691854289">"അടുത്തത്"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"ഇനിപ്പറയുന്നതിൽ നിന്ന് ഇമ്പോർട്ട് ചെയ്യൂ"</string>

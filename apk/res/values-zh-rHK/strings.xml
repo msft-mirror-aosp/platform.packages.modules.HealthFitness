@@ -78,7 +78,8 @@
     <string name="can_read" msgid="4568261079308309564">"可以讀取<xliff:g id="PERMISSION_TYPE">%s</xliff:g>資料"</string>
     <string name="can_write" msgid="5082414937218423823">"可以寫入<xliff:g id="PERMISSION_TYPE">%s</xliff:g>資料"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"已停用的應用程式"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"這些應用程式無法再寫入<xliff:g id="DATA_TYPE">%s</xliff:g>，但仍有資料儲存在 Health Connect"</string>
+    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
+    <skip />
     <string name="data_access_empty_message" msgid="9084350402254264452">"應用程式無法再於 Health Connect 中讀取或寫入<xliff:g id="DATA_TYPE_0">%1$s</xliff:g>資料，而且 Health Connect 亦沒有儲存任何<xliff:g id="DATA_TYPE_2">%2$s</xliff:g>資料"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"此資料包括活動時間、運動類型、圈數、重複次數、時段、泳式等資料"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"此資料包括睡眠階段和睡眠時段"</string>
@@ -360,8 +361,7 @@
     <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"開啟"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"關閉"</string>
-    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
-    <skip />
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"使用已預定匯出"</string>
     <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"變更頻率"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"關閉排定匯出時間的設定後，系統不會從儲存位置刪除先前匯出的資料"</string>
@@ -392,9 +392,8 @@
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"選擇檔案"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"騰出空間"</string>
     <string name="export_back_button" msgid="3550795479165524982">"返回"</string>
-    <!-- no translation found for export_cancel_button (1952360582645412410) -->
-    <skip />
     <string name="export_next_button" msgid="657930567137105172">"繼續"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"取消"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"取消"</string>
     <string name="import_next_button" msgid="5706322508691854289">"下一步"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"匯入來源"</string>
@@ -417,15 +416,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"刪除資料"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"進入刪除狀態"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"離開刪除狀態"</string>
-    <!-- no translation found for time_range_title (5777596779865648336) -->
-    <skip />
+    <string name="time_range_title" msgid="5777596779865648336">"選擇要從「健康資料同步」刪除的資料"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"繼續"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"此操作會永久刪除所選時段內新增至 Health Connect 的所有資料"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"此操作會永久刪除所選時段內新增至 Health Connect 的<xliff:g id="DATA_TYPE">%s</xliff:g>資料"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"此操作會永久刪除所選時段內新增至 Health Connect 的<xliff:g id="CATEGORY">%s</xliff:g>資料"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"此操作會永久刪除所選時段內新增至 Health Connect 的「<xliff:g id="APP_DATA">%s</xliff:g>」資料"</string>
-    <!-- no translation found for time_range_message_permission_type_app_data (1613568925588480588) -->
-    <skip />
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"此操作會永久刪除所選時段內由「<xliff:g id="APP_DATA">%2$s</xliff:g>」新增至「健康資料同步」的<xliff:g id="DATA_TYPE">%1$s</xliff:g>資料"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"刪除過去 24 小時的資料"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"刪除過去 7 天的資料"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"刪除過去 30 天的資料"</string>
@@ -446,32 +443,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"要永久刪除過去 24 小時的「<xliff:g id="APP_DATA">%s</xliff:g>」資料嗎？"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"要永久刪除過去 7 天的「<xliff:g id="APP_DATA">%s</xliff:g>」資料嗎？"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"要永久刪除過去 30 天的「<xliff:g id="APP_DATA">%s</xliff:g>」資料嗎？"</string>
-    <!-- no translation found for confirming_question_permission_type_app_data_all (1210052631467085849) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_day (4377296923865256246) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_week (2253468260502709170) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_month (1656927839079630144) -->
-    <skip />
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"要永久刪除所有時段由「<xliff:g id="APP_DATA">%2$s</xliff:g>」新增的<xliff:g id="DATA_TYPE">%1$s</xliff:g>資料嗎？"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"要永久刪除過去 24 小時由「<xliff:g id="APP_DATA">%2$s</xliff:g>」新增的<xliff:g id="DATA_TYPE">%1$s</xliff:g>資料嗎？"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"要永久刪除過去 7 日由「<xliff:g id="APP_DATA">%2$s</xliff:g>」新增的<xliff:g id="DATA_TYPE">%1$s</xliff:g>資料嗎？"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"要永久刪除過去 30 日由「<xliff:g id="APP_DATA">%2$s</xliff:g>」新增的<xliff:g id="DATA_TYPE">%1$s</xliff:g>資料嗎？"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"同時從 Health Connect 移除「<xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g>」的所有權限"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"要永久刪除「<xliff:g id="APP_DATA">%2$s</xliff:g>」新增的所有<xliff:g id="DATA_TYPE">%1$s</xliff:g>資料嗎？"</string>
-    <!-- no translation found for confirming_question_single_entry (2064578008447638932) -->
-    <skip />
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"要從「健康資料同步」永久刪除此項目嗎？"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"已連結的應用程式將無法在 Health Connect 存取此資料"</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"這操作將刪除 <xliff:g id="START_DATE">%1$s</xliff:g>至 <xliff:g id="END_DATE">%2$s</xliff:g>的所有經期項目。"</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"刪除"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"返回"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"完成"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"關閉"</string>
-    <!-- no translation found for delete_dialog_success_title (900884533930984889) -->
-    <skip />
-    <!-- no translation found for delete_dialog_success_message (7454086333205881294) -->
-    <skip />
-    <!-- no translation found for delete_dialog_done_button (1371340030947835493) -->
-    <skip />
-    <!-- no translation found for delete_dialog_see_connected_apps_button (2975631672738138716) -->
-    <skip />
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"已從「健康資料同步」刪除的資料"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"如果你想從已連接應用程式徹底刪除資料，請檢查每個可能有儲存資料的應用程式。"</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"完成"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"查看已連接的應用程式"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"正在刪除資料"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"無法刪除資料"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"發生錯誤，Health Connect 無法刪除你的資料"</string>
@@ -858,17 +846,14 @@
     <string name="range_off" msgid="8178520557618184215">"已關閉"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"變更這些設定後，Health Connect 會根據新的偏好設定刪除現有資料"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{要在 # 個月後自動刪除資料嗎？}other{要在 # 個月後自動刪除資料嗎？}}"</string>
-    <!-- no translation found for confirming_message_x_months (986840333220382321) -->
-    <skip />
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{這亦會從「健康資料同步」刪除 # 個月前的資料。\n\n如果你想從已連接應用程式徹底刪除資料，請檢查每個可能有儲存資料的應用程式。}other{這亦會從「健康資料同步」刪除 # 個月前的資料。\n\n如果你想從已連接應用程式徹底刪除資料，請檢查每個可能有儲存資料的應用程式。}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"設定自動刪除功能"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"系統將刪除現有資料"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect 將刪除 # 個月前的所有資料。這些變更可能一天後才會在已連結的應用程式上顯示。}other{Health Connect 將刪除 # 個月前的所有資料。這些變更可能一天後才會在已連結的應用程式上顯示。}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"系統會刪除以下類別的資料"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"完成"</string>
-    <!-- no translation found for auto_delete_confirmation_toast (7161651426400701306) -->
-    <skip />
-    <!-- no translation found for auto_delete_off_toast (6530926709108821768) -->
-    <skip />
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{已開啟自動刪除。系統會刪除 # 個月前的資料}other{已開啟自動刪除。系統會刪除 # 個月前的資料}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"已關閉自動刪除"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"設定應用程式優先次序"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"如果多個應用程式新增<xliff:g id="DATA_TYPE">%s</xliff:g>資料，Health Connect 會優先處理此清單中排名最高的應用程式。拖曳應用程式即可重新排序。"</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"儲存"</string>

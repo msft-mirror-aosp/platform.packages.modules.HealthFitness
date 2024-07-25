@@ -78,7 +78,8 @@
     <string name="can_read" msgid="4568261079308309564">"Δυνατότητα ανάγνωσης <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"Δυνατότητα γραφής <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Ανενεργές εφαρμογές"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"Αυτές οι εφαρμογές δεν μπορούν πλέον να γράψουν δεδομένα <xliff:g id="DATA_TYPE">%s</xliff:g>, αλλά εξακολουθούν να έχουν δεδομένα αποθηκευμένα στο Health Connect"</string>
+    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
+    <skip />
     <string name="data_access_empty_message" msgid="9084350402254264452">"Οι εφαρμογές δεν μπορούν πλέον να διαβάζουν ή να εγγράφουν δεδομένα <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> και δεν υπάρχουν αποθηκευμένα δεδομένα <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> στο Health Connect"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Αυτά τα δεδομένα περιλαμβάνουν πληροφορίες όπως είναι ο χρόνος σωματικής δραστηριότητας, ο τύπος της άσκησης, οι γύροι, οι επαναλήψεις ή οι απλωτές κατά την κολύμβηση"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Αυτά τα δεδομένα περιλαμβάνουν πληροφορίες όπως είναι τα στάδια του ύπνου και οι περίοδοι ύπνου"</string>
@@ -344,8 +345,7 @@
     <string name="next_export_time" msgid="3138247220014510213">"Επόμενη εξαγωγή: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Αντίγραφα ασφαλείας και επαναφορά"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Τελευταία εξαγωγή: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for last_export_file_location (4069435932524304633) -->
-    <skip />
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Προγραμματισμένη εξαγωγή"</string>
     <string name="import_data" msgid="404502315533233094">"Εισαγωγή δεδομένων"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Επαναφορά δεδομένων από αρχείο που εξάχθηκε προηγουμένως"</string>
@@ -358,14 +358,11 @@
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Παρουσιάστηκε κάποιο πρόβλημα με την επαναφορά δεδομένων από την εξαγωγή σας."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Η εξαγωγή σάς επιτρέπει να αποθηκεύσετε τα δεδομένα σας για να τα μεταφέρετε σε ένα νέο τηλέφωνο"</string>
     <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"Σχετικά με αντίγρ. ασφαλ. και επαναφορά"</string>
-    <!-- no translation found for automatic_export_status (4407131306281440230) -->
-    <skip />
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Ενεργή"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Ανενεργή"</string>
-    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
-    <skip />
-    <!-- no translation found for next_export_file_location (2117071837862240540) -->
-    <skip />
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"Χρήση προγραμματισμένης εξαγωγής"</string>
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"Αλλαγή συχνότητας"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Εάν απενεργοποιήσετε την προγραμματισμένη εξαγωγή, δεν θα διαγραφούν τα δεδομένα που είχαν εξαχθεί προηγουμένως από την τοποθεσία αποθήκευσής τους"</string>
     <string name="choose_frequency" msgid="8119085390857180221">"Ρύθμιση προγραμματισμένης εξαγωγής"</string>
@@ -395,9 +392,8 @@
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Επιλογή αρχείου"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Ελευθερώστε χώρο"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Πίσω"</string>
-    <!-- no translation found for export_cancel_button (1952360582645412410) -->
-    <skip />
     <string name="export_next_button" msgid="657930567137105172">"Επόμενο"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"Ακύρωση"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Ακύρωση"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Επόμενο"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Εισαγωγή από"</string>
@@ -420,15 +416,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"Διαγραφή δεδομένων"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Έναρξη διαγραφής"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Έξοδος από τη διαγραφή"</string>
-    <!-- no translation found for time_range_title (5777596779865648336) -->
-    <skip />
+    <string name="time_range_title" msgid="5777596779865648336">"Επιλογή δεδομένων για διαγραφή από το Health Connect"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Επόμενο"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Αυτή η ενέργεια διαγράφει όλα τα δεδομένα που έχουν προστεθεί στο Health Connect την επιλεγμένη χρονική περίοδο"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"Αυτή η ενέργεια διαγράφει τα δεδομένα <xliff:g id="DATA_TYPE">%s</xliff:g> που έχουν προστεθεί στο Health Connect την επιλεγμένη χρονική περίοδο"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"Αυτή η ενέργεια διαγράφει τα δεδομένα <xliff:g id="CATEGORY">%s</xliff:g> που έχουν προστεθεί στο Health Connect την επιλεγμένη χρονική περίοδο"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"Αυτή η ενέργεια διαγράφει τα δεδομένα <xliff:g id="APP_DATA">%s</xliff:g> που έχουν προστεθεί στο Health Connect την επιλεγμένη χρονική περίοδο"</string>
-    <!-- no translation found for time_range_message_permission_type_app_data (1613568925588480588) -->
-    <skip />
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"Αυτή η ενέργεια διαγράφει οριστικά τα δεδομένα <xliff:g id="DATA_TYPE">%1$s</xliff:g> που προστέθηκαν από την εφαρμογή <xliff:g id="APP_DATA">%2$s</xliff:g> στο Health Connect την επιλεγμένη χρονική περίοδο"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"Διαγραφή των τελευταίων 24 ωρών"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"Διαγραφή των τελευταίων 7 ημερών"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"Διαγραφή των τελευταίων 30 ημερών"</string>
@@ -449,32 +443,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"Οριστική διαγραφή των δεδομένων <xliff:g id="APP_DATA">%s</xliff:g> από τις τελευταίες 24 ώρες;"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"Οριστική διαγραφή των δεδομένων <xliff:g id="APP_DATA">%s</xliff:g> από τις τελευταίες 7 ημέρες;"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"Οριστική διαγραφή των δεδομένων <xliff:g id="APP_DATA">%s</xliff:g> από τις τελευταίες 30 ημέρες;"</string>
-    <!-- no translation found for confirming_question_permission_type_app_data_all (1210052631467085849) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_day (4377296923865256246) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_week (2253468260502709170) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_month (1656927839079630144) -->
-    <skip />
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"Να διαγραφούν οριστικά τα δεδομένα <xliff:g id="DATA_TYPE">%1$s</xliff:g> που προστέθηκαν από την αρχή από την εφαρμογή <xliff:g id="APP_DATA">%2$s</xliff:g>;"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"Να διαγραφούν οριστικά τα δεδομένα <xliff:g id="DATA_TYPE">%1$s</xliff:g> που προστέθηκαν τις τελευταίες 24 ώρες από την εφαρμογή <xliff:g id="APP_DATA">%2$s</xliff:g>;"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"Να διαγραφούν οριστικά τα δεδομένα <xliff:g id="DATA_TYPE">%1$s</xliff:g> που προστέθηκαν τις τελευταίες 7 ημέρες από την εφαρμογή <xliff:g id="APP_DATA">%2$s</xliff:g>;"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"Να διαγραφούν οριστικά τα δεδομένα <xliff:g id="DATA_TYPE">%1$s</xliff:g> που προστέθηκαν τις τελευταίες 30 ημέρες από την εφαρμογή <xliff:g id="APP_DATA">%2$s</xliff:g>;"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Καταργήστε επίσης όλες τις άδειες <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> από το Health Connect"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Οριστική διαγραφή όλων των δεδομένων <xliff:g id="DATA_TYPE">%1$s</xliff:g> που προστέθηκαν από την εφαρμογή <xliff:g id="APP_DATA">%2$s</xliff:g>;"</string>
-    <!-- no translation found for confirming_question_single_entry (2064578008447638932) -->
-    <skip />
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"Να διαγραφεί οριστικά αυτή η καταχώριση από το Health Connect;"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Οι συνδεδεμένες εφαρμογές δεν θα έχουν πλέον πρόσβαση σε αυτά τα δεδομένα από το Health Connect"</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"Με αυτή την ενέργεια θα διαγραφούν όλες οι καταχωρίσεις εμμηνόρροιας από τις <xliff:g id="START_DATE">%1$s</xliff:g> έως τις <xliff:g id="END_DATE">%2$s</xliff:g>."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Διαγραφή"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Επιστροφή"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Τέλος"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"Κλείσιμο"</string>
-    <!-- no translation found for delete_dialog_success_title (900884533930984889) -->
-    <skip />
-    <!-- no translation found for delete_dialog_success_message (7454086333205881294) -->
-    <skip />
-    <!-- no translation found for delete_dialog_done_button (1371340030947835493) -->
-    <skip />
-    <!-- no translation found for delete_dialog_see_connected_apps_button (2975631672738138716) -->
-    <skip />
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"Τα δεδομένα διαγράφηκαν από το Health Connect"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"Αν θέλετε να διαγράψετε εντελώς τα δεδομένα από τις συνδεδεμένες εφαρμογές σας, ελέγξτε κάθε εφαρμογή στην οποία μπορεί να είναι αποθηκευμένα τα δεδομένα σας."</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"Τέλος"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"Προβολή συνδεδεμένων εφαρμογών"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"Διαγραφή των δεδομένων σας"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"Δεν ήταν δυνατή η διαγραφή των δεδομένων"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"Παρουσιάστηκε κάποιο πρόβλημα και δεν ήταν δυνατή η διαγραφή των δεδομένων σας από το Health Connect."</string>
@@ -861,17 +846,14 @@
     <string name="range_off" msgid="8178520557618184215">"Ανενεργή"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Όταν αλλάζετε αυτές τις ρυθμίσεις, το Health Connect διαγράφει τα υπάρχοντα δεδομένα ώστε να αντικατοπτρίζουν τις νέες προτιμήσεις σας."</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Αυτόματη διαγραφή δεδομένων μετά από # μήνα;}other{Αυτόματη διαγραφή δεδομένων μετά από # μήνες;}}"</string>
-    <!-- no translation found for confirming_message_x_months (986840333220382321) -->
-    <skip />
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Αυτή η ενέργεια διαγράφει επίσης δεδομένα που είναι παλαιότερα του # μήνα από το Health Connect.\n\nΑν θέλετε να διαγράψετε εντελώς τα δεδομένα από τις συνδεδεμένες εφαρμογές σας, ελέγξτε κάθε εφαρμογή στην οποία μπορεί να είναι αποθηκευμένα τα δεδομένα σας.}other{Αυτή η ενέργεια διαγράφει επίσης δεδομένα που είναι παλαιότερα των # μηνών από το Health Connect.\n\nΑν θέλετε να διαγράψετε εντελώς τα δεδομένα από τις συνδεδεμένες εφαρμογές σας, ελέγξτε κάθε εφαρμογή στην οποία μπορεί να είναι αποθηκευμένα τα δεδομένα σας.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Ορισμός αυτόματης διαγραφής"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Τα υπάρχοντα δεδομένα θα διαγραφούν"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Το Health Connect θα διαγράφει όλα τα δεδομένα που είναι παλαιότερα των # μηνών. Μπορεί να χρειαστεί μία ημέρα για να εμφανιστούν αυτές οι αλλαγές στις συνδεδεμένες εφαρμογές σας.}other{Το Health Connect θα διαγράφει όλα τα δεδομένα που είναι παλαιότερα των # μηνών. Μπορεί να χρειαστεί μία ημέρα για να εμφανιστούν αυτές οι αλλαγές στις συνδεδεμένες εφαρμογές σας.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Διαγραφή δεδομένων από τις ακόλουθες κατηγορίες"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Τέλος"</string>
-    <!-- no translation found for auto_delete_confirmation_toast (7161651426400701306) -->
-    <skip />
-    <!-- no translation found for auto_delete_off_toast (6530926709108821768) -->
-    <skip />
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Η Αυτόματη διαγραφή είναι ενεργοποιημένη. Τα δεδομένα που είναι παλαιότερα του # μήνα θα διαγραφούν}other{Η Αυτόματη διαγραφή είναι ενεργοποιημένη. Τα δεδομένα που είναι παλαιότερα των # μηνών θα διαγραφούν}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"Η Αυτόματη διαγραφή είναι απενεργοποιημένη"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Ορισμός προτεραιότητας εφαρμογών"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Εάν περισσότερες από μία εφαρμογές προσθέτουν δεδομένα τύπου \"<xliff:g id="DATA_TYPE">%s</xliff:g>\", το Health Connect δίνει προτεραιότητα στην εφαρμογή που βρίσκεται υψηλότερα σε αυτήν τη λίστα. Σύρετε τις εφαρμογές για να τις αναδιατάξετε."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"Αποθήκευση"</string>
@@ -1007,6 +989,5 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Διαγράφηκαν όλα τα δεδομένα"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> δεδομένα διαγράφηκαν"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> στοιχεία διαγράφηκαν"</string>
-    <!-- no translation found for select_all (837499881590001166) -->
-    <skip />
+    <string name="select_all" msgid="837499881590001166">"Επιλογή όλων"</string>
 </resources>
