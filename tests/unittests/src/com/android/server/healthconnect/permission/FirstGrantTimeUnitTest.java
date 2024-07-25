@@ -129,7 +129,7 @@ public class FirstGrantTimeUnitTest {
         when(mContext.getSystemService(UserManager.class)).thenReturn(mUserManager);
         when(mUserManager.isUserUnlocked()).thenReturn(true);
 
-        mHealthConnectInjectorBuilder = HealthConnectInjectorImpl.newBuilderForTest();
+        mHealthConnectInjectorBuilder = HealthConnectInjectorImpl.newBuilderForTest(context);
         mUiAutomation.adoptShellPermissionIdentity(
                 "android.permission.OBSERVE_GRANT_REVOKE_PERMISSIONS");
     }

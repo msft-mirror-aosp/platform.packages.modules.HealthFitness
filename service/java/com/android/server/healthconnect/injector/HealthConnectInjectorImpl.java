@@ -16,10 +16,14 @@
 
 package com.android.server.healthconnect.injector;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
+import com.android.server.healthconnect.storage.TransactionManager;
 
 import java.util.Objects;
 
@@ -32,9 +36,10 @@ import java.util.Objects;
 public class HealthConnectInjectorImpl implements HealthConnectInjector {
 
     private final PackageInfoUtils mPackageInfoUtils;
+    private final TransactionManager mTransactionManager;
 
-    public HealthConnectInjectorImpl() {
-        this(new Builder());
+    public HealthConnectInjectorImpl(Context context) {
+        this(new Builder(context));
     }
 
     private HealthConnectInjectorImpl(Builder builder) {
@@ -42,6 +47,11 @@ public class HealthConnectInjectorImpl implements HealthConnectInjector {
                 builder.mFakePackageInfoUtils == null
                         ? PackageInfoUtils.getInstance()
                         : builder.mFakePackageInfoUtils;
+
+        mTransactionManager =
+                builder.mFakeTransactionManager == null
+                        ? TransactionManager.initializeInstance(builder.mHealthConnectUserContext)
+                        : builder.mFakeTransactionManager;
     }
 
     @NonNull
@@ -50,13 +60,19 @@ public class HealthConnectInjectorImpl implements HealthConnectInjector {
         return mPackageInfoUtils;
     }
 
+    @NonNull
+    @Override
+    public TransactionManager getTransactionManager() {
+        return mTransactionManager;
+    }
+
     /**
      * Returns a new Builder of Health Connect Injector
      *
      * <p>USE ONLY DURING TESTING.
      */
-    public static Builder newBuilderForTest() {
-        return new Builder();
+    public static Builder newBuilderForTest(Context context) {
+        return new Builder(context);
     }
 
     /**
@@ -67,14 +83,26 @@ public class HealthConnectInjectorImpl implements HealthConnectInjector {
      */
     public static class Builder {
 
-        @Nullable private PackageInfoUtils mFakePackageInfoUtils;
+        private final HealthConnectUserContext mHealthConnectUserContext;
 
-        private Builder() {}
+        @Nullable private PackageInfoUtils mFakePackageInfoUtils;
+        @Nullable private TransactionManager mFakeTransactionManager;
+
+        private Builder(Context context) {
+            mHealthConnectUserContext = new HealthConnectUserContext(context, context.getUser());
+        }
 
         /** Set fake or custom PackageInfoUtils */
         public Builder setPackageInfoUtils(PackageInfoUtils fakePackageInfoUtils) {
             Objects.requireNonNull(fakePackageInfoUtils);
             mFakePackageInfoUtils = fakePackageInfoUtils;
+            return this;
+        }
+
+        /** Set fake or custom TransactionManager */
+        public Builder setTransactionManager(TransactionManager fakeTransactionManager) {
+            Objects.requireNonNull(fakeTransactionManager);
+            mFakeTransactionManager = fakeTransactionManager;
             return this;
         }
 

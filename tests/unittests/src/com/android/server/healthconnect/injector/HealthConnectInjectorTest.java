@@ -18,7 +18,12 @@ package com.android.server.healthconnect.injector;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.content.Context;
+
+import androidx.test.InstrumentationRegistry;
+
 import com.android.server.healthconnect.permission.PackageInfoUtils;
+import com.android.server.healthconnect.storage.TransactionManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,17 +32,21 @@ import org.mockito.MockitoAnnotations;
 
 public class HealthConnectInjectorTest {
 
+    private Context mContext;
     @Mock PackageInfoUtils mPackageInfoUtils;
+    @Mock TransactionManager mTransactionManager;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+
+        mContext = InstrumentationRegistry.getContext();
     }
 
     @Test
     public void setFakePackageInfoUtils_injectorReturnsFakePackageInfoUtils() {
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest()
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPackageInfoUtils(mPackageInfoUtils)
                         .build();
 
@@ -47,9 +56,28 @@ public class HealthConnectInjectorTest {
     @Test
     public void testProductionInjector_injectorReturnsOriginalPackageInfoUtils() {
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest().build();
+                HealthConnectInjectorImpl.newBuilderForTest(mContext).build();
 
         assertThat(healthConnectInjector.getPackageInfoUtils())
                 .isEqualTo(PackageInfoUtils.getInstance());
+    }
+
+    @Test
+    public void setFakeTransactionManager_injectorReturnsFakeTransactionManager() {
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                        .setTransactionManager(mTransactionManager)
+                        .build();
+
+        assertThat(healthConnectInjector.getTransactionManager()).isEqualTo(mTransactionManager);
+    }
+
+    @Test
+    public void testProductionInjector_injectorReturnsOriginalTransactionManager() {
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext).build();
+
+        assertThat(healthConnectInjector.getTransactionManager())
+                .isEqualTo(TransactionManager.getInitialisedInstance());
     }
 }

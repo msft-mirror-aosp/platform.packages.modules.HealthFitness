@@ -77,15 +77,14 @@ public class HealthConnectManagerService extends SystemService {
                 HealthConnectDeviceConfigManager.initializeInstance(context);
         MigrationStateManager migrationStateManager =
                 MigrationStateManager.initializeInstance(mCurrentForegroundUser.getIdentifier());
-        mTransactionManager =
-                TransactionManager.initializeInstance(
-                        new HealthConnectUserContext(mContext, mCurrentForegroundUser));
+
         HealthPermissionIntentAppsTracker permissionIntentTracker =
                 new HealthPermissionIntentAppsTracker(context);
         FirstGrantTimeManager firstGrantTimeManager;
 
         if (Flags.dependencyInjection()) {
-            HealthConnectInjector healthConnectInjector = new HealthConnectInjectorImpl();
+            HealthConnectInjector healthConnectInjector = new HealthConnectInjectorImpl(mContext);
+            mTransactionManager = healthConnectInjector.getTransactionManager();
             firstGrantTimeManager =
                     new FirstGrantTimeManager(
                             context,
@@ -93,6 +92,9 @@ public class HealthConnectManagerService extends SystemService {
                             FirstGrantTimeDatastore.createInstance(),
                             healthConnectInjector.getPackageInfoUtils());
         } else {
+            mTransactionManager =
+                    TransactionManager.initializeInstance(
+                            new HealthConnectUserContext(mContext, mCurrentForegroundUser));
             firstGrantTimeManager =
                     new FirstGrantTimeManager(
                             context,

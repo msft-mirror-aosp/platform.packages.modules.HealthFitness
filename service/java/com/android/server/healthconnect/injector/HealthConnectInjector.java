@@ -19,6 +19,7 @@ package com.android.server.healthconnect.injector;
 import androidx.annotation.NonNull;
 
 import com.android.server.healthconnect.permission.PackageInfoUtils;
+import com.android.server.healthconnect.storage.TransactionManager;
 
 /**
  * Interface for Health Connect Dependency Injector.
@@ -30,4 +31,8 @@ public interface HealthConnectInjector {
     /** Getter for PackageInfoUtils instance initialised by the Health Connect Injector. */
     @NonNull
     PackageInfoUtils getPackageInfoUtils();
+
+    /** Getter for TransactionManager instance initialised by the Health Connect Injector. */
+    @NonNull
+    TransactionManager getTransactionManager();
 }
