@@ -72,7 +72,7 @@ class BackupAndRestoreSettingsFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
-    // TODO: b/330484311 - Replace the mock with a fake.
+    // TODO: b/348591669 - Replace the mock with a fake and investigate the UI tests.
     @BindValue
     val exportSettingsViewModel: ExportSettingsViewModel =
         Mockito.mock(ExportSettingsViewModel::class.java)
