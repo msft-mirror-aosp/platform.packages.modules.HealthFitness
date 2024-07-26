@@ -17,7 +17,7 @@ package com.android.healthconnect.controller.tests.utiltests
 
 import androidx.core.os.bundleOf
 import com.android.healthconnect.controller.dataentries.DataEntriesFragment
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.STEPS
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.utils.DatePickerFactory

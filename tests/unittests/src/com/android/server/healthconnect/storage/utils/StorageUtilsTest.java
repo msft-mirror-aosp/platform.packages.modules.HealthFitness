@@ -16,10 +16,10 @@
 
 package healthconnect.storage.utils;
 
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceId;
-import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceType;
 
 import static com.android.server.healthconnect.storage.utils.StorageUtils.UUID_BYTE_SIZE;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.bytesToUuids;
@@ -55,15 +55,12 @@ public class StorageUtilsTest {
     @Test
     public void generateMedicalResourceUuid_correctResult() throws JSONException {
         byte[] resourceIdBytes = getFhirResourceId(FHIR_DATA_IMMUNIZATION).getBytes();
-        byte[] resourceTypeBytes = getFhirResourceType(FHIR_DATA_IMMUNIZATION).getBytes();
         byte[] dataSourceIdBytes = DATA_SOURCE_ID.getBytes();
         byte[] bytes =
                 ByteBuffer.allocate(
-                                resourceIdBytes.length
-                                        + resourceTypeBytes.length
-                                        + dataSourceIdBytes.length)
+                                resourceIdBytes.length + Integer.BYTES + dataSourceIdBytes.length)
                         .put(resourceIdBytes)
-                        .put(resourceTypeBytes)
+                        .putInt(FHIR_RESOURCE_TYPE_IMMUNIZATION)
                         .put(dataSourceIdBytes)
                         .array();
         UUID expected = UUID.nameUUIDFromBytes(bytes);
@@ -71,7 +68,7 @@ public class StorageUtilsTest {
         UUID result =
                 generateMedicalResourceUUID(
                         getFhirResourceId(FHIR_DATA_IMMUNIZATION),
-                        getFhirResourceType(FHIR_DATA_IMMUNIZATION),
+                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
                         DATA_SOURCE_ID);
 
         assertThat(result).isEqualTo(expected);

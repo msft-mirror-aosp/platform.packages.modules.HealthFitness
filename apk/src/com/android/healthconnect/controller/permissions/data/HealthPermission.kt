@@ -46,7 +46,7 @@ sealed class HealthPermission {
 
     /** Pair of {@link HealthPermissionType} and {@link PermissionsAccessType}. */
     data class FitnessPermission(
-        val healthPermissionType: HealthPermissionType,
+        val fitnessPermissionType: FitnessPermissionType,
         val permissionsAccessType: PermissionsAccessType
     ) : HealthPermission() {
         companion object {
@@ -68,16 +68,16 @@ sealed class HealthPermission {
                 }
             }
 
-            private fun getHealthPermissionType(value: String): HealthPermissionType {
-                return HealthPermissionType.valueOf(value)
+            private fun getHealthPermissionType(value: String): FitnessPermissionType {
+                return FitnessPermissionType.valueOf(value)
             }
         }
 
         override fun toString(): String {
             return if (permissionsAccessType == PermissionsAccessType.READ) {
-                "$READ_PERMISSION_PREFIX${healthPermissionType.name}"
+                "$READ_PERMISSION_PREFIX${fitnessPermissionType.name}"
             } else {
-                "$WRITE_PERMISSION_PREFIX${healthPermissionType.name}"
+                "$WRITE_PERMISSION_PREFIX${fitnessPermissionType.name}"
             }
         }
     }

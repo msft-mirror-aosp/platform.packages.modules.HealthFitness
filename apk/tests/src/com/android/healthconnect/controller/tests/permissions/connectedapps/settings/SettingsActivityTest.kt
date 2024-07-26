@@ -32,7 +32,7 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.permissions.shared.SettingsActivity
 import com.android.healthconnect.controller.service.HealthPermissionManagerModule
@@ -102,9 +102,9 @@ class SettingsActivityTest {
                     context.getDrawable(R.drawable.health_connect_logo)))
         }
         val writePermission =
-            FitnessPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
         val readPermission =
-            FitnessPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
+            FitnessPermission(FitnessPermissionType.DISTANCE, PermissionsAccessType.READ)
         whenever(viewModel.fitnessPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }

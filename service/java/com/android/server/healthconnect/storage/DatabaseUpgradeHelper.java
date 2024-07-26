@@ -47,7 +47,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.SkinTemperatureRecordHelper;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
-import com.android.server.healthconnect.storage.utils.DropTableRequest;
+import com.android.server.healthconnect.storage.request.DropTableRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import java.util.ArrayList;
@@ -148,7 +148,7 @@ final class DatabaseUpgradeHelper {
                         .map(CreateTableRequest::getTableName)
                         .toList();
         for (String table : allTables) {
-            db.execSQL(new DropTableRequest(table).getCommand());
+            db.execSQL(new DropTableRequest(table).getDropTableCommand());
         }
     }
 

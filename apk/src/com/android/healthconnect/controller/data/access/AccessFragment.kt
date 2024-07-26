@@ -29,12 +29,10 @@ import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_
 import com.android.healthconnect.controller.deletion.DeletionConstants.START_DELETION_EVENT
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.permissions.connectedapps.HealthAppPreference
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.fromPermissionTypeName
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
-import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
-import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.inactiveapp.InactiveAppPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.logging.DataAccessElement
@@ -82,9 +80,10 @@ class AccessFragment : Hilt_AccessFragment() {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.access_screen, rootKey)
         if (requireArguments().containsKey(PERMISSION_TYPE_KEY)) {
-            permissionType =
-                arguments?.getSerializable(PERMISSION_TYPE_KEY, HealthPermissionType::class.java)
-                    ?: throw IllegalArgumentException("PERMISSION_TYPE_KEY can't be null!")
+            val permissionTypeName =
+                arguments?.getString(PERMISSION_TYPE_KEY)
+                   ?: throw IllegalArgumentException("PERMISSION_TYPE_KEY can't be null!")
+            permissionType =  fromPermissionTypeName(permissionTypeName)
         }
 
         mCanReadSection?.isVisible = false
@@ -92,15 +91,15 @@ class AccessFragment : Hilt_AccessFragment() {
         mInactiveSection?.isVisible = false
         mCanReadSection?.title =
             getString(
-                R.string.can_read, getString(fromPermissionType(permissionType).lowercaseLabel))
+                R.string.can_read, getString(permissionType.lowerCaseLabel()))
         mCanWriteSection?.title =
             getString(
-                R.string.can_write, getString(fromPermissionType(permissionType).lowercaseLabel))
+                R.string.can_write, getString(permissionType.lowerCaseLabel()))
     }
 
     override fun onResume() {
         super.onResume()
-        setTitle(fromPermissionType(permissionType).uppercaseLabel)
+        setTitle(permissionType.upperCaseLabel())
         viewModel.loadAppMetaDataMap(permissionType)
     }
 
@@ -174,7 +173,7 @@ class AccessFragment : Hilt_AccessFragment() {
                         it.summary =
                             getString(
                                 R.string.inactive_apps_message,
-                                getString(fromPermissionType(permissionType).lowercaseLabel))
+                                getString(permissionType.lowerCaseLabel()))
                     })
                 appMetadataMap[AppAccessState.Inactive]?.forEach { appAccessMetadata ->
                     val appMetadata = appAccessMetadata.appMetadata

@@ -60,25 +60,25 @@ public class MedicalDataPermissionEnforcerTest {
         mMedicalDataPermissionEnforcer = new MedicalDataPermissionEnforcer(mPermissionManager);
     }
 
-    /** enforceWriteMedicalResourcePermission */
+    /** enforceWriteMedicalDataPermission */
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testEnforceWriteMedicalResourcePermission_permissionGranted_doesNotThrow() {
+    public void testEnforceWriteMedicalDataPermission_permissionGranted_doesNotThrow() {
         when(mPermissionManager.checkPermissionForDataDelivery(
                         WRITE_MEDICAL_DATA, mAttributionSource, null))
                 .thenReturn(PERMISSION_GRANTED);
 
-        mMedicalDataPermissionEnforcer.enforceWriteMedicalResourcePermission(mAttributionSource);
+        mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(mAttributionSource);
     }
 
     @Test(expected = SecurityException.class)
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testEnforceWriteMedicalResourcePermission_permissionDenied_throwsException() {
+    public void testEnforceWriteMedicalDataPermission_permissionDenied_throwsException() {
         when(mPermissionManager.checkPermissionForDataDelivery(
                         WRITE_MEDICAL_DATA, mAttributionSource, null))
                 .thenReturn(PERMISSION_HARD_DENIED);
 
-        mMedicalDataPermissionEnforcer.enforceWriteMedicalResourcePermission(mAttributionSource);
+        mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(mAttributionSource);
     }
 
     /** enforceMedicalReadAccessAndGetEnforceSelfRead */

@@ -4,7 +4,7 @@ import android.health.connect.datatypes.Record
 import com.android.healthconnect.controller.data.entries.api.LoadDataEntriesInput
 import com.android.healthconnect.controller.data.entries.api.LoadEntriesHelper
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissiontypes.api.ILoadPriorityListUseCase
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions
@@ -30,7 +30,7 @@ constructor(
      * priority list for this healthPermissionType.
      */
     override suspend fun invoke(
-        healthPermissionType: HealthPermissionType,
+        fitnessPermissionType: FitnessPermissionType,
         localDate: LocalDate
     ): UseCaseResults<List<Record>> =
         withContext(dispatcher) {
@@ -41,14 +41,14 @@ constructor(
                 when (val priorityAppsResult =
                     loadPriorityListUseCase.invoke(
                         HealthDataCategoryExtensions.fromHealthPermissionType(
-                            healthPermissionType))) {
+                            fitnessPermissionType))) {
                     is UseCaseResults.Success -> {
                         val priorityApps = priorityAppsResult.data
 
                         priorityApps.forEach { priorityApp ->
                             val input =
                                 LoadDataEntriesInput(
-                                    HealthPermissionType.SLEEP,
+                                    FitnessPermissionType.SLEEP,
                                     packageName = priorityApp.packageName,
                                     displayedStartTime = localDateInstant,
                                     period = DateNavigationPeriod.PERIOD_DAY,
@@ -74,7 +74,7 @@ constructor(
 
 interface ILoadPriorityEntriesUseCase {
     suspend fun invoke(
-        healthPermissionType: HealthPermissionType,
+        fitnessPermissionType: FitnessPermissionType,
         localDate: LocalDate
     ): UseCaseResults<List<Record>>
 }

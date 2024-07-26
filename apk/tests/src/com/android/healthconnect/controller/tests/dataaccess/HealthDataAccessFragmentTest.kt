@@ -17,7 +17,6 @@ package com.android.healthconnect.controller.tests.dataaccess
 
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
-import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -25,7 +24,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.access.AccessViewModel
 import com.android.healthconnect.controller.data.access.AccessViewModel.AccessScreenState
@@ -33,7 +31,7 @@ import com.android.healthconnect.controller.data.access.AccessViewModel.AccessSc
 import com.android.healthconnect.controller.data.access.AppAccessMetadata
 import com.android.healthconnect.controller.data.access.AppAccessState
 import com.android.healthconnect.controller.dataaccess.HealthDataAccessFragment
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.launchFragment
@@ -86,7 +84,7 @@ class HealthDataAccessFragmentTest {
         onView(withText("Inactive apps")).check(doesNotExist())
         onView(
                 withText(
-                    "These apps can no longer write distance, but still have data stored in Health\u00A0Connect"))
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
             .check(doesNotExist())
         onView(withText("Manage data")).check(matches(isDisplayed()))
         onView(withText("See all entries")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -110,7 +108,7 @@ class HealthDataAccessFragmentTest {
         onView(withText("Inactive apps")).check(doesNotExist())
         onView(
                 withText(
-                    "These apps can no longer write distance, but still have data stored in Health\u00A0Connect"))
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
             .check(doesNotExist())
         onView(withText("Manage data")).check(matches(isDisplayed()))
         onView(withText("See all entries")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -134,7 +132,7 @@ class HealthDataAccessFragmentTest {
         onView(withText("Inactive apps")).check(doesNotExist())
         onView(
                 withText(
-                    "These apps can no longer write distance, but still have data stored in Health\u00A0Connect"))
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
             .check(doesNotExist())
         onView(withText("Manage data")).check(matches(isDisplayed()))
         onView(withText("See all entries")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -165,7 +163,7 @@ class HealthDataAccessFragmentTest {
         onView(withText("Inactive apps")).check(matches(isDisplayed()))
         onView(
                 withText(
-                    "These apps can no longer write distance, but still have data stored in Health\u00A0Connect"))
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
             .check(matches(isDisplayed()))
         onView(withText("Manage data")).check(matches(isDisplayed()))
         onView(withText("See all entries")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -203,7 +201,7 @@ class HealthDataAccessFragmentTest {
 
     private fun distanceBundle(): Bundle {
         val bundle = Bundle()
-        bundle.putSerializable(PERMISSION_TYPE_KEY, HealthPermissionType.DISTANCE)
+        bundle.putSerializable(PERMISSION_TYPE_KEY, FitnessPermissionType.DISTANCE)
         return bundle
     }
 }

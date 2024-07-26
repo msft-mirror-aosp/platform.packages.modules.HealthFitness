@@ -43,13 +43,15 @@ public class MedicalDataPermissionEnforcer {
     }
 
     /**
-     * Enforces that caller has write permission for medical resources.
+     * Enforces that caller has write permission for medical data.
      *
      * @throws SecurityException if the app does not have write permission.
      */
-    public void enforceWriteMedicalResourcePermission(AttributionSource attributionSource) {
-        enforceMedicalResourcePermission(
-                WRITE_MEDICAL_DATA, attributionSource, /* isReadPermission= */ false);
+    public void enforceWriteMedicalDataPermission(AttributionSource attributionSource) {
+        if (!isPermissionGranted(WRITE_MEDICAL_DATA, attributionSource)) {
+            throw new SecurityException(
+                    "Caller doesn't have " + WRITE_MEDICAL_DATA + " to write MedicalResource");
+        }
     }
 
     /**
@@ -94,15 +96,6 @@ public class MedicalDataPermissionEnforcer {
             }
         }
         return grantedPermissions;
-    }
-
-    private void enforceMedicalResourcePermission(
-            String permissionName, AttributionSource attributionSource, boolean isReadPermission) {
-        if (!isPermissionGranted(permissionName, attributionSource)) {
-            String prohibitedAction =
-                    isReadPermission ? "to read MedicalResource" : " to write MedicalResource";
-            throw new SecurityException("Caller doesn't have " + permissionName + prohibitedAction);
-        }
     }
 
     private boolean isPermissionGranted(

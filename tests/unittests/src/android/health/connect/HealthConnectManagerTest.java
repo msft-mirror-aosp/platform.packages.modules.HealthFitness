@@ -16,21 +16,29 @@
 
 package android.health.connect;
 
+import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
+import android.health.connect.aidl.HealthConnectExceptionParcel;
+import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
+import android.health.connect.aidl.IMedicalDataSourcesResponseCallback;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.healthconnect.cts.utils.PhrDataFactory;
 import android.os.OutcomeReceiver;
 import android.os.RemoteException;
 
+import androidx.annotation.NonNull;
 import androidx.test.core.app.ApplicationProvider;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.util.concurrent.MoreExecutors;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,15 +47,19 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.mockito.stubbing.Answer;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.concurrent.Executor;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 @RunWith(JUnit4.class)
 public class HealthConnectManagerTest {
 
-    @Rule public final MockitoRule mockito = MockitoJUnit.rule();
+    @Rule public final MockitoRule mMockitoRule = MockitoJUnit.rule();
 
     @Mock IHealthConnectService mService;
 
@@ -96,22 +108,230 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    public void testHealthConnectManager_deleteResources_notImplemented() throws Exception {
+    public void testHealthConnectManager_getDatasourcesByIds_usesExceptionFromService()
+            throws Exception {
         Context context = ApplicationProvider.getApplicationContext();
         HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
-        Executor executor = MoreExecutors.directExecutor();
-        OutcomeReceiver<Void, HealthConnectException> callback =
-                new OutcomeReceiver<>() {
-                    @Override
-                    public void onResult(Void result) {}
-                };
-        assertThrows(
-                UnsupportedOperationException.class,
-                () ->
-                        healthConnectManager.deleteMedicalResources(
-                                ImmutableList.of(MedicalIdFilter.fromId("fictionalid")),
-                                executor,
-                                callback));
+        TestOutcomeReceiver<List<MedicalDataSource>> receiver = new TestOutcomeReceiver<>();
+        String id = "id";
+        HealthConnectExceptionParcel error =
+                new HealthConnectExceptionParcel(
+                        new HealthConnectException(
+                                HealthConnectException.ERROR_UNSUPPORTED_OPERATION));
+        doAnswer(
+                        (Answer<Void>)
+                                invocation -> {
+                                    IMedicalDataSourcesResponseCallback callback =
+                                            invocation.getArgument(2);
+                                    callback.onError(error);
+                                    return null;
+                                })
+                .when(mService)
+                .getMedicalDataSourcesByIds(any(), any(), any());
+
+        healthConnectManager.getMedicalDataSources(
+                ImmutableList.of(id), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    public void testHealthConnectManager_getDatasourcesByIds_usesResultFromService()
+            throws Exception {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
+        TestOutcomeReceiver<List<MedicalDataSource>> receiver = new TestOutcomeReceiver<>();
+        String id = "id";
+        List<MedicalDataSource> response = List.of(PhrDataFactory.getMedicalDataSource());
+        doAnswer(
+                        (Answer<Void>)
+                                invocation -> {
+                                    IMedicalDataSourcesResponseCallback callback =
+                                            invocation.getArgument(2);
+                                    callback.onResult(response);
+                                    return null;
+                                })
+                .when(mService)
+                .getMedicalDataSourcesByIds(any(), any(), any());
+
+        healthConnectManager.getMedicalDataSources(
+                ImmutableList.of(id), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).containsExactlyElementsIn(response);
+    }
+
+    @Test
+    public void testHealthConnectManager_getDataSourcesByRequest_usesExceptionFromService()
+            throws Exception {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
+        TestOutcomeReceiver<List<MedicalDataSource>> receiver = new TestOutcomeReceiver<>();
+        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
+        HealthConnectExceptionParcel error =
+                new HealthConnectExceptionParcel(
+                        new HealthConnectException(
+                                HealthConnectException.ERROR_UNSUPPORTED_OPERATION));
+        doAnswer(
+                        (Answer<Void>)
+                                invocation -> {
+                                    IMedicalDataSourcesResponseCallback callback =
+                                            invocation.getArgument(2);
+                                    callback.onError(error);
+                                    return null;
+                                })
+                .when(mService)
+                .getMedicalDataSourcesByRequest(any(), any(), any());
+
+        healthConnectManager.getMedicalDataSources(
+                request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    public void testHealthConnectManager_getDataSourcesByRequest_usesResultFromService()
+            throws Exception {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
+        TestOutcomeReceiver<List<MedicalDataSource>> receiver = new TestOutcomeReceiver<>();
+        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
+        List<MedicalDataSource> response = List.of(PhrDataFactory.getMedicalDataSource());
+        doAnswer(
+                        (Answer<Void>)
+                                invocation -> {
+                                    IMedicalDataSourcesResponseCallback callback =
+                                            invocation.getArgument(2);
+                                    callback.onResult(response);
+                                    return null;
+                                })
+                .when(mService)
+                .getMedicalDataSourcesByRequest(any(), any(), any());
+
+        healthConnectManager.getMedicalDataSources(
+                request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isEqualTo(response);
+    }
+
+    @Test
+    public void testHealthConnectManager_deleteResources_usesExceptionFromService()
+            throws Exception {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
+        TestOutcomeReceiver<Void> receiver = new TestOutcomeReceiver<>();
+        doAnswer(
+                        (Answer<Void>)
+                                invocation -> {
+                                    IEmptyResponseCallback callback = invocation.getArgument(2);
+                                    callback.onError(
+                                            new HealthConnectExceptionParcel(
+                                                    new HealthConnectException(
+                                                            HealthConnectException
+                                                                    .ERROR_UNSUPPORTED_OPERATION)));
+                                    return null;
+                                })
+                .when(mService)
+                .deleteMedicalResourcesByIds(any(), any(), any());
+
+        healthConnectManager.deleteMedicalResources(
+                ImmutableList.of(getMedicalResourceId()),
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    public void testHealthConnectManager_deleteResourcesByIds_usesResultFromService()
+            throws Exception {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
+        TestOutcomeReceiver<Void> receiver = new TestOutcomeReceiver<>();
+        doAnswer(
+                        (Answer<Void>)
+                                invocation -> {
+                                    IEmptyResponseCallback callback = invocation.getArgument(2);
+                                    callback.onResult();
+                                    return null;
+                                })
+                .when(mService)
+                .deleteMedicalResourcesByIds(any(), any(), any());
+
+        healthConnectManager.deleteMedicalResources(
+                ImmutableList.of(getMedicalResourceId()),
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        assertThat(receiver.getResponse()).isNull();
+    }
+
+    @Test
+    public void testHealthConnectManager_deleteResourcesByIds_shortcutsEmptyRequest()
+            throws Exception {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
+        TestOutcomeReceiver<Void> receiver = new TestOutcomeReceiver<>();
+
+        healthConnectManager.deleteMedicalResources(
+                ImmutableList.of(), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isNull();
+    }
+
+    @Test
+    public void testHealthConnectManager_deleteResourcesByRequest_usesExceptionFromService()
+            throws Exception {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
+        TestOutcomeReceiver<Void> receiver = new TestOutcomeReceiver<>();
+        doAnswer(
+                        (Answer<Void>)
+                                invocation -> {
+                                    IEmptyResponseCallback callback = invocation.getArgument(2);
+                                    callback.onError(
+                                            new HealthConnectExceptionParcel(
+                                                    new HealthConnectException(
+                                                            HealthConnectException
+                                                                    .ERROR_UNSUPPORTED_OPERATION)));
+                                    return null;
+                                })
+                .when(mService)
+                .deleteMedicalResourcesByRequest(any(), any(), any());
+        DeleteMedicalResourcesRequest request =
+                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
+
+        healthConnectManager.deleteMedicalResources(
+                request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    public void testHealthConnectManager_deleteResourcesByRequest_usesResultFromService()
+            throws Exception {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
+        TestOutcomeReceiver<Void> receiver = new TestOutcomeReceiver<>();
+        doAnswer(
+                        (Answer<Void>)
+                                invocation -> {
+                                    IEmptyResponseCallback callback = invocation.getArgument(2);
+                                    callback.onResult();
+                                    return null;
+                                })
+                .when(mService)
+                .deleteMedicalResourcesByRequest(any(), any(), any());
+        DeleteMedicalResourcesRequest request =
+                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
+
+        healthConnectManager.deleteMedicalResources(
+                request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isNull();
     }
 
     /**
@@ -132,5 +352,65 @@ public class HealthConnectManagerTest {
         return HealthConnectManager.class
                 .getDeclaredConstructor(Context.class, IHealthConnectService.class)
                 .newInstance(context, service);
+    }
+
+    private static class TestOutcomeReceiver<T>
+            implements OutcomeReceiver<T, HealthConnectException> {
+        private static final int DEFAULT_TIMEOUT_SECONDS = 5;
+        private final CountDownLatch mLatch = new CountDownLatch(1);
+        private final AtomicReference<T> mResponse = new AtomicReference<>();
+        private final AtomicReference<HealthConnectException> mException = new AtomicReference<>();
+
+        /**
+         * Returns the resppnse received. Fails if no response received within the default timeout.
+         *
+         * @throws InterruptedException if this is interrupted before any response received
+         */
+        public T getResponse() throws InterruptedException {
+            verifyNoExceptionOrThrow();
+            return mResponse.get();
+        }
+
+        /**
+         * Asserts that no exception is received within the default timeout. If an exception is
+         * received it is rethrown by this method.
+         */
+        public void verifyNoExceptionOrThrow() throws InterruptedException {
+            verifyNoExceptionOrThrow(DEFAULT_TIMEOUT_SECONDS);
+        }
+
+        /**
+         * Asserts that no exception is received within the given timeout. If an exception is
+         * received it is rethrown by this method.
+         */
+        public void verifyNoExceptionOrThrow(int timeoutSeconds) throws InterruptedException {
+            assertThat(mLatch.await(timeoutSeconds, TimeUnit.SECONDS)).isTrue();
+            if (mException.get() != null) {
+                throw mException.get();
+            }
+        }
+
+        /**
+         * Returns the exception received. Fails if no response received within the default timeout.
+         *
+         * @throws InterruptedException if this is interrupted before any response received
+         */
+        public HealthConnectException assertAndGetException() throws InterruptedException {
+            assertThat(mLatch.await(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
+            assertThat(mResponse.get()).isNull();
+            return mException.get();
+        }
+
+        @Override
+        public void onResult(T result) {
+            mResponse.set(result);
+            mLatch.countDown();
+        }
+
+        @Override
+        public void onError(@NonNull HealthConnectException error) {
+            mException.set(error);
+            mLatch.countDown();
+        }
     }
 }

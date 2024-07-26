@@ -18,7 +18,7 @@ import androidx.core.os.asOutcomeReceiver
 import com.android.healthconnect.controller.data.entries.api.LoadDataEntriesInput
 import com.android.healthconnect.controller.data.entries.api.LoadEntriesHelper
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissiontypes.api.ILoadPriorityListUseCase
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
@@ -51,21 +51,21 @@ constructor(
      * apps on the priority list.
      */
     override suspend fun invoke(
-        healthPermissionType: HealthPermissionType
+        fitnessPermissionType: FitnessPermissionType
     ): UseCaseResults<LocalDate?> =
         withContext(dispatcher) {
             var latestDateWithData: LocalDate? = null
             try {
                 when (val priorityAppsResult =
                     loadPriorityListUseCase.invoke(
-                        fromHealthPermissionType(healthPermissionType))) {
+                        fromHealthPermissionType(fitnessPermissionType))) {
                     is UseCaseResults.Success -> {
                         val priorityApps = priorityAppsResult.data
 
                         priorityApps.forEach { priorityApp ->
                             val lastDateWithDataForApp =
                                 loadLastDateWithDataForApp(
-                                    healthPermissionType, priorityApp.packageName)
+                                    fitnessPermissionType, priorityApp.packageName)
 
                             latestDateWithData =
                                 maxDateOrNull(latestDateWithData, lastDateWithDataForApp)
@@ -91,11 +91,11 @@ constructor(
      * contains data from this packageName.
      */
     private suspend fun loadLastDateWithDataForApp(
-        healthPermissionType: HealthPermissionType,
+        fitnessPermissionType: FitnessPermissionType,
         packageName: String
     ): LocalDate? {
 
-        val recordTypes = HealthPermissionToDatatypeMapper.getDataTypes(healthPermissionType)
+        val recordTypes = HealthPermissionToDatatypeMapper.getDataTypes(fitnessPermissionType)
 
         val datesWithData = suspendCancellableCoroutine { continuation ->
             healthConnectManager.queryActivityDates(
@@ -122,7 +122,7 @@ constructor(
         // Query the data entries from this last month in one single API call
         val input =
             LoadDataEntriesInput(
-                permissionType = healthPermissionType,
+                permissionType = fitnessPermissionType,
                 packageName = packageName,
                 displayedStartTime = minDate.toInstantAtStartOfDay(),
                 period = DateNavigationPeriod.PERIOD_MONTH,
@@ -148,5 +148,5 @@ constructor(
 }
 
 interface ILoadLastDateWithPriorityDataUseCase {
-    suspend fun invoke(healthPermissionType: HealthPermissionType): UseCaseResults<LocalDate?>
+    suspend fun invoke(fitnessPermissionType: FitnessPermissionType): UseCaseResults<LocalDate?>
 }

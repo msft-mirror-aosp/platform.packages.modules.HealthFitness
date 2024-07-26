@@ -39,6 +39,7 @@ import static android.health.connect.datatypes.HeightRecord.HEIGHT_AVG;
 import static android.health.connect.datatypes.HeightRecord.HEIGHT_MAX;
 import static android.health.connect.datatypes.HeightRecord.HEIGHT_MIN;
 import static android.health.connect.datatypes.HydrationRecord.VOLUME_TOTAL;
+import static android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_DURATION_TOTAL;
 import static android.health.connect.datatypes.NutritionRecord.BIOTIN_TOTAL;
 import static android.health.connect.datatypes.NutritionRecord.CAFFEINE_TOTAL;
 import static android.health.connect.datatypes.NutritionRecord.CALCIUM_TOTAL;
@@ -115,6 +116,9 @@ import android.health.connect.datatypes.units.Velocity;
 import android.health.connect.datatypes.units.Volume;
 import android.os.Parcel;
 
+import com.android.healthfitness.flags.Flags;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -139,19 +143,26 @@ public final class AggregationTypeIdMapper {
         mIdDataAggregationTypeMap = new HashMap<>();
         mDataAggregationTypeIdMap = new HashMap<>();
 
-        addLongIdsToAggregateResultMap(
-                Arrays.asList(
-                        BPM_MAX,
-                        BPM_MIN,
-                        STEPS_COUNT_TOTAL,
-                        BPM_AVG,
-                        RestingHeartRateRecord.BPM_MAX,
-                        RestingHeartRateRecord.BPM_MIN,
-                        RestingHeartRateRecord.BPM_AVG,
-                        WHEEL_CHAIR_PUSHES_COUNT_TOTAL,
-                        HEART_MEASUREMENTS_COUNT,
-                        SLEEP_DURATION_TOTAL,
-                        EXERCISE_DURATION_TOTAL));
+        List<AggregationType<?>> longAggregations =
+                new ArrayList<>(
+                        List.of(
+                                BPM_MAX,
+                                BPM_MIN,
+                                STEPS_COUNT_TOTAL,
+                                BPM_AVG,
+                                RestingHeartRateRecord.BPM_MAX,
+                                RestingHeartRateRecord.BPM_MIN,
+                                RestingHeartRateRecord.BPM_AVG,
+                                WHEEL_CHAIR_PUSHES_COUNT_TOTAL,
+                                HEART_MEASUREMENTS_COUNT,
+                                SLEEP_DURATION_TOTAL,
+                                EXERCISE_DURATION_TOTAL));
+
+        if (Flags.mindfulness()) {
+            longAggregations.add(MINDFULNESS_DURATION_TOTAL);
+        }
+
+        addLongIdsToAggregateResultMap(longAggregations);
         addDoubleIdsToAggregateResultMap(
                 Arrays.asList(
                         FLOORS_CLIMBED_TOTAL,

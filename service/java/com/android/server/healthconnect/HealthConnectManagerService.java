@@ -26,8 +26,11 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.Slog;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.server.SystemService;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
 import com.android.server.healthconnect.migration.MigrationCleaner;
 import com.android.server.healthconnect.migration.MigrationStateManager;
@@ -41,7 +44,10 @@ import com.android.server.healthconnect.permission.HealthConnectPermissionHelper
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PermissionPackageChangesOrchestrator;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import java.util.Objects;
@@ -65,11 +71,37 @@ public class HealthConnectManagerService extends SystemService {
 
     public HealthConnectManagerService(Context context) {
         super(context);
+        mContext = context;
+        mCurrentForegroundUser = context.getUser();
+        HealthConnectDeviceConfigManager healthConnectDeviceConfigManager =
+                HealthConnectDeviceConfigManager.initializeInstance(context);
+        MigrationStateManager migrationStateManager =
+                MigrationStateManager.initializeInstance(mCurrentForegroundUser.getIdentifier());
+
         HealthPermissionIntentAppsTracker permissionIntentTracker =
                 new HealthPermissionIntentAppsTracker(context);
-        FirstGrantTimeManager firstGrantTimeManager =
-                new FirstGrantTimeManager(
-                        context, permissionIntentTracker, FirstGrantTimeDatastore.createInstance());
+        FirstGrantTimeManager firstGrantTimeManager;
+
+        if (Flags.dependencyInjection()) {
+            HealthConnectInjector healthConnectInjector = new HealthConnectInjectorImpl(mContext);
+            mTransactionManager = healthConnectInjector.getTransactionManager();
+            firstGrantTimeManager =
+                    new FirstGrantTimeManager(
+                            context,
+                            permissionIntentTracker,
+                            FirstGrantTimeDatastore.createInstance(),
+                            healthConnectInjector.getPackageInfoUtils());
+        } else {
+            mTransactionManager =
+                    TransactionManager.initializeInstance(
+                            new HealthConnectUserContext(mContext, mCurrentForegroundUser));
+            firstGrantTimeManager =
+                    new FirstGrantTimeManager(
+                            context,
+                            permissionIntentTracker,
+                            FirstGrantTimeDatastore.createInstance());
+        }
+
         HealthConnectPermissionHelper permissionHelper =
                 new HealthConnectPermissionHelper(
                         context,
@@ -77,8 +109,6 @@ public class HealthConnectManagerService extends SystemService {
                         HealthConnectManager.getHealthPermissions(context),
                         permissionIntentTracker,
                         firstGrantTimeManager);
-        mCurrentForegroundUser = context.getUser();
-        mContext = context;
         mPermissionPackageChangesOrchestrator =
                 new PermissionPackageChangesOrchestrator(
                         permissionIntentTracker,
@@ -86,14 +116,8 @@ public class HealthConnectManagerService extends SystemService {
                         permissionHelper,
                         mCurrentForegroundUser);
         mUserManager = context.getSystemService(UserManager.class);
-        mTransactionManager =
-                TransactionManager.getInstance(
-                        new HealthConnectUserContext(mContext, mCurrentForegroundUser));
-        HealthConnectDeviceConfigManager.initializeInstance(context);
         mMigrationBroadcastScheduler =
                 new MigrationBroadcastScheduler(mCurrentForegroundUser.getIdentifier());
-        final MigrationStateManager migrationStateManager =
-                MigrationStateManager.initializeInstance(mCurrentForegroundUser.getIdentifier());
         migrationStateManager.setMigrationBroadcastScheduler(mMigrationBroadcastScheduler);
         final MigrationCleaner migrationCleaner =
                 new MigrationCleaner(mTransactionManager, PriorityMigrationHelper.getInstance());
@@ -104,16 +128,20 @@ public class HealthConnectManagerService extends SystemService {
                         mCurrentForegroundUser,
                         migrationStateManager,
                         mMigrationNotificationSender);
+        MedicalDataSourceHelper medicalDataSourceHelper =
+                new MedicalDataSourceHelper(mTransactionManager, AppInfoHelper.getInstance());
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mTransactionManager,
-                        HealthConnectDeviceConfigManager.getInitialisedInstance(),
+                        healthConnectDeviceConfigManager,
                         permissionHelper,
                         migrationCleaner,
                         firstGrantTimeManager,
                         migrationStateManager,
                         mMigrationUiStateManager,
-                        mContext);
+                        mContext,
+                        new MedicalResourceHelper(mTransactionManager, medicalDataSourceHelper),
+                        medicalDataSourceHelper);
     }
 
     @Override

@@ -29,7 +29,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.appdata.AppDataUseCase
 import com.android.healthconnect.controller.data.appdata.AppDataViewModel
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -145,13 +145,13 @@ class AppDataViewModelTest {
         val expected =
             listOf(
                 PermissionTypesPerCategory(
-                    HealthDataCategory.ACTIVITY, listOf(HealthPermissionType.STEPS)),
+                    HealthDataCategory.ACTIVITY, listOf(FitnessPermissionType.STEPS)),
                 PermissionTypesPerCategory(HealthDataCategory.BODY_MEASUREMENTS, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.CYCLE_TRACKING, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.NUTRITION, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.SLEEP, listOf()),
                 PermissionTypesPerCategory(
-                    HealthDataCategory.VITALS, listOf(HealthPermissionType.HEART_RATE)))
+                    HealthDataCategory.VITALS, listOf(FitnessPermissionType.HEART_RATE)))
         assertThat(testObserver.getLastValue())
             .isEqualTo(AppDataViewModel.AppDataState.WithData(expected))
     }

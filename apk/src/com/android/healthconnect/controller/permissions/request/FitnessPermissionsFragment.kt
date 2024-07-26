@@ -202,7 +202,7 @@ class FitnessPermissionsFragment : Hilt_FitnessPermissionsFragment() {
             .sortedBy {
                 requireContext()
                     .getString(
-                        FitnessPermissionStrings.fromPermissionType(it.healthPermissionType)
+                        FitnessPermissionStrings.fromPermissionType(it.fitnessPermissionType)
                             .uppercaseLabel)
             }
             .forEach { permission ->
@@ -227,11 +227,11 @@ class FitnessPermissionsFragment : Hilt_FitnessPermissionsFragment() {
         return HealthSwitchPreference(requireContext()).also {
             val healthCategory =
                 HealthDataCategoryExtensions.fromHealthPermissionType(
-                    permission.healthPermissionType)
+                    permission.fitnessPermissionType)
             it.icon = healthCategory.icon(requireContext())
             it.setDefaultValue(defaultValue)
             it.setTitle(
-                FitnessPermissionStrings.fromPermissionType(permission.healthPermissionType)
+                FitnessPermissionStrings.fromPermissionType(permission.fitnessPermissionType)
                     .uppercaseLabel)
             it.logNameActive = PermissionsElement.PERMISSION_SWITCH
             it.logNameInactive = PermissionsElement.PERMISSION_SWITCH

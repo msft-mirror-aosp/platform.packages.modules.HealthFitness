@@ -21,7 +21,7 @@ import android.health.connect.RecordTypeInfoResponse
 import android.health.connect.datatypes.Record
 import android.util.Log
 import androidx.core.os.asOutcomeReceiver
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.fromHealthPermissionCategory
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.healthPermissionTypes
@@ -32,6 +32,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 @Singleton
 class LoadPermissionTypesUseCase
 @Inject
@@ -44,8 +45,8 @@ constructor(
         private const val TAG = "GetPermissionTypesWithData"
     }
 
-    /** Returns list of available [HealthPermissionType]s within given [HealthDataCategory]. */
-    suspend fun invoke(category: @HealthDataCategoryInt Int): List<HealthPermissionType> =
+    /** Returns list of available [FitnessPermissionType]s within given [HealthDataCategory]. */
+    suspend fun invoke(category: @HealthDataCategoryInt Int): List<FitnessPermissionType> =
         withContext(dispatcher) {
             try {
                 val recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse> =
@@ -61,7 +62,7 @@ constructor(
         }
 
     private fun hasData(
-        permissionType: HealthPermissionType,
+        permissionType: FitnessPermissionType,
         recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse>
     ): Boolean =
         recordTypeInfoMap.values.firstOrNull {

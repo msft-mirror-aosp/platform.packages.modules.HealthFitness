@@ -47,7 +47,8 @@ class DataManagementActivity : Hilt_DataManagementActivity() {
         super.onCreate(savedInstanceState)
 
         // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
-        window.addSystemFlags(WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+        window.addSystemFlags(
+            WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
 
         setContentView(R.layout.activity_data_management)
         if (savedInstanceState == null && featureUtils.isNewInformationArchitectureEnabled()) {

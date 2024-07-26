@@ -36,12 +36,11 @@ import com.android.healthconnect.controller.deletion.DeletionFragment
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.permissions.connectedapps.HealthAppPreference
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings.Companion.fromPermissionType
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
-import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.inactiveapp.InactiveAppPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreference
@@ -58,6 +57,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /** Fragment displaying health data access information. */
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 @AndroidEntryPoint(HealthPreferenceFragment::class)
 class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
 
@@ -79,7 +79,7 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
 
     private val viewModel: AccessViewModel by viewModels()
 
-    private lateinit var permissionType: HealthPermissionType
+    private lateinit var permissionType: FitnessPermissionType
 
     private val mDataAccessHeader: AppHeaderPreference? by lazy {
         preferenceScreen.findPreference(DATA_ACCESS_HEADER)
@@ -114,7 +114,7 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
         setPreferencesFromResource(R.xml.health_data_access_screen, rootKey)
         if (requireArguments().containsKey(PERMISSION_TYPE_KEY)) {
             permissionType =
-                arguments?.getSerializable(PERMISSION_TYPE_KEY, HealthPermissionType::class.java)
+                arguments?.getSerializable(PERMISSION_TYPE_KEY, FitnessPermissionType::class.java)
                     ?: throw IllegalArgumentException("PERMISSION_TYPE_KEY can't be null!")
         }
 
@@ -144,7 +144,7 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
         mDeletePermissionTypeData?.setOnPreferenceClickListener {
             val deletionType =
                 DeletionType.DeletionTypeHealthPermissionTypeData(
-                    healthPermissionType = permissionType)
+                    fitnessPermissionType = permissionType)
             childFragmentManager.setFragmentResult(
                 START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionType))
             true
@@ -153,11 +153,11 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
 
     private fun maybeShowPermissionTypeDescription() {
         mPermissionTypeDescription?.isVisible = false
-        if (permissionType == HealthPermissionType.EXERCISE) {
+        if (permissionType == FitnessPermissionType.EXERCISE) {
             mPermissionTypeDescription?.isVisible = true
             mPermissionTypeDescription?.setTitle(R.string.data_access_exercise_description)
         }
-        if (permissionType == HealthPermissionType.SLEEP) {
+        if (permissionType == FitnessPermissionType.SLEEP) {
             mPermissionTypeDescription?.isVisible = true
             mPermissionTypeDescription?.setTitle(R.string.data_access_sleep_description)
         }
@@ -250,8 +250,10 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
                             it.logName = DataAccessElement.DATA_ACCESS_INACTIVE_APP_BUTTON
                             it.setOnDeleteButtonClickListener {
                                 val deletionType =
-                                    DeletionType.DeletionTypeAppData(
-                                        appMetadata.packageName, appMetadata.appName)
+                                    DeletionType.DeletionTypeHealthPermissionTypeFromApp(
+                                        permissionType,
+                                        appMetadata.packageName,
+                                        appMetadata.appName)
                                 childFragmentManager.setFragmentResult(
                                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionType))
                             }
@@ -275,9 +277,12 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
         val appPermissionsType = appAccessMetadata.appPermissionsType
         val navigationId =
             when (appPermissionsType) {
-                AppPermissionsType.FITNESS_PERMISSIONS_ONLY -> R.id.action_healthDataAccessFragment_to_fitnessApp
-                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY -> R.id.action_healthDataAccessFragment_to_medicalApp
-                AppPermissionsType.COMBINED_PERMISSIONS -> R.id.action_healthDataAccessFragment_to_combinedPermissions
+                AppPermissionsType.FITNESS_PERMISSIONS_ONLY ->
+                    R.id.action_healthDataAccessFragment_to_fitnessApp
+                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY ->
+                    R.id.action_healthDataAccessFragment_to_medicalApp
+                AppPermissionsType.COMBINED_PERMISSIONS ->
+                    R.id.action_healthDataAccessFragment_to_combinedPermissions
             }
         findNavController()
             .navigate(

@@ -73,17 +73,30 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
     private final PackageInfoUtils mPackageInfoHelper;
     private final Context mContext;
 
+    private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private final MigrationStateManager mMigrationStateManager;
+
     public FirstGrantTimeManager(
-            @NonNull Context context,
-            @NonNull HealthPermissionIntentAppsTracker tracker,
-            @NonNull FirstGrantTimeDatastore datastore) {
+            Context context,
+            HealthPermissionIntentAppsTracker tracker,
+            FirstGrantTimeDatastore datastore) {
+        this(context, tracker, datastore, PackageInfoUtils.getInstance());
+    }
+
+    public FirstGrantTimeManager(
+            Context context,
+            HealthPermissionIntentAppsTracker tracker,
+            FirstGrantTimeDatastore datastore,
+            PackageInfoUtils packageInfoUtils) {
         mTracker = tracker;
         mDatastore = datastore;
         mPackageManager = context.getPackageManager();
         mUserManager = context.getSystemService(UserManager.class);
         mUidToGrantTimeCache = new UidToGrantTimeCache();
         mContext = context;
-        mPackageInfoHelper = PackageInfoUtils.getInstance();
+        mPackageInfoHelper = packageInfoUtils;
+        mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
+        mMigrationStateManager = MigrationStateManager.getInitialisedInstance();
         mPackageManager.addOnPermissionsChangeListener(this);
     }
 
@@ -222,7 +235,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
                     mUidToGrantTimeCache.remove(uid);
                     // Update priority table only if migration is not in progress as it should
                     // already take care of merging permissions.
-                    if (!MigrationStateManager.getInitialisedInstance().isMigrationInProgress()) {
+                    if (!mMigrationStateManager.isMigrationInProgress()) {
                         HealthConnectThreadScheduler.scheduleInternalTask(
                                 () -> removeAppsFromPriorityList(packageNames));
                     }
@@ -241,12 +254,11 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
             } else {
                 // Update priority table only if migration is not in progress as it should already
                 // take care of merging permissions
-                if (!MigrationStateManager.getInitialisedInstance().isMigrationInProgress()) {
+                if (!mMigrationStateManager.isMigrationInProgress()) {
                     HealthConnectThreadScheduler.scheduleInternalTask(
                             () ->
-                                    HealthDataCategoryPriorityHelper.getInstance()
-                                            .updateHealthDataPriority(
-                                                    packageNames, user, getUserContext(user)));
+                                    mHealthDataCategoryPriorityHelper.updateHealthDataPriority(
+                                            packageNames, user, getUserContext(user)));
                 }
             }
         } finally {
@@ -406,6 +418,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
             List<PackageInfo> validHealthApps =
                     mPackageInfoHelper.getPackagesHoldingHealthPermissions(
                             user, getUserContext(user));
+
             logIfInDebugMode(
                     "Packages holding health perms of user " + user + " :", validHealthApps);
 
@@ -647,9 +660,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
                     mPackageInfoHelper
                             .getPackageNameFromUid(uid)
                             .ifPresent(
-                                    packageName -> {
-                                        packageNameToGrantTime.put(packageName, time);
-                                    });
+                                    packageName -> packageNameToGrantTime.put(packageName, time));
                 }
             }
 
@@ -723,8 +734,8 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
 
     private void removeAppsFromPriorityList(String[] packageNames) {
         for (String packageName : packageNames) {
-            HealthDataCategoryPriorityHelper.getInstance()
-                    .maybeRemoveAppWithoutWritePermissionsFromPriorityList(packageName);
+            mHealthDataCategoryPriorityHelper.maybeRemoveAppWithoutWritePermissionsFromPriorityList(
+                    packageName);
         }
     }
 

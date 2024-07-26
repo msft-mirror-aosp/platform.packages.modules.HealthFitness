@@ -18,7 +18,6 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 import android.content.Intent
 import android.content.Intent.*
 import androidx.core.os.bundleOf
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
@@ -30,56 +29,37 @@ import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
-import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
-import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState.NotStarted
 import com.android.healthconnect.controller.permissions.app.CombinedPermissionsFragment
-import com.android.healthconnect.controller.permissions.app.HealthPermissionStatus
-import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.DISTANCE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.EXERCISE
-import com.android.healthconnect.controller.permissions.data.PermissionsAccessType.READ
-import com.android.healthconnect.controller.permissions.data.PermissionsAccessType.WRITE
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.TestActivity
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
-import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.android.healthconnect.controller.tests.utils.safeEq
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
-import com.android.healthconnect.controller.utils.logging.DisconnectAppDialogElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
-import com.android.healthconnect.controller.utils.logging.PageName
-import com.android.settingslib.widget.MainSwitchPreference
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
-import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.*
@@ -185,8 +165,10 @@ class CombinedPermissionsFragmentTest {
 
         onView(withText("Health Connect test app")).check(matches(isDisplayed()))
         onView(withText("Permissions")).check(matches(isDisplayed()))
-        onView(withText("Manage fitness permissions")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Manage health record permissions")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Fitness and wellness")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Exercise, sleep, nutrition and others")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Health records")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Lab results, medications, immunizations and others")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Additional access")).check(doesNotExist())
         onView(withText("Manage app")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -284,6 +266,7 @@ class CombinedPermissionsFragmentTest {
         }
         onView(withText("Additional access")).perform(scrollTo()).perform(click())
 
+        onIdle()
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.additionalAccessFragment)
         verify(healthConnectLogger).logInteraction(AppAccessElement.ADDITIONAL_ACCESS_BUTTON)
@@ -298,7 +281,7 @@ class CombinedPermissionsFragmentTest {
             navHostController.setCurrentDestination(R.id.combinedPermissionsFragment)
             Navigation.setViewNavController(requireView(), navHostController)
         }
-        onView(withText("Manage fitness permissions")).perform(scrollTo()).perform(click())
+        onView(withText("Fitness and wellness")).perform(scrollTo()).perform(click())
 
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.fitnessAppFragment)
@@ -313,7 +296,7 @@ class CombinedPermissionsFragmentTest {
             navHostController.setCurrentDestination(R.id.combinedPermissionsFragment)
             Navigation.setViewNavController(requireView(), navHostController)
         }
-        onView(withText("Manage health record permissions")).perform(scrollTo()).perform(click())
+        onView(withText("Health records")).perform(scrollTo()).perform(click())
 
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.medicalAppFragment)
     }

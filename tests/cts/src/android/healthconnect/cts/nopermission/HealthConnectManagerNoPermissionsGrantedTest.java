@@ -24,6 +24,8 @@ import static android.health.connect.HealthPermissions.READ_STEPS;
 import static android.health.connect.HealthPermissions.READ_TOTAL_CALORIES_BURNED;
 import static android.health.connect.datatypes.DistanceRecord.DISTANCE_TOTAL;
 import static android.health.connect.datatypes.ExerciseSessionRecord.EXERCISE_DURATION_TOTAL;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
 import static android.health.connect.datatypes.SleepSessionRecord.SLEEP_DURATION_TOTAL;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
@@ -40,13 +42,17 @@ import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurned
 import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurnedRecordWithEmptyMetadata;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByDuration;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByPeriod;
 import static android.healthconnect.cts.utils.TestUtils.getChangeLogToken;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
-import static android.healthconnect.cts.utils.TestUtils.readMedicalResourcesByIds;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
 import static android.healthconnect.cts.utils.TestUtils.updateRecords;
 import static android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords;
@@ -55,15 +61,20 @@ import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
 import static java.time.temporal.ChronoUnit.DAYS;
 
 import android.health.connect.AggregateRecordsRequest;
+import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.HealthConnectException;
+import android.health.connect.HealthConnectManager;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.datatypes.AggregationType;
@@ -71,6 +82,8 @@ import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.DistanceRecord;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.HeartRateRecord;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.SleepSessionRecord;
 import android.health.connect.datatypes.StepsRecord;
@@ -78,6 +91,7 @@ import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
 import android.healthconnect.cts.lib.MindfulnessSessionRecordFactory;
 import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 import android.platform.test.annotations.RequiresFlagsEnabled;
@@ -85,7 +99,7 @@ import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 import android.util.Pair;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Assert;
 import org.junit.Rule;
@@ -100,6 +114,8 @@ import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /** These test run under an environment which has no HC permissions */
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
@@ -387,17 +403,72 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testReadMedicalResources_noPermission_expectError() throws InterruptedException {
-        try {
-            readMedicalResourcesByIds(List.of(new MedicalResourceId("123", "observation", "456")));
-            Assert.fail(
-                    "Read medical resources by ids must be not allowed without right HC PHR "
-                            + "permission");
-        } catch (HealthConnectException healthConnectException) {
-            assertThat(healthConnectException.getErrorCode())
-                    .isEqualTo(HealthConnectException.ERROR_SECURITY);
-            assertThat(healthConnectException.getMessage())
-                    .contains("Caller doesn't have permission to read or write medical data");
-        }
+        HealthConnectManager manager = TestUtils.getHealthConnectManager();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+
+        manager.readMedicalResources(
+                List.of(new MedicalResourceId("123", FHIR_RESOURCE_TYPE_IMMUNIZATION, "456")),
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        HealthConnectException exception = receiver.assertAndGetException();
+        assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
+        assertThat(exception.getMessage())
+                .contains("Caller doesn't have permission to read or write medical data");
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void createMedicalDataSource_noPermission_expectError() throws InterruptedException {
+        CreateMedicalDataSourceRequest request =
+                new CreateMedicalDataSourceRequest.Builder(
+                                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME)
+                        .build();
+        HealthConnectManager manager = TestUtils.getHealthConnectManager();
+        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        manager.createMedicalDataSource(request, executor, receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void upsertMedicalResources_noPermission_expectError() {
+        HealthConnectManager manager = TestUtils.getHealthConnectManager();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID,
+                                parseFhirVersion(FHIR_VERSION_R4),
+                                FHIR_DATA_IMMUNIZATION)
+                        .build();
+
+        HealthConnectException exception =
+                assertThrows(
+                        HealthConnectException.class,
+                        () ->
+                                manager.upsertMedicalResources(
+                                        List.of(request),
+                                        Executors.newSingleThreadExecutor(),
+                                        receiver));
+        assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void deleteMedicalResourcesByIds_noPermission_expectError() throws InterruptedException {
+        HealthConnectManager manager = TestUtils.getHealthConnectManager();
+        List<MedicalResourceId> ids =
+                List.of(new MedicalResourceId("123", FHIR_RESOURCE_TYPE_IMMUNIZATION, "456"));
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
+
+        manager.deleteMedicalResources(ids, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_SECURITY);
     }
 
     private static List<Record> getTestRecords() {

@@ -30,7 +30,7 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.appdata.AppDataFragment
 import com.android.healthconnect.controller.data.appdata.AppDataViewModel
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
@@ -88,15 +88,15 @@ class AppDataFragmentTest {
                         PermissionTypesPerCategory(
                             HealthDataCategory.ACTIVITY,
                             listOf(
-                                HealthPermissionType.DISTANCE,
-                                HealthPermissionType.EXERCISE,
-                                HealthPermissionType.EXERCISE_ROUTE,
-                                HealthPermissionType.STEPS)),
+                                FitnessPermissionType.DISTANCE,
+                                FitnessPermissionType.EXERCISE,
+                                FitnessPermissionType.EXERCISE_ROUTE,
+                                FitnessPermissionType.STEPS)),
                         PermissionTypesPerCategory(
                             HealthDataCategory.CYCLE_TRACKING,
                             listOf(
-                                HealthPermissionType.MENSTRUATION,
-                                HealthPermissionType.SEXUAL_ACTIVITY)))))
+                                FitnessPermissionType.MENSTRUATION,
+                                FitnessPermissionType.SEXUAL_ACTIVITY)))))
         }
         launchFragment<AppDataFragment>(
             bundleOf(
