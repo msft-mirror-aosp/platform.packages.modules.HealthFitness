@@ -21,47 +21,45 @@ import static com.android.server.healthconnect.TestUtils.TEST_USER;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
-import android.health.connect.HealthConnectManager;
 import android.os.Environment;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 
 import org.junit.rules.ExternalResource;
-import org.mockito.MockitoSession;
-import org.mockito.quality.Strictness;
 
 import java.io.File;
 
-/** A test rule that deals with ground work of setting up a mock Health Connect database. */
+/**
+ * A test rule that deals with ground work of setting up a mock Health Connect database. To use, add
+ * the following to your test class:
+ *
+ * <p><code>
+ * {@literal @} Rule (order = 1)
+ * public final ExtendedMockitoRule mExtendedMockitoRule = new ExtendedMockitoRule.Builder(this)
+ *     .mockStatic(HealthConnectManager.class)
+ *     .mockStatic(Environment.class)
+ *     .setStrictness(Strictness.LENIENT)
+ *     .build();
+ *
+ * {@literal @} Rule (order = 2)
+ * public final HealthConnectDatabaseTestRule mDatabaseTestRule =
+ *     new HealthConnectDatabaseTestRule();
+ * </code>
+ *
+ * <p>Mocking is done in the test class rather than here to avoid interferences for Mockito session
+ * handling when multiple test rules are used. It avoids starting multiple sessions in parallel.
+ */
 public class HealthConnectDatabaseTestRule extends ExternalResource {
-    private static final String TAG = "HealthConnectDatabaseTestRule";
-    @Nullable private Object mTestClassInstance = null;
-    private MockitoSession mStaticMockSession;
     private HealthConnectUserContext mContext;
     private TransactionManager mTransactionManager;
 
     public HealthConnectDatabaseTestRule() {}
 
-    public HealthConnectDatabaseTestRule(@NonNull Object testClassInstance) {
-        mTestClassInstance = testClassInstance;
-    }
-
     @Override
     public void before() {
-        mStaticMockSession =
-                ExtendedMockito.mockitoSession()
-                        .initMocks(mTestClassInstance)
-                        .mockStatic(HealthConnectManager.class)
-                        .mockStatic(Environment.class)
-                        .strictness(Strictness.LENIENT)
-                        .startMocking();
-
         mContext =
                 new HealthConnectUserContext(
                         InstrumentationRegistry.getInstrumentation().getContext(), TEST_USER);
@@ -73,12 +71,8 @@ public class HealthConnectDatabaseTestRule extends ExternalResource {
 
     @Override
     public void after() {
-        try {
-            DatabaseHelper.clearAllData(mTransactionManager);
-            TransactionManager.cleanUpForTest();
-        } finally {
-            mStaticMockSession.finishMocking();
-        }
+        DatabaseHelper.clearAllData(mTransactionManager);
+        TransactionManager.cleanUpForTest();
     }
 
     public HealthConnectUserContext getUserContext() {

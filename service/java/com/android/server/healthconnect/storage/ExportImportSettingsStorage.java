@@ -204,11 +204,12 @@ public final class ExportImportSettingsStorage {
         try (Cursor cursor =
                 context.getContentResolver().query(destinationUri, null, null, null, null)) {
             if (cursor != null && cursor.moveToFirst()) {
-                return cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-            } else {
-                return destinationUri.getLastPathSegment();
+                return cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME));
             }
+        } catch (IllegalArgumentException exception) {
+            Slog.i(TAG, "Failed to get the file name", exception);
         }
+        return null;
     }
 
     /** Set the uri of the last successful export. */
@@ -229,16 +230,14 @@ public final class ExportImportSettingsStorage {
                     if (contentProviderCursor != null && contentProviderCursor.moveToFirst()) {
                         String appName =
                                 contentProviderCursor.getString(
-                                        contentProviderCursor.getColumnIndex(
+                                        contentProviderCursor.getColumnIndexOrThrow(
                                                 DocumentsContract.Root.COLUMN_TITLE));
                         return appName;
                     }
                 }
             }
-        } catch (RemoteException exception) {
+        } catch (RemoteException | SecurityException | IllegalArgumentException exception) {
             Slog.e(TAG, "Failed to get the app name", exception);
-        } catch (SecurityException exception) {
-            Slog.e(TAG, "Failed to query the app name", exception);
         }
         return null;
     }
