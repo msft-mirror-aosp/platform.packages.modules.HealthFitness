@@ -73,7 +73,9 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
+import android.health.connect.MedicalPermissionCategory;
 import android.health.connect.MedicalResourceId;
+import android.health.connect.MedicalResourceTypeInfoResponse;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequestUsingIds;
@@ -141,6 +143,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -2165,6 +2168,30 @@ public class HealthConnectManagerTest {
 
         assertThat(receiver.assertAndGetException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testQueryAllMedicalResourceTypesInfo_succeeds() throws InterruptedException {
+        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        HealthConnectReceiver<List<MedicalResourceTypeInfoResponse>> receiver =
+                new HealthConnectReceiver<>();
+        List<MedicalResourceTypeInfoResponse> expectedResponses =
+                List.of(
+                        new MedicalResourceTypeInfoResponse(
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                                MedicalPermissionCategory.IMMUNIZATION,
+                                Set.of()));
+
+        try {
+            mManager.queryAllMedicalResourceTypesInfo(
+                    Executors.newSingleThreadExecutor(), receiver);
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
+
+        assertThat(receiver.getResponse()).isEqualTo(expectedResponses);
     }
 
     private boolean isEmptyContributingPackagesForAll(

@@ -32,6 +32,7 @@ import android.health.connect.aidl.UpdatePriorityRequestParcel;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
+import android.health.connect.aidl.IMedicalResourceTypesInfoResponseCallback;
 import android.health.connect.aidl.IActivityDatesResponseCallback;
 import android.health.connect.aidl.IRecordTypeInfoResponseCallback;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
@@ -478,4 +479,12 @@ interface IHealthConnectService {
         in AttributionSource attributionSource,
         in DeleteMedicalResourcesRequest request,
         in IEmptyResponseCallback callback);
+
+    /**
+     * Returns information for each MedicalResourceType like medical permission category and
+     * contributing data sources.
+     *
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void queryAllMedicalResourceTypesInfo(in IMedicalResourceTypesInfoResponseCallback callback);
 }

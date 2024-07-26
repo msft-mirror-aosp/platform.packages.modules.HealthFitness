@@ -53,8 +53,10 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
@@ -79,6 +81,7 @@ import android.health.connect.aidl.IDataStagingFinishedCallback;
 import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
+import android.health.connect.aidl.IMedicalResourceTypesInfoResponseCallback;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
@@ -192,7 +195,8 @@ public class HealthConnectServiceImplTest {
                     "deleteMedicalResourcesByRequest",
                     "upsertMedicalResources",
                     "readMedicalResourcesByIds",
-                    "readMedicalResourcesByRequest");
+                    "readMedicalResourcesByRequest",
+                    "queryAllMedicalResourceTypesInfo");
 
     /** Health connect service APIs that do not block calls when data sync is in progress. */
     public static final Set<String> DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST =
@@ -973,6 +977,36 @@ public class HealthConnectServiceImplTest {
         verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
         assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
                 .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testQueryAllMedicalResourceTypesInfo_flagOff_throws() throws Exception {
+        IMedicalResourceTypesInfoResponseCallback callback =
+                mock(IMedicalResourceTypesInfoResponseCallback.class);
+
+        mHealthConnectService.queryAllMedicalResourceTypesInfo(callback);
+
+        verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
+        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
+                .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testQueryAllMedicalResourceTypesInfo_noDataManagementPermission_throws()
+            throws Exception {
+        doThrow(SecurityException.class)
+                .when(mServiceContext)
+                .enforcePermission(eq(MANAGE_HEALTH_DATA_PERMISSION), anyInt(), anyInt(), isNull());
+        IMedicalResourceTypesInfoResponseCallback callback =
+                mock(IMedicalResourceTypesInfoResponseCallback.class);
+
+        mHealthConnectService.queryAllMedicalResourceTypesInfo(callback);
+
+        verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
+        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_SECURITY);
     }
 
     private void setUpCreateMedicalDataSourceDefaultMocks() {

@@ -27,6 +27,7 @@ import static android.health.connect.HealthConnectException.ERROR_UNSUPPORTED_OP
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
+import static android.health.connect.internal.datatypes.utils.MedicalResourceTypePermissionCategoryMapper.getMedicalPermissionCategory;
 
 import static com.android.healthfitness.flags.Flags.personalHealthRecord;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_DATA;
@@ -36,6 +37,8 @@ import static com.android.server.healthconnect.logging.HealthConnectServiceLogge
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.READ_AGGREGATED_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.READ_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.UPDATE_DATA;
+
+import static java.util.stream.Collectors.toList;
 
 import android.Manifest;
 import android.annotation.NonNull;
@@ -57,6 +60,7 @@ import android.health.connect.HealthConnectManager.DataDownloadState;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.MedicalResourceId;
+import android.health.connect.MedicalResourceTypeInfoResponse;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
@@ -85,6 +89,7 @@ import android.health.connect.aidl.IGetPriorityResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
+import android.health.connect.aidl.IMedicalResourceTypesInfoResponseCallback;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
@@ -577,7 +582,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                     .mapToObj(
                                                             mAggregationTypeIdMapper
                                                                     ::getAggregationTypeFor)
-                                                    .collect(Collectors.toList()));
+                                                    .collect(toList()));
                         }
                         callback.onResult(
                                 new AggregateTransactionRequest(
@@ -1393,7 +1398,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                         new DataOrigin.Builder()
                                                                 .setPackageName(name)
                                                                 .build())
-                                        .collect(Collectors.toList());
+                                        .collect(toList());
                         callback.onResult(
                                 new GetPriorityResponseParcel(
                                         new FetchDataOriginsPriorityOrderResponse(
@@ -2964,6 +2969,54 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 holdsDataManagementPermission);
     }
 
+    /**
+     * Retrieves {@link MedicalResourceTypeInfoResponse} for each {@link
+     * MedicalResource.MedicalResourceType}.
+     */
+    @Override
+    public void queryAllMedicalResourceTypesInfo(
+            @NonNull IMedicalResourceTypesInfoResponseCallback callback) {
+        checkParamsNonNull(callback);
+        ErrorCallback errorCallback = callback::onError;
+        if (!personalHealthRecord()) {
+            HealthConnectException unsupportedException =
+                    new HealthConnectException(
+                            ERROR_UNSUPPORTED_OPERATION,
+                            "Querying MedicalResource types info is not supported.");
+            Slog.e(TAG, "HealthConnectException: ", unsupportedException);
+            tryAndThrowException(
+                    errorCallback, unsupportedException, unsupportedException.getErrorCode());
+            return;
+        }
+
+        final int uid = Binder.getCallingUid();
+        final int pid = Binder.getCallingPid();
+        final UserHandle userHandle = Binder.getCallingUserHandle();
+        HealthConnectThreadScheduler.scheduleControllerTask(
+                () -> {
+                    try {
+                        enforceIsForegroundUser(userHandle);
+                        mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
+                        throwExceptionIfDataSyncInProgress();
+                        callback.onResult(getPopulatedMedicalResourceTypeInfoResponses());
+                    } catch (SQLiteException sqLiteException) {
+                        tryAndThrowException(
+                                errorCallback, sqLiteException, HealthConnectException.ERROR_IO);
+                    } catch (SecurityException securityException) {
+                        Slog.e(TAG, "SecurityException: ", securityException);
+                        tryAndThrowException(errorCallback, securityException, ERROR_SECURITY);
+                    } catch (HealthConnectException healthConnectException) {
+                        Slog.e(TAG, "HealthConnectException: ", healthConnectException);
+                        tryAndThrowException(
+                                errorCallback,
+                                healthConnectException,
+                                healthConnectException.getErrorCode());
+                    } catch (Exception exception) {
+                        tryAndThrowException(errorCallback, exception, ERROR_INTERNAL);
+                    }
+                });
+    }
+
     // Cancel BR timeouts - this might be needed when a user is going into background.
     void cancelBackupRestoreTimeouts() {
         mBackupRestore.cancelAllJobs();
@@ -3152,6 +3205,21 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             }
                         });
         return recordTypeInfoResponses;
+    }
+
+    private List<MedicalResourceTypeInfoResponse> getPopulatedMedicalResourceTypeInfoResponses() {
+        // TODO(b/350010200): Get valid types from validator once we have it.
+        List<Integer> validTypes = List.of(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+        return validTypes.stream()
+                .map(
+                        medicalResourceType -> {
+                            // TODO(b/350014259): Get contributing data sources from DB.
+                            return new MedicalResourceTypeInfoResponse(
+                                    medicalResourceType,
+                                    getMedicalPermissionCategory(medicalResourceType),
+                                    Set.of());
+                        })
+                .collect(toList());
     }
 
     private boolean hasDataManagementPermission(int uid, int pid) {
