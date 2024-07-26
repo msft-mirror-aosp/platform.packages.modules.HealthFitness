@@ -94,7 +94,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
 
         view.requireViewById<Button>(R.id.phr_create_data_source_button).setOnClickListener {
             executeAndShowMessage {
-                createMedicalDataSource(view, "Hospital X", "example.fhir.com/R4/123")
+                createMedicalDataSource(view, "example.fhir.com/R4/123", "Hospital X")
             }
         }
 
@@ -169,11 +169,11 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         return resources
     }
 
-    private suspend fun createMedicalDataSource(view: View, displayName: String, fhirBaseUri: String): String {
+    private suspend fun createMedicalDataSource(view: View, fhirBaseUri: String, displayName: String): String {
         val dataSource =
             suspendCancellableCoroutine<MedicalDataSource> { continuation ->
                 healthConnectManager.createMedicalDataSource(
-                    CreateMedicalDataSourceRequest.Builder(displayName, fhirBaseUri).build(),
+                    CreateMedicalDataSourceRequest.Builder(fhirBaseUri, displayName).build(),
                     Runnable::run,
                     continuation.asOutcomeReceiver()
                 )

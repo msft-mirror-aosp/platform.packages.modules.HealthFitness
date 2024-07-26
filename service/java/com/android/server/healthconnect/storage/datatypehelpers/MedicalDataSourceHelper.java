@@ -131,11 +131,6 @@ public class MedicalDataSourceHelper {
                 .setWhereClause(getReadTableWhereClause(ids));
     }
 
-    /**
-     * Returns a {@link WhereClauses} that limits to data sources with id in {@code ids}.
-     *
-     * @param ids the ids to limit to.
-     */
     @NonNull
     private static SqlJoin getJoinClauseWithAppInfoTable() {
         return new SqlJoin(
@@ -146,6 +141,11 @@ public class MedicalDataSourceHelper {
                 .setJoinType(SqlJoin.SQL_JOIN_INNER);
     }
 
+    /**
+     * Returns a {@link WhereClauses} that limits to data sources with id in {@code ids}.
+     *
+     * @param ids the ids to limit to.
+     */
     @NonNull
     private static WhereClauses getReadTableWhereClause(@NonNull List<String> ids) {
         List<UUID> uuids = ids.stream().map(UUID::fromString).toList();

@@ -67,6 +67,7 @@ import android.health.connect.aidl.IGetPriorityResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
+import android.health.connect.aidl.IMedicalResourceTypesInfoResponseCallback;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
@@ -2329,6 +2330,44 @@ public class HealthConnectManager {
                         @Override
                         public void onResult() {
                             returnResult(executor, null, callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Retrieves information about all medical resource types and returns a list of {@link
+     * MedicalResourceTypeInfoResponse}.
+     *
+     * @param executor Executor on which to invoke the callback.
+     * @param callback Callback to receive result of performing this operation.
+     * @hide
+     */
+    @SystemApi
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public void queryAllMedicalResourceTypesInfo(
+            @NonNull @CallbackExecutor Executor executor,
+            @NonNull
+                    OutcomeReceiver<List<MedicalResourceTypeInfoResponse>, HealthConnectException>
+                            callback) {
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        try {
+            mService.queryAllMedicalResourceTypesInfo(
+                    new IMedicalResourceTypesInfoResponseCallback.Stub() {
+                        @Override
+                        public void onResult(List<MedicalResourceTypeInfoResponse> responses) {
+                            Binder.clearCallingIdentity();
+                            executor.execute(() -> callback.onResult(responses));
                         }
 
                         @Override
