@@ -19,8 +19,20 @@
     app:startDestination="@id/settingsManagePermissionFragment">
 
     <action
-        android:id="@+id/action_deeplink_to_settingsManageAppPermissionsFragment"
-        app:destination="@+id/settingsManageAppPermissionsFragment"
+        android:id="@+id/action_deeplink_to_settingsCombinedApp"
+        app:destination="@+id/settingsCombinedPermissionsFragment"
+        app:popUpTo="@+id/settingsManagePermissionFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_deeplink_to_settingsFitnessApp"
+        app:destination="@+id/settingsFitnessAppFragment"
+        app:popUpTo="@+id/settingsManagePermissionFragment"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_deeplink_to_settingsMedicalApp"
+        app:destination="@+id/settingsMedicalAppFragment"
         app:popUpTo="@+id/settingsManagePermissionFragment"
         app:popUpToInclusive="true" />
 
@@ -29,19 +41,54 @@
         android:name="com.android.healthconnect.controller.permissions.connectedapps.SettingsManagePermissionFragment"
         android:label="@string/app_label">
         <action
-            android:id="@+id/action_settingsManagePermission_to_settingsManageAppPermissions"
-            app:destination="@id/settingsManageAppPermissionsFragment" />
+            android:id="@+id/action_settingsManagePermission_to_settingsCombinedPermissions"
+            app:destination="@id/settingsCombinedPermissionsFragment" />
+        <action
+            android:id="@+id/action_settingsManagePermission_to_settingsFitnessApp"
+            app:destination="@id/settingsFitnessAppFragment" />
+        <action
+            android:id="@+id/action_settingsManagePermission_to_settingsMedicalApp"
+            app:destination="@id/settingsMedicalAppFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/settingsManageAppPermissionsFragment"
-        android:name="com.android.healthconnect.controller.permissions.app.SettingsManageAppPermissionsFragment"
+        android:id="@+id/settingsCombinedPermissionsFragment"
+        android:name="com.android.healthconnect.controller.permissions.app.SettingsCombinedPermissionsFragment"
         android:label="@string/app_label">
         <argument
             android:name="android.intent.extra.PACKAGE_NAME"
             app:argType="string" />
         <action
-            android:id="@+id/action_manageAppFragment_to_additionalAccessFragment"
+            android:id="@+id/action_settingsCombinedPermissions_to_FitnessAppFragment"
+            app:destination="@id/settingsFitnessAppFragment" />
+        <action
+            android:id="@+id/action_settingsCombinedPermissions_to_MedicalAppFragment"
+            app:destination="@id/settingsMedicalAppFragment" />
+        <action
+            android:id="@+id/action_settingsCombinedPermissions_to_additionalAccessFragment"
+            app:destination="@id/additionalAccessFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingsFitnessAppFragment"
+        android:name="com.android.healthconnect.controller.permissions.app.SettingsFitnessAppFragment"
+        android:label="@string/app_label">
+        <argument
+            android:name="android.intent.extra.PACKAGE_NAME"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_settingsFitnessApp_to_additionalAccessFragment"
+            app:destination="@id/additionalAccessFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsMedicalAppFragment"
+        android:name="com.android.healthconnect.controller.permissions.app.SettingsMedicalAppFragment"
+        android:label="@string/app_label">
+        <argument
+            android:name="android.intent.extra.PACKAGE_NAME"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_settingsMedicalApp_to_additionalAccessFragment"
             app:destination="@id/additionalAccessFragment" />
     </fragment>
     <fragment
