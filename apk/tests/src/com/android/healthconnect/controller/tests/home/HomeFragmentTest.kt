@@ -84,7 +84,6 @@ import java.util.TimeZone
 import javax.inject.Inject
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
@@ -152,14 +151,8 @@ class HomeFragmentTest {
                         null,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
                         /** periodInDays= */
-                        0,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        0)))
         }
-        // Reflects that IsNewAppPriorityEnabled is always true in the configuration.
-        (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(true)
         navHostController = TestNavHostController(context)
 
         // disable animations
@@ -339,21 +332,6 @@ class HomeFragmentTest {
     }
 
     @Test
-    fun manageData_whenNewPriorityAndInformationArchitectureDisabled_doesNotShowManageData() {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(false)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsNewInformationArchitectureEnabled(false)
-        whenever(recentAccessViewModel.recentAccessApps).then {
-            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf()))
-        }
-        whenever(homeFragmentViewModel.connectedApps).then {
-            MutableLiveData(listOf<ConnectedAppMetadata>())
-        }
-        launchFragment<HomeFragment>(Bundle())
-
-        onView(withText("Manage data")).check(doesNotExist())
-    }
-
-    @Test
     fun homeFragmentLogging_impressionsLogged() {
         val recentApp =
             RecentAccessEntry(
@@ -384,6 +362,7 @@ class HomeFragmentTest {
         verify(healthConnectLogger).logPageImpression()
         verify(healthConnectLogger).logImpression(HomePageElement.APP_PERMISSIONS_BUTTON)
         verify(healthConnectLogger).logImpression(HomePageElement.DATA_AND_ACCESS_BUTTON)
+        verify(healthConnectLogger).logImpression(HomePageElement.MANAGE_DATA_BUTTON)
         verify(healthConnectLogger).logImpression(HomePageElement.SEE_ALL_RECENT_ACCESS_BUTTON)
         verify(healthConnectLogger).logImpression(RecentAccessElement.RECENT_ACCESS_ENTRY_BUTTON)
     }
@@ -465,7 +444,7 @@ class HomeFragmentTest {
     }
 
     @Test
-    fun test_HomeFragment_withNoRecentAccessApps() {
+    fun whenNoRecentAccessApps_showsNoRecentAccessApps() {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
@@ -537,62 +516,6 @@ class HomeFragmentTest {
     }
 
     @Test
-    fun whenNewAppPriorityFlagOn_showsManageDataButton() {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(true)
-        whenever(recentAccessViewModel.recentAccessApps).then {
-            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
-        }
-        whenever(homeFragmentViewModel.connectedApps).then {
-            MutableLiveData(
-                listOf(
-                    ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
-                    ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED)))
-        }
-        launchFragment<HomeFragment>(Bundle())
-
-        onView(
-                withText(
-                    "Manage the health and fitness data on your device, and control which apps can access it"))
-            .check(matches(isDisplayed()))
-        onView(withText("App permissions")).check(matches(isDisplayed()))
-        onView(withText("2 apps have access")).check(matches(isDisplayed()))
-        onView(withText("Data and access")).check(matches(isDisplayed()))
-        onView(withText("Manage data")).check(matches(isDisplayed()))
-
-        onView(withText("Recent access")).check(matches(isDisplayed()))
-        onView(withText("No apps recently accessed Health\u00A0Connect"))
-            .check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun whenNewInformationArchitectureFlagOn_showsManageDataButton() {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsNewInformationArchitectureEnabled(true)
-        whenever(recentAccessViewModel.recentAccessApps).then {
-            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
-        }
-        whenever(homeFragmentViewModel.connectedApps).then {
-            MutableLiveData(
-                listOf(
-                    ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
-                    ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED)))
-        }
-        launchFragment<HomeFragment>(Bundle())
-
-        onView(
-                withText(
-                    "Manage the health and fitness data on your device, and control which apps can access it"))
-            .check(matches(isDisplayed()))
-        onView(withText("App permissions")).check(matches(isDisplayed()))
-        onView(withText("2 apps have access")).check(matches(isDisplayed()))
-        onView(withText("Data and access")).check(matches(isDisplayed()))
-        onView(withText("Manage data")).check(matches(isDisplayed()))
-
-        onView(withText("Recent access")).check(matches(isDisplayed()))
-        onView(withText("No apps recently accessed Health\u00A0Connect"))
-            .check(matches(isDisplayed()))
-    }
-
-    @Test
     fun whenMigrationStatePending_showsMigrationBanner() {
         Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
         whenever(migrationViewModel.migrationState).then {
@@ -632,7 +555,6 @@ class HomeFragmentTest {
     }
 
     @Test
-    @Ignore("b/327170886")
     fun whenDataRestoreStatePending_showsRestoreBanner() {
         Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
         whenever(migrationViewModel.migrationState).then {
@@ -787,11 +709,7 @@ class HomeFragmentTest {
                     ScheduledExportUiState(
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        TEST_EXPORT_FREQUENCY_IN_DAYS)))
         }
         launchFragment<HomeFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
@@ -819,11 +737,7 @@ class HomeFragmentTest {
                     ScheduledExportUiState(
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        TEST_EXPORT_FREQUENCY_IN_DAYS)))
         }
         launchFragment<HomeFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
@@ -851,11 +765,7 @@ class HomeFragmentTest {
                     ScheduledExportUiState(
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        TEST_EXPORT_FREQUENCY_IN_DAYS)))
         }
 
         launchFragment<HomeFragment>(Bundle()) {
@@ -868,7 +778,7 @@ class HomeFragmentTest {
 
     @Test
     @EnableFlags(Flags.FLAG_EXPORT_IMPORT)
-    fun whenExportImportFlagIsEnabled_lastSuccessfulDateIsNull_exportFileAccessErrorBannerIsNotShown() {
+    fun whenExportImportFlagIsEnabled_lastFailedExportTimeIsNull_exportFileAccessErrorBannerIsNotShown() {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
@@ -882,15 +792,11 @@ class HomeFragmentTest {
             MutableLiveData(
                 ScheduledExportUiStatus.WithData(
                     ScheduledExportUiState(
-                        null,
-                        ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
+                        periodInDays = TEST_EXPORT_FREQUENCY_IN_DAYS,
+                        lastFailedExportTime = null)))
         }
-
         launchFragment<HomeFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
             Navigation.setViewNavController(this.requireView(), navHostController)
@@ -915,13 +821,10 @@ class HomeFragmentTest {
             MutableLiveData(
                 ScheduledExportUiStatus.WithData(
                     ScheduledExportUiState(
-                        NOW,
-                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_UNKNOWN,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_UNKNOWN,
+                        periodInDays = TEST_EXPORT_FREQUENCY_IN_DAYS,
+                        lastFailedExportTime = NOW)))
         }
         launchFragment<HomeFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
@@ -932,7 +835,7 @@ class HomeFragmentTest {
         onView(withText("Set up")).check(matches(isDisplayed()))
         onView(
                 withText(
-                    "There was a problem with the export for October 21, 2022. Please set up a new scheduled export and try again."))
+                    "There was a problem with the export for October 20, 2022. Please set up a new scheduled export and try again."))
             .check(matches(isDisplayed()))
     }
 
@@ -952,13 +855,10 @@ class HomeFragmentTest {
             MutableLiveData(
                 ScheduledExportUiStatus.WithData(
                     ScheduledExportUiState(
-                        NOW,
-                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        periodInDays = TEST_EXPORT_FREQUENCY_IN_DAYS,
+                        lastFailedExportTime = NOW)))
         }
         launchFragment<HomeFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
@@ -986,13 +886,10 @@ class HomeFragmentTest {
             MutableLiveData(
                 ScheduledExportUiStatus.WithData(
                     ScheduledExportUiState(
-                        NOW,
-                        ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
+                        periodInDays = TEST_EXPORT_FREQUENCY_IN_DAYS,
+                        lastFailedExportTime = NOW)))
         }
         launchFragment<HomeFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
@@ -1003,7 +900,7 @@ class HomeFragmentTest {
         onView(withText("Set up")).check(matches(isDisplayed()))
         onView(
                 withText(
-                    "There was a problem with the export for October 21, 2022. Please set up a new scheduled export and try again."))
+                    "There was a problem with the export for October 20, 2022. Please set up a new scheduled export and try again."))
             .check(matches(isDisplayed()))
         verify(healthConnectLogger).logImpression(HomePageElement.EXPORT_ERROR_BANNER)
         verify(healthConnectLogger).logImpression(HomePageElement.EXPORT_ERROR_BANNER_BUTTON)
@@ -1025,13 +922,10 @@ class HomeFragmentTest {
             MutableLiveData(
                 ScheduledExportUiStatus.WithData(
                     ScheduledExportUiState(
-                        NOW,
-                        ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
-                        TEST_EXPORT_FREQUENCY_IN_DAYS,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
+                        periodInDays = TEST_EXPORT_FREQUENCY_IN_DAYS,
+                        lastFailedExportTime = NOW)))
         }
         launchFragment<HomeFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
@@ -1043,7 +937,6 @@ class HomeFragmentTest {
     }
 
     private fun setupFragmentForNavigation() {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsNewInformationArchitectureEnabled(true)
         val recentApp =
             RecentAccessEntry(
                 metadata = TEST_APP,

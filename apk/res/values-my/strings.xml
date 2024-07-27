@@ -78,7 +78,8 @@
     <string name="can_read" msgid="4568261079308309564">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ဖတ်နိုင်သည်"</string>
     <string name="can_write" msgid="5082414937218423823">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ရေးနိုင်သည်"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"အသုံးမပြုသော အက်ပ်များ"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"ဤအက်ပ်များက <xliff:g id="DATA_TYPE">%s</xliff:g> ကို ရေးမထည့်နိုင်တော့သော်လည်း Health Connect တွင် ဒေတာများ သိမ်းထားသေးသည်"</string>
+    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
+    <skip />
     <string name="data_access_empty_message" msgid="9084350402254264452">"အက်ပ်များသည် <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> ကို ဖတ်နိုင် (သို့) ရေးနိုင်တော့မည်မဟုတ်ပါ။ Health Connect တွင် <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> ဒေတာများ သိမ်းထားခြင်းမရှိပါ"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"ဤဒေတာတွင် လှုပ်ရှားချိန်၊ လေ့ကျင့်ခန်းအမျိုးအစား၊ အကြိမ်ရေ၊ အကျော့ရေ၊ စက်ရှင် (သို့) ရေကူးခပ်သည့် အရေအတွက်များကဲ့သို့ အချက်အလက်များပါဝင်သည်"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"ဤဒေတာတွင် အိပ်စက်မှုဆိုင်ရာ အဆင့်နှင့် စက်ရှင်များကဲ့သို့ အချက်အလက်များပါဝင်သည်"</string>
@@ -360,8 +361,7 @@
     <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ဖွင့်"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ပိတ်"</string>
-    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
-    <skip />
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"စီစဉ်ထားသော ထုတ်ယူမှုကို သုံးရန်"</string>
     <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"အကြိမ်ရေ ပြောင်းခြင်း"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"စီစဉ်ထားသော ထုတ်ယူမှုကို ပိတ်လိုက်ပါက ယခင်ထုတ်ယူထားသော ဒေတာကို သိမ်းထားသည့်နေရာမှ ဖျက်မည်မဟုတ်ပါ"</string>
@@ -392,9 +392,8 @@
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"ဖိုင်ရွေးချယ်ရန်"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"နေရာလွတ်ပြုလုပ်ပါ"</string>
     <string name="export_back_button" msgid="3550795479165524982">"နောက်သို့"</string>
-    <!-- no translation found for export_cancel_button (1952360582645412410) -->
-    <skip />
     <string name="export_next_button" msgid="657930567137105172">"ရှေ့သို့"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"မလုပ်တော့"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"မလုပ်တော့"</string>
     <string name="import_next_button" msgid="5706322508691854289">"ရှေ့သို့"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"၎င်းမှ ထည့်သွင်းခြင်း-"</string>
@@ -417,15 +416,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"ဒေတာဖျက်ရန်"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"ဖျက်ခြင်းသို့ ဝင်ရန်"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"ဖျက်ခြင်းမှ ထွက်ရန်"</string>
-    <!-- no translation found for time_range_title (5777596779865648336) -->
-    <skip />
+    <string name="time_range_title" msgid="5777596779865648336">"Health Connect မှ ဖျက်ရန် ဒေတာ ရွေးခြင်း"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"ရှေ့သို့"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"၎င်းက ရွေးချယ်ထားသည့်အချိန်ကာလအတွင်း Health Connect တွင် ထည့်ထားသည့် ဒေတာအားလုံးကို အပြီးဖျက်သည်"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"၎င်းက ရွေးချယ်ထားသည့်အချိန်ကာလအတွင်း Health Connect တွင် ထည့်ထားသည့် <xliff:g id="DATA_TYPE">%s</xliff:g> ဒေတာကို အပြီးဖျက်သည်"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"၎င်းက ရွေးချယ်ထားသည့်အချိန်ကာလအတွင်း Health Connect တွင် ထည့်ထားသည့် <xliff:g id="CATEGORY">%s</xliff:g> ဒေတာကို အပြီးဖျက်သည်"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"၎င်းက ရွေးချယ်ထားသည့်အချိန်ကာလအတွင်း Health Connect တွင် ထည့်ထားသည့် <xliff:g id="APP_DATA">%s</xliff:g> ဒေတာကို အပြီးဖျက်သည်"</string>
-    <!-- no translation found for time_range_message_permission_type_app_data (1613568925588480588) -->
-    <skip />
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"၎င်းက ရွေးချယ်ထားသည့်အချိန်ကာလအတွင်း Health Connect တွင် <xliff:g id="APP_DATA">%2$s</xliff:g> က ထည့်ထားသည့် <xliff:g id="DATA_TYPE">%1$s</xliff:g> ဒေတာကို အပြီးဖျက်သည်"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"ပြီးခဲ့သော ၂၄ နာရီစာ ဖျက်ရန်"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"ပြီးခဲ့သော ၇ ရက်စာ ဖျက်ရန်"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"ပြီးခဲ့သော ရက် ၃၀ စာ ဖျက်ရန်"</string>
@@ -446,32 +443,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"ပြီးခဲ့သည့် ၂၄ နာရီအတွင်းရှိ <xliff:g id="APP_DATA">%s</xliff:g> ဒေတာကို အပြီးဖျက်မလား။"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"ပြီးခဲ့သည့် ၇ ရက်အတွင်းရှိ <xliff:g id="APP_DATA">%s</xliff:g> ဒေတာကို အပြီးဖျက်မလား။"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"ပြီးခဲ့သည့် ရက် ၃၀ အတွင်းရှိ <xliff:g id="APP_DATA">%s</xliff:g> ဒေတာကို အပြီးဖျက်မလား။"</string>
-    <!-- no translation found for confirming_question_permission_type_app_data_all (1210052631467085849) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_day (4377296923865256246) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_week (2253468260502709170) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_month (1656927839079630144) -->
-    <skip />
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"ယခင်ရှိသမျှ <xliff:g id="APP_DATA">%2$s</xliff:g> က ထည့်ထားသော <xliff:g id="DATA_TYPE">%1$s</xliff:g> ဒေတာကို အပြီးဖျက်မလား။"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"ပြီးခဲ့သည့် ၂၄ ရက်အတွင်း <xliff:g id="APP_DATA">%2$s</xliff:g> က ထည့်ထားသော <xliff:g id="DATA_TYPE">%1$s</xliff:g> ဒေတာကို အပြီးဖျက်မလား။"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"ပြီးခဲ့သည့် ၇ ရက်အတွင်း <xliff:g id="APP_DATA">%2$s</xliff:g> က ထည့်ထားသော <xliff:g id="DATA_TYPE">%1$s</xliff:g> ဒေတာကို အပြီးဖျက်မလား။"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"ပြီးခဲ့သည့် ရက် ၃၀ အတွင်း <xliff:g id="APP_DATA">%2$s</xliff:g> က ထည့်ထားသော <xliff:g id="DATA_TYPE">%1$s</xliff:g> ဒေတာကို အပြီးဖျက်မလား။"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"<xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> ခွင့်ပြုချက် အားလုံးကိုလည်း Health Connect မှ ဖယ်ရှားရန်"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"<xliff:g id="APP_DATA">%2$s</xliff:g> က ထည့်ထားသော <xliff:g id="DATA_TYPE">%1$s</xliff:g> ဒေတာအားလုံးကို အပြီးဖျက်မလား။"</string>
-    <!-- no translation found for confirming_question_single_entry (2064578008447638932) -->
-    <skip />
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"Health Connect မှ ဤထည့်သွင်းမှုကို အပြီးဖျက်မလား။"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"ချိတ်ဆက်ထားသည့်အက်ပ်များက Health Connect မှ ဤဒေတာကို သုံးနိုင်တော့မည်မဟုတ်ပါ"</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"၎င်းက <xliff:g id="START_DATE">%1$s</xliff:g> မှ <xliff:g id="END_DATE">%2$s</xliff:g> အထိ ဓမ္မတာလာခြင်း ထည့်သွင်းမှုအားလုံးကို ဖျက်မည်။"</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"ဖျက်ရန်"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"နောက်သို့"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"ပြီးပြီ"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"ပိတ်ရန်"</string>
-    <!-- no translation found for delete_dialog_success_title (900884533930984889) -->
-    <skip />
-    <!-- no translation found for delete_dialog_success_message (7454086333205881294) -->
-    <skip />
-    <!-- no translation found for delete_dialog_done_button (1371340030947835493) -->
-    <skip />
-    <!-- no translation found for delete_dialog_see_connected_apps_button (2975631672738138716) -->
-    <skip />
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"ဒေတာကို Health Connect မှ ဖျက်ထားသည်"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"သင်၏ချိတ်ဆက်ထားသော အက်ပ်များမှ ဒေတာကို အပြီးဖျက်လိုပါက သင့်ဒေတာ သိမ်းထားနိုင်သော အက်ပ်တစ်ခုစီကို စစ်ဆေးပါ။"</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"ပြီးပြီ"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"ချိတ်ဆက်ထားသော အက်ပ်များကို ကြည့်ရန်"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"သင့်ဒေတာကို ဖျက်နေသည်"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"ဒေတာကို ဖျက်၍မရပါ"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"တစ်ခုခုမှားသွားသဖြင့် Health Connect က သင့်ဒေတာကို ဖျက်၍မရပါ"</string>
@@ -858,17 +846,14 @@
     <string name="range_off" msgid="8178520557618184215">"ပိတ်"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"ဤဆက်တင်များပြောင်းပါက Health Connect သည် သင်၏သတ်မှတ်ချက်အသစ်များအရ လက်ရှိဒေတာကို ဖျက်သည်"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{# လ နောက်ပိုင်းတွင် ဒေတာ အလိုအလျောက်ဖျက်မလား။}other{# လ နောက်ပိုင်းတွင် ဒေတာ အလိုအလျောက်ဖျက်မလား။}}"</string>
-    <!-- no translation found for confirming_message_x_months (986840333220382321) -->
-    <skip />
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{၎င်းသည် Health Connect မှ # လထက်ကျော်သော ဒေတာကိုလည်း ဖျက်ပါသည်။\n\nသင်၏ချိတ်ဆက်ထားသော အက်ပ်များမှ ဒေတာကို အပြီးဖျက်လိုပါက သင့်ဒေတာ သိမ်းထားနိုင်သော အက်ပ်တစ်ခုစီကို စစ်ဆေးပါ။}other{၎င်းသည် Health Connect မှ # လထက်ကျော်သော ဒေတာကိုလည်း ဖျက်ပါသည်။\n\nသင်၏ချိတ်ဆက်ထားသော အက်ပ်များမှ ဒေတာကို အပြီးဖျက်လိုပါက သင့်ဒေတာ သိမ်းထားနိုင်သော အက်ပ်တစ်ခုစီကို စစ်ဆေးပါ။}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"အလိုအလျောက်ဖျက်ခြင်း သတ်မှတ်ရန်"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"လက်ရှိဒေတာကို ဖျက်မည်"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect သည် # လအထက် ဒေတာအားလုံးကို ဖျက်မည်။ ချိတ်ဆက်ထားသောအက်ပ်များတွင် ဤအပြောင်းအလဲများ ပြသရန် တစ်ရက်ကြာနိုင်သည်။}other{Health Connect သည် # လအထက် ဒေတာအားလုံးကို ဖျက်မည်။ ချိတ်ဆက်ထားသောအက်ပ်များတွင် ဤအပြောင်းအလဲများ ပြသရန် တစ်ရက်ကြာနိုင်သည်။}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"၎င်းတို့မှဖျက်ရန် ဒေတာ"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"ပြီးပြီ"</string>
-    <!-- no translation found for auto_delete_confirmation_toast (7161651426400701306) -->
-    <skip />
-    <!-- no translation found for auto_delete_off_toast (6530926709108821768) -->
-    <skip />
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{အလိုအလျောက်ဖျက်ခြင်းကို ဖွင့်ထားသည်။ # လထက်ကျော်သော ဒေတာကို ဖျက်ပါမည်}other{အလိုအလျောက်ဖျက်ခြင်းကို ဖွင့်ထားသည်။ # လထက်ကျော်သော ဒေတာကို ဖျက်ပါမည်}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"အလိုအလျောက်ဖျက်ခြင်း ပိတ်ထားသည်"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"ဦးစားပေးအက်ပ် သတ်မှတ်ခြင်း"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"အက်ပ်တစ်ခုနှင့်အထက်က <xliff:g id="DATA_TYPE">%s</xliff:g> ဒေတာများ ထည့်ပါက Health Connect သည် ဤစာရင်းထိပ်ဆုံးရှိအက်ပ်ကို ဦးစားပေးသတ်မှတ်သည်။ အက်ပ်များကို ပြန်စီစဉ်ရန် ဖိဆွဲပါ။"</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"သိမ်းရန်"</string>

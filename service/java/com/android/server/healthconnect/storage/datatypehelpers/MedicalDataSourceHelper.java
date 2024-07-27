@@ -21,6 +21,7 @@ import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
 import static com.android.server.healthconnect.storage.HealthConnectDatabase.createTable;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_UNIQUE_NON_NULL;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
@@ -30,6 +31,7 @@ import static com.android.server.healthconnect.storage.utils.WhereClauses.Logica
 
 import android.annotation.NonNull;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -44,6 +46,7 @@ import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
+import com.android.server.healthconnect.storage.utils.SqlJoin;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
@@ -52,6 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 /**
  * Helper class for MedicalDataSource.
@@ -64,15 +68,18 @@ public class MedicalDataSourceHelper {
 
     @VisibleForTesting static final String DISPLAY_NAME_COLUMN_NAME = "display_name";
     @VisibleForTesting static final String FHIR_BASE_URI_COLUMN_NAME = "fhir_base_uri";
-    @VisibleForTesting static final String PACKAGE_NAME_COLUMN_NAME = "package_name";
+    @VisibleForTesting static final String APP_INFO_ID_COLUMN_NAME = "app_info_id";
     @VisibleForTesting static final String DATA_SOURCE_UUID_COLUMN_NAME = "data_source_uuid";
     private static final List<Pair<String, Integer>> UNIQUE_COLUMNS_INFO =
             List.of(new Pair<>(DATA_SOURCE_UUID_COLUMN_NAME, UpsertTableRequest.TYPE_BLOB));
 
     private final TransactionManager mTransactionManager;
+    private final AppInfoHelper mAppInfoHelper;
 
-    public MedicalDataSourceHelper(@NonNull TransactionManager transactionManager) {
+    public MedicalDataSourceHelper(
+            @NonNull TransactionManager transactionManager, @NonNull AppInfoHelper appInfoHelper) {
         mTransactionManager = transactionManager;
+        mAppInfoHelper = appInfoHelper;
     }
 
     @NonNull
@@ -85,23 +92,23 @@ public class MedicalDataSourceHelper {
         return DATA_SOURCE_UUID_COLUMN_NAME;
     }
 
-    // TODO(b/344781394): Remove the package_name column and add app_info_id column once the table
-    // is created with a foreign key to the application_info_id_table.
     @NonNull
     private static List<Pair<String, String>> getColumnInfo() {
         return List.of(
                 Pair.create(PRIMARY_COLUMN_NAME, PRIMARY),
-                Pair.create(PACKAGE_NAME_COLUMN_NAME, TEXT_NOT_NULL),
+                Pair.create(APP_INFO_ID_COLUMN_NAME, INTEGER_NOT_NULL),
                 Pair.create(DISPLAY_NAME_COLUMN_NAME, TEXT_NOT_NULL),
                 Pair.create(FHIR_BASE_URI_COLUMN_NAME, TEXT_NOT_NULL),
                 Pair.create(DATA_SOURCE_UUID_COLUMN_NAME, BLOB_UNIQUE_NON_NULL));
     }
 
-    // TODO(b/344781394): Add the foreign key to the application_info_table and the relevant logic
-    // to populate that when creating a {@link MedicalDataSource} row.
     @NonNull
     public static CreateTableRequest getCreateTableRequest() {
-        return new CreateTableRequest(MEDICAL_DATA_SOURCE_TABLE_NAME, getColumnInfo());
+        return new CreateTableRequest(MEDICAL_DATA_SOURCE_TABLE_NAME, getColumnInfo())
+                .addForeignKey(
+                        AppInfoHelper.TABLE_NAME,
+                        List.of(APP_INFO_ID_COLUMN_NAME),
+                        List.of(PRIMARY_COLUMN_NAME));
     }
 
     /** Creates the medical_data_source table. */
@@ -109,7 +116,20 @@ public class MedicalDataSourceHelper {
         createTable(db, getCreateTableRequest());
     }
 
-    /** Creates {@link ReadTableRequest} for the given list of {@code ids}. */
+    /**
+     * Creates {@link ReadTableRequest} that joins with {@link AppInfoHelper#TABLE_NAME} and filters
+     * for the given list of {@code ids}.
+     */
+    @NonNull
+    public static ReadTableRequest getReadTableRequestJoinWithAppInfo(@NonNull List<String> ids) {
+        return getReadTableRequest(ids).setJoinClause(getJoinClauseWithAppInfoTable());
+    }
+
+    /**
+     * Creates {@link ReadTableRequest} for the given list of {@code ids}.
+     *
+     * <p>If any of the ids are obviously not valid (eg not UUID strings) they are ignored.
+     */
     @NonNull
     public static ReadTableRequest getReadTableRequest(@NonNull List<String> ids) {
         return new ReadTableRequest(getMainTableName())
@@ -117,8 +137,33 @@ public class MedicalDataSourceHelper {
     }
 
     @NonNull
+    private static SqlJoin getJoinClauseWithAppInfoTable() {
+        return new SqlJoin(
+                        MEDICAL_DATA_SOURCE_TABLE_NAME,
+                        AppInfoHelper.TABLE_NAME,
+                        APP_INFO_ID_COLUMN_NAME,
+                        PRIMARY_COLUMN_NAME)
+                .setJoinType(SqlJoin.SQL_JOIN_INNER);
+    }
+
+    /**
+     * Returns a {@link WhereClauses} that limits to data sources with id in {@code ids}.
+     *
+     * @param ids the ids to limit to.
+     */
+    @NonNull
     private static WhereClauses getReadTableWhereClause(@NonNull List<String> ids) {
-        List<UUID> uuids = ids.stream().map(UUID::fromString).toList();
+        List<UUID> uuids =
+                ids.stream()
+                        .flatMap(
+                                id -> {
+                                    try {
+                                        return Stream.of(UUID.fromString(id));
+                                    } catch (IllegalArgumentException ex) {
+                                        return Stream.of();
+                                    }
+                                })
+                        .toList();
         return new WhereClauses(AND)
                 .addWhereInClauseWithoutQuotes(
                         DATA_SOURCE_UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(uuids));
@@ -149,7 +194,8 @@ public class MedicalDataSourceHelper {
     private static MedicalDataSource getMedicalDataSource(@NonNull Cursor cursor) {
         return new MedicalDataSource.Builder(
                         /* id= */ getCursorUUID(cursor, DATA_SOURCE_UUID_COLUMN_NAME).toString(),
-                        /* packageName= */ getCursorString(cursor, PACKAGE_NAME_COLUMN_NAME),
+                        /* packageName= */ getCursorString(
+                                cursor, AppInfoHelper.PACKAGE_COLUMN_NAME),
                         /* fhirBaseUri= */ getCursorString(cursor, FHIR_BASE_URI_COLUMN_NAME),
                         /* displayName= */ getCursorString(cursor, DISPLAY_NAME_COLUMN_NAME))
                 .build();
@@ -166,12 +212,26 @@ public class MedicalDataSourceHelper {
      */
     @NonNull
     public MedicalDataSource createMedicalDataSource(
-            @NonNull CreateMedicalDataSourceRequest request, @NonNull String packageName) {
+            @NonNull Context context,
+            @NonNull CreateMedicalDataSourceRequest request,
+            @NonNull String packageName) {
         // TODO(b/344781394): Add support for access logs.
+        return mTransactionManager.runAsTransaction(
+                (TransactionManager.TransactionRunnableWithReturn<
+                                MedicalDataSource, RuntimeException>)
+                        db -> createMedicalDataSourceAndAppInfo(db, context, request, packageName));
+    }
+
+    private MedicalDataSource createMedicalDataSourceAndAppInfo(
+            @NonNull SQLiteDatabase db,
+            @NonNull Context context,
+            @NonNull CreateMedicalDataSourceRequest request,
+            @NonNull String packageName) {
+        long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(db, packageName, context);
         UUID dataSourceUuid = UUID.randomUUID();
         UpsertTableRequest upsertTableRequest =
-                getUpsertTableRequest(dataSourceUuid, request, packageName);
-        mTransactionManager.insert(upsertTableRequest);
+                getUpsertTableRequest(dataSourceUuid, request, appInfoId);
+        mTransactionManager.insert(db, upsertTableRequest);
         return buildMedicalDataSource(dataSourceUuid, request, packageName);
     }
 
@@ -185,7 +245,33 @@ public class MedicalDataSourceHelper {
     @NonNull
     public List<MedicalDataSource> getMedicalDataSources(@NonNull List<String> ids)
             throws SQLiteException {
-        ReadTableRequest readTableRequest = getReadTableRequest(ids);
+        ReadTableRequest readTableRequest = getReadTableRequestJoinWithAppInfo(ids);
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+            return getMedicalDataSources(cursor);
+        }
+    }
+
+    /**
+     * Returns the {@link MedicalDataSource}s stored in the HealthConnect database, optionally
+     * restricted by package name.
+     *
+     * <p>If {@code packageNames} is empty, returns all datasources, otherwise returns only
+     * datasources belonging to the given apps,
+     *
+     * @param packageNames list of packageNames of apps to restrict to
+     */
+    @NonNull
+    public List<MedicalDataSource> getMedicalDataSourcesByPackage(List<String> packageNames)
+            throws SQLiteException {
+        ReadTableRequest readTableRequest =
+                new ReadTableRequest(getMainTableName())
+                        .setJoinClause(getJoinClauseWithAppInfoTable());
+        if (!packageNames.isEmpty()) {
+            List<Long> appInfoIds = mAppInfoHelper.getAppInfoIds(packageNames);
+            readTableRequest.setWhereClause(
+                    new WhereClauses(AND)
+                            .addWhereInLongsClause(APP_INFO_ID_COLUMN_NAME, appInfoIds));
+        }
         try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
             return getMedicalDataSources(cursor);
         }
@@ -193,15 +279,15 @@ public class MedicalDataSourceHelper {
 
     /**
      * Creates {@link UpsertTableRequest} for the given {@link CreateMedicalDataSourceRequest} and
-     * {@code packageName}.
+     * {@code appInfoId}.
      */
     @NonNull
     public static UpsertTableRequest getUpsertTableRequest(
             @NonNull UUID uuid,
             @NonNull CreateMedicalDataSourceRequest createMedicalDataSourceRequest,
-            @NonNull String packageName) {
+            long appInfoId) {
         ContentValues contentValues =
-                getContentValues(uuid, createMedicalDataSourceRequest, packageName);
+                getContentValues(uuid, createMedicalDataSourceRequest, appInfoId);
         return new UpsertTableRequest(getMainTableName(), contentValues, UNIQUE_COLUMNS_INFO);
     }
 
@@ -214,7 +300,6 @@ public class MedicalDataSourceHelper {
      * @param id the id to delete.
      * @throws IllegalArgumentException if the id does not exist
      */
-    @NonNull
     public static void deleteMedicalDataSource(@NonNull String id) throws SQLiteException {
         UUID uuid;
         try {
@@ -291,14 +376,14 @@ public class MedicalDataSourceHelper {
     private static ContentValues getContentValues(
             @NonNull UUID uuid,
             @NonNull CreateMedicalDataSourceRequest createMedicalDataSourceRequest,
-            @NonNull String packageName) {
+            long appInfoId) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DATA_SOURCE_UUID_COLUMN_NAME, StorageUtils.convertUUIDToBytes(uuid));
         contentValues.put(
                 DISPLAY_NAME_COLUMN_NAME, createMedicalDataSourceRequest.getDisplayName());
         contentValues.put(
                 FHIR_BASE_URI_COLUMN_NAME, createMedicalDataSourceRequest.getFhirBaseUri());
-        contentValues.put(PACKAGE_NAME_COLUMN_NAME, packageName);
+        contentValues.put(APP_INFO_ID_COLUMN_NAME, appInfoId);
         return contentValues;
     }
 }

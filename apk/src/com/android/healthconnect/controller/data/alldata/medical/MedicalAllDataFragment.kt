@@ -65,16 +65,6 @@ open class MedicalAllDataFragment : Hilt_MedicalAllDataFragment() {
 
     private val viewModel: MedicalAllDataViewModel by activityViewModels()
 
-    private val onMenuSetup: (MenuItem) -> Boolean = { menuItem ->
-        when (menuItem.itemId) {
-            R.id.menu_enter_deletion_state -> {
-                //TODO(): Display deletion dialog.
-                true
-            }
-            else -> false
-        }
-    }
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.app_data_screen, rootKey)
@@ -110,8 +100,6 @@ open class MedicalAllDataFragment : Hilt_MedicalAllDataFragment() {
     ) {
         preferenceScreen?.removeAll()
 
-        setupMenu(R.menu.all_data_menu, viewLifecycleOwner, logger, onMenuSetup)
-
         if (medicalPermissionTypes.isEmpty()) {
             preferenceScreen.addPreference(NoDataPreference(requireContext()))
             preferenceScreen.addPreference(
@@ -129,7 +117,13 @@ open class MedicalAllDataFragment : Hilt_MedicalAllDataFragment() {
                             it.setTitle(getString(MedicalPermissionStrings.fromPermissionType(permissionType).uppercaseLabel))
                             // TODO(b/343148212): Add icon.
                             // TODO(b/342159144): Add logName
-                            // TODO(b/343148212): Add preference click listener.
+                            it.setOnPreferenceClickListener {
+                                findNavController()
+                                        .navigate(
+                                                R.id.action_medicalAllData_to_entriesAndAccess,
+                                                bundleOf(PERMISSION_TYPE_KEY to permissionType.name))
+                                true
+                            }
                         })
                 }
 
