@@ -4,7 +4,6 @@ container: "com.android.healthfitness"
 
 flag {
     name: "personal_health_record"
-    is_exported: true
     namespace: "health_fitness_aconfig"
     description: "Flag for adding new PHR features."
     bug: "329271826"
@@ -13,7 +12,6 @@ flag {
 
 flag {
     name: "personal_health_record_database"
-    is_exported: true
     namespace: "health_fitness_aconfig"
     description: "Flag for guarding DB schema changes for PHR features."
     bug: "340809376"
@@ -60,5 +58,13 @@ flag {
     namespace: "health_fitness_aconfig"
     description: "Enables new information architecture."
     bug: "291249677"
+    is_fixed_read_only: true
+}
+
+flag {
+    name: "health_connect_mappings"
+    namespace: "health_fitness_aconfig"
+    description: "Uses new mappings for convenient data type maintenance."
+    bug: "353283052"
     is_fixed_read_only: true
 }

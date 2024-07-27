@@ -829,7 +829,8 @@ public final class HealthPermissions {
                             WRITE_RESPIRATORY_RATE,
                             WRITE_RESTING_HEART_RATE,
                             WRITE_SKIN_TEMPERATURE,
-                            WRITE_PLANNED_EXERCISE));
+                            WRITE_PLANNED_EXERCISE,
+                            WRITE_MINDFULNESS));
 
     private static final Map<String, Integer> sWriteHealthPermissionToHealthDataCategoryMap =
             new ArrayMap<>();
@@ -1229,7 +1230,8 @@ public final class HealthPermissions {
                     WRITE_HEART_RATE_VARIABILITY,
                     WRITE_OXYGEN_SATURATION,
                     WRITE_RESPIRATORY_RATE,
-                    WRITE_RESTING_HEART_RATE
+                    WRITE_RESTING_HEART_RATE,
+                    WRITE_SKIN_TEMPERATURE
                 });
 
         if (Flags.mindfulness()) {

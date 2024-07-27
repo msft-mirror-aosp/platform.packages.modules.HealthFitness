@@ -72,7 +72,7 @@ class BackupAndRestoreSettingsFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
-    // TODO: b/330484311 - Replace the mock with a fake.
+    // TODO: b/348591669 - Replace the mock with a fake and investigate the UI tests.
     @BindValue
     val exportSettingsViewModel: ExportSettingsViewModel =
         Mockito.mock(ExportSettingsViewModel::class.java)
@@ -109,23 +109,18 @@ class BackupAndRestoreSettingsFragmentTest {
             MutableLiveData(
                 ImportUiStatus.WithData(
                     ImportUiState(
-                        ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
-                        /** isImportOngoing= */
-                        false,
-                    )))
+                        dataImportError = ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
+                        isImportOngoing = false)))
         }
         whenever(exportStatusViewModel.storedScheduledExportStatus).then {
             MutableLiveData(
                 ScheduledExportUiStatus.WithData(
                     ScheduledExportUiState(
-                        null,
-                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-                        /** periodInDays= */
-                        0,
-                        TEST_LAST_EXPORT_FILE_NAME,
-                        TEST_LAST_EXPORT_APP_NAME,
-                        null,
-                        null)))
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        periodInDays = 0,
+                        lastExportFileName = TEST_LAST_EXPORT_FILE_NAME,
+                        lastExportAppName = TEST_LAST_EXPORT_APP_NAME)))
         }
     }
 
@@ -147,9 +142,7 @@ class BackupAndRestoreSettingsFragmentTest {
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
                         TEST_EXPORT_PERIOD_IN_DAYS,
                         TEST_LAST_EXPORT_FILE_NAME,
-                        TEST_LAST_EXPORT_APP_NAME,
-                        null,
-                        null)))
+                        TEST_LAST_EXPORT_APP_NAME)))
         }
         whenever(exportSettingsViewModel.storedExportSettings).then {
             MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
@@ -190,13 +183,10 @@ class BackupAndRestoreSettingsFragmentTest {
             MutableLiveData(
                 ScheduledExportUiStatus.WithData(
                     ScheduledExportUiState(
-                        null,
-                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-                        TEST_EXPORT_PERIOD_IN_DAYS,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        lastSuccessfulExportTime = null,
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        periodInDays = TEST_EXPORT_PERIOD_IN_DAYS)))
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
@@ -212,13 +202,11 @@ class BackupAndRestoreSettingsFragmentTest {
             MutableLiveData(
                 ScheduledExportUiStatus.WithData(
                     ScheduledExportUiState(
-                        NOW,
-                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-                        TEST_EXPORT_PERIOD_IN_DAYS,
-                        null,
-                        TEST_LAST_EXPORT_APP_NAME,
-                        null,
-                        null)))
+                        lastSuccessfulExportTime = NOW,
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        periodInDays = TEST_EXPORT_PERIOD_IN_DAYS,
+                        lastExportAppName = TEST_LAST_EXPORT_APP_NAME)))
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
@@ -234,13 +222,11 @@ class BackupAndRestoreSettingsFragmentTest {
             MutableLiveData(
                 ScheduledExportUiStatus.WithData(
                     ScheduledExportUiState(
-                        NOW,
-                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-                        TEST_EXPORT_PERIOD_IN_DAYS,
-                        TEST_LAST_EXPORT_FILE_NAME,
-                        null,
-                        null,
-                        null)))
+                        lastSuccessfulExportTime = NOW,
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        periodInDays = TEST_EXPORT_PERIOD_IN_DAYS,
+                        lastExportFileName = TEST_LAST_EXPORT_FILE_NAME)))
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
@@ -346,9 +332,9 @@ class BackupAndRestoreSettingsFragmentTest {
             MutableLiveData(
                 ImportUiStatus.WithData(
                     ImportUiState(
-                        ImportUiState.DataImportError.DATA_IMPORT_ERROR_WRONG_FILE,
-                        /** isImportOngoing= */
-                        false,
+                        dataImportError =
+                            ImportUiState.DataImportError.DATA_IMPORT_ERROR_WRONG_FILE,
+                        isImportOngoing = false,
                     )))
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
@@ -428,10 +414,8 @@ class BackupAndRestoreSettingsFragmentTest {
             MutableLiveData(
                 ImportUiStatus.WithData(
                     ImportUiState(
-                        ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
-                        /** isImportOngoing= */
-                        false,
-                    )))
+                        dataImportError = ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
+                        isImportOngoing = false)))
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 

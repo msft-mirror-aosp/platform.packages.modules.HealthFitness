@@ -155,6 +155,62 @@ class HealthPermissionReaderTest {
     }
 
     @Test
+    fun getAppsWithFitnessPermissions_returnsSupportedApps() = runTest {
+        assertThat(permissionReader.getAppsWithFitnessPermissions())
+                .containsAtLeast(TEST_APP_PACKAGE_NAME, TEST_APP_PACKAGE_NAME_2)
+    }
+
+    @Test
+    fun getAppsWithFitnessPermissions_returnsDistinctApps() = runTest {
+        val apps = permissionReader.getAppsWithFitnessPermissions()
+        assertThat(apps).isEqualTo(apps.distinct())
+    }
+
+    @Test
+    fun getAppsWithFitnessPermissions_doesNotReturnUnsupportedApps() = runTest {
+        assertThat(permissionReader.getAppsWithFitnessPermissions())
+                .doesNotContain(UNSUPPORTED_TEST_APP_PACKAGE_NAME)
+    }
+
+    @Test
+    fun getAppsWithFitnessPermissions_doesNotReturnMedicalPermissionApps() = runTest {
+        assertThat(permissionReader.getAppsWithFitnessPermissions())
+                .doesNotContain(MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME)
+    }
+
+    @Test
+    fun getAppsWithMedicalPermissions_flagDisabled_returnsEmptyList() = runTest {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(false)
+
+        assertThat(permissionReader.getAppsWithMedicalPermissions())
+                .isEmpty()
+    }
+
+    @Test
+    fun getAppsWithMedicalPermissions_returnsSupportedApps() = runTest {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
+
+        assertThat(permissionReader.getAppsWithMedicalPermissions())
+                .containsAtLeast(TEST_APP_PACKAGE_NAME, MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME)
+    }
+
+    @Test
+    fun getAppsWithMedicalPermissions_returnsDistinctApps() = runTest {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(false)
+
+        val apps = permissionReader.getAppsWithMedicalPermissions()
+        assertThat(apps).isEqualTo(apps.distinct())
+    }
+
+    @Test
+    fun getAppsWithMedicalPermissions_doesNotReturnUnsupportedApps() = runTest {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(false)
+
+        assertThat(permissionReader.getAppsWithMedicalPermissions())
+                .doesNotContain(UNSUPPORTED_TEST_APP_PACKAGE_NAME)
+    }
+
+    @Test
     fun getAppsWithOldHealthPermissions_returnsOldSupportedApps() = runTest {
         assertThat(permissionReader.getAppsWithOldHealthPermissions())
             .contains(OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME)

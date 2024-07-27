@@ -41,6 +41,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.suspendCancellableCoroutine
 
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 class LoadMenstruationDataUseCase
 @Inject
 constructor(

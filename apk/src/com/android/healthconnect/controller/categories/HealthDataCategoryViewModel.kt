@@ -25,6 +25,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 class HealthDataCategoryViewModel
 @Inject
 constructor(
