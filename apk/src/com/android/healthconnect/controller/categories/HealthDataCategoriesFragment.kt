@@ -15,10 +15,8 @@
  */
 package com.android.healthconnect.controller.categories
 
-import android.icu.text.MessageFormat
 import android.os.Bundle
 import android.view.View
-import androidx.annotation.AttrRes
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commitNow
@@ -27,8 +25,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.autodelete.AutoDeleteRange
-import com.android.healthconnect.controller.autodelete.AutoDeleteViewModel
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.Error
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.Loading
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.WithData
@@ -53,6 +49,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /** Fragment for health data categories. */
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 @AndroidEntryPoint(HealthPreferenceFragment::class)
 class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
 
@@ -71,7 +68,6 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
     @Inject lateinit var featureUtils: FeatureUtils
 
     private val categoriesViewModel: HealthDataCategoryViewModel by viewModels()
-    private val autoDeleteViewModel: AutoDeleteViewModel by activityViewModels()
     private val deletionViewModel: DeletionViewModel by activityViewModels()
 
     private val mBrowseDataCategory: PreferenceGroup? by lazy {
@@ -92,15 +88,6 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
             childFragmentManager.commitNow { add(DeletionFragment(), FRAGMENT_TAG_DELETION) }
         }
 
-        if (!featureUtils.isNewAppPriorityEnabled()) {
-            mAutoDelete?.isVisible = true
-            mAutoDelete?.logName = CategoriesElement.AUTO_DELETE_BUTTON
-            mAutoDelete?.setOnPreferenceClickListener {
-                findNavController().navigate(R.id.action_healthDataCategories_to_autoDelete)
-                true
-            }
-        }
-
         mDeleteAllData?.logName = CategoriesElement.DELETE_ALL_DATA_BUTTON
         mDeleteAllData?.setOnPreferenceClickListener {
             val deletionType = DeletionType.DeletionTypeAllData()
@@ -109,30 +96,6 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
             true
         }
         mDeleteAllData?.isEnabled = false
-    }
-
-    private fun buildSummary(autoDeleteRange: AutoDeleteRange): String {
-        return when (autoDeleteRange) {
-            AutoDeleteRange.AUTO_DELETE_RANGE_NEVER -> getString(R.string.range_off)
-            AutoDeleteRange.AUTO_DELETE_RANGE_THREE_MONTHS -> {
-                val count = AutoDeleteRange.AUTO_DELETE_RANGE_THREE_MONTHS.numberOfMonths
-                MessageFormat.format(
-                    getString(R.string.range_after_x_months), mapOf("count" to count))
-            }
-            AutoDeleteRange.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS -> {
-                val count = AutoDeleteRange.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS.numberOfMonths
-                MessageFormat.format(
-                    getString(R.string.range_after_x_months), mapOf("count" to count))
-            }
-        }
-    }
-
-    @AttrRes
-    private fun iconAttribute(autoDeleteRange: AutoDeleteRange): Int {
-        return when (autoDeleteRange) {
-            AutoDeleteRange.AUTO_DELETE_RANGE_NEVER -> R.attr.autoDeleteOffIcon
-            else -> R.attr.autoDeleteIcon
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -164,27 +127,6 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
                     true
                 }
                 else -> false
-            }
-        }
-
-        if (!featureUtils.isNewAppPriorityEnabled()) {
-            autoDeleteViewModel.storedAutoDeleteRange.observe(viewLifecycleOwner) { state ->
-                when (state) {
-                    AutoDeleteViewModel.AutoDeleteState.Loading -> {
-                        mAutoDelete?.summary = ""
-                        mAutoDelete?.icon = null
-                    }
-                    is AutoDeleteViewModel.AutoDeleteState.LoadingFailed -> {
-                        mAutoDelete?.summary = ""
-                        mAutoDelete?.icon = null
-                    }
-                    is AutoDeleteViewModel.AutoDeleteState.WithData -> {
-                        mAutoDelete?.summary = buildSummary(state.autoDeleteRange)
-                        mAutoDelete?.setIcon(
-                            AttributeResolver.getResource(
-                                requireContext(), iconAttribute(state.autoDeleteRange)))
-                    }
-                }
             }
         }
 

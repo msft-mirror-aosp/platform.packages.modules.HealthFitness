@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,6 @@
  * limitations under the License.
  *
  *
- */
-
-/**
- * Copyright (C) 2022 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
- *
- * ```
- *      http://www.apache.org/licenses/LICENSE-2.0
- * ```
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
  */
 package com.android.healthconnect.controller.permissions.app
 
@@ -48,20 +32,18 @@ import com.android.healthconnect.controller.migration.MigrationActivity.Companio
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState.*
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
-import com.android.healthconnect.controller.permissions.additionalaccess.DisableExerciseRoutePermissionDialog
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
-import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionStrings.Companion.fromPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment
-import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
-import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
+import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
-import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement.ADDITIONAL_ACCESS_BUTTON
@@ -75,14 +57,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /**
- * Fragment to show granted/revoked health permissions for and app. It is used as an entry point
- * from PermissionController.
+ * Fragment to show granted/revoked [MedicalPermission]s for and app. It is used as an entry point
+ * from PermissionController or from [SettingsCombinedPermissionsFragment].
  *
  * For apps that declares health connect permissions without the rational intent, we only show
  * granted permissions to allow the user to revoke this app permissions.
  */
 @AndroidEntryPoint(HealthPreferenceFragment::class)
-class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFragment() {
+class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
 
     init {
         this.setPageName(PageName.MANAGE_PERMISSIONS_PAGE)
@@ -93,9 +75,10 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
 
     private lateinit var packageName: String
     private var appName: String = ""
+    private var showManageAppSection = true
 
     private val viewModel: AppPermissionViewModel by activityViewModels()
-    private val permissionMap: MutableMap<FitnessPermission, TwoStatePreference> = mutableMapOf()
+    private val permissionMap: MutableMap<MedicalPermission, TwoStatePreference> = mutableMapOf()
     private val additionalAccessViewModel: AdditionalAccessViewModel by viewModels()
     private val migrationViewModel: MigrationViewModel by viewModels()
     private val allowAllPreference: HealthMainSwitchPreference by pref(ALLOW_ALL_PREFERENCE)
@@ -104,10 +87,9 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
     private val manageAppCategory: PreferenceGroup by pref(MANAGE_APP_CATEGORY)
     private val header: AppHeaderPreference by pref(PERMISSION_HEADER)
     private val footer: FooterPreference by pref(FOOTER)
-    private val dateFormatter by lazy { LocalDateTimeFormatter(requireContext()) }
     private val onSwitchChangeListener = OnCheckedChangeListener { switchView, isChecked ->
         if (isChecked) {
-            val permissionsUpdated = viewModel.grantAllFitnessPermissions(packageName)
+            val permissionsUpdated = viewModel.grantAllMedicalPermissions(packageName)
             if (!permissionsUpdated) {
                 switchView.isChecked = false
                 Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
@@ -133,14 +115,17 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
             requireArguments().getString(EXTRA_PACKAGE_NAME) != null) {
             packageName = requireArguments().getString(EXTRA_PACKAGE_NAME)!!
         }
+        if (requireArguments().containsKey(Constants.SHOW_MANAGE_APP_SECTION)) {
+            showManageAppSection = requireArguments().getBoolean(Constants.SHOW_MANAGE_APP_SECTION)
+        }
 
         viewModel.loadPermissionsForPackage(packageName)
         additionalAccessViewModel.loadAdditionalAccessPreferences(packageName)
 
-        viewModel.fitnessPermissions.observe(viewLifecycleOwner) { permissions ->
+        viewModel.medicalPermissions.observe(viewLifecycleOwner) { permissions ->
             updatePermissions(permissions)
         }
-        viewModel.grantedFitnessPermissions.observe(viewLifecycleOwner) { granted ->
+        viewModel.grantedMedicalPermissions.observe(viewLifecycleOwner) { granted ->
             permissionMap.forEach { (healthPermission, switchPreference) ->
                 switchPreference.isChecked = healthPermission in granted
             }
@@ -181,13 +166,6 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
             }
         }
 
-        viewModel.showDisableExerciseRouteEvent.observe(viewLifecycleOwner) { event ->
-            if (event.shouldShowDialog) {
-                DisableExerciseRoutePermissionDialog.createDialog(packageName, event.appName)
-                    .show(childFragmentManager, DISABLE_EXERCISE_ROUTE_DIALOG_TAG)
-            }
-        }
-
         childFragmentManager.setFragmentResultListener(
             DisconnectDialogFragment.DISCONNECT_CANCELED_EVENT, this) { _, _ ->
                 allowAllPreference.isChecked = true
@@ -225,7 +203,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
 
     private fun setupFooter(appName: String) {
         if (viewModel.isPackageSupported(packageName)) {
-            viewModel.atLeastOneFitnessPermissionGranted.observe(viewLifecycleOwner) {
+            viewModel.atLeastOneMedicalPermissionGranted.observe(viewLifecycleOwner) {
                 isAtLeastOneGranted ->
                 updateFooter(isAtLeastOneGranted, appName)
             }
@@ -235,6 +213,10 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
     }
 
     private fun setupManageAppCategory() {
+        if (!showManageAppSection) {
+            manageAppCategory.isVisible = false
+            return
+        }
         additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
             manageAppCategory.isVisible = state.isValid()
             manageAppCategory.removeAll()
@@ -248,7 +230,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
                             val extras = bundleOf(EXTRA_PACKAGE_NAME to packageName)
                             navigationUtils.navigate(
                                 fragment = this,
-                                action = R.id.action_manageAppFragment_to_additionalAccessFragment,
+                                action = R.id.action_settingsMedicalApp_to_additionalAccessFragment,
                                 bundle = extras)
                             true
                         }
@@ -260,7 +242,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
 
     private fun setupAllowAllPreference() {
         allowAllPreference.addOnSwitchChangeListener(onSwitchChangeListener)
-        viewModel.allFitnessPermissionsGranted.observe(viewLifecycleOwner) { isAllGranted ->
+        viewModel.allMedicalPermissionsGranted.observe(viewLifecycleOwner) { isAllGranted ->
             allowAllPreference.removeOnSwitchChangeListener(onSwitchChangeListener)
             allowAllPreference.isChecked = isAllGranted
             allowAllPreference.addOnSwitchChangeListener(onSwitchChangeListener)
@@ -272,7 +254,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
             .show(childFragmentManager, DisconnectDialogFragment.TAG)
     }
 
-    private fun updatePermissions(permissions: List<FitnessPermission>) {
+    private fun updatePermissions(permissions: List<MedicalPermission>) {
         readPermissionCategory.removeAll()
         writePermissionCategory.removeAll()
 
@@ -281,22 +263,21 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
         permissions
             .sortedBy {
                 requireContext()
-                    .getString(fromPermissionType(it.fitnessPermissionType).uppercaseLabel)
+                    .getString(fromPermissionType(it.medicalPermissionType).uppercaseLabel)
             }
             .forEach { permission ->
                 val category =
-                    if (permission.permissionsAccessType == PermissionsAccessType.READ) {
-                        readPermissionCategory
-                    } else {
+                    if (permission.medicalPermissionType ==
+                            MedicalPermissionType.ALL_MEDICAL_DATA) {
                         writePermissionCategory
+                    } else {
+                        readPermissionCategory
                     }
                 val switchPreference =
                     HealthSwitchPreference(requireContext()).also {
-                        val healthCategory =
-                            fromHealthPermissionType(permission.fitnessPermissionType)
-                        it.icon = healthCategory.icon(requireContext())
+                        //it.icon = healthCategory.icon(requireContext())
                         it.setTitle(
-                            fromPermissionType(permission.fitnessPermissionType).uppercaseLabel)
+                            fromPermissionType(permission.medicalPermissionType).uppercaseLabel)
                         it.logNameActive = PermissionsElement.PERMISSION_SWITCH
                         it.logNameInactive = PermissionsElement.PERMISSION_SWITCH
                         it.setOnPreferenceChangeListener { _, newValue ->
@@ -323,24 +304,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
     }
 
     private fun updateFooter(isAtLeastOneGranted: Boolean, appName: String) {
-        var title = getString(R.string.manage_permissions_rationale, appName)
-
-        val isHistoryReadAvailable =
-            additionalAccessViewModel.additionalAccessState.value?.historyReadUIState?.isDeclared
-                ?: false
-        // Do not show the access date here if history read is available
-        if (isAtLeastOneGranted && !isHistoryReadAvailable) {
-            val dataAccessDate = viewModel.loadAccessDate(packageName)
-            dataAccessDate?.let {
-                val formattedDate = dateFormatter.formatLongDate(dataAccessDate)
-                title =
-                    getString(R.string.manage_permissions_time_frame, appName, formattedDate) +
-                        PARAGRAPH_SEPARATOR +
-                        title
-            }
-        }
-
-        footer.title = title
+        footer.title = getString(R.string.manage_permissions_rationale, appName)
         if (healthPermissionReader.isRationaleIntentDeclared(packageName)) {
             footer.setLearnMoreText(getString(R.string.manage_permissions_learn_more))
             footer.setLearnMoreAction {
@@ -358,8 +322,6 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
         private const val PERMISSION_HEADER = "manage_app_permission_header"
         private const val MANAGE_APP_CATEGORY = "manage_app_category"
         private const val KEY_ADDITIONAL_ACCESS = "additional_access"
-        private const val DISABLE_EXERCISE_ROUTE_DIALOG_TAG = "disable_exercise_route_dialog"
         private const val FOOTER = "manage_app_permission_footer"
-        private const val PARAGRAPH_SEPARATOR = "\n\n"
     }
 }
