@@ -50,6 +50,8 @@ public final class ScheduledExportStatus implements Parcelable {
 
     @Nullable private final Instant mLastSuccessfulExportTime;
 
+    @Nullable private final Instant mLastFailedExportTime;
+
     @HealthConnectManager.DataExportError private final int mDataExportError;
     private final int mPeriodInDays;
     @Nullable private final String mLastExportFileName;
@@ -57,8 +59,9 @@ public final class ScheduledExportStatus implements Parcelable {
     @Nullable private final String mNextExportFileName;
     @Nullable private final String mNextExportAppName;
 
-    public ScheduledExportStatus(
+    private ScheduledExportStatus(
             @Nullable Instant lastSuccessfulExportTime,
+            @Nullable Instant lastFailedExportTime,
             @HealthConnectManager.DataExportError int dataExportError,
             int periodInDays,
             @Nullable String lastExportFileName,
@@ -66,6 +69,7 @@ public final class ScheduledExportStatus implements Parcelable {
             @Nullable String nextExportFileName,
             @Nullable String nextExportAppName) {
         mLastSuccessfulExportTime = lastSuccessfulExportTime;
+        mLastFailedExportTime = lastFailedExportTime;
         mDataExportError = dataExportError;
         mPeriodInDays = periodInDays;
         mLastExportFileName = lastExportFileName;
@@ -81,6 +85,15 @@ public final class ScheduledExportStatus implements Parcelable {
     @Nullable
     public Instant getLastSuccessfulExportTime() {
         return mLastSuccessfulExportTime;
+    }
+
+    /**
+     * Returns the time of the last failed export attempt, or null if there hasn't been a failed
+     * export.
+     */
+    @Nullable
+    public Instant getLastFailedExportTime() {
+        return mLastFailedExportTime;
     }
 
     /** Returns the error status of the last export attempt. */
@@ -130,6 +143,9 @@ public final class ScheduledExportStatus implements Parcelable {
     private ScheduledExportStatus(@NonNull Parcel in) {
         long timestamp = in.readLong();
         mLastSuccessfulExportTime = timestamp == 0 ? null : Instant.ofEpochMilli(timestamp);
+        long lastFailedExportTimestamp = in.readLong();
+        mLastFailedExportTime =
+                timestamp == 0 ? null : Instant.ofEpochMilli(lastFailedExportTimestamp);
         mDataExportError = in.readInt();
         mPeriodInDays = in.readInt();
         mLastExportFileName = in.readString();
@@ -142,11 +158,118 @@ public final class ScheduledExportStatus implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeLong(
                 mLastSuccessfulExportTime == null ? 0 : mLastSuccessfulExportTime.toEpochMilli());
+        dest.writeLong(mLastFailedExportTime == null ? 0 : mLastFailedExportTime.toEpochMilli());
         dest.writeInt(mDataExportError);
         dest.writeInt(mPeriodInDays);
         dest.writeString(mLastExportFileName);
         dest.writeString(mLastExportAppName);
         dest.writeString(mNextExportFileName);
         dest.writeString(mNextExportAppName);
+    }
+
+    /** Builder for {@link ScheduledExportStatus}. */
+    public static final class Builder {
+        @Nullable private Instant mLastSuccessfulExportTime;
+        @Nullable private Instant mLastFailedExportTime;
+        @HealthConnectManager.DataExportError private int mDataExportError;
+        private int mPeriodInDays;
+        @Nullable private String mLastExportFileName;
+        @Nullable private String mLastExportAppName;
+        @Nullable private String mNextExportFileName;
+        @Nullable private String mNextExportAppName;
+
+        public Builder() {}
+
+        /**
+         * Sets the time for the last successful export, or null if there hasn't been a successful
+         * export to the current location.
+         */
+        public Builder setLastSuccessfulExportTime(@Nullable Instant lastSuccessfulExportTime) {
+            mLastSuccessfulExportTime = lastSuccessfulExportTime;
+            return this;
+        }
+
+        /**
+         * Sets the time of the last failed export attempt, or null if there hasn't been a failed
+         * export.
+         */
+        public Builder setLastFailedExportTime(@Nullable Instant lastFailedExportTime) {
+            mLastFailedExportTime = lastFailedExportTime;
+            return this;
+        }
+
+        /**
+         * Sets the error status of the last export attempt.
+         *
+         * <p>Defaults to {@link HealthConnectManager#DATA_EXPORT_ERROR_NONE}.
+         */
+        public Builder setDataExportError(
+                @HealthConnectManager.DataExportError int dataExportError) {
+            mDataExportError = dataExportError;
+            return this;
+        }
+
+        /**
+         * Sets the period between scheduled exports.
+         *
+         * <p>A value of 0 indicates that no setting has been set.
+         */
+        public Builder setPeriodInDays(int periodInDays) {
+            mPeriodInDays = periodInDays;
+            return this;
+        }
+
+        /**
+         * Sets the file name of the last successful export.
+         *
+         * <p>Defaults to null.
+         */
+        public Builder setLastExportFileName(@Nullable String lastExportFileName) {
+            mLastExportFileName = lastExportFileName;
+            return this;
+        }
+
+        /**
+         * Sets the app name of the last successful export.
+         *
+         * <p>Defaults to null.
+         */
+        public Builder setLastExportAppName(@Nullable String lastExportAppName) {
+            mLastExportAppName = lastExportAppName;
+            return this;
+        }
+
+        /**
+         * Sets the file name of the next export.
+         *
+         * <p>Defaults to null.
+         */
+        public Builder setNextExportFileName(@Nullable String nextExportFileName) {
+            mNextExportFileName = nextExportFileName;
+            return this;
+        }
+
+        /**
+         * Sets the app name of the next export.
+         *
+         * <p>Defaults to null.
+         */
+        public Builder setNextExportAppName(@Nullable String nextExportAppName) {
+            mNextExportAppName = nextExportAppName;
+            return this;
+        }
+
+        /** Builds a {@link ScheduledExportStatus} object. */
+        public ScheduledExportStatus build() {
+            return new ScheduledExportStatus(
+                    mLastSuccessfulExportTime,
+                    mLastFailedExportTime,
+                    mDataExportError,
+                    mPeriodInDays,
+                    mLastExportFileName,
+                    mLastExportAppName,
+                    mNextExportFileName,
+                    mNextExportAppName);
+        }
     }
 }

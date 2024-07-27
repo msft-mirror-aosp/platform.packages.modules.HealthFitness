@@ -206,7 +206,9 @@ class FakeLoadMedicalEntriesUseCase : ILoadMedicalEntriesUseCase {
         formattedList = list
     }
 
-    override suspend fun invoke(input: LoadMedicalEntriesInput): UseCaseResults<List<FormattedEntry>> {
+    override suspend fun invoke(
+        input: LoadMedicalEntriesInput
+    ): UseCaseResults<List<FormattedEntry>> {
         return UseCaseResults.Success(formattedList)
     }
 

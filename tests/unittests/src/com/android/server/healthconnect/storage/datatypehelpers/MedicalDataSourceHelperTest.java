@@ -106,13 +106,13 @@ public class MedicalDataSourceHelperTest {
 
     @Before
     public void setup() throws NameNotFoundException {
-        TransactionManager mTransactionManager =
+        TransactionManager transactionManager =
                 mHealthConnectDatabaseTestRule.getTransactionManager();
         mMedicalDataSourceHelper =
-                new MedicalDataSourceHelper(mTransactionManager, AppInfoHelper.getInstance());
+                new MedicalDataSourceHelper(transactionManager, AppInfoHelper.getInstance());
         // We set the context to null, because we only use insertApp in this set of tests and
         // we don't need context for that.
-        mTransactionTestUtils = new TransactionTestUtils(/* context= */ null, mTransactionManager);
+        mTransactionTestUtils = new TransactionTestUtils(/* context= */ null, transactionManager);
         when(mContext.getPackageManager()).thenReturn(mPackageManager);
     }
 
@@ -330,6 +330,67 @@ public class MedicalDataSourceHelperTest {
 
         assertThat(result.size()).isEqualTo(2);
         assertThat(result).containsExactlyElementsIn(expected);
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    public void getMedicalDataSourcesByPackage_noPackages_returnsAll() throws Exception {
+        setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
+        setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        CreateMedicalDataSourceRequest createMedicalDataSourceRequest1 =
+                new CreateMedicalDataSourceRequest.Builder(
+                                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME)
+                        .build();
+        CreateMedicalDataSourceRequest createMedicalDataSourceRequest2 =
+                new CreateMedicalDataSourceRequest.Builder(
+                                DIFFERENT_DATA_SOURCE_BASE_URI, DIFFERENT_DATA_SOURCE_DISPLAY_NAME)
+                        .build();
+        MedicalDataSource dataSource1 =
+                mMedicalDataSourceHelper.createMedicalDataSource(
+                        mContext, createMedicalDataSourceRequest1, DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2 =
+                mMedicalDataSourceHelper.createMedicalDataSource(
+                        mContext,
+                        createMedicalDataSourceRequest2,
+                        DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+
+        List<MedicalDataSource> dataSources =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByPackage(List.of());
+
+        assertThat(dataSources).containsExactly(dataSource1, dataSource2);
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    public void getMedicalDataSourcesByPackage_onePackage_filters() throws Exception {
+        setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
+        setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        CreateMedicalDataSourceRequest createMedicalDataSourceRequest1 =
+                new CreateMedicalDataSourceRequest.Builder(
+                                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME)
+                        .build();
+        CreateMedicalDataSourceRequest createMedicalDataSourceRequest2 =
+                new CreateMedicalDataSourceRequest.Builder(
+                                DIFFERENT_DATA_SOURCE_BASE_URI, DIFFERENT_DATA_SOURCE_DISPLAY_NAME)
+                        .build();
+        MedicalDataSource dataSource1 =
+                mMedicalDataSourceHelper.createMedicalDataSource(
+                        mContext, createMedicalDataSourceRequest1, DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2 =
+                mMedicalDataSourceHelper.createMedicalDataSource(
+                        mContext,
+                        createMedicalDataSourceRequest2,
+                        DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+
+        List<MedicalDataSource> dataSources1 =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByPackage(
+                        List.of(DATA_SOURCE_PACKAGE_NAME));
+        List<MedicalDataSource> dataSources2 =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByPackage(
+                        List.of(DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+
+        assertThat(dataSources1).containsExactly(dataSource1);
+        assertThat(dataSources2).containsExactly(dataSource2);
     }
 
     @Test

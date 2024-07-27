@@ -202,7 +202,8 @@ public class ExportManagerTest {
                 new HealthConnectDatabase(mContext, "healthconnect.db");
         assertTableSize(originalDatabase, "steps_record_table", 1);
 
-        ExportImportSettingsStorage.setLastExportError(HealthConnectManager.DATA_EXPORT_ERROR_NONE);
+        ExportImportSettingsStorage.setLastExportError(
+                HealthConnectManager.DATA_EXPORT_ERROR_NONE, mTimeStamp);
         // Set export location to inaccessible directory.
         ExportImportSettingsStorage.configure(
                 ScheduledExportSettings.withUri(Uri.fromFile(new File("inaccessible"))));
@@ -212,6 +213,10 @@ public class ExportManagerTest {
                         ExportImportSettingsStorage.getScheduledExportStatus(mContext)
                                 .getDataExportError())
                 .isEqualTo(HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS);
+        assertThat(
+                        ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                                .getLastFailedExportTime())
+                .isEqualTo(mTimeStamp);
     }
 
     @Test

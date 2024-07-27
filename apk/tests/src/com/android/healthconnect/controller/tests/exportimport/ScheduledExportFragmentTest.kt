@@ -78,17 +78,13 @@ class ScheduledExportFragmentTest {
             ScheduledExportSettings.withPeriodInDays(
                 ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays))
         val scheduledExportStatus =
-            ScheduledExportStatus(
-                null,
-                HealthConnectManager.DATA_EXPORT_ERROR_NONE,
-                0,
-                /** lastExportFileName= */
-                null,
-                /** lastExportAppName= */
-                null,
-                TEST_NEXT_EXPORT_FILE_NAME,
-                TEST_NEXT_EXPORT_APP_NAME)
-
+            ScheduledExportStatus.Builder()
+                .setLastSuccessfulExportTime(NOW)
+                .setDataExportError(HealthConnectManager.DATA_EXPORT_ERROR_NONE)
+                .setPeriodInDays(0)
+                .setNextExportAppName(TEST_NEXT_EXPORT_APP_NAME)
+                .setNextExportFileName(TEST_NEXT_EXPORT_FILE_NAME)
+                .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
     }
 
@@ -100,16 +96,13 @@ class ScheduledExportFragmentTest {
     @Test
     fun scheduledExportFragment_isDisplayedCorrectly() {
         val scheduledExportStatus =
-            ScheduledExportStatus(
-                NOW,
-                HealthConnectManager.DATA_EXPORT_ERROR_NONE,
-                TEST_EXPORT_PERIOD_IN_DAYS,
-                /** lastExportFileName= */
-                null,
-                /** lastExportAppName= */
-                null,
-                TEST_NEXT_EXPORT_FILE_NAME,
-                TEST_NEXT_EXPORT_APP_NAME)
+            ScheduledExportStatus.Builder()
+                .setLastSuccessfulExportTime(NOW)
+                .setDataExportError(HealthConnectManager.DATA_EXPORT_ERROR_NONE)
+                .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
+                .setNextExportAppName(TEST_NEXT_EXPORT_APP_NAME)
+                .setNextExportFileName(TEST_NEXT_EXPORT_FILE_NAME)
+                .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
 
         launchFragment<ScheduledExportFragment>(Bundle())
@@ -130,18 +123,11 @@ class ScheduledExportFragmentTest {
     @Test
     fun scheduledExportFragment_impressionsLogged() {
         val scheduledExportStatus =
-            ScheduledExportStatus(
-                NOW,
-                HealthConnectManager.DATA_EXPORT_ERROR_NONE,
-                TEST_EXPORT_PERIOD_IN_DAYS,
-                /** lastExportFileName= */
-                null,
-                /** lastExportAppName= */
-                null,
-                /** nextExportFileName= */
-                null,
-                /** nextExportAppName= */
-                null)
+            ScheduledExportStatus.Builder()
+                .setLastSuccessfulExportTime(NOW)
+                .setDataExportError(HealthConnectManager.DATA_EXPORT_ERROR_NONE)
+                .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
+                .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
 
         launchFragment<ScheduledExportFragment>(Bundle())
@@ -159,17 +145,12 @@ class ScheduledExportFragmentTest {
     @Test
     fun scheduledExportFragment_whenOnlyAppNameIsAvailable_showsAppName() {
         val scheduledExportStatus =
-            ScheduledExportStatus(
-                NOW,
-                HealthConnectManager.DATA_EXPORT_ERROR_NONE,
-                TEST_EXPORT_PERIOD_IN_DAYS,
-                /** lastExportFileName= */
-                null,
-                /** lastExportAppName= */
-                null,
-                /** nextExportFileName= */
-                null,
-                TEST_NEXT_EXPORT_APP_NAME)
+            ScheduledExportStatus.Builder()
+                .setLastSuccessfulExportTime(NOW)
+                .setDataExportError(HealthConnectManager.DATA_EXPORT_ERROR_NONE)
+                .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
+                .setNextExportAppName(TEST_NEXT_EXPORT_APP_NAME)
+                .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
 
         launchFragment<ScheduledExportFragment>(Bundle())
@@ -180,17 +161,12 @@ class ScheduledExportFragmentTest {
     @Test
     fun scheduledExportFragment_whenOnlyFileNameIsAvailable_showsFileName() {
         val scheduledExportStatus =
-            ScheduledExportStatus(
-                NOW,
-                HealthConnectManager.DATA_EXPORT_ERROR_NONE,
-                TEST_EXPORT_PERIOD_IN_DAYS,
-                /** lastExportFileName= */
-                null,
-                /** lastExportAppName= */
-                null,
-                TEST_NEXT_EXPORT_FILE_NAME,
-                /** nextExportAppName= */
-                null)
+            ScheduledExportStatus.Builder()
+                .setLastSuccessfulExportTime(NOW)
+                .setDataExportError(HealthConnectManager.DATA_EXPORT_ERROR_NONE)
+                .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
+                .setNextExportFileName(TEST_NEXT_EXPORT_FILE_NAME)
+                .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
 
         launchFragment<ScheduledExportFragment>(Bundle())
@@ -201,18 +177,11 @@ class ScheduledExportFragmentTest {
     @Test
     fun scheduledExportFragment_whenLastSuccessfulExportDateIsNull_doesNotShowNextExportStatus() {
         val scheduledExportStatus =
-            ScheduledExportStatus(
-                null,
-                HealthConnectManager.DATA_EXPORT_ERROR_NONE,
-                TEST_EXPORT_PERIOD_IN_DAYS,
-                /** lastExportFileName= */
-                null,
-                /** lastExportAppName= */
-                null,
-                /** nextExportFileName= */
-                null,
-                /** nextExportAppName= */
-                null)
+            ScheduledExportStatus.Builder()
+                .setLastSuccessfulExportTime(null)
+                .setDataExportError(HealthConnectManager.DATA_EXPORT_ERROR_NONE)
+                .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
+                .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
 
         launchFragment<ScheduledExportFragment>(Bundle())
@@ -277,18 +246,11 @@ class ScheduledExportFragmentTest {
     @Test
     fun scheduledExportFragment_turnsOffControl_doesNotShowExportStatus() {
         val scheduledExportStatus =
-            ScheduledExportStatus(
-                NOW,
-                HealthConnectManager.DATA_EXPORT_ERROR_NONE,
-                TEST_EXPORT_PERIOD_IN_DAYS,
-                /** lastExportFileName= */
-                null,
-                /** lastExportAppName= */
-                null,
-                /** nextExportFileName= */
-                null,
-                /** nextExportAppName= */
-                null)
+            ScheduledExportStatus.Builder()
+                .setLastSuccessfulExportTime(NOW)
+                .setDataExportError(HealthConnectManager.DATA_EXPORT_ERROR_NONE)
+                .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
+                .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
 
         launchFragment<ScheduledExportFragment>(Bundle())

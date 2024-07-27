@@ -58,6 +58,7 @@ import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -72,6 +73,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.sqlite.SQLiteException;
 import android.health.connect.DeleteMedicalResourcesRequest;
+import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesRequest;
@@ -81,6 +83,7 @@ import android.health.connect.aidl.IDataStagingFinishedCallback;
 import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
+import android.health.connect.aidl.IMedicalDataSourcesResponseCallback;
 import android.health.connect.aidl.IMedicalResourceTypesInfoResponseCallback;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
@@ -191,6 +194,8 @@ public class HealthConnectServiceImplTest {
                     "runImport",
                     "createMedicalDataSource",
                     "deleteMedicalDataSourceWithData",
+                    "getMedicalDataSourcesByIds",
+                    "getMedicalDataSourcesByRequest",
                     "deleteMedicalResourcesByIds",
                     "deleteMedicalResourcesByRequest",
                     "upsertMedicalResources",
@@ -248,7 +253,9 @@ public class HealthConnectServiceImplTest {
     @Mock private MedicalResourceHelper mMedicalResourceHelper;
     @Mock IMigrationCallback mMigrationCallback;
     @Mock IMedicalDataSourceResponseCallback mMedicalDataSourceCallback;
+    @Mock IMedicalDataSourcesResponseCallback mMedicalDataSourcesResponseCallback;
     @Captor ArgumentCaptor<HealthConnectExceptionParcel> mErrorCaptor;
+    @Captor ArgumentCaptor<List<MedicalDataSource>> mResponseCaptor;
     private Context mContext;
     private AttributionSource mAttributionSource;
     private HealthConnectServiceImpl mHealthConnectService;
@@ -604,6 +611,32 @@ public class HealthConnectServiceImplTest {
 
     @Test
     @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalDataSourceByIds_flagOff_throws() throws Exception {
+        mHealthConnectService.getMedicalDataSourcesByIds(
+                mAttributionSource, List.of(), mMedicalDataSourcesResponseCallback);
+
+        verify(mMedicalDataSourcesResponseCallback, timeout(5000).times(1))
+                .onError(mErrorCaptor.capture());
+        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
+                .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalDataSourceByRequest_flagOff_throws() throws Exception {
+        mHealthConnectService.getMedicalDataSourcesByRequest(
+                mAttributionSource,
+                new GetMedicalDataSourcesRequest.Builder().build(),
+                mMedicalDataSourcesResponseCallback);
+
+        verify(mMedicalDataSourcesResponseCallback, timeout(5000).times(1))
+                .onError(mErrorCaptor.capture());
+        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
+                .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testDeleteMedicalDataSource_flagOff_throws() throws Exception {
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
         mHealthConnectService.deleteMedicalDataSourceWithData(mAttributionSource, "foo", callback);
@@ -773,6 +806,39 @@ public class HealthConnectServiceImplTest {
         verify(mMedicalDataSourceCallback, timeout(5000)).onError(mErrorCaptor.capture());
         HealthConnectException exception = mErrorCaptor.getValue().getHealthConnectException();
         assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalDataSourceByRequest_emptyRequest_usesHelper() throws RemoteException {
+        MedicalDataSource dataSource = getMedicalDataSource();
+        when(mMedicalDataSourceHelper.getMedicalDataSourcesByPackage(any()))
+                .thenReturn(List.of(dataSource));
+
+        mHealthConnectService.getMedicalDataSourcesByRequest(
+                mAttributionSource,
+                new GetMedicalDataSourcesRequest.Builder().build(),
+                mMedicalDataSourcesResponseCallback);
+
+        verify(mMedicalDataSourcesResponseCallback, timeout(5000))
+                .onResult(mResponseCaptor.capture());
+        assertThat(mResponseCaptor.getValue()).isEqualTo(List.of(dataSource));
+        verify(mMedicalDataSourcesResponseCallback, never()).onError(any());
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalDataSourceByIds_usesHelper() throws RemoteException {
+        MedicalDataSource dataSource = getMedicalDataSource();
+        when(mMedicalDataSourceHelper.getMedicalDataSources(any())).thenReturn(List.of(dataSource));
+
+        mHealthConnectService.getMedicalDataSourcesByIds(
+                mAttributionSource, List.of("foo"), mMedicalDataSourcesResponseCallback);
+
+        verify(mMedicalDataSourcesResponseCallback, timeout(5000))
+                .onResult(mResponseCaptor.capture());
+        assertThat(mResponseCaptor.getValue()).isEqualTo(List.of(dataSource));
+        verify(mMedicalDataSourcesResponseCallback, never()).onError(any());
     }
 
     @Test
