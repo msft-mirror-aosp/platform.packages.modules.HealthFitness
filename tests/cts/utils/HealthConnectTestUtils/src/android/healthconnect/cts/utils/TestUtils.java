@@ -51,6 +51,8 @@ import static android.healthconnect.test.app.TestAppReceiver.EXTRA_TIMES;
 import static com.android.compatibility.common.util.FeatureUtil.AUTOMOTIVE_FEATURE;
 import static com.android.compatibility.common.util.FeatureUtil.hasSystemFeature;
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
+import static com.android.healthfitness.flags.Flags.personalHealthRecord;
+import static com.android.healthfitness.flags.Flags.personalHealthRecordDatabase;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -69,6 +71,7 @@ import android.health.connect.ApplicationInfoResponse;
 import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.FetchDataOriginsPriorityOrderResponse;
+import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
@@ -110,6 +113,7 @@ import android.health.connect.datatypes.HeightRecord;
 import android.health.connect.datatypes.HydrationRecord;
 import android.health.connect.datatypes.IntermenstrualBleedingRecord;
 import android.health.connect.datatypes.LeanBodyMassRecord;
+import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MenstruationFlowRecord;
 import android.health.connect.datatypes.MenstruationPeriodRecord;
 import android.health.connect.datatypes.Metadata;
@@ -167,6 +171,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -440,6 +445,35 @@ public final class TestUtils {
             getHealthConnectManager()
                     .deleteRecords(request, Executors.newSingleThreadExecutor(), receiver);
             receiver.verifyNoExceptionOrThrow();
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
+    }
+
+    /**
+     * Delete all medical data (datasources, resources etc) stored in the Health Connect database.
+     */
+    public static void deleteAllMedicalData() throws InterruptedException {
+        if (!personalHealthRecord()) {
+            return;
+        }
+        if (!personalHealthRecordDatabase()) {
+            return;
+        }
+        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        try {
+            HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+            HealthConnectManager manager = getHealthConnectManager();
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            manager.getMedicalDataSources(
+                    new GetMedicalDataSourcesRequest.Builder().build(), executor, receiver);
+            List<MedicalDataSource> dataSources = receiver.getResponse();
+            for (MedicalDataSource dataSource : dataSources) {
+                HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+                manager.deleteMedicalDataSourceWithData(dataSource.getId(), executor, callback);
+                callback.verifyNoExceptionOrThrow();
+            }
         } finally {
             uiAutomation.dropShellPermissionIdentity();
         }

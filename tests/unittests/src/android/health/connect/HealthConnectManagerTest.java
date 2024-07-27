@@ -29,6 +29,9 @@ import android.content.Context;
 import android.health.connect.aidl.HealthConnectExceptionParcel;
 import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
+import android.health.connect.aidl.IMedicalDataSourcesResponseCallback;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.healthconnect.cts.utils.PhrDataFactory;
 import android.os.OutcomeReceiver;
 import android.os.RemoteException;
 
@@ -102,6 +105,114 @@ public class HealthConnectManagerTest {
         assertThrows(
                 RuntimeException.class,
                 () -> healthConnectManager.getGrantedHealthPermissions("com.foo.bar"));
+    }
+
+    @Test
+    public void testHealthConnectManager_getDatasourcesByIds_usesExceptionFromService()
+            throws Exception {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
+        TestOutcomeReceiver<List<MedicalDataSource>> receiver = new TestOutcomeReceiver<>();
+        String id = "id";
+        HealthConnectExceptionParcel error =
+                new HealthConnectExceptionParcel(
+                        new HealthConnectException(
+                                HealthConnectException.ERROR_UNSUPPORTED_OPERATION));
+        doAnswer(
+                        (Answer<Void>)
+                                invocation -> {
+                                    IMedicalDataSourcesResponseCallback callback =
+                                            invocation.getArgument(2);
+                                    callback.onError(error);
+                                    return null;
+                                })
+                .when(mService)
+                .getMedicalDataSourcesByIds(any(), any(), any());
+
+        healthConnectManager.getMedicalDataSources(
+                ImmutableList.of(id), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    public void testHealthConnectManager_getDatasourcesByIds_usesResultFromService()
+            throws Exception {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
+        TestOutcomeReceiver<List<MedicalDataSource>> receiver = new TestOutcomeReceiver<>();
+        String id = "id";
+        List<MedicalDataSource> response = List.of(PhrDataFactory.getMedicalDataSource());
+        doAnswer(
+                        (Answer<Void>)
+                                invocation -> {
+                                    IMedicalDataSourcesResponseCallback callback =
+                                            invocation.getArgument(2);
+                                    callback.onResult(response);
+                                    return null;
+                                })
+                .when(mService)
+                .getMedicalDataSourcesByIds(any(), any(), any());
+
+        healthConnectManager.getMedicalDataSources(
+                ImmutableList.of(id), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).containsExactlyElementsIn(response);
+    }
+
+    @Test
+    public void testHealthConnectManager_getDataSourcesByRequest_usesExceptionFromService()
+            throws Exception {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
+        TestOutcomeReceiver<List<MedicalDataSource>> receiver = new TestOutcomeReceiver<>();
+        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
+        HealthConnectExceptionParcel error =
+                new HealthConnectExceptionParcel(
+                        new HealthConnectException(
+                                HealthConnectException.ERROR_UNSUPPORTED_OPERATION));
+        doAnswer(
+                        (Answer<Void>)
+                                invocation -> {
+                                    IMedicalDataSourcesResponseCallback callback =
+                                            invocation.getArgument(2);
+                                    callback.onError(error);
+                                    return null;
+                                })
+                .when(mService)
+                .getMedicalDataSourcesByRequest(any(), any(), any());
+
+        healthConnectManager.getMedicalDataSources(
+                request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    public void testHealthConnectManager_getDataSourcesByRequest_usesResultFromService()
+            throws Exception {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
+        TestOutcomeReceiver<List<MedicalDataSource>> receiver = new TestOutcomeReceiver<>();
+        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
+        List<MedicalDataSource> response = List.of(PhrDataFactory.getMedicalDataSource());
+        doAnswer(
+                        (Answer<Void>)
+                                invocation -> {
+                                    IMedicalDataSourcesResponseCallback callback =
+                                            invocation.getArgument(2);
+                                    callback.onResult(response);
+                                    return null;
+                                })
+                .when(mService)
+                .getMedicalDataSourcesByRequest(any(), any(), any());
+
+        healthConnectManager.getMedicalDataSources(
+                request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isEqualTo(response);
     }
 
     @Test
