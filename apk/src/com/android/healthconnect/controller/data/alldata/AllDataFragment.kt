@@ -297,7 +297,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
                 findNavController()
                     .navigate(
                         R.id.action_allData_to_entriesAndAccess,
-                        bundleOf(PERMISSION_TYPE_KEY to permissionType))
+                        bundleOf(PERMISSION_TYPE_KEY to permissionType.name))
                 true
             }
         }

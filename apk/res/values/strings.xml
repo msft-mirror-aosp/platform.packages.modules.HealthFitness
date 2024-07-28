@@ -99,7 +99,7 @@
     <string name="can_read" description="Section title that refers to apps with read permission for given permission type. [CHAR_LIMIT=50]">Can read <xliff:g example="heart rate" id="permission_type">%s</xliff:g></string>
     <string name="can_write" description="Section title that refers to apps with write permission for given permission type. [CHAR_LIMIT=50]">Can write <xliff:g example="heart rate" id="permission_type">%s</xliff:g></string>
     <string name="inactive_apps" description="Section title that refers to apps that are inactive in Health Connect. [CHAR_LIMIT=50]">Inactive apps</string>
-    <string name="inactive_apps_message" description="Description of the inactive apps section. [CHAR_LIMIT=NONE]">These apps can no longer write <xliff:g example="heart rate" id="data_type">%s</xliff:g>, but still have data stored in Health&#160;Connect</string>
+    <string name="inactive_apps_message" description="Description of the inactive apps section. [CHAR_LIMIT=NONE]">These apps can no longer read or write <xliff:g example="heart rate" id="data_type">%s</xliff:g>, but still have data stored in Health&#160;Connect</string>
     <string name="data_access_empty_message" description="Message shown if there is no app to display on this page [CHAR_LIMIT=NONE]">Apps can no longer read or write <xliff:g example="heart rate" id="data_type">%1$s</xliff:g> and there is no <xliff:g example="heart rate" id="data_type_2">%2$s</xliff:g> data stored in Health&#160;Connect</string>
     <string name="data_access_exercise_description" description="Description of data access for the exercise data type [CHAR_LIMIT=NONE]">This data includes information like active time, exercise type, laps, repetitions, sessions, or swimming strokes</string>
     <string name="data_access_sleep_description" description="Description of data access for the sleep data type [CHAR_LIMIT=NONE]">This data includes information like sleep stages and sleep sessions</string>
@@ -431,9 +431,10 @@
     <string name="additional_access_label" description="Label of a button that opens additional permissions access for an app. [CHAR_LIMIT=40]">Additional access</string>
     <string name="removed_additional_permissions_toast" description="Message letting the user know that additional permissions have also been removed for this app">Removed additional permissions for this app</string>
     <string name="permissions_header" description="Title shown for section that lists permissions. [CHAR_LIMIT=40]">Permissions</string>
-    <string name="manage_fitness_permissions" description="Label of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Manage fitness permissions</string>
-    <string name="manage_medical_permissions" description="Label of a button that opens the medical permissions screen. [CHAR_LIMIT=40]">Manage health record permissions</string>
-
+    <string name="manage_fitness_permissions" description="Label of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Fitness and wellness</string>
+    <string name="manage_fitness_permissions_summary" description="Summary of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Exercise, sleep, nutrition and others</string>
+    <string name="manage_medical_permissions" description="Label of a button that opens the medical permissions screen. [CHAR_LIMIT=40]">Health records</string>
+    <string name="manage_medical_permissions_summary" description="Summary of a button that opens the medical permissions screen. [CHAR_LIMIT=40]">Lab results, medications, immunizations and others</string>
     <!--endregion-->
 
     <!--region Denied Apps -->

@@ -421,6 +421,25 @@ public final class TransactionManager {
     }
 
     /**
+     * Inserts record into the table in {@code request} into the HealthConnect database using the
+     * given {@link SQLiteDatabase}.
+     *
+     * <p>NOTE: PLEASE ONLY USE THIS FUNCTION IF YOU WANT TO INSERT A SINGLE RECORD PER API. PLEASE
+     * DON'T USE THIS FUNCTION INSIDE A FOR LOOP OR REPEATEDLY: The reason is that this function
+     * tries to insert a record inside its own transaction and if you are trying to insert multiple
+     * things using this method in the same api call, they will all get inserted in their separate
+     * transactions and will be less performant. If at all, the requirement is to insert them in
+     * different transactions, as they are not related to each, then this method can be used.
+     *
+     * @param db a {@link SQLiteDatabase}.
+     * @param request an insert request.
+     * @return rowId of the inserted record.
+     */
+    public long insert(SQLiteDatabase db, @NonNull UpsertTableRequest request) {
+        return insertRecord(db, request);
+    }
+
+    /**
      * Update record into the table in {@code request} into the HealthConnect database.
      *
      * <p>NOTE: PLEASE ONLY USE THIS FUNCTION IF YOU WANT TO UPDATE A SINGLE RECORD PER API. PLEASE
@@ -474,7 +493,7 @@ public final class TransactionManager {
      * @param db a {@link SQLiteDatabase}.
      * @param request a {@link ReadTableRequest}.
      */
-    public Cursor read(@NonNull SQLiteDatabase db, @NonNull ReadTableRequest request) {
+    public Cursor read(SQLiteDatabase db, @NonNull ReadTableRequest request) {
         if (Constants.DEBUG) {
             Slog.d(TAG, "Read query: " + request.getReadCommand());
         }

@@ -77,13 +77,7 @@ class MainActivityTest {
             MutableLiveData(
                 ScheduledExportUiStatus.WithData(
                     ScheduledExportUiState(
-                        NOW,
-                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-                        1,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        NOW, ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE, 1)))
         }
     }
 
