@@ -57,8 +57,8 @@ public class DeleteTableRequest {
     @Nullable private List<String> mIds;
     private boolean mEnforcePackageCheck;
     private int mNumberOfUuidsToDelete;
-    @Nullable private WhereClauses mCustomWhereClauses;
-    private long mLessThanOrEqualValue;
+    @Nullable private String mInnerReadColumnName;
+    @Nullable private ReadTableRequest mInnerReadRequest;
 
     public DeleteTableRequest(
             @NonNull String tableName, @RecordTypeIdentifier.RecordType int recordType) {
@@ -152,6 +152,22 @@ public class DeleteTableRequest {
         return this;
     }
 
+    /**
+     * Add a restriction on the delete that {@code innerReadColumnName} has a value in the values
+     * read by the {@code innerRead} {@link ReadTableRequest}.
+     *
+     * @param columnName the column to restrict the delete on.
+     * @param innerReadRequest a request that will SELECT the values to restrict on.
+     * @return this Request with the values set.
+     */
+    @NonNull
+    public DeleteTableRequest setInnerSqlRequestFilter(
+            String columnName, ReadTableRequest innerReadRequest) {
+        mInnerReadColumnName = columnName;
+        mInnerReadRequest = innerReadRequest;
+        return this;
+    }
+
     @NonNull
     public String getDeleteCommand() {
         return "DELETE FROM " + mTableName + getWhereCommand();
@@ -168,11 +184,14 @@ public class DeleteTableRequest {
     }
 
     public String getWhereCommand() {
-        WhereClauses whereClauses =
-                Objects.isNull(mCustomWhereClauses) ? new WhereClauses(AND) : mCustomWhereClauses;
+        WhereClauses whereClauses = new WhereClauses(AND);
         whereClauses.addWhereInLongsClause(mPackageColumnName, mPackageFilters);
         whereClauses.addWhereBetweenTimeClause(mTimeColumnName, mStartTime, mEndTime);
         whereClauses.addWhereInClauseWithoutQuotes(mIdColumnName, mIds);
+
+        if (mInnerReadColumnName != null && mInnerReadRequest != null) {
+            whereClauses.addWhereInSQLRequestClause(mInnerReadColumnName, mInnerReadRequest);
+        }
 
         if (Constants.DEBUG) {
             Slog.d(

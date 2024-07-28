@@ -68,17 +68,20 @@ import static org.junit.Assert.assertThrows;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.HealthConnectManager;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
+import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
 import com.android.healthfitness.flags.Flags;
+import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
@@ -94,8 +97,7 @@ import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.junit.rules.TestRule;
+import org.mockito.quality.Strictness;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -103,12 +105,22 @@ import java.util.List;
 import java.util.UUID;
 
 public class MedicalResourceHelperTest {
-    private final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
-            new HealthConnectDatabaseTestRule();
 
-    @Rule
-    public TestRule chain =
-            RuleChain.outerRule(new SetFlagsRule()).around(mHealthConnectDatabaseTestRule);
+    @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    @Rule(order = 2)
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(HealthConnectManager.class)
+                    .mockStatic(Environment.class)
+                    .setStrictness(Strictness.LENIENT)
+                    .build();
+
+    @Rule(order = 3)
+    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
+            new com.android.server.healthconnect.storage.datatypehelpers
+                    .HealthConnectDatabaseTestRule();
 
     private MedicalResourceHelper mMedicalResourceHelper;
     private MedicalDataSourceHelper mMedicalDataSourceHelper;
@@ -170,6 +182,7 @@ public class MedicalResourceHelperTest {
         FhirResource fhirResource = getFhirResource();
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource.getId())
                         .setFhirResourceType(fhirResource.getType())
                         .setFhirVersion(parseFhirVersion(FHIR_VERSION_R4))
@@ -299,6 +312,7 @@ public class MedicalResourceHelperTest {
         FhirVersion fhirVersion = parseFhirVersion(FHIR_VERSION_R4);
         UpsertMedicalResourceInternalRequest upsertImmunizationResourceRequest =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource.getId())
                         .setFhirResourceType(fhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -316,7 +330,7 @@ public class MedicalResourceHelperTest {
         assertThat(upsertedResources)
                 .containsExactly(
                         new MedicalResource.Builder(
-                                        fhirResource.getType(),
+                                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                                         dataSource.getId(),
                                         fhirVersion,
                                         fhirResource)
@@ -336,6 +350,7 @@ public class MedicalResourceHelperTest {
         FhirVersion fhirVersion = parseFhirVersion(FHIR_VERSION_R4);
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest1 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource.getId())
                         .setFhirResourceType(fhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -343,7 +358,7 @@ public class MedicalResourceHelperTest {
                         .setDataSourceId(dataSource.getId());
         MedicalResource immunization =
                 new MedicalResource.Builder(
-                                fhirResource.getType(),
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                                 dataSource.getId(),
                                 fhirVersion,
                                 fhirResource)
@@ -351,6 +366,7 @@ public class MedicalResourceHelperTest {
         FhirResource differentFhirResource = getFhirResourceDifferentImmunization();
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest2 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(differentFhirResource.getId())
                         .setFhirResourceType(differentFhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -358,7 +374,7 @@ public class MedicalResourceHelperTest {
                         .setDataSourceId(dataSource.getId());
         MedicalResource differentImmunization =
                 new MedicalResource.Builder(
-                                differentFhirResource.getType(),
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                                 dataSource.getId(),
                                 fhirVersion,
                                 differentFhirResource)
@@ -366,6 +382,7 @@ public class MedicalResourceHelperTest {
         FhirResource allergyFhirResource = getFhirResourceAllergy();
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest3 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                         .setFhirResourceId(allergyFhirResource.getId())
                         .setFhirResourceType(allergyFhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -373,7 +390,7 @@ public class MedicalResourceHelperTest {
                         .setDataSourceId(dataSource.getId());
         MedicalResource allergy =
                 new MedicalResource.Builder(
-                                allergyFhirResource.getType(),
+                                MEDICAL_RESOURCE_TYPE_UNKNOWN,
                                 dataSource.getId(),
                                 fhirVersion,
                                 allergyFhirResource)
@@ -418,6 +435,7 @@ public class MedicalResourceHelperTest {
         FhirVersion fhirVersion = parseFhirVersion(FHIR_VERSION_R4);
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest1 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource.getId())
                         .setFhirResourceType(fhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -425,7 +443,7 @@ public class MedicalResourceHelperTest {
                         .setDataSourceId(dataSource1.getId());
         MedicalResource immunization =
                 new MedicalResource.Builder(
-                                fhirResource.getType(),
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                                 dataSource1.getId(),
                                 fhirVersion,
                                 fhirResource)
@@ -433,6 +451,7 @@ public class MedicalResourceHelperTest {
         FhirResource differentFhirResource = getFhirResourceDifferentImmunization();
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest2 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(differentFhirResource.getId())
                         .setFhirResourceType(differentFhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -440,7 +459,7 @@ public class MedicalResourceHelperTest {
                         .setDataSourceId(dataSource2.getId());
         MedicalResource differentImmunization =
                 new MedicalResource.Builder(
-                                differentFhirResource.getType(),
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                                 dataSource2.getId(),
                                 fhirVersion,
                                 differentFhirResource)
@@ -448,6 +467,7 @@ public class MedicalResourceHelperTest {
         FhirResource allergyFhirResource = getFhirResourceAllergy();
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest3 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                         .setFhirResourceId(allergyFhirResource.getId())
                         .setFhirResourceType(allergyFhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -455,7 +475,7 @@ public class MedicalResourceHelperTest {
                         .setDataSourceId(dataSource1.getId());
         MedicalResource allergy =
                 new MedicalResource.Builder(
-                                allergyFhirResource.getType(),
+                                MEDICAL_RESOURCE_TYPE_UNKNOWN,
                                 dataSource1.getId(),
                                 fhirVersion,
                                 allergyFhirResource)
@@ -489,6 +509,7 @@ public class MedicalResourceHelperTest {
         FhirResource fhirResource = getFhirResource();
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource.getId())
                         .setFhirResourceType(fhirResource.getType())
                         .setFhirVersion(parseFhirVersion(FHIR_VERSION_R4))
@@ -520,6 +541,7 @@ public class MedicalResourceHelperTest {
         FhirVersion fhirVersion = parseFhirVersion(FHIR_VERSION_R4);
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest1 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource.getId())
                         .setFhirResourceType(fhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -538,6 +560,7 @@ public class MedicalResourceHelperTest {
         FhirResource allergyFhirResource = getFhirResourceAllergy();
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest2 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                         .setFhirResourceId(allergyFhirResource.getId())
                         .setFhirResourceType(allergyFhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -590,6 +613,7 @@ public class MedicalResourceHelperTest {
                                 .build());
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource.getId())
                         .setFhirResourceType(fhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -616,6 +640,7 @@ public class MedicalResourceHelperTest {
         FhirVersion fhirVersion = parseFhirVersion(FHIR_VERSION_R4);
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource.getId())
                         .setFhirResourceType(fhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -663,6 +688,7 @@ public class MedicalResourceHelperTest {
         FhirVersion fhirVersion = parseFhirVersion(FHIR_VERSION_R4);
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest1 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource1.getId())
                         .setFhirResourceType(fhirResource1.getType())
                         .setFhirVersion(fhirVersion)
@@ -681,6 +707,7 @@ public class MedicalResourceHelperTest {
         FhirResource fhirResource2 = getFhirResourceAllergy();
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest2 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                         .setFhirResourceId(fhirResource2.getId())
                         .setFhirResourceType(fhirResource2.getType())
                         .setFhirVersion(fhirVersion)
@@ -735,6 +762,7 @@ public class MedicalResourceHelperTest {
         FhirVersion fhirVersion = parseFhirVersion(FHIR_VERSION_R4);
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest1 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource.getId())
                         .setFhirResourceType(fhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -752,6 +780,7 @@ public class MedicalResourceHelperTest {
                         dataSource1.getId(), fhirResource.getType(), fhirResource.getId());
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest2 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource.getId())
                         .setFhirResourceType(fhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -804,6 +833,7 @@ public class MedicalResourceHelperTest {
                         .build();
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource.getId())
                         .setFhirResourceType(fhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -811,6 +841,7 @@ public class MedicalResourceHelperTest {
                         .setDataSourceId(dataSource.getId());
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequestUpdated =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource.getId())
                         .setFhirResourceType(fhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -858,6 +889,7 @@ public class MedicalResourceHelperTest {
         FhirVersion fhirVersion = parseFhirVersion(FHIR_VERSION_R4);
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest1 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource.getId())
                         .setFhirResourceType(fhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -865,6 +897,7 @@ public class MedicalResourceHelperTest {
                         .setDataSourceId(dataSource.getId());
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequestUpdated1 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource.getId())
                         .setFhirResourceType(fhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -891,6 +924,7 @@ public class MedicalResourceHelperTest {
         FhirResource allergyFhirResource = getFhirResourceAllergy();
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest2 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                         .setFhirResourceId(allergyFhirResource.getId())
                         .setFhirResourceType(allergyFhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -948,6 +982,7 @@ public class MedicalResourceHelperTest {
         FhirVersion fhirVersion = parseFhirVersion(FHIR_VERSION_R4);
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest1 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource.getId())
                         .setFhirResourceType(fhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -955,6 +990,7 @@ public class MedicalResourceHelperTest {
                         .setDataSourceId(dataSource.getId());
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequestUpdated1 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource.getId())
                         .setFhirResourceType(fhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -981,6 +1017,7 @@ public class MedicalResourceHelperTest {
         FhirResource allergyFhirResource = getFhirResourceAllergy();
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest2 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                         .setFhirResourceId(allergyFhirResource.getId())
                         .setFhirResourceType(allergyFhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -988,6 +1025,7 @@ public class MedicalResourceHelperTest {
                         .setDataSourceId(dataSource.getId());
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequestUpdated2 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                         .setFhirResourceId(allergyFhirResource.getId())
                         .setFhirResourceType(allergyFhirResource.getType())
                         .setFhirVersion(fhirVersion)
@@ -1071,6 +1109,7 @@ public class MedicalResourceHelperTest {
         FhirResource fhirResource = getFhirResource();
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource.getId())
                         .setFhirResourceType(fhirResource.getType())
                         .setFhirVersion(parseFhirVersion(FHIR_VERSION_R4))
@@ -1105,6 +1144,7 @@ public class MedicalResourceHelperTest {
         FhirVersion fhirVersion = parseFhirVersion(FHIR_VERSION_R4);
         UpsertMedicalResourceInternalRequest medicalResource1 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(fhirResource1.getId())
                         .setFhirResourceType(fhirResource1.getType())
                         .setFhirVersion(fhirVersion)
@@ -1113,6 +1153,7 @@ public class MedicalResourceHelperTest {
         FhirResource fhirResource2 = getFhirResourceAllergy();
         UpsertMedicalResourceInternalRequest medicalResource2 =
                 new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                         .setFhirResourceId(fhirResource2.getId())
                         .setFhirResourceType(fhirResource2.getType())
                         .setFhirVersion(fhirVersion)
@@ -1193,6 +1234,74 @@ public class MedicalResourceHelperTest {
                                 + ", "
                                 + uuidHex3
                                 + ")");
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteMedicalResourcesByDataSources_noIds_succeeds() {
+        mMedicalResourceHelper.deleteMedicalResourcesByDataSources(List.of());
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteMedicalResourcesByDataSources_singleDataSource_succeeds() {
+        // Create two datasources, with one resource each.
+        MedicalDataSource dataSource1 =
+                insertMedicalDataSource(
+                        DATA_SOURCE_FHIR_BASE_URI + "1",
+                        DATA_SOURCE_DISPLAY_NAME + "1",
+                        DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2 =
+                insertMedicalDataSource(
+                        DATA_SOURCE_FHIR_BASE_URI + "2",
+                        DATA_SOURCE_DISPLAY_NAME + "2",
+                        DATA_SOURCE_PACKAGE_NAME);
+        FhirResource fhirResource1 = getFhirResource();
+        FhirResource fhirResource2 = getFhirResourceAllergy();
+        FhirVersion fhirVersion = parseFhirVersion(FHIR_VERSION_R4);
+        UpsertMedicalResourceInternalRequest dataSource1Resource1 =
+                new UpsertMedicalResourceInternalRequest()
+                        .setFhirResourceId(fhirResource1.getId())
+                        .setFhirResourceType(fhirResource1.getType())
+                        .setFhirVersion(fhirVersion)
+                        .setData(fhirResource1.getData())
+                        .setDataSourceId(dataSource1.getId());
+        UpsertMedicalResourceInternalRequest dataSource1Resource2 =
+                new UpsertMedicalResourceInternalRequest()
+                        .setFhirResourceId(fhirResource2.getId())
+                        .setFhirResourceType(fhirResource2.getType())
+                        .setFhirVersion(fhirVersion)
+                        .setData(fhirResource2.getData())
+                        .setDataSourceId(dataSource1.getId());
+        UpsertMedicalResourceInternalRequest datasource2resource =
+                new UpsertMedicalResourceInternalRequest()
+                        .setFhirResourceId(fhirResource2.getId())
+                        .setFhirResourceType(fhirResource2.getType())
+                        .setFhirVersion(fhirVersion)
+                        .setData(fhirResource2.getData())
+                        .setDataSourceId(dataSource2.getId());
+        mMedicalResourceHelper.upsertMedicalResources(
+                List.of(dataSource1Resource1, dataSource1Resource2, datasource2resource));
+
+        // Delete all of the data for just the first datasource
+        mMedicalResourceHelper.deleteMedicalResourcesByDataSources(List.of(dataSource1.getId()));
+
+        // Test that the data for data source 1 is gone, but 2 is still present
+        MedicalResourceId datasource1Resource1Id =
+                new MedicalResourceId(
+                        dataSource1.getId(), fhirResource1.getType(), fhirResource1.getId());
+        MedicalResourceId datasource1resource2Id =
+                new MedicalResourceId(
+                        dataSource1.getId(), fhirResource2.getType(), fhirResource2.getId());
+        MedicalResourceId datasource2resourceId =
+                new MedicalResourceId(
+                        dataSource2.getId(), fhirResource2.getType(), fhirResource2.getId());
+        assertThat(
+                        mMedicalResourceHelper.readMedicalResourcesByIds(
+                                List.of(datasource1Resource1Id, datasource1resource2Id)))
+                .hasSize(0);
+        assertThat(mMedicalResourceHelper.readMedicalResourcesByIds(List.of(datasource2resourceId)))
+                .hasSize(1);
     }
 
     /**

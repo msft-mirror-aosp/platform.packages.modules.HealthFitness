@@ -62,7 +62,6 @@ import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthfitness.flags.Flags.exportImport
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
-import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 /** Home fragment for Health Connect. */
@@ -137,18 +136,13 @@ class HomeFragment : Hilt_HomeFragment() {
             true
         }
 
-        if (featureUtils.isNewAppPriorityEnabled() ||
-            featureUtils.isNewInformationArchitectureEnabled()) {
-            mManageDataPreference?.logName = HomePageElement.MANAGE_DATA_BUTTON
-            mManageDataPreference?.setOnPreferenceClickListener {
-                findNavController().navigate(R.id.action_homeFragment_to_manageDataFragment)
-                true
-            }
-            if (exportImport()) {
-                mManageDataPreference?.summary = getString(R.string.manage_data_summary)
-            }
-        } else {
-            preferenceScreen.removePreferenceRecursively(MANAGE_DATA_PREFERENCE_KEY)
+        mManageDataPreference?.logName = HomePageElement.MANAGE_DATA_BUTTON
+        mManageDataPreference?.setOnPreferenceClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_manageDataFragment)
+            true
+        }
+        if (exportImport()) {
+            mManageDataPreference?.summary = getString(R.string.manage_data_summary)
         }
 
         // TODO(b/343148212): Change condition to whether there is any medical data stored in HC
@@ -226,7 +220,7 @@ class HomeFragment : Hilt_HomeFragment() {
         val (migrationUiState, dataRestoreUiState, dataErrorState) = migrationRestoreState
 
         if (dataRestoreUiState == DataRestoreUiState.PENDING) {
-             preferenceScreen.addPreference(getDataRestorePendingBanner())
+            preferenceScreen.addPreference(getDataRestorePendingBanner())
         } else if (migrationUiState in
             listOf(
                 MigrationUiState.ALLOWED_PAUSED,
@@ -272,16 +266,14 @@ class HomeFragment : Hilt_HomeFragment() {
         }
         if (scheduledExportUiState.dataExportError !=
             ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE) {
-            scheduledExportUiState.lastSuccessfulExportTime?.let {
-                preferenceScreen.addPreference(
-                    getExportFileAccessErrorBanner(it, scheduledExportUiState.periodInDays))
+            scheduledExportUiState.lastFailedExportTime?.let {
+                preferenceScreen.addPreference(getExportFileAccessErrorBanner(it))
             }
         }
     }
 
     private fun getExportFileAccessErrorBanner(
-        lastSuccessfulDate: Instant,
-        periodInDays: Int
+        lastFailedExportTime: Instant,
     ): BannerPreference {
         return BannerPreference(requireContext(), HomePageElement.EXPORT_ERROR_BANNER).also {
             it.setPrimaryButton(
@@ -292,8 +284,7 @@ class HomeFragment : Hilt_HomeFragment() {
             it.summary =
                 getString(
                     R.string.export_file_access_error_banner_summary,
-                    dateFormatter.formatLongDate(
-                        lastSuccessfulDate.plus(periodInDays.toLong(), ChronoUnit.DAYS)))
+                    dateFormatter.formatLongDate(lastFailedExportTime))
             it.icon = AttributeResolver.getNullableDrawable(requireContext(), R.attr.warningIcon)
             it.setPrimaryButtonOnClickListener {
                 findNavController().navigate(R.id.action_homeFragment_to_exportSetupActivity)

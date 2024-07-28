@@ -203,11 +203,6 @@ public class PhrDataFactory {
                 DATA_SOURCE_ID, FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_RESOURCE_ID_IMMUNIZATION);
     }
 
-    /** Returns the FHIR resource type field from the given {@code fhirJSON} string. */
-    public static String getFhirResourceTypeString(String fhirJSON) throws JSONException {
-        return new JSONObject(fhirJSON).getString(RESOURCE_TYPE_FIELD_NAME);
-    }
-
     /** Returns the FHIR resource id field from the given {@code fhirJSON} string. */
     public static String getFhirResourceId(String fhirJSON) throws JSONException {
         return new JSONObject(fhirJSON).getString(RESOURCE_ID_FIELD_NAME);

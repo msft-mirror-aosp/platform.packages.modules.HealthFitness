@@ -67,13 +67,16 @@ import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
+import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
+import android.health.connect.MedicalPermissionCategory;
 import android.health.connect.MedicalResourceId;
+import android.health.connect.MedicalResourceTypeInfoResponse;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequestUsingIds;
@@ -141,6 +144,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -168,14 +172,15 @@ public class HealthConnectManagerTest {
     @Before
     public void before() throws InterruptedException {
         deleteAllRecords();
-        // TODO(b/348158309) Clean up PHR data here when delete APIs are implemented.
         TestUtils.deleteAllStagedRemoteData();
+        TestUtils.deleteAllMedicalData();
         mManager = TestUtils.getHealthConnectManager();
     }
 
     @After
     public void after() throws InterruptedException {
         deleteAllRecords();
+        TestUtils.deleteAllMedicalData();
     }
 
     private void deleteAllRecords() throws InterruptedException {
@@ -1954,15 +1959,58 @@ public class HealthConnectManagerTest {
 
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetMedicalDataSources_byId_throws() {
+    public void testGetMedicalDataSourcesById_notPresent_returnsEmptyList() throws Exception {
         HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
-        List<String> ids = List.of("1");
+        List<String> ids = List.of("foo");
 
-        assertThrows(
-                UnsupportedOperationException.class,
-                () ->
-                        mManager.getMedicalDataSources(
-                                ids, Executors.newSingleThreadExecutor(), receiver));
+        mManager.getMedicalDataSources(ids, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalDataSourcesById_onePresent_returnsIt() throws Exception {
+        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(
+                getCreateMedicalDataSourceRequest(),
+                Executors.newSingleThreadExecutor(),
+                createReceiver);
+        MedicalDataSource dataSource = createReceiver.getResponse();
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+
+        mManager.getMedicalDataSources(
+                List.of(dataSource.getId()), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).containsExactly(dataSource);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalDataSourcesByRequest_nothingPresent_returnsEmpty() throws Exception {
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
+
+        mManager.getMedicalDataSources(request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalDataSourcesByRequest_onePresent_returnsIt() throws Exception {
+        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(
+                getCreateMedicalDataSourceRequest(),
+                Executors.newSingleThreadExecutor(),
+                createReceiver);
+        MedicalDataSource dataSource = createReceiver.getResponse();
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
+
+        mManager.getMedicalDataSources(request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).containsExactly(dataSource);
     }
 
     @Test
@@ -2165,6 +2213,30 @@ public class HealthConnectManagerTest {
 
         assertThat(receiver.assertAndGetException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testQueryAllMedicalResourceTypesInfo_succeeds() throws InterruptedException {
+        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        HealthConnectReceiver<List<MedicalResourceTypeInfoResponse>> receiver =
+                new HealthConnectReceiver<>();
+        List<MedicalResourceTypeInfoResponse> expectedResponses =
+                List.of(
+                        new MedicalResourceTypeInfoResponse(
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                                MedicalPermissionCategory.IMMUNIZATION,
+                                Set.of()));
+
+        try {
+            mManager.queryAllMedicalResourceTypesInfo(
+                    Executors.newSingleThreadExecutor(), receiver);
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
+
+        assertThat(receiver.getResponse()).isEqualTo(expectedResponses);
     }
 
     private boolean isEmptyContributingPackagesForAll(

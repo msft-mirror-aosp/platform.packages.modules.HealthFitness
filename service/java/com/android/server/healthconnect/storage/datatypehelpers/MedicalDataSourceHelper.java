@@ -55,6 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 /**
  * Helper class for MedicalDataSource.
@@ -124,7 +125,11 @@ public class MedicalDataSourceHelper {
         return getReadTableRequest(ids).setJoinClause(getJoinClauseWithAppInfoTable());
     }
 
-    /** Creates {@link ReadTableRequest} for the given list of {@code ids}. */
+    /**
+     * Creates {@link ReadTableRequest} for the given list of {@code ids}.
+     *
+     * <p>If any of the ids are obviously not valid (eg not UUID strings) they are ignored.
+     */
     @NonNull
     public static ReadTableRequest getReadTableRequest(@NonNull List<String> ids) {
         return new ReadTableRequest(getMainTableName())
@@ -141,9 +146,24 @@ public class MedicalDataSourceHelper {
                 .setJoinType(SqlJoin.SQL_JOIN_INNER);
     }
 
+    /**
+     * Returns a {@link WhereClauses} that limits to data sources with id in {@code ids}.
+     *
+     * @param ids the ids to limit to.
+     */
     @NonNull
     private static WhereClauses getReadTableWhereClause(@NonNull List<String> ids) {
-        List<UUID> uuids = ids.stream().map(UUID::fromString).toList();
+        List<UUID> uuids =
+                ids.stream()
+                        .flatMap(
+                                id -> {
+                                    try {
+                                        return Stream.of(UUID.fromString(id));
+                                    } catch (IllegalArgumentException ex) {
+                                        return Stream.of();
+                                    }
+                                })
+                        .toList();
         return new WhereClauses(AND)
                 .addWhereInClauseWithoutQuotes(
                         DATA_SOURCE_UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(uuids));
@@ -232,6 +252,32 @@ public class MedicalDataSourceHelper {
     }
 
     /**
+     * Returns the {@link MedicalDataSource}s stored in the HealthConnect database, optionally
+     * restricted by package name.
+     *
+     * <p>If {@code packageNames} is empty, returns all datasources, otherwise returns only
+     * datasources belonging to the given apps,
+     *
+     * @param packageNames list of packageNames of apps to restrict to
+     */
+    @NonNull
+    public List<MedicalDataSource> getMedicalDataSourcesByPackage(List<String> packageNames)
+            throws SQLiteException {
+        ReadTableRequest readTableRequest =
+                new ReadTableRequest(getMainTableName())
+                        .setJoinClause(getJoinClauseWithAppInfoTable());
+        if (!packageNames.isEmpty()) {
+            List<Long> appInfoIds = mAppInfoHelper.getAppInfoIds(packageNames);
+            readTableRequest.setWhereClause(
+                    new WhereClauses(AND)
+                            .addWhereInLongsClause(APP_INFO_ID_COLUMN_NAME, appInfoIds));
+        }
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+            return getMedicalDataSources(cursor);
+        }
+    }
+
+    /**
      * Creates {@link UpsertTableRequest} for the given {@link CreateMedicalDataSourceRequest} and
      * {@code appInfoId}.
      */
@@ -254,7 +300,6 @@ public class MedicalDataSourceHelper {
      * @param id the id to delete.
      * @throws IllegalArgumentException if the id does not exist
      */
-    @NonNull
     public static void deleteMedicalDataSource(@NonNull String id) throws SQLiteException {
         UUID uuid;
         try {

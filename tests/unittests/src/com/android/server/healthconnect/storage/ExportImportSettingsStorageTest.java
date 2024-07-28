@@ -66,9 +66,11 @@ public final class ExportImportSettingsStorageTest {
     @Mock Context mContext;
     @Mock ContentResolver mContentResolver;
     @Mock ContentProviderClient mContentProviderClient;
-    @Mock Cursor mCursor;
+    @Mock Cursor mAppNameCursor;
+    @Mock Cursor mFileNameCursor;
 
     private final PreferenceHelper mFakePreferenceHelper = new FakePreferenceHelper();
+    private final Instant mInstant = Instant.ofEpochMilli(12345678);
 
     @Before
     public void setUp() throws RemoteException {
@@ -76,8 +78,10 @@ public final class ExportImportSettingsStorageTest {
         when(mContext.getContentResolver()).thenReturn(mContentResolver);
         when(mContentResolver.acquireUnstableContentProviderClient(any(Uri.class)))
                 .thenReturn(mContentProviderClient);
+        when(mContentResolver.query(any(Uri.class), any(), any(), any(), any()))
+                .thenReturn(mFileNameCursor);
         when(mContentProviderClient.query(any(Uri.class), any(), any(), any(), any()))
-                .thenReturn(mCursor);
+                .thenReturn(mAppNameCursor);
     }
 
     @Test
@@ -101,7 +105,7 @@ public final class ExportImportSettingsStorageTest {
     @Test
     public void testConfigure_uri_removeExportLostFileAccessError() {
         ExportImportSettingsStorage.setLastExportError(
-                HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS);
+                HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS, mInstant);
         ExportImportSettingsStorage.configure(ScheduledExportSettings.withUri(Uri.parse(TEST_URI)));
 
         assertThat(mFakePreferenceHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY))
@@ -111,7 +115,7 @@ public final class ExportImportSettingsStorageTest {
     @Test
     public void testConfigure_uri_removeUnknownError() {
         ExportImportSettingsStorage.setLastExportError(
-                HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
+                HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN, mInstant);
         ExportImportSettingsStorage.configure(ScheduledExportSettings.withUri(Uri.parse(TEST_URI)));
 
         assertThat(mFakePreferenceHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY))
@@ -182,7 +186,7 @@ public final class ExportImportSettingsStorageTest {
     public void
             testSetLastSuccessfulExportTime_callsGetScheduledExportStatus_returnsLastExportTime() {
         Instant now = Instant.now();
-        ExportImportSettingsStorage.setLastSuccessfulExport(now);
+        ExportImportSettingsStorage.setLastSuccessfulExport(now, Uri.parse(TEST_URI));
 
         assertThat(
                         ExportImportSettingsStorage.getScheduledExportStatus(mContext)
@@ -193,27 +197,46 @@ public final class ExportImportSettingsStorageTest {
     @Test
     public void testSetLastExportError_callsGetScheduledExportStatus_returnsExportError() {
         ExportImportSettingsStorage.setLastExportError(
-                HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
+                HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN, mInstant);
 
         assertThat(
                         ExportImportSettingsStorage.getScheduledExportStatus(mContext)
                                 .getDataExportError())
                 .isEqualTo(HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
+        assertThat(
+                        ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                                .getLastFailedExportTime())
+                .isEqualTo(Instant.ofEpochMilli(mInstant.toEpochMilli()));
     }
 
     @Test
     public void testLastExportFileName_callsGetScheduledExportStatus_returnsLastExportFileName() {
-        ExportImportSettingsStorage.setLastSuccessfulExportUri(Uri.parse(TEST_URI));
+        when(mFileNameCursor.moveToFirst()).thenReturn(true);
+        when(mFileNameCursor.getString(anyInt())).thenReturn("healthconnect.zip");
+        ExportImportSettingsStorage.setLastSuccessfulExport(Instant.now(), Uri.parse(TEST_URI));
 
         assertThat(
                         ExportImportSettingsStorage.getScheduledExportStatus(mContext)
                                 .getLastExportFileName())
-                .isEqualTo("testuri");
+                .isEqualTo("healthconnect.zip");
     }
 
     @Test
     public void testLastExportFileName_withNoLastSuccessfulExportUri_returnsNull() {
         mFakePreferenceHelper.removeKey(LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY);
+
+        assertThat(
+                        ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                                .getLastExportFileName())
+                .isNull();
+    }
+
+    @Test
+    public void testLastExportFileName_exceptionThrown_returnsNull() {
+        when(mFileNameCursor.moveToFirst()).thenReturn(true);
+        when(mFileNameCursor.getString(anyInt()))
+                .thenThrow(new IllegalArgumentException("Cannot find the file name"));
+        ExportImportSettingsStorage.setLastSuccessfulExport(Instant.now(), Uri.parse(TEST_URI));
 
         assertThat(
                         ExportImportSettingsStorage.getScheduledExportStatus(mContext)
@@ -232,19 +255,34 @@ public final class ExportImportSettingsStorageTest {
     }
 
     @Test
+    public void testNextExportFileName_exceptionThrown_returnsNull() {
+        when(mFileNameCursor.moveToFirst()).thenReturn(true);
+        when(mFileNameCursor.getString(anyInt()))
+                .thenThrow(new IllegalArgumentException("Cannot find the file name"));
+        ExportImportSettingsStorage.configure(ScheduledExportSettings.withUri(Uri.parse(TEST_URI)));
+
+        assertThat(
+                        ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                                .getLastExportFileName())
+                .isNull();
+    }
+
+    @Test
     public void testNextExportFileName_callsGetScheduledExportStatus_returnsNextExportFileName() {
+        when(mFileNameCursor.moveToFirst()).thenReturn(true);
+        when(mFileNameCursor.getString(anyInt())).thenReturn("hc.zip");
         ExportImportSettingsStorage.configure(ScheduledExportSettings.withUri(Uri.parse(TEST_URI)));
 
         assertThat(
                         ExportImportSettingsStorage.getScheduledExportStatus(mContext)
                                 .getNextExportFileName())
-                .isEqualTo("testuri");
+                .isEqualTo("hc.zip");
     }
 
     @Test
     public void testLastExportAppName_withNoSuccessfulExportUri_returnsNull() {
-        when(mCursor.moveToFirst()).thenReturn(true);
-        when(mCursor.getString(anyInt())).thenReturn("Drive");
+        when(mAppNameCursor.moveToFirst()).thenReturn(true);
+        when(mAppNameCursor.getString(anyInt())).thenReturn("Drive");
         mFakePreferenceHelper.removeKey(LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY);
 
         assertThat(
@@ -254,10 +292,23 @@ public final class ExportImportSettingsStorageTest {
     }
 
     @Test
+    public void testLastExportAppName_exceptionThrown_returnsNull() {
+        when(mAppNameCursor.moveToFirst()).thenReturn(true);
+        when(mAppNameCursor.getString(anyInt()))
+                .thenThrow(new IllegalArgumentException("Cannot find the app name"));
+        ExportImportSettingsStorage.setLastSuccessfulExport(Instant.now(), Uri.parse(TEST_URI));
+
+        assertThat(
+                        ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                                .getLastExportAppName())
+                .isNull();
+    }
+
+    @Test
     public void testLastExportAppName_withLastSuccessfulExportUri_returnsLastExportAppName() {
-        when(mCursor.moveToFirst()).thenReturn(true);
-        when(mCursor.getString(anyInt())).thenReturn("Drive");
-        ExportImportSettingsStorage.setLastSuccessfulExportUri(Uri.parse(TEST_URI));
+        when(mAppNameCursor.moveToFirst()).thenReturn(true);
+        when(mAppNameCursor.getString(anyInt())).thenReturn("Drive");
+        ExportImportSettingsStorage.setLastSuccessfulExport(Instant.now(), Uri.parse(TEST_URI));
 
         assertThat(
                         ExportImportSettingsStorage.getScheduledExportStatus(mContext)
@@ -267,8 +318,8 @@ public final class ExportImportSettingsStorageTest {
 
     @Test
     public void testNextExportAppName_withNoUriConfigured_returnsNull() {
-        when(mCursor.moveToFirst()).thenReturn(true);
-        when(mCursor.getString(anyInt())).thenReturn("Dropbox");
+        when(mAppNameCursor.moveToFirst()).thenReturn(true);
+        when(mAppNameCursor.getString(anyInt())).thenReturn("Dropbox");
         mFakePreferenceHelper.removeKey(EXPORT_URI_PREFERENCE_KEY);
 
         assertThat(
@@ -278,9 +329,22 @@ public final class ExportImportSettingsStorageTest {
     }
 
     @Test
+    public void testNextExportAppName_exceptionThrown_returnsNull() {
+        when(mAppNameCursor.moveToFirst()).thenReturn(true);
+        when(mAppNameCursor.getString(anyInt()))
+                .thenThrow(new IllegalArgumentException("Cannot find the app name"));
+        ExportImportSettingsStorage.configure(ScheduledExportSettings.withUri(Uri.parse(TEST_URI)));
+
+        assertThat(
+                        ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                                .getNextExportAppName())
+                .isNull();
+    }
+
+    @Test
     public void testNextExportAppName_callsGetScheduledExportStatus_returnsNextExportAppName() {
-        when(mCursor.moveToFirst()).thenReturn(true);
-        when(mCursor.getString(anyInt())).thenReturn("Dropbox");
+        when(mAppNameCursor.moveToFirst()).thenReturn(true);
+        when(mAppNameCursor.getString(anyInt())).thenReturn("Dropbox");
         ExportImportSettingsStorage.configure(ScheduledExportSettings.withUri(Uri.parse(TEST_URI)));
 
         assertThat(

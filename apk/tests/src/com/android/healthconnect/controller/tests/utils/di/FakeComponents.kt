@@ -206,7 +206,9 @@ class FakeLoadMedicalEntriesUseCase : ILoadMedicalEntriesUseCase {
         formattedList = list
     }
 
-    override suspend fun invoke(input: LoadMedicalEntriesInput): UseCaseResults<List<FormattedEntry>> {
+    override suspend fun invoke(
+        input: LoadMedicalEntriesInput
+    ): UseCaseResults<List<FormattedEntry>> {
         return UseCaseResults.Success(formattedList)
     }
 
@@ -516,24 +518,12 @@ class FakeUpdateExportSettingsUseCase : IUpdateExportSettingsUseCase {
 class FakeLoadScheduledExportStatusUseCase : ILoadScheduledExportStatusUseCase {
     private var exportState: ScheduledExportUiState =
         ScheduledExportUiState(
-            null,
-            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-            0,
-            null,
-            null,
-            null,
-            null)
+            null, ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE, 0)
 
     fun reset() {
         exportState =
             ScheduledExportUiState(
-                null,
-                ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-                0,
-                null,
-                null,
-                null,
-                null)
+                null, ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE, 0)
     }
 
     fun updateExportStatus(exportState: ScheduledExportUiState) {
