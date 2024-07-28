@@ -78,7 +78,8 @@
     <string name="can_read" msgid="4568261079308309564">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>: чтение"</string>
     <string name="can_write" msgid="5082414937218423823">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>: запись"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Неактивные приложения"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"Эти приложения больше не записывают данные \"<xliff:g id="DATA_TYPE">%s</xliff:g>\". Поступившие от них сведения продолжат храниться в сервисе \"Здоровье и спорт\"."</string>
+    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
+    <skip />
     <string name="data_access_empty_message" msgid="9084350402254264452">"Приложения больше не могут считывать или записывать данные \"<xliff:g id="DATA_TYPE_0">%1$s</xliff:g>\". В приложении \"Здоровье и спорт\" нет данных \"<xliff:g id="DATA_TYPE_2">%2$s</xliff:g>\"."</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Сведения о времени и типе тренировок, количестве кругов, повторений, подходов, гребков и т. д."</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Сведения о сне, например о его фазах."</string>
@@ -344,8 +345,7 @@
     <string name="next_export_time" msgid="3138247220014510213">"Следующий экспорт: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Резервное копирование и восстановление"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Последний экспорт: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for last_export_file_location (4069435932524304633) -->
-    <skip />
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Экспорт по расписанию"</string>
     <string name="import_data" msgid="404502315533233094">"Импорт данных"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Восстановить данные из ранее экспортированного файла"</string>
@@ -358,14 +358,11 @@
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Не удалось восстановить экспортированные данные."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Используя функцию экспорта, вы можете сохранить данные, чтобы перенести их на другой телефон."</string>
     <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"О резервном копировании и восстановлении"</string>
-    <!-- no translation found for automatic_export_status (4407131306281440230) -->
-    <skip />
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Включен"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Отключен"</string>
-    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
-    <skip />
-    <!-- no translation found for next_export_file_location (2117071837862240540) -->
-    <skip />
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"Использовать экспорт по расписанию"</string>
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"Изменить периодичность"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Если выключить экспорт по расписанию, ранее экспортированные данные не будут удалены из хранилища."</string>
     <string name="choose_frequency" msgid="8119085390857180221">"Настройка экспорта по расписанию"</string>
@@ -395,9 +392,8 @@
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Выбрать файл"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Освободить место"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
-    <!-- no translation found for export_cancel_button (1952360582645412410) -->
-    <skip />
     <string name="export_next_button" msgid="657930567137105172">"Далее"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"Отмена"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Отмена"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Далее"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Откуда импортировать:"</string>
@@ -993,6 +989,5 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Все данные удалены."</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Данные в категории \"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>\" удалены."</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Удалено пунктов: <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>."</string>
-    <!-- no translation found for select_all (837499881590001166) -->
-    <skip />
+    <string name="select_all" msgid="837499881590001166">"Выбрать все"</string>
 </resources>

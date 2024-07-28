@@ -84,7 +84,7 @@ class HealthDataAccessFragmentTest {
         onView(withText("Inactive apps")).check(doesNotExist())
         onView(
                 withText(
-                    "These apps can no longer write distance, but still have data stored in Health\u00A0Connect"))
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
             .check(doesNotExist())
         onView(withText("Manage data")).check(matches(isDisplayed()))
         onView(withText("See all entries")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -108,7 +108,7 @@ class HealthDataAccessFragmentTest {
         onView(withText("Inactive apps")).check(doesNotExist())
         onView(
                 withText(
-                    "These apps can no longer write distance, but still have data stored in Health\u00A0Connect"))
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
             .check(doesNotExist())
         onView(withText("Manage data")).check(matches(isDisplayed()))
         onView(withText("See all entries")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -132,7 +132,7 @@ class HealthDataAccessFragmentTest {
         onView(withText("Inactive apps")).check(doesNotExist())
         onView(
                 withText(
-                    "These apps can no longer write distance, but still have data stored in Health\u00A0Connect"))
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
             .check(doesNotExist())
         onView(withText("Manage data")).check(matches(isDisplayed()))
         onView(withText("See all entries")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -163,7 +163,7 @@ class HealthDataAccessFragmentTest {
         onView(withText("Inactive apps")).check(matches(isDisplayed()))
         onView(
                 withText(
-                    "These apps can no longer write distance, but still have data stored in Health\u00A0Connect"))
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
             .check(matches(isDisplayed()))
         onView(withText("Manage data")).check(matches(isDisplayed()))
         onView(withText("See all entries")).perform(scrollTo()).check(matches(isDisplayed()))
