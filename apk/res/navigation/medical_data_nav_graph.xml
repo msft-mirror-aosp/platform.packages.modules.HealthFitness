@@ -25,5 +25,24 @@
         android:id="@+id/medicalAllDataFragment"
         android:label="@string/browse_medical_data"
         android:name="com.android.healthconnect.controller.data.alldata.medical.MedicalAllDataFragment">
+        <action
+            android:id="@+id/action_medicalAllData_to_entriesAndAccess"
+            app:destination="@id/entriesAndAccessFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/entriesAndAccessFragment"
+        android:label="@string/data_title"
+        android:name="com.android.healthconnect.controller.data.entriesandaccess.EntriesAndAccessFragment">
+        <action
+            android:id="@+id/action_entriesAndAccessFragment_to_fitnessApp"
+            app:destination="@id/fitness_app_nav_graph" />
+        <action
+            android:id="@+id/action_entriesAndAccessFragment_to_medicalApp"
+            app:destination="@id/medical_app_nav_graph" />
+        <action
+            android:id="@+id/action_entriesAndAccessFragment_to_combinedPermissions"
+            app:destination="@id/combined_permissions_nav_graph" />
+    </fragment>
+
 </navigation>

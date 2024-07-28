@@ -48,6 +48,7 @@ import static com.android.compatibility.common.util.SystemUtil.runWithShellPermi
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 
+import static com.google.common.truth.Correspondence.transforming;
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
@@ -66,13 +67,16 @@ import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
+import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
+import android.health.connect.MedicalPermissionCategory;
 import android.health.connect.MedicalResourceId;
+import android.health.connect.MedicalResourceTypeInfoResponse;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequestUsingIds;
@@ -111,6 +115,7 @@ import android.util.ArrayMap;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -139,6 +144,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -166,14 +172,15 @@ public class HealthConnectManagerTest {
     @Before
     public void before() throws InterruptedException {
         deleteAllRecords();
-        // TODO(b/348158309) Clean up PHR data here when delete APIs are implemented.
         TestUtils.deleteAllStagedRemoteData();
+        TestUtils.deleteAllMedicalData();
         mManager = TestUtils.getHealthConnectManager();
     }
 
     @After
     public void after() throws InterruptedException {
         deleteAllRecords();
+        TestUtils.deleteAllMedicalData();
     }
 
     private void deleteAllRecords() throws InterruptedException {
@@ -273,14 +280,14 @@ public class HealthConnectManagerTest {
         service.updateRecords(
                 updateRecords,
                 Executors.newSingleThreadExecutor(),
-                new OutcomeReceiver<Void, HealthConnectException>() {
+                new OutcomeReceiver<>() {
                     @Override
                     public void onResult(Void result) {
                         latch.countDown();
                     }
 
                     @Override
-                    public void onError(HealthConnectException exception) {
+                    public void onError(@NonNull HealthConnectException exception) {
                         responseException.set(exception);
                         latch.countDown();
                         Log.e(
@@ -343,12 +350,12 @@ public class HealthConnectManagerTest {
         service.updateRecords(
                 updateRecords,
                 Executors.newSingleThreadExecutor(),
-                new OutcomeReceiver<Void, HealthConnectException>() {
+                new OutcomeReceiver<>() {
                     @Override
                     public void onResult(Void result) {}
 
                     @Override
-                    public void onError(HealthConnectException exception) {
+                    public void onError(@NonNull HealthConnectException exception) {
                         responseException.set(exception);
                         latch.countDown();
                         Log.e(
@@ -405,10 +412,7 @@ public class HealthConnectManagerTest {
                             updateRecords.get(itr), insertRecords.get(itr).getMetadata().getId()));
             //             adding an entry with invalid packageName.
             if (updateRecords.get(itr).getRecordType() == RECORD_TYPE_STEPS) {
-                updateRecords.set(
-                        itr,
-                        getStepsRecord(
-                                /* clientRecordId= */ null, /* packageName= */ "abc.xyz.pqr"));
+                updateRecords.set(itr, getStepsRecord(/* packageName= */ "abc.xyz.pqr"));
             }
         }
 
@@ -417,14 +421,14 @@ public class HealthConnectManagerTest {
             service.updateRecords(
                     updateRecords,
                     Executors.newSingleThreadExecutor(),
-                    new OutcomeReceiver<Void, HealthConnectException>() {
+                    new OutcomeReceiver<>() {
                         @Override
                         public void onResult(Void result) {
                             latch.countDown();
                         }
 
                         @Override
-                        public void onError(HealthConnectException exception) {
+                        public void onError(@NonNull HealthConnectException exception) {
                             responseException.set(exception);
                             latch.countDown();
                             Log.e(
@@ -633,13 +637,9 @@ public class HealthConnectManagerTest {
         final Instant startTime = endTime.minusMillis(1000L);
 
         final String id1 =
-                TestUtils.insertRecordAndGetId(
-                        getHydrationRecord(
-                                /* clientRecordId= */ null, startTime, endTime, volume1));
+                TestUtils.insertRecordAndGetId(getHydrationRecord(startTime, endTime, volume1));
         final String id2 =
-                TestUtils.insertRecordAndGetId(
-                        getHydrationRecord(
-                                /* clientRecordId= */ null, startTime, endTime, volume2));
+                TestUtils.insertRecordAndGetId(getHydrationRecord(startTime, endTime, volume2));
 
         final List<HydrationRecord> records =
                 TestUtils.readRecords(
@@ -663,13 +663,9 @@ public class HealthConnectManagerTest {
         final Instant startTime = endTime.minusMillis(1000L);
 
         final String id1 =
-                TestUtils.insertRecordAndGetId(
-                        getNutritionRecord(
-                                /* clientRecordId= */ null, startTime, endTime, protein1));
+                TestUtils.insertRecordAndGetId(getNutritionRecord(startTime, endTime, protein1));
         final String id2 =
-                TestUtils.insertRecordAndGetId(
-                        getNutritionRecord(
-                                /* clientRecordId= */ null, startTime, endTime, protein2));
+                TestUtils.insertRecordAndGetId(getNutritionRecord(startTime, endTime, protein2));
 
         final List<NutritionRecord> records =
                 TestUtils.readRecords(
@@ -717,12 +713,12 @@ public class HealthConnectManagerTest {
                         getStepsRecord(t0300, UTC, t0400, UTC, 250));
         TestUtils.setupAggregation(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         TestUtils.insertRecords(records);
-        LocalDateTime startOfYesterday = LocalDateTime.now(UTC).truncatedTo(DAYS).minus(1, DAYS);
+        LocalDateTime startOfYesterday = LocalDateTime.now(UTC).truncatedTo(DAYS).minusDays(1);
         AggregateRecordsRequest<Long> aggregateRecordsRequest =
                 new AggregateRecordsRequest.Builder<Long>(
                                 new LocalTimeRangeFilter.Builder()
-                                        .setStartTime(startOfYesterday.plus(1, HOURS))
-                                        .setEndTime(startOfYesterday.plus(4, HOURS))
+                                        .setStartTime(startOfYesterday.plusHours(1))
+                                        .setEndTime(startOfYesterday.plusHours(4))
                                         .build())
                         .addAggregationType(STEPS_COUNT_TOTAL)
                         .build();
@@ -746,7 +742,7 @@ public class HealthConnectManagerTest {
         // When no data falls in a given bucket, zone offset will be null and we use system default
         // zone to set bucket start and end time
         LocalDateTime localStart = t0100.atZone(utcPlusOne).toLocalDateTime();
-        LocalDateTime localEnd = localStart.plus(1, HOURS);
+        LocalDateTime localEnd = localStart.plusHours(1);
         ZoneOffset startZone = ZoneOffset.systemDefault().getRules().getOffset(localStart);
         Instant start = localStart.atZone(startZone).toInstant();
         ZoneOffset endZone = ZoneOffset.systemDefault().getRules().getOffset(localEnd);
@@ -892,21 +888,10 @@ public class HealthConnectManagerTest {
         }
 
         assertThat(latch.await(10, TimeUnit.SECONDS)).isEqualTo(true);
-        assertThat(observedExceptionsByFileName.get()).isNotNull();
-        assertThat(observedExceptionsByFileName.get().size()).isEqualTo(1);
-        assertThat(
-                        observedExceptionsByFileName.get().entrySet().stream()
-                                .findFirst()
-                                .get()
-                                .getKey())
-                .isEqualTo("testRestoreFile1");
-        assertThat(
-                        observedExceptionsByFileName.get().entrySet().stream()
-                                .findFirst()
-                                .get()
-                                .getValue()
-                                .getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_IO);
+        assertThat(observedExceptionsByFileName.get())
+                .comparingValuesUsing(
+                        transforming(HealthConnectException::getErrorCode, "has error code"))
+                .containsExactly("testRestoreFile1", HealthConnectException.ERROR_IO);
 
         deleteAllStagedRemoteData();
     }
@@ -1026,21 +1011,10 @@ public class HealthConnectManagerTest {
         }
 
         assertThat(latch.await(10, TimeUnit.SECONDS)).isEqualTo(true);
-        assertThat(observedExceptionsByFileName.get()).isNotNull();
-        assertThat(observedExceptionsByFileName.get().size()).isEqualTo(1);
-        assertThat(
-                        observedExceptionsByFileName.get().entrySet().stream()
-                                .findFirst()
-                                .get()
-                                .getKey())
-                .isEqualTo("");
-        assertThat(
-                        observedExceptionsByFileName.get().entrySet().stream()
-                                .findFirst()
-                                .get()
-                                .getValue()
-                                .getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_SECURITY);
+        assertThat(observedExceptionsByFileName.get())
+                .comparingValuesUsing(
+                        transforming(HealthConnectException::getErrorCode, "has error code"))
+                .containsExactly("", HealthConnectException.ERROR_SECURITY);
 
         deleteAllStagedRemoteData();
     }
@@ -1985,15 +1959,58 @@ public class HealthConnectManagerTest {
 
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetMedicalDataSources_byId_throws() {
+    public void testGetMedicalDataSourcesById_notPresent_returnsEmptyList() throws Exception {
         HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
-        List<String> ids = List.of("1");
+        List<String> ids = List.of("foo");
 
-        assertThrows(
-                UnsupportedOperationException.class,
-                () ->
-                        mManager.getMedicalDataSources(
-                                ids, Executors.newSingleThreadExecutor(), receiver));
+        mManager.getMedicalDataSources(ids, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalDataSourcesById_onePresent_returnsIt() throws Exception {
+        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(
+                getCreateMedicalDataSourceRequest(),
+                Executors.newSingleThreadExecutor(),
+                createReceiver);
+        MedicalDataSource dataSource = createReceiver.getResponse();
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+
+        mManager.getMedicalDataSources(
+                List.of(dataSource.getId()), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).containsExactly(dataSource);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalDataSourcesByRequest_nothingPresent_returnsEmpty() throws Exception {
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
+
+        mManager.getMedicalDataSources(request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalDataSourcesByRequest_onePresent_returnsIt() throws Exception {
+        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(
+                getCreateMedicalDataSourceRequest(),
+                Executors.newSingleThreadExecutor(),
+                createReceiver);
+        MedicalDataSource dataSource = createReceiver.getResponse();
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
+
+        mManager.getMedicalDataSources(request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).containsExactly(dataSource);
     }
 
     @Test
@@ -2198,14 +2215,38 @@ public class HealthConnectManagerTest {
                 .isEqualTo(HealthConnectException.ERROR_UNSUPPORTED_OPERATION);
     }
 
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testQueryAllMedicalResourceTypesInfo_succeeds() throws InterruptedException {
+        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        HealthConnectReceiver<List<MedicalResourceTypeInfoResponse>> receiver =
+                new HealthConnectReceiver<>();
+        List<MedicalResourceTypeInfoResponse> expectedResponses =
+                List.of(
+                        new MedicalResourceTypeInfoResponse(
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                                MedicalPermissionCategory.IMMUNIZATION,
+                                Set.of()));
+
+        try {
+            mManager.queryAllMedicalResourceTypesInfo(
+                    Executors.newSingleThreadExecutor(), receiver);
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
+
+        assertThat(receiver.getResponse()).isEqualTo(expectedResponses);
+    }
+
     private boolean isEmptyContributingPackagesForAll(
             Map<Class<? extends Record>, RecordTypeInfoResponse> response) {
         // If all the responses have empty lists in their contributing packages then we
         // return true. This can happen when the sync or insert took a long time to run, or they
         // faced an issue while running.
-        return !response.values().stream()
+        return response.values().stream()
                 .map(RecordTypeInfoResponse::getContributingPackages)
-                .anyMatch(list -> !list.isEmpty());
+                .allMatch(List::isEmpty);
     }
 
     private static void deleteAllStagedRemoteData()
@@ -2258,7 +2299,7 @@ public class HealthConnectManagerTest {
 
     private static List<Record> getTestRecords() {
         return Arrays.asList(
-                getStepsRecord(/* clientRecordId= */ null, /* packageName= */ ""),
+                getStepsRecord(/* packageName= */ ""),
                 getHeartRateRecord(),
                 getBasalMetabolicRateRecord());
     }
@@ -2334,9 +2375,9 @@ public class HealthConnectManagerTest {
         return readRecords;
     }
 
-    private static StepsRecord getStepsRecord(String clientRecordId, String packageName) {
+    private static StepsRecord getStepsRecord(String packageName) {
         return getStepsRecord(
-                clientRecordId,
+                /* clientRecordId= */ null,
                 packageName,
                 /* count= */ 10,
                 Instant.now(),
@@ -2344,7 +2385,7 @@ public class HealthConnectManagerTest {
     }
 
     private static StepsRecord getStepsRecord(
-            String clientRecordId,
+            @Nullable String clientRecordId,
             String packageName,
             int count,
             Instant startTime,
@@ -2413,27 +2454,21 @@ public class HealthConnectManagerTest {
     }
 
     private static HydrationRecord getHydrationRecord(
-            String clientRecordId, Instant startTime, Instant endTime, Volume volume) {
+            Instant startTime, Instant endTime, Volume volume) {
         Device device = getPhoneDevice();
         DataOrigin dataOrigin = getDataOrigin();
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
-        if (clientRecordId != null) {
-            testMetadataBuilder.setClientRecordId(clientRecordId);
-        }
         return new HydrationRecord.Builder(testMetadataBuilder.build(), startTime, endTime, volume)
                 .build();
     }
 
     private static NutritionRecord getNutritionRecord(
-            String clientRecordId, Instant startTime, Instant endTime, Mass protein) {
+            Instant startTime, Instant endTime, Mass protein) {
         Device device = getPhoneDevice();
         DataOrigin dataOrigin = getDataOrigin();
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
-        if (clientRecordId != null) {
-            testMetadataBuilder.setClientRecordId(clientRecordId);
-        }
         return new NutritionRecord.Builder(testMetadataBuilder.build(), startTime, endTime)
                 .setProtein(protein)
                 .build();

@@ -41,6 +41,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.ApplicationInfoFlags;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -71,6 +72,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -298,9 +300,28 @@ public final class AppInfoHelper extends DatabaseHelper {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Returns AppInfo id for the provided {@code packageName}, creating it if needed using the
+     * given {@link SQLiteDatabase}.
+     */
+    public long getOrInsertAppInfoId(
+            @NonNull SQLiteDatabase db, @NonNull String packageName, @NonNull Context context) {
+        return getOrInsertAppInfoId(Optional.of(db), packageName, context);
+    }
+
     /** Returns AppInfo id for the provided {@code packageName}, creating it if needed. */
     public long getOrInsertAppInfoId(@NonNull String packageName, @NonNull Context context) {
-        AppInfoInternal appInfoInternal = getAppInfoMap().get(packageName);
+        return getOrInsertAppInfoId(Optional.empty(), packageName, context);
+    }
+
+    /**
+     * Returns AppInfo id for the provided {@code packageName}, creating it if needed. If given db
+     * is null, the default will be {@link TransactionManager#getReadableDb()} for reads and {@link
+     * TransactionManager#getWritableDb()} for writes.
+     */
+    private long getOrInsertAppInfoId(
+            Optional<SQLiteDatabase> db, @NonNull String packageName, @NonNull Context context) {
+        AppInfoInternal appInfoInternal = getAppInfoMap(db).get(packageName);
 
         if (appInfoInternal == null) {
             try {
@@ -309,19 +330,19 @@ public final class AppInfoHelper extends DatabaseHelper {
                 throw new IllegalArgumentException("Could not find package info for package", e);
             }
 
-            insertIfNotPresent(packageName, appInfoInternal);
+            insertIfNotPresent(db, packageName, appInfoInternal);
         }
 
         return appInfoInternal.getId();
     }
 
-    private synchronized void populateAppInfoMap() {
+    private synchronized void populateAppInfoMap(Optional<SQLiteDatabase> db) {
         if (mAppInfoMap != null) {
             return;
         }
         ConcurrentHashMap<String, AppInfoInternal> appInfoMap = new ConcurrentHashMap<>();
         ConcurrentHashMap<Long, String> idPackageNameMap = new ConcurrentHashMap<>();
-        try (Cursor cursor = mTransactionManager.read(new ReadTableRequest(TABLE_NAME))) {
+        try (Cursor cursor = readAppInfo(db)) {
             while (cursor.moveToNext()) {
                 long rowId = getCursorLong(cursor, RecordHelper.PRIMARY_COLUMN_NAME);
                 String packageName = getCursorString(cursor, PACKAGE_COLUMN_NAME);
@@ -341,6 +362,13 @@ public final class AppInfoHelper extends DatabaseHelper {
         }
         mAppInfoMap = appInfoMap;
         mIdPackageNameMap = idPackageNameMap;
+    }
+
+    @NonNull
+    private Cursor readAppInfo(Optional<SQLiteDatabase> db) {
+        ReadTableRequest request = new ReadTableRequest(TABLE_NAME);
+        return db.map(sqLiteDatabase -> mTransactionManager.read(sqLiteDatabase, request))
+                .orElseGet(() -> mTransactionManager.read(request));
     }
 
     @Nullable
@@ -603,19 +631,36 @@ public final class AppInfoHelper extends DatabaseHelper {
     }
 
     private Map<String, AppInfoInternal> getAppInfoMap() {
+        return getAppInfoMap(Optional.empty());
+    }
+
+    /**
+     * Populates and gets the {@code mAppInfoMap} using the given {@link SQLiteDatabase} to read the
+     * table. If given db is null, the default will be {@link TransactionManager#getReadableDb()}.
+     */
+    private Map<String, AppInfoInternal> getAppInfoMap(Optional<SQLiteDatabase> db) {
         if (Objects.isNull(mAppInfoMap)) {
-            populateAppInfoMap();
+            populateAppInfoMap(db);
         }
 
         return mAppInfoMap;
     }
 
-    private Map<Long, String> getIdPackageNameMap() {
+    /**
+     * Populates and gets the {@code mIdPackageNameMap} using the given {@link SQLiteDatabase} to
+     * read the table. If given db is null, the default will be {@link
+     * TransactionManager#getReadableDb()}.
+     */
+    private Map<Long, String> getIdPackageNameMap(Optional<SQLiteDatabase> db) {
         if (mIdPackageNameMap == null) {
-            populateAppInfoMap();
+            populateAppInfoMap(db);
         }
 
         return mIdPackageNameMap;
+    }
+
+    private Map<Long, String> getIdPackageNameMap() {
+        return getIdPackageNameMap(Optional.empty());
     }
 
     private AppInfoInternal getAppInfo(@NonNull String packageName, @NonNull Context context)
@@ -645,19 +690,37 @@ public final class AppInfoHelper extends DatabaseHelper {
 
     private synchronized void insertIfNotPresent(
             @NonNull String packageName, @NonNull AppInfoInternal appInfo) {
-        if (getAppInfoMap().containsKey(packageName)) {
+        insertIfNotPresent(Optional.empty(), packageName, appInfo);
+    }
+
+    /**
+     * Inserts appInfo if not present in the db, using the given {@link SQLiteDatabase}. If given db
+     * is null, the default will be {@link TransactionManager#getReadableDb()} for reads and {@link
+     * TransactionManager#getWritableDb()} for writes.
+     */
+    private synchronized void insertIfNotPresent(
+            Optional<SQLiteDatabase> db,
+            @NonNull String packageName,
+            @NonNull AppInfoInternal appInfo) {
+        if (getAppInfoMap(db).containsKey(packageName)) {
             return;
         }
 
-        long rowId =
-                mTransactionManager.insert(
-                        new UpsertTableRequest(
-                                TABLE_NAME,
-                                getContentValues(packageName, appInfo),
-                                UNIQUE_COLUMN_INFO));
+        long rowId = insertAppInfo(db, packageName, appInfo);
         appInfo.setId(rowId);
-        getAppInfoMap().put(packageName, appInfo);
-        getIdPackageNameMap().put(appInfo.getId(), packageName);
+        getAppInfoMap(db).put(packageName, appInfo);
+        getIdPackageNameMap(db).put(appInfo.getId(), packageName);
+    }
+
+    private long insertAppInfo(
+            Optional<SQLiteDatabase> db,
+            @NonNull String packageName,
+            @NonNull AppInfoInternal appInfo) {
+        UpsertTableRequest upsertRequest =
+                new UpsertTableRequest(
+                        TABLE_NAME, getContentValues(packageName, appInfo), UNIQUE_COLUMN_INFO);
+        return db.map(sqLiteDatabase -> mTransactionManager.insert(sqLiteDatabase, upsertRequest))
+                .orElseGet(() -> mTransactionManager.insert(upsertRequest));
     }
 
     private synchronized void updateIfPresent(String packageName, AppInfoInternal appInfoInternal) {

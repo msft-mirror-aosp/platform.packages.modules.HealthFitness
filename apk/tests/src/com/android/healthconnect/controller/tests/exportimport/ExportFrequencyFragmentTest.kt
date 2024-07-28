@@ -118,7 +118,6 @@ class ExportFrequencyFragmentTest {
     fun exportFrequencyFragment_cancelButton_isClickable() {
         launchFragment<ExportFrequencyFragment>(Bundle())
 
-        // TODO: b/330484311 - Add check for activity state and use export activity if possible
         onView(withId(R.id.export_import_cancel_button)).check(matches(isClickable()))
         onView(withId(R.id.export_import_cancel_button)).perform(click())
 

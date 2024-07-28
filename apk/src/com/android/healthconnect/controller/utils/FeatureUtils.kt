@@ -17,8 +17,6 @@ interface FeatureUtils {
 
     fun isEntryPointsEnabled(): Boolean
 
-    fun isNewAppPriorityEnabled(): Boolean
-
     fun isNewInformationArchitectureEnabled(): Boolean
 
     fun isBackgroundReadEnabled(): Boolean
@@ -40,8 +38,6 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
             "exercise_routes_read_all_enable"
         private const val PROPERTY_SESSIONS_TYPE_ENABLED = "session_types_enable"
         private const val PROPERTY_ENTRY_POINTS_ENABLED = "entry_points_enable"
-        private const val PROPERTY_AGGREGATION_SOURCE_CONTROL_ENABLED =
-            "aggregation_source_controls_enable"
     }
 
     private val lock = Any()
@@ -60,17 +56,9 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
     private var isEntryPointsEnabled =
         DeviceConfig.getBoolean(HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_ENTRY_POINTS_ENABLED, true)
 
-    private var isNewAppPriorityEnabled = true
-
     private var isNewInformationArchitectureEnabled = Flags.newInformationArchitecture()
 
     private var isPersonalHealthRecordEnabled = Flags.personalHealthRecord()
-
-    override fun isNewAppPriorityEnabled(): Boolean {
-        synchronized(lock) {
-            return isNewAppPriorityEnabled
-        }
-    }
 
     override fun isNewInformationArchitectureEnabled(): Boolean {
         synchronized(lock) {
@@ -144,7 +132,6 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
                     PROPERTY_ENTRY_POINTS_ENABLED ->
                         isEntryPointsEnabled =
                             properties.getBoolean(PROPERTY_ENTRY_POINTS_ENABLED, true)
-                    PROPERTY_AGGREGATION_SOURCE_CONTROL_ENABLED -> isNewAppPriorityEnabled = true
                 }
             }
         }
