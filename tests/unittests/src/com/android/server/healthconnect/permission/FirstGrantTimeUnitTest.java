@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.permission;
 
-import static com.android.server.healthconnect.TestUtils.getInternalBackgroundExecutorTaskCount;
 import static com.android.server.healthconnect.TestUtils.waitForAllScheduledTasksToComplete;
 import static com.android.server.healthconnect.permission.FirstGrantTimeDatastore.DATA_TYPE_CURRENT;
 import static com.android.server.healthconnect.permission.FirstGrantTimeDatastore.DATA_TYPE_STAGED;
@@ -28,6 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -37,6 +37,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.HealthPermissions;
 import android.health.connect.ReadRecordsRequest;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsResponse;
@@ -51,7 +52,10 @@ import android.util.Pair;
 
 import androidx.test.InstrumentationRegistry;
 
+import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
@@ -87,6 +91,7 @@ public class FirstGrantTimeUnitTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(MigrationStateManager.class)
+                    .mockStatic(HealthConnectThreadScheduler.class)
                     .spyStatic(HealthDataCategoryPriorityHelper.class)
                     .setStrictness(Strictness.LENIENT)
                     .build();
@@ -114,6 +119,7 @@ public class FirstGrantTimeUnitTest {
     public void setUp() {
         Context context = InstrumentationRegistry.getContext();
         MockitoAnnotations.initMocks(this);
+        HealthConnectDeviceConfigManager.initializeInstance(context);
         TransactionManager.initializeInstance(new HealthConnectUserContext(context, CURRENT_USER));
         when(MigrationStateManager.getInitialisedInstance()).thenReturn(mMigrationStateManager);
         when(mMigrationStateManager.isMigrationInProgress()).thenReturn(false);
@@ -241,46 +247,74 @@ public class FirstGrantTimeUnitTest {
     }
 
     @Test
-    public void testOnPermissionsChangedCalled_withHealthPermissionsUid_expectBackgroundTaskAdded()
-            throws TimeoutException {
-        long currentTaskCount = getInternalBackgroundExecutorTaskCount();
-        waitForAllScheduledTasksToComplete();
+    public void
+            testOnPermissionsChangedCalled_withHealthPermissionsUid_expectBackgroundTaskAdded() {
         int uid = 123;
         String[] packageNames = {"package.name"};
+        PackageInfo packageInfo = new PackageInfo();
+        packageInfo.packageName = packageNames[0];
+        packageInfo.requestedPermissions =
+                new String[] {
+                    HealthPermissions.WRITE_EXERCISE,
+                };
+        packageInfo.requestedPermissionsFlags =
+                new int[] {
+                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
+                };
         when(mPackageManager.getPackagesForUid(uid)).thenReturn(packageNames);
+        when(mPackageInfoUtils.getPackageNamesForUid(uid)).thenReturn(packageNames);
+        when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
+                .thenReturn(List.of(packageInfo));
+        when(mPackageInfoUtils.hasGrantedHealthPermissions(eq(packageNames), any(), any()))
+                .thenReturn(true);
         when(mTracker.supportsPermissionUsageIntent(eq(packageNames[0]), ArgumentMatchers.any()))
                 .thenReturn(true);
         when(HealthDataCategoryPriorityHelper.getInstance())
                 .thenReturn(mHealthDataCategoryPriorityHelper);
+
         FirstGrantTimeManager firstGrantTimeManager =
-                createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ false);
+                createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ true);
 
         firstGrantTimeManager.onPermissionsChanged(uid);
-        waitForAllScheduledTasksToComplete();
 
-        assertThat(getInternalBackgroundExecutorTaskCount()).isEqualTo(currentTaskCount + 1);
+        ExtendedMockito.verify(
+                () -> HealthConnectThreadScheduler.scheduleInternalTask(any()), times(1));
     }
 
     @Test
     public void
             testOnPermissionsChangedCalled_withNoHealthPermissionsUid_expectNoBackgroundTaskAdded()
                     throws TimeoutException {
-        long currentTaskCount = getInternalBackgroundExecutorTaskCount();
-        waitForAllScheduledTasksToComplete();
         int uid = 123;
         String[] packageNames = {"package.name"};
+        PackageInfo packageInfo = new PackageInfo();
+        packageInfo.packageName = packageNames[0];
+        packageInfo.requestedPermissions =
+                new String[] {
+                    HealthPermissions.WRITE_EXERCISE,
+                };
+        packageInfo.requestedPermissionsFlags =
+                new int[] {
+                    PackageInfo.REQUESTED_PERMISSION_GRANTED,
+                };
         when(mPackageManager.getPackagesForUid(uid)).thenReturn(packageNames);
+        when(mPackageInfoUtils.getPackageNamesForUid(uid)).thenReturn(packageNames);
+        when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(any(), any()))
+                .thenReturn(List.of(packageInfo));
+        when(mPackageInfoUtils.hasGrantedHealthPermissions(eq(packageNames), any(), any()))
+                .thenReturn(true);
         when(mTracker.supportsPermissionUsageIntent(eq(packageNames[0]), ArgumentMatchers.any()))
                 .thenReturn(false);
         when(HealthDataCategoryPriorityHelper.getInstance())
                 .thenReturn(mHealthDataCategoryPriorityHelper);
+
         FirstGrantTimeManager firstGrantTimeManager =
-                createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ false);
+                createFirstGrantTimeManager(/* useMockPackageInfoUtils= */ true);
 
         firstGrantTimeManager.onPermissionsChanged(uid);
-        waitForAllScheduledTasksToComplete();
 
-        assertThat(getInternalBackgroundExecutorTaskCount()).isEqualTo(currentTaskCount);
+        ExtendedMockito.verify(
+                () -> HealthConnectThreadScheduler.scheduleInternalTask(any()), times(0));
     }
 
     @Test

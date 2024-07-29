@@ -82,6 +82,7 @@ import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -90,6 +91,7 @@ import org.mockito.Mockito
 import org.mockito.kotlin.any
 import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
 
@@ -167,6 +169,7 @@ class HomeFragmentTest {
         reset(healthConnectLogger)
     }
 
+    // region Navigation tests
     @Test
     fun appPermissions_navigatesToConnectedApps() {
         setupFragmentForNavigation()
@@ -176,6 +179,7 @@ class HomeFragmentTest {
     }
 
     @Test
+    @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
     fun dataAndAccess_navigatesToDataAndAccess() {
         setupFragmentForNavigation()
         onView(withText("Data and access")).check(matches(isDisplayed()))
@@ -184,19 +188,12 @@ class HomeFragmentTest {
     }
 
     @Test
-    fun browseMedicalData_flagDisabled_notDisplayed() {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(false)
+    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
+    fun browseData_navigatesToBrowseData() {
         setupFragmentForNavigation()
-
-        onView(withText("Browse health records")).check(doesNotExist())
-    }
-
-    @Test
-    fun browseMedicalData_flagEnabled_isDiplayed() {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
-        setupFragmentForNavigation()
-
-        onView(withText("Browse health records")).check(matches(isDisplayed()))
+        onView(withText("Browse data")).check(matches(isDisplayed()))
+        onView(withText("Browse data")).perform(click())
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.data_activity)
     }
 
     @Test
@@ -331,43 +328,11 @@ class HomeFragmentTest {
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.manageDataFragment)
     }
 
+    // endregion
+
+    // region Display tests
     @Test
-    fun homeFragmentLogging_impressionsLogged() {
-        val recentApp =
-            RecentAccessEntry(
-                metadata = TEST_APP,
-                instantTime = Instant.parse("2022-10-20T18:40:13.00Z"),
-                isToday = true,
-                dataTypesWritten =
-                    mutableSetOf(
-                        HealthDataCategory.ACTIVITY.uppercaseTitle(),
-                        HealthDataCategory.VITALS.uppercaseTitle()),
-                dataTypesRead =
-                    mutableSetOf(
-                        HealthDataCategory.SLEEP.uppercaseTitle(),
-                        HealthDataCategory.NUTRITION.uppercaseTitle()))
-
-        timeSource.setIs24Hour(true)
-
-        whenever(recentAccessViewModel.recentAccessApps).then {
-            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
-        }
-        whenever(homeFragmentViewModel.connectedApps).then {
-            MutableLiveData(listOf<ConnectedAppMetadata>())
-        }
-
-        launchFragment<HomeFragment>(Bundle())
-
-        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.HOME_PAGE)
-        verify(healthConnectLogger).logPageImpression()
-        verify(healthConnectLogger).logImpression(HomePageElement.APP_PERMISSIONS_BUTTON)
-        verify(healthConnectLogger).logImpression(HomePageElement.DATA_AND_ACCESS_BUTTON)
-        verify(healthConnectLogger).logImpression(HomePageElement.MANAGE_DATA_BUTTON)
-        verify(healthConnectLogger).logImpression(HomePageElement.SEE_ALL_RECENT_ACCESS_BUTTON)
-        verify(healthConnectLogger).logImpression(RecentAccessElement.RECENT_ACCESS_ENTRY_BUTTON)
-    }
-
-    @Test
+    @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
     fun whenRecentAccessApps_showsRecentAccessApps() {
         val recentApp =
             RecentAccessEntry(
@@ -444,7 +409,8 @@ class HomeFragmentTest {
     }
 
     @Test
-    fun whenNoRecentAccessApps_showsNoRecentAccessApps() {
+    @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
+    fun oldIA_withNoRecentAccessApps() {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
@@ -471,6 +437,7 @@ class HomeFragmentTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
     fun whenOneAppConnected_showsOneAppHasPermissions() {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
@@ -484,14 +451,16 @@ class HomeFragmentTest {
         onView(
                 withText(
                     "Manage the health and fitness data on your device, and control which apps can access it"))
-            .check(matches(isDisplayed()))
+            .check(doesNotExist())
         onView(withText("App permissions")).check(matches(isDisplayed()))
         onView(withText("1 app has access")).check(matches(isDisplayed()))
-        onView(withText("Data and access")).check(matches(isDisplayed()))
+        onView(withText("Browse data")).check(matches(isDisplayed()))
+        onView(withText("See data and which apps can access it")).check(matches(isDisplayed()))
         onView(withText("Manage data")).check(matches(isDisplayed()))
     }
 
     @Test
+    @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
     fun whenOneAppConnected_oneAppNotConnected_showsCorrectSummary() {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
@@ -515,6 +484,9 @@ class HomeFragmentTest {
         onView(withText("Manage data")).check(matches(isDisplayed()))
     }
 
+    // endregion
+
+    // region Migration tests
     @Test
     fun whenMigrationStatePending_showsMigrationBanner() {
         Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
@@ -691,6 +663,28 @@ class HomeFragmentTest {
         }
     }
 
+    // endregion
+
+    // region Medical data tests
+    @Test
+    fun browseMedicalData_flagDisabled_notDisplayed() {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(false)
+        setupFragmentForNavigation()
+
+        onView(withText("Browse health records")).check(doesNotExist())
+    }
+
+    @Test
+    fun browseMedicalData_flagEnabled_isDisplayed() {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
+        setupFragmentForNavigation()
+
+        onView(withText("Browse health records")).check(matches(isDisplayed()))
+    }
+
+    // endregion
+
+    // region Import/Export tests
     @Test
     @DisableFlags(Flags.FLAG_EXPORT_IMPORT)
     fun whenExportImportFlagIsDisabled_doesNotShowExportFileAccessErrorBanner() {
@@ -935,6 +929,86 @@ class HomeFragmentTest {
         onView(withText("Set up")).perform(click())
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.exportSetupActivity)
     }
+
+    // endregion
+
+    // region Logging
+    @Test
+    @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
+    fun homeFragmentLogging_oldIA_impressionsLogged() {
+        val recentApp =
+            RecentAccessEntry(
+                metadata = TEST_APP,
+                instantTime = Instant.parse("2022-10-20T18:40:13.00Z"),
+                isToday = true,
+                dataTypesWritten =
+                    mutableSetOf(
+                        HealthDataCategory.ACTIVITY.uppercaseTitle(),
+                        HealthDataCategory.VITALS.uppercaseTitle()),
+                dataTypesRead =
+                    mutableSetOf(
+                        HealthDataCategory.SLEEP.uppercaseTitle(),
+                        HealthDataCategory.NUTRITION.uppercaseTitle()))
+
+        timeSource.setIs24Hour(true)
+
+        whenever(recentAccessViewModel.recentAccessApps).then {
+            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
+        }
+        whenever(homeFragmentViewModel.connectedApps).then {
+            MutableLiveData(listOf<ConnectedAppMetadata>())
+        }
+
+        launchFragment<HomeFragment>(Bundle())
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.HOME_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(HomePageElement.APP_PERMISSIONS_BUTTON)
+        verify(healthConnectLogger).logImpression(HomePageElement.DATA_AND_ACCESS_BUTTON)
+        verify(healthConnectLogger, never()).logImpression(HomePageElement.BROWSE_DATA_BUTTON)
+        verify(healthConnectLogger).logImpression(HomePageElement.SEE_ALL_RECENT_ACCESS_BUTTON)
+        verify(healthConnectLogger).logImpression(RecentAccessElement.RECENT_ACCESS_ENTRY_BUTTON)
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
+    fun homeFragmentLogging_newIA_impressionsLogged() {
+        val recentApp =
+            RecentAccessEntry(
+                metadata = TEST_APP,
+                instantTime = Instant.parse("2022-10-20T18:40:13.00Z"),
+                isToday = true,
+                dataTypesWritten =
+                    mutableSetOf(
+                        HealthDataCategory.ACTIVITY.uppercaseTitle(),
+                        HealthDataCategory.VITALS.uppercaseTitle()),
+                dataTypesRead =
+                    mutableSetOf(
+                        HealthDataCategory.SLEEP.uppercaseTitle(),
+                        HealthDataCategory.NUTRITION.uppercaseTitle()))
+
+        timeSource.setIs24Hour(true)
+
+        whenever(recentAccessViewModel.recentAccessApps).then {
+            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
+        }
+        whenever(homeFragmentViewModel.connectedApps).then {
+            MutableLiveData(listOf<ConnectedAppMetadata>())
+        }
+
+        launchFragment<HomeFragment>(Bundle())
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.HOME_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(HomePageElement.APP_PERMISSIONS_BUTTON)
+        verify(healthConnectLogger, never()).logImpression(HomePageElement.DATA_AND_ACCESS_BUTTON)
+        verify(healthConnectLogger).logImpression(HomePageElement.BROWSE_DATA_BUTTON)
+        verify(healthConnectLogger).logImpression(HomePageElement.MANAGE_DATA_BUTTON)
+        verify(healthConnectLogger).logImpression(HomePageElement.SEE_ALL_RECENT_ACCESS_BUTTON)
+        verify(healthConnectLogger).logImpression(RecentAccessElement.RECENT_ACCESS_ENTRY_BUTTON)
+    }
+
+    // endregion
 
     private fun setupFragmentForNavigation() {
         val recentApp =

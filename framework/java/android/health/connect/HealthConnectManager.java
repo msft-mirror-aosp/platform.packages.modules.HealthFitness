@@ -20,6 +20,7 @@ import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
+import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 
 import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
@@ -2265,13 +2266,27 @@ public class HealthConnectManager {
 
     /**
      * Deletes {@link MedicalResource}s based on given filters in {@link
-     * DeleteMedicalResourcesRequest}. *
+     * DeleteMedicalResourcesRequest}.
      *
-     * @param request The read request.
+     * <p>Regarding permissions:
+     *
+     * <ul>
+     *   <li>Callers with system permission {@link HealthPermissions#MANAGE_HEALTH_DATA_PERMISSION}
+     *       can delete any data.
+     *   <li>Other callers require permission {@link HealthPermissions#WRITE_MEDICAL_DATA} to
+     *       delete, and may only delete data written by themself.
+     *   <li>Deletes are permitted in the foreground or background.
+     * </ul>
+     *
+     * @param request The delete request.
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    // Suppress missing because API flagged out. Suppress Requires because javadoc explains the
+    // the difference between the permissions.
+    @SuppressWarnings({"MissingPermission", "RequiresPermission"})
+    @RequiresPermission(anyOf = {WRITE_MEDICAL_DATA, MANAGE_HEALTH_DATA_PERMISSION})
     public void deleteMedicalResources(
             @NonNull DeleteMedicalResourcesRequest request,
             @NonNull Executor executor,
@@ -2305,11 +2320,26 @@ public class HealthConnectManager {
      *
      * <p>Deletions are performed in a transaction i.e. either all will be deleted or none.
      *
+     * <p>Regarding permissions:
+     *
+     * <ul>
+     *   <li>Callers with system permission {@link HealthPermissions#MANAGE_HEALTH_DATA_PERMISSION}
+     *       can delete any data.
+     *   <li>Other callers require permission {@link HealthPermissions#WRITE_MEDICAL_DATA} to
+     *       delete, and may only delete data written by themself.
+     *   <li>Deletes are permitted in the foreground or background.
+     * </ul>
+     *
      * @param ids The ids to delete.
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    // Suppress missing because API flagged out. Suppress Requires because javadoc explains the
+    // the difference between the permissions.
+    // TODO: b/355156275 - remove suppression once API not flagged out.
+    @SuppressWarnings({"MissingPermission", "RequiresPermission"})
+    @RequiresPermission(anyOf = {WRITE_MEDICAL_DATA, MANAGE_HEALTH_DATA_PERMISSION})
     public void deleteMedicalResources(
             @NonNull List<MedicalResourceId> ids,
             @NonNull Executor executor,
