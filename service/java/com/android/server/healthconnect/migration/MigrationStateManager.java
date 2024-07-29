@@ -85,8 +85,8 @@ public final class MigrationStateManager {
 
     private static final Object sInstanceLock = new Object();
     private static final String TAG = "MigrationStateManager";
-    private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager =
-            HealthConnectDeviceConfigManager.getInitialisedInstance();
+    private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
+    private final PreferenceHelper mPreferenceHelper;
 
     @GuardedBy("mLock")
     private final Set<StateChangedListener> mStateChangedListeners = new CopyOnWriteArraySet<>();
@@ -98,6 +98,9 @@ public final class MigrationStateManager {
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private MigrationStateManager(@UserIdInt int userId) {
         mUserId = userId;
+        mHealthConnectDeviceConfigManager =
+                HealthConnectDeviceConfigManager.getInitialisedInstance();
+        mPreferenceHelper = PreferenceHelper.getInstance();
     }
 
     /**
@@ -167,10 +170,8 @@ public final class MigrationStateManager {
                 updateMigrationState(context, MIGRATION_STATE_ALLOWED);
                 return;
             }
-            PreferenceHelper.getInstance()
-                    .insertOrReplacePreference(
-                            MIN_DATA_MIGRATION_SDK_EXTENSION_VERSION_KEY,
-                            String.valueOf(minVersion));
+            mPreferenceHelper.insertOrReplacePreference(
+                    MIN_DATA_MIGRATION_SDK_EXTENSION_VERSION_KEY, String.valueOf(minVersion));
             updateMigrationState(context, MIGRATION_STATE_MODULE_UPGRADE_REQUIRED);
         }
     }
@@ -184,8 +185,7 @@ public final class MigrationStateManager {
 
     @HealthConnectDataState.DataMigrationState
     public int getMigrationState() {
-        String migrationState =
-                PreferenceHelper.getInstance().getPreference(MIGRATION_STATE_PREFERENCE_KEY);
+        String migrationState = mPreferenceHelper.getPreference(MIGRATION_STATE_PREFERENCE_KEY);
         if (Objects.isNull(migrationState)) {
             return MIGRATION_STATE_IDLE;
         }
@@ -280,11 +280,10 @@ public final class MigrationStateManager {
 
     public void clearCaches(@NonNull Context context) {
         synchronized (mLock) {
-            PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
             updateMigrationStatePreference(context, MIGRATION_STATE_IDLE, false);
-            preferenceHelper.insertOrReplacePreference(
+            mPreferenceHelper.insertOrReplacePreference(
                     MIGRATION_STARTS_COUNT_KEY, String.valueOf(0));
-            preferenceHelper.removeKey(ALLOWED_STATE_START_TIME_KEY);
+            mPreferenceHelper.removeKey(ALLOWED_STATE_START_TIME_KEY);
         }
     }
 
@@ -315,11 +314,10 @@ public final class MigrationStateManager {
     /** Returns the number of times migration has started. */
     public int getMigrationStartsCount() {
         synchronized (mLock) {
-            PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
             int res =
                     Integer.parseInt(
                             Optional.ofNullable(
-                                            preferenceHelper.getPreference(
+                                            mPreferenceHelper.getPreference(
                                                     MIGRATION_STARTS_COUNT_KEY))
                                     .orElse("0"));
             return res;
@@ -469,7 +467,7 @@ public final class MigrationStateManager {
         if (migrationState == MIGRATION_STATE_ALLOWED && Objects.isNull(getAllowedStateTimeout())) {
             preferences.put(ALLOWED_STATE_START_TIME_KEY, Instant.now().toString());
         }
-        PreferenceHelper.getInstance().insertOrReplacePreferencesTransaction(preferences);
+        mPreferenceHelper.insertOrReplacePreferencesTransaction(preferences);
 
         if (mMigrationBroadcastScheduler != null) {
             //noinspection Convert2Lambda
@@ -515,7 +513,7 @@ public final class MigrationStateManager {
     boolean hasInProgressStateTimedOut() {
         synchronized (mLock) {
             String inProgressTimeoutReached =
-                    PreferenceHelper.getInstance().getPreference(IN_PROGRESS_TIMEOUT_REACHED_KEY);
+                    mPreferenceHelper.getPreference(IN_PROGRESS_TIMEOUT_REACHED_KEY);
 
             if (!Objects.isNull(inProgressTimeoutReached)) {
                 return Boolean.parseBoolean(inProgressTimeoutReached);
@@ -528,7 +526,7 @@ public final class MigrationStateManager {
     boolean hasIdleStateTimedOut() {
         synchronized (mLock) {
             String idleStateTimeoutReached =
-                    PreferenceHelper.getInstance().getPreference(IDLE_TIMEOUT_REACHED_KEY);
+                    mPreferenceHelper.getPreference(IDLE_TIMEOUT_REACHED_KEY);
 
             if (!Objects.isNull(idleStateTimeoutReached)) {
                 return Boolean.parseBoolean(idleStateTimeoutReached);
@@ -604,8 +602,8 @@ public final class MigrationStateManager {
     @GuardedBy("mLock")
     private void handleIsUpgradeStillRequired(@NonNull Context context) {
         if (Integer.parseInt(
-                        PreferenceHelper.getInstance()
-                                .getPreference(MIN_DATA_MIGRATION_SDK_EXTENSION_VERSION_KEY))
+                        mPreferenceHelper.getPreference(
+                                MIN_DATA_MIGRATION_SDK_EXTENSION_VERSION_KEY))
                 <= getUdcSdkExtensionVersion()) {
             updateMigrationState(context, MIGRATION_STATE_ALLOWED);
             return;
@@ -618,7 +616,7 @@ public final class MigrationStateManager {
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     String getAllowedStateTimeout() {
         String allowedStateStartTime =
-                PreferenceHelper.getInstance().getPreference(ALLOWED_STATE_START_TIME_KEY);
+                mPreferenceHelper.getPreference(ALLOWED_STATE_START_TIME_KEY);
         if (allowedStateStartTime != null) {
             return Instant.parse(allowedStateStartTime)
                     .plusMillis(
@@ -642,12 +640,11 @@ public final class MigrationStateManager {
      */
     @GuardedBy("mLock")
     private void updateMigrationStartsCount() {
-        PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
         String migrationStartsCount =
-                Optional.ofNullable(preferenceHelper.getPreference(MIGRATION_STARTS_COUNT_KEY))
+                Optional.ofNullable(mPreferenceHelper.getPreference(MIGRATION_STARTS_COUNT_KEY))
                         .orElse("0");
 
-        preferenceHelper.insertOrReplacePreference(
+        mPreferenceHelper.insertOrReplacePreference(
                 MIGRATION_STARTS_COUNT_KEY,
                 String.valueOf(Integer.parseInt(migrationStartsCount) + 1));
     }
@@ -795,9 +792,7 @@ public final class MigrationStateManager {
 
     private int getStartMigrationCount() {
         return Integer.parseInt(
-                Optional.ofNullable(
-                                PreferenceHelper.getInstance()
-                                        .getPreference(MIGRATION_STARTS_COUNT_KEY))
+                Optional.ofNullable(mPreferenceHelper.getPreference(MIGRATION_STARTS_COUNT_KEY))
                         .orElse("0"));
     }
 
@@ -806,19 +801,18 @@ public final class MigrationStateManager {
      * before they migrate data.
      */
     void resetMigrationStateIfNeeded(@NonNull Context context) {
-        PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
 
-        if (!Boolean.parseBoolean(preferenceHelper.getPreference(HAVE_RESET_MIGRATION_STATE_KEY))
+        if (!Boolean.parseBoolean(mPreferenceHelper.getPreference(HAVE_RESET_MIGRATION_STATE_KEY))
                 && hasMigrationTimedOutPrematurely()) {
             updateMigrationState(context, MIGRATION_STATE_IDLE);
-            preferenceHelper.insertOrReplacePreference(
+            mPreferenceHelper.insertOrReplacePreference(
                     HAVE_RESET_MIGRATION_STATE_KEY, String.valueOf(true));
         }
     }
 
     private boolean hasMigrationTimedOutPrematurely() {
         String currentStateStartTime =
-                PreferenceHelper.getInstance().getPreference(CURRENT_STATE_START_TIME_KEY);
+                mPreferenceHelper.getPreference(CURRENT_STATE_START_TIME_KEY);
 
         if (!Objects.isNull(currentStateStartTime)) {
             return getMigrationState() == MIGRATION_STATE_COMPLETE

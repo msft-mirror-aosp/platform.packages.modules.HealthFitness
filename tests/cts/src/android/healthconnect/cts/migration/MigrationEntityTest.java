@@ -19,7 +19,7 @@ package android.healthconnect.cts.migration;
 import android.health.connect.migration.AppInfoMigrationPayload;
 import android.health.connect.migration.MigrationEntity;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.google.common.truth.Expect;
 

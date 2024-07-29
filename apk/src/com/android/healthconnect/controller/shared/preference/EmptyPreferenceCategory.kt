@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.android.healthconnect.controller.shared.preference
 
-package com.android.server.healthconnect.storage.utils;
+import android.content.Context
+import android.util.AttributeSet
+import androidx.preference.PreferenceCategory
+import com.android.healthconnect.controller.R
 
-/** @hide */
-public final class DropTableRequest {
-    private final String mTableName;
+class EmptyPreferenceCategory
+@JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null) : PreferenceCategory(context, attrs) {
 
-    public DropTableRequest(String tableName) {
-        mTableName = tableName;
-    }
-
-    public String getCommand() {
-        return "DROP TABLE IF EXISTS '" + mTableName + "'";
+    init {
+        layoutResource = R.layout.widget_empty_preference_category
     }
 }

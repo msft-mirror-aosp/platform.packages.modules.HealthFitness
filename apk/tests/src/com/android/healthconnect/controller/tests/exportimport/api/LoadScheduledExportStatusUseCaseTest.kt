@@ -40,6 +40,7 @@ import org.junit.Test
 class LoadScheduledExportStatusUseCaseTest {
 
     @BindValue val healthDataExportManager: HealthDataExportManager = FakeHealthDataExportManager()
+    private val fakeHealthDataExportManager = healthDataExportManager as FakeHealthDataExportManager
 
     private lateinit var useCase: LoadScheduledExportStatusUseCase
 
@@ -50,16 +51,23 @@ class LoadScheduledExportStatusUseCaseTest {
 
     @After
     fun teardown() {
-        (healthDataExportManager as FakeHealthDataExportManager).reset()
+        fakeHealthDataExportManager.reset()
     }
 
     @Test
     fun invoke_callsHealthDataExportManagerSuccessfully() = runTest {
         val scheduledExportStatus =
-            ScheduledExportStatus(
-                Instant.ofEpochMilli(100), HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS, 7)
-        (healthDataExportManager as FakeHealthDataExportManager).setScheduledExportStatus(
-            scheduledExportStatus)
+            ScheduledExportStatus.Builder()
+                .setLastSuccessfulExportTime(Instant.ofEpochMilli(100))
+                .setLastFailedExportTime(Instant.ofEpochMilli(1000))
+                .setDataExportError(HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS)
+                .setPeriodInDays(7)
+                .setLastExportFileName("healthconnect.zip")
+                .setLastExportAppName("Drive")
+                .setNextExportFileName("hc.zip")
+                .setNextExportAppName("Dropbox")
+                .build()
+        fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
 
         val result = useCase.invoke()
 
@@ -69,13 +77,17 @@ class LoadScheduledExportStatusUseCaseTest {
         assertThat(exportStatus.dataExportError)
             .isEqualTo(ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS)
         assertThat(exportStatus.periodInDays).isEqualTo(7)
+        assertThat(exportStatus.lastExportFileName).isEqualTo("healthconnect.zip")
+        assertThat(exportStatus.lastExportAppName).isEqualTo("Drive")
+        assertThat(exportStatus.nextExportFileName).isEqualTo("hc.zip")
+        assertThat(exportStatus.nextExportAppName).isEqualTo("Dropbox")
+        assertThat(exportStatus.lastFailedExportTime).isEqualTo(Instant.ofEpochMilli(1000))
     }
 
     @Test
     fun invoke_callsHealthDataExportManager_returnsFailure() = runTest {
         val exception = HealthConnectException(HealthConnectException.ERROR_UNKNOWN)
-        (healthDataExportManager as FakeHealthDataExportManager).setScheduledExportStatusException(
-            exception)
+        fakeHealthDataExportManager.setScheduledExportStatusException(exception)
 
         val result = useCase.invoke()
 

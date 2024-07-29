@@ -51,7 +51,6 @@ public class ExportManager {
 
     @VisibleForTesting static final String LOCAL_EXPORT_DIR_NAME = "export_import";
 
-    @VisibleForTesting
     static final String LOCAL_EXPORT_DATABASE_FILE_NAME = "health_connect_export.db";
 
     @VisibleForTesting static final String LOCAL_EXPORT_ZIP_FILE_NAME = "health_connect_export.zip";
@@ -59,6 +58,7 @@ public class ExportManager {
     private static final String TAG = "HealthConnectExportImport";
 
     private Clock mClock;
+    private final TransactionManager mTransactionManager;
 
     // Tables to drop instead of tables to keep to avoid risk of bugs if new data types are added.
 
@@ -79,6 +79,7 @@ public class ExportManager {
         mClock = clock;
         mDatabaseContext =
                 DatabaseContext.create(context, LOCAL_EXPORT_DIR_NAME, context.getUser());
+        mTransactionManager = TransactionManager.getInitialisedInstance();
     }
 
     /**
@@ -98,7 +99,7 @@ public class ExportManager {
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to create local file for export", e);
                 ExportImportSettingsStorage.setLastExportError(
-                        HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
+                        HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN, mClock.instant());
                 return false;
             }
 
@@ -107,35 +108,36 @@ public class ExportManager {
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to prepare local file for export", e);
                 ExportImportSettingsStorage.setLastExportError(
-                        HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
+                        HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN, mClock.instant());
                 return false;
             }
 
             try {
-                Compressor.compress(localExportDbFile, localExportZipFile);
+                Compressor.compress(
+                        localExportDbFile, LOCAL_EXPORT_DATABASE_FILE_NAME, localExportZipFile);
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to compress local file for export", e);
                 ExportImportSettingsStorage.setLastExportError(
-                        HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
+                        HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN, mClock.instant());
                 return false;
             }
 
+            Uri destinationUri = ExportImportSettingsStorage.getUri();
             try {
-                exportToUri(localExportZipFile, ExportImportSettingsStorage.getUri());
+                exportToUri(localExportZipFile, destinationUri);
             } catch (FileNotFoundException e) {
                 Slog.e(TAG, "Lost access to export location", e);
                 ExportImportSettingsStorage.setLastExportError(
-                        HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS);
+                        HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS, mClock.instant());
                 return false;
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to export to URI", e);
                 ExportImportSettingsStorage.setLastExportError(
-                        HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
+                        HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN, mClock.instant());
                 return false;
             }
-
             Slog.i(TAG, "Export completed.");
-            ExportImportSettingsStorage.setLastSuccessfulExport(mClock.instant());
+            ExportImportSettingsStorage.setLastSuccessfulExport(mClock.instant(), destinationUri);
             return true;
         } finally {
             Slog.i(TAG, "Delete local export files started.");
@@ -152,12 +154,12 @@ public class ExportManager {
     private void exportLocally(File destination) throws IOException {
         Slog.i(TAG, "Local export started.");
 
-        if (!destination.mkdirs()) {
+        if (!destination.exists() && !destination.mkdirs()) {
             throw new IOException("Unable to create directory for local export.");
         }
 
         Files.copy(
-                TransactionManager.getInitialisedInstance().getDatabasePath().toPath(),
+                mTransactionManager.getDatabasePath().toPath(),
                 destination.toPath(),
                 StandardCopyOption.REPLACE_EXISTING);
 

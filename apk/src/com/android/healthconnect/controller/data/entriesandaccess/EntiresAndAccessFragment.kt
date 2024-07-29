@@ -28,6 +28,9 @@ import com.android.healthconnect.controller.data.access.AccessFragment
 import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.data.entries.AllEntriesFragment
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.permissions.data.fromPermissionTypeName
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -40,7 +43,7 @@ class EntriesAndAccessFragment : Hilt_EntriesAndAccessFragment() {
 
     @Inject lateinit var logger: HealthConnectLogger
 
-    private lateinit var permissionType: FitnessPermissionType
+    private lateinit var permissionType: HealthPermissionType
     private lateinit var viewPager: ViewPager2
 
     override fun onCreateView(
@@ -52,9 +55,10 @@ class EntriesAndAccessFragment : Hilt_EntriesAndAccessFragment() {
         // logger.setPageId(pageName)
 
         if (requireArguments().containsKey(PERMISSION_TYPE_KEY)) {
-            permissionType =
-                arguments?.getSerializable(PERMISSION_TYPE_KEY, FitnessPermissionType::class.java)
-                    ?: throw IllegalArgumentException("PERMISSION_TYPE_KEY can't be null!")
+            val permissionTypeName =
+                    arguments?.getString(PERMISSION_TYPE_KEY)
+                            ?: throw IllegalArgumentException("PERMISSION_TYPE_KEY can't be null!")
+            permissionType =  fromPermissionTypeName(permissionTypeName)
         }
         return inflater.inflate(R.layout.fragment_entries_access, container, false)
     }
@@ -81,14 +85,14 @@ class EntriesAndAccessFragment : Hilt_EntriesAndAccessFragment() {
 
     class ViewPagerAdapter(
         fragment: EntriesAndAccessFragment,
-        private val permissionType: FitnessPermissionType
+        private val permissionType: HealthPermissionType
     ) : FragmentStateAdapter(fragment) {
 
         override fun getItemCount(): Int = 2
 
         override fun createFragment(position: Int): Fragment {
             val fragment: Fragment = if (position == 0) AllEntriesFragment() else AccessFragment()
-            fragment.arguments = bundleOf(PERMISSION_TYPE_KEY to permissionType)
+            fragment.arguments = bundleOf(PERMISSION_TYPE_KEY to permissionType.name)
             return fragment
         }
     }

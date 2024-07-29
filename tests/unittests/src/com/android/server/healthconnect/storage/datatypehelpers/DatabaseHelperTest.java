@@ -41,6 +41,9 @@ public class DatabaseHelperTest {
             String className = nonSingletonClass.getName();
             for (Field declaredField : declaredFields) {
                 String fieldName = declaredField.getName();
+                if (declaredField.isSynthetic()) {
+                    continue;
+                }
 
                 if (!declaredField.getType().equals(String.class)) {
                     assertWithMessage(
