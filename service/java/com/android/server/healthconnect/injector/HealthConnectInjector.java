@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
 /**
  * Interface for Health Connect Dependency Injector.
@@ -35,4 +36,11 @@ public interface HealthConnectInjector {
     /** Getter for TransactionManager instance initialised by the Health Connect Injector. */
     @NonNull
     TransactionManager getTransactionManager();
+
+    /**
+     * Getter for HealthDataCategoryPriorityHelper instance initialised by the Health Connect
+     * Injector.
+     */
+    @NonNull
+    HealthDataCategoryPriorityHelper getHealthDataCategoryPriorityHelper();
 }

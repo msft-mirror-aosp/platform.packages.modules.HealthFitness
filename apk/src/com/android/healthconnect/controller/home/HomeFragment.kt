@@ -60,6 +60,8 @@ import com.android.healthconnect.controller.utils.logging.HomePageElement
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthfitness.flags.Flags.exportImport
+import com.android.healthfitness.flags.Flags.newInformationArchitecture
+import com.android.settingslib.widget.TopIntroPreference
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
 import javax.inject.Inject
@@ -69,6 +71,7 @@ import javax.inject.Inject
 class HomeFragment : Hilt_HomeFragment() {
 
     companion object {
+        private const val TOP_INTRO_PREFERENCE_KEY = "health_connect_top_intro"
         private const val DATA_AND_ACCESS_PREFERENCE_KEY = "data_and_access"
         private const val RECENT_ACCESS_PREFERENCE_KEY = "recent_access"
         private const val CONNECTED_APPS_PREFERENCE_KEY = "connected_apps"
@@ -94,6 +97,10 @@ class HomeFragment : Hilt_HomeFragment() {
     private val homeFragmentViewModel: HomeFragmentViewModel by viewModels()
     private val migrationViewModel: MigrationViewModel by activityViewModels()
     private val exportStatusViewModel: ExportStatusViewModel by activityViewModels()
+
+    private val mTopIntroPreference: TopIntroPreference? by lazy {
+        preferenceScreen.findPreference(TOP_INTRO_PREFERENCE_KEY)
+    }
 
     private val mDataAndAccessPreference: HealthPreference? by lazy {
         preferenceScreen.findPreference(DATA_AND_ACCESS_PREFERENCE_KEY)
@@ -125,7 +132,16 @@ class HomeFragment : Hilt_HomeFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.home_preference_screen, rootKey)
-        mDataAndAccessPreference?.logName = HomePageElement.DATA_AND_ACCESS_BUTTON
+        if (newInformationArchitecture()) {
+            mDataAndAccessPreference?.logName = HomePageElement.BROWSE_DATA_BUTTON
+            mDataAndAccessPreference?.title = getString(R.string.browse_data_title)
+            mDataAndAccessPreference?.summary = getString(R.string.browse_data_subtitle)
+            mTopIntroPreference?.isVisible = false
+        } else {
+            mDataAndAccessPreference?.logName = HomePageElement.DATA_AND_ACCESS_BUTTON
+            mDataAndAccessPreference?.title = getString(R.string.data_title)
+            mTopIntroPreference?.isVisible = true
+        }
         mDataAndAccessPreference?.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_healthDataCategoriesFragment)
             true
@@ -217,7 +233,7 @@ class HomeFragment : Hilt_HomeFragment() {
         preferenceScreen.removePreferenceRecursively(MIGRATION_BANNER_PREFERENCE_KEY)
         preferenceScreen.removePreferenceRecursively(DATA_RESTORE_BANNER_PREFERENCE_KEY)
 
-        val (migrationUiState, dataRestoreUiState, dataErrorState) = migrationRestoreState
+        val (migrationUiState, dataRestoreUiState, _) = migrationRestoreState
 
         if (dataRestoreUiState == DataRestoreUiState.PENDING) {
             preferenceScreen.addPreference(getDataRestorePendingBanner())
