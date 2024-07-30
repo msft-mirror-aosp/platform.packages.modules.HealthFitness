@@ -21,36 +21,51 @@ import android.view.View.OnClickListener
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.CheckBox
+import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceClickListener
 import androidx.preference.PreferenceViewHolder
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.permissions.connectedapps.ComparablePreference
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.preference.HealthPreference
+import com.android.healthconnect.controller.utils.logging.ElementName
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
+import dagger.hilt.android.EntryPointAccessors
 
 /** Custom preference for displaying checkboxes where the user can delete their data */
-class DeletionPermissionTypesPreference constructor(context: Context) : HealthPreference(context) {
+class DeletionPermissionTypesPreference(context: Context) :
+    Preference(context), ComparablePreference {
     private var checkboxButtonListener: OnClickListener? = null
 
-    // TODO: b/341886932
-    // var logName : ElementName = ErrorPageElement.UNKNOWN_ELEMENT
+    private var logger: HealthConnectLogger
+
     private var isShowCheckbox: Boolean = false
     private var widgetFrame: ViewGroup? = null
     private var checkBox: CheckBox? = null
     private var isChecked: Boolean = false
     private lateinit var mFitnessPermissionType: FitnessPermissionType
 
+    private lateinit var logNameNoCheckbox: ElementName
+    private lateinit var logNameCheckbox: ElementName
+
     init {
         widgetLayoutResource = R.layout.widget_checkbox
         isSelectable = true
+
+        val hiltEntryPoint =
+            EntryPointAccessors.fromApplication(
+                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
+        logger = hiltEntryPoint.logger()
     }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        widgetFrame = holder?.findViewById(android.R.id.widget_frame) as ViewGroup?
+        widgetFrame = holder.findViewById(android.R.id.widget_frame) as ViewGroup?
         showCheckbox(isShowCheckbox)
 
-        checkBox = holder?.findViewById(R.id.checkbox_button) as CheckBox
+        checkBox = holder.findViewById(R.id.checkbox_button) as CheckBox
 
         checkBox?.isChecked = this.isChecked
 
@@ -79,8 +94,10 @@ class DeletionPermissionTypesPreference constructor(context: Context) : HealthPr
                 // Set local variable to current value of whether checkBox is checked
                 isChecked = checkBox?.isChecked ?: false
                 method()
+                logger.logInteraction(logNameCheckbox)
             } else {
                 onPreferenceClickListener.onPreferenceClick(it)
+                logger.logInteraction(logNameNoCheckbox)
             }
             true
         }
@@ -88,6 +105,7 @@ class DeletionPermissionTypesPreference constructor(context: Context) : HealthPr
         checkboxButtonListener = OnClickListener {
             isChecked = !isChecked
             method()
+            logger.logInteraction(logNameCheckbox)
         }
 
         super.setOnPreferenceClickListener(clickListener)
@@ -106,12 +124,17 @@ class DeletionPermissionTypesPreference constructor(context: Context) : HealthPr
         setShowCheckbox(isShowCheckbox)
         widgetFrame?.visibility = if (isShowCheckbox) VISIBLE else GONE
         widgetFrame?.tag = if (isShowCheckbox) "checkbox" else ""
+
+        if (isShowCheckbox) {
+            logger.logImpression(logNameCheckbox)
+        } else {
+            logger.logImpression(logNameNoCheckbox)
+        }
     }
 
     fun setIsChecked(isChecked: Boolean) {
         this.isChecked = isChecked
         checkBox?.isChecked = isChecked
-        notifyChanged()
     }
 
     fun getIsChecked(): Boolean {
@@ -120,5 +143,25 @@ class DeletionPermissionTypesPreference constructor(context: Context) : HealthPr
 
     fun setShowCheckbox(isShowCheckbox: Boolean) {
         this.isShowCheckbox = isShowCheckbox
+    }
+
+    fun setLogNameNoCheckbox(logName: ElementName) {
+        logNameNoCheckbox = logName
+    }
+
+    fun setLogNameCheckbox(logName: ElementName) {
+        logNameCheckbox = logName
+    }
+
+    override fun hasSameContents(preference: Preference): Boolean {
+        return preference is HealthPreference &&
+            this.title == preference.title &&
+            this.summary == preference.summary &&
+            this.icon == preference.icon &&
+            this.isEnabled == preference.isEnabled
+    }
+
+    override fun isSameItem(preference: Preference): Boolean {
+        return preference == this
     }
 }
