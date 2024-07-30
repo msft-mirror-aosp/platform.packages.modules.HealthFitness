@@ -433,10 +433,11 @@
     <string name="additional_access_label" description="Label of a button that opens additional permissions access for an app. [CHAR_LIMIT=40]">Additional access</string>
     <string name="removed_additional_permissions_toast" description="Message letting the user know that additional permissions have also been removed for this app">Removed additional permissions for this app</string>
     <string name="permissions_header" description="Title shown for section that lists permissions. [CHAR_LIMIT=40]">Permissions</string>
-    <string name="manage_fitness_permissions" description="Label of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Fitness and wellness</string>
-    <string name="manage_fitness_permissions_summary" description="Summary of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Exercise, sleep, nutrition and others</string>
-    <string name="manage_medical_permissions" description="Label of a button that opens the medical permissions screen. [CHAR_LIMIT=40]">Health records</string>
-    <string name="manage_medical_permissions_summary" description="Summary of a button that opens the medical permissions screen. [CHAR_LIMIT=40]">Lab results, medications, immunizations and others</string>
+    <string name="fitness_permissions" description="Label of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Fitness and wellness</string>
+    <string name="fitness_permissions_summary" description="Summary of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Exercise, sleep, nutrition and others</string>
+    <string name="medical_permissions" description="Uppercase name of medical data category that contains lab results, immunizations, medications, etc. [CHAR_LIMIT=40]">Health records</string>
+    <string name="medical_permissions_lowercase" description="Lowercase name of medical data category that contains lab results, immunizations, medications, etc. [CHAR_LIMIT=40]">health records</string>
+    <string name="medical_permissions_summary" description="Summary of a button that opens the medical permissions screen. [CHAR_LIMIT=40]">Lab results, medications, immunizations and others</string>
     <!--endregion-->
 
     <!--region Denied Apps -->

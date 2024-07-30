@@ -22,13 +22,14 @@ import static org.mockito.Mockito.when;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.platform.test.annotations.EnableFlags;
+import android.platform.test.annotations.DisableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.healthfitness.flags.Flags;
 
+import com.google.common.base.Preconditions;
 import com.google.common.truth.Truth;
 
 import org.junit.Before;
@@ -37,11 +38,13 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.io.File;
+
 public class HealthConnectDatabaseTest {
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
     // This number can only increase, as we are not allowed to make changes that remove tables or
-    // columns
-    private static final int NUM_OF_TABLES = 67;
+    // columns. However, exclude development tables as the number of these can fluctuate.
+    private static final int NUM_OF_TABLES = 64;
     @Mock Context mContext;
     private HealthConnectDatabase mHealthConnectDatabase;
     private SQLiteDatabase mSQLiteDatabase;
@@ -55,11 +58,17 @@ public class HealthConnectDatabaseTest {
                                 .getContext()
                                 .getDatabasePath("mock"));
         mHealthConnectDatabase = new HealthConnectDatabase(mContext);
+        // Make sure there is nothing there already.
+
+        File databasePath = mHealthConnectDatabase.getDatabasePath();
+        if (databasePath.exists()) {
+            Preconditions.checkState(databasePath.delete());
+        }
         mSQLiteDatabase = mHealthConnectDatabase.getWritableDatabase();
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    @DisableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
     public void testCreateTable() {
         Truth.assertThat(mHealthConnectDatabase).isNotNull();
         Truth.assertThat(mSQLiteDatabase).isNotNull();

@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 import android.annotation.NonNull;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.health.connect.HealthConnectManager;
+import android.health.connect.exportimport.ScheduledExportStatus;
 import android.net.Uri;
 import android.util.Slog;
 
@@ -99,7 +99,7 @@ public class ExportManager {
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to create local file for export", e);
                 ExportImportSettingsStorage.setLastExportError(
-                        HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN, mClock.instant());
+                        ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN, mClock.instant());
                 return false;
             }
 
@@ -108,7 +108,7 @@ public class ExportManager {
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to prepare local file for export", e);
                 ExportImportSettingsStorage.setLastExportError(
-                        HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN, mClock.instant());
+                        ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN, mClock.instant());
                 return false;
             }
 
@@ -118,7 +118,7 @@ public class ExportManager {
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to compress local file for export", e);
                 ExportImportSettingsStorage.setLastExportError(
-                        HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN, mClock.instant());
+                        ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN, mClock.instant());
                 return false;
             }
 
@@ -128,12 +128,12 @@ public class ExportManager {
             } catch (FileNotFoundException e) {
                 Slog.e(TAG, "Lost access to export location", e);
                 ExportImportSettingsStorage.setLastExportError(
-                        HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS, mClock.instant());
+                        ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS, mClock.instant());
                 return false;
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to export to URI", e);
                 ExportImportSettingsStorage.setLastExportError(
-                        HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN, mClock.instant());
+                        ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN, mClock.instant());
                 return false;
             }
             Slog.i(TAG, "Export completed.");

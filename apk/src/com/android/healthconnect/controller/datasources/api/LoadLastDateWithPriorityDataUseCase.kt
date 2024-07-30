@@ -21,7 +21,7 @@ import com.android.healthconnect.controller.data.entries.datenavigation.DateNavi
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissiontypes.api.ILoadPriorityListUseCase
 import com.android.healthconnect.controller.service.IoDispatcher
-import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromFitnessPermissionType
 import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.utils.TimeSource
@@ -58,7 +58,7 @@ constructor(
             try {
                 when (val priorityAppsResult =
                     loadPriorityListUseCase.invoke(
-                        fromHealthPermissionType(fitnessPermissionType))) {
+                        fromFitnessPermissionType(fitnessPermissionType))) {
                     is UseCaseResults.Success -> {
                         val priorityApps = priorityAppsResult.data
 

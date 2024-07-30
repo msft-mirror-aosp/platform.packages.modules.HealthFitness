@@ -481,6 +481,10 @@ public class FirstGrantTimeUnitTest {
         }
 
         return new FirstGrantTimeManager(
-                mContext, mTracker, mDatastore, healthConnectInjector.getPackageInfoUtils());
+                mContext,
+                mTracker,
+                mDatastore,
+                healthConnectInjector.getPackageInfoUtils(),
+                healthConnectInjector.getHealthDataCategoryPriorityHelper());
     }
 }

@@ -16,7 +16,6 @@
 
 package com.android.healthconnect.controller.tests.exportimport
 
-import android.health.connect.HealthConnectManager
 import android.health.connect.exportimport.ScheduledExportSettings
 import android.health.connect.exportimport.ScheduledExportStatus
 import android.os.Bundle
@@ -65,7 +64,7 @@ class ScheduledExportFragmentTest {
         private const val TEST_EXPORT_PERIOD_IN_DAYS = 1
         private const val TEST_NEXT_EXPORT_FILE_NAME = "hc.zip"
         private const val TEST_NEXT_EXPORT_APP_NAME = "Dropbox"
-        // The test now is 2022-10-20T07:06:05.432Z.
+        // The fake 'now' is 2022-10-20T07:06:05.432Z.
         private val TEST_LAST_SUCCESSFUL_TIME = Instant.parse("2022-09-20T07:06:05.432Z")
     }
 
@@ -87,7 +86,7 @@ class ScheduledExportFragmentTest {
         val scheduledExportStatus =
             ScheduledExportStatus.Builder()
                 .setLastSuccessfulExportTime(TEST_LAST_SUCCESSFUL_TIME)
-                .setDataExportError(HealthConnectManager.DATA_EXPORT_ERROR_NONE)
+                .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
                 .setPeriodInDays(0)
                 .setNextExportAppName(TEST_NEXT_EXPORT_APP_NAME)
                 .setNextExportFileName(TEST_NEXT_EXPORT_FILE_NAME)
@@ -105,7 +104,7 @@ class ScheduledExportFragmentTest {
         val scheduledExportStatus =
             ScheduledExportStatus.Builder()
                 .setLastSuccessfulExportTime(TEST_LAST_SUCCESSFUL_TIME)
-                .setDataExportError(HealthConnectManager.DATA_EXPORT_ERROR_NONE)
+                .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
                 .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
                 .setNextExportAppName(TEST_NEXT_EXPORT_APP_NAME)
                 .setNextExportFileName(TEST_NEXT_EXPORT_FILE_NAME)
@@ -132,7 +131,7 @@ class ScheduledExportFragmentTest {
         val scheduledExportStatus =
             ScheduledExportStatus.Builder()
                 .setLastSuccessfulExportTime(TEST_LAST_SUCCESSFUL_TIME)
-                .setDataExportError(HealthConnectManager.DATA_EXPORT_ERROR_NONE)
+                .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
                 .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
                 .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
@@ -154,7 +153,7 @@ class ScheduledExportFragmentTest {
         val scheduledExportStatus =
             ScheduledExportStatus.Builder()
                 .setLastSuccessfulExportTime(TEST_LAST_SUCCESSFUL_TIME)
-                .setDataExportError(HealthConnectManager.DATA_EXPORT_ERROR_NONE)
+                .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
                 .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
                 .setNextExportAppName(TEST_NEXT_EXPORT_APP_NAME)
                 .build()
@@ -170,7 +169,7 @@ class ScheduledExportFragmentTest {
         val scheduledExportStatus =
             ScheduledExportStatus.Builder()
                 .setLastSuccessfulExportTime(TEST_LAST_SUCCESSFUL_TIME)
-                .setDataExportError(HealthConnectManager.DATA_EXPORT_ERROR_NONE)
+                .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
                 .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
                 .setNextExportFileName(TEST_NEXT_EXPORT_FILE_NAME)
                 .build()
@@ -182,18 +181,18 @@ class ScheduledExportFragmentTest {
     }
 
     @Test
-    fun scheduledExportFragment_whenLastSuccessfulExportDateIsNull_doesNotShowNextExportStatus() {
+    fun scheduledExportFragment_whenLastSuccessfulExportDateIsNull_showsNextExportText() {
         val scheduledExportStatus =
             ScheduledExportStatus.Builder()
                 .setLastSuccessfulExportTime(null)
-                .setDataExportError(HealthConnectManager.DATA_EXPORT_ERROR_NONE)
+                .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
                 .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
                 .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
 
         launchFragment<ScheduledExportFragment>(Bundle())
 
-        onView(withText(containsString("Next export"))).check(doesNotExist())
+        onView(withText("Next export starting soon")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -201,15 +200,14 @@ class ScheduledExportFragmentTest {
         val scheduledExportStatus =
             ScheduledExportStatus.Builder()
                 .setLastSuccessfulExportTime(NOW)
-                .setDataExportError(HealthConnectManager.DATA_EXPORT_ERROR_NONE)
+                .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
                 .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
                 .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
 
         launchFragment<ScheduledExportFragment>(Bundle())
 
-        onView(withText(containsString("Next export: October 21, 2022")))
-            .check(matches(isDisplayed()))
+        onView(withText("Next export: October 21, 2022")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -271,7 +269,7 @@ class ScheduledExportFragmentTest {
         val scheduledExportStatus =
             ScheduledExportStatus.Builder()
                 .setLastSuccessfulExportTime(TEST_LAST_SUCCESSFUL_TIME)
-                .setDataExportError(HealthConnectManager.DATA_EXPORT_ERROR_NONE)
+                .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
                 .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
                 .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
@@ -280,7 +278,7 @@ class ScheduledExportFragmentTest {
 
         onView(withText("Use scheduled export")).perform(click())
 
-        onView(allOf(withText("Next export: October 21, 2022"))).check(doesNotExist())
+        onView(allOf(withText(containsString("Next export")))).check(doesNotExist())
     }
 
     @Test
