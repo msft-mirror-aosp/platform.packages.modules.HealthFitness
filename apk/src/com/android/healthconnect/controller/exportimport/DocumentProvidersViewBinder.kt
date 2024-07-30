@@ -65,7 +65,11 @@ class DocumentProvidersViewBinder {
                 val root = documentProvider.roots[0]
 
                 summaryView.setText(root.summary)
-                summaryView.setVisibility(VISIBLE)
+                if (root.summary.isNotEmpty()) {
+                    summaryView.setVisibility(VISIBLE)
+                } else {
+                    summaryView.setVisibility(GONE)
+                }
 
                 if (documentProviders.size == 1) {
                     radioButtonView.setVisibility(GONE)

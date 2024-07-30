@@ -51,12 +51,26 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
             HealthPermissionIntentAppsTracker permissionIntentTracker,
             FirstGrantTimeManager grantTimeManager,
             HealthConnectPermissionHelper permissionHelper,
-            @NonNull UserHandle userHandle) {
+            UserHandle userHandle) {
+        this(
+                permissionIntentTracker,
+                grantTimeManager,
+                permissionHelper,
+                userHandle,
+                HealthDataCategoryPriorityHelper.getInstance());
+    }
+
+    public PermissionPackageChangesOrchestrator(
+            HealthPermissionIntentAppsTracker permissionIntentTracker,
+            FirstGrantTimeManager grantTimeManager,
+            HealthConnectPermissionHelper permissionHelper,
+            UserHandle userHandle,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
         mPermissionIntentTracker = permissionIntentTracker;
         mFirstGrantTimeManager = grantTimeManager;
         mPermissionHelper = permissionHelper;
         mCurrentForegroundUser = userHandle;
-        mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
+        mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
     }
 
     /**
