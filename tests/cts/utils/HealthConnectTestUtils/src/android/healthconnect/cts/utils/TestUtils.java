@@ -68,7 +68,6 @@ import android.health.connect.AggregateRecordsGroupedByPeriodResponse;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.ApplicationInfoResponse;
-import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.FetchDataOriginsPriorityOrderResponse;
 import android.health.connect.GetMedicalDataSourcesRequest;
@@ -1240,17 +1239,6 @@ public final class TestUtils {
     /** Extracts and returns ids of the provided records. */
     public static List<String> getRecordIds(List<? extends Record> records) {
         return records.stream().map(Record::getMetadata).map(Metadata::getId).toList();
-    }
-
-    /**
-     * Helper function to delete medical resources from the DB by a {@link
-     * DeleteMedicalResourcesRequest}, using HealthConnectManager.
-     */
-    public static void deleteMedicalResourcesByRequest(DeleteMedicalResourcesRequest request)
-            throws InterruptedException {
-        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
-        getHealthConnectManager()
-                .deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
     }
 
     /**
