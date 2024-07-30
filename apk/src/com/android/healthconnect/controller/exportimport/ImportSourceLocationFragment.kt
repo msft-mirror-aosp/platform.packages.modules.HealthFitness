@@ -22,6 +22,8 @@ import android.os.Bundle
 import android.provider.DocumentsContract
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
@@ -37,7 +39,13 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.api.DocumentProviders
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
 import com.android.healthconnect.controller.exportimport.api.isLocalFile
+import com.android.healthconnect.controller.utils.DeviceInfoUtils
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.ImportSourceLocationElement
+import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.settingslib.widget.LinkTextView
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /** Fragment to allow the user to find and select the backup file to import and restore. */
 @AndroidEntryPoint(Fragment::class)
@@ -48,14 +56,20 @@ class ImportSourceLocationFragment : Hilt_ImportSourceLocationFragment() {
 
     private val viewModel: ExportSettingsViewModel by viewModels()
 
+    @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
+    @Inject lateinit var logger: HealthConnectLogger
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        logger.setPageId(PageName.IMPORT_SOURCE_LOCATION_PAGE)
         val view = inflater.inflate(R.layout.import_source_location_screen, container, false)
         val pageHeaderView = view.findViewById<TextView>(R.id.page_header_text)
         val pageHeaderIconView = view.findViewById<ImageView>(R.id.page_header_icon)
+        val footerView = view.findViewById<View>(R.id.export_import_footer)
+        val playStoreView = view.findViewById<LinkTextView>(R.id.export_import_go_to_play_store)
         val cancelButton = view.findViewById<Button>(R.id.export_import_cancel_button)
         val nextButton = view.findViewById<Button>(R.id.export_import_next_button)
 
@@ -64,7 +78,20 @@ class ImportSourceLocationFragment : Hilt_ImportSourceLocationFragment() {
         nextButton.text = getString(R.string.import_next_button)
         cancelButton.text = getString(R.string.import_cancel_button)
 
-        cancelButton.setOnClickListener { requireActivity().finish() }
+        logger.logImpression(ImportSourceLocationElement.IMPORT_SOURCE_LOCATION_CANCEL_BUTTON)
+        logger.logImpression(ImportSourceLocationElement.IMPORT_SOURCE_LOCATION_NEXT_BUTTON)
+
+        cancelButton.setOnClickListener {
+            logger.logInteraction(ImportSourceLocationElement.IMPORT_SOURCE_LOCATION_CANCEL_BUTTON)
+            requireActivity().finish()
+        }
+
+        if (deviceInfoUtils.isPlayStoreAvailable(requireContext())) {
+            playStoreView?.setVisibility(VISIBLE)
+            playStoreView?.setOnClickListener {
+                findNavController().navigate(R.id.action_importSourceLocationFragment_to_playStore)
+            }
+        }
 
         val documentProvidersViewBinder = DocumentProvidersViewBinder()
         val documentProvidersList = view.findViewById<ViewGroup>(R.id.import_document_providers)
@@ -81,10 +108,11 @@ class ImportSourceLocationFragment : Hilt_ImportSourceLocationFragment() {
                     Toast.makeText(activity, R.string.default_error, Toast.LENGTH_LONG).show()
                 }
                 is DocumentProviders.WithData -> {
-                    // TODO: b/339189778 - Handle no document providers.
                     documentProvidersViewBinder.bindDocumentProvidersView(
                         providers.providers, documentProvidersList, inflater) { root ->
                             nextButton.setOnClickListener {
+                                logger.logInteraction(
+                                    ImportSourceLocationElement.IMPORT_SOURCE_LOCATION_NEXT_BUTTON)
                                 saveResultLauncher.launch(
                                     Intent(Intent.ACTION_OPEN_DOCUMENT)
                                         .addFlags(
@@ -96,11 +124,22 @@ class ImportSourceLocationFragment : Hilt_ImportSourceLocationFragment() {
                             }
                             nextButton.setEnabled(true)
                         }
+
+                    if (providers.providers.size > 1) {
+                        footerView.setVisibility(GONE)
+                    } else {
+                        footerView.setVisibility(VISIBLE)
+                    }
                 }
             }
         }
 
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logger.logPageImpression()
     }
 
     private fun onSave(result: ActivityResult) {
@@ -110,8 +149,12 @@ class ImportSourceLocationFragment : Hilt_ImportSourceLocationFragment() {
                 Toast.makeText(activity, R.string.import_invalid_storage, Toast.LENGTH_LONG).show()
             } else {
                 // TODO: b/339189778 - Add test when import API is done.
-                findNavController()
-                    .navigate(R.id.action_importSourceLocationFragment_to_importDecryptionFragment)
+                val bundle = Bundle()
+                bundle.putString(
+                    ImportConfirmationDialogFragment.IMPORT_FILE_URI_KEY, fileUri.toString())
+                val dialogFragment = ImportConfirmationDialogFragment()
+                dialogFragment.arguments = bundle
+                dialogFragment.show(childFragmentManager, ImportConfirmationDialogFragment.TAG)
             }
         }
     }

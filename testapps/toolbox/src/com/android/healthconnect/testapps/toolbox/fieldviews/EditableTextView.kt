@@ -28,21 +28,21 @@ class EditableTextView(context: Context, fieldName: String?, inputType: Int) :
 
     init {
         inflate(context, R.layout.fragment_editable_field, this)
-        val textView = findViewById<TextView>(R.id.title)
+        val textView = requireViewById<TextView>(R.id.title)
         if (fieldName == null) {
             textView.visibility = View.GONE
         } else {
             textView.text = fieldName
         }
 
-        findViewById<EditText>(R.id.input_field).inputType = inputType
+        requireViewById<EditText>(R.id.input_field).inputType = inputType
     }
 
     override fun getFieldValue(): Any {
-        return findViewById<EditText>(R.id.input_field).text.toString()
+        return requireViewById<EditText>(R.id.input_field).text.toString()
     }
 
     override fun isEmpty(): Boolean {
-        return findViewById<EditText>(R.id.input_field).text.isEmpty()
+        return requireViewById<EditText>(R.id.input_field).text.isEmpty()
     }
 }

@@ -30,6 +30,7 @@ import android.safetycenter.SafetyEvent
 import android.safetycenter.SafetyEvent.SAFETY_EVENT_TYPE_DEVICE_REBOOTED
 import android.safetycenter.SafetyEvent.SAFETY_EVENT_TYPE_REFRESH_REQUESTED
 import com.android.healthconnect.controller.safetycenter.HealthConnectSafetySource.Companion.HEALTH_CONNECT_SOURCE_ID
+import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -38,6 +39,7 @@ class SafetySourceBroadcastReceiver : Hilt_SafetySourceBroadcastReceiver() {
 
     @Inject lateinit var safetySource: HealthConnectSafetySource
     @Inject lateinit var safetyCenterManagerWrapper: SafetyCenterManagerWrapper
+    @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
@@ -87,17 +89,8 @@ class SafetySourceBroadcastReceiver : Hilt_SafetySourceBroadcastReceiver() {
     }
 
     private fun shouldEnableLegacySettingsEntryPoint(context: Context): Boolean {
-        return !safetyCenterManagerWrapper.isEnabled(context) && isHardwareSupported(context)
-    }
-
-    private fun isHardwareSupported(context: Context): Boolean {
-        // These UI tests are not optimised for Watches, TVs, Auto;
-        // IoT devices do not have a UI to run these UI tests
-        val pm: PackageManager = context.packageManager
-        return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED) &&
-            !pm.hasSystemFeature(PackageManager.FEATURE_WATCH) &&
-            !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) &&
-            !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE))
+        return !safetyCenterManagerWrapper.isEnabled(context) &&
+            deviceInfoUtils.isHealthConnectAvailable(context)
     }
 
     private fun refreshSafetySources(

@@ -145,7 +145,7 @@ class SettingsManagePermissionFragmentTest {
 
     @Test
     fun test_accessedHealthData_showsRecentAccessSummary() {
-        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ALLOWED, NOW))
+        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ALLOWED, healthUsageLastAccess = NOW))
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
 
         launchFragment<SettingsManagePermissionFragment>(Bundle())

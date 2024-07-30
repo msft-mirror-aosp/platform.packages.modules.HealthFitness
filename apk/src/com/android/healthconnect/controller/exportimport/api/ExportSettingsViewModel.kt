@@ -68,10 +68,10 @@ constructor(
         _storedExportSettings.postValue(ExportSettings.Loading)
         viewModelScope.launch {
             when (val result = loadExportSettingsUseCase.invoke()) {
-                is ExportUseCaseResult.Success -> {
+                is ExportImportUseCaseResult.Success -> {
                     _storedExportSettings.postValue(ExportSettings.WithData(result.data))
                 }
-                is ExportUseCaseResult.Failed -> {
+                is ExportImportUseCaseResult.Failed -> {
                     _storedExportSettings.postValue(ExportSettings.LoadingFailed)
                 }
             }
@@ -83,10 +83,10 @@ constructor(
         _documentProviders.postValue(DocumentProviders.Loading)
         viewModelScope.launch {
             when (val result = queryDocumentProvidersUseCase.invoke()) {
-                is ExportUseCaseResult.Success -> {
+                is ExportImportUseCaseResult.Success -> {
                     _documentProviders.postValue(DocumentProviders.WithData(result.data))
                 }
-                is ExportUseCaseResult.Failed -> {
+                is ExportImportUseCaseResult.Failed -> {
                     _documentProviders.postValue(DocumentProviders.LoadingFailed)
                 }
             }
@@ -115,8 +115,7 @@ constructor(
             ScheduledExportSettings.withUriAndPeriodInDays(
                 uri,
                 _selectedExportFrequency.value?.periodInDays
-                    ?: ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays
-            )
+                    ?: ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays)
         updateExportSettings(settings)
     }
 
@@ -134,13 +133,13 @@ constructor(
     private fun updateExportSettings(settings: ScheduledExportSettings) {
         viewModelScope.launch {
             when (updateExportSettingsUseCase.invoke(settings)) {
-                is ExportUseCaseResult.Success -> {
+                is ExportImportUseCaseResult.Success -> {
                     if (settings.periodInDays != DEFAULT_INT) {
                         val frequency = fromPeriodInDays(settings.periodInDays)
                         _storedExportSettings.postValue(ExportSettings.WithData(frequency))
                     }
                 }
-                is ExportUseCaseResult.Failed -> {
+                is ExportImportUseCaseResult.Failed -> {
                     _storedExportSettings.postValue(ExportSettings.LoadingFailed)
                 }
             }

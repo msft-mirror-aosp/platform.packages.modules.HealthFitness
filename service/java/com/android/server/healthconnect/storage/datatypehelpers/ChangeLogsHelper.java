@@ -75,12 +75,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
     private static final String TIME_COLUMN_NAME = "time";
     private static final int NUM_COLS = 5;
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private static volatile ChangeLogsHelper sChangeLogsHelper;
-
-    private ChangeLogsHelper() {}
-
-    public DeleteTableRequest getDeleteRequestForAutoDelete() {
+    public static DeleteTableRequest getDeleteRequestForAutoDelete() {
         return new DeleteTableRequest(TABLE_NAME)
                 .setTimeFilter(
                         TIME_COLUMN_NAME,
@@ -90,9 +85,8 @@ public final class ChangeLogsHelper extends DatabaseHelper {
                                 .toEpochMilli());
     }
 
-    @Override
     @NonNull
-    public CreateTableRequest getCreateTableRequest() {
+    public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo())
                 .createIndexOn(RECORD_TYPE_COLUMN_NAME)
                 .createIndexOn(APP_ID_COLUMN_NAME);
@@ -104,7 +98,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
     }
 
     /** Returns change logs post the time when {@code changeLogTokenRequest} was generated */
-    public ChangeLogsResponse getChangeLogs(
+    public static ChangeLogsResponse getChangeLogs(
             ChangeLogsRequestHelper.TokenRequest changeLogTokenRequest,
             ChangeLogsRequest changeLogsRequest) {
         long token = changeLogTokenRequest.getRowIdChangeLogs();
@@ -150,17 +144,17 @@ public final class ChangeLogsHelper extends DatabaseHelper {
                 nextChangesToken != DEFAULT_LONG
                         ? ChangeLogsRequestHelper.getNextPageToken(
                                 changeLogTokenRequest, nextChangesToken)
-                        : String.valueOf(changeLogsRequest.getToken());
+                        : changeLogsRequest.getToken();
 
         return new ChangeLogsResponse(operationToChangeLogMap, nextToken, hasMoreRecords);
     }
 
-    public long getLatestRowId() {
+    public static long getLatestRowId() {
         return TransactionManager.getInitialisedInstance().getLastRowIdFor(TABLE_NAME);
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    private int addChangeLogs(Cursor cursor, Map<Integer, ChangeLogs> changeLogs) {
+    private static int addChangeLogs(Cursor cursor, Map<Integer, ChangeLogs> changeLogs) {
         @RecordTypeIdentifier.RecordType
         int recordType = getCursorInt(cursor, RECORD_TYPE_COLUMN_NAME);
         @OperationType.OperationTypes
@@ -185,14 +179,6 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         columnInfo.add(new Pair<>(TIME_COLUMN_NAME, INTEGER));
 
         return columnInfo;
-    }
-
-    public static synchronized ChangeLogsHelper getInstance() {
-        if (sChangeLogsHelper == null) {
-            sChangeLogsHelper = new ChangeLogsHelper();
-        }
-
-        return sChangeLogsHelper;
     }
 
     @NonNull

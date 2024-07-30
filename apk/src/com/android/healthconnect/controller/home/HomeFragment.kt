@@ -43,6 +43,7 @@ import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.R
 import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.Constants.MIGRATION_NOT_COMPLETE_DIALOG_SEEN
 import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
@@ -55,14 +56,14 @@ import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HomePageElement
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
-import com.android.healthfitness.flags.Flags
+import com.android.healthfitness.flags.Flags.exportImport
+import com.android.healthfitness.flags.Flags.newInformationArchitecture
+import com.android.settingslib.widget.TopIntroPreference
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
-import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 /** Home fragment for Health Connect. */
@@ -70,14 +71,15 @@ import javax.inject.Inject
 class HomeFragment : Hilt_HomeFragment() {
 
     companion object {
+        private const val TOP_INTRO_PREFERENCE_KEY = "health_connect_top_intro"
         private const val DATA_AND_ACCESS_PREFERENCE_KEY = "data_and_access"
         private const val RECENT_ACCESS_PREFERENCE_KEY = "recent_access"
         private const val CONNECTED_APPS_PREFERENCE_KEY = "connected_apps"
         private const val MIGRATION_BANNER_PREFERENCE_KEY = "migration_banner"
         private const val DATA_RESTORE_BANNER_PREFERENCE_KEY = "data_restore_banner"
         private const val MANAGE_DATA_PREFERENCE_KEY = "manage_data"
-        private const val EXPORT_FILE_ACCESS_ERROR_BANNER_PREFERENCE_KEY =
-            "export_file_access_error_banner"
+        private const val BROSE_MEDICAL_DATA_PREFERENCE_KEY = "medical_data"
+        private const val EXPORT_ERROR_BANNER_PREFERENCE_KEY = "export_error_banner"
         private const val HOME_FRAGMENT_BANNER_ORDER = 1
 
         @JvmStatic fun newInstance() = HomeFragment()
@@ -96,6 +98,10 @@ class HomeFragment : Hilt_HomeFragment() {
     private val migrationViewModel: MigrationViewModel by activityViewModels()
     private val exportStatusViewModel: ExportStatusViewModel by activityViewModels()
 
+    private val mTopIntroPreference: TopIntroPreference? by lazy {
+        preferenceScreen.findPreference(TOP_INTRO_PREFERENCE_KEY)
+    }
+
     private val mDataAndAccessPreference: HealthPreference? by lazy {
         preferenceScreen.findPreference(DATA_AND_ACCESS_PREFERENCE_KEY)
     }
@@ -112,6 +118,10 @@ class HomeFragment : Hilt_HomeFragment() {
         preferenceScreen.findPreference(MANAGE_DATA_PREFERENCE_KEY)
     }
 
+    private val mBrowseMedicalDataPreference: HealthPreference? by lazy {
+        preferenceScreen.findPreference(BROSE_MEDICAL_DATA_PREFERENCE_KEY)
+    }
+
     private val dateFormatter: LocalDateTimeFormatter by lazy {
         LocalDateTimeFormatter(requireContext())
     }
@@ -122,7 +132,16 @@ class HomeFragment : Hilt_HomeFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.home_preference_screen, rootKey)
-        mDataAndAccessPreference?.logName = HomePageElement.DATA_AND_ACCESS_BUTTON
+        if (newInformationArchitecture()) {
+            mDataAndAccessPreference?.logName = HomePageElement.BROWSE_DATA_BUTTON
+            mDataAndAccessPreference?.title = getString(R.string.browse_data_title)
+            mDataAndAccessPreference?.summary = getString(R.string.browse_data_subtitle)
+            mTopIntroPreference?.isVisible = false
+        } else {
+            mDataAndAccessPreference?.logName = HomePageElement.DATA_AND_ACCESS_BUTTON
+            mDataAndAccessPreference?.title = getString(R.string.data_title)
+            mTopIntroPreference?.isVisible = true
+        }
         mDataAndAccessPreference?.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_healthDataCategoriesFragment)
             true
@@ -133,15 +152,25 @@ class HomeFragment : Hilt_HomeFragment() {
             true
         }
 
-        if (featureUtils.isNewAppPriorityEnabled() ||
-            featureUtils.isNewInformationArchitectureEnabled()) {
-            mManageDataPreference?.logName = HomePageElement.MANAGE_DATA_BUTTON
-            mManageDataPreference?.setOnPreferenceClickListener {
-                findNavController().navigate(R.id.action_homeFragment_to_manageDataFragment)
+        mManageDataPreference?.logName = HomePageElement.MANAGE_DATA_BUTTON
+        mManageDataPreference?.setOnPreferenceClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_manageDataFragment)
+            true
+        }
+        if (exportImport()) {
+            mManageDataPreference?.summary = getString(R.string.manage_data_summary)
+        }
+
+        // TODO(b/343148212): Change condition to whether there is any medical data stored in HC
+        // when the API is ready.
+        if (featureUtils.isPersonalHealthRecordEnabled()) {
+            // TODO(b/343148212): Add logname.
+            mBrowseMedicalDataPreference?.setOnPreferenceClickListener {
+                findNavController().navigate(R.id.action_homeFragment_to_medicalDataFragment)
                 true
             }
         } else {
-            preferenceScreen.removePreferenceRecursively(MANAGE_DATA_PREFERENCE_KEY)
+            preferenceScreen.removePreferenceRecursively(BROSE_MEDICAL_DATA_PREFERENCE_KEY)
         }
 
         migrationBannerSummary = getString(R.string.resume_migration_banner_description_fallback)
@@ -152,6 +181,9 @@ class HomeFragment : Hilt_HomeFragment() {
         super.onResume()
         recentAccessViewModel.loadRecentAccessApps(maxNumEntries = 3)
         homeFragmentViewModel.loadConnectedApps()
+        if (exportImport()) {
+            exportStatusViewModel.loadScheduledExportStatus()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -182,7 +214,7 @@ class HomeFragment : Hilt_HomeFragment() {
             }
         }
 
-        if (Flags.exportImport()) {
+        if (exportImport()) {
             exportStatusViewModel.storedScheduledExportStatus.observe(viewLifecycleOwner) {
                 scheduledExportUiStatus ->
                 when (scheduledExportUiStatus) {
@@ -201,11 +233,10 @@ class HomeFragment : Hilt_HomeFragment() {
         preferenceScreen.removePreferenceRecursively(MIGRATION_BANNER_PREFERENCE_KEY)
         preferenceScreen.removePreferenceRecursively(DATA_RESTORE_BANNER_PREFERENCE_KEY)
 
-        val (migrationUiState, dataRestoreUiState, dataErrorState) = migrationRestoreState
+        val (migrationUiState, dataRestoreUiState, _) = migrationRestoreState
 
         if (dataRestoreUiState == DataRestoreUiState.PENDING) {
-            // TODO (b/327170886) uncomment when states are correct
-            // preferenceScreen.addPreference(getDataRestorePendingBanner())
+            preferenceScreen.addPreference(getDataRestorePendingBanner())
         } else if (migrationUiState in
             listOf(
                 MigrationUiState.ALLOWED_PAUSED,
@@ -245,35 +276,31 @@ class HomeFragment : Hilt_HomeFragment() {
     }
 
     private fun maybeShowExportErrorBanner(scheduledExportUiState: ScheduledExportUiState) {
-        when (scheduledExportUiState.dataExportError) {
-            ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS -> {
-                scheduledExportUiState.lastSuccessfulExportTime?.let {
-                    preferenceScreen.addPreference(
-                        getExportFileAccessErrorBanner(it, scheduledExportUiState.periodInDays))
-                }
-            }
-            else -> {
-                // Do nothing yet.
+        if (preferenceScreen.findPreference<Preference>(EXPORT_ERROR_BANNER_PREFERENCE_KEY) !=
+            null) {
+            preferenceScreen.removePreferenceRecursively(EXPORT_ERROR_BANNER_PREFERENCE_KEY)
+        }
+        if (scheduledExportUiState.dataExportError !=
+            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE) {
+            scheduledExportUiState.lastFailedExportTime?.let {
+                preferenceScreen.addPreference(getExportFileAccessErrorBanner(it))
             }
         }
     }
 
     private fun getExportFileAccessErrorBanner(
-        lastSuccessfulDate: Instant,
-        periodInDays: Int
+        lastFailedExportTime: Instant,
     ): BannerPreference {
-        // TODO: b/325917283 - Add proper logging for the export file access error banner.
-        return BannerPreference(requireContext(), ErrorPageElement.UNKNOWN_ELEMENT).also {
+        return BannerPreference(requireContext(), HomePageElement.EXPORT_ERROR_BANNER).also {
             it.setPrimaryButton(
                 getString(R.string.export_file_access_error_banner_button),
-                ErrorPageElement.UNKNOWN_ELEMENT)
+                HomePageElement.EXPORT_ERROR_BANNER_BUTTON)
             it.title = getString(R.string.export_file_access_error_banner_title)
-            it.key = EXPORT_FILE_ACCESS_ERROR_BANNER_PREFERENCE_KEY
+            it.key = EXPORT_ERROR_BANNER_PREFERENCE_KEY
             it.summary =
                 getString(
                     R.string.export_file_access_error_banner_summary,
-                    dateFormatter.formatLongDate(
-                        lastSuccessfulDate.plus(periodInDays.toLong(), ChronoUnit.DAYS)))
+                    dateFormatter.formatLongDate(lastFailedExportTime))
             it.icon = AttributeResolver.getNullableDrawable(requireContext(), R.attr.warningIcon)
             it.setPrimaryButtonOnClickListener {
                 findNavController().navigate(R.id.action_homeFragment_to_exportSetupActivity)
@@ -355,13 +382,7 @@ class HomeFragment : Hilt_HomeFragment() {
                         newPreference ->
                         if (!recentApp.isInactive) {
                             newPreference.setOnPreferenceClickListener {
-                                findNavController()
-                                    .navigate(
-                                        R.id.action_homeFragment_to_connectedAppFragment,
-                                        bundleOf(
-                                            Intent.EXTRA_PACKAGE_NAME to
-                                                recentApp.metadata.packageName,
-                                            Constants.EXTRA_APP_NAME to recentApp.metadata.appName))
+                                navigateToAppInfoScreen(recentApp)
                                 true
                             }
                         }
@@ -380,5 +401,24 @@ class HomeFragment : Hilt_HomeFragment() {
             }
             mRecentAccessPreference?.addPreference(seeAllPreference)
         }
+    }
+
+    private fun navigateToAppInfoScreen(recentApp: RecentAccessEntry) {
+        val appPermissionsType = recentApp.appPermissionsType
+        val navigationId =
+            when (appPermissionsType) {
+                AppPermissionsType.FITNESS_PERMISSIONS_ONLY ->
+                    R.id.action_homeFragment_to_fitnessAppFragment
+                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY ->
+                    R.id.action_homeFragment_to_medicalAppFragment
+                AppPermissionsType.COMBINED_PERMISSIONS ->
+                    R.id.action_homeFragment_to_combinedPermissionsFragment
+            }
+        findNavController()
+            .navigate(
+                navigationId,
+                bundleOf(
+                    Intent.EXTRA_PACKAGE_NAME to recentApp.metadata.packageName,
+                    Constants.EXTRA_APP_NAME to recentApp.metadata.appName))
     }
 }

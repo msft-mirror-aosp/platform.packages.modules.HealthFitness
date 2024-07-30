@@ -70,7 +70,7 @@ public class AutoDeleteService {
             // Update the recordTypesUsed by packages if required after the deletion of records.
             AppInfoHelper.getInstance().syncAppInfoRecordTypesUsed();
             // Re-sync activity dates table
-            ActivityDateHelper.getInstance().reSyncForAllRecords();
+            ActivityDateHelper.reSyncForAllRecords();
             // Sync health data priority list table
             HealthDataCategoryPriorityHelper.getInstance().reSyncHealthDataPriorityTable(context);
         } catch (Exception e) {
@@ -113,9 +113,8 @@ public class AutoDeleteService {
             TransactionManager.getInitialisedInstance()
                     .deleteWithoutChangeLogs(
                             List.of(
-                                    ChangeLogsHelper.getInstance().getDeleteRequestForAutoDelete(),
-                                    ChangeLogsRequestHelper.getInstance()
-                                            .getDeleteRequestForAutoDelete()));
+                                    ChangeLogsHelper.getDeleteRequestForAutoDelete(),
+                                    ChangeLogsRequestHelper.getDeleteRequestForAutoDelete()));
         } catch (Exception exception) {
             Slog.e(TAG, "Auto delete for Change logs failed", exception);
             // Don't rethrow as that will crash system_server
@@ -126,9 +125,7 @@ public class AutoDeleteService {
         try {
             TransactionManager.getInitialisedInstance()
                     .deleteWithoutChangeLogs(
-                            List.of(
-                                    AccessLogsHelper.getInstance()
-                                            .getDeleteRequestForAutoDelete()));
+                            List.of(AccessLogsHelper.getDeleteRequestForAutoDelete()));
         } catch (Exception exception) {
             Slog.e(TAG, "Auto delete for Access logs failed", exception);
             // Don't rethrow as that will crash system_server

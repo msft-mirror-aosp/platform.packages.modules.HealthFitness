@@ -24,6 +24,7 @@ import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.RecentAccessState.Loading
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
+import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
 import com.android.healthconnect.controller.shared.dataTypeToCategory
@@ -40,6 +41,7 @@ class RecentAccessViewModel
 @Inject
 constructor(
     private val appInfoReader: AppInfoReader,
+    private val healthPermissionsReader: HealthPermissionReader,
     private val loadHealthPermissionApps: ILoadHealthPermissionApps,
     private val loadRecentAccessUseCase: ILoadRecentAccessUseCase,
     private val timeSource: TimeSource
@@ -172,7 +174,8 @@ constructor(
                 recentDataAccessEntry =
                     RecentAccessEntry(
                         metadata =
-                            appInfoReader.getAppMetadata(packageName = accessLog.packageName)))
+                            appInfoReader.getAppMetadata(packageName = accessLog.packageName),
+                        appPermissionsType = healthPermissionsReader.getAppPermissionsType(packageName = accessLog.packageName)))
 
         updateDataAccessEntryCluster(newCluster, accessLog)
         return newCluster

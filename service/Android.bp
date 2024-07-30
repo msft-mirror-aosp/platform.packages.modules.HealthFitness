@@ -46,6 +46,7 @@ java_sdk_library {
         "keepanno-annotations",
         "modules-utils-preconditions",
         "healthfitness-aconfig-flags-lib",
+        "healthfitness-aconfig-flags-helper",
     ],
     static_libs: [
         "modules-utils-backgroundthread",

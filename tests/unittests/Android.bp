@@ -36,6 +36,10 @@ android_test {
     static_libs: [
         "service-healthfitness.impl",
         "framework-healthfitness.impl",
+        "healthfitness-aconfig-flags-lib",
+        "healthfitness-aconfig-flags-helper",
+        "flag-junit",
+        "healthfitness-aconfig-flags-lib",
         "androidx.test.runner",
         "mockito-target-extended-minus-junit4",
         "truth",

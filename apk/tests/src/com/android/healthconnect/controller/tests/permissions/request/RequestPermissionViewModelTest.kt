@@ -335,16 +335,6 @@ class RequestPermissionViewModelTest {
     }
 
     @Test
-    fun isPermissionLocallyGranted_onlyOneAdditionalPermission_returnsTrue() = runTest {
-        val permissions = arrayOf(READ_EXERCISE, READ_SLEEP, READ_HEALTH_DATA_HISTORY)
-        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
-
-        val historyReadPermission = fromPermissionString(READ_HEALTH_DATA_HISTORY)
-
-        assertThat(viewModel.isPermissionLocallyGranted(historyReadPermission)).isTrue()
-    }
-
-    @Test
     fun init_anyReadPermissionsGranted_whenReadPermissionGranted_returnsTrue() = runTest {
         val permissions =
             arrayOf(

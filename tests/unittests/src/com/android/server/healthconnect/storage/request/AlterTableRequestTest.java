@@ -20,13 +20,17 @@ import static com.google.common.truth.Truth.assertThat;
 
 import android.util.Pair;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@RunWith(AndroidJUnit4.class)
 public class AlterTableRequestTest {
     private static final String TABLE_NAME = "sample_table";
     private static final String COLUMN_NAME = "sample_column";

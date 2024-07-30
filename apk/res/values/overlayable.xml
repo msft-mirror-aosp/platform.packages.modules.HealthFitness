@@ -81,7 +81,6 @@
             <item type="drawable" name="ic_import"/>
 
             <item type="drawable" name="ic_warning"/>
-            <item type="drawable" name="ic_password"/>
             <item type="drawable" name="ic_info"/>
             <!-- END REGION -->
 
@@ -112,7 +111,6 @@
             <item type="style" name="TextAppearance.HealthConnect.ErrorMessage"/>
 
             <item type="style" name="Widget.HealthConnect.Button"/>
-            <item type="style" name="Widget.HealthConnect.CheckBox"/>
             <item type="style" name="Widget.HealthConnect.RadioButton.Chip"/>
             <item type="style" name="Widget.HealthConnect.CalendarSpinner"/>
             <item type="style" name="Widget.HealthConnect.TabLayout"/>

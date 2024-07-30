@@ -67,11 +67,11 @@ public final class ExportImportDocumentProvider implements Parcelable {
             @DrawableRes int iconResource,
             @NonNull Uri rootUri,
             @NonNull String authority) {
-        mTitle = title;
-        mSummary = summary;
+        mTitle = Objects.requireNonNull(title);
+        mSummary = Objects.requireNonNull(summary);
         mIconResource = iconResource;
-        mRootUri = rootUri;
-        mAuthority = authority;
+        mRootUri = Objects.requireNonNull(rootUri);
+        mAuthority = Objects.requireNonNull(authority);
     }
 
     /** Returns the title for the document provider (usually corresponds to the app name). */

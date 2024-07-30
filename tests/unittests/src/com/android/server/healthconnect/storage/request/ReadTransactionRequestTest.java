@@ -20,16 +20,17 @@ import static com.android.server.healthconnect.storage.datatypehelpers.Transacti
 
 import static com.google.common.truth.Truth.assertThat;
 
-import android.health.connect.MedicalIdFilter;
+import android.health.connect.HealthConnectManager;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
-import android.health.connect.aidl.MedicalIdFiltersParcel;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsRecord;
+import android.os.Environment;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 
 import com.google.common.collect.ImmutableList;
@@ -38,6 +39,7 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.quality.Strictness;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,7 +47,16 @@ import java.util.UUID;
 
 @RunWith(AndroidJUnit4.class)
 public class ReadTransactionRequestTest {
-    @Rule public final HealthConnectDatabaseTestRule testRule = new HealthConnectDatabaseTestRule();
+    @Rule(order = 1)
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(HealthConnectManager.class)
+                    .mockStatic(Environment.class)
+                    .setStrictness(Strictness.LENIENT)
+                    .build();
+
+    @Rule(order = 2)
+    public final HealthConnectDatabaseTestRule testRule = new HealthConnectDatabaseTestRule();
 
     @Test
     public void createReadByFilterRequest_noPageToken_correctPaginationInfo() {
@@ -104,21 +115,6 @@ public class ReadTransactionRequestTest {
                                 RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE, ramdonUuids));
 
         assertThat(request.getReadRequests()).hasSize(2);
-        assertThat(request.getPageToken()).isNull();
-        assertThat(request.getPageSize()).isEqualTo(Optional.empty());
-    }
-
-    @Test
-    public void testReadTransactionUsingMedicalId_correctReadRequests() {
-        MedicalIdFiltersParcel parcel =
-                new MedicalIdFiltersParcel(
-                        List.of(
-                                MedicalIdFilter.fromId(UUID.randomUUID().toString()),
-                                MedicalIdFilter.fromId(UUID.randomUUID().toString())));
-
-        ReadTransactionRequest request = getReadTransactionRequest(parcel);
-
-        assertThat(request.getReadRequests()).hasSize(1);
         assertThat(request.getPageToken()).isNull();
         assertThat(request.getPageSize()).isEqualTo(Optional.empty());
     }

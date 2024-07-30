@@ -15,8 +15,13 @@
  */
 package com.android.healthconnect.controller.tests.data
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.health.connect.HealthDataCategory
+import android.platform.test.annotations.DisableFlags
+import android.platform.test.annotations.EnableFlags
+import android.platform.test.flag.junit.SetFlagsRule
 import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
@@ -26,25 +31,23 @@ import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
-import com.android.healthconnect.controller.autodelete.AutoDeleteRange
-import com.android.healthconnect.controller.autodelete.AutoDeleteViewModel
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel
 import com.android.healthconnect.controller.data.DataManagementActivity
+import com.android.healthconnect.controller.data.alldata.AllDataViewModel
+import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiError
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
-import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.tests.utils.showOnboarding
 import com.android.healthconnect.controller.tests.utils.whenever
-import com.android.healthconnect.controller.utils.FeatureUtils
+import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import javax.inject.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -53,9 +56,9 @@ import org.junit.Test
 import org.mockito.Mockito
 
 @HiltAndroidTest
-@OptIn(ExperimentalCoroutinesApi::class)
 class DataManagementActivityTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val setFlagsRule = SetFlagsRule()
 
     @BindValue
     val migrationViewModel: MigrationViewModel = Mockito.mock(MigrationViewModel::class.java)
@@ -64,29 +67,85 @@ class DataManagementActivityTest {
     val categoryViewModel: HealthDataCategoryViewModel =
         Mockito.mock(HealthDataCategoryViewModel::class.java)
 
-    @BindValue
-    val autoDeleteViewModel: AutoDeleteViewModel = Mockito.mock(AutoDeleteViewModel::class.java)
-
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
+    @BindValue val allDataViewModel: AllDataViewModel = Mockito.mock(AllDataViewModel::class.java)
 
     private lateinit var context: Context
 
     @Before
     fun setup() {
         hiltRule.inject()
+        // Required for aconfig flag reading for tests run on pre V devices
+        InstrumentationRegistry.getInstrumentation()
+            .getUiAutomation()
+            .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG)
+
         context = InstrumentationRegistry.getInstrumentation().context
-        (fakeFeatureUtils as FakeFeatureUtils).setIsNewInformationArchitectureEnabled(false)
 
         showOnboarding(context, show = false)
-        whenever(autoDeleteViewModel.storedAutoDeleteRange).then {
-            MutableLiveData(
-                AutoDeleteViewModel.AutoDeleteState.WithData(
-                    AutoDeleteRange.AUTO_DELETE_RANGE_NEVER))
-        }
         whenever(categoryViewModel.categoriesData).then {
             MutableLiveData<HealthDataCategoryViewModel.CategoriesFragmentState>(
                 HealthDataCategoryViewModel.CategoriesFragmentState.WithData(emptyList()))
         }
+        whenever(allDataViewModel.allData).then {
+            MutableLiveData<AllDataViewModel.AllDataState>(
+                AllDataViewModel.AllDataState.WithData(
+                    listOf(
+                        PermissionTypesPerCategory(
+                            HealthDataCategory.ACTIVITY, listOf(FitnessPermissionType.STEPS)))))
+        }
+        whenever(allDataViewModel.setOfPermissionTypesToBeDeleted).then {
+            MutableLiveData<Set<FitnessPermissionType>>(emptySet())
+        }
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
+    fun whenNewIA_showsAllDataFragment() {
+        whenever(migrationViewModel.getCurrentMigrationUiState()).then {
+            MigrationRestoreState(
+                migrationUiState = MigrationUiState.IDLE,
+                dataRestoreState = DataRestoreUiState.IDLE,
+                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+        }
+        whenever(migrationViewModel.migrationState).then {
+            MutableLiveData(
+                MigrationViewModel.MigrationFragmentState.WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.IDLE,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+        }
+        val startActivityIntent = Intent(context, DataManagementActivity::class.java)
+
+        launch<DataManagementActivity>(startActivityIntent)
+
+        onView(withText("Activity")).check(matches(isDisplayed()))
+        onView(withText("Steps")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
+    fun whenOldIA_showsCategoriesFragment() {
+        whenever(migrationViewModel.getCurrentMigrationUiState()).then {
+            MigrationRestoreState(
+                migrationUiState = MigrationUiState.IDLE,
+                dataRestoreState = DataRestoreUiState.IDLE,
+                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+        }
+        whenever(migrationViewModel.migrationState).then {
+            MutableLiveData(
+                MigrationViewModel.MigrationFragmentState.WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.IDLE,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+        }
+
+        val startActivityIntent = Intent(context, DataManagementActivity::class.java)
+
+        launch<DataManagementActivity>(startActivityIntent)
+
+        onView(withText("See all categories")).check(matches(isDisplayed()))
     }
 
     @Test

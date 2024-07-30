@@ -38,7 +38,6 @@ constructor(
         get() = _storedScheduledExportStatus
 
     init {
-
         loadScheduledExportStatus()
     }
 
@@ -47,11 +46,11 @@ constructor(
         _storedScheduledExportStatus.postValue(ScheduledExportUiStatus.Loading)
         viewModelScope.launch {
             when (val result = loadScheduledExportStatusUseCase.invoke()) {
-                is ExportUseCaseResult.Success -> {
+                is ExportImportUseCaseResult.Success -> {
                     _storedScheduledExportStatus.postValue(
                         ScheduledExportUiStatus.WithData(result.data))
                 }
-                is ExportUseCaseResult.Failed -> {
+                is ExportImportUseCaseResult.Failed -> {
                     _storedScheduledExportStatus.postValue(ScheduledExportUiStatus.LoadingFailed)
                 }
             }
