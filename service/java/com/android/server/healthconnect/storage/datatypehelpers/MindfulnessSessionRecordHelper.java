@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.MINDFULNESS_SESSION_DURATION_TOTAL;
+
 import static com.android.server.healthconnect.storage.HealthConnectDatabase.createTable;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NULL;
@@ -25,11 +27,14 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.MindfulnessSessionRecordInternal;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
+
+import com.android.server.healthconnect.storage.request.AggregateParams;
 
 import java.util.List;
 
@@ -80,6 +85,17 @@ public class MindfulnessSessionRecordHelper
     @Override
     public String getMainTableName() {
         return TABLE_NAME;
+    }
+
+    @Override
+    AggregateParams getAggregateParams(AggregationType<?> aggregateRequest) {
+        @AggregationType.AggregationTypeIdentifier.Id
+        int aggregationTypeId = aggregateRequest.getAggregationTypeIdentifier();
+        if (aggregationTypeId != MINDFULNESS_SESSION_DURATION_TOTAL) {
+            throw new IllegalArgumentException("Illegal aggregation type id: " + aggregationTypeId);
+        }
+
+        return new AggregateParams(TABLE_NAME, getPriorityAggregationColumnNames());
     }
 
     /** Creates the mindfulness session table. */

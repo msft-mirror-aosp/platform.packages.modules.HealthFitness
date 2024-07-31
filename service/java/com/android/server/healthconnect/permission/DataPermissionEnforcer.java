@@ -50,6 +50,7 @@ public class DataPermissionEnforcer {
     private final PermissionManager mPermissionManager;
     private final Context mContext;
     private final HealthConnectDeviceConfigManager mDeviceConfigManager;
+    private final RecordMapper mRecordMapper;
 
     public DataPermissionEnforcer(
             @NonNull PermissionManager permissionManager,
@@ -58,6 +59,7 @@ public class DataPermissionEnforcer {
         mPermissionManager = permissionManager;
         mContext = context;
         mDeviceConfigManager = deviceConfigManager;
+        mRecordMapper = RecordMapper.getInstance();
     }
 
     /** Enforces default write permissions for given recordTypeIds */
@@ -239,7 +241,7 @@ public class DataPermissionEnforcer {
                     "Caller doesn't have "
                             + permissionName
                             + prohibitedAction
-                            + RecordMapper.getInstance()
+                            + mRecordMapper
                                     .getRecordIdToExternalRecordClassMap()
                                     .get(recordTypeId));
         }

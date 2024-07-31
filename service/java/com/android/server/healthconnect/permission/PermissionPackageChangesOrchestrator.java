@@ -45,16 +45,32 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
     private final FirstGrantTimeManager mFirstGrantTimeManager;
     private final HealthConnectPermissionHelper mPermissionHelper;
     private UserHandle mCurrentForegroundUser;
+    private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
 
     public PermissionPackageChangesOrchestrator(
             HealthPermissionIntentAppsTracker permissionIntentTracker,
             FirstGrantTimeManager grantTimeManager,
             HealthConnectPermissionHelper permissionHelper,
-            @NonNull UserHandle userHandle) {
+            UserHandle userHandle) {
+        this(
+                permissionIntentTracker,
+                grantTimeManager,
+                permissionHelper,
+                userHandle,
+                HealthDataCategoryPriorityHelper.getInstance());
+    }
+
+    public PermissionPackageChangesOrchestrator(
+            HealthPermissionIntentAppsTracker permissionIntentTracker,
+            FirstGrantTimeManager grantTimeManager,
+            HealthConnectPermissionHelper permissionHelper,
+            UserHandle userHandle,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
         mPermissionIntentTracker = permissionIntentTracker;
         mFirstGrantTimeManager = grantTimeManager;
         mPermissionHelper = permissionHelper;
         mCurrentForegroundUser = userHandle;
+        mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
     }
 
     /**
@@ -106,7 +122,7 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
                     && userManager.isUserUnlocked(userHandle)) {
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () ->
-                                HealthDataCategoryPriorityHelper.getInstance()
+                                mHealthDataCategoryPriorityHelper
                                         .maybeRemoveAppWithoutWritePermissionsFromPriorityList(
                                                 packageName));
             }

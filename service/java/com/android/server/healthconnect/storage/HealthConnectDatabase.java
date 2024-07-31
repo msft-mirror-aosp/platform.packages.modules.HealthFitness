@@ -70,6 +70,11 @@ public class HealthConnectDatabase extends SQLiteOpenHelper {
         Log.i(TAG, "onDowngrade oldVersion = " + oldVersion + " newVersion = " + newVersion);
     }
 
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        DevelopmentDatabaseHelper.onOpen(db);
+    }
+
     public File getDatabasePath() {
         return mContext.getDatabasePath(getDatabaseName());
     }

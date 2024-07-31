@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2022 The Android Open Source Project
+/*
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -21,16 +21,22 @@ import android.health.connect.HealthDataCategory
 import androidx.annotation.StringRes
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.shared.CategoriesMappers.ACTIVITY_PERMISSION_GROUPS
 import com.android.healthconnect.controller.shared.CategoriesMappers.BODY_MEASUREMENTS_PERMISSION_GROUPS
 import com.android.healthconnect.controller.shared.CategoriesMappers.CYCLE_TRACKING_PERMISSION_GROUPS
+import com.android.healthconnect.controller.shared.CategoriesMappers.MEDICAL_PERMISSION_GROUPS
 import com.android.healthconnect.controller.shared.CategoriesMappers.NUTRITION_PERMISSION_GROUPS
 import com.android.healthconnect.controller.shared.CategoriesMappers.SLEEP_PERMISSION_GROUPS
 import com.android.healthconnect.controller.shared.CategoriesMappers.VITALS_PERMISSION_GROUPS
 import com.android.healthconnect.controller.utils.AttributeResolver
 
 object HealthDataCategoryExtensions {
-    fun @receiver:HealthDataCategoryInt Int.healthPermissionTypes(): List<FitnessPermissionType> {
+    /** Additional category for medical permission types. */
+    const val MEDICAL = 1000
+
+    fun @receiver:HealthDataCategoryInt Int.healthPermissionTypes(): List<HealthPermissionType> {
         return when (this) {
             HealthDataCategory.ACTIVITY -> ACTIVITY_PERMISSION_GROUPS
             HealthDataCategory.BODY_MEASUREMENTS -> BODY_MEASUREMENTS_PERMISSION_GROUPS
@@ -38,6 +44,7 @@ object HealthDataCategoryExtensions {
             HealthDataCategory.NUTRITION -> NUTRITION_PERMISSION_GROUPS
             HealthDataCategory.SLEEP -> SLEEP_PERMISSION_GROUPS
             HealthDataCategory.VITALS -> VITALS_PERMISSION_GROUPS
+            MEDICAL -> MEDICAL_PERMISSION_GROUPS
             else -> throw IllegalArgumentException("Category $this is not supported.")
         }
     }
@@ -51,6 +58,7 @@ object HealthDataCategoryExtensions {
             HealthDataCategory.NUTRITION -> R.string.nutrition_category_lowercase
             HealthDataCategory.SLEEP -> R.string.sleep_category_lowercase
             HealthDataCategory.VITALS -> R.string.vitals_category_lowercase
+            MEDICAL -> R.string.medical_permissions_lowercase
             else -> throw IllegalArgumentException("Category $this is not supported.")
         }
     }
@@ -64,6 +72,7 @@ object HealthDataCategoryExtensions {
             HealthDataCategory.NUTRITION -> R.string.nutrition_category_uppercase
             HealthDataCategory.SLEEP -> R.string.sleep_category_uppercase
             HealthDataCategory.VITALS -> R.string.vitals_category_uppercase
+            MEDICAL -> R.string.medical_permissions
             else -> throw IllegalArgumentException("Category $this is not supported.")
         }
     }
@@ -77,19 +86,21 @@ object HealthDataCategoryExtensions {
                 HealthDataCategory.NUTRITION -> R.attr.nutritionCategoryIcon
                 HealthDataCategory.SLEEP -> R.attr.sleepCategoryIcon
                 HealthDataCategory.VITALS -> R.attr.vitalsCategoryIcon
+                // TODO(b/342156345): Add default medical icon.
+                MEDICAL -> R.attr.vitalsCategoryIcon
                 else -> throw IllegalArgumentException("Category $this is not supported.")
             }
         return AttributeResolver.getDrawable(context, attrRes)
     }
 
     @HealthDataCategoryInt
-    fun fromHealthPermissionType(type: FitnessPermissionType): Int {
-        for (category in HEALTH_DATA_CATEGORIES) {
+    fun fromFitnessPermissionType(type: FitnessPermissionType): Int {
+        for (category in FITNESS_DATA_CATEGORIES) {
             if (category.healthPermissionTypes().contains(type)) {
                 return category
             }
         }
-        throw IllegalArgumentException("No Category for permission type $type")
+        throw IllegalArgumentException("No Category for fitness permission type $type")
     }
 }
 
@@ -147,10 +158,13 @@ private object CategoriesMappers {
             FitnessPermissionType.RESPIRATORY_RATE,
             FitnessPermissionType.RESTING_HEART_RATE,
             FitnessPermissionType.SKIN_TEMPERATURE)
+
+    val MEDICAL_PERMISSION_GROUPS =
+        listOf(MedicalPermissionType.IMMUNIZATION, MedicalPermissionType.ALL_MEDICAL_DATA)
 }
 
 /** List of available Health data categories. */
-val HEALTH_DATA_CATEGORIES =
+val FITNESS_DATA_CATEGORIES =
     listOf(
         HealthDataCategory.ACTIVITY,
         HealthDataCategory.BODY_MEASUREMENTS,

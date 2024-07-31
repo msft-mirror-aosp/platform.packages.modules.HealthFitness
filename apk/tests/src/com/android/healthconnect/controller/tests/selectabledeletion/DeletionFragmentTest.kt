@@ -170,11 +170,16 @@ class DeletionFragmentTest {
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Delete")).inRoot(isDialog()).perform(click())
-        onView(withText("Data deleted")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("This data is no longer stored in Health\u00A0Connect."))
+        onView(withText("Data deleted from Health Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "If you want to completely delete the data from your connected apps, check each app where your data may be saved."))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Done")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("See connected apps")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
 
     @Test

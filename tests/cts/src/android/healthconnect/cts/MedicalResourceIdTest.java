@@ -16,12 +16,12 @@
 
 package android.healthconnect.cts;
 
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_TYPE_ALLERGY;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -32,7 +32,7 @@ import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 
@@ -101,7 +101,7 @@ public class MedicalResourceIdTest {
                         FHIR_RESOURCE_ID_IMMUNIZATION);
         MedicalResourceId idWithDifferentFhirResourceType =
                 new MedicalResourceId(
-                        DATA_SOURCE_ID, FHIR_RESOURCE_TYPE_ALLERGY, FHIR_RESOURCE_ID_IMMUNIZATION);
+                        DATA_SOURCE_ID, FHIR_RESOURCE_TYPE_UNKNOWN, FHIR_RESOURCE_ID_IMMUNIZATION);
         MedicalResourceId idWithDifferentFhirResourceId =
                 new MedicalResourceId(
                         DATA_SOURCE_ID, FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_RESOURCE_ID_ALLERGY);

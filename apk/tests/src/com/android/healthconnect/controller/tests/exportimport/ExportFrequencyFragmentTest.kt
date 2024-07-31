@@ -91,7 +91,7 @@ class ExportFrequencyFragmentTest {
         onView(withText("Weekly")).check(matches(isDisplayed()))
         onView(withText("Monthly")).check(matches(isDisplayed()))
 
-        onView(withText("Back")).check(matches(isDisplayed()))
+        onView(withText("Cancel")).check(matches(isDisplayed()))
         onView(withText("Next")).check(matches(isDisplayed()))
     }
 
@@ -115,10 +115,9 @@ class ExportFrequencyFragmentTest {
     }
 
     @Test
-    fun exportFrequencyFragment_backButton_isClickable() {
+    fun exportFrequencyFragment_cancelButton_isClickable() {
         launchFragment<ExportFrequencyFragment>(Bundle())
 
-        // TODO: b/330484311 - Add check for activity state and use export activity if possible
         onView(withId(R.id.export_import_cancel_button)).check(matches(isClickable()))
         onView(withId(R.id.export_import_cancel_button)).perform(click())
 
