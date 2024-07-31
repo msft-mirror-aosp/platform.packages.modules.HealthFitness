@@ -77,7 +77,7 @@ public final class TransactionTestUtils {
         mTransactionManager.insert(
                 new UpsertTableRequest(
                         AppInfoHelper.TABLE_NAME, contentValues, UNIQUE_COLUMN_INFO));
-        AppInfoHelper.getInstance().clearCache();
+        AppInfoHelper.clearInstanceForTest();
         assertThat(AppInfoHelper.getInstance().getAppInfoId(packageName))
                 .isNotEqualTo(DEFAULT_LONG);
     }

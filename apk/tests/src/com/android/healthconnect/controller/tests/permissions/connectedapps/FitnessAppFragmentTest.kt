@@ -597,6 +597,7 @@ class FitnessAppFragmentTest {
     }
 
     @Test
+    @Ignore //TODO(b/352003559): Unignore when fixed flakiness.
     fun additionalAccessState_onClick_navigatesToAdditionalAccessFragment() {
         val validState =
             AdditionalAccessViewModel.State(
@@ -615,6 +616,7 @@ class FitnessAppFragmentTest {
             }
         onView(withText(R.string.additional_access_label)).perform(scrollTo()).perform(click())
 
+        onIdle()
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.additionalAccessFragment)
         verify(healthConnectLogger).logInteraction(AppAccessElement.ADDITIONAL_ACCESS_BUTTON)

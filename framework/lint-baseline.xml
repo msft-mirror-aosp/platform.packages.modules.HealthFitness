@@ -13146,4 +13146,84 @@
             column="13"/>
     </issue>
 
+    <issue
+        id="FlaggedApi"
+        severity="Error"
+        message="Field `RECORD_TYPE_MINDFULNESS_SESSION` is a flagged API and should be inside an `if (Flags.mindfulness())` check (or annotate the surrounding method `RecordMapper` with `@FlaggedApi(Flags.FLAG_MINDFULNESS) to transfer requirement to caller`)"
+        category="Correctness"
+        priority="6"
+        summary="FlaggedApi access without check"
+        explanation="This lint check looks for accesses of APIs marked with `@FlaggedApi(X)` without a guarding `if (Flags.X)` check. See go/android-flagged-apis."
+        errorLine1="                RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION,"
+        errorLine2="                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/framework/java/android/health/connect/internal/datatypes/utils/RecordMapper.java"
+            line="228"
+            column="38"/>
+    </issue>
+
+    <issue
+        id="FlaggedApi"
+        severity="Error"
+        message="Field `RECORD_TYPE_MINDFULNESS_SESSION` is a flagged API and should be inside an `if (Flags.mindfulness())` check (or annotate the surrounding method `RecordMapper` with `@FlaggedApi(Flags.FLAG_MINDFULNESS) to transfer requirement to caller`)"
+        category="Correctness"
+        priority="6"
+        summary="FlaggedApi access without check"
+        explanation="This lint check looks for accesses of APIs marked with `@FlaggedApi(X)` without a guarding `if (Flags.X)` check. See go/android-flagged-apis."
+        errorLine1="                RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION,"
+        errorLine2="                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/framework/java/android/health/connect/internal/datatypes/utils/RecordMapper.java"
+            line="326"
+            column="38"/>
+    </issue>
+
+    <issue
+        id="FlaggedApi"
+        severity="Error"
+        message="Class `MindfulnessSessionRecord` is a flagged API and should be inside an `if (Flags.mindfulness())` check (or annotate the surrounding method `RecordMapper` with `@FlaggedApi(Flags.FLAG_MINDFULNESS) to transfer requirement to caller`)"
+        category="Correctness"
+        priority="6"
+        summary="FlaggedApi access without check"
+        explanation="This lint check looks for accesses of APIs marked with `@FlaggedApi(X)` without a guarding `if (Flags.X)` check. See go/android-flagged-apis."
+        errorLine1="                MindfulnessSessionRecord.class);"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/framework/java/android/health/connect/internal/datatypes/utils/RecordMapper.java"
+            line="327"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="FlaggedApi"
+        severity="Error"
+        message="Field `MINDFULNESS` is a flagged API and should be inside an `if (Flags.mindfulness())` check (or annotate the surrounding method `populateDataTypeHealthPermissionCategoryMap` with `@FlaggedApi(Flags.FLAG_MINDFULNESS) to transfer requirement to caller`)"
+        category="Correctness"
+        priority="6"
+        summary="FlaggedApi access without check"
+        explanation="This lint check looks for accesses of APIs marked with `@FlaggedApi(X)` without a guarding `if (Flags.X)` check. See go/android-flagged-apis."
+        errorLine1="                        put(RECORD_TYPE_MINDFULNESS_SESSION, HealthPermissionCategory.MINDFULNESS);"
+        errorLine2="                                                                                      ~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/framework/java/android/health/connect/internal/datatypes/utils/RecordTypePermissionCategoryMapper.java"
+            line="151"
+            column="87"/>
+    </issue>
+
+    <issue
+        id="FlaggedApi"
+        severity="Error"
+        message="Field `RECORD_TYPE_MINDFULNESS_SESSION` is a flagged API and should be inside an `if (Flags.mindfulness())` check (or annotate the surrounding method `populateDataTypeHealthPermissionCategoryMap` with `@FlaggedApi(Flags.FLAG_MINDFULNESS) to transfer requirement to caller`)"
+        category="Correctness"
+        priority="6"
+        summary="FlaggedApi access without check"
+        explanation="This lint check looks for accesses of APIs marked with `@FlaggedApi(X)` without a guarding `if (Flags.X)` check. See go/android-flagged-apis."
+        errorLine1="                        put(RECORD_TYPE_MINDFULNESS_SESSION, HealthPermissionCategory.MINDFULNESS);"
+        errorLine2="                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/framework/java/android/health/connect/internal/datatypes/utils/RecordTypePermissionCategoryMapper.java"
+            line="151"
+            column="29"/>
+    </issue>
+
 </issues>

@@ -22,9 +22,14 @@ import java.time.Instant
  * Internal class representing the [ScheduledExportStatus] received from the HealthConnectManager.
  */
 data class ScheduledExportUiState(
-    val lastSuccessfulExportTime: Instant?,
+    val lastSuccessfulExportTime: Instant? = null,
     val dataExportError: DataExportError,
-    val periodInDays: Int
+    val periodInDays: Int,
+    val lastExportFileName: String? = null,
+    val lastExportAppName: String? = null,
+    val nextExportFileName: String? = null,
+    val nextExportAppName: String? = null,
+    val lastFailedExportTime: Instant? = null,
 ) {
     enum class DataExportError {
         DATA_EXPORT_ERROR_UNKNOWN,

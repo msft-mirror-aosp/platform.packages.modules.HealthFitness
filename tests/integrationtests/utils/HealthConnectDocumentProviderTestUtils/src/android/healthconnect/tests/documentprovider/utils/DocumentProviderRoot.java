@@ -24,9 +24,12 @@ import androidx.annotation.Nullable;
 
 /** Root for a document provider. */
 public final class DocumentProviderRoot {
+    private static final String HAS_SUMMARY_KEY = "has_summary";
+
     @Nullable private String mRootId;
     @Nullable private String mTitle;
     @Nullable private String mSummary;
+    private boolean mHasSummary;
     @Nullable private Integer mFlags;
     @Nullable private Integer mIconResourceId;
     @Nullable private String mMimeTypes;
@@ -37,6 +40,7 @@ public final class DocumentProviderRoot {
         mRootId = bundle.getString(DocumentsContract.Root.COLUMN_ROOT_ID);
         mTitle = bundle.getString(DocumentsContract.Root.COLUMN_TITLE);
         mSummary = bundle.getString(DocumentsContract.Root.COLUMN_SUMMARY);
+        mHasSummary = bundle.getBoolean(HAS_SUMMARY_KEY, true);
 
         if (bundle.containsKey(DocumentsContract.Root.COLUMN_FLAGS)) {
             mFlags = bundle.getInt(DocumentsContract.Root.COLUMN_FLAGS);
@@ -59,7 +63,7 @@ public final class DocumentProviderRoot {
             row.add(DocumentsContract.Root.COLUMN_TITLE, mTitle);
         }
 
-        if (mSummary != null) {
+        if (mHasSummary) {
             row.add(DocumentsContract.Root.COLUMN_SUMMARY, mSummary);
         }
 
@@ -89,8 +93,9 @@ public final class DocumentProviderRoot {
     }
 
     /** Sets the summary of the root. */
-    public DocumentProviderRoot setSummary(String summary) {
+    public DocumentProviderRoot setSummary(@Nullable String summary) {
         mSummary = summary;
+        mHasSummary = true;
         return this;
     }
 
@@ -127,6 +132,7 @@ public final class DocumentProviderRoot {
         if (mSummary != null) {
             bundle.putString(DocumentsContract.Root.COLUMN_SUMMARY, mSummary);
         }
+        bundle.putBoolean(HAS_SUMMARY_KEY, mHasSummary);
 
         if (mFlags != null) {
             bundle.putInt(DocumentsContract.Root.COLUMN_FLAGS, mFlags);

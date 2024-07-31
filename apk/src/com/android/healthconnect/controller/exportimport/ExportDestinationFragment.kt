@@ -64,6 +64,7 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
     ): View? {
         logger.setPageId(PageName.EXPORT_DESTINATION_PAGE)
         val view = inflater.inflate(R.layout.export_destination_screen, container, false)
+        val titleView = view.findViewById<View>(R.id.export_destination_title)
         val footerView = view.findViewById<View>(R.id.export_import_footer)
         val playStoreView = view.findViewById<LinkTextView>(R.id.export_import_go_to_play_store)
         val backButton = view.findViewById<Button>(R.id.export_import_cancel_button)
@@ -71,6 +72,10 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
 
         logger.logImpression(ExportDestinationElement.EXPORT_DESTINATION_BACK_BUTTON)
         logger.logImpression(ExportDestinationElement.EXPORT_DESTINATION_NEXT_BUTTON)
+
+        // Make sure the focus is set to the title rather than on the next button from the previous
+        // screen.
+        titleView.requestFocus()
 
         backButton?.text = getString(R.string.export_back_button)
         backButton?.setOnClickListener {
@@ -152,6 +157,6 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
     }
 
     private fun getDefaultFileName(): String {
-        return getString(R.string.export_default_file_name) + ".zip";
+        return getString(R.string.export_default_file_name) + ".zip"
     }
 }

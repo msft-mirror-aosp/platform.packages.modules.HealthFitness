@@ -72,6 +72,7 @@ class FakeHealthDataImportManager : HealthDataImportManager {
     fun reset() {
         importStatus = DEFAULT_IMPORT_STATUS
         getImportStatusException = null
+        runImportException = null
         importFileUri = null
     }
 

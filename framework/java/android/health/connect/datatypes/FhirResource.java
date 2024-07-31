@@ -92,7 +92,7 @@ public final class FhirResource implements Parcelable {
 
     /**
      * Returns the FHIR resource type. This is extracted from the "resourceType" field in {@code
-     * data}.
+     * data}, and mapped into an {@code IntDef} {@link FhirResourceType}.
      */
     @FhirResourceType
     public int getType() {
@@ -183,7 +183,7 @@ public final class FhirResource implements Parcelable {
 
         /**
          * @param type The FHIR resource type extracted from the "resourceType" field in {@code
-         *     data}.
+         *     data}, and mapped into an {@code IntDef} {@link FhirResourceType}.
          * @param id The FHIR resource ID extracted from the "id" field in {@code data}.
          * @param data The FHIR resource data in JSON representation.
          */
@@ -221,7 +221,7 @@ public final class FhirResource implements Parcelable {
 
         /**
          * Sets the FHIR resource type. This is extracted from the "resourceType" field in {@code
-         * data}.
+         * data}, and mapped into an {@code IntDef} {@link FhirResourceType}.
          */
         @NonNull
         public Builder setType(@FhirResourceType int type) {
