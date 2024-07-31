@@ -23,6 +23,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.exportimport.ScheduledExportStatus;
 import android.net.Uri;
+import android.os.UserHandle;
 import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
@@ -57,7 +58,7 @@ public class ExportManager {
 
     private static final String TAG = "HealthConnectExportImport";
 
-    private Clock mClock;
+    private final Clock mClock;
     private final TransactionManager mTransactionManager;
 
     // Tables to drop instead of tables to keep to avoid risk of bugs if new data types are added.
@@ -76,9 +77,12 @@ public class ExportManager {
     public ExportManager(@NonNull Context context, Clock clock) {
         requireNonNull(context);
         requireNonNull(clock);
+
+        UserHandle user = context.getUser();
+        Context userContext = context.createContextAsUser(user, 0);
+
         mClock = clock;
-        mDatabaseContext =
-                DatabaseContext.create(context, LOCAL_EXPORT_DIR_NAME, context.getUser());
+        mDatabaseContext = DatabaseContext.create(userContext, LOCAL_EXPORT_DIR_NAME, user);
         mTransactionManager = TransactionManager.getInitialisedInstance();
     }
 

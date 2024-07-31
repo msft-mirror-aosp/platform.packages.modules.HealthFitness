@@ -72,8 +72,7 @@ class DocumentProvidersViewBinder {
                 }
 
                 if (documentProviders.size == 1) {
-                    radioButtonView.setVisibility(GONE)
-
+                    radioButtonView.setChecked(true)
                     onSelectionChanged(root)
                 } else {
                     documentProviderView.setOnClickListener {
@@ -85,8 +84,6 @@ class DocumentProvidersViewBinder {
                 }
             } else {
                 if (documentProviders.size == 1) {
-                    radioButtonView.setVisibility(GONE)
-
                     summaryView.setText(R.string.export_import_tap_to_choose_account)
                 } else {
                     summaryView.setText("")

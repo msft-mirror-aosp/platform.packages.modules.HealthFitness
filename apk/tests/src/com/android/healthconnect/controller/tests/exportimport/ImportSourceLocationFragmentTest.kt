@@ -660,7 +660,7 @@ class ImportSourceLocationFragmentTest {
     }
 
     @Test
-    fun importSourceLocationFragment_singleProvider_noRadioButton() {
+    fun importSourceLocationFragment_singleProvider_hasRadioButtonChecked() {
         val documentProviders =
             listOf(
                 ExportImportDocumentProvider(
@@ -672,7 +672,8 @@ class ImportSourceLocationFragmentTest {
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
-        onView(withId(R.id.item_document_provider_radio_button)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.item_document_provider_radio_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.item_document_provider_radio_button)).check(matches(isChecked()))
     }
 
     @Test

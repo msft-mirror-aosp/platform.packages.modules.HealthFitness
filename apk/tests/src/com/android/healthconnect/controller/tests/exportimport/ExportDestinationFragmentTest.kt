@@ -649,7 +649,7 @@ class ExportDestinationFragmentTest {
     }
 
     @Test
-    fun exportDestinationFragment_singleProvider_noRadioButton() {
+    fun exportDestinationFragment_singleProvider_hasRadioButtonChecked() {
         val documentProviders =
             listOf(
                 ExportImportDocumentProvider(
@@ -662,7 +662,8 @@ class ExportDestinationFragmentTest {
 
         launchFragment<ExportDestinationFragment>(Bundle())
 
-        onView(withId(R.id.item_document_provider_radio_button)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.item_document_provider_radio_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.item_document_provider_radio_button)).check(matches(isChecked()))
     }
 
     @Test

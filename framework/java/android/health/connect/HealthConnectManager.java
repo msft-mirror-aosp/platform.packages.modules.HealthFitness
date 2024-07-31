@@ -22,7 +22,6 @@ import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMIS
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 
-import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import android.Manifest;
@@ -1759,7 +1758,6 @@ public class HealthConnectManager {
      * @throws RuntimeException for internal errors
      * @hide
      */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
     @WorkerThread
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
     public void getScheduledExportStatus(
@@ -1794,7 +1792,6 @@ public class HealthConnectManager {
      * @throws RuntimeException for internal errors
      * @hide
      */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
     @WorkerThread
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
     public void getImportStatus(
@@ -1829,7 +1826,6 @@ public class HealthConnectManager {
      * @throws RuntimeException for internal errors
      * @hide
      */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
     @WorkerThread
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
     public void runImport(@NonNull Uri file) {
@@ -1869,7 +1865,6 @@ public class HealthConnectManager {
      * @throws RuntimeException for internal errors
      * @hide
      */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
     @WorkerThread
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
     public void queryDocumentProviders(
