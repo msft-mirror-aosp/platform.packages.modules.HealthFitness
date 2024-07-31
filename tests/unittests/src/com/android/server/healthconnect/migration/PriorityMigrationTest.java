@@ -31,7 +31,7 @@ import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.migration.MigrationEntity;
 import android.health.connect.migration.PriorityMigrationPayload;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
@@ -93,7 +93,7 @@ public class PriorityMigrationTest {
                             }
                         })
                 .when(mTransactionManager)
-                .runAsTransaction(any());
+                .runAsTransaction(any(TransactionManager.TransactionRunnable.class));
 
         mDataMigrationManager =
                 new DataMigrationManager(

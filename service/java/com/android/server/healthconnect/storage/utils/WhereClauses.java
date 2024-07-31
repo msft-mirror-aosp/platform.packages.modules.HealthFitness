@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.storage.utils;
 
+import android.annotation.Nullable;
+
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 
 import java.util.ArrayList;
@@ -49,8 +51,18 @@ public final class WhereClauses {
         return this;
     }
 
-    public WhereClauses addWhereBetweenTimeClause(String columnName, long startTime, long endTime) {
-        if (endTime < 0 || endTime < startTime) {
+    /**
+     * Adds a clause for a time column between two values.
+     *
+     * <p>If the clause would be guaranteed empty (end < 0 or start > end) no clause is added.
+     *
+     * @param columnName the column to check (or no effect if null)
+     * @param startTime the earliest start time (inclusive)
+     * @param endTime the latest end time (inclusive)
+     */
+    public WhereClauses addWhereBetweenTimeClause(
+            @Nullable String columnName, long startTime, long endTime) {
+        if (columnName == null || endTime < 0 || endTime < startTime) {
             // Below method has check for startTime less than 0.
             // If both startTime and endTime are less than 0 then no new time clause will be added
             // and just return current object.
@@ -62,8 +74,16 @@ public final class WhereClauses {
         return this;
     }
 
-    public WhereClauses addWhereLaterThanTimeClause(String columnName, long startTime) {
-        if (startTime < 0) {
+    /**
+     * Adds a clause for a time column after a given time.
+     *
+     * <p>If the clause would be guaranteed empty (startTime < 0) then no clause is added.
+     *
+     * @param columnName the column to check (or no effect if null)
+     * @param startTime the earliest start time (inclusive)
+     */
+    public WhereClauses addWhereLaterThanTimeClause(@Nullable String columnName, long startTime) {
+        if (startTime < 0 || columnName == null) {
             return this;
         }
 
@@ -80,8 +100,17 @@ public final class WhereClauses {
         return this;
     }
 
-    public WhereClauses addWhereInClauseWithoutQuotes(String columnName, List<String> values) {
-        if (values == null || values.isEmpty()) return this;
+    /**
+     * Adds a clause for a value contained in a list of values.
+     *
+     * <p>If the clause would be guaranteed empty (values null or emoty) no clause is added.
+     *
+     * @param columnName the column to check (or no effect if null)
+     * @param values the column to check (or no effect if null)
+     */
+    public WhereClauses addWhereInClauseWithoutQuotes(
+            @Nullable String columnName, @Nullable List<String> values) {
+        if (columnName == null || values == null || values.isEmpty()) return this;
 
         mClauses.add(columnName + " IN " + "(" + String.join(", ", values) + ")");
 
@@ -147,8 +176,9 @@ public final class WhereClauses {
      * @param columnName Column name on which where condition to be applied
      * @param values to check in the where condition
      */
-    public WhereClauses addWhereInLongsClause(String columnName, Collection<Long> values) {
-        if (values == null || values.isEmpty()) return this;
+    public WhereClauses addWhereInLongsClause(
+            @Nullable String columnName, @Nullable Collection<Long> values) {
+        if (columnName == null || values == null || values.isEmpty()) return this;
 
         mClauses.add(
                 columnName
