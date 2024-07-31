@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,6 @@
  * limitations under the License.
  *
  *
- */
-
-/**
- * Copyright (C) 2022 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
- *
- * ```
- *      http://www.apache.org/licenses/LICENSE-2.0
- * ```
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
  */
 package com.android.healthconnect.controller.permissions.app
 
@@ -54,7 +38,8 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionSt
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment
-import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
+import com.android.healthconnect.controller.shared.Constants
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromFitnessPermissionType
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
@@ -75,14 +60,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /**
- * Fragment to show granted/revoked health permissions for and app. It is used as an entry point
- * from PermissionController.
+ * Fragment to show granted/revoked [FitnessPermission]s for and app. It is used as an entry point
+ * from PermissionController or from [SettingsCombinedPermissionsFragment].
  *
  * For apps that declares health connect permissions without the rational intent, we only show
  * granted permissions to allow the user to revoke this app permissions.
  */
 @AndroidEntryPoint(HealthPreferenceFragment::class)
-class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFragment() {
+class SettingsFitnessAppFragment : Hilt_SettingsFitnessAppFragment() {
 
     init {
         this.setPageName(PageName.MANAGE_PERMISSIONS_PAGE)
@@ -93,6 +78,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
 
     private lateinit var packageName: String
     private var appName: String = ""
+    private var showManageAppSection = true
 
     private val viewModel: AppPermissionViewModel by activityViewModels()
     private val permissionMap: MutableMap<FitnessPermission, TwoStatePreference> = mutableMapOf()
@@ -132,6 +118,9 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
         if (requireArguments().containsKey(EXTRA_PACKAGE_NAME) &&
             requireArguments().getString(EXTRA_PACKAGE_NAME) != null) {
             packageName = requireArguments().getString(EXTRA_PACKAGE_NAME)!!
+        }
+        if (requireArguments().containsKey(Constants.SHOW_MANAGE_APP_SECTION)) {
+            showManageAppSection = requireArguments().getBoolean(Constants.SHOW_MANAGE_APP_SECTION)
         }
 
         viewModel.loadPermissionsForPackage(packageName)
@@ -235,6 +224,10 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
     }
 
     private fun setupManageAppCategory() {
+        if (!showManageAppSection) {
+            manageAppCategory.isVisible = false
+            return
+        }
         additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
             manageAppCategory.isVisible = state.isValid()
             manageAppCategory.removeAll()
@@ -248,7 +241,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
                             val extras = bundleOf(EXTRA_PACKAGE_NAME to packageName)
                             navigationUtils.navigate(
                                 fragment = this,
-                                action = R.id.action_manageAppFragment_to_additionalAccessFragment,
+                                action = R.id.action_settingsFitnessApp_to_additionalAccessFragment,
                                 bundle = extras)
                             true
                         }
@@ -293,7 +286,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
                 val switchPreference =
                     HealthSwitchPreference(requireContext()).also {
                         val healthCategory =
-                            fromHealthPermissionType(permission.fitnessPermissionType)
+                            fromFitnessPermissionType(permission.fitnessPermissionType)
                         it.icon = healthCategory.icon(requireContext())
                         it.setTitle(
                             fromPermissionType(permission.fitnessPermissionType).uppercaseLabel)

@@ -20,7 +20,7 @@ import android.health.connect.RecordTypeInfoResponse
 import android.health.connect.datatypes.Record
 import androidx.core.os.asOutcomeReceiver
 import com.android.healthconnect.controller.service.IoDispatcher
-import com.android.healthconnect.controller.shared.HEALTH_DATA_CATEGORIES
+import com.android.healthconnect.controller.shared.FITNESS_DATA_CATEGORIES
 import com.android.healthconnect.controller.shared.HealthDataCategoryInt
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import javax.inject.Inject
@@ -30,6 +30,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
 @Singleton
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 class LoadHealthCategoriesUseCase
 @Inject
 constructor(
@@ -47,7 +48,7 @@ constructor(
                             Runnable::run, continuation.asOutcomeReceiver())
                     }
                 val categories =
-                    HEALTH_DATA_CATEGORIES.map {
+                    FITNESS_DATA_CATEGORIES.map {
                         HealthCategoryUiState(it, hasData(it, recordTypeInfoMap))
                     }
                 UseCaseResults.Success(categories)

@@ -19,6 +19,7 @@ import android.health.connect.datatypes.ExercisePerformanceGoal
 import android.health.connect.datatypes.ExerciseRoute
 import android.health.connect.datatypes.PlannedExerciseBlock
 import android.health.connect.datatypes.PlannedExerciseStep
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.shared.DataType
 import java.time.Instant
 
@@ -33,6 +34,14 @@ sealed class FormattedEntry(open val uuid: String) {
         val startTime: Instant? = null,
         val endTime: Instant? = null
     ) : FormattedEntry(uuid)
+
+    data class FormattedMedicalDataEntry(
+            val header: String,
+            val headerA11y: String,
+            val title: String,
+            val titleA11y: String,
+            val time: Instant? = null,
+    ) : FormattedEntry(uuid = "")
 
     data class SleepSessionEntry(
         override val uuid: String,

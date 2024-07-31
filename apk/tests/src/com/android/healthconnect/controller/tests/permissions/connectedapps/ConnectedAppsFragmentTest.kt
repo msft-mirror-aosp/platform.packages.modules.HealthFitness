@@ -24,11 +24,14 @@ import androidx.navigation.testing.TestNavHostController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.repeatedlyUntil
 import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToLastPosition
 import androidx.test.espresso.matcher.RootMatchers
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -41,6 +44,7 @@ import com.android.healthconnect.controller.permissions.connectedapps.ConnectedA
 import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsViewModel.DisconnectAllState.Loading
 import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsViewModel.DisconnectAllState.NotStarted
 import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsViewModel.DisconnectAllState.Updated
+import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.ALLOWED
@@ -54,6 +58,7 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_3
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME_2
 import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
+import com.android.healthconnect.controller.tests.utils.isAbove
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.whenever
@@ -120,7 +125,12 @@ class ConnectedAppsFragmentTest {
 
     @Test
     fun appName_navigatesToFitnessAppPermissions() {
-        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ALLOWED, permissionsType = AppPermissionsType.FITNESS_PERMISSIONS_ONLY))
+        val connectApp =
+            listOf(
+                ConnectedAppMetadata(
+                    TEST_APP,
+                    status = ALLOWED,
+                    permissionsType = AppPermissionsType.FITNESS_PERMISSIONS_ONLY))
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
         (deviceInfoUtils as FakeDeviceInfoUtils).setSendFeedbackAvailability(false)
         deviceInfoUtils.setPlayStoreAvailability(true)
@@ -138,7 +148,12 @@ class ConnectedAppsFragmentTest {
 
     @Test
     fun appName_navigatesToMedicalAppPermissions() {
-        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ALLOWED, permissionsType = AppPermissionsType.MEDICAL_PERMISSIONS_ONLY))
+        val connectApp =
+            listOf(
+                ConnectedAppMetadata(
+                    TEST_APP,
+                    status = ALLOWED,
+                    permissionsType = AppPermissionsType.MEDICAL_PERMISSIONS_ONLY))
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
         (deviceInfoUtils as FakeDeviceInfoUtils).setSendFeedbackAvailability(false)
         deviceInfoUtils.setPlayStoreAvailability(true)
@@ -156,7 +171,12 @@ class ConnectedAppsFragmentTest {
 
     @Test
     fun appName_navigatesToCombinedPermissions() {
-        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ALLOWED, permissionsType = AppPermissionsType.COMBINED_PERMISSIONS))
+        val connectApp =
+            listOf(
+                ConnectedAppMetadata(
+                    TEST_APP,
+                    status = ALLOWED,
+                    permissionsType = AppPermissionsType.COMBINED_PERMISSIONS))
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
 
         (deviceInfoUtils as FakeDeviceInfoUtils).setSendFeedbackAvailability(false)
@@ -170,7 +190,8 @@ class ConnectedAppsFragmentTest {
 
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText(TEST_APP_NAME)).perform(click())
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.combinedPermissionsFragment)
+        assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.combinedPermissionsFragment)
     }
 
     @Test
@@ -275,6 +296,104 @@ class ConnectedAppsFragmentTest {
         onView(withText(R.string.inactive_apps)).check(matches(isDisplayed()))
         verify(healthConnectLogger).logImpression(AppPermissionsElement.INACTIVE_APP_BUTTON)
         verify(healthConnectLogger).logImpression(AppPermissionsElement.INACTIVE_APP_DELETE_BUTTON)
+    }
+
+    @Test
+    fun allowedApps_displayedAlphabetically() {
+        val connectedApps =
+            listOf(
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package3", appName = "thirdApp", icon = null),
+                    status = ALLOWED),
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package1", appName = "firstApp", icon = null),
+                    status = ALLOWED),
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package2", appName = "secondApp", icon = null),
+                    status = ALLOWED),
+            )
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectedApps) }
+
+        launchFragment<ConnectedAppsFragment>(Bundle())
+        onView(withText("firstApp")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("secondApp")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("firstApp")).check(matches(isAbove(withText("secondApp"))))
+        onView(withText("thirdApp")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("secondApp")).check(matches(isAbove(withText("thirdApp"))))
+    }
+
+    @Test
+    fun notAllowedApps_displayedAlphabetically() {
+        val connectedApps =
+            listOf(
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package3", appName = "thirdApp", icon = null),
+                    status = DENIED),
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package1", appName = "firstApp", icon = null),
+                    status = DENIED),
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package2", appName = "secondApp", icon = null),
+                    status = DENIED),
+            )
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectedApps) }
+
+        launchFragment<ConnectedAppsFragment>(Bundle())
+        onView(withText("firstApp")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("secondApp")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("firstApp")).check(matches(isAbove(withText("secondApp"))))
+        onView(withText("thirdApp")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("secondApp")).check(matches(isAbove(withText("thirdApp"))))
+    }
+
+    @Test
+    fun inactiveApps_displayedAlphabetically() {
+        val connectedApps =
+            listOf(
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package3", appName = "thirdApp", icon = null),
+                    status = INACTIVE),
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package1", appName = "firstApp", icon = null),
+                    status = INACTIVE),
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package2", appName = "secondApp", icon = null),
+                    status = INACTIVE),
+            )
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectedApps) }
+
+        launchFragment<ConnectedAppsFragment>(Bundle())
+        onView(withText("firstApp")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("secondApp")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("firstApp")).check(matches(isAbove(withText("secondApp"))))
+        onView(withText("thirdApp")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("secondApp")).check(matches(isAbove(withText("thirdApp"))))
+    }
+
+    @Test
+    fun needsUpdateApps_displayedAlphabetically() {
+        val connectedApps =
+            listOf(
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package3", appName = "thirdApp", icon = null),
+                    status = NEEDS_UPDATE),
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package1", appName = "firstApp", icon = null),
+                    status = NEEDS_UPDATE),
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package2", appName = "secondApp", icon = null),
+                    status = NEEDS_UPDATE),
+            )
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectedApps) }
+
+        launchFragment<ConnectedAppsFragment>(Bundle())
+        onView(withId(androidx.preference.R.id.recycler_view))
+                .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
+        onView(withText("firstApp")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("secondApp")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("firstApp")).check(matches(isAbove(withText("secondApp"))))
+        onView(withText("thirdApp")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("secondApp")).check(matches(isAbove(withText("thirdApp"))))
     }
 
     @Test

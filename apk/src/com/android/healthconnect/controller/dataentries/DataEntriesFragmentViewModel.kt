@@ -33,6 +33,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 /** View model for {@link DataEntriesFragment} . */
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 @HiltViewModel
 class DataEntriesFragmentViewModel
 @Inject

@@ -165,8 +165,10 @@ class CombinedPermissionsFragmentTest {
 
         onView(withText("Health Connect test app")).check(matches(isDisplayed()))
         onView(withText("Permissions")).check(matches(isDisplayed()))
-        onView(withText("Manage fitness permissions")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Manage health record permissions")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Fitness and wellness")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Exercise, sleep, nutrition and others")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Health records")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Lab results, medications, immunizations and others")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Additional access")).check(doesNotExist())
         onView(withText("Manage app")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -264,6 +266,7 @@ class CombinedPermissionsFragmentTest {
         }
         onView(withText("Additional access")).perform(scrollTo()).perform(click())
 
+        onIdle()
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.additionalAccessFragment)
         verify(healthConnectLogger).logInteraction(AppAccessElement.ADDITIONAL_ACCESS_BUTTON)
@@ -278,7 +281,7 @@ class CombinedPermissionsFragmentTest {
             navHostController.setCurrentDestination(R.id.combinedPermissionsFragment)
             Navigation.setViewNavController(requireView(), navHostController)
         }
-        onView(withText("Manage fitness permissions")).perform(scrollTo()).perform(click())
+        onView(withText("Fitness and wellness")).perform(scrollTo()).perform(click())
 
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.fitnessAppFragment)
@@ -293,7 +296,7 @@ class CombinedPermissionsFragmentTest {
             navHostController.setCurrentDestination(R.id.combinedPermissionsFragment)
             Navigation.setViewNavController(requireView(), navHostController)
         }
-        onView(withText("Manage health record permissions")).perform(scrollTo()).perform(click())
+        onView(withText("Health records")).perform(scrollTo()).perform(click())
 
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.medicalAppFragment)
     }

@@ -60,9 +60,10 @@ import com.android.healthconnect.controller.utils.logging.HomePageElement
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthfitness.flags.Flags.exportImport
+import com.android.healthfitness.flags.Flags.newInformationArchitecture
+import com.android.settingslib.widget.TopIntroPreference
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
-import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 /** Home fragment for Health Connect. */
@@ -70,6 +71,7 @@ import javax.inject.Inject
 class HomeFragment : Hilt_HomeFragment() {
 
     companion object {
+        private const val TOP_INTRO_PREFERENCE_KEY = "health_connect_top_intro"
         private const val DATA_AND_ACCESS_PREFERENCE_KEY = "data_and_access"
         private const val RECENT_ACCESS_PREFERENCE_KEY = "recent_access"
         private const val CONNECTED_APPS_PREFERENCE_KEY = "connected_apps"
@@ -95,6 +97,10 @@ class HomeFragment : Hilt_HomeFragment() {
     private val homeFragmentViewModel: HomeFragmentViewModel by viewModels()
     private val migrationViewModel: MigrationViewModel by activityViewModels()
     private val exportStatusViewModel: ExportStatusViewModel by activityViewModels()
+
+    private val mTopIntroPreference: TopIntroPreference? by lazy {
+        preferenceScreen.findPreference(TOP_INTRO_PREFERENCE_KEY)
+    }
 
     private val mDataAndAccessPreference: HealthPreference? by lazy {
         preferenceScreen.findPreference(DATA_AND_ACCESS_PREFERENCE_KEY)
@@ -126,7 +132,16 @@ class HomeFragment : Hilt_HomeFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.home_preference_screen, rootKey)
-        mDataAndAccessPreference?.logName = HomePageElement.DATA_AND_ACCESS_BUTTON
+        if (newInformationArchitecture()) {
+            mDataAndAccessPreference?.logName = HomePageElement.BROWSE_DATA_BUTTON
+            mDataAndAccessPreference?.title = getString(R.string.browse_data_title)
+            mDataAndAccessPreference?.summary = getString(R.string.browse_data_subtitle)
+            mTopIntroPreference?.isVisible = false
+        } else {
+            mDataAndAccessPreference?.logName = HomePageElement.DATA_AND_ACCESS_BUTTON
+            mDataAndAccessPreference?.title = getString(R.string.data_title)
+            mTopIntroPreference?.isVisible = true
+        }
         mDataAndAccessPreference?.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_healthDataCategoriesFragment)
             true
@@ -137,20 +152,19 @@ class HomeFragment : Hilt_HomeFragment() {
             true
         }
 
-        if (featureUtils.isNewAppPriorityEnabled() ||
-            featureUtils.isNewInformationArchitectureEnabled()) {
-            mManageDataPreference?.logName = HomePageElement.MANAGE_DATA_BUTTON
-            mManageDataPreference?.setOnPreferenceClickListener {
-                findNavController().navigate(R.id.action_homeFragment_to_manageDataFragment)
-                true
-            }
-        } else {
-            preferenceScreen.removePreferenceRecursively(MANAGE_DATA_PREFERENCE_KEY)
+        mManageDataPreference?.logName = HomePageElement.MANAGE_DATA_BUTTON
+        mManageDataPreference?.setOnPreferenceClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_manageDataFragment)
+            true
+        }
+        if (exportImport()) {
+            mManageDataPreference?.summary = getString(R.string.manage_data_summary)
         }
 
-        //TODO(b/343148212): Change condition to whether there is any medical data stored in HC when the API is ready.
+        // TODO(b/343148212): Change condition to whether there is any medical data stored in HC
+        // when the API is ready.
         if (featureUtils.isPersonalHealthRecordEnabled()) {
-            //TODO(b/343148212): Add logname.
+            // TODO(b/343148212): Add logname.
             mBrowseMedicalDataPreference?.setOnPreferenceClickListener {
                 findNavController().navigate(R.id.action_homeFragment_to_medicalDataFragment)
                 true
@@ -219,11 +233,10 @@ class HomeFragment : Hilt_HomeFragment() {
         preferenceScreen.removePreferenceRecursively(MIGRATION_BANNER_PREFERENCE_KEY)
         preferenceScreen.removePreferenceRecursively(DATA_RESTORE_BANNER_PREFERENCE_KEY)
 
-        val (migrationUiState, dataRestoreUiState, dataErrorState) = migrationRestoreState
+        val (migrationUiState, dataRestoreUiState, _) = migrationRestoreState
 
         if (dataRestoreUiState == DataRestoreUiState.PENDING) {
-            // TODO (b/327170886) uncomment when states are correct
-            // preferenceScreen.addPreference(getDataRestorePendingBanner())
+            preferenceScreen.addPreference(getDataRestorePendingBanner())
         } else if (migrationUiState in
             listOf(
                 MigrationUiState.ALLOWED_PAUSED,
@@ -269,16 +282,14 @@ class HomeFragment : Hilt_HomeFragment() {
         }
         if (scheduledExportUiState.dataExportError !=
             ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE) {
-            scheduledExportUiState.lastSuccessfulExportTime?.let {
-                preferenceScreen.addPreference(
-                    getExportFileAccessErrorBanner(it, scheduledExportUiState.periodInDays))
+            scheduledExportUiState.lastFailedExportTime?.let {
+                preferenceScreen.addPreference(getExportFileAccessErrorBanner(it))
             }
         }
     }
 
     private fun getExportFileAccessErrorBanner(
-        lastSuccessfulDate: Instant,
-        periodInDays: Int
+        lastFailedExportTime: Instant,
     ): BannerPreference {
         return BannerPreference(requireContext(), HomePageElement.EXPORT_ERROR_BANNER).also {
             it.setPrimaryButton(
@@ -289,8 +300,7 @@ class HomeFragment : Hilt_HomeFragment() {
             it.summary =
                 getString(
                     R.string.export_file_access_error_banner_summary,
-                    dateFormatter.formatLongDate(
-                        lastSuccessfulDate.plus(periodInDays.toLong(), ChronoUnit.DAYS)))
+                    dateFormatter.formatLongDate(lastFailedExportTime))
             it.icon = AttributeResolver.getNullableDrawable(requireContext(), R.attr.warningIcon)
             it.setPrimaryButtonOnClickListener {
                 findNavController().navigate(R.id.action_homeFragment_to_exportSetupActivity)

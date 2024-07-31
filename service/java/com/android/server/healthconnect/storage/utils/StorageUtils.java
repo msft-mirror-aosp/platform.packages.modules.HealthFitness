@@ -18,6 +18,7 @@ package com.android.server.healthconnect.storage.utils;
 
 import static android.health.connect.HealthDataCategory.ACTIVITY;
 import static android.health.connect.HealthDataCategory.SLEEP;
+import static android.health.connect.HealthDataCategory.WELLNESS;
 import static android.health.connect.datatypes.AggregationType.SUM;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HYDRATION;
@@ -38,11 +39,9 @@ import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.HealthDataCategory;
-import android.health.connect.MedicalResourceId;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.internal.datatypes.InstantRecordInternal;
 import android.health.connect.internal.datatypes.IntervalRecordInternal;
-import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper;
@@ -51,6 +50,7 @@ import android.util.Slog;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 
 import java.nio.ByteBuffer;
 import java.time.ZoneOffset;
@@ -60,7 +60,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * An util class for HC storage
@@ -116,33 +115,30 @@ public final class StorageUtils {
      * dataSourceId}.
      */
     public static UUID generateMedicalResourceUUID(
-            @NonNull String resourceId,
-            @NonNull String resourceType,
-            @NonNull String dataSourceId) {
+            @NonNull String resourceId, int resourceType, @NonNull String dataSourceId) {
         final byte[] resourceIdBytes = resourceId.getBytes();
-        final byte[] resourceTypeBytes = resourceType.getBytes();
         final byte[] dataSourceIdBytes = dataSourceId.getBytes();
-        return getUUID(resourceIdBytes, resourceTypeBytes, dataSourceIdBytes);
-    }
 
-    private static UUID getUUID(byte[]... byteArrays) {
-        int total = Stream.of(byteArrays).mapToInt(arr -> arr.length).sum();
-        ByteBuffer byteBuffer = ByteBuffer.allocate(total);
-        for (byte[] byteArray : byteArrays) {
-            byteBuffer.put(byteArray);
-        }
-        return UUID.nameUUIDFromBytes(byteBuffer.array());
+        byte[] bytes =
+                ByteBuffer.allocate(
+                                resourceIdBytes.length + Integer.BYTES + dataSourceIdBytes.length)
+                        .put(resourceIdBytes)
+                        .putInt(resourceType)
+                        .put(dataSourceIdBytes)
+                        .array();
+        return UUID.nameUUIDFromBytes(bytes);
     }
 
     /**
-     * Sets {@link UUID} for the given {@code medicalResourceInternal}. Since the rest of the fields
-     * in {@link MedicalResourceInternal} are not yet created, the UUID is randomly generated.
+     * Sets {@link UUID} for the given {@code upsertMedicalResourceInternalRequest}. Since the rest
+     * of the fields in {@link UpsertMedicalResourceInternalRequest} are not yet created, the UUID
+     * is randomly generated.
      */
     public static void addNameBasedUUIDTo(
-            @NonNull MedicalResourceInternal medicalResourceInternal) {
+            @NonNull UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest) {
         // TODO(b/338195583): generate uuid based on medical_data_source_id, resource_type and
         // resource_id.
-        medicalResourceInternal.setUuid(UUID.randomUUID());
+        upsertMedicalResourceInternalRequest.setUuid(UUID.randomUUID());
     }
 
     /**
@@ -181,14 +177,6 @@ public final class StorageUtils {
                         clientRecordId,
                         recordInternal.getRecordType());
         recordInternal.setUuid(uuid);
-    }
-
-    /** Returns a UUID for the given {@link MedicalResourceId}. */
-    public static UUID getUUIDFor(@NonNull MedicalResourceId medicalResourceId) {
-        return generateMedicalResourceUUID(
-                medicalResourceId.getFhirResourceId(),
-                medicalResourceId.getFhirResourceType(),
-                medicalResourceId.getDataSourceId());
     }
 
     /**
@@ -386,7 +374,7 @@ public final class StorageUtils {
 
     /**
      * Returns if priority of apps needs to be considered to compute the aggregate request for the
-     * record type. Priority to be considered only for sleep and Activity categories.
+     * record type.
      */
     public static boolean supportsPriority(int recordType, int operationType) {
         if (operationType != SUM) {
@@ -396,7 +384,7 @@ public final class StorageUtils {
         @HealthDataCategory.Type
         int recordCategory =
                 RecordTypeRecordCategoryMapper.getRecordCategoryForRecordType(recordType);
-        return recordCategory == ACTIVITY || recordCategory == SLEEP;
+        return recordCategory == ACTIVITY || recordCategory == SLEEP || recordCategory == WELLNESS;
     }
 
     /** Returns list of app Ids of contributing apps for the record type in the priority order */

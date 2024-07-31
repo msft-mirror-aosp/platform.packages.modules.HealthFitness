@@ -73,7 +73,11 @@ class ExportStatusViewModelTest {
             ScheduledExportUiState(
                 Instant.ofEpochMilli(100),
                 ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS,
-                TEST_EXPORT_FREQUENCY_IN_DAYS)
+                TEST_EXPORT_FREQUENCY_IN_DAYS,
+                "hc.zip",
+                "Drive",
+                "test.zip",
+                "Dropbox")
         loadScheduledExportStatusUseCase.updateExportStatus(scheduledExportUiState)
 
         viewModel.loadScheduledExportStatus()
