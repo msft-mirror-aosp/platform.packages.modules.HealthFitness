@@ -1,9 +1,25 @@
+/*
+ * Copyright (C) 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * ```
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * ```
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.android.healthconnect.controller.tests.data.access
 
 import com.android.healthconnect.controller.data.access.AccessViewModel
 import com.android.healthconnect.controller.data.access.AppAccessMetadata
 import com.android.healthconnect.controller.data.access.AppAccessState
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppPermissionsType.COMBINED_PERMISSIONS
 import com.android.healthconnect.controller.shared.app.AppPermissionsType.MEDICAL_PERMISSIONS_ONLY
@@ -73,5 +89,23 @@ class AccessViewModelTest {
 
         assertThat(testObserver.getLastValue())
             .isEqualTo(AccessViewModel.AccessScreenState.WithData(expected))
+    }
+
+    @Test
+    fun loadAppMetadataMap_medicalPermissions_returnsCorrectApps() = runTest {
+        val expected =
+                mapOf(
+                        AppAccessState.Read to listOf(AppAccessMetadata(TEST_APP), AppAccessMetadata((TEST_APP_2))),
+                        AppAccessState.Write to listOf(AppAccessMetadata(TEST_APP_2, COMBINED_PERMISSIONS)),
+                        AppAccessState.Inactive to listOf(AppAccessMetadata(TEST_APP_3, MEDICAL_PERMISSIONS_ONLY)))
+        fakeLoadAccessUseCase.updateMap(expected)
+
+        val testObserver = TestObserver<AccessViewModel.AccessScreenState>()
+        viewModel.appMetadataMap.observeForever(testObserver)
+        viewModel.loadAppMetaDataMap(MedicalPermissionType.IMMUNIZATION)
+        advanceUntilIdle()
+
+        assertThat(testObserver.getLastValue())
+                .isEqualTo(AccessViewModel.AccessScreenState.WithData(expected))
     }
 }

@@ -19,6 +19,7 @@ import com.android.healthconnect.controller.data.entries.EntriesViewModel
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
@@ -26,6 +27,7 @@ import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.TestTimeSource
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadDataAggregationsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadDataEntriesUseCase
+import com.android.healthconnect.controller.tests.utils.di.FakeLoadMedicalEntriesUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadMenstruationDataUseCase
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -79,6 +81,12 @@ class EntriesViewModelTest {
                 title = "15 steps",
                 titleA11y = "15 steps",
                 dataType = DataType.MENSTRUATION_PERIOD)
+        private val FORMATTED_IMMUNIZATION =
+            FormattedEntry.FormattedMedicalDataEntry(
+                header = "Health Connect Toolbox",
+                headerA11y = "Health Connect Toolbox",
+                title = "Covid vaccine",
+                titleA11y = "Covid vaccine")
     }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -91,6 +99,7 @@ class EntriesViewModelTest {
     private val fakeLoadDataEntriesUseCase = FakeLoadDataEntriesUseCase()
     private val fakeLoadMenstruationDataUseCase = FakeLoadMenstruationDataUseCase()
     private val fakeLoadDataAggregationsUseCase = FakeLoadDataAggregationsUseCase()
+    private val fakeLoadMedicalEntriesUseCase = FakeLoadMedicalEntriesUseCase()
 
     private lateinit var viewModel: EntriesViewModel
 
@@ -103,7 +112,8 @@ class EntriesViewModelTest {
                 appInfoReader,
                 fakeLoadDataEntriesUseCase,
                 fakeLoadMenstruationDataUseCase,
-                fakeLoadDataAggregationsUseCase)
+                fakeLoadDataAggregationsUseCase,
+                fakeLoadMedicalEntriesUseCase)
     }
 
     @After
@@ -164,6 +174,22 @@ class EntriesViewModelTest {
         val actual = testObserver.getLastValue()
         val expected =
             EntriesViewModel.EntriesFragmentState.With(listOf(FORMATTED_MENSTRUATION_PERIOD))
+        assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
+    fun loadDataEntries_hasImmunizationData_returnsFragmentStateWitImmunization() = runTest {
+        fakeLoadMedicalEntriesUseCase.updateList(listOf(FORMATTED_IMMUNIZATION))
+        val testObserver = TestObserver<EntriesViewModel.EntriesFragmentState>()
+        viewModel.entries.observeForever(testObserver)
+        viewModel.loadEntries(
+                MedicalPermissionType.IMMUNIZATION,
+                Instant.ofEpochMilli(timeSource.currentTimeMillis()),
+                DateNavigationPeriod.PERIOD_WEEK)
+        advanceUntilIdle()
+
+        val actual = testObserver.getLastValue()
+        val expected = EntriesViewModel.EntriesFragmentState.With(listOf(FORMATTED_IMMUNIZATION))
         assertThat(actual).isEqualTo(expected)
     }
 }

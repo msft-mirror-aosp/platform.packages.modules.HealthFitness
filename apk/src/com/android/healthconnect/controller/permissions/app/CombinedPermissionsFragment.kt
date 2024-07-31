@@ -20,48 +20,33 @@ package com.android.healthconnect.controller.permissions.app
 import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.os.Bundle
 import android.view.View
-import android.widget.CompoundButton.OnCheckedChangeListener
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.commitNow
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
-import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
-import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.children
-import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
-import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
-import com.android.healthconnect.controller.utils.FeatureUtils
-import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
-import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
-import com.android.healthconnect.controller.utils.showLoadingDialog
 import com.android.settingslib.widget.AppHeaderPreference
 import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-/**
- * Fragment for an app that has both fitness and medical permissions.
- */
+/** Fragment for an app that has both fitness and medical permissions. */
 @AndroidEntryPoint(HealthPreferenceFragment::class)
 class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
 
-    @Inject
-    lateinit var logger: HealthConnectLogger
-    @Inject
-    lateinit var healthPermissionReader: HealthPermissionReader
+    @Inject lateinit var logger: HealthConnectLogger
+    @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
     companion object {
         private const val PERMISSION_HEADER = "manage_app_permission_header"
@@ -82,7 +67,8 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
     private val appPermissionViewModel: AppPermissionViewModel by activityViewModels()
     private val additionalAccessViewModel: AdditionalAccessViewModel by activityViewModels()
     private val header: AppHeaderPreference by pref(PERMISSION_HEADER)
-    private val managePermissionsCategory: PreferenceGroup by pref(MANAGE_PERMISSIONS_PREFERENCE_KEY)
+    private val managePermissionsCategory: PreferenceGroup by
+        pref(MANAGE_PERMISSIONS_PREFERENCE_KEY)
     private val manageAppCategory: PreferenceGroup by pref(MANAGE_APP_PREFERENCE_KEY)
     private val connectedAppFooter: FooterPreference by pref(FOOTER_KEY)
 
@@ -102,6 +88,9 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
             requireArguments().getString(EXTRA_APP_NAME) != null) {
             appName = requireArguments().getString(EXTRA_APP_NAME)!!
         }
+
+        appPermissionViewModel.loadPermissionsForPackage(packageName)
+
         setupHeader()
         setupManagePermissionsPreferenceCategory()
         setupManageAppPreferenceCategory()
@@ -122,26 +111,32 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
 
         managePermissionsCategory.addPreference(
             HealthPreference(requireContext()).also {
-                it.title = getString(R.string.manage_fitness_permissions)
+                it.title = getString(R.string.fitness_permissions)
+                it.summary = getString(R.string.fitness_permissions_summary)
                 it.setOnPreferenceClickListener {
                     findNavController()
                         .navigate(
                             R.id.action_combinedPermissions_to_fitnessApp,
                             bundleOf(
-                                EXTRA_PACKAGE_NAME to packageName, EXTRA_APP_NAME to appName, SHOW_MANAGE_APP_SECTION to false))
+                                EXTRA_PACKAGE_NAME to packageName,
+                                EXTRA_APP_NAME to appName,
+                                SHOW_MANAGE_APP_SECTION to false))
                     true
                 }
             })
 
         managePermissionsCategory.addPreference(
             HealthPreference(requireContext()).also {
-                it.title = getString(R.string.manage_medical_permissions)
+                it.title = getString(R.string.medical_permissions)
+                it.summary = getString(R.string.medical_permissions_summary)
                 it.setOnPreferenceClickListener {
                     findNavController()
                         .navigate(
                             R.id.action_combinedPermissions_to_medicalApp,
                             bundleOf(
-                                EXTRA_PACKAGE_NAME to packageName, EXTRA_APP_NAME to appName, SHOW_MANAGE_APP_SECTION to false))
+                                EXTRA_PACKAGE_NAME to packageName,
+                                EXTRA_APP_NAME to appName,
+                                SHOW_MANAGE_APP_SECTION to false))
                     true
                 }
             })
@@ -158,8 +153,7 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
                             val extras = bundleOf(EXTRA_PACKAGE_NAME to packageName)
                             findNavController()
                                 .navigate(
-                                    R.id.action_combinedPermissions_to_additionalAccess,
-                                    extras)
+                                    R.id.action_combinedPermissions_to_additionalAccess, extras)
                             true
                         }
                     }
@@ -183,8 +177,7 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
                     findNavController()
                         .navigate(
                             R.id.action_combinedPermissions_to_appData,
-                            bundleOf(
-                                EXTRA_PACKAGE_NAME to packageName, EXTRA_APP_NAME to appName))
+                            bundleOf(EXTRA_PACKAGE_NAME to packageName, EXTRA_APP_NAME to appName))
                     true
                 }
             })
@@ -193,12 +186,12 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
     private fun setupFooter() {
         val title =
             getString(R.string.other_android_permissions) +
-                    PARAGRAPH_SEPARATOR +
-                    getString(R.string.manage_permissions_rationale, appName)
+                PARAGRAPH_SEPARATOR +
+                getString(R.string.manage_permissions_rationale, appName)
         val contentDescription =
             getString(R.string.other_android_permissions_content_description) +
-                    PARAGRAPH_SEPARATOR +
-                    getString(R.string.manage_permissions_rationale, appName)
+                PARAGRAPH_SEPARATOR +
+                getString(R.string.manage_permissions_rationale, appName)
         connectedAppFooter.title = title
         connectedAppFooter.setContentDescription(contentDescription)
         if (healthPermissionReader.isRationaleIntentDeclared(packageName)) {

@@ -1,9 +1,24 @@
+# Use this file to add new flags to the HealthFitness module instead of flags.aconfig.
 package: "com.android.healthfitness.flags"
 container: "com.android.healthfitness"
 
+
+flag {
+    # This flag should NEVER be turned on in prod / release for real users.
+    # This flag turns on development only features in the database schema.
+    # It is used to guard database schema changes that are not finalized enough
+    # to add upgrade/downgrade code for, and so should only be used on development
+    # devices. If this flag is enabled then the device could have data loss.
+    name: "development_database"
+    is_exported: false
+    namespace: "health_fitness_aconfig"
+    description: "Flag for using currently being developed database tables."
+    bug: "354913565"
+    is_fixed_read_only: true
+}
+
 flag {
     name: "personal_health_record"
-    is_exported: true
     namespace: "health_fitness_aconfig"
     description: "Flag for adding new PHR features."
     bug: "329271826"
@@ -12,7 +27,6 @@ flag {
 
 flag {
     name: "personal_health_record_database"
-    is_exported: true
     namespace: "health_fitness_aconfig"
     description: "Flag for guarding DB schema changes for PHR features."
     bug: "340809376"
@@ -23,7 +37,7 @@ flag {
     name: "export_import"
     namespace: "health_fitness_aconfig"
     description: "Flag for adding new export/import feature."
-    bug: "318484778"
+    bug: "318484000"
     is_fixed_read_only: true
 }
 
@@ -32,5 +46,40 @@ flag {
     namespace: "health_fitness_aconfig"
     description: "Enables mindfulness session data type."
     bug: "341704006"
+    is_fixed_read_only: true
+}
+
+flag {
+    name: "d2d_file_deletion_bug_fix"
+    namespace: "health_fitness_aconfig"
+    description: "Fixes bugs that prevents file deletion during d2d."
+    bug: "301926710"
+    is_fixed_read_only: true
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "dependency_injection"
+    namespace: "health_fitness_aconfig"
+    description: "Enables dependency injection."
+    bug: "341654919"
+    is_fixed_read_only: true
+}
+
+flag {
+    name: "new_information_architecture"
+    namespace: "health_fitness_aconfig"
+    description: "Enables new information architecture."
+    bug: "291249677"
+    is_fixed_read_only: true
+}
+
+flag {
+    name: "health_connect_mappings"
+    namespace: "health_fitness_aconfig"
+    description: "Uses new mappings for convenient data type maintenance."
+    bug: "353283052"
     is_fixed_read_only: true
 }

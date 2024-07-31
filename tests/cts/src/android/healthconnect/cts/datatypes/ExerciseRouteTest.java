@@ -27,7 +27,7 @@ import android.health.connect.datatypes.ExerciseRoute;
 import android.health.connect.datatypes.units.Length;
 import android.os.Parcel;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.google.common.collect.ImmutableList;
 
