@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.health.connect.internal.datatypes;
+package com.android.server.healthconnect.storage.request;
 
 import static com.android.healthfitness.flags.Flags.personalHealthRecord;
 
@@ -24,27 +24,30 @@ import static java.util.Objects.requireNonNull;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.health.connect.UpsertMedicalResourceRequest;
-import android.health.connect.datatypes.MedicalResource;
+import android.health.connect.datatypes.FhirResource.FhirResourceType;
+import android.health.connect.datatypes.FhirVersion;
+import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
+
+import com.android.server.healthconnect.phr.FhirJsonExtractor;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Internal representation of {@link MedicalResource}.
+ * Internal representation of {@link UpsertMedicalResourceRequest}.
  *
  * @hide
  */
-public final class MedicalResourceInternal {
-    private static final String FHIR_RESOURCE_TYPE_FIELD_NAME = "resourceType";
-    private static final String FHIR_RESOURCE_ID_FIELD_NAME = "id";
+public final class UpsertMedicalResourceInternalRequest {
     @Nullable private UUID mUuid;
     @NonNull private String mDataSourceId = "";
     @NonNull private String mData = "";
-    @NonNull private String mFhirResourceType = "";
+    @MedicalResourceType private int mMedicalResourceType;
+    @FhirResourceType private int mFhirResourceType;
     @NonNull private String mFhirResourceId = "";
+    @NonNull private String mFhirVersion = "";
 
     /** Returns the unique identifier of this data. */
     @Nullable
@@ -54,7 +57,7 @@ public final class MedicalResourceInternal {
 
     /** Returns this object with the identifier. */
     @NonNull
-    public MedicalResourceInternal setUuid(@Nullable UUID uuid) {
+    public UpsertMedicalResourceInternalRequest setUuid(@Nullable UUID uuid) {
         requireNonNull(uuid);
         mUuid = uuid;
         return this;
@@ -68,7 +71,7 @@ public final class MedicalResourceInternal {
 
     /** Returns this object with the data source ID. */
     @NonNull
-    public MedicalResourceInternal setDataSourceId(@NonNull String dataSourceId) {
+    public UpsertMedicalResourceInternalRequest setDataSourceId(@NonNull String dataSourceId) {
         requireNonNull(dataSourceId);
         mDataSourceId = dataSourceId;
         return this;
@@ -82,22 +85,37 @@ public final class MedicalResourceInternal {
 
     /** Returns this object with the FHIR resource data in JSON representation. */
     @NonNull
-    public MedicalResourceInternal setData(@NonNull String data) {
+    public UpsertMedicalResourceInternalRequest setData(@NonNull String data) {
         requireNonNull(data);
         mData = data;
         return this;
     }
 
-    /** Returns the FHIR resource type extracted from the FHIR JSON. */
-    @NonNull
-    public String getFhirResourceType() {
+    /** Returns the {@code IntDef} {@link MedicalResourceType} of the {@code mData}. */
+    @MedicalResourceType
+    public int getMedicalResourceType() {
+        return mMedicalResourceType;
+    }
+
+    /** Returns this object with the medical resource type. */
+    public UpsertMedicalResourceInternalRequest setMedicalResourceType(
+            @MedicalResourceType int medicalResourceType) {
+        mMedicalResourceType = medicalResourceType;
+        return this;
+    }
+
+    /**
+     * Returns the FHIR resource type. This is extracted from the "resourceType" field in {@code
+     * mData}, and mapped into an {@code IntDef} {@link FhirResourceType}.
+     */
+    @FhirResourceType
+    public int getFhirResourceType() {
         return mFhirResourceType;
     }
 
     /** Returns this object with the FHIR resource type. */
-    @NonNull
-    public MedicalResourceInternal setFhirResourceType(@NonNull String fhirResourceType) {
-        requireNonNull(fhirResourceType);
+    public UpsertMedicalResourceInternalRequest setFhirResourceType(
+            @FhirResourceType int fhirResourceType) {
         mFhirResourceType = fhirResourceType;
         return this;
     }
@@ -110,41 +128,56 @@ public final class MedicalResourceInternal {
 
     /** Returns this object with the FHIR resource id. */
     @NonNull
-    public MedicalResourceInternal setFhirResourceId(@NonNull String fhirResourceId) {
+    public UpsertMedicalResourceInternalRequest setFhirResourceId(@NonNull String fhirResourceId) {
         requireNonNull(fhirResourceId);
         mFhirResourceId = fhirResourceId;
         return this;
     }
 
-    /** Converts to this object from an upsert request. */
+    /** Returns the FHIR version as string. */
     @NonNull
-    public static MedicalResourceInternal fromUpsertRequest(
+    public String getFhirVersion() {
+        return mFhirVersion;
+    }
+
+    /** Returns this object with the FHIR version string. */
+    @NonNull
+    public UpsertMedicalResourceInternalRequest setFhirVersion(@NonNull FhirVersion fhirVersion) {
+        requireNonNull(fhirVersion);
+        mFhirVersion = fhirVersion.toString();
+        return this;
+    }
+
+    /** Converts to this object from an upsert request. */
+    // TODO(b/350010200): Refactor this once we check in the request validator code.
+    @NonNull
+    public static UpsertMedicalResourceInternalRequest fromUpsertRequest(
             @NonNull UpsertMedicalResourceRequest request) throws JSONException {
         if (!personalHealthRecord()) {
             throw new UnsupportedOperationException(
                     "Convert from UpsertMedicalResourceRequest is not supported");
         }
         requireNonNull(request);
-        String fhirJson = request.getData();
-        JSONObject fhirJsonObj = new JSONObject(fhirJson);
-        String resourceType = fhirJsonObj.getString(FHIR_RESOURCE_TYPE_FIELD_NAME);
-        String resourceId = fhirJsonObj.getString(FHIR_RESOURCE_ID_FIELD_NAME);
-        String dataSourceId = String.valueOf(request.getDataSourceId());
-        return new MedicalResourceInternal()
-                .setFhirResourceId(resourceId)
-                .setFhirResourceType(resourceType)
-                .setDataSourceId(dataSourceId)
-                .setData(fhirJson);
+        FhirJsonExtractor extractor = new FhirJsonExtractor(request.getData());
+        return new UpsertMedicalResourceInternalRequest()
+                .setMedicalResourceType(extractor.getMedicalResourceType())
+                .setFhirResourceId(extractor.getFhirResourceId())
+                .setFhirResourceType(extractor.getFhirResourceType())
+                .setDataSourceId(request.getDataSourceId())
+                .setFhirVersion(request.getFhirVersion())
+                .setData(request.getData());
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MedicalResourceInternal that)) return false;
+        if (!(o instanceof UpsertMedicalResourceInternalRequest that)) return false;
         return Objects.equals(getUuid(), that.getUuid())
                 && getDataSourceId().equals(that.getDataSourceId())
-                && getFhirResourceType().equals(that.getFhirResourceType())
+                && getMedicalResourceType() == that.getMedicalResourceType()
+                && getFhirResourceType() == that.getFhirResourceType()
                 && getFhirResourceId().equals(that.getFhirResourceId())
+                && getFhirVersion().equals(that.getFhirVersion())
                 && getData().equals(that.getData());
     }
 
@@ -153,8 +186,10 @@ public final class MedicalResourceInternal {
         return hash(
                 getUuid(),
                 getDataSourceId(),
+                getMedicalResourceType(),
                 getFhirResourceType(),
                 getFhirResourceId(),
+                getFhirVersion(),
                 getData());
     }
 }

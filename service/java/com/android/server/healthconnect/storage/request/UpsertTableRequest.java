@@ -30,6 +30,7 @@ import android.util.Pair;
 
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
+import com.android.server.healthconnect.storage.utils.TableColumnPair;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.lang.annotation.ElementType;
@@ -58,6 +59,7 @@ public class UpsertTableRequest {
     private RecordInternal<?> mRecordInternal;
     private RecordHelper<?> mRecordHelper;
     private List<String> mPostUpsertCommands = Collections.emptyList();
+    private List<TableColumnPair> mChildTableAndColumnPairsToDelete = Collections.emptyList();
 
     @Nullable private ArrayMap<String, Boolean> mExtraWritePermissionsStateMapping;
 
@@ -205,12 +207,29 @@ public class UpsertTableRequest {
         return this;
     }
 
+    /**
+     * Returns the {@link UpsertTableRequest} with the {@code childTableAndColumnPairsToDelete} set.
+     *
+     * @param childTableAndColumnPairsToDelete a list of {@link TableColumnPair}.
+     */
     @NonNull
-    public List<RecordHelper.TableColumnPair> getChildTablesWithRowsToBeDeletedDuringUpdate() {
-        return mRecordHelper == null
-                ? Collections.emptyList()
-                : mRecordHelper.getChildTablesWithRowsToBeDeletedDuringUpdate(
-                        mExtraWritePermissionsStateMapping);
+    public UpsertTableRequest setChildTablesWithRowsToBeDeletedDuringUpdate(
+            @NonNull List<TableColumnPair> childTableAndColumnPairsToDelete) {
+        mChildTableAndColumnPairsToDelete = childTableAndColumnPairsToDelete;
+        return this;
+    }
+
+    /**
+     * Returns a list {@link TableColumnPair}s to be deleted when an update happens to the parent
+     * row.
+     */
+    @NonNull
+    public List<TableColumnPair> getChildTablesWithRowsToBeDeletedDuringUpdate() {
+        if (mRecordHelper != null) {
+            return mRecordHelper.getChildTablesWithRowsToBeDeletedDuringUpdate(
+                    mExtraWritePermissionsStateMapping);
+        }
+        return mChildTableAndColumnPairsToDelete;
     }
 
     @NonNull

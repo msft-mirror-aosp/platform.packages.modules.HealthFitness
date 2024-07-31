@@ -40,6 +40,7 @@ import java.time.Duration.ofDays
 import java.time.Instant
 
 /** This DateNavigationView allows the user to navigate in time to see their past data. */
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 class DateNavigationView
 @JvmOverloads
 constructor(

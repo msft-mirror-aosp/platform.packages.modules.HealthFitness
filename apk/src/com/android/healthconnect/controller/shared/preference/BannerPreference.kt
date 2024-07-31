@@ -51,7 +51,7 @@ class BannerPreference constructor(context: Context, private val logName: Elemen
 
     private var buttonSecondaryText: String? = null
     private var buttonSecondaryAction: OnClickListener? = null
-    private var buttonSecondaryVisibility = View.VISIBLE
+    private var buttonSecondaryVisibility = View.GONE
     private var buttonSecondaryLogName: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
 
     private var isDismissable = false
@@ -85,15 +85,12 @@ class BannerPreference constructor(context: Context, private val logName: Elemen
     fun setSecondaryButton(buttonText: String, logName: ElementName) {
         this.buttonSecondaryText = buttonText
         this.buttonSecondaryLogName = logName
+        this.buttonSecondaryVisibility = View.VISIBLE
     }
 
     fun setSecondaryButtonOnClickListener(onClickListener: OnClickListener?) {
         logger.logInteraction(buttonSecondaryLogName)
         this.buttonSecondaryAction = onClickListener
-    }
-
-    fun setSecondaryButtonVisibility(visibility: Int) {
-        this.buttonSecondaryVisibility = visibility
     }
 
     fun setIsDismissable(isDismissable: Boolean) {
@@ -140,6 +137,9 @@ class BannerPreference constructor(context: Context, private val logName: Elemen
 
         if (buttonSecondaryVisibility == View.VISIBLE) {
             logger.logImpression(buttonSecondaryLogName)
+            bannerSecondaryButton.isClickable = true
+        } else {
+            bannerSecondaryButton.isClickable = false
         }
 
         if (isDismissable) {

@@ -29,6 +29,7 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.navigation.DestinationChangedListener
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
 import com.android.healthconnect.controller.shared.HealthPermissionReader
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -52,7 +53,7 @@ class SettingsActivity : Hilt_SettingsActivity() {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
                     val packageName = intent.getStringExtra(EXTRA_PACKAGE_NAME)!!
                     maybeNavigateToAppPermissions(
-                        viewModel.shouldNavigateToAppPermissionsFragment(packageName))
+                        viewModel.shouldNavigateToAppPermissionsFragment(packageName), packageName)
                 }
             }
         }
@@ -64,12 +65,18 @@ class SettingsActivity : Hilt_SettingsActivity() {
             .addOnDestinationChangedListener(DestinationChangedListener(this))
     }
 
-    private fun maybeNavigateToAppPermissions(shouldNavigate: Boolean) {
+    private fun maybeNavigateToAppPermissions(shouldNavigate: Boolean, packageName: String) {
         val navController = findNavController(R.id.nav_host_fragment)
 
         if (shouldNavigate) {
+            val appPermissionType = healthPermissionReader.getAppPermissionsType(packageName)
+            val navigationId: Int = when (appPermissionType) {
+                AppPermissionsType.FITNESS_PERMISSIONS_ONLY -> R.id.action_deeplink_to_settingsFitnessApp
+                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY -> R.id.action_deeplink_to_settingsMedicalApp
+                AppPermissionsType.COMBINED_PERMISSIONS -> R.id.action_deeplink_to_settingsCombinedApp
+            }
             navController.navigate(
-                R.id.action_deeplink_to_settingsManageAppPermissionsFragment,
+                    navigationId,
                 bundleOf(EXTRA_PACKAGE_NAME to intent.getStringExtra(EXTRA_PACKAGE_NAME)))
         } else {
             finish()

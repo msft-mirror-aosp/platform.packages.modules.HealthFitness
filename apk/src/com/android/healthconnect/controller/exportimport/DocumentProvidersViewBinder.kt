@@ -65,7 +65,11 @@ class DocumentProvidersViewBinder {
                 val root = documentProvider.roots[0]
 
                 summaryView.setText(root.summary)
-                summaryView.setVisibility(VISIBLE)
+                if (root.summary.isNotEmpty()) {
+                    summaryView.setVisibility(VISIBLE)
+                } else {
+                    summaryView.setVisibility(GONE)
+                }
 
                 if (documentProviders.size == 1) {
                     radioButtonView.setVisibility(GONE)
@@ -130,7 +134,7 @@ class DocumentProvidersViewBinder {
         // TODO: b/339189778 - Add proper logging for the account picker dialog.
         AlertDialogBuilder(inflater.context, ErrorPageElement.UNKNOWN_ELEMENT)
             .setView(view)
-            .setNegativeButton(
+            .setNeutralButton(
                 R.string.export_import_choose_account_cancel_button,
                 ErrorPageElement.UNKNOWN_ELEMENT)
             .setPositiveButton(

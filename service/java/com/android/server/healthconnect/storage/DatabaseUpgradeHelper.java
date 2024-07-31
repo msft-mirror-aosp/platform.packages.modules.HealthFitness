@@ -28,7 +28,6 @@ import android.annotation.NonNull;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
@@ -38,8 +37,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsReques
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ExerciseSessionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MindfulnessSessionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper;
@@ -47,7 +44,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.SkinTemperatureRecordHelper;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
-import com.android.server.healthconnect.storage.utils.DropTableRequest;
+import com.android.server.healthconnect.storage.request.DropTableRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import java.util.ArrayList;
@@ -67,13 +64,6 @@ final class DatabaseUpgradeHelper {
 
     // TODO(b/346981687): increment db version for PHR, once done with development.
 
-    /**
-     * A shared DB version to guard all schema changes of under development features in HC.
-     *
-     * <p>See more at go/hc-aconfig-and-db
-     */
-    private static final int DB_VERSION_UNDER_DEVELOPMENT = 1_000_000;
-
     private static final String SQLITE_MASTER_TABLE_NAME = "sqlite_master";
 
     // Whenever we are bumping the database version, take a look at potential problems described in:
@@ -85,9 +75,7 @@ final class DatabaseUpgradeHelper {
     // with different values very difficult. See this chat:
     // https://chat.google.com/room/AAAAl1xxgQM/uokEORpq24c.
     static int getDatabaseVersion() {
-        return Flags.personalHealthRecordDatabase()
-                ? DB_VERSION_UNDER_DEVELOPMENT
-                : DB_VERSION_MINDFULNESS_SESSION;
+        return DB_VERSION_MINDFULNESS_SESSION;
     }
 
     /**
@@ -118,6 +106,7 @@ final class DatabaseUpgradeHelper {
                             RECORD_TYPE_SKIN_TEMPERATURE)
                     .applySkinTemperatureUpgrade(db);
         }
+
         if (oldVersion < DB_VERSION_PLANNED_EXERCISE_SESSIONS) {
             applyPlannedExerciseDatabaseUpgrade(db);
         }
@@ -125,14 +114,6 @@ final class DatabaseUpgradeHelper {
             MindfulnessSessionRecordHelper mindfulnessRecordHelper =
                     getRecordHelper(RECORD_TYPE_MINDFULNESS_SESSION);
             mindfulnessRecordHelper.applyMindfulnessSessionUpgrade(db);
-        }
-
-        if (oldVersion < DB_VERSION_UNDER_DEVELOPMENT
-                && DB_VERSION_UNDER_DEVELOPMENT <= newVersion) {
-            if (Flags.personalHealthRecordDatabase()) {
-                MedicalDataSourceHelper.onInitialUpgrade(db);
-                MedicalResourceHelper.onInitialUpgrade(db);
-            }
         }
     }
 
@@ -148,7 +129,7 @@ final class DatabaseUpgradeHelper {
                         .map(CreateTableRequest::getTableName)
                         .toList();
         for (String table : allTables) {
-            db.execSQL(new DropTableRequest(table).getCommand());
+            db.execSQL(new DropTableRequest(table).getDropTableCommand());
         }
     }
 

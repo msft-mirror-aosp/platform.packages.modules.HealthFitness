@@ -50,33 +50,32 @@ public final class MedicalResource implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     public @interface MedicalResourceType {}
 
-    @NonNull private final String mId;
     @MedicalResourceType private final int mType;
     @NonNull private final String mDataSourceId;
-    @NonNull private final String mData;
+    @NonNull private final FhirVersion mFhirVersion;
+    @NonNull private final FhirResource mFhirResource;
 
     /**
-     * @param id The unique identifier of this data, assigned by the Android Health Platform at
-     *     insertion time.
      * @param type The medical resource type assigned by the Android Health Platform at insertion
      *     time.
      * @param dataSourceId Where the data comes from.
-     * @param data The FHIR resource data in JSON representation.
+     * @param fhirVersion The {@link FhirVersion} object that represents the FHIR version.
+     * @param fhirResource The enclosed {@link FhirResource} object.
      */
     private MedicalResource(
-            @NonNull String id,
             @MedicalResourceType int type,
             @NonNull String dataSourceId,
-            @NonNull String data) {
-        requireNonNull(id);
+            @NonNull FhirVersion fhirVersion,
+            @NonNull FhirResource fhirResource) {
         requireNonNull(dataSourceId);
-        requireNonNull(data);
+        requireNonNull(fhirVersion);
+        requireNonNull(fhirResource);
         validateMedicalResourceType(type);
 
-        mId = id;
         mType = type;
         mDataSourceId = dataSourceId;
-        mData = data;
+        mFhirVersion = fhirVersion;
+        mFhirResource = fhirResource;
     }
 
     /**
@@ -85,10 +84,14 @@ public final class MedicalResource implements Parcelable {
      */
     private MedicalResource(@NonNull Parcel in) {
         requireNonNull(in);
-        mId = requireNonNull(in.readString());
         mType = in.readInt();
         mDataSourceId = requireNonNull(in.readString());
-        mData = requireNonNull(in.readString());
+        mFhirVersion =
+                requireNonNull(
+                        in.readParcelable(FhirVersion.class.getClassLoader(), FhirVersion.class));
+        mFhirResource =
+                requireNonNull(
+                        in.readParcelable(FhirResource.class.getClassLoader(), FhirResource.class));
     }
 
     @NonNull
@@ -109,12 +112,6 @@ public final class MedicalResource implements Parcelable {
                 }
             };
 
-    /** Returns the unique identifier of this data. */
-    @NonNull
-    public String getId() {
-        return mId;
-    }
-
     /** Returns the medical resource type. */
     @MedicalResourceType
     public int getType() {
@@ -127,10 +124,16 @@ public final class MedicalResource implements Parcelable {
         return mDataSourceId;
     }
 
-    /** Returns the FHIR resource data in JSON representation. */
+    /** Returns the {@link FhirVersion} object that represents the FHIR version. */
     @NonNull
-    public String getData() {
-        return mData;
+    public FhirVersion getFhirVersion() {
+        return mFhirVersion;
+    }
+
+    /** Returns the enclosed {@link FhirResource} object. */
+    @NonNull
+    public FhirResource getFhirResource() {
+        return mFhirResource;
     }
 
     @Override
@@ -142,10 +145,10 @@ public final class MedicalResource implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         requireNonNull(dest);
-        dest.writeString(getId());
         dest.writeInt(getType());
         dest.writeString(getDataSourceId());
-        dest.writeString(getData());
+        dest.writeParcelable(getFhirVersion(), 0);
+        dest.writeParcelable(getFhirResource(), 0);
     }
 
     /**
@@ -173,16 +176,16 @@ public final class MedicalResource implements Parcelable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof MedicalResource that)) return false;
-        return getId().equals(that.getId())
-                && getType() == that.getType()
+        return getType() == that.getType()
                 && getDataSourceId().equals(that.getDataSourceId())
-                && getData().equals(that.getData());
+                && getFhirVersion().equals(that.getFhirVersion())
+                && getFhirResource().equals(that.getFhirResource());
     }
 
     /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
-        return hash(getId(), getType(), getDataSourceId(), getData());
+        return hash(getType(), getDataSourceId(), getFhirVersion(), getFhirResource());
     }
 
     /** Returns a string representation of this {@link MedicalResource}. */
@@ -190,35 +193,42 @@ public final class MedicalResource implements Parcelable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.getClass().getSimpleName()).append("{");
-        sb.append("id=").append(getId());
-        sb.append(",type=").append(getType());
+        sb.append("type=").append(getType());
         sb.append(",dataSourceId=").append(getDataSourceId());
-        sb.append(",data=").append(getData());
+        sb.append(",fhirVersion=").append(getFhirVersion());
+        sb.append(",fhirResource=").append(getFhirResource());
         sb.append("}");
         return sb.toString();
     }
 
     /** Builder class for {@link MedicalResource} */
     public static final class Builder {
-        @NonNull private String mId;
         @MedicalResourceType private int mType;
         @NonNull private String mDataSourceId;
-        @NonNull private String mData;
+        @NonNull private FhirVersion mFhirVersion;
+        @NonNull private FhirResource mFhirResource;
 
+        /**
+         * @param type The medical resource type assigned by the Android Health Platform at
+         *     insertion time.
+         * @param dataSourceId Where the data comes from.
+         * @param fhirVersion The enclosed {@link FhirVersion} object.
+         * @param fhirResource The enclosed {@link FhirResource} object.
+         */
         public Builder(
-                @NonNull String id,
                 @MedicalResourceType int type,
                 @NonNull String dataSourceId,
-                @NonNull String data) {
-            requireNonNull(id);
+                @NonNull FhirVersion fhirVersion,
+                @NonNull FhirResource fhirResource) {
             requireNonNull(dataSourceId);
-            requireNonNull(data);
+            requireNonNull(fhirVersion);
+            requireNonNull(fhirResource);
             validateMedicalResourceType(type);
 
-            mId = id;
             mType = type;
             mDataSourceId = dataSourceId;
-            mData = data;
+            mFhirVersion = fhirVersion;
+            mFhirResource = fhirResource;
         }
 
         /**
@@ -227,10 +237,10 @@ public final class MedicalResource implements Parcelable {
          */
         public Builder(@NonNull Builder original) {
             requireNonNull(original);
-            mId = original.mId;
             mType = original.mType;
             mDataSourceId = original.mDataSourceId;
-            mData = original.mData;
+            mFhirVersion = original.mFhirVersion;
+            mFhirResource = original.mFhirResource;
         }
 
         /**
@@ -239,21 +249,10 @@ public final class MedicalResource implements Parcelable {
          */
         public Builder(@NonNull MedicalResource original) {
             requireNonNull(original);
-            mId = original.getId();
             mType = original.getType();
             mDataSourceId = original.getDataSourceId();
-            mData = original.getData();
-        }
-
-        /**
-         * Sets the unique identifier of this data, assigned by the Android Health Platform at
-         * insertion time.
-         */
-        @NonNull
-        public Builder setId(@NonNull String id) {
-            requireNonNull(id);
-            mId = id;
-            return this;
+            mFhirVersion = original.getFhirVersion();
+            mFhirResource = original.getFhirResource();
         }
 
         /**
@@ -275,18 +274,26 @@ public final class MedicalResource implements Parcelable {
             return this;
         }
 
-        /** Sets the FHIR resource data in JSON representation. */
+        /** Sets the {@link FhirVersion} object that represents the FHIR version. */
         @NonNull
-        public Builder setData(@NonNull String data) {
-            requireNonNull(data);
-            mData = data;
+        public Builder setFhirVersion(@NonNull FhirVersion fhirVersion) {
+            requireNonNull(fhirVersion);
+            mFhirVersion = fhirVersion;
+            return this;
+        }
+
+        /** Sets the enclosed {@link FhirResource} object */
+        @NonNull
+        public Builder setFhirResource(@NonNull FhirResource fhirResource) {
+            requireNonNull(fhirResource);
+            mFhirResource = fhirResource;
             return this;
         }
 
         /** Returns a new instance of {@link MedicalResource} with the specified parameters. */
         @NonNull
         public MedicalResource build() {
-            return new MedicalResource(mId, mType, mDataSourceId, mData);
+            return new MedicalResource(mType, mDataSourceId, mFhirVersion, mFhirResource);
         }
     }
 }
