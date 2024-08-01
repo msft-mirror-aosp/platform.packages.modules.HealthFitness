@@ -26,6 +26,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -66,6 +67,8 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
         val view = inflater.inflate(R.layout.export_destination_screen, container, false)
         val titleView = view.findViewById<View>(R.id.export_destination_title)
         val footerView = view.findViewById<View>(R.id.export_import_footer)
+        val footerIconView = view.findViewById<View>(R.id.export_import_footer_icon)
+        val footerTextView = view.findViewById<TextView>(R.id.export_import_footer_text)
         val playStoreView = view.findViewById<LinkTextView>(R.id.export_import_go_to_play_store)
         val backButton = view.findViewById<Button>(R.id.export_import_cancel_button)
         val nextButton = view.findViewById<Button>(R.id.export_import_next_button)
@@ -101,6 +104,8 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
             nextButton.setOnClickListener {}
             nextButton.setEnabled(false)
 
+            footerView.setVisibility(GONE)
+
             when (providers) {
                 is DocumentProviders.Loading -> {
                     // Do nothing
@@ -110,7 +115,12 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
                 }
                 is DocumentProviders.WithData -> {
                     documentProvidersViewBinder.bindDocumentProvidersView(
-                        providers.providers, documentProvidersList, inflater) { root ->
+                        providers.providers,
+                        viewModel.selectedDocumentProvider.value,
+                        viewModel.selectedDocumentProviderRoot.value,
+                        documentProvidersList,
+                        inflater) { provider, root ->
+                            viewModel.updateSelectedDocumentProvider(provider, root)
                             nextButton.setOnClickListener {
                                 logger.logInteraction(
                                     ExportDestinationElement.EXPORT_DESTINATION_NEXT_BUTTON)
@@ -131,6 +141,14 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
                         footerView.setVisibility(GONE)
                     } else {
                         footerView.setVisibility(VISIBLE)
+
+                        if (providers.providers.isEmpty()) {
+                            footerIconView.setVisibility(GONE)
+                            footerTextView.setText(R.string.export_import_no_apps_text)
+                        } else {
+                            footerIconView.setVisibility(VISIBLE)
+                            footerTextView.setText(R.string.export_import_install_apps_text)
+                        }
                     }
                 }
             }

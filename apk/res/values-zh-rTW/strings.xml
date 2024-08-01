@@ -35,8 +35,11 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 個應用程式可存取}other{# 個應用程式可存取}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"無"</string>
     <string name="entry_details_title" msgid="590184849040247850">"項目詳細資料"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
+    <!-- no translation found for browse_data_title (5232691805953326097) -->
     <skip />
+    <!-- no translation found for browse_data_subtitle (7025164374898103993) -->
+    <skip />
+    <string name="manage_data_summary" msgid="8537870912521944449">"自動刪除、資料來源、備份和還原"</string>
     <string name="backup_title" msgid="211503191266235085">"備份"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"資料來源與優先順序"</string>
     <string name="set_units_title" msgid="2657822539603758029">"設定單位"</string>
@@ -78,8 +81,7 @@
     <string name="can_read" msgid="4568261079308309564">"可以讀取<xliff:g id="PERMISSION_TYPE">%s</xliff:g>資料"</string>
     <string name="can_write" msgid="5082414937218423823">"可以寫入<xliff:g id="PERMISSION_TYPE">%s</xliff:g>資料"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"已停用的應用程式"</string>
-    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
-    <skip />
+    <string name="inactive_apps_message" msgid="8335803540719022910">"這些應用程式無法再讀取或寫入<xliff:g id="DATA_TYPE">%s</xliff:g>，但仍有資料儲存在「健康資料同步」"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"應用程式無法再讀取或寫入<xliff:g id="DATA_TYPE_0">%1$s</xliff:g>資料，而且「健康資料同步」也未儲存<xliff:g id="DATA_TYPE_2">%2$s</xliff:g>資料。"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"這類資料包括活動時間、運動類型、圈數、重複次數、時段或泳姿等資訊"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"這類資料包括睡眠階段和睡眠時段"</string>
@@ -328,8 +330,14 @@
     <string name="additional_access_label" msgid="4645249249222528341">"額外存取權"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"這個應用程式的其他權限已移除"</string>
     <string name="permissions_header" msgid="6519976063360071569">"權限"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"管理健身資料權限"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"管理健康記錄權限"</string>
+    <!-- no translation found for manage_fitness_permissions (3363128122122446755) -->
+    <skip />
+    <!-- no translation found for manage_fitness_permissions_summary (2558503899466623148) -->
+    <skip />
+    <!-- no translation found for manage_medical_permissions (3772912800582350567) -->
+    <skip />
+    <!-- no translation found for manage_medical_permissions_summary (2624707097284112258) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"應用程式權限已移除"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"「健康資料同步」已移除「<xliff:g id="APP_DATA">%s</xliff:g>」的權限"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"「健康資料同步」已移除「<xliff:g id="APP_DATA_0">%1$s</xliff:g>」和「<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>」的權限"</string>
@@ -343,6 +351,8 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"無法匯出資料"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"匯出 <xliff:g id="DATE">%1$s</xliff:g>的資料時發生問題，請設定新的資料匯出時間，然後再試一次。"</string>
     <string name="next_export_time" msgid="3138247220014510213">"下次匯出時間：<xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <!-- no translation found for next_export_text (6726252793571403846) -->
+    <skip />
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"備份與還原"</string>
     <string name="last_export_time" msgid="9205875050823594041">"上次匯出時間：<xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>

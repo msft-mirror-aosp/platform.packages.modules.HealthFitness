@@ -35,6 +35,8 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 app has access}other{# apps have access}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"None"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Entry details"</string>
+    <string name="browse_data_title" msgid="5232691805953326097">"Browse data"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"See data and which apps can access it"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"Auto-delete, data sources, backup and restore"</string>
     <string name="backup_title" msgid="211503191266235085">"Backup"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Data sources and priority"</string>
@@ -326,8 +328,10 @@
     <string name="additional_access_label" msgid="4645249249222528341">"Additional access"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Removed additional permissions for this app"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Permissions"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"Manage fitness permissions"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"Manage health record permissions"</string>
+    <string name="manage_fitness_permissions" msgid="3363128122122446755">"Fitness and wellness"</string>
+    <string name="manage_fitness_permissions_summary" msgid="2558503899466623148">"Exercise, sleep, nutrition and others"</string>
+    <string name="manage_medical_permissions" msgid="3772912800582350567">"Health records"</string>
+    <string name="manage_medical_permissions_summary" msgid="2624707097284112258">"Lab results, medications, immunizations and others"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Removed app permissions"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect removed permissions for <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect removed permissions for <xliff:g id="APP_DATA_0">%1$s</xliff:g> and <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -341,6 +345,7 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Couldn\'t export data"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"There was a problem with the export for <xliff:g id="DATE">%1$s</xliff:g>. Please set up a new scheduled export and try again."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Next export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"Next export starting soon"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Backup and restore"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Last export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>

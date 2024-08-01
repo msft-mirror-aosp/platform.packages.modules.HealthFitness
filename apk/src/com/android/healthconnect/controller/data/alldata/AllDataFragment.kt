@@ -28,7 +28,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment.Companion.CATEGORY_KEY
-import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_KEY
+import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
@@ -225,9 +225,8 @@ open class AllDataFragment : Hilt_AllDataFragment() {
             permissionTypesListGroup.addPreference(preferenceCategory)
 
             permissionTypesPerCategory.data
-                .sortedBy {
-                    getString(FitnessPermissionStrings.fromPermissionType(it).uppercaseLabel)
-                }
+                .sortedBy { getString(it.upperCaseLabel()) }
+                .filterIsInstance<FitnessPermissionType>()
                 .forEach { permissionType ->
                     preferenceCategory.addPreference(
                         getPermissionTypePreference(permissionType, categoryIcon))
@@ -318,7 +317,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
                     findNavController()
                         .navigate(
                             R.id.action_allData_to_entriesAndAccess,
-                            bundleOf(PERMISSION_TYPE_KEY to permissionType.name))
+                            bundleOf(PERMISSION_TYPE_NAME_KEY to permissionType.name))
                     true
                 }
             }
