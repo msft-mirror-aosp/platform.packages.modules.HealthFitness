@@ -118,9 +118,6 @@
         <action
             android:id="@+id/action_backupAndRestoreSettingsFragment_to_scheduledExportFragment"
             app:destination="@id/scheduledExportFragment" />
-        <action
-            android:id="@+id/action_backupAndRestoreSettingsFragment_to_importFlowActivity"
-            app:destination="@id/importFlowActivity" />
     </fragment>
 
     <fragment

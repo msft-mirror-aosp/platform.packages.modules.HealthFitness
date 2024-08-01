@@ -40,6 +40,8 @@ constructor(
     private val _selectedExportFrequency = MutableLiveData<ExportFrequency>()
     private val _previousExportFrequency = MutableLiveData<ExportFrequency?>()
     private val _documentProviders = MutableLiveData<DocumentProviders>()
+    private val _selectedDocumentProvider = MutableLiveData<DocumentProviderInfo?>()
+    private val _selectedDocumentProviderRoot = MutableLiveData<DocumentProviderRoot?>()
 
     /** Holds the export settings that is stored in the Health Connect service. */
     val storedExportSettings: LiveData<ExportSettings>
@@ -56,6 +58,14 @@ constructor(
     /** Holds the supported document providers. */
     val documentProviders: LiveData<DocumentProviders>
         get() = _documentProviders
+
+    /** Holds the user selected document provider. */
+    val selectedDocumentProvider: LiveData<DocumentProviderInfo?>
+        get() = _selectedDocumentProvider
+
+    /** Holds the user selected document provider. */
+    val selectedDocumentProviderRoot: LiveData<DocumentProviderRoot?>
+        get() = _selectedDocumentProviderRoot
 
     init {
         loadExportSettings()
@@ -128,6 +138,15 @@ constructor(
     /** Updates the stored frequency of scheduled exports of Health Connect data. */
     fun updateSelectedFrequency(frequency: ExportFrequency) {
         _selectedExportFrequency.value = frequency
+    }
+
+    /** Updates the selected document provider. */
+    fun updateSelectedDocumentProvider(
+        documentProvider: DocumentProviderInfo,
+        documentProviderRoot: DocumentProviderRoot
+    ) {
+        _selectedDocumentProvider.value = documentProvider
+        _selectedDocumentProviderRoot.value = documentProviderRoot
     }
 
     private fun updateExportSettings(settings: ScheduledExportSettings) {

@@ -30,6 +30,7 @@ import com.android.healthconnect.controller.data.entries.datenavigation.DateNavi
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod.PERIOD_WEEK
 import com.android.healthconnect.controller.utils.SystemTimeSource
 import com.android.healthconnect.controller.utils.TimeSource
+import com.android.healthconnect.controller.utils.logging.AllEntriesElement
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
@@ -138,9 +139,18 @@ constructor(
                 ) {
                     val period: DateNavigationPeriod =
                         when (position) {
-                            0 -> PERIOD_DAY
-                            1 -> PERIOD_WEEK
-                            2 -> PERIOD_MONTH
+                            0 -> {
+                                logger.logInteraction(AllEntriesElement.DATE_VIEW_SPINNER_DAY)
+                                PERIOD_DAY
+                            }
+                            1 -> {
+                                logger.logInteraction(AllEntriesElement.DATE_VIEW_SPINNER_WEEK)
+                                PERIOD_WEEK
+                            }
+                            2 -> {
+                                logger.logInteraction(AllEntriesElement.DATE_VIEW_SPINNER_MONTH)
+                                PERIOD_MONTH
+                            }
                             else -> throw IllegalStateException("Not supported time period.")
                         }
                     setPeriod(period)
@@ -161,6 +171,12 @@ constructor(
                             context.getString(R.string.selected_date_view_action_description)))
                 }
             }
+
+        when (period) {
+            PERIOD_DAY -> logger.logImpression(AllEntriesElement.DATE_VIEW_SPINNER_DAY)
+            PERIOD_WEEK -> logger.logImpression(AllEntriesElement.DATE_VIEW_SPINNER_WEEK)
+            PERIOD_MONTH -> logger.logImpression(AllEntriesElement.DATE_VIEW_SPINNER_MONTH)
+        }
     }
 
     private fun updateDisplayedDates() {

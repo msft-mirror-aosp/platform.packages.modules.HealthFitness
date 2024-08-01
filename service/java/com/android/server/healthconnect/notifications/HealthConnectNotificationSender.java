@@ -38,7 +38,6 @@ import java.util.Objects;
  *
  * @hide
  */
-@FlaggedApi(FLAG_EXPORT_IMPORT)
 public final class HealthConnectNotificationSender {
 
     private static final String TAG = "HealthConnectNotificationSender";

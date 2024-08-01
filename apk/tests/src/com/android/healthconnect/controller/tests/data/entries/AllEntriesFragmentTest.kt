@@ -48,7 +48,12 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.withIndex
+import com.android.healthconnect.controller.utils.logging.AllEntriesElement
+import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.toInstantAtStartOfDay
 import com.android.healthconnect.controller.utils.toLocalDate
 import dagger.hilt.android.testing.BindValue
@@ -58,10 +63,16 @@ import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 
 @HiltAndroidTest
 class AllEntriesFragmentTest {
@@ -69,12 +80,14 @@ class AllEntriesFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @BindValue val viewModel: EntriesViewModel = Mockito.mock(EntriesViewModel::class.java)
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     private lateinit var context: Context
 
     @Before
     fun setup() {
         hiltRule.inject()
+        toggleAnimation(false)
         context = InstrumentationRegistry.getInstrumentation().context
         context.setLocale(Locale.UK)
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
@@ -91,28 +104,32 @@ class AllEntriesFragmentTest {
                         context.getDrawable(R.drawable.health_connect_logo))))
     }
 
+    @After
+    fun tearDown() {
+        toggleAnimation(true)
+        reset(healthConnectLogger)
+    }
+
     @Test
     fun appEntriesInit_showsDateNavigationPreference() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(emptyList())))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.date_picker_spinner)).check(matches(isDisplayed()))
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.TAB_ENTRIES_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger, atLeast(1))
+            .logImpression(AllEntriesElement.DATE_VIEW_SPINNER_DAY)
+        verify(healthConnectLogger).logImpression(DataEntriesElement.PREVIOUS_DAY_BUTTON)
+        verify(healthConnectLogger).logImpression(DataEntriesElement.NEXT_DAY_BUTTON)
     }
 
     @Test
     fun allEntriesInit_noData_showsNoData() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Empty))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.no_data_view)).check(matches(isDisplayed()))
     }
@@ -121,11 +138,7 @@ class AllEntriesFragmentTest {
     fun appEntriesInit_error_showsErrorView() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(LoadingFailed))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.error_view)).check(matches(isDisplayed()))
     }
@@ -134,11 +147,7 @@ class AllEntriesFragmentTest {
     fun appEntriesInit_loading_showsLoading() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Loading))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.loading)).check(matches(isDisplayed()))
     }
@@ -147,27 +156,22 @@ class AllEntriesFragmentTest {
     fun appEntriesInit_withData_showsListOfEntries() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("12 steps")).check(matches(isDisplayed()))
         onView(withText("8:06 - 8:06")).check(matches(isDisplayed()))
         onView(withText("15 steps")).check(matches(isDisplayed()))
+
+        verify(healthConnectLogger, times(2))
+            .logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 
     @Test
     fun appEntries_withData_notShowingDeleteAction() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withIndex(withId(R.id.item_data_entry_delete), 0))
             .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
@@ -179,9 +183,6 @@ class AllEntriesFragmentTest {
 
         val scenario =
             launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("12 steps")).check(matches(isDisplayed()))
@@ -197,18 +198,18 @@ class AllEntriesFragmentTest {
         onView(withText("12 steps")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("8:06 - 8:06")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("15 steps")).perform(scrollTo()).check(matches(isDisplayed()))
+
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
     }
 
     @Test
     fun allEntriesInit_noMedicalData_showsNoData() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Empty))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(
-                bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name))
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(
+            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name))
 
         onView(withId(R.id.no_data_view)).check(matches(isDisplayed()))
     }
@@ -217,12 +218,8 @@ class AllEntriesFragmentTest {
     fun allEntriesInit_medicalError_showsErrorView() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(LoadingFailed))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(
-                bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name))
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(
+            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name))
 
         onView(withId(R.id.error_view)).check(matches(isDisplayed()))
     }
@@ -231,12 +228,8 @@ class AllEntriesFragmentTest {
     fun allEntriesInit_medicalLoading_showsLoading() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Loading))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(
-                bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name))
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(
+            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name))
 
         onView(withId(R.id.loading)).check(matches(isDisplayed()))
     }
@@ -246,12 +239,8 @@ class AllEntriesFragmentTest {
         Mockito.`when`(viewModel.entries)
             .thenReturn(MutableLiveData(With(FORMATTED_IMMUNIZATION_LIST)))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(
-                bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name))
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(
+            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name))
 
         onView(withText("02 May 2023 • Health Connect Toolbox")).check(matches(isDisplayed()))
         onView(withText("12 Aug 2022 • Health Connect Toolbox")).check(matches(isDisplayed()))
