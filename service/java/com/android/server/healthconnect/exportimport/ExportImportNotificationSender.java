@@ -33,7 +33,6 @@ import java.lang.annotation.RetentionPolicy;
  *
  * @hide
  */
-@FlaggedApi(FLAG_EXPORT_IMPORT)
 @HealthConnectNotificationSender.HealthConnectNotificationType
 public class ExportImportNotificationSender {
 
