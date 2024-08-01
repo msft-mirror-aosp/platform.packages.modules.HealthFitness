@@ -16,9 +16,7 @@
 
 package android.health.connect.exportimport;
 
-import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
 
-import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
@@ -35,7 +33,6 @@ import java.time.Instant;
  *
  * @hide
  */
-@FlaggedApi(FLAG_EXPORT_IMPORT)
 public final class ScheduledExportStatus implements Parcelable {
     @NonNull
     public static final Creator<ScheduledExportStatus> CREATOR =

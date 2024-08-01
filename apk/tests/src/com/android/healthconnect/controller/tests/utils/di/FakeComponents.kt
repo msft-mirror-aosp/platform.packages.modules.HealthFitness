@@ -19,6 +19,7 @@ import android.health.connect.HealthDataCategory
 import android.health.connect.accesslog.AccessLog
 import android.health.connect.datatypes.Record
 import android.health.connect.exportimport.ScheduledExportSettings
+import android.net.Uri
 import com.android.healthconnect.controller.data.access.AppAccessMetadata
 import com.android.healthconnect.controller.data.access.AppAccessState
 import com.android.healthconnect.controller.data.access.ILoadAccessUseCase
@@ -48,6 +49,7 @@ import com.android.healthconnect.controller.exportimport.api.ILoadExportSettings
 import com.android.healthconnect.controller.exportimport.api.ILoadImportStatusUseCase
 import com.android.healthconnect.controller.exportimport.api.ILoadScheduledExportStatusUseCase
 import com.android.healthconnect.controller.exportimport.api.IQueryDocumentProvidersUseCase
+import com.android.healthconnect.controller.exportimport.api.ITriggerImportUseCase
 import com.android.healthconnect.controller.exportimport.api.IUpdateExportSettingsUseCase
 import com.android.healthconnect.controller.exportimport.api.ImportUiState
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
@@ -568,6 +570,29 @@ class FakeLoadExerciseRoute : ILoadExerciseRoutePermissionUseCase {
 
     override suspend fun invoke(input: String): UseCaseResults<ExerciseRouteState> {
         return UseCaseResults.Success(this.state)
+    }
+}
+
+class FakeTriggerImportUseCase : ITriggerImportUseCase {
+
+    private var lastImportCompletionInstant: Instant? = null
+
+    private var importState: ImportUiState =
+        ImportUiState(
+            ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
+            /** isImportOngoing= */
+            false)
+
+    fun reset() {
+        lastImportCompletionInstant = null
+    }
+
+    fun updateLastImportCompletionInstant(instant: Instant) {
+        this.lastImportCompletionInstant = instant
+    }
+
+    override suspend fun invoke(fileToImportUri: Uri): ExportImportUseCaseResult<Unit> {
+        return ExportImportUseCaseResult.Success(Unit)
     }
 }
 

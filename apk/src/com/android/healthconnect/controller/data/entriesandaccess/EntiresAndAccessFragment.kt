@@ -49,9 +49,6 @@ class EntriesAndAccessFragment : Hilt_EntriesAndAccessFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // TODO(b/291249677): Add logging.
-        // logger.setPageId(pageName)
-
         if (requireArguments().containsKey(PERMISSION_TYPE_NAME_KEY)) {
             val permissionTypeName =
                 arguments?.getString(PERMISSION_TYPE_NAME_KEY)
@@ -75,10 +72,6 @@ class EntriesAndAccessFragment : Hilt_EntriesAndAccessFragment() {
                 }
             }
             .attach()
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     class ViewPagerAdapter(

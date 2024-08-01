@@ -29,6 +29,8 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.HydrationRecordInternal;
 import android.util.Pair;
 
+import androidx.annotation.Nullable;
+
 import com.android.server.healthconnect.storage.request.AggregateParams;
 
 import java.util.Collections;
@@ -47,8 +49,8 @@ public final class HydrationRecordHelper extends IntervalRecordHelper<HydrationR
         super(RecordTypeIdentifier.RECORD_TYPE_HYDRATION);
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
+    @Nullable
     public AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         switch (aggregationType.getAggregationTypeIdentifier()) {
