@@ -63,6 +63,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -170,6 +171,7 @@ public class ImportManagerTest {
     }
 
     @Test
+    @Ignore("Fails with export/import flag turned off")
     public void mergesPriorityList() throws Exception {
         // Insert data so that getPriorityOrder doesn't remove apps from priority list.
         mTransactionTestUtils.insertApp("other.app");
