@@ -187,9 +187,10 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     /**
      * Used to get the Aggregate result for aggregate types
      *
-     * @return {@link AggregateResult} for {@link AggregationType}
+     * @return {@link AggregateResult} for {@link AggregationType} or null if that aggregation type
+     *     is not handled.
      */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    @Nullable
     public AggregateResult<?> getAggregateResult(
             Cursor cursor, AggregationType<?> aggregationType) {
         return null;

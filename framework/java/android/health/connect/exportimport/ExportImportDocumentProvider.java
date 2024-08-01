@@ -15,10 +15,7 @@
  */
 package android.health.connect.exportimport;
 
-import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
-
 import android.annotation.DrawableRes;
-import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
 import android.net.Uri;
 import android.os.Parcel;
@@ -31,7 +28,6 @@ import java.util.Objects;
  *
  * @hide
  */
-@FlaggedApi(FLAG_EXPORT_IMPORT)
 public final class ExportImportDocumentProvider implements Parcelable {
     @NonNull
     public static final Creator<ExportImportDocumentProvider> CREATOR =

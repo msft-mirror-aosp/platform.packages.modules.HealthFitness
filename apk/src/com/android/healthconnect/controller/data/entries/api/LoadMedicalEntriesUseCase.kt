@@ -30,10 +30,12 @@ class LoadMedicalEntriesUseCase
 @Inject
 constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
-) : BaseUseCase<LoadMedicalEntriesInput, List<FormattedEntry>>(dispatcher), ILoadMedicalEntriesUseCase {
+) :
+    BaseUseCase<LoadMedicalEntriesInput, List<FormattedEntry>>(dispatcher),
+    ILoadMedicalEntriesUseCase {
 
     override suspend fun execute(input: LoadMedicalEntriesInput): List<FormattedEntry> {
-        return listOf<FormattedEntry.FormattedMedicalDataEntry>()
+        return listOf()
     }
 }
 

@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.VERTICAL
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.Empty
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.Loading
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.LoadingFailed
@@ -35,12 +36,10 @@ import com.android.healthconnect.controller.data.entries.EntriesViewModel.Entrie
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationView
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsFragment
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.fromPermissionTypeName
-import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
@@ -80,9 +79,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             }
         }
     }
-    private val aggregationViewBinder by lazy {
-        AggregationViewBinder()
-    }
+    private val aggregationViewBinder by lazy { AggregationViewBinder() }
     private val entryViewBinder by lazy { EntryItemViewBinder() }
     private val medicalEntryViewBinder by lazy { MedicalEntryItemViewBinder() }
     private val sectionTitleViewBinder by lazy { SectionTitleViewBinder() }
@@ -103,10 +100,10 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     ): View? {
 
         val view = inflater.inflate(R.layout.fragment_entries, container, false)
-        if (requireArguments().containsKey(PERMISSION_TYPE_KEY)) {
+        if (requireArguments().containsKey(PERMISSION_TYPE_NAME_KEY)) {
             val permissionTypeName =
-                arguments?.getString(PERMISSION_TYPE_KEY)
-                    ?: throw IllegalArgumentException("PERMISSION_TYPE_KEY can't be null!")
+                arguments?.getString(PERMISSION_TYPE_NAME_KEY)
+                    ?: throw IllegalArgumentException("PERMISSION_TYPE_NAME_KEY can't be null!")
             permissionType = fromPermissionTypeName(permissionTypeName)
         }
         setTitle(permissionType.upperCaseLabel())
@@ -135,7 +132,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             RecyclerViewAdapter.Builder()
                 .setViewBinder(FormattedEntry.FormattedDataEntry::class.java, entryViewBinder)
                 .setViewBinder(
-                        FormattedEntry.FormattedMedicalDataEntry::class.java, medicalEntryViewBinder)
+                    FormattedEntry.FormattedMedicalDataEntry::class.java, medicalEntryViewBinder)
                 .setViewBinder(FormattedEntry.SleepSessionEntry::class.java, sleepSessionViewBinder)
                 .setViewBinder(
                     FormattedEntry.ExerciseSessionEntry::class.java, exerciseSessionItemViewBinder)

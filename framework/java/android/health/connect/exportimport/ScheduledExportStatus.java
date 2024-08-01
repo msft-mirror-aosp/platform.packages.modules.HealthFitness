@@ -16,15 +16,16 @@
 
 package android.health.connect.exportimport;
 
-import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
 
-import android.annotation.FlaggedApi;
+import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.health.connect.HealthConnectManager;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.time.Instant;
 
 /**
@@ -32,7 +33,6 @@ import java.time.Instant;
  *
  * @hide
  */
-@FlaggedApi(FLAG_EXPORT_IMPORT)
 public final class ScheduledExportStatus implements Parcelable {
     @NonNull
     public static final Creator<ScheduledExportStatus> CREATOR =
@@ -48,11 +48,37 @@ public final class ScheduledExportStatus implements Parcelable {
                 }
             };
 
+    /**
+     * No error during the last data export.
+     *
+     * @hide
+     */
+    public static final int DATA_EXPORT_ERROR_NONE = 0;
+
+    /**
+     * Unknown error during the last data export.
+     *
+     * @hide
+     */
+    public static final int DATA_EXPORT_ERROR_UNKNOWN = 1;
+
+    /**
+     * Indicates that the last export failed because we lost access to the export file location.
+     *
+     * @hide
+     */
+    public static final int DATA_EXPORT_LOST_FILE_ACCESS = 2;
+
+    /** @hide */
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({DATA_EXPORT_ERROR_UNKNOWN, DATA_EXPORT_ERROR_NONE, DATA_EXPORT_LOST_FILE_ACCESS})
+    public @interface DataExportError {}
+
     @Nullable private final Instant mLastSuccessfulExportTime;
 
     @Nullable private final Instant mLastFailedExportTime;
 
-    @HealthConnectManager.DataExportError private final int mDataExportError;
+    @DataExportError private final int mDataExportError;
     private final int mPeriodInDays;
     @Nullable private final String mLastExportFileName;
     @Nullable private final String mLastExportAppName;
@@ -62,7 +88,7 @@ public final class ScheduledExportStatus implements Parcelable {
     private ScheduledExportStatus(
             @Nullable Instant lastSuccessfulExportTime,
             @Nullable Instant lastFailedExportTime,
-            @HealthConnectManager.DataExportError int dataExportError,
+            @DataExportError int dataExportError,
             int periodInDays,
             @Nullable String lastExportFileName,
             @Nullable String lastExportAppName,
@@ -171,7 +197,7 @@ public final class ScheduledExportStatus implements Parcelable {
     public static final class Builder {
         @Nullable private Instant mLastSuccessfulExportTime;
         @Nullable private Instant mLastFailedExportTime;
-        @HealthConnectManager.DataExportError private int mDataExportError;
+        @DataExportError private int mDataExportError;
         private int mPeriodInDays;
         @Nullable private String mLastExportFileName;
         @Nullable private String mLastExportAppName;
@@ -203,8 +229,7 @@ public final class ScheduledExportStatus implements Parcelable {
          *
          * <p>Defaults to {@link HealthConnectManager#DATA_EXPORT_ERROR_NONE}.
          */
-        public Builder setDataExportError(
-                @HealthConnectManager.DataExportError int dataExportError) {
+        public Builder setDataExportError(@DataExportError int dataExportError) {
             mDataExportError = dataExportError;
             return this;
         }

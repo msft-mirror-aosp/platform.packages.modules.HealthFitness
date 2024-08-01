@@ -33,9 +33,8 @@ import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState.*
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
-import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
-import com.android.healthconnect.controller.permissions.data.MedicalPermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment
 import com.android.healthconnect.controller.shared.Constants
@@ -268,14 +267,14 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
             .forEach { permission ->
                 val category =
                     if (permission.medicalPermissionType ==
-                            MedicalPermissionType.ALL_MEDICAL_DATA) {
+                        MedicalPermissionType.ALL_MEDICAL_DATA) {
                         writePermissionCategory
                     } else {
                         readPermissionCategory
                     }
                 val switchPreference =
                     HealthSwitchPreference(requireContext()).also {
-                        //it.icon = healthCategory.icon(requireContext())
+                        // it.icon = healthCategory.icon(requireContext())
                         it.setTitle(
                             fromPermissionType(permission.medicalPermissionType).uppercaseLabel)
                         it.logNameActive = PermissionsElement.PERMISSION_SWITCH

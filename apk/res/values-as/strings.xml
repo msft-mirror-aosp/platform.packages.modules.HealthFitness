@@ -35,8 +35,11 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{১ টা এপে এক্সেছ কৰিব পাৰে}one{# টা এপে এক্সেছ কৰিব পাৰে}other{# টা এপে এক্সেছ কৰিব পাৰে}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"নাই"</string>
     <string name="entry_details_title" msgid="590184849040247850">"প্ৰৱিষ্টিৰ সবিশেষ"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
+    <!-- no translation found for browse_data_title (5232691805953326097) -->
     <skip />
+    <!-- no translation found for browse_data_subtitle (7025164374898103993) -->
+    <skip />
+    <string name="manage_data_summary" msgid="8537870912521944449">"স্বয়ংক্ৰিয়ভাৱে মচা, ডেটাৰ উৎস, বেকআপ আৰু পুনঃস্থাপন"</string>
     <string name="backup_title" msgid="211503191266235085">"বেকআপ"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"ডেটাৰ উৎস আৰু অগ্ৰাধিকাৰ"</string>
     <string name="set_units_title" msgid="2657822539603758029">"একক ছেট কৰক"</string>
@@ -78,8 +81,7 @@
     <string name="can_read" msgid="4568261079308309564">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> পঢ়িব পাৰে"</string>
     <string name="can_write" msgid="5082414937218423823">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> লিখিব পাৰে"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"নিষ্ক্ৰিয় এপ্‌সমূহ"</string>
-    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
-    <skip />
+    <string name="inactive_apps_message" msgid="8335803540719022910">"এই এপ্‌সমূহে আৰু <xliff:g id="DATA_TYPE">%s</xliff:g> পঢ়িব বা লিখিব নোৱাৰে, কিন্তু তথাপি Health Connectত ডেটা ষ্ট’ৰ কৰি ৰাখিছে"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"এপ্‌সমূহে <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> আৰু পঢ়িব অথবা লিখিব নোৱাৰিব আৰু Health Connectত কোনো <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> ডেটা ষ্ট’ৰ কৰি ৰখা হোৱা নাই"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"এই ডেটাত সক্ৰিয় হৈ থকাৰ সময়, ব্যায়ামৰ ধৰণ, দৌৰি ঘূৰি অহা পাকৰ সংখ্যা, পুনৰাবৃত্তি, ছেশ্বন অথবা ছুইমিং ষ্ট্ৰোক অন্তৰ্ভুক্ত"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"এই ডেটাত শোৱাৰ স্তৰ আৰু শোৱাৰ ছেশ্বনৰ দৰে তথ্য অন্তৰ্ভুক্ত"</string>
@@ -328,8 +330,10 @@
     <string name="additional_access_label" msgid="4645249249222528341">"অতিৰিক্ত এক্সেছ"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"এই এপ্‌টোৰ বাবে অতিৰিক্ত অনুমতি আঁতৰোৱা হৈছে"</string>
     <string name="permissions_header" msgid="6519976063360071569">"অনুমতি"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"ফিটনেছৰ অনুমতি পৰিচালনা কৰক"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"স্বাস্থ্য সম্বন্ধীয় নথিৰ অনুমতি পৰিচালনা কৰক"</string>
+    <string name="manage_fitness_permissions" msgid="3363128122122446755">"ফিটনেছ আৰু সুস্থতা"</string>
+    <string name="manage_fitness_permissions_summary" msgid="2558503899466623148">"ব্যায়াম, টোপনি, পুষ্টি আৰু অন্যান্য"</string>
+    <string name="manage_medical_permissions" msgid="3772912800582350567">"স্বাস্থ্য সম্বন্ধীয় নথি"</string>
+    <string name="manage_medical_permissions_summary" msgid="2624707097284112258">"লেবৰ ফলাফল, ঔষধ, প্ৰতিষেধক আৰু অন্যান্য"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"অনুমতি আঁতৰোৱা এপ্‌সমূহ"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connectএ <xliff:g id="APP_DATA">%s</xliff:g>ৰ অনুমতি আঁতৰাইছে"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connectএ <xliff:g id="APP_DATA_0">%1$s</xliff:g> আৰু <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>ৰ অনুমতি আঁতৰাইছে"</string>
@@ -343,6 +347,8 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"ডেটা ৰপ্তানি কৰিব পৰা নগ’ল"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g>ৰ বাবে ৰপ্তানিৰ ক্ষেত্ৰত সমস্যা হৈছে। অনুগ্ৰহ কৰি এটা নতুন সময়সূচী নিৰ্ধাৰিত ৰপ্তানি ছেট আপ কৰক আৰু পুনৰ চেষ্টা কৰক।"</string>
     <string name="next_export_time" msgid="3138247220014510213">"পৰৱৰ্তী ৰপ্তানি: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <!-- no translation found for next_export_text (6726252793571403846) -->
+    <skip />
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"বেকআপ লওক আৰু পুনঃস্থাপন কৰক"</string>
     <string name="last_export_time" msgid="9205875050823594041">"অন্তিম ৰপ্তানি: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>

@@ -1671,7 +1671,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                 callback.onError(new StageRemoteDataException(exceptionsByFileName));
             } catch (RemoteException remoteException) {
-                Log.e(TAG, "Restore permission response could not be sent to the caller.", e);
+                Log.e(TAG, "Stage data response could not be sent to the caller.", e);
             }
         }
     }
