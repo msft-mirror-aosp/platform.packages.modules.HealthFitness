@@ -313,6 +313,7 @@ public final class BackupRestore {
             try {
                 if (exceptionsByFileName.isEmpty()) {
                     callback.onResult();
+                    Slog.i(TAG, "Restore response sent successfully to caller.");
                 } else {
                     Slog.i(TAG, "Exceptions encountered during staging.");
                     setDataRestoreError(RESTORE_ERROR_FETCHING_DATA);

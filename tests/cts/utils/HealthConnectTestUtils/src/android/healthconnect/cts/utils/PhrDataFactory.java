@@ -25,6 +25,7 @@ import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.FhirResource;
+import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 
@@ -62,8 +63,23 @@ public class PhrDataFactory {
 
     public static final String RESOURCE_TYPE_FIELD_NAME = "resourceType";
     public static final String RESOURCE_ID_FIELD_NAME = "id";
-    public static final String FHIR_VERSION_R4 = "4.0.1";
-    public static final String FHIR_VERSION_R4B = "4.3.0";
+
+    /**
+     * String version code for FHIR version <a href="https://hl7.org/fhir/r4/versions.html">R4</a>.
+     */
+    public static final String R4_VERSION_STRING = "4.0.1";
+
+    /**
+     * {@link FhirVersion} for FHIR version <a href="https://hl7.org/fhir/r4/versions.html">R4</a>.
+     */
+    public static final FhirVersion FHIR_VERSION_R4 = parseFhirVersion(R4_VERSION_STRING);
+
+    /** String version code for FHIR version <a href="https://www.hl7.org/fhir/R4B/">R4B</a>. */
+    public static final String R4B_VERSION_STRING = "4.3.0";
+
+    /** {@link FhirVersion} for FHIR version <a href="https://www.hl7.org/fhir/R4B/">R4B</a>. */
+    public static final FhirVersion FHIR_VERSION_R4B = parseFhirVersion(R4B_VERSION_STRING);
+
     public static final String PAGE_TOKEN = "111";
 
     /** Creates and returns a {@link MedicalDataSource.Builder} with default arguments. */
@@ -172,7 +188,7 @@ public class PhrDataFactory {
         return new MedicalResource.Builder(
                 MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                 DATA_SOURCE_ID,
-                parseFhirVersion(FHIR_VERSION_R4),
+                FHIR_VERSION_R4,
                 getFhirResource());
     }
 
@@ -188,7 +204,7 @@ public class PhrDataFactory {
     /** Creates and returns a {@link UpsertMedicalResourceRequest} with default arguments. */
     public static UpsertMedicalResourceRequest getUpsertMedicalResourceRequest() {
         return new UpsertMedicalResourceRequest.Builder(
-                        DATA_SOURCE_ID, parseFhirVersion(FHIR_VERSION_R4), FHIR_DATA_IMMUNIZATION)
+                        DATA_SOURCE_ID, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
                 .build();
     }
 
