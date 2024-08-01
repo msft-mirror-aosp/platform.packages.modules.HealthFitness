@@ -15,7 +15,6 @@
  */
 package com.android.healthconnect.controller.utils.logging
 
-import android.util.Log
 import com.android.healthconnect.controller.HealthFitnessUiStatsLog.*
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -1084,7 +1083,7 @@ enum class AllEntriesElement(override val impressionId: Int, override val intera
     DATE_VIEW_SPINNER_WEEK(
         HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__DATE_VIEW_SPINNER_WEEK,
         HEALTH_CONNECT_UI_INTERACTION__ELEMENT__DATE_VIEW_SPINNER_WEEK),
-    DATE_VIEW_SPINNER_YEAR(
+    DATE_VIEW_SPINNER_MONTH(
         HEALTH_CONNECT_UI_IMPRESSION__ELEMENT__DATE_VIEW_SPINNER_YEAR,
         HEALTH_CONNECT_UI_INTERACTION__ELEMENT__DATE_VIEW_SPINNER_YEAR),
 }

@@ -21,7 +21,7 @@ import android.widget.TextView
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedDataEntry
 import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
-import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.AllEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
@@ -44,8 +44,7 @@ class EntryItemViewBinder : ViewBinder<FormattedDataEntry, View> {
         val header = view.findViewById<TextView>(R.id.item_data_entry_header)
         val title = view.findViewById<TextView>(R.id.item_data_entry_title)
         val deleteButton = view.findViewById<ImageButton>(R.id.item_data_entry_delete)
-        logger.logImpression(DataEntriesElement.DATA_ENTRY_VIEW)
-        logger.logImpression(DataEntriesElement.DATA_ENTRY_DELETE_BUTTON)
+        logger.logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
 
         title.text = data.title
         title.contentDescription = data.titleA11y

@@ -44,17 +44,27 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.whenever
+import com.android.healthconnect.controller.utils.logging.DataAccessElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import java.util.Locale
 import org.hamcrest.Matchers.not
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 
 @HiltAndroidTest
 class AccessFragmentTest {
@@ -62,15 +72,23 @@ class AccessFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @BindValue val viewModel: AccessViewModel = Mockito.mock(AccessViewModel::class.java)
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
 
     @Before
     fun setup() {
         hiltRule.inject()
+        toggleAnimation(false)
         context = InstrumentationRegistry.getInstrumentation().context
         navHostController = TestNavHostController(context)
         context.setLocale(Locale.US)
+    }
+
+    @After
+    fun tearDown() {
+        toggleAnimation(true)
+        reset(healthConnectLogger)
     }
 
     @Test
@@ -148,6 +166,11 @@ class AccessFragmentTest {
                 withText(
                     "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
             .check(doesNotExist())
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.TAB_ACCESS_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger, times(2))
+            .logImpression(DataAccessElement.DATA_ACCESS_APP_BUTTON)
     }
 
     @Test
@@ -170,6 +193,8 @@ class AccessFragmentTest {
                 withText(
                     "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
             .check(matches(isDisplayed()))
+
+        verify(healthConnectLogger).logImpression(DataAccessElement.DATA_ACCESS_INACTIVE_APP_BUTTON)
     }
 
     @Test

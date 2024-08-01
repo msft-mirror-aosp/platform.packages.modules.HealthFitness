@@ -72,6 +72,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -150,6 +151,22 @@ public final class MedicalResourceHelper {
             medicalResources = getMedicalResources(cursor);
         }
         return medicalResources;
+    }
+
+    /**
+     * Reads the {@link MedicalResource}s stored in the HealthConnect database.
+     *
+     * @return List of {@link MedicalResource}s read from medical_resource table based on ids.
+     */
+    public List<MedicalResource> readMedicalResourcesByIds(
+            @NonNull List<MedicalResourceId> ignoredMedicalResourceIds,
+            @NonNull Set<Integer> ignoredGrantedMedicalResourceTypes,
+            @NonNull String ignoredCallingPackageName,
+            boolean ignoredHasWritePermission,
+            boolean ignoredIsCalledFromBgWithoutBgRead)
+            throws SQLiteException {
+        // TODO(b/350435512): Use ignored fields for permission checks in read table request.
+        return List.of();
     }
 
     /**
@@ -471,7 +488,8 @@ public final class MedicalResourceHelper {
     /**
      * Deletes all {@link MedicalResource}s that are part of the given datasource.
      *
-     * <p>No error occurs if any of the ids are not present because the ids are just a part of the filters.
+     * <p>No error occurs if any of the ids are not present because the ids are just a part of the
+     * filters.
      *
      * @param medicalDataSourceIds list of ids from {@link MedicalDataSource#getId()}.
      */

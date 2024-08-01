@@ -24,28 +24,41 @@ import android.health.connect.MedicalPermissionCategory;
 import android.health.connect.datatypes.MedicalResource;
 import android.util.SparseIntArray;
 
-import java.util.Objects;
-
 /** @hide */
 public final class MedicalResourceTypePermissionCategoryMapper {
 
-    private static SparseIntArray sMedicalResourceTypeHealthPermissionCategoryMap =
+    private static final SparseIntArray sMedicalResourceTypeToPermissionCategoryMap =
+            new SparseIntArray();
+    private static final SparseIntArray sMedicalResourcePermissionCategoryToTypeMap =
             new SparseIntArray();
 
     private MedicalResourceTypePermissionCategoryMapper() {}
 
-    private static void populateMedicalResourceTypeHealthPermissionCategoryMap() {
+    private static void populateMedicalResourceTypeToPermissionCategoryMap() {
         if (!personalHealthRecord()) {
             throw new UnsupportedOperationException(
-                    "populateMedicalResourceTypeHealthPermissionCategoryMap is not supported");
+                    "populateMedicalResourceTypeToPermissionCategoryMap is not supported");
         }
 
-        if (sMedicalResourceTypeHealthPermissionCategoryMap.size() != 0) {
+        if (sMedicalResourceTypeToPermissionCategoryMap.size() != 0) {
             return;
         }
 
-        sMedicalResourceTypeHealthPermissionCategoryMap.put(
+        sMedicalResourceTypeToPermissionCategoryMap.put(
                 MEDICAL_RESOURCE_TYPE_IMMUNIZATION, MedicalPermissionCategory.IMMUNIZATION);
+    }
+
+    private static void populateMedicalResourcePermissionCategoryToTypeMap() {
+        if (sMedicalResourcePermissionCategoryToTypeMap.size() != 0) {
+            return;
+        }
+
+        populateMedicalResourceTypeToPermissionCategoryMap();
+        for (int i = 0; i < sMedicalResourceTypeToPermissionCategoryMap.size(); i++) {
+            sMedicalResourcePermissionCategoryToTypeMap.put(
+                    sMedicalResourceTypeToPermissionCategoryMap.valueAt(i),
+                    sMedicalResourceTypeToPermissionCategoryMap.keyAt(i));
+        }
     }
 
     /**
@@ -55,14 +68,34 @@ public final class MedicalResourceTypePermissionCategoryMapper {
     @MedicalPermissionCategory.Type
     public static int getMedicalPermissionCategory(
             @MedicalResource.MedicalResourceType int resourceType) {
-        populateMedicalResourceTypeHealthPermissionCategoryMap();
+        populateMedicalResourceTypeToPermissionCategoryMap();
 
-        @MedicalPermissionCategory.Type
-        Integer resourceCategory =
-                sMedicalResourceTypeHealthPermissionCategoryMap.get(resourceType);
-        Objects.requireNonNull(
-                resourceCategory,
-                "Medical Permission Category not found for resource type:" + resourceType);
-        return resourceCategory;
+        int idx = sMedicalResourceTypeToPermissionCategoryMap.indexOfKey(resourceType);
+        if (idx < 0) {
+            throw new IllegalArgumentException(
+                    "Medical Permission Category not found for the Medical Resource Type:"
+                            + resourceType);
+        }
+
+        return sMedicalResourceTypeToPermissionCategoryMap.valueAt(idx);
+    }
+
+    /**
+     * Returns {@link MedicalResource.MedicalResourceType} for the input {@link
+     * MedicalPermissionCategory.Type}.
+     */
+    @MedicalResource.MedicalResourceType
+    public static int getMedicalResourceType(
+            @MedicalPermissionCategory.Type int permissionCategory) {
+        populateMedicalResourcePermissionCategoryToTypeMap();
+
+        int idx = sMedicalResourcePermissionCategoryToTypeMap.indexOfKey(permissionCategory);
+        if (idx < 0) {
+            throw new IllegalArgumentException(
+                    "Medical Resource Type not found for the Medical Permission Category:"
+                            + permissionCategory);
+        }
+
+        return sMedicalResourcePermissionCategoryToTypeMap.valueAt(idx);
     }
 }

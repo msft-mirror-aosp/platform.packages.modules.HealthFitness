@@ -25,7 +25,7 @@ import com.android.healthconnect.controller.data.entries.FormattedEntry.Exercise
 import com.android.healthconnect.controller.shared.RoundView
 import com.android.healthconnect.controller.shared.map.MapView
 import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
-import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.AllEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
@@ -56,7 +56,7 @@ class ExerciseSessionItemViewBinder(
         val deleteButton = view.findViewById<ImageButton>(R.id.item_data_entry_delete)
         val mapView = view.findViewById<MapView>(R.id.map_view)
         val mapContainer = view.findViewById<RoundView>(R.id.map_round_view)
-        logger.logImpression(DataEntriesElement.EXERCISE_SESSION_ENTRY_BUTTON)
+        logger.logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
         title.text = data.title
         title.contentDescription = data.titleA11y
         header.text = data.header
@@ -70,7 +70,7 @@ class ExerciseSessionItemViewBinder(
             mapView.setRoute(data.route)
         }
         container.setOnClickListener {
-            logger.logInteraction(DataEntriesElement.EXERCISE_SESSION_ENTRY_BUTTON)
+            logger.logInteraction(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
             onItemClickedListener?.onItemClicked(data.uuid, index)
         }
     }

@@ -27,6 +27,7 @@ import android.provider.DocumentsContract
 import android.view.View
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
+import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -603,13 +604,13 @@ class ImportSourceLocationFragmentTest {
     }
 
     @Test
-    fun importSourceLocationFragment_noProvidersAndPlayStoreNotAvailable_showsInstallAppsText() {
+    fun importSourceLocationFragment_noProvidersAndPlayStoreNotAvailable_showsNoAppsText() {
         (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(false)
 
         fakeHealthDataExportManager.setExportImportDocumentProviders(listOf())
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
-        onView(withText(R.string.export_import_install_apps_text)).check(matches(isDisplayed()))
+        onView(withText(R.string.export_import_no_apps_text)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -624,13 +625,13 @@ class ImportSourceLocationFragmentTest {
     }
 
     @Test
-    fun importSourceLocationFragment_noProvidersAndPlayStoreAvailable_showsInstallAppsText() {
+    fun importSourceLocationFragment_noProvidersAndPlayStoreAvailable_showsNoAppsText() {
         (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(true)
 
         fakeHealthDataExportManager.setExportImportDocumentProviders(listOf())
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
-        onView(withText(R.string.export_import_install_apps_text)).check(matches(isDisplayed()))
+        onView(withText(R.string.export_import_no_apps_text)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -924,6 +925,92 @@ class ImportSourceLocationFragmentTest {
         onView(withId(R.id.export_import_go_to_play_store)).perform(click())
 
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.play_store_activity)
+    }
+
+    @Test
+    fun importSourceLocationFragment_orientationChanged_keepsSelection() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_2_TITLE,
+                    TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        val scenario = launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
+        onView(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY))
+            .inRoot(isDialog())
+            .perform(click())
+        onView(withText("Done")).inRoot(isDialog()).perform(click())
+
+        scenario.recreate()
+        onIdle()
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE))
+            .check(
+                matches(
+                    hasDescendant(
+                        allOf(withId(R.id.item_document_provider_radio_button), isChecked()))))
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE))
+            .check(
+                matches(
+                    hasDescendant(
+                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY), isDisplayed()))))
+    }
+
+    @Test
+    fun importSourceLocationFragment_orientationChanged_nextButtonClicked_startsDocumentsUi() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_2_TITLE,
+                    TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        val scenario = launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
+        onView(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY))
+            .inRoot(isDialog())
+            .perform(click())
+        onView(withText("Done")).inRoot(isDialog()).perform(click())
+
+        scenario.recreate()
+        onIdle()
+        onView(withText("Next")).perform(click())
+
+        intended(hasAction(Intent.ACTION_OPEN_DOCUMENT))
+        intended(hasType("application/zip"))
+        intended(hasExtra(DocumentsContract.EXTRA_INITIAL_URI, TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI))
     }
 
     private fun documentProviderWithTitle(title: String): Matcher<View>? =
