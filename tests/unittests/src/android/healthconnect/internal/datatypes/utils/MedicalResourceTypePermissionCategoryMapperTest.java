@@ -23,6 +23,8 @@ import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
 import android.health.connect.MedicalPermissionCategory;
 import android.health.connect.internal.datatypes.utils.MedicalResourceTypePermissionCategoryMapper;
 import android.platform.test.annotations.EnableFlags;
@@ -36,7 +38,7 @@ public class MedicalResourceTypePermissionCategoryMapperTest {
 
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetMedicalPermissionCategoryForResourceType_immunizationType_returnsCategory() {
+    public void testGetMedicalPermissionCategoryForResourceType_immunizationType_returns() {
         int category =
                 MedicalResourceTypePermissionCategoryMapper.getMedicalPermissionCategory(
                         MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
@@ -47,7 +49,30 @@ public class MedicalResourceTypePermissionCategoryMapperTest {
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalPermissionCategoryForResourceType_unknownType_throws() {
-        MedicalResourceTypePermissionCategoryMapper.getMedicalPermissionCategory(
-                MEDICAL_RESOURCE_TYPE_UNKNOWN);
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        MedicalResourceTypePermissionCategoryMapper.getMedicalPermissionCategory(
+                                MEDICAL_RESOURCE_TYPE_UNKNOWN));
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalResourceTypeForPermissionCategory_immunizationType_returns() {
+        int medicalResourceType =
+                MedicalResourceTypePermissionCategoryMapper.getMedicalResourceType(
+                        MedicalPermissionCategory.IMMUNIZATION);
+
+        assertThat(medicalResourceType).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalResourceTypeForPermissionCategory_unknownType_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        MedicalResourceTypePermissionCategoryMapper.getMedicalResourceType(
+                                MedicalPermissionCategory.ALL_MEDICAL_DATA));
     }
 }

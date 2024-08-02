@@ -280,6 +280,7 @@ public class HealthConnectServiceImplTest {
         mContext =
                 new HealthConnectUserContext(
                         InstrumentationRegistry.getInstrumentation().getContext(), mUserHandle);
+        HealthConnectDeviceConfigManager.initializeInstance(mContext);
         mAttributionSource = mContext.getAttributionSource();
         when(mServiceContext.createContextAsUser(mUserHandle, 0)).thenReturn(mContext);
         when(mServiceContext.getSystemService(ActivityManager.class))
