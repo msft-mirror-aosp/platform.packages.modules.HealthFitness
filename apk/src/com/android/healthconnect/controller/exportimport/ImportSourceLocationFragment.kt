@@ -97,7 +97,7 @@ class ImportSourceLocationFragment : Hilt_ImportSourceLocationFragment() {
 
         val documentProvidersViewBinder = DocumentProvidersViewBinder()
         val documentProvidersList = view.findViewById<ViewGroup>(R.id.import_document_providers)
-        viewModel.documentProviders.observe(viewLifecycleOwner) { providers ->
+        viewModel.documentProviders.observe(viewLifecycleOwner) { providers: DocumentProviders ->
             documentProvidersList.removeAllViews()
             nextButton.setOnClickListener {}
             nextButton.setEnabled(false)
