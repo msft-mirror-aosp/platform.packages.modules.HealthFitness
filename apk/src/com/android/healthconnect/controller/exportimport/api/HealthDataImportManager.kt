@@ -30,5 +30,9 @@ interface HealthDataImportManager {
         outcomeReceiver: OutcomeReceiver<ImportStatus, HealthConnectException>
     )
 
-    fun runImport(uri: Uri) {}
+    fun runImport(
+        uri: Uri,
+        executor: Executor,
+        outcomeReceiver: OutcomeReceiver<Void, HealthConnectException>
+    )
 }

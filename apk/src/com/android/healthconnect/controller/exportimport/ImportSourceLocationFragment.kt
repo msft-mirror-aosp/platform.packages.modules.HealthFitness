@@ -69,6 +69,8 @@ class ImportSourceLocationFragment : Hilt_ImportSourceLocationFragment() {
         val pageHeaderView = view.findViewById<TextView>(R.id.page_header_text)
         val pageHeaderIconView = view.findViewById<ImageView>(R.id.page_header_icon)
         val footerView = view.findViewById<View>(R.id.export_import_footer)
+        val footerIconView = view.findViewById<View>(R.id.export_import_footer_icon)
+        val footerTextView = view.findViewById<TextView>(R.id.export_import_footer_text)
         val playStoreView = view.findViewById<LinkTextView>(R.id.export_import_go_to_play_store)
         val cancelButton = view.findViewById<Button>(R.id.export_import_cancel_button)
         val nextButton = view.findViewById<Button>(R.id.export_import_next_button)
@@ -95,10 +97,12 @@ class ImportSourceLocationFragment : Hilt_ImportSourceLocationFragment() {
 
         val documentProvidersViewBinder = DocumentProvidersViewBinder()
         val documentProvidersList = view.findViewById<ViewGroup>(R.id.import_document_providers)
-        viewModel.documentProviders.observe(viewLifecycleOwner) { providers ->
+        viewModel.documentProviders.observe(viewLifecycleOwner) { providers: DocumentProviders ->
             documentProvidersList.removeAllViews()
             nextButton.setOnClickListener {}
             nextButton.setEnabled(false)
+
+            footerView.setVisibility(GONE)
 
             when (providers) {
                 is DocumentProviders.Loading -> {
@@ -109,7 +113,12 @@ class ImportSourceLocationFragment : Hilt_ImportSourceLocationFragment() {
                 }
                 is DocumentProviders.WithData -> {
                     documentProvidersViewBinder.bindDocumentProvidersView(
-                        providers.providers, documentProvidersList, inflater) { root ->
+                        providers.providers,
+                        viewModel.selectedDocumentProvider.value,
+                        viewModel.selectedDocumentProviderRoot.value,
+                        documentProvidersList,
+                        inflater) { provider, root ->
+                            viewModel.updateSelectedDocumentProvider(provider, root)
                             nextButton.setOnClickListener {
                                 logger.logInteraction(
                                     ImportSourceLocationElement.IMPORT_SOURCE_LOCATION_NEXT_BUTTON)
@@ -129,6 +138,14 @@ class ImportSourceLocationFragment : Hilt_ImportSourceLocationFragment() {
                         footerView.setVisibility(GONE)
                     } else {
                         footerView.setVisibility(VISIBLE)
+
+                        if (providers.providers.isEmpty()) {
+                            footerIconView.setVisibility(GONE)
+                            footerTextView.setText(R.string.export_import_no_apps_text)
+                        } else {
+                            footerIconView.setVisibility(VISIBLE)
+                            footerTextView.setText(R.string.export_import_install_apps_text)
+                        }
                     }
                 }
             }
