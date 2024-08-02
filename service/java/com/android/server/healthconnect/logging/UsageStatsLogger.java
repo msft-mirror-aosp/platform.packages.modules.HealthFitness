@@ -49,10 +49,18 @@ final class UsageStatsLogger {
             return;
         }
 
+        logExportImportStats(usageStatsCollector);
+
         HealthFitnessStatsLog.write(
                 HealthFitnessStatsLog.HEALTH_CONNECT_USAGE_STATS,
                 numberOfConnectedApps,
                 numberOfAvailableApps,
                 isUserMonthlyActive);
+    }
+
+    static void logExportImportStats(UsageStatsCollector usageStatsCollector) {
+        int exportFrequency = usageStatsCollector.getExportFrequency();
+        HealthFitnessStatsLog.write(
+                HealthFitnessStatsLog.HEALTH_CONNECT_EXPORT_IMPORT_STATS_REPORTED, exportFrequency);
     }
 }
