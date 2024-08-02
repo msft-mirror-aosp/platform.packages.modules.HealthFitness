@@ -1828,10 +1828,29 @@ public class HealthConnectManager {
      */
     @WorkerThread
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
-    public void runImport(@NonNull Uri file) {
+    public void runImport(
+            @NonNull Uri file,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
         Objects.requireNonNull(file);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
         try {
-            mService.runImport(mContext.getUser(), file);
+            mService.runImport(
+                    mContext.getUser(),
+                    file,
+                    new IEmptyResponseCallback.Stub() {
+                        @Override
+                        public void onResult() {
+                            Binder.clearCallingIdentity();
+                            executor.execute(() -> callback.onResult(null));
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
         } catch (RemoteException e) {
             e.rethrowFromSystemServer();
         }

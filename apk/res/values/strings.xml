@@ -840,6 +840,7 @@
     <string name="rest" description="Auto-detected periods of rest during an activity session. There should be no user movement detected during rest and any movement detected should finish rest event. [CHAR LIMIT=50]">Rest</string>
     <string name="pause" description="Explicit pause during an activity session, requested by the user. [CHAR LIMIT=50]">Pause</string>
     <string name="activity_type_australian_football" translation_description="Activity type: playing australian football. [CHAR LIMIT=40]">Australian football</string>
+    <string name="unknown_type" description="Unknown exercise type">Unknown type</string>
     <!--  endregion-->
 
     <!--  region sleep -->
