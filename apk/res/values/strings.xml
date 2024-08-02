@@ -34,6 +34,8 @@
     <string name="connected_apps_connected_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens when all possible apps are connected. [ICU SYNTAX][CHAR_LIMIT=NONE]">{count, plural, =1 {1 app has access} other {# apps have access}}</string>
     <string name="connected_apps_button_no_permissions_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens, when no apps are connected. [CHAR_LIMIT=NONE]">None</string>
     <string name="entry_details_title" description="Label for a screen that list an entry details. [CHAR_LIMIT=40]">Entry details</string>
+    <string name="browse_data_title" description="Label for button that allows the user to browse data [CHAR_LIMIT=NONE]">Browse data</string>
+    <string name="browse_data_subtitle" description="Description for button that allows the user to browse data [CHAR_LIMIT=NONE]">See data and which apps can access it</string>
     <string name="manage_data_summary" description="Summary for the manage data preference. [CHAR_LIMIT=NONE]">Auto-delete, data sources, backup and restore</string>
     <!--  endregion -->
 
@@ -431,10 +433,11 @@
     <string name="additional_access_label" description="Label of a button that opens additional permissions access for an app. [CHAR_LIMIT=40]">Additional access</string>
     <string name="removed_additional_permissions_toast" description="Message letting the user know that additional permissions have also been removed for this app">Removed additional permissions for this app</string>
     <string name="permissions_header" description="Title shown for section that lists permissions. [CHAR_LIMIT=40]">Permissions</string>
-    <string name="manage_fitness_permissions" description="Label of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Fitness and wellness</string>
-    <string name="manage_fitness_permissions_summary" description="Summary of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Exercise, sleep, nutrition and others</string>
-    <string name="manage_medical_permissions" description="Label of a button that opens the medical permissions screen. [CHAR_LIMIT=40]">Health records</string>
-    <string name="manage_medical_permissions_summary" description="Summary of a button that opens the medical permissions screen. [CHAR_LIMIT=40]">Lab results, medications, immunizations and others</string>
+    <string name="fitness_permissions" description="Label of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Fitness and wellness</string>
+    <string name="fitness_permissions_summary" description="Summary of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Exercise, sleep, nutrition and others</string>
+    <string name="medical_permissions" description="Uppercase name of medical data category that contains lab results, immunizations, medications, etc. [CHAR_LIMIT=40]">Health records</string>
+    <string name="medical_permissions_lowercase" description="Lowercase name of medical data category that contains lab results, immunizations, medications, etc. [CHAR_LIMIT=40]">health records</string>
+    <string name="medical_permissions_summary" description="Summary of a button that opens the medical permissions screen. [CHAR_LIMIT=40]">Lab results, medications, immunizations and others</string>
     <!--endregion-->
 
     <!--region Denied Apps -->
@@ -453,7 +456,8 @@
     <string name="export_file_access_error_banner_button" description="Button of banner prompting the user to set up the scheduled export again due to the lost file access. [CHAR LIMIT=50]">Set up</string>
     <string name="export_file_access_error_banner_title" description="Title of banner prompting the user to set up the scheduled export again due to the lost file access. [CHAR LIMIT=50]">Couldn\'t export data</string>
     <string name="export_file_access_error_banner_summary" description="Summary of banner prompting the user to set up the scheduled export again due to the lost file access. [CHAR LIMIT=NONE]">There was a problem with the export for <xliff:g example="May 21" id="date">%1$s</xliff:g>. Please set up a new scheduled export and try again.</string>
-    <string name="next_export_time" description="Text to shown when the next export will be [CHAR LIMIT=40]">Next export: <xliff:g example="May 21" id="date">%1$s</xliff:g></string>
+    <string name="next_export_time" description="Text to show when the next export will be [CHAR LIMIT=40]">Next export: <xliff:g example="May 21" id="date">%1$s</xliff:g></string>
+    <string name="next_export_text" description="Text to show when the next export will start soon [CHAR LIMIT=60]">Next export starting soon</string>
 
     <string name="backup_and_restore_settings_screen_title" description="Title of the 'backup and restore' screen where users can set up configurations to export and import Health Connect data. [CHAR_LIMIT=40]">Backup and restore</string>
     <string name="last_export_time" description="Text to show when the last successful export was [CHAR LIMIT=40]">Last export: <xliff:g example="May 21" id="date">%1$s</xliff:g></string>
@@ -836,6 +840,7 @@
     <string name="rest" description="Auto-detected periods of rest during an activity session. There should be no user movement detected during rest and any movement detected should finish rest event. [CHAR LIMIT=50]">Rest</string>
     <string name="pause" description="Explicit pause during an activity session, requested by the user. [CHAR LIMIT=50]">Pause</string>
     <string name="activity_type_australian_football" translation_description="Activity type: playing australian football. [CHAR LIMIT=40]">Australian football</string>
+    <string name="unknown_type" description="Unknown exercise type">Unknown type</string>
     <!--  endregion-->
 
     <!--  region sleep -->

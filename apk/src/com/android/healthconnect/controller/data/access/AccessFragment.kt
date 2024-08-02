@@ -24,7 +24,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_KEY
+import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
 import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_TYPE
 import com.android.healthconnect.controller.deletion.DeletionConstants.START_DELETION_EVENT
 import com.android.healthconnect.controller.deletion.DeletionType
@@ -79,22 +79,20 @@ class AccessFragment : Hilt_AccessFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.access_screen, rootKey)
-        if (requireArguments().containsKey(PERMISSION_TYPE_KEY)) {
+        if (requireArguments().containsKey(PERMISSION_TYPE_NAME_KEY)) {
             val permissionTypeName =
-                arguments?.getString(PERMISSION_TYPE_KEY)
-                   ?: throw IllegalArgumentException("PERMISSION_TYPE_KEY can't be null!")
-            permissionType =  fromPermissionTypeName(permissionTypeName)
+                arguments?.getString(PERMISSION_TYPE_NAME_KEY)
+                    ?: throw IllegalArgumentException("PERMISSION_TYPE_NAME_KEY can't be null!")
+            permissionType = fromPermissionTypeName(permissionTypeName)
         }
 
         mCanReadSection?.isVisible = false
         mCanWriteSection?.isVisible = false
         mInactiveSection?.isVisible = false
         mCanReadSection?.title =
-            getString(
-                R.string.can_read, getString(permissionType.lowerCaseLabel()))
+            getString(R.string.can_read, getString(permissionType.lowerCaseLabel()))
         mCanWriteSection?.title =
-            getString(
-                R.string.can_write, getString(permissionType.lowerCaseLabel()))
+            getString(R.string.can_write, getString(permissionType.lowerCaseLabel()))
     }
 
     override fun onResume() {
@@ -200,7 +198,7 @@ class AccessFragment : Hilt_AccessFragment() {
         return HealthAppPreference(requireContext(), appAccessMetadata.appMetadata).also {
             it.logName = DataAccessElement.DATA_ACCESS_APP_BUTTON
             it.setOnPreferenceClickListener {
-               navigateToAppInfoScreen(appAccessMetadata)
+                navigateToAppInfoScreen(appAccessMetadata)
                 true
             }
         }
@@ -210,9 +208,12 @@ class AccessFragment : Hilt_AccessFragment() {
         val appPermissionsType = appAccessMetadata.appPermissionsType
         val navigationId =
             when (appPermissionsType) {
-                AppPermissionsType.FITNESS_PERMISSIONS_ONLY -> R.id.action_entriesAndAccessFragment_to_fitnessApp
-                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY -> R.id.action_entriesAndAccessFragment_to_medicalApp
-                AppPermissionsType.COMBINED_PERMISSIONS -> R.id.action_entriesAndAccessFragment_to_combinedPermissions
+                AppPermissionsType.FITNESS_PERMISSIONS_ONLY ->
+                    R.id.action_entriesAndAccessFragment_to_fitnessApp
+                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY ->
+                    R.id.action_entriesAndAccessFragment_to_medicalApp
+                AppPermissionsType.COMBINED_PERMISSIONS ->
+                    R.id.action_entriesAndAccessFragment_to_combinedPermissions
             }
         findNavController()
             .navigate(

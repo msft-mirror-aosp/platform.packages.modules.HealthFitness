@@ -16,9 +16,11 @@
 
 package com.android.healthconnect.controller.exportimport
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.ContentResolver
 import android.content.DialogInterface
+import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
@@ -31,6 +33,8 @@ import com.android.healthconnect.controller.exportimport.api.ImportFlowViewModel
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.utils.logging.ImportConfirmationDialogElement
 import dagger.hilt.android.AndroidEntryPoint
+
+private const val SELECTED_URI_KEY = "selectedUri"
 
 /** Fragment to get the user to confirm that they have selected the right import file. */
 @AndroidEntryPoint(DialogFragment::class)
@@ -46,7 +50,8 @@ class ImportConfirmationDialogFragment : Hilt_ImportConfirmationDialogFragment()
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val importFileUriString = arguments?.getString(IMPORT_FILE_URI_KEY) ?: ""
         val importFileName = getFileName(importFileUriString)
-        val importMessage = requireContext().getString(R.string.import_confirmation_dialog_text, importFileName)
+        val importMessage =
+            requireContext().getString(R.string.import_confirmation_dialog_text, importFileName)
 
         return AlertDialogBuilder(
                 requireContext(), ImportConfirmationDialogElement.IMPORT_CONFIRMATION_CONTAINER)
@@ -60,7 +65,9 @@ class ImportConfirmationDialogFragment : Hilt_ImportConfirmationDialogFragment()
                     _: Int ->
                     Slog.i(TAG, "positive button clicked")
                     Slog.i(TAG, importFileUriString)
-                    viewModel.triggerImportOfSelectedFile(Uri.parse(importFileUriString))
+                    val returnIntent: Intent =
+                        Intent().putExtra(SELECTED_URI_KEY, importFileUriString)
+                    requireActivity().setResult(Activity.RESULT_OK, returnIntent)
                     requireActivity().finish()
                 }
             .setNeutralButton(

@@ -115,6 +115,7 @@ public class ImportManagerTest {
         InstrumentationRegistry.getInstrumentation()
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
+        HealthDataCategoryPriorityHelper.clearInstanceForTest();
         mContext = mDatabaseTestRule.getUserContext();
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(mContext, mTransactionManager);
@@ -123,7 +124,6 @@ public class ImportManagerTest {
         mNotificationSender = mock(HealthConnectNotificationSender.class);
         mImportManager = new ImportManager(mContext, mNotificationSender);
         HealthConnectDeviceConfigManager.initializeInstance(mContext);
-        HealthDataCategoryPriorityHelper.clearInstanceForTest();
 
         mPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
         mPriorityHelper.setPriorityOrder(HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME));
