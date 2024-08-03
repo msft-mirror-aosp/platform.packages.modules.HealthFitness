@@ -31,6 +31,8 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.HeightRecordInternal;
 import android.util.Pair;
 
+import androidx.annotation.Nullable;
+
 import com.android.server.healthconnect.storage.request.AggregateParams;
 
 import java.util.Arrays;
@@ -51,8 +53,8 @@ public final class HeightRecordHelper extends InstantRecordHelper<HeightRecordIn
         super(RecordTypeIdentifier.RECORD_TYPE_HEIGHT);
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
+    @Nullable
     public AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         double aggregateValue;

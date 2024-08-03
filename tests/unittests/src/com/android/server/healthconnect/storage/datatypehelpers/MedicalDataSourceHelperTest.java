@@ -203,7 +203,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
     public void createAndGetSingleMedicalDataSource_packageDoesNotExist_success()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
@@ -223,7 +223,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
     public void createAndGetSingleMedicalDataSource_packageAlreadyExists_success() {
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
         CreateMedicalDataSourceRequest createMedicalDataSourceRequest1 =
@@ -242,7 +242,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
     public void createAndGetMultipleMedicalDataSources_bothPackagesAlreadyExist_success() {
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
@@ -271,7 +271,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
     public void createAndGetMultipleMedicalDataSourcesWithSamePackage_packageDoesNotExist_success()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
@@ -300,7 +300,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
     public void
             createAndGetMultipleMedicalDataSourcesWithDifferentPackages_packagesDoNotExist_success()
                     throws NameNotFoundException {
@@ -333,7 +333,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
     public void getMedicalDataSourcesByPackage_noPackages_returnsAll() throws Exception {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
         setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
@@ -361,7 +361,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
     public void getMedicalDataSourcesByPackage_onePackage_filters() throws Exception {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
         setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
@@ -394,7 +394,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
     public void delete_badId_throws() {
         assertThrows(
                 IllegalArgumentException.class,
@@ -404,7 +404,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
     public void delete_badId_leavesRecordsUnchanged() throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
         CreateMedicalDataSourceRequest createMedicalDataSourceRequest =
@@ -427,7 +427,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
     public void delete_oneId_existingDataDeleted() throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
         CreateMedicalDataSourceRequest createMedicalDataSourceRequest =
@@ -446,7 +446,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
     public void delete_multiplePresentOneIdRequested_onlyRequestedDeleted()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);

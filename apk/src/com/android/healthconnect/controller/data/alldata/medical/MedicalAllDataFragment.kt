@@ -15,39 +15,21 @@
  */
 package com.android.healthconnect.controller.data.alldata.medical
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
-import androidx.annotation.VisibleForTesting
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commitNow
 import androidx.navigation.fragment.findNavController
-import androidx.preference.Preference
-import androidx.preference.PreferenceCategory
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment.Companion.CATEGORY_KEY
-import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_KEY
-import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionStrings
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
-import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.START_DELETION_KEY
 import com.android.healthconnect.controller.selectabledeletion.DeletionFragment
-import com.android.healthconnect.controller.selectabledeletion.DeletionPermissionTypesPreference
-import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
-import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
-import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
-import com.android.healthconnect.controller.shared.HealthDataCategoryInt
-import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.NoDataPreference
-import com.android.healthconnect.controller.utils.logging.CategoriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
-import com.android.healthconnect.controller.utils.setupMenu
 import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -95,9 +77,7 @@ open class MedicalAllDataFragment : Hilt_MedicalAllDataFragment() {
         }
     }
 
-    private fun updatePreferenceScreen(
-        medicalPermissionTypes: List<MedicalPermissionType>
-    ) {
+    private fun updatePreferenceScreen(medicalPermissionTypes: List<MedicalPermissionType>) {
         preferenceScreen?.removeAll()
 
         if (medicalPermissionTypes.isEmpty()) {
@@ -108,24 +88,24 @@ open class MedicalAllDataFragment : Hilt_MedicalAllDataFragment() {
         }
 
         medicalPermissionTypes
-                .sortedBy {
-                    getString(MedicalPermissionStrings.fromPermissionType(it).uppercaseLabel)
-                }
-                .forEach { permissionType ->
-                    preferenceScreen.addPreference(
-                        HealthPreference(requireContext()).also {
-                            it.setTitle(getString(MedicalPermissionStrings.fromPermissionType(permissionType).uppercaseLabel))
-                            // TODO(b/343148212): Add icon.
-                            // TODO(b/342159144): Add logName
-                            it.setOnPreferenceClickListener {
-                                findNavController()
-                                        .navigate(
-                                                R.id.action_medicalAllData_to_entriesAndAccess,
-                                                bundleOf(PERMISSION_TYPE_KEY to permissionType.name))
-                                true
-                            }
-                        })
-                }
-
+            .sortedBy { getString(MedicalPermissionStrings.fromPermissionType(it).uppercaseLabel) }
+            .forEach { permissionType ->
+                preferenceScreen.addPreference(
+                    HealthPreference(requireContext()).also {
+                        it.setTitle(
+                            getString(
+                                MedicalPermissionStrings.fromPermissionType(permissionType)
+                                    .uppercaseLabel))
+                        // TODO(b/343148212): Add icon.
+                        // TODO(b/342159144): Add logName
+                        it.setOnPreferenceClickListener {
+                            findNavController()
+                                .navigate(
+                                    R.id.action_medicalAllData_to_entriesAndAccess,
+                                    bundleOf(PERMISSION_TYPE_NAME_KEY to permissionType.name))
+                            true
+                        }
+                    })
+            }
     }
 }

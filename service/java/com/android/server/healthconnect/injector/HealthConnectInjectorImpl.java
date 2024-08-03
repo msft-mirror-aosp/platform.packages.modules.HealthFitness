@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
 import java.util.Objects;
 
@@ -37,6 +38,7 @@ public class HealthConnectInjectorImpl implements HealthConnectInjector {
 
     private final PackageInfoUtils mPackageInfoUtils;
     private final TransactionManager mTransactionManager;
+    private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -44,14 +46,17 @@ public class HealthConnectInjectorImpl implements HealthConnectInjector {
 
     private HealthConnectInjectorImpl(Builder builder) {
         mPackageInfoUtils =
-                builder.mFakePackageInfoUtils == null
+                builder.mPackageInfoUtils == null
                         ? PackageInfoUtils.getInstance()
-                        : builder.mFakePackageInfoUtils;
-
+                        : builder.mPackageInfoUtils;
         mTransactionManager =
-                builder.mFakeTransactionManager == null
+                builder.mTransactionManager == null
                         ? TransactionManager.initializeInstance(builder.mHealthConnectUserContext)
-                        : builder.mFakeTransactionManager;
+                        : builder.mTransactionManager;
+        mHealthDataCategoryPriorityHelper =
+                builder.mHealthDataCategoryPriorityHelper == null
+                        ? HealthDataCategoryPriorityHelper.getInstance()
+                        : builder.mHealthDataCategoryPriorityHelper;
     }
 
     @NonNull
@@ -64,6 +69,12 @@ public class HealthConnectInjectorImpl implements HealthConnectInjector {
     @Override
     public TransactionManager getTransactionManager() {
         return mTransactionManager;
+    }
+
+    @NonNull
+    @Override
+    public HealthDataCategoryPriorityHelper getHealthDataCategoryPriorityHelper() {
+        return mHealthDataCategoryPriorityHelper;
     }
 
     /**
@@ -85,24 +96,33 @@ public class HealthConnectInjectorImpl implements HealthConnectInjector {
 
         private final HealthConnectUserContext mHealthConnectUserContext;
 
-        @Nullable private PackageInfoUtils mFakePackageInfoUtils;
-        @Nullable private TransactionManager mFakeTransactionManager;
+        @Nullable private PackageInfoUtils mPackageInfoUtils;
+        @Nullable private TransactionManager mTransactionManager;
+        @Nullable private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
 
         private Builder(Context context) {
             mHealthConnectUserContext = new HealthConnectUserContext(context, context.getUser());
         }
 
         /** Set fake or custom PackageInfoUtils */
-        public Builder setPackageInfoUtils(PackageInfoUtils fakePackageInfoUtils) {
-            Objects.requireNonNull(fakePackageInfoUtils);
-            mFakePackageInfoUtils = fakePackageInfoUtils;
+        public Builder setPackageInfoUtils(PackageInfoUtils packageInfoUtils) {
+            Objects.requireNonNull(packageInfoUtils);
+            mPackageInfoUtils = packageInfoUtils;
             return this;
         }
 
         /** Set fake or custom TransactionManager */
-        public Builder setTransactionManager(TransactionManager fakeTransactionManager) {
-            Objects.requireNonNull(fakeTransactionManager);
-            mFakeTransactionManager = fakeTransactionManager;
+        public Builder setTransactionManager(TransactionManager transactionManager) {
+            Objects.requireNonNull(transactionManager);
+            mTransactionManager = transactionManager;
+            return this;
+        }
+
+        /** Set fake or custom HealthDataCategoryPriorityHelper */
+        public Builder setHealthDataCategoryPriorityHelper(
+                HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
+            Objects.requireNonNull(healthDataCategoryPriorityHelper);
+            mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
             return this;
         }
 

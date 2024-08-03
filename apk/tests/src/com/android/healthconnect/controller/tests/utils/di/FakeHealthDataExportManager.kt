@@ -17,7 +17,6 @@
 package com.android.healthconnect.controller.tests.utils.di
 
 import android.health.connect.HealthConnectException
-import android.health.connect.HealthConnectManager
 import android.health.connect.exportimport.ExportImportDocumentProvider
 import android.health.connect.exportimport.ScheduledExportSettings
 import android.health.connect.exportimport.ScheduledExportStatus
@@ -32,7 +31,7 @@ class FakeHealthDataExportManager : HealthDataExportManager {
         private const val DEFAULT_EXPORT_PERIOD_IN_DAYS = 0
         private val DEFAULT_SCHEDULED_EXPORT_STATUS =
             ScheduledExportStatus.Builder()
-                .setDataExportError(HealthConnectManager.DATA_EXPORT_ERROR_NONE)
+                .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
                 .setPeriodInDays(1)
                 .build()
     }
