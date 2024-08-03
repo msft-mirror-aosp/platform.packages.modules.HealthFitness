@@ -25,6 +25,7 @@ import android.os.Environment;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 
@@ -67,6 +68,7 @@ public class HealthConnectDatabaseTestRule extends ExternalResource {
         when(Environment.getDataDirectory()).thenReturn(mockDataDirectory);
         TransactionManager.cleanUpForTest();
         mTransactionManager = TransactionManager.initializeInstance(mContext);
+        HealthConnectDeviceConfigManager.initializeInstance(mContext);
     }
 
     @Override
