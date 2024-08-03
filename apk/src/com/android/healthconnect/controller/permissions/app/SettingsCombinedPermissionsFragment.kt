@@ -25,12 +25,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowMigrationDialog
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState.*
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
 import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -118,57 +118,58 @@ class SettingsCombinedPermissionsFragment : Hilt_SettingsCombinedPermissionsFrag
         managePermissionsCategory.removeAll()
 
         managePermissionsCategory.addPreference(
-                HealthPreference(requireContext()).also {
-                    it.title = getString(R.string.manage_fitness_permissions)
-                    it.summary = getString(R.string.manage_fitness_permissions_summary)
-                    it.setOnPreferenceClickListener {
-                        navigationUtils
-                                .navigate(
-                                        this,
-                                        R.id.action_settingsCombinedPermissions_to_FitnessAppFragment,
-                                        bundleOf(
-                                                EXTRA_PACKAGE_NAME to packageName, Constants.EXTRA_APP_NAME to appName, SHOW_MANAGE_APP_SECTION to false))
-                        true
-                    }
-                })
+            HealthPreference(requireContext()).also {
+                it.title = getString(R.string.fitness_permissions)
+                it.summary = getString(R.string.fitness_permissions_summary)
+                it.setOnPreferenceClickListener {
+                    navigationUtils.navigate(
+                        this,
+                        R.id.action_settingsCombinedPermissions_to_FitnessAppFragment,
+                        bundleOf(
+                            EXTRA_PACKAGE_NAME to packageName,
+                            Constants.EXTRA_APP_NAME to appName,
+                            SHOW_MANAGE_APP_SECTION to false))
+                    true
+                }
+            })
 
         managePermissionsCategory.addPreference(
-                HealthPreference(requireContext()).also {
-                    it.title = getString(R.string.manage_medical_permissions)
-                    it.summary = getString(R.string.manage_medical_permissions_summary)
-                    it.setOnPreferenceClickListener {
-                        navigationUtils
-                                .navigate(
-                                        this,
-                                        R.id.action_settingsCombinedPermissions_to_MedicalAppFragment,
-                                        bundleOf(
-                                                EXTRA_PACKAGE_NAME to packageName, Constants.EXTRA_APP_NAME to appName, SHOW_MANAGE_APP_SECTION to false))
-                        true
-                    }
-                })
+            HealthPreference(requireContext()).also {
+                it.title = getString(R.string.medical_permissions)
+                it.summary = getString(R.string.medical_permissions_summary)
+                it.setOnPreferenceClickListener {
+                    navigationUtils.navigate(
+                        this,
+                        R.id.action_settingsCombinedPermissions_to_MedicalAppFragment,
+                        bundleOf(
+                            EXTRA_PACKAGE_NAME to packageName,
+                            Constants.EXTRA_APP_NAME to appName,
+                            SHOW_MANAGE_APP_SECTION to false))
+                    true
+                }
+            })
 
         additionalAccessViewModel.loadAdditionalAccessPreferences(packageName)
         additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
             if (state.isValid() && shouldAddAdditionalAccessPref()) {
                 val additionalAccessPref =
-                        HealthPreference(requireContext()).also {
-                            it.key = KEY_ADDITIONAL_ACCESS
-                            it.logName = AppAccessElement.ADDITIONAL_ACCESS_BUTTON
-                            it.setTitle(R.string.additional_access_label)
-                            it.setOnPreferenceClickListener { _ ->
-                                val extras = bundleOf(EXTRA_PACKAGE_NAME to packageName)
-                                navigationUtils
-                                        .navigate(
-                                                this,
-                                                R.id.action_settingsCombinedPermissions_to_additionalAccessFragment,
-                                                extras)
-                                true
-                            }
+                    HealthPreference(requireContext()).also {
+                        it.key = KEY_ADDITIONAL_ACCESS
+                        it.logName = AppAccessElement.ADDITIONAL_ACCESS_BUTTON
+                        it.setTitle(R.string.additional_access_label)
+                        it.setOnPreferenceClickListener { _ ->
+                            val extras = bundleOf(EXTRA_PACKAGE_NAME to packageName)
+                            navigationUtils.navigate(
+                                this,
+                                R.id.action_settingsCombinedPermissions_to_additionalAccessFragment,
+                                extras)
+                            true
                         }
+                    }
                 managePermissionsCategory.addPreference(additionalAccessPref)
             }
             managePermissionsCategory.children.find { it.key == KEY_ADDITIONAL_ACCESS }?.isVisible =
-                    state.isValid()
+                state.isValid()
         }
     }
 
@@ -178,7 +179,7 @@ class SettingsCombinedPermissionsFragment : Hilt_SettingsCombinedPermissionsFrag
 
     private fun setupFooter(appName: String) {
         if (viewModel.isPackageSupported(packageName)) {
-            updateFooter( appName)
+            updateFooter(appName)
         } else {
             preferenceScreen.removePreferenceRecursively(FOOTER)
         }

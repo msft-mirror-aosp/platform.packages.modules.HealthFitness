@@ -20,6 +20,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissiontypes.api.FilterPermissionTypesUseCase
 import com.android.healthconnect.controller.permissiontypes.api.LoadContributingAppsUseCase
 import com.android.healthconnect.controller.permissiontypes.api.LoadPermissionTypesUseCase
@@ -96,7 +97,7 @@ constructor(
     sealed class PermissionTypesState {
         object Loading : PermissionTypesState()
 
-        data class WithData(val permissionTypes: List<FitnessPermissionType>) :
+        data class WithData(val permissionTypes: List<HealthPermissionType>) :
             PermissionTypesState()
     }
 

@@ -31,6 +31,8 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.WeightRecordInternal;
 import android.util.Pair;
 
+import androidx.annotation.Nullable;
+
 import com.android.server.healthconnect.storage.request.AggregateParams;
 
 import java.util.Arrays;
@@ -50,8 +52,8 @@ public final class WeightRecordHelper extends InstantRecordHelper<WeightRecordIn
         super(RecordTypeIdentifier.RECORD_TYPE_WEIGHT);
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
+    @Nullable
     public AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         double aggregateValue;

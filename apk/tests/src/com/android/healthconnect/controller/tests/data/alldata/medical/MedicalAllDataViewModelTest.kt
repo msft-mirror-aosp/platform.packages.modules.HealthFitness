@@ -72,18 +72,17 @@ class MedicalAllDataViewModelTest {
         testDispatcher.cleanupTestCoroutines()
     }
 
-    //TODO(): Update once API is ready.
+    // TODO(b/355793284): Update once API is ready.
     @Test
     fun returnsImmunization() = runTest {
-        //TODO(): mock API answer.
+        // TODO(b/355793284): mock API answer.
 
         val testObserver = TestObserver<MedicalAllDataViewModel.AllDataState>()
         viewModel.allData.observeForever(testObserver)
         viewModel.loadAllMedicalData()
         advanceUntilIdle()
 
-        val expected =
-            listOf(MedicalPermissionType.IMMUNIZATION)
+        val expected = listOf(MedicalPermissionType.IMMUNIZATION)
         assertThat(testObserver.getLastValue())
             .isEqualTo(MedicalAllDataViewModel.AllDataState.WithData(expected))
     }

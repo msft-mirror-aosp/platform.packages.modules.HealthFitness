@@ -18,9 +18,13 @@ package com.android.healthconnect.controller.exportimport.api
 
 import android.net.Uri
 import android.util.Slog
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.common.annotations.VisibleForTesting
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.time.Instant
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
@@ -32,8 +36,18 @@ constructor(
     private val triggerImportUseCase: ITriggerImportUseCase,
 ) : ViewModel() {
 
+    private val _lastImportCompletionInstant = MutableLiveData<Instant>()
+
     companion object {
         const val TAG = "ImportFlowViewModel"
+    }
+
+    val lastImportCompletionInstant: LiveData<Instant>
+        get() = _lastImportCompletionInstant
+
+    @VisibleForTesting
+    fun setLastCompletionInstant(newCompletionInstant: Instant) {
+        _lastImportCompletionInstant.postValue(newCompletionInstant)
     }
 
     fun triggerImportOfSelectedFile(uri: Uri) {
@@ -42,6 +56,8 @@ constructor(
             when (triggerImportUseCase.invoke(uri)) {
                 is ExportImportUseCaseResult.Success -> {
                     Slog.i(TAG, "import succeeded")
+                    // TODO(b/356652714): Change to use TimeSource instead
+                    setLastCompletionInstant(Instant.now())
                 }
                 is ExportImportUseCaseResult.Failed -> {
                     Slog.i(TAG, "import failed")

@@ -35,8 +35,11 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 แอปมีสิทธิ์เข้าถึง}other{# แอปมีสิทธิ์เข้าถึง}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"ไม่มี"</string>
     <string name="entry_details_title" msgid="590184849040247850">"รายละเอียดรายการ"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
+    <!-- no translation found for browse_data_title (5232691805953326097) -->
     <skip />
+    <!-- no translation found for browse_data_subtitle (7025164374898103993) -->
+    <skip />
+    <string name="manage_data_summary" msgid="8537870912521944449">"ลบอัตโนมัติ แหล่งข้อมูล การสำรองและกู้คืนข้อมูล"</string>
     <string name="backup_title" msgid="211503191266235085">"การสำรองข้อมูล"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"แหล่งข้อมูลและลำดับความสำคัญ"</string>
     <string name="set_units_title" msgid="2657822539603758029">"ตั้งค่าหน่วย"</string>
@@ -78,8 +81,7 @@
     <string name="can_read" msgid="4568261079308309564">"อ่านข้อมูล<xliff:g id="PERMISSION_TYPE">%s</xliff:g>ได้"</string>
     <string name="can_write" msgid="5082414937218423823">"เขียนข้อมูล<xliff:g id="PERMISSION_TYPE">%s</xliff:g>ได้"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"แอปที่ไม่ได้ใช้งาน"</string>
-    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
-    <skip />
+    <string name="inactive_apps_message" msgid="8335803540719022910">"แอปเหล่านี้จะอ่านหรือเขียนข้อมูล<xliff:g id="DATA_TYPE">%s</xliff:g>ไม่ได้อีกต่อไป แต่จะยังคงมีข้อมูลจัดเก็บอยู่ใน Health Connect"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"แอปไม่สามารถอ่านหรือเขียนข้อมูล<xliff:g id="DATA_TYPE_0">%1$s</xliff:g>ได้อีก และจะไม่มีข้อมูล<xliff:g id="DATA_TYPE_2">%2$s</xliff:g>จัดเก็บไว้ใน Health Connect"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"ข้อมูลนี้รวมถึงข้อมูลอย่างเช่นเวลาที่เคลื่อนไหวร่างกาย ประเภทการออกกำลังกาย รอบ การทำซ้ำ เซสชัน หรือสโตรกการว่ายน้ำ"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"ข้อมูลนี้รวมถึงข้อมูลอย่างเช่นระยะการนอนหลับและเซสชันการนอนหลับ"</string>
@@ -328,8 +330,14 @@
     <string name="additional_access_label" msgid="4645249249222528341">"การเข้าถึงเพิ่มเติม"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"นำสิทธิ์เพิ่มเติมสำหรับแอปนี้ออกแล้ว"</string>
     <string name="permissions_header" msgid="6519976063360071569">"สิทธิ์"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"จัดการสิทธิ์ด้านการออกกำลังกาย"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"จัดการสิทธิ์ด้านบันทึกข้อมูลสุขภาพ"</string>
+    <!-- no translation found for manage_fitness_permissions (3363128122122446755) -->
+    <skip />
+    <!-- no translation found for manage_fitness_permissions_summary (2558503899466623148) -->
+    <skip />
+    <!-- no translation found for manage_medical_permissions (3772912800582350567) -->
+    <skip />
+    <!-- no translation found for manage_medical_permissions_summary (2624707097284112258) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"สิทธิ์ของแอปที่ถูกนำออก"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect นำสิทธิ์สำหรับ <xliff:g id="APP_DATA">%s</xliff:g> ออกแล้ว"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect นำสิทธิ์สำหรับ <xliff:g id="APP_DATA_0">%1$s</xliff:g> และ <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> ออกแล้ว"</string>
@@ -343,6 +351,8 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"ส่งออกข้อมูลไม่ได้"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"เกิดปัญหาเกี่ยวกับการส่งออกของวันที่ <xliff:g id="DATE">%1$s</xliff:g> โปรดตั้งค่าการส่งออกที่กำหนดเวลาใหม่แล้วลองอีกครั้ง"</string>
     <string name="next_export_time" msgid="3138247220014510213">"การส่งออกครั้งถัดไป: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <!-- no translation found for next_export_text (6726252793571403846) -->
+    <skip />
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"การสำรองและคืนค่า"</string>
     <string name="last_export_time" msgid="9205875050823594041">"การส่งออกครั้งล่าสุด: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>

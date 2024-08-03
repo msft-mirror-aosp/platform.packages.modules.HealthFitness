@@ -69,6 +69,8 @@ public class HealthConnectManagerService extends SystemService {
     private MigrationUiStateManager mMigrationUiStateManager;
     private final MigrationNotificationSender mMigrationNotificationSender;
 
+    @Nullable private HealthConnectInjector mHealthConnectInjector;
+
     public HealthConnectManagerService(Context context) {
         super(context);
         mContext = context;
@@ -81,16 +83,33 @@ public class HealthConnectManagerService extends SystemService {
         HealthPermissionIntentAppsTracker permissionIntentTracker =
                 new HealthPermissionIntentAppsTracker(context);
         FirstGrantTimeManager firstGrantTimeManager;
+        HealthConnectPermissionHelper permissionHelper;
 
         if (Flags.dependencyInjection()) {
-            HealthConnectInjector healthConnectInjector = new HealthConnectInjectorImpl(mContext);
-            mTransactionManager = healthConnectInjector.getTransactionManager();
+            mHealthConnectInjector = new HealthConnectInjectorImpl(mContext);
+            mTransactionManager = mHealthConnectInjector.getTransactionManager();
             firstGrantTimeManager =
                     new FirstGrantTimeManager(
                             context,
                             permissionIntentTracker,
                             FirstGrantTimeDatastore.createInstance(),
-                            healthConnectInjector.getPackageInfoUtils());
+                            mHealthConnectInjector.getPackageInfoUtils(),
+                            mHealthConnectInjector.getHealthDataCategoryPriorityHelper());
+            permissionHelper =
+                    new HealthConnectPermissionHelper(
+                            context,
+                            context.getPackageManager(),
+                            HealthConnectManager.getHealthPermissions(context),
+                            permissionIntentTracker,
+                            firstGrantTimeManager,
+                            mHealthConnectInjector.getHealthDataCategoryPriorityHelper());
+            mPermissionPackageChangesOrchestrator =
+                    new PermissionPackageChangesOrchestrator(
+                            permissionIntentTracker,
+                            firstGrantTimeManager,
+                            permissionHelper,
+                            mCurrentForegroundUser,
+                            mHealthConnectInjector.getHealthDataCategoryPriorityHelper());
         } else {
             mTransactionManager =
                     TransactionManager.initializeInstance(
@@ -100,21 +119,21 @@ public class HealthConnectManagerService extends SystemService {
                             context,
                             permissionIntentTracker,
                             FirstGrantTimeDatastore.createInstance());
+            permissionHelper =
+                    new HealthConnectPermissionHelper(
+                            context,
+                            context.getPackageManager(),
+                            HealthConnectManager.getHealthPermissions(context),
+                            permissionIntentTracker,
+                            firstGrantTimeManager);
+            mPermissionPackageChangesOrchestrator =
+                    new PermissionPackageChangesOrchestrator(
+                            permissionIntentTracker,
+                            firstGrantTimeManager,
+                            permissionHelper,
+                            mCurrentForegroundUser);
         }
 
-        HealthConnectPermissionHelper permissionHelper =
-                new HealthConnectPermissionHelper(
-                        context,
-                        context.getPackageManager(),
-                        HealthConnectManager.getHealthPermissions(context),
-                        permissionIntentTracker,
-                        firstGrantTimeManager);
-        mPermissionPackageChangesOrchestrator =
-                new PermissionPackageChangesOrchestrator(
-                        permissionIntentTracker,
-                        firstGrantTimeManager,
-                        permissionHelper,
-                        mCurrentForegroundUser);
         mUserManager = context.getSystemService(UserManager.class);
         mMigrationBroadcastScheduler =
                 new MigrationBroadcastScheduler(mCurrentForegroundUser.getIdentifier());

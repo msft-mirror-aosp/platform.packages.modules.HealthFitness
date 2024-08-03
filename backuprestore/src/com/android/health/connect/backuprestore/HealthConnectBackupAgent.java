@@ -30,13 +30,17 @@ import android.os.ParcelFileDescriptor;
 import android.util.ArrayMap;
 import android.util.Slog;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * An intermediary to help with the transfer of HealthConnect data during device-to-device transfer.
@@ -105,6 +109,7 @@ public class HealthConnectBackupAgent extends BackupAgent {
             }
         }
 
+        CountDownLatch latch = new CountDownLatch(1);
         mHealthConnectManager.stageAllHealthConnectRemoteData(
                 pfdsByFileName,
                 Executors.newSingleThreadExecutor(),
@@ -113,6 +118,7 @@ public class HealthConnectBackupAgent extends BackupAgent {
                     public void onResult(Void result) {
                         Slog.i(TAG, "Backup data successfully staged. Deleting all files.");
                         deleteBackupFiles();
+                        latch.countDown();
                     }
 
                     @Override
@@ -126,8 +132,20 @@ public class HealthConnectBackupAgent extends BackupAgent {
                                             + fileNameToException.getValue());
                         }
                         deleteBackupFiles();
+                        latch.countDown();
                     }
                 });
+
+        if (Flags.d2dFileDeletionBugFix()) {
+            try {
+                boolean callbackCalled = latch.await(10, TimeUnit.SECONDS);
+                if (!callbackCalled) {
+                    throw new TimeoutException();
+                }
+            } catch (InterruptedException | TimeoutException e) {
+                Slog.e(TAG, "Exception while waiting for callback, Files might not be deleted", e);
+            }
+        }
 
         // close the FDs
         for (var pfdToFileName : pfdsByFileName.entrySet()) {
@@ -174,5 +192,11 @@ public class HealthConnectBackupAgent extends BackupAgent {
     @VisibleForTesting
     void backupFile(File file, FullBackupDataOutput data) {
         fullBackupFile(file, data);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Slog.i(TAG, "onDestroy.");
     }
 }
