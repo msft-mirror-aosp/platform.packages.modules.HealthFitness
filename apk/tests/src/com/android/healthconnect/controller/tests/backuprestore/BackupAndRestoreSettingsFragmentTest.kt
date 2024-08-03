@@ -28,6 +28,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -54,14 +55,18 @@ import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiSt
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.NOW
+import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.whenever
+import com.android.healthconnect.controller.utils.DeviceInfoUtils
+import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
 import com.android.healthconnect.controller.utils.logging.BackupAndRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
@@ -78,12 +83,14 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
+@UninstallModules(DeviceInfoUtilsModule::class)
 class BackupAndRestoreSettingsFragmentTest {
 
     companion object {
@@ -117,6 +124,8 @@ class BackupAndRestoreSettingsFragmentTest {
     val importFlowViewModel: ImportFlowViewModel = Mockito.mock(ImportFlowViewModel::class.java)
 
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
+    @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
+    val fakeDeviceInfoUtils = deviceInfoUtils as FakeDeviceInfoUtils
 
     private var previousDefaultTimeZone: TimeZone? = null
     private var previousLocale: Locale? = null
@@ -126,6 +135,7 @@ class BackupAndRestoreSettingsFragmentTest {
 
     @Before
     fun setup() {
+        MockitoAnnotations.initMocks(this)
         Dispatchers.setMain(testDispatcher)
 
         previousDefaultTimeZone = TimeZone.getDefault()
@@ -166,6 +176,7 @@ class BackupAndRestoreSettingsFragmentTest {
     fun tearDown() {
         Dispatchers.resetMain()
         reset(healthConnectLogger)
+        fakeDeviceInfoUtils.reset()
         Intents.release()
 
         TimeZone.setDefault(previousDefaultTimeZone)
@@ -492,5 +503,19 @@ class BackupAndRestoreSettingsFragmentTest {
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
         onView(withText("Couldn't restore data")).check(doesNotExist())
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_clicksAboutBackupAndRestore_showsHelpCenterLink() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
+
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("About backup and restore")).check(matches(isDisplayed()))
+
+        onView(withText("About backup and restore")).perform(scrollTo(), click())
+        assertThat(fakeDeviceInfoUtils.backupAndRestoreHelpCenterInvoked).isTrue()
     }
 }
