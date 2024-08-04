@@ -36,6 +36,8 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.BloodPressureRecordInternal;
 import android.util.Pair;
 
+import androidx.annotation.Nullable;
+
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.request.AggregateParams;
 
@@ -90,8 +92,8 @@ public final class BloodPressureRecordHelper
         contentValues.put(BODY_POSITION_COLUMN_NAME, bloodPressureRecord.getBodyPosition());
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
+    @Nullable
     public AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         double aggregateValue;

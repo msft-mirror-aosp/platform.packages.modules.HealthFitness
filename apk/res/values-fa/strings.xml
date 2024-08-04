@@ -35,8 +35,11 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{‫۱ برنامه دسترسی دارد}one{‫# برنامه دسترسی دارد}other{‫# برنامه دسترسی دارد}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"هیچ‌کدام"</string>
     <string name="entry_details_title" msgid="590184849040247850">"جزئیات ورود"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
+    <!-- no translation found for browse_data_title (5232691805953326097) -->
     <skip />
+    <!-- no translation found for browse_data_subtitle (7025164374898103993) -->
+    <skip />
+    <string name="manage_data_summary" msgid="8537870912521944449">"حذف خودکار، منابع داده، پشتیبان‌گیری و بازیابی"</string>
     <string name="backup_title" msgid="211503191266235085">"پشتیبان‌گیری"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"منابع داده و اولویت"</string>
     <string name="set_units_title" msgid="2657822539603758029">"تنظیم واحدها"</string>
@@ -78,8 +81,7 @@
     <string name="can_read" msgid="4568261079308309564">"می‌تواند داده‌های <xliff:g id="PERMISSION_TYPE">%s</xliff:g> را بخواند"</string>
     <string name="can_write" msgid="5082414937218423823">"می‌تواند داده‌های <xliff:g id="PERMISSION_TYPE">%s</xliff:g> را بنویسد"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"برنامه‌های غیرفعال"</string>
-    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
-    <skip />
+    <string name="inactive_apps_message" msgid="8335803540719022910">"این برنامه‌ها دیگر نمی‌توانند داده <xliff:g id="DATA_TYPE">%s</xliff:g> را بخوانند یا بنویسند، اما همچنان داده ذخیره‌شده‌ای در Health Connect دارند"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"برنامه‌ها دیگر نمی‌توانند <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> را بخوانند یا بنویسند و هیچ داده <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> در Health Connect ذخیره نشده است"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"این داده‌ها شامل اطلاعاتی مثل زمان فعالیت، نوع تمرین، دورها، تکرارها، جلسه‌ها، یا حرکت‌های شنا می‌شود"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"این داده‌ها شامل اطلاعاتی مثل مراحل خواب و جلسات خواب می‌شود"</string>
@@ -328,8 +330,14 @@
     <string name="additional_access_label" msgid="4645249249222528341">"دسترسی اضافی"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"اجازه‌های اضافی این برنامه برداشته شد"</string>
     <string name="permissions_header" msgid="6519976063360071569">"اجازه‌ها"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"مدیریت کردن اجازه‌های تناسب اندام"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"مدیریت کردن اجازه‌های سابقه سلامتی"</string>
+    <!-- no translation found for manage_fitness_permissions (3363128122122446755) -->
+    <skip />
+    <!-- no translation found for manage_fitness_permissions_summary (2558503899466623148) -->
+    <skip />
+    <!-- no translation found for manage_medical_permissions (3772912800582350567) -->
+    <skip />
+    <!-- no translation found for manage_medical_permissions_summary (2624707097284112258) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"اجازه‌های برنامه‌هایی که برداشته شده‌اند"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect اجازه‌های مربوط به <xliff:g id="APP_DATA">%s</xliff:g> را برداشته است"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect اجازه‌های مربوط به <xliff:g id="APP_DATA_0">%1$s</xliff:g> و <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> را برداشته است"</string>
@@ -343,6 +351,8 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"داده‌ها صادر نشد"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"مشکلی در برون‌برد <xliff:g id="DATE">%1$s</xliff:g> وجود داشت. لطفاً برون‌برد برنامه‌ریزی‌شده جدیدی تنظیم کنید و دوباره امتحان کنید."</string>
     <string name="next_export_time" msgid="3138247220014510213">"برون‌برد بعدی: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <!-- no translation found for next_export_text (6726252793571403846) -->
+    <skip />
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"پشتیبان‌گیری و بازیابی"</string>
     <string name="last_export_time" msgid="9205875050823594041">"آخرین برون‌برد: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"‫<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g>‏ • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
