@@ -17,7 +17,6 @@
 package com.android.healthconnect.controller.tests.exportimport.api
 
 import android.health.connect.HealthConnectException
-import android.health.connect.HealthConnectManager
 import android.health.connect.exportimport.ScheduledExportStatus
 import com.android.healthconnect.controller.exportimport.api.ExportImportUseCaseResult
 import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
@@ -60,7 +59,7 @@ class LoadScheduledExportStatusUseCaseTest {
             ScheduledExportStatus.Builder()
                 .setLastSuccessfulExportTime(Instant.ofEpochMilli(100))
                 .setLastFailedExportTime(Instant.ofEpochMilli(1000))
-                .setDataExportError(HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS)
+                .setDataExportError(ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS)
                 .setPeriodInDays(7)
                 .setLastExportFileName("healthconnect.zip")
                 .setLastExportAppName("Drive")
@@ -68,7 +67,6 @@ class LoadScheduledExportStatusUseCaseTest {
                 .setNextExportAppName("Dropbox")
                 .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
-
         val result = useCase.invoke()
 
         assertThat(result is ExportImportUseCaseResult.Success).isTrue()

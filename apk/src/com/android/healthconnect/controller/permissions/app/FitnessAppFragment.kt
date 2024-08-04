@@ -46,7 +46,7 @@ import com.android.healthconnect.controller.permissions.shared.DisconnectDialogF
 import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment.Companion.KEY_DELETE_DATA
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
-import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromFitnessPermissionType
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.children
@@ -321,7 +321,7 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
                 val preference =
                     HealthSwitchPreference(requireContext()).also { it ->
                         val healthCategory =
-                            fromHealthPermissionType(permission.fitnessPermissionType)
+                            fromFitnessPermissionType(permission.fitnessPermissionType)
                         it.icon = healthCategory.icon(requireContext())
                         it.setTitle(
                             fromPermissionType(permission.fitnessPermissionType).uppercaseLabel)

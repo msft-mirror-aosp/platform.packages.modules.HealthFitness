@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.exportimport;
 
-import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
 import static com.android.server.healthconnect.exportimport.ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_COMPLETE;
 import static com.android.server.healthconnect.exportimport.ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_IN_PROGRESS;
 import static com.android.server.healthconnect.exportimport.ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_GENERIC_ERROR;
@@ -24,7 +23,6 @@ import static com.android.server.healthconnect.exportimport.ExportImportNotifica
 import static com.android.server.healthconnect.exportimport.ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_NOT_ENOUGH_SPACE;
 import static com.android.server.healthconnect.exportimport.ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_VERSION_MISMATCH;
 
-import android.annotation.FlaggedApi;
 import android.annotation.Nullable;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -50,7 +48,6 @@ import java.util.Optional;
  *
  * @hide
  */
-@FlaggedApi(FLAG_EXPORT_IMPORT)
 public class ExportImportNotificationFactory implements HealthConnectNotificationFactory {
 
     private static final String TAG = "ExportImportNotificationFactory";

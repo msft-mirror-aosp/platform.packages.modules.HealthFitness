@@ -34,6 +34,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.exportimport.ScheduledExportSettings;
+import android.health.connect.exportimport.ScheduledExportStatus;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.net.Uri;
@@ -203,7 +204,7 @@ public class ExportManagerTest {
         assertTableSize(originalDatabase, "steps_record_table", 1);
 
         ExportImportSettingsStorage.setLastExportError(
-                HealthConnectManager.DATA_EXPORT_ERROR_NONE, mTimeStamp);
+                ScheduledExportStatus.DATA_EXPORT_ERROR_NONE, mTimeStamp);
         // Set export location to inaccessible directory.
         ExportImportSettingsStorage.configure(
                 ScheduledExportSettings.withUri(Uri.fromFile(new File("inaccessible"))));
@@ -212,7 +213,7 @@ public class ExportManagerTest {
         assertThat(
                         ExportImportSettingsStorage.getScheduledExportStatus(mContext)
                                 .getDataExportError())
-                .isEqualTo(HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS);
+                .isEqualTo(ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS);
         assertThat(
                         ExportImportSettingsStorage.getScheduledExportStatus(mContext)
                                 .getLastFailedExportTime())

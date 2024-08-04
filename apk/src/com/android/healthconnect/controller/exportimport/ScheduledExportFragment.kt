@@ -150,8 +150,8 @@ class ScheduledExportFragment : Hilt_ScheduledExportFragment() {
     private fun maybeShowNextExportStatus(scheduledExportUiState: ScheduledExportUiState) {
         val lastSuccessfulExportTime = scheduledExportUiState.lastSuccessfulExportTime
         val periodInDays = scheduledExportUiState.periodInDays
+        var nextExportText: String
         if (lastSuccessfulExportTime != null) {
-            var nextExportText: String
             val scheduledExportTime =
                 lastSuccessfulExportTime.plus(periodInDays.toLong(), ChronoUnit.DAYS)
             if (scheduledExportTime.isBefore(timeSource.currentTimeMillis().toInstant())) {
@@ -162,12 +162,14 @@ class ScheduledExportFragment : Hilt_ScheduledExportFragment() {
                         R.string.next_export_time,
                         dateFormatter.formatLongDate(scheduledExportTime))
             }
-            val nextExportLocation = getNextExportLocationString(scheduledExportUiState)
-            preferenceScreen.addPreference(
-                ExportStatusPreference(requireContext(), nextExportText, nextExportLocation).also {
-                    it.order = EXPORT_STATUS_PREFERENCE_ORDER
-                })
+        } else {
+            nextExportText = getString(R.string.next_export_text)
         }
+        val nextExportLocation = getNextExportLocationString(scheduledExportUiState)
+        preferenceScreen.addPreference(
+            ExportStatusPreference(requireContext(), nextExportText, nextExportLocation).also {
+                it.order = EXPORT_STATUS_PREFERENCE_ORDER
+            })
     }
 
     private fun getNextExportLocationString(

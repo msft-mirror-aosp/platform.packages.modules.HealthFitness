@@ -35,8 +35,11 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 aplikaziok du sarbidea}other{# aplikaziok dute sarbidea}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Batek ere ez"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Sarreraren xehetasunak"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
+    <!-- no translation found for browse_data_title (5232691805953326097) -->
     <skip />
+    <!-- no translation found for browse_data_subtitle (7025164374898103993) -->
+    <skip />
+    <string name="manage_data_summary" msgid="8537870912521944449">"Ezabatze automatikoa, datu-iturburuak, babeskopiak eta leheneratzea"</string>
     <string name="backup_title" msgid="211503191266235085">"Babeskopiak"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Datu-iturburuak eta lehentasuna"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Ezarri unitateak"</string>
@@ -78,8 +81,7 @@
     <string name="can_read" msgid="4568261079308309564">"Kategoria honetako datuak irakur ditzaketenak: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"Kategoria honetako datuak idatz ditzaketenak: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Aplikazio inaktiboak"</string>
-    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
-    <skip />
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Aplikazio hauek jada ezin dute irakurri edo idatzi \"<xliff:g id="DATA_TYPE">%s</xliff:g>\" kategoriako daturik, baina oraindik datuak gordeta dauzkate Health Connect-en"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Aplikazioek jada ezin dituzte irakurri eta idatzi \"<xliff:g id="DATA_TYPE_0">%1$s</xliff:g>\" kategoriako datuak, eta ez dago \"<xliff:g id="DATA_TYPE_2">%2$s</xliff:g>\" kategoriako daturik Health Connect-en gordeta"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Aktibo egondako denbora, ariketa mota, itzuliak, errepikapenak, saioak, besakadak eta antzeko informazioa sartzen da datuetan"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Lo-faseak eta -saioak, eta antzeko informazioa sartzen da datuetan"</string>
@@ -328,8 +330,14 @@
     <string name="additional_access_label" msgid="4645249249222528341">"Sarbide gehigarria"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Kendu dira aplikazio honen baimen gehigarriak"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Baimenak"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"Kudeatu fitnessari buruzko baimenak"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"Kudeatu historia klinikoari buruzko baimenak"</string>
+    <!-- no translation found for manage_fitness_permissions (3363128122122446755) -->
+    <skip />
+    <!-- no translation found for manage_fitness_permissions_summary (2558503899466623148) -->
+    <skip />
+    <!-- no translation found for manage_medical_permissions (3772912800582350567) -->
+    <skip />
+    <!-- no translation found for manage_medical_permissions_summary (2624707097284112258) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Kendutako aplikazio-baimenak"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"<xliff:g id="APP_DATA">%s</xliff:g> aplikazioaren baimenak kendu ditu Health Connect-ek"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"<xliff:g id="APP_DATA_0">%1$s</xliff:g> eta <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> aplikazioen baimenak kendu ditu Health Connect-ek"</string>
@@ -343,6 +351,8 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Ezin izan dira esportatu datuak"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Arazo bat izan da <xliff:g id="DATE">%1$s</xliff:g> datarako programatutako esportazioarekin. Konfiguratu beste esportazio programatu bat eta saiatu berriro."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Hurrengo esportatze-data: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <!-- no translation found for next_export_text (6726252793571403846) -->
+    <skip />
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Egin babeskopiak eta leheneratu"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Azken esportatze-data: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
