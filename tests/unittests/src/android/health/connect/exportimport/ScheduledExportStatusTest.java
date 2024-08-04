@@ -18,7 +18,6 @@ package android.health.connect.exportimport;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import android.health.connect.HealthConnectManager;
 import android.os.Parcel;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -42,7 +41,7 @@ public class ScheduledExportStatusTest {
                 new ScheduledExportStatus.Builder()
                         .setLastSuccessfulExportTime(Instant.ofEpochMilli(100))
                         .setLastFailedExportTime(Instant.ofEpochMilli(200))
-                        .setDataExportError(HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS)
+                        .setDataExportError(ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS)
                         .setPeriodInDays(7)
                         .setLastExportFileName(TEST_LAST_EXPORT_FILE_NAME)
                         .setLastExportAppName(TEST_LAST_EXPORT_APP_NAME)
@@ -60,7 +59,7 @@ public class ScheduledExportStatusTest {
         assertThat(deserializedStatus.getLastFailedExportTime())
                 .isEqualTo(Instant.ofEpochMilli(200));
         assertThat(deserializedStatus.getDataExportError())
-                .isEqualTo(HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS);
+                .isEqualTo(ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS);
         assertThat(deserializedStatus.getPeriodInDays()).isEqualTo(7);
         assertThat(deserializedStatus.getLastExportFileName())
                 .isEqualTo(TEST_LAST_EXPORT_FILE_NAME);
@@ -75,7 +74,7 @@ public class ScheduledExportStatusTest {
         ScheduledExportStatus scheduledExportStatus =
                 new ScheduledExportStatus.Builder()
                         .setPeriodInDays(7)
-                        .setDataExportError(HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS)
+                        .setDataExportError(ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS)
                         .build();
 
         Parcel statusParcel = writeToParcel(scheduledExportStatus);
@@ -86,7 +85,7 @@ public class ScheduledExportStatusTest {
         assertThat(deserializedStatus.getLastSuccessfulExportTime()).isNull();
         assertThat(deserializedStatus.getLastFailedExportTime()).isNull();
         assertThat(deserializedStatus.getDataExportError())
-                .isEqualTo(HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS);
+                .isEqualTo(ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS);
         assertThat(deserializedStatus.getPeriodInDays()).isEqualTo(7);
         assertThat(deserializedStatus.getLastExportAppName()).isNull();
         assertThat(deserializedStatus.getLastExportFileName()).isNull();

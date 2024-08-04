@@ -28,9 +28,9 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.exportimport.ImportStatus;
 import android.health.connect.exportimport.ScheduledExportSettings;
+import android.health.connect.exportimport.ScheduledExportStatus;
 import android.net.Uri;
 import android.os.RemoteException;
 
@@ -105,7 +105,7 @@ public final class ExportImportSettingsStorageTest {
     @Test
     public void testConfigure_uri_removeExportLostFileAccessError() {
         ExportImportSettingsStorage.setLastExportError(
-                HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS, mInstant);
+                ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS, mInstant);
         ExportImportSettingsStorage.configure(ScheduledExportSettings.withUri(Uri.parse(TEST_URI)));
 
         assertThat(mFakePreferenceHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY))
@@ -115,7 +115,7 @@ public final class ExportImportSettingsStorageTest {
     @Test
     public void testConfigure_uri_removeUnknownError() {
         ExportImportSettingsStorage.setLastExportError(
-                HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN, mInstant);
+                ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN, mInstant);
         ExportImportSettingsStorage.configure(ScheduledExportSettings.withUri(Uri.parse(TEST_URI)));
 
         assertThat(mFakePreferenceHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY))
@@ -197,12 +197,11 @@ public final class ExportImportSettingsStorageTest {
     @Test
     public void testSetLastExportError_callsGetScheduledExportStatus_returnsExportError() {
         ExportImportSettingsStorage.setLastExportError(
-                HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN, mInstant);
-
+                ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN, mInstant);
         assertThat(
                         ExportImportSettingsStorage.getScheduledExportStatus(mContext)
                                 .getDataExportError())
-                .isEqualTo(HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
+                .isEqualTo(ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN);
         assertThat(
                         ExportImportSettingsStorage.getScheduledExportStatus(mContext)
                                 .getLastFailedExportTime())

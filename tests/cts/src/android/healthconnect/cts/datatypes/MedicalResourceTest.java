@@ -16,7 +16,6 @@
 
 package android.healthconnect.cts.datatypes;
 
-import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
@@ -54,25 +53,24 @@ public class MedicalResourceTest {
 
     @Test
     public void testMedicalResourceBuilder_requiredFieldsOnly() {
-        FhirVersion fhirVersion = parseFhirVersion(FHIR_VERSION_R4);
         FhirResource fhirResource = getFhirResource();
         MedicalResource resource =
                 new MedicalResource.Builder(
                                 MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                                 DATA_SOURCE_ID,
-                                fhirVersion,
+                                FHIR_VERSION_R4,
                                 fhirResource)
                         .build();
 
         assertThat(resource.getType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
         assertThat(resource.getDataSourceId()).isEqualTo(DATA_SOURCE_ID);
-        assertThat(resource.getFhirVersion()).isEqualTo(fhirVersion);
+        assertThat(resource.getFhirVersion()).isEqualTo(FHIR_VERSION_R4);
         assertThat(resource.getFhirResource()).isEqualTo(fhirResource);
     }
 
     @Test
     public void testMedicalResourceBuilder_setAllFields() {
-        FhirVersion differentFhirVersion = parseFhirVersion(FHIR_VERSION_R4B);
+        FhirVersion differentFhirVersion = FHIR_VERSION_R4B;
         FhirResource differentFhirResource = getFhirResourceAllergy();
         MedicalResource resource =
                 getMedicalResourceBuilder()
@@ -106,13 +104,12 @@ public class MedicalResourceTest {
 
     @Test
     public void testMedicalResource_toString() {
-        FhirVersion fhirVersion = parseFhirVersion(FHIR_VERSION_R4);
         FhirResource fhirResource = getFhirResource();
         MedicalResource resource =
                 new MedicalResource.Builder(
                                 MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                                 DATA_SOURCE_ID,
-                                fhirVersion,
+                                FHIR_VERSION_R4,
                                 fhirResource)
                         .build();
         String expectedPropertiesString =
@@ -120,7 +117,7 @@ public class MedicalResourceTest {
                         "type=%d,dataSourceId=%s,fhirVersion=%s,fhirResource=%s",
                         MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                         DATA_SOURCE_ID,
-                        fhirVersion,
+                        FHIR_VERSION_R4,
                         fhirResource);
 
         assertThat(resource.toString())
@@ -148,9 +145,7 @@ public class MedicalResourceTest {
                         .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .build();
         MedicalResource resourceDifferentVersion =
-                new MedicalResource.Builder(resource)
-                        .setFhirVersion(parseFhirVersion(FHIR_VERSION_R4B))
-                        .build();
+                new MedicalResource.Builder(resource).setFhirVersion(FHIR_VERSION_R4B).build();
         MedicalResource resourceDifferentFhirResource =
                 new MedicalResource.Builder(resource)
                         .setFhirResource(getFhirResourceAllergy())
