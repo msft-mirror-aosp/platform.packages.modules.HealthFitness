@@ -26,7 +26,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
@@ -48,14 +47,14 @@ import com.android.healthconnect.controller.shared.preference.BannerPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.AttributeResolver
-import com.android.healthconnect.controller.utils.DeviceInfoUtilsImpl
+import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.logging.BackupAndRestoreElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
 import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /** Fragment displaying backup and restore settings. */
 @AndroidEntryPoint(HealthPreferenceFragment::class)
@@ -75,6 +74,8 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
     init {
         this.setPageName(PageName.BACKUP_AND_RESTORE_PAGE)
     }
+
+    @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
 
     private val exportSettingsViewModel: ExportSettingsViewModel by viewModels()
     private val exportStatusViewModel: ExportStatusViewModel by viewModels()
@@ -109,7 +110,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
 
         footerPreference.setLearnMoreText(getString(R.string.backup_and_restore_footer_link_text))
         footerPreference.setLearnMoreAction {
-            DeviceInfoUtilsImpl().openHCGetStartedLink(requireActivity())
+            deviceInfoUtils.openHCBackupAndRestoreLink(requireActivity())
         }
 
         scheduledExportPreference?.logName = BackupAndRestoreElement.SCHEDULED_EXPORT_BUTTON

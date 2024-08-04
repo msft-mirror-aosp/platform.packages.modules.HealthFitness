@@ -83,3 +83,11 @@ flag {
     bug: "353283052"
     is_fixed_read_only: true
 }
+
+flag {
+    name: "onboarding"
+    namespace: "health_fitness_aconfig"
+    description: "Enables onboarding elements for users, such as banners and notifications."
+    bug: "356819770"
+    is_fixed_read_only: true
+}
