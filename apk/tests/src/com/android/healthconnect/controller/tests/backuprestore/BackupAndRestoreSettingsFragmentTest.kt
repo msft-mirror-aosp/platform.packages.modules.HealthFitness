@@ -53,6 +53,7 @@ import com.android.healthconnect.controller.exportimport.api.ImportUiState
 import com.android.healthconnect.controller.exportimport.api.ImportUiStatus
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
+import com.android.healthconnect.controller.tests.utils.ClearTimeFormatRule
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
@@ -105,6 +106,7 @@ class BackupAndRestoreSettingsFragmentTest {
     private val testDispatcher = StandardTestDispatcher()
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val clearTimeFormatRule = ClearTimeFormatRule()
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     // TODO: b/348591669 - Replace the mock with a fake and investigate the UI tests.
