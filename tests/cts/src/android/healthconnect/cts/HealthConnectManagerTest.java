@@ -73,7 +73,6 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
-import android.health.connect.MedicalPermissionCategory;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.MedicalResourceTypeInfoResponse;
 import android.health.connect.ReadMedicalResourcesRequest;
@@ -2222,9 +2221,7 @@ public class HealthConnectManagerTest {
         List<MedicalResourceTypeInfoResponse> expectedResponses =
                 List.of(
                         new MedicalResourceTypeInfoResponse(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
-                                MedicalPermissionCategory.IMMUNIZATION,
-                                Set.of()));
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION, Set.of()));
 
         try {
             mManager.queryAllMedicalResourceTypesInfo(

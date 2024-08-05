@@ -16,7 +16,6 @@
 
 package android.health.connect;
 
-import static android.health.connect.MedicalPermissionCategory.validateMedicalPermissionCategoryType;
 import static android.health.connect.datatypes.MedicalResource.validateMedicalResourceType;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
@@ -43,7 +42,6 @@ import java.util.Set;
  *
  * <ul>
  *   <li>The {@link MedicalResourceType}.
- *   <li>{@link MedicalPermissionCategory.Type} for the above {@link MedicalResourceType}.
  *   <li>Contributing {@link MedicalDataSource}s of the above {@link MedicalResourceType}.
  * </ul>
  *
@@ -53,25 +51,19 @@ import java.util.Set;
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class MedicalResourceTypeInfoResponse implements Parcelable {
     @MedicalResourceType private final int mMedicalResourceType;
-    @MedicalPermissionCategory.Type private final int mPermissionCategoryType;
     @NonNull private final Set<MedicalDataSource> mContributingDataSources;
 
     /**
      * @param medicalResourceType The {@link MedicalResourceType}.
-     * @param permissionCategoryType The {@link MedicalPermissionCategory.Type} for the {@code
-     *     medicalResourceType}.
      * @param contributingDataSources The contributing {@link MedicalDataSource}s of the {@code
      *     medicalResourceType}.
      */
     public MedicalResourceTypeInfoResponse(
             @MedicalResourceType int medicalResourceType,
-            @MedicalPermissionCategory.Type int permissionCategoryType,
             @NonNull Set<MedicalDataSource> contributingDataSources) {
         validateMedicalResourceType(medicalResourceType);
-        validateMedicalPermissionCategoryType(permissionCategoryType);
         requireNonNull(contributingDataSources);
         mMedicalResourceType = medicalResourceType;
-        mPermissionCategoryType = permissionCategoryType;
         mContributingDataSources = contributingDataSources;
     }
 
@@ -79,7 +71,6 @@ public final class MedicalResourceTypeInfoResponse implements Parcelable {
         requireNonNull(in);
         in = ParcelUtils.getParcelForSharedMemoryIfRequired(in);
         mMedicalResourceType = in.readInt();
-        mPermissionCategoryType = in.readInt();
         List<MedicalDataSource> contributingDataSources = new ArrayList<>();
         in.readParcelableList(
                 contributingDataSources,
@@ -108,12 +99,6 @@ public final class MedicalResourceTypeInfoResponse implements Parcelable {
         return mMedicalResourceType;
     }
 
-    /** Returns {@link MedicalPermissionCategory.Type} for the {@code mMedicalResourceType}. */
-    @MedicalPermissionCategory.Type
-    public int getPermissionCategoryType() {
-        return mPermissionCategoryType;
-    }
-
     /** Returns contributing {@link MedicalDataSource}s of the {@code mMedicalResourceType}. */
     @NonNull
     public Set<MedicalDataSource> getContributingDataSources() {
@@ -134,7 +119,6 @@ public final class MedicalResourceTypeInfoResponse implements Parcelable {
     private void writeToParcelInternal(@NonNull Parcel dest) {
         requireNonNull(dest);
         dest.writeInt(mMedicalResourceType);
-        dest.writeInt(mPermissionCategoryType);
         dest.writeParcelableList(mContributingDataSources.stream().toList(), 0);
     }
 
@@ -144,16 +128,12 @@ public final class MedicalResourceTypeInfoResponse implements Parcelable {
         if (this == o) return true;
         if (!(o instanceof MedicalResourceTypeInfoResponse that)) return false;
         return getMedicalResourceType() == that.getMedicalResourceType()
-                && getPermissionCategoryType() == that.getPermissionCategoryType()
                 && getContributingDataSources().equals(that.getContributingDataSources());
     }
 
     /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
-        return hash(
-                getMedicalResourceType(),
-                getPermissionCategoryType(),
-                getContributingDataSources());
+        return hash(getMedicalResourceType(), getContributingDataSources());
     }
 }
