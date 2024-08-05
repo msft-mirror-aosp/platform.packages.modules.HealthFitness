@@ -61,6 +61,7 @@ java_sdk_library {
     ],
     impl_library_visibility: [
         "//packages/modules/HealthFitness/tests/unittests",
+        "//packages/modules/HealthFitness/tests/integrationtests",
     ],
     errorprone: {
         extra_check_modules: [
