@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
 
 import android.annotation.NonNull;
@@ -65,7 +64,7 @@ public class MedicalResourceIndicesHelper {
                 .addForeignKey(
                         MedicalResourceHelper.getMainTableName(),
                         Collections.singletonList(MEDICAL_RESOURCE_ID),
-                        Collections.singletonList(PRIMARY_COLUMN_NAME));
+                        Collections.singletonList(MedicalResourceHelper.getPrimaryColumn()));
     }
 
     /** Creates {@link UpsertTableRequest} for medical_resource_indices table. */

@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
 import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 
@@ -36,6 +37,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMAR
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.generateMedicalResourceUUID;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
@@ -56,6 +58,8 @@ import android.util.Pair;
 import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
+import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.TransactionManager.TransactionRunnableWithReturn;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
@@ -63,6 +67,7 @@ import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
+import com.android.server.healthconnect.storage.utils.OrderByClause;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.TableColumnPair;
@@ -88,6 +93,8 @@ public final class MedicalResourceHelper {
     @VisibleForTesting static final String FHIR_VERSION_COLUMN_NAME = "fhir_version";
     @VisibleForTesting static final String DATA_SOURCE_ID_COLUMN_NAME = "data_source_id";
     @VisibleForTesting static final String FHIR_RESOURCE_ID_COLUMN_NAME = "fhir_resource_id";
+    private static final String MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME = "medical_resource_row_id";
+
     private static final List<Pair<String, Integer>> UNIQUE_COLUMNS_INFO =
             List.of(new Pair<>(UUID_COLUMN_NAME, UpsertTableRequest.TYPE_BLOB));
 
@@ -107,9 +114,14 @@ public final class MedicalResourceHelper {
     }
 
     @NonNull
+    public static String getPrimaryColumn() {
+        return MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME;
+    }
+
+    @NonNull
     private static List<Pair<String, String>> getColumnInfo() {
         return List.of(
-                Pair.create(PRIMARY_COLUMN_NAME, PRIMARY_AUTOINCREMENT),
+                Pair.create(MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME, PRIMARY_AUTOINCREMENT),
                 Pair.create(FHIR_RESOURCE_TYPE_COLUMN_NAME, INTEGER_NOT_NULL),
                 Pair.create(FHIR_RESOURCE_ID_COLUMN_NAME, TEXT_NOT_NULL),
                 Pair.create(FHIR_DATA_COLUMN_NAME, TEXT_NOT_NULL),
@@ -173,19 +185,32 @@ public final class MedicalResourceHelper {
      * Reads the {@link MedicalResource}s stored in the HealthConnect database by {@code request}.
      *
      * @param request a {@link ReadMedicalResourcesRequest}.
-     * @return List of {@link MedicalResource}s read from medical_resource table using the {@code
-     *     request}.
+     * @return a {@link ReadMedicalResourcesInternalResponse}.
      */
-    // TODO(b/351817943): Add pagination support.
+    // TODO(b/354872929): Add cts tests for read by request.
     @NonNull
-    public List<MedicalResource> readMedicalResourcesByRequest(
+    public ReadMedicalResourcesInternalResponse readMedicalResourcesByRequest(
             @NonNull ReadMedicalResourcesRequest request) {
-        List<MedicalResource> medicalResources;
+        ReadMedicalResourcesInternalResponse response;
         ReadTableRequest readTableRequest = getReadTableRequestUsingRequest(request);
         try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
-            medicalResources = getMedicalResources(cursor);
+            response = getMedicalResources(cursor, request);
         }
-        return medicalResources;
+        return response;
+    }
+
+    /**
+     * Reads the {@link MedicalResource}s stored in the HealthConnect database by {@code request}.
+     *
+     * @return a {@link ReadMedicalResourcesInternalResponse}.
+     */
+    @NonNull
+    public ReadMedicalResourcesInternalResponse readMedicalResourcesByRequest(
+            @NonNull ReadMedicalResourcesRequest ignoredRequest,
+            @NonNull String ignoredCallingPackageName,
+            boolean ignoredEnforceSelfRead) {
+        // TODO(b/350436655): Use ignored fields for permission checks in read table request.
+        return new ReadMedicalResourcesInternalResponse(List.of(), null);
     }
 
     /** Creates {@link ReadTableRequest} for the given {@link MedicalResourceId}s. */
@@ -203,7 +228,12 @@ public final class MedicalResourceHelper {
     @VisibleForTesting
     static ReadTableRequest getReadTableRequestUsingRequest(
             @NonNull ReadMedicalResourcesRequest request) {
+        // The limit is set to pageSize + 1, so that we know if there are more resources
+        // than the pageSize for creating the pageToken.
         return new ReadTableRequest(getMainTableName())
+                .setWhereClause(getReadByRequestWhereClause(request))
+                .setOrderBy(getOrderByClause())
+                .setLimit(request.getPageSize() + 1)
                 .setJoinClause(getJoinForReadByRequest(request.getMedicalResourceType()));
     }
 
@@ -229,7 +259,7 @@ public final class MedicalResourceHelper {
         return new SqlJoin(
                         MEDICAL_RESOURCE_TABLE_NAME,
                         getTableName(),
-                        PRIMARY_COLUMN_NAME,
+                        MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME,
                         MedicalResourceIndicesHelper.getParentColumnReference())
                 .setJoinType(SQL_JOIN_INNER);
     }
@@ -245,10 +275,30 @@ public final class MedicalResourceHelper {
     }
 
     @NonNull
+    private static OrderByClause getOrderByClause() {
+        return new OrderByClause()
+                .addOrderByClause(MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME, /* isAscending= */ true);
+    }
+
+    @NonNull
     private static WhereClauses getResourceIdsWhereClause(
             @NonNull List<MedicalResourceId> medicalResourceIds) {
         List<String> hexUuids = medicalResourceIdsToHexUuids(medicalResourceIds);
         return new WhereClauses(AND).addWhereInClauseWithoutQuotes(UUID_COLUMN_NAME, hexUuids);
+    }
+
+    @NonNull
+    private static WhereClauses getReadByRequestWhereClause(
+            @NonNull ReadMedicalResourcesRequest request) {
+        WhereClauses whereClauses = new WhereClauses(AND);
+        String pageToken = request.getPageToken();
+        if (pageToken == null || pageToken.isEmpty()) {
+            return whereClauses;
+        }
+
+        long lastRowId = PhrPageTokenWrapper.from(pageToken).getLastRowId();
+        whereClauses.addWhereGreaterThanClause(MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME, lastRowId);
+        return whereClauses;
     }
 
     @NonNull
@@ -433,6 +483,37 @@ public final class MedicalResourceHelper {
                         parseFhirVersion(internalRequest.getFhirVersion()),
                         fhirResource)
                 .build();
+    }
+
+    /**
+     * Returns a {@link ReadMedicalResourcesInternalResponse}. If the cursor contains more
+     * than @link MAXIMUM_ALLOWED_CURSOR_COUNT} records, it throws {@link IllegalArgumentException}.
+     */
+    @NonNull
+    private static ReadMedicalResourcesInternalResponse getMedicalResources(
+            @NonNull Cursor cursor, @NonNull ReadMedicalResourcesRequest request) {
+        // TODO(b/356613483): remove these checks in the helpers and instead validate pageSize
+        // in the service.
+        if (cursor.getCount() > MAXIMUM_ALLOWED_CURSOR_COUNT) {
+            throw new IllegalArgumentException(
+                    "Too many resources in the cursor. Max allowed: "
+                            + MAXIMUM_ALLOWED_CURSOR_COUNT);
+        }
+        List<MedicalResource> medicalResources = new ArrayList<>();
+        int requestSize = request.getPageSize();
+        String nextPageToken = null;
+        long lastRowId = DEFAULT_LONG;
+        if (cursor.moveToFirst()) {
+            do {
+                if (medicalResources.size() >= requestSize) {
+                    nextPageToken = PhrPageTokenWrapper.of(request, lastRowId).encode();
+                    break;
+                }
+                medicalResources.add(getMedicalResource(cursor));
+                lastRowId = getCursorLong(cursor, MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME);
+            } while (cursor.moveToNext());
+        }
+        return new ReadMedicalResourcesInternalResponse(medicalResources, nextPageToken);
     }
 
     /**
