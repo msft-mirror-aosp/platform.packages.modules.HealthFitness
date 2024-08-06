@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.phr;
 
+import static android.health.connect.internal.datatypes.utils.FhirResourceTypeStringToIntMapper.getFhirResourceTypeInt;
+
 import static com.android.healthfitness.flags.Flags.personalHealthRecord;
 
 import android.annotation.NonNull;
@@ -27,10 +29,6 @@ import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
 /**
  * Helper class to extract fields from the FHIR JSON.
  *
@@ -39,8 +37,6 @@ import java.util.Map;
 public class FhirJsonExtractor {
     private static final String FHIR_RESOURCE_TYPE_FIELD_NAME = "resourceType";
     private static final String FHIR_RESOURCE_ID_FIELD_NAME = "id";
-    private static final String FHIR_RESOURCE_TYPE_IMMUNIZATION_STR = "IMMUNIZATION";
-    private static final Map<String, Integer> FHIR_RESOURCE_TYPE_TO_INT = new HashMap<>();
 
     private final int mFhirResourceTypeInt;
     private final int mMedicalResourceTypeInt;
@@ -76,25 +72,6 @@ public class FhirJsonExtractor {
     }
 
     /**
-     * Returns the corresponding {@code IntDef} {@link FhirResourceType} from a {@code String}
-     * {@code fhirResourceType}.
-     */
-    @FhirResourceType
-    public static int getFhirResourceTypeInt(@NonNull String fhirResourceType) {
-        initIfNecessaryAndPopulateFhirResourceTypeToIntMap();
-        // TODO(b/342574702): remove the default value once we have validation and it is more
-        // clear what resources should through to the database.
-        if (personalHealthRecord()) {
-            return FHIR_RESOURCE_TYPE_TO_INT.getOrDefault(
-                    fhirResourceType.toUpperCase(Locale.ROOT),
-                    FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN);
-        }
-        throw new UnsupportedOperationException(
-                "this case should never happen because we have a check at the top of the API impl"
-                        + " in HealthConnectServiceImpl");
-    }
-
-    /**
      * Returns the corresponding {@code IntDef} {@link MedicalResourceType} of the given {@code
      * mFhirJsonObj}.
      */
@@ -111,13 +88,5 @@ public class FhirJsonExtractor {
         throw new UnsupportedOperationException(
                 "this case should never happen because we have a check at the top of the API impl"
                         + " in HealthConnectServiceImpl");
-    }
-
-    private static void initIfNecessaryAndPopulateFhirResourceTypeToIntMap() {
-        if (personalHealthRecord() && FHIR_RESOURCE_TYPE_TO_INT.isEmpty()) {
-            FHIR_RESOURCE_TYPE_TO_INT.put(
-                    FHIR_RESOURCE_TYPE_IMMUNIZATION_STR,
-                    FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION);
-        }
     }
 }

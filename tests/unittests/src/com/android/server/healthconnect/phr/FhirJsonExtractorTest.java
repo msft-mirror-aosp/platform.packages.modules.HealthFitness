@@ -73,20 +73,11 @@ public class FhirJsonExtractorTest {
 
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void getFhirResourceType_immunization_success() throws JSONException {
+    public void getFhirResourceType_success() throws JSONException {
         FhirJsonExtractor extractor = new FhirJsonExtractor(FHIR_DATA_IMMUNIZATION);
 
         assertThat(extractor.getFhirResourceType())
                 .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION);
-    }
-
-    @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void getFhirResourceType_unknown_success() throws JSONException {
-        FhirJsonExtractor extractor = new FhirJsonExtractor(FHIR_DATA_ALLERGY);
-
-        assertThat(extractor.getFhirResourceType())
-                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN);
     }
 
     @Test
