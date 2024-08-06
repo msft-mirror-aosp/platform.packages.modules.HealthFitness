@@ -2971,9 +2971,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         medicalResourceType -> {
                             // TODO(b/350014259): Get contributing data sources from DB.
                             return new MedicalResourceTypeInfoResponse(
-                                    medicalResourceType,
-                                    getMedicalPermissionCategory(medicalResourceType),
-                                    Set.of());
+                                    medicalResourceType, Set.of());
                         })
                 .collect(toList());
     }

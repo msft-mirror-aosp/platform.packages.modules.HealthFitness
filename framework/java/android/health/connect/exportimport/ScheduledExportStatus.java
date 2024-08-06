@@ -69,7 +69,15 @@ public final class ScheduledExportStatus implements Parcelable {
      */
     public static final int DATA_EXPORT_LOST_FILE_ACCESS = 2;
 
+    /**
+     * Indicates that an export was started and is ongoing.
+     *
+     * @hide
+     */
+    public static final int DATA_EXPORT_STARTED = 3;
+
     /** @hide */
+    // TODO(b/356393172) rename to Status & include DATA_EXPORT_STARTED during Statuses cleanup.
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({DATA_EXPORT_ERROR_UNKNOWN, DATA_EXPORT_ERROR_NONE, DATA_EXPORT_LOST_FILE_ACCESS})
     public @interface DataExportError {}
