@@ -145,11 +145,10 @@ package android.health.connect {
   }
 
   @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalResourceTypeInfoResponse implements android.os.Parcelable {
-    ctor public MedicalResourceTypeInfoResponse(int, int, @NonNull java.util.Set<android.health.connect.datatypes.MedicalDataSource>);
+    ctor public MedicalResourceTypeInfoResponse(int, @NonNull java.util.Set<android.health.connect.datatypes.MedicalDataSource>);
     method public int describeContents();
     method @NonNull public java.util.Set<android.health.connect.datatypes.MedicalDataSource> getContributingDataSources();
     method public int getMedicalResourceType();
-    method public int getPermissionCategoryType();
     method public void writeToParcel(@NonNull android.os.Parcel, int);
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.MedicalResourceTypeInfoResponse> CREATOR;
   }
