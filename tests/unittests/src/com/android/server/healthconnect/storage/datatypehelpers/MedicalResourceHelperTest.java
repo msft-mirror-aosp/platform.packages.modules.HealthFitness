@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
@@ -30,6 +31,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IM
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.utils.PhrDataFactory.R4_VERSION_STRING;
 import static android.healthconnect.cts.utils.PhrDataFactory.addCompletedStatus;
+import static android.healthconnect.cts.utils.PhrDataFactory.createImmunizationMedicalResources;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResource;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceAllergy;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceBuilder;
@@ -44,6 +46,7 @@ import static com.android.server.healthconnect.storage.datatypehelpers.MedicalRe
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.FHIR_VERSION_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.MEDICAL_RESOURCE_TABLE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getCreateTableRequest;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getPrimaryColumn;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getParentColumnReference;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getTableName;
@@ -81,6 +84,8 @@ import android.util.Pair;
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
+import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -117,14 +122,14 @@ public class MedicalResourceHelperTest {
 
     @Rule(order = 3)
     public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
-            new com.android.server.healthconnect.storage.datatypehelpers
-                    .HealthConnectDatabaseTestRule();
+            new HealthConnectDatabaseTestRule();
 
     private MedicalResourceHelper mMedicalResourceHelper;
     private MedicalDataSourceHelper mMedicalDataSourceHelper;
     private TransactionManager mTransactionManager;
     private HealthConnectUserContext mContext;
     private static final long DATA_SOURCE_ROW_ID = 1234;
+    private static final String INVALID_PAGE_TOKEN = "aw==";
 
     @Before
     public void setup() {
@@ -144,7 +149,7 @@ public class MedicalResourceHelperTest {
     public void getCreateTableRequest_correctResult() {
         List<Pair<String, String>> columnInfoMedicalResource =
                 List.of(
-                        Pair.create(PRIMARY_COLUMN_NAME, PRIMARY_AUTOINCREMENT),
+                        Pair.create(getPrimaryColumn(), PRIMARY_AUTOINCREMENT),
                         Pair.create(FHIR_RESOURCE_TYPE_COLUMN_NAME, INTEGER_NOT_NULL),
                         Pair.create(FHIR_RESOURCE_ID_COLUMN_NAME, TEXT_NOT_NULL),
                         Pair.create(FHIR_DATA_COLUMN_NAME, TEXT_NOT_NULL),
@@ -161,7 +166,7 @@ public class MedicalResourceHelperTest {
                         .addForeignKey(
                                 MEDICAL_RESOURCE_TABLE_NAME,
                                 Collections.singletonList(getParentColumnReference()),
-                                Collections.singletonList(PRIMARY_COLUMN_NAME));
+                                Collections.singletonList(getPrimaryColumn()));
         CreateTableRequest expected =
                 new CreateTableRequest(MEDICAL_RESOURCE_TABLE_NAME, columnInfoMedicalResource)
                         .addForeignKey(
@@ -238,7 +243,8 @@ public class MedicalResourceHelperTest {
                         "SELECT * FROM ( SELECT * FROM medical_resource_table WHERE uuid IN ("
                                 + String.join(", ", hexValues)
                                 + ") ) AS inner_query_result  INNER JOIN"
-                                + " medical_resource_indices_table ON inner_query_result.row_id ="
+                                + " medical_resource_indices_table ON"
+                                + " inner_query_result.medical_resource_row_id ="
                                 + " medical_resource_indices_table.medical_resource_id  INNER JOIN"
                                 + " medical_data_source_table ON inner_query_result.data_source_id"
                                 + " = medical_data_source_table.row_id");
@@ -256,13 +262,16 @@ public class MedicalResourceHelperTest {
         assertThat(readRequest.getTableName()).isEqualTo(MEDICAL_RESOURCE_TABLE_NAME);
         assertThat(readRequest.getReadCommand())
                 .isEqualTo(
-                        "SELECT * FROM ( SELECT * FROM medical_resource_table ) AS"
+                        "SELECT * FROM ( SELECT * FROM medical_resource_table ORDER BY"
+                                + " medical_resource_row_id LIMIT "
+                                + (DEFAULT_PAGE_SIZE + 1)
+                                + " ) AS"
                                 + " inner_query_result  INNER JOIN ( SELECT * FROM"
                                 + " medical_resource_indices_table WHERE medical_resource_type = "
                                 + "'"
                                 + MEDICAL_RESOURCE_TYPE_IMMUNIZATION
-                                + "'"
-                                + ") medical_resource_indices_table ON inner_query_result.row_id ="
+                                + "') medical_resource_indices_table ON"
+                                + " inner_query_result.medical_resource_row_id ="
                                 + " medical_resource_indices_table.medical_resource_id  INNER JOIN"
                                 + " medical_data_source_table ON inner_query_result.data_source_id"
                                 + " = medical_data_source_table.row_id");
@@ -290,10 +299,11 @@ public class MedicalResourceHelperTest {
         ReadMedicalResourcesRequest readImmunizationRequest =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
 
-        List<MedicalResource> resources =
+        ReadMedicalResourcesInternalResponse result =
                 mMedicalResourceHelper.readMedicalResourcesByRequest(readImmunizationRequest);
 
-        assertThat(resources).isEmpty();
+        assertThat(result.getMedicalResources()).isEmpty();
+        assertThat(result.getPageToken()).isEqualTo(null);
     }
 
     @Test
@@ -313,7 +323,7 @@ public class MedicalResourceHelperTest {
                         List.of(upsertImmunizationResourceRequest));
         ReadMedicalResourcesRequest readUnknownRequest =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_UNKNOWN).build();
-        List<MedicalResource> resourcesWithUnknownResourceType =
+        ReadMedicalResourcesInternalResponse result =
                 mMedicalResourceHelper.readMedicalResourcesByRequest(readUnknownRequest);
 
         assertThat(upsertedResources)
@@ -324,7 +334,8 @@ public class MedicalResourceHelperTest {
                                         FHIR_VERSION_R4,
                                         fhirResource)
                                 .build());
-        assertThat(resourcesWithUnknownResourceType).isEmpty();
+        assertThat(result.getMedicalResources()).isEmpty();
+        assertThat(result.getPageToken()).isEqualTo(null);
     }
 
     @Test
@@ -372,15 +383,17 @@ public class MedicalResourceHelperTest {
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_UNKNOWN).build();
         ReadMedicalResourcesRequest readImmunizationRequest =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
-        List<MedicalResource> resourcesWithUnknownResourceTypes =
+        ReadMedicalResourcesInternalResponse unknownResourcesResult =
                 mMedicalResourceHelper.readMedicalResourcesByRequest(readUnknownRequest);
-        List<MedicalResource> resourcesWithImmunizationResourceType =
+        ReadMedicalResourcesInternalResponse immunizationResult =
                 mMedicalResourceHelper.readMedicalResourcesByRequest(readImmunizationRequest);
 
         assertThat(upsertedResources).containsExactly(immunization, differentImmunization, allergy);
-        assertThat(resourcesWithUnknownResourceTypes).containsExactly(allergy);
-        assertThat(resourcesWithImmunizationResourceType)
+        assertThat(unknownResourcesResult.getMedicalResources()).containsExactly(allergy);
+        assertThat(unknownResourcesResult.getPageToken()).isEqualTo(null);
+        assertThat(immunizationResult.getMedicalResources())
                 .containsExactly(immunization, differentImmunization);
+        assertThat(immunizationResult.getPageToken()).isEqualTo(null);
     }
 
     @Test
@@ -430,15 +443,17 @@ public class MedicalResourceHelperTest {
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_UNKNOWN).build();
         ReadMedicalResourcesRequest readImmunizationRequest =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
-        List<MedicalResource> resourcesWithUnknownResourceTypes =
+        ReadMedicalResourcesInternalResponse unknownResourcesResult =
                 mMedicalResourceHelper.readMedicalResourcesByRequest(readUnknownRequest);
-        List<MedicalResource> resourcesWithImmunizationResourceType =
+        ReadMedicalResourcesInternalResponse immunizationResult =
                 mMedicalResourceHelper.readMedicalResourcesByRequest(readImmunizationRequest);
 
         assertThat(upsertedResources).containsExactly(immunization, differentImmunization, allergy);
-        assertThat(resourcesWithUnknownResourceTypes).containsExactly(allergy);
-        assertThat(resourcesWithImmunizationResourceType)
+        assertThat(unknownResourcesResult.getMedicalResources()).containsExactly(allergy);
+        assertThat(unknownResourcesResult.getPageToken()).isEqualTo(null);
+        assertThat(immunizationResult.getMedicalResources())
                 .containsExactly(immunization, differentImmunization);
+        assertThat(immunizationResult.getPageToken()).isEqualTo(null);
     }
 
     @Test
@@ -814,6 +829,93 @@ public class MedicalResourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void insertMultipleMedicalResources_readByRequest_success() {
+        MedicalDataSource dataSource = insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+        List<MedicalResource> resources =
+                createImmunizationMedicalResources(/* numOfResources= */ 6, dataSource.getId());
+        List<UpsertMedicalResourceInternalRequest> upsertRequests =
+                createUpsertMedicalResourceRequests(resources, dataSource.getId());
+
+        List<MedicalResource> upsertedMedicalResources =
+                mMedicalResourceHelper.upsertMedicalResources(upsertRequests);
+        assertThat(upsertedMedicalResources).containsExactlyElementsIn(resources);
+
+        ReadMedicalResourcesRequest readRequest =
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .setPageSize(2)
+                        .build();
+        ReadMedicalResourcesInternalResponse result =
+                mMedicalResourceHelper.readMedicalResourcesByRequest(readRequest);
+        String pageToken = result.getPageToken();
+        assertThat(result.getMedicalResources())
+                .containsExactlyElementsIn(List.of(resources.get(0), resources.get(1)));
+        assertThat(pageToken)
+                .isEqualTo(PhrPageTokenWrapper.of(readRequest, /* lastRowId= */ 2).encode());
+
+        ReadMedicalResourcesRequest readRequest1 =
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .setPageSize(2)
+                        .setPageToken(pageToken)
+                        .build();
+        ReadMedicalResourcesInternalResponse result1 =
+                mMedicalResourceHelper.readMedicalResourcesByRequest(readRequest1);
+        String pageToken1 = result1.getPageToken();
+        assertThat(result1.getMedicalResources())
+                .containsExactlyElementsIn(List.of(resources.get(2), resources.get(3)));
+        assertThat(pageToken1)
+                .isEqualTo(PhrPageTokenWrapper.of(readRequest1, /* lastRowId= */ 4).encode());
+
+        ReadMedicalResourcesRequest readRequest2 =
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .setPageSize(2)
+                        .setPageToken(pageToken1)
+                        .build();
+        ReadMedicalResourcesInternalResponse result2 =
+                mMedicalResourceHelper.readMedicalResourcesByRequest(readRequest2);
+        String pageToken2 = result2.getPageToken();
+        assertThat(result2.getMedicalResources())
+                .containsExactlyElementsIn(List.of(resources.get(4), resources.get(5)));
+        assertThat(pageToken2).isEqualTo(null);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void insertMultipleMedicalResourcesReadByRequest_pageSizeLargerThanResources_success() {
+        MedicalDataSource dataSource = insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+        List<MedicalResource> resources =
+                createImmunizationMedicalResources(/* numOfResources= */ 6, dataSource.getId());
+        List<UpsertMedicalResourceInternalRequest> requests =
+                createUpsertMedicalResourceRequests(resources, dataSource.getId());
+
+        List<MedicalResource> upsertedMedicalResources =
+                mMedicalResourceHelper.upsertMedicalResources(requests);
+        ReadMedicalResourcesRequest readRequest =
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .setPageSize(10)
+                        .build();
+        ReadMedicalResourcesInternalResponse result =
+                mMedicalResourceHelper.readMedicalResourcesByRequest(readRequest);
+
+        assertThat(upsertedMedicalResources).containsExactlyElementsIn(resources);
+        assertThat(result.getMedicalResources()).containsExactlyElementsIn(resources);
+        assertThat(result.getPageToken()).isEqualTo(null);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void readMedicalResourcedByRequest_invalidPageToken_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mMedicalResourceHelper.readMedicalResourcesByRequest(
+                                new ReadMedicalResourcesRequest.Builder(
+                                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                                        .setPageToken(INVALID_PAGE_TOKEN)
+                                        .build()));
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteMedicalResourcesByIds_noId_fails() {
         assertThrows(
                 IllegalArgumentException.class,
@@ -1082,5 +1184,27 @@ public class MedicalResourceHelperTest {
             }
             return medicalResourceTypes;
         }
+    }
+
+    /**
+     * Creates a list of {@link UpsertMedicalResourceInternalRequest}s for the given list of {@link
+     * MedicalResource}s and {@code dataSourceId}.
+     */
+    private static List<UpsertMedicalResourceInternalRequest> createUpsertMedicalResourceRequests(
+            List<MedicalResource> medicalResources, String dataSourceId) {
+        List<UpsertMedicalResourceInternalRequest> requests = new ArrayList<>();
+        for (MedicalResource medicalResource : medicalResources) {
+            FhirResource fhirResource = medicalResource.getFhirResource();
+            UpsertMedicalResourceInternalRequest request =
+                    new UpsertMedicalResourceInternalRequest()
+                            .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                            .setFhirResourceId(fhirResource.getId())
+                            .setFhirResourceType(fhirResource.getType())
+                            .setFhirVersion(medicalResource.getFhirVersion())
+                            .setData(fhirResource.getData())
+                            .setDataSourceId(dataSourceId);
+            requests.add(request);
+        }
+        return requests;
     }
 }
