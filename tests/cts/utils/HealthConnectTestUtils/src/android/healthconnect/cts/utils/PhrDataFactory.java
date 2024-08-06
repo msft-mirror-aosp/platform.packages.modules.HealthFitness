@@ -32,6 +32,9 @@ import android.health.connect.datatypes.MedicalResource;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PhrDataFactory {
     public static final String DATA_SOURCE_ID = "123";
     public static final String DATA_SOURCE_PACKAGE_NAME = "com.example.app";
@@ -229,5 +232,32 @@ public class PhrDataFactory {
         JSONObject jsonObj = new JSONObject(fhirJSON);
         jsonObj.put("status", "completed");
         return jsonObj.toString();
+    }
+
+    /**
+     * Creates a number of immunization resources based on the given {@code numOfResources} and
+     * {@code dataSourceId}.
+     */
+    public static List<MedicalResource> createImmunizationMedicalResources(
+            int numOfResources, String dataSourceId) {
+        FhirVersion fhirVersion = parseFhirVersion(R4_VERSION_STRING);
+        List<MedicalResource> medicalResources = new ArrayList<>();
+        for (int i = 0; i < numOfResources; i++) {
+            FhirResource fhirResource =
+                    new FhirResource.Builder(
+                                    FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                    "id/" + i,
+                                    FHIR_DATA_IMMUNIZATION)
+                            .build();
+            MedicalResource medicalResource =
+                    new MedicalResource.Builder(
+                                    MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                                    dataSourceId,
+                                    fhirVersion,
+                                    fhirResource)
+                            .build();
+            medicalResources.add(medicalResource);
+        }
+        return medicalResources;
     }
 }
