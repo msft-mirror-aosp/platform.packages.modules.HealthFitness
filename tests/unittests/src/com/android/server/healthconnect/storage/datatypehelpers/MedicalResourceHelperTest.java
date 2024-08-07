@@ -879,7 +879,7 @@ public class MedicalResourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void insertMultipleMedicalResourcesReadByRequest_pageSizeLargerThanResources_success() {
         MedicalDataSource dataSource = insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         List<MedicalResource> resources =
@@ -902,7 +902,7 @@ public class MedicalResourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void readMedicalResourcedByRequest_invalidPageToken_throws() {
         assertThrows(
                 IllegalArgumentException.class,
@@ -915,7 +915,7 @@ public class MedicalResourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteMedicalResourcesByIds_noId_fails() {
         assertThrows(
                 IllegalArgumentException.class,
