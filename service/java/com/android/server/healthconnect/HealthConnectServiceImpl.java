@@ -29,7 +29,6 @@ import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.HealthPermissions.getMedicalPermissionCategory;
-import static android.health.connect.internal.datatypes.utils.MedicalResourceTypePermissionCategoryMapper.getMedicalPermissionCategory;
 import static android.health.connect.internal.datatypes.utils.MedicalResourceTypePermissionCategoryMapper.getMedicalResourceType;
 
 import static com.android.healthfitness.flags.Flags.personalHealthRecord;
@@ -765,10 +764,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         if (enforceSelfRead
                 && (packageFilters.size() != 1
                         || !packageFilters.get(0).equals(callingPackageName))) {
-            throwSecurityException(
+            throw new SecurityException(
                     "Caller does not have permission to read data for the following ("
-                            + entityFailureMessage
-                            + ") from other applications.");
+                                + entityFailureMessage
+                                + ") from other applications.");
         }
     }
 
@@ -2868,7 +2867,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             throw new IllegalStateException(packageName + " not found");
         }
         if (UserHandle.getAppId(packageUid) != UserHandle.getAppId(callingUid)) {
-            throwSecurityException(packageName + " does not belong to uid " + callingUid);
+            throw new SecurityException(packageName + " does not belong to uid " + callingUid);
         }
     }
 
@@ -2901,7 +2900,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull String claimedCallingPackage) {
         int claimedCallingUid = getPackageUid(actualCallingUserContext, claimedCallingPackage);
         if (claimedCallingUid != actualCallingUid) {
-            throwSecurityException(
+            throw new SecurityException(
                     claimedCallingPackage + " does not belong to uid " + actualCallingUid);
         }
     }
@@ -3011,13 +3010,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         return mContext.checkPermission(permission, pid, uid) == PERMISSION_GRANTED;
     }
 
-    private void enforceBinderUidIsSameAsAttributionSourceUid(
-            int binderUid, int attributionSourceUid) {
-        if (binderUid != attributionSourceUid) {
-            throw new SecurityException("Binder uid must be equal to attribution source uid.");
-        }
-    }
-
     private void logRecordTypeSpecificUpsertMetrics(
             @NonNull List<RecordInternal<?>> recordInternals, @NonNull String packageName) {
         checkParamsNonNull(recordInternals, packageName);
@@ -3051,10 +3043,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
         return recordInternals.stream()
                 .collect(Collectors.groupingBy(RecordInternal::getRecordType));
-    }
-
-    private void throwSecurityException(String message) {
-        throw new SecurityException(message);
     }
 
     private void throwExceptionIfDataSyncInProgress() {
