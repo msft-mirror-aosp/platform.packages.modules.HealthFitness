@@ -41,7 +41,21 @@ aconfig_declarations {
     name: "healthfitness-aconfig-flags",
     package: "com.android.healthfitness.flags",
     container: "com.android.healthfitness",
+    exportable: true,
     srcs: ["healthfitness-flags.aconfig"],
+}
+
+java_aconfig_library {
+    name: "healthfitness-exported-aconfig-flags-lib",
+    aconfig_declarations: "healthfitness-aconfig-flags",
+    min_sdk_version: "34",
+    defaults: ["framework-minus-apex-aconfig-java-defaults"],
+    mode: "exported",
+    visibility: [
+        // Added this due to go/android-flags-howto-apis#test-infra-and-mainline-support, hence
+        // making this only visible to tests for now.
+        "//packages/modules/HealthFitness/tests:__subpackages__",
+    ],
 }
 
 java_aconfig_library {
