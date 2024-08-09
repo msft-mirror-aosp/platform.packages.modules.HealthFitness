@@ -15,7 +15,7 @@
  */
 package android.health.connect.internal.datatypes.utils;
 
-import static com.android.healthfitness.flags.Flags.personalHealthRecord;
+import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 
 import android.annotation.NonNull;
 import android.health.connect.datatypes.FhirResource;
@@ -37,7 +37,7 @@ public final class FhirResourceTypeStringToIntMapper {
      */
     @FhirResourceType
     public static int getFhirResourceTypeInt(@NonNull String fhirResourceType) {
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             throw new UnsupportedOperationException("getFhirResourceTypeInt is not supported");
         }
 
@@ -50,7 +50,7 @@ public final class FhirResourceTypeStringToIntMapper {
     }
 
     private static void populateFhirResourceTypeStringToIntMap() {
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             throw new UnsupportedOperationException(
                     "populateFhirResourceTypeStringToIntMap is not supported");
         }

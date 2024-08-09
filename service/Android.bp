@@ -45,6 +45,9 @@ java_sdk_library {
         "framework-configinfrastructure",
         "keepanno-annotations",
         "modules-utils-preconditions",
+        // Keeping aconfig lib deps in "libs" instead of "static_libs" because we already have them
+        // in the framework jar which is included in this service jar.
+        // See go/fixing-strict-java-packages.
         "healthfitness-aconfig-flags-lib",
         "healthfitness-aconfig-flags-helper",
     ],

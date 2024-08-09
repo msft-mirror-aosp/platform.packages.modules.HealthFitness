@@ -502,6 +502,7 @@
     <string name="import_notification_import_in_progress_title" description="Title text of notification displayed when import is in progress. [CHAR_LIMIT=NONE]">Health&#160;Connect restore in progress</string>
     <string name="import_notification_import_complete_title" description="Title text of notification displayed when import has completed successfully. [CHAR_LIMIT=NONE]">Health&#160;Connect restore complete</string>
 
+    <string name="import_in_progress_toast_text" description="Toast text displayed when import is in progress. [CHAR_LIMIT=40]">Restore in progress</string>
     <string name="import_complete_toast_text" description="Toast text displayed when import completes successfully. [CHAR_LIMIT=40]">Finished restoring data</string>
 
     <string name="import_notification_error_generic_error_title" description="Title text of notification displayed when import fails due to generic error. [CHAR_LIMIT=NONE]">Health&#160;Connect couldn\'t restore data</string>

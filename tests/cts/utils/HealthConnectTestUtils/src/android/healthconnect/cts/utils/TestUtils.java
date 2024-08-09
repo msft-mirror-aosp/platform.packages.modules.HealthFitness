@@ -51,8 +51,7 @@ import static android.healthconnect.test.app.TestAppReceiver.EXTRA_TIMES;
 import static com.android.compatibility.common.util.FeatureUtil.AUTOMOTIVE_FEATURE;
 import static com.android.compatibility.common.util.FeatureUtil.hasSystemFeature;
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
-import static com.android.healthfitness.flags.Flags.personalHealthRecord;
-import static com.android.healthfitness.flags.Flags.personalHealthRecordDatabase;
+import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -453,10 +452,7 @@ public final class TestUtils {
      * Delete all medical data (datasources, resources etc) stored in the Health Connect database.
      */
     public static void deleteAllMedicalData() throws InterruptedException {
-        if (!personalHealthRecord()) {
-            return;
-        }
-        if (!personalHealthRecordDatabase()) {
+        if (!isPersonalHealthRecordEnabled()) {
             return;
         }
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
