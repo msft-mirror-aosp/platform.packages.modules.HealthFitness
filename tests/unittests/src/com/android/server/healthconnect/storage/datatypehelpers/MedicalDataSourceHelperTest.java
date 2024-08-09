@@ -23,11 +23,11 @@ import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOUR
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_DISPLAY_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_PACKAGE_NAME;
 
-import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.APP_INFO_ID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.DATA_SOURCE_UUID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.DISPLAY_NAME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.FHIR_BASE_URI_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.MEDICAL_DATA_SOURCE_TABLE_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getAppInfoIdColumnName;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getCreateTableRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getReadTableRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getReadTableRequestJoinWithAppInfo;
@@ -126,7 +126,7 @@ public class MedicalDataSourceHelperTest {
         List<Pair<String, String>> columnInfo =
                 List.of(
                         Pair.create(PRIMARY_COLUMN_NAME, PRIMARY),
-                        Pair.create(APP_INFO_ID_COLUMN_NAME, INTEGER_NOT_NULL),
+                        Pair.create(getAppInfoIdColumnName(), INTEGER_NOT_NULL),
                         Pair.create(DISPLAY_NAME_COLUMN_NAME, TEXT_NOT_NULL),
                         Pair.create(FHIR_BASE_URI_COLUMN_NAME, TEXT_NOT_NULL),
                         Pair.create(DATA_SOURCE_UUID_COLUMN_NAME, BLOB_UNIQUE_NON_NULL));
@@ -134,7 +134,7 @@ public class MedicalDataSourceHelperTest {
                 new CreateTableRequest(MEDICAL_DATA_SOURCE_TABLE_NAME, columnInfo)
                         .addForeignKey(
                                 AppInfoHelper.getInstance().getMainTableName(),
-                                List.of(APP_INFO_ID_COLUMN_NAME),
+                                List.of(getAppInfoIdColumnName()),
                                 List.of(PRIMARY_COLUMN_NAME));
 
         CreateTableRequest result = getCreateTableRequest();
@@ -162,7 +162,7 @@ public class MedicalDataSourceHelperTest {
         assertThat(contentValues.get(DISPLAY_NAME_COLUMN_NAME)).isEqualTo(DATA_SOURCE_DISPLAY_NAME);
         assertThat(contentValues.get(DATA_SOURCE_UUID_COLUMN_NAME))
                 .isEqualTo(StorageUtils.convertUUIDToBytes(uuid));
-        assertThat(contentValues.get(APP_INFO_ID_COLUMN_NAME)).isEqualTo(APP_INFO_ID);
+        assertThat(contentValues.get(getAppInfoIdColumnName())).isEqualTo(APP_INFO_ID);
     }
 
     @Test

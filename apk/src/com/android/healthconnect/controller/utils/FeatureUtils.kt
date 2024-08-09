@@ -2,6 +2,7 @@ package com.android.healthconnect.controller.utils
 
 import android.content.Context
 import android.provider.DeviceConfig
+import com.android.healthfitness.flags.AconfigFlagHelper
 import com.android.healthfitness.flags.Flags
 import dagger.Module
 import dagger.Provides
@@ -58,7 +59,7 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
 
     private var isNewInformationArchitectureEnabled = Flags.newInformationArchitecture()
 
-    private var isPersonalHealthRecordEnabled = Flags.personalHealthRecord()
+    private var isPersonalHealthRecordEnabled = AconfigFlagHelper.isPersonalHealthRecordEnabled()
 
     override fun isNewInformationArchitectureEnabled(): Boolean {
         synchronized(lock) {

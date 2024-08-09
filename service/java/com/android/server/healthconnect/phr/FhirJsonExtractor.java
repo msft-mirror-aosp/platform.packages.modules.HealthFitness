@@ -18,7 +18,7 @@ package com.android.server.healthconnect.phr;
 
 import static android.health.connect.internal.datatypes.utils.FhirResourceTypeStringToIntMapper.getFhirResourceTypeInt;
 
-import static com.android.healthfitness.flags.Flags.personalHealthRecord;
+import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 
 import android.annotation.NonNull;
 import android.health.connect.datatypes.FhirResource;
@@ -77,7 +77,7 @@ public class FhirJsonExtractor {
      */
     @MedicalResourceType
     private int calculateMedicalResourceTypeInt() {
-        if (personalHealthRecord()) {
+        if (isPersonalHealthRecordEnabled()) {
             if (mFhirResourceTypeInt == FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION) {
                 return MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
             }

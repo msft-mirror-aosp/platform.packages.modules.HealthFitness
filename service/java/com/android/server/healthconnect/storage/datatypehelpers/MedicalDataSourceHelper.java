@@ -68,8 +68,8 @@ public class MedicalDataSourceHelper {
 
     @VisibleForTesting static final String DISPLAY_NAME_COLUMN_NAME = "display_name";
     @VisibleForTesting static final String FHIR_BASE_URI_COLUMN_NAME = "fhir_base_uri";
-    @VisibleForTesting static final String APP_INFO_ID_COLUMN_NAME = "app_info_id";
     @VisibleForTesting static final String DATA_SOURCE_UUID_COLUMN_NAME = "data_source_uuid";
+    private static final String APP_INFO_ID_COLUMN_NAME = "app_info_id";
     private static final List<Pair<String, Integer>> UNIQUE_COLUMNS_INFO =
             List.of(new Pair<>(DATA_SOURCE_UUID_COLUMN_NAME, UpsertTableRequest.TYPE_BLOB));
 
@@ -90,6 +90,11 @@ public class MedicalDataSourceHelper {
     @NonNull
     public static String getDataSourceUuidColumnName() {
         return DATA_SOURCE_UUID_COLUMN_NAME;
+    }
+
+    @NonNull
+    public static String getAppInfoIdColumnName() {
+        return APP_INFO_ID_COLUMN_NAME;
     }
 
     @NonNull
