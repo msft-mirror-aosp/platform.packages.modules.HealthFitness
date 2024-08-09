@@ -155,6 +155,11 @@
         <!-- Popup Menu -->
         <item name="android:itemBackground">@color/settingslib_dialog_background</item>
         <!-- END REGION -->
+
+        <!-- REGION CLIPPING -->
+        <item name="android:clipToPadding">true</item>
+        <item name="android:clipChildren">true</item>
+        <!-- END REGION -->
     </style>
 
     <style name="Theme.HealthConnect" parent="Base.Theme.HealthConnect" />
