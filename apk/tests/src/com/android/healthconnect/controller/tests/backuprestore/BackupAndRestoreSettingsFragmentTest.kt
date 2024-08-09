@@ -26,6 +26,7 @@ import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
+import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
@@ -53,6 +54,7 @@ import com.android.healthconnect.controller.exportimport.api.ImportUiState
 import com.android.healthconnect.controller.exportimport.api.ImportUiStatus
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
+import com.android.healthconnect.controller.tests.TestActivity
 import com.android.healthconnect.controller.tests.utils.ClearTimeFormatRule
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.NOW
@@ -61,6 +63,8 @@ import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
+import com.android.healthconnect.controller.utils.ToastManager
+import com.android.healthconnect.controller.utils.ToastManagerModule
 import com.android.healthconnect.controller.utils.logging.BackupAndRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.google.common.truth.Truth.assertThat
@@ -83,15 +87,17 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
-@UninstallModules(DeviceInfoUtilsModule::class)
+@UninstallModules(DeviceInfoUtilsModule::class, ToastManagerModule::class)
 class BackupAndRestoreSettingsFragmentTest {
 
     companion object {
@@ -124,6 +130,8 @@ class BackupAndRestoreSettingsFragmentTest {
 
     @BindValue
     val importFlowViewModel: ImportFlowViewModel = Mockito.mock(ImportFlowViewModel::class.java)
+
+    @BindValue var toastManager: ToastManager = mock()
 
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
     @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
@@ -308,6 +316,42 @@ class BackupAndRestoreSettingsFragmentTest {
 
         intended(hasComponent(ImportFlowActivity::class.java.name))
         verify(importFlowViewModel).triggerImportOfSelectedFile(Uri.parse(TEST_LAST_IMPORT_URI))
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_whenImportTriggered_importStatusToastsShown() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
+        }
+        whenever(exportSettingsViewModel.documentProviders).then {
+            MutableLiveData(DocumentProviders.WithData(listOf()))
+        }
+        whenever(importFlowViewModel.setLastCompletionInstant(Instant.now())).then {
+            MutableLiveData(Instant.now())
+        }
+
+        val expectedInProgressMessage: Int = R.string.import_in_progress_toast_text
+        val expectedCompleteMessage: Int = R.string.import_complete_toast_text
+
+        val expectedResult =
+            ActivityResult(
+                Activity.RESULT_OK, Intent().putExtra(IMPORT_FILE_URI_KEY, TEST_LAST_IMPORT_URI))
+        intending(hasComponent(ImportFlowActivity::class.java.name)).respondWith(expectedResult)
+
+        val scenario: ActivityScenario<TestActivity> =
+            launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Import data")).perform(click())
+
+        intended(hasComponent(ImportFlowActivity::class.java.name))
+        verify(importFlowViewModel).triggerImportOfSelectedFile(Uri.parse(TEST_LAST_IMPORT_URI))
+
+        scenario.onActivity { activity: TestActivity ->
+            verify(toastManager)
+                .showToast(eq(activity), eq(expectedInProgressMessage), ArgumentMatchers.anyInt())
+            verify(toastManager)
+                .showToast(eq(activity), eq(expectedCompleteMessage), ArgumentMatchers.anyInt())
+        }
     }
 
     @Test

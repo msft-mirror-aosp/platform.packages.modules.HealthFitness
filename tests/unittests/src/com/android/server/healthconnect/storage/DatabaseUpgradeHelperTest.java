@@ -16,8 +16,7 @@
 
 package com.android.server.healthconnect.storage;
 
-import static com.android.server.healthconnect.storage.DatabaseUpgradeHelper.DB_VERSION_UUID_BLOB;
-import static com.android.server.healthconnect.storage.DatabaseUpgradeHelper.getDatabaseVersion;
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_UUID_BLOB;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -26,6 +25,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import androidx.test.platform.app.InstrumentationRegistry;
+
+import com.android.healthfitness.flags.AconfigFlagHelper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,8 +59,8 @@ public class DatabaseUpgradeHelperTest {
         // The DB_VERSION_UUID_BLOB upgrade is a special case, and is not idempotent.
         // We are testing from the version above that.
         DatabaseUpgradeHelper.onUpgrade(
-                mSQLiteDatabase, DB_VERSION_UUID_BLOB, getDatabaseVersion());
+                mSQLiteDatabase, DB_VERSION_UUID_BLOB, AconfigFlagHelper.getDbVersion());
         DatabaseUpgradeHelper.onUpgrade(
-                mSQLiteDatabase, DB_VERSION_UUID_BLOB, getDatabaseVersion());
+                mSQLiteDatabase, DB_VERSION_UUID_BLOB, AconfigFlagHelper.getDbVersion());
     }
 }

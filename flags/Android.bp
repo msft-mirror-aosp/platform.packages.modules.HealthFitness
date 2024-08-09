@@ -78,6 +78,9 @@ java_library {
     srcs: [
         "src/**/*.java",
     ],
+    libs: [
+        "framework-annotations-lib",
+    ],
     static_libs: [
         "healthfitness-aconfig-flags-lib",
     ],
