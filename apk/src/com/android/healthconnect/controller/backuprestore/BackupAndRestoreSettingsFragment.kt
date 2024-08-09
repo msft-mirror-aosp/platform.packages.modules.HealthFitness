@@ -49,6 +49,7 @@ import com.android.healthconnect.controller.shared.preference.HealthPreferenceFr
 import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
+import com.android.healthconnect.controller.utils.ToastManager
 import com.android.healthconnect.controller.utils.logging.BackupAndRestoreElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
@@ -76,6 +77,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
     }
 
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
+    @Inject lateinit var toastManager: ToastManager
 
     private val exportSettingsViewModel: ExportSettingsViewModel by viewModels()
     private val exportStatusViewModel: ExportStatusViewModel by viewModels()
@@ -144,6 +146,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
 
         importFlowViewModel.lastImportCompletionInstant.observe(viewLifecycleOwner) {
             importDataPreference?.setEnabled(true)
+            toastManager.showToast(requireActivity(), R.string.import_complete_toast_text)
             importStatusViewModel.loadImportStatus()
         }
 
@@ -332,6 +335,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
             Slog.i(TAG, "uri: $uriString")
             if (uriString != null) {
                 importDataPreference?.setEnabled(false)
+                toastManager.showToast(requireActivity(), R.string.import_in_progress_toast_text)
                 importFlowViewModel.triggerImportOfSelectedFile(Uri.parse(uriString))
             }
         }
