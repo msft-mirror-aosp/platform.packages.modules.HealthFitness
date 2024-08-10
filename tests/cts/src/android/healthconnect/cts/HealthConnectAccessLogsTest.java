@@ -21,6 +21,8 @@ import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getTestRecords;
 import static android.healthconnect.cts.utils.DataFactory.getUpdatedStepsRecord;
 
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import android.content.Context;
@@ -36,7 +38,11 @@ import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
+import android.os.SystemClock;
 import android.platform.test.annotations.AppModeFull;
+import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -50,12 +56,16 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 /** CTS test for {@link HealthConnectManager#queryAccessLogs} API. */
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
 public class HealthConnectAccessLogsTest {
     private static final String SELF_PACKAGE_NAME = "android.healthconnect.cts";
+
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -80,12 +90,16 @@ public class HealthConnectAccessLogsTest {
         TestUtils.insertRecords(testRecord);
         TestUtils.readRecords(
                 new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class).build());
-        // Wait for some time before fetching access logs as they are updated in the background.
-        Thread.sleep(500);
-        List<AccessLog> newAccessLogsResponse = TestUtils.queryAccessLogs();
-        assertThat(newAccessLogsResponse.size() - oldAccessLogsResponse.size()).isGreaterThan(1);
-        int size = newAccessLogsResponse.size();
-        AccessLog accessLog = newAccessLogsResponse.get(size - 1);
+
+        List<AccessLog> newAccessLogsResponse =
+                waitForNewAccessLogsWithExpectedMinSize(
+                        HealthConnectAccessLogsTest::queryAccessLogsWithoutThrow,
+                        oldAccessLogsResponse.size() + 2,
+                        1000,
+                        200);
+
+        assertThat(newAccessLogsResponse.size() - oldAccessLogsResponse.size()).isEqualTo(2);
+        AccessLog accessLog = newAccessLogsResponse.get(newAccessLogsResponse.size() - 1);
         assertThat(accessLog.getRecordTypes()).contains(StepsRecord.class);
         assertThat(accessLog.getOperationType())
                 .isEqualTo(AccessLog.OperationType.OPERATION_TYPE_READ);
@@ -105,10 +119,15 @@ public class HealthConnectAccessLogsTest {
         TestUtils.readRecords(
                 new ReadRecordsRequestUsingFilters.Builder<>(BasalMetabolicRateRecord.class)
                         .build());
-        // Wait for some time before fetching access logs as they are updated in the background.
-        Thread.sleep(500);
-        List<AccessLog> newAccessLogsResponse = TestUtils.queryAccessLogs();
-        assertThat(newAccessLogsResponse.size() - oldAccessLogsResponse.size()).isGreaterThan(3);
+
+        List<AccessLog> newAccessLogsResponse =
+                waitForNewAccessLogsWithExpectedMinSize(
+                        HealthConnectAccessLogsTest::queryAccessLogsWithoutThrow,
+                        oldAccessLogsResponse.size() + 4,
+                        1000,
+                        200);
+
+        assertThat(newAccessLogsResponse.size() - oldAccessLogsResponse.size()).isEqualTo(4);
     }
 
     @Test
@@ -124,13 +143,15 @@ public class HealthConnectAccessLogsTest {
                                 record.getMetadata().getClientRecordId()));
         TestUtils.updateRecords(updatedTestRecord);
 
-        // Wait for some time before fetching access logs as they are updated in the background.
-        Thread.sleep(500);
-
-        List<AccessLog> newAccessLogsResponse = TestUtils.queryAccessLogs();
-        AccessLog accessLog = newAccessLogsResponse.get(newAccessLogsResponse.size() - 1);
+        List<AccessLog> newAccessLogsResponse =
+                waitForNewAccessLogsWithExpectedMinSize(
+                        HealthConnectAccessLogsTest::queryAccessLogsWithoutThrow,
+                        oldAccessLogsResponse.size() + 2,
+                        1000,
+                        200);
 
         assertThat(newAccessLogsResponse.size() - oldAccessLogsResponse.size()).isEqualTo(2);
+        AccessLog accessLog = newAccessLogsResponse.get(newAccessLogsResponse.size() - 1);
         assertThat(accessLog.getRecordTypes()).contains(StepsRecord.class);
         assertThat(accessLog.getOperationType())
                 .isEqualTo(AccessLog.OperationType.OPERATION_TYPE_UPSERT);
@@ -156,13 +177,15 @@ public class HealthConnectAccessLogsTest {
                         74, Instant.now(), heartRateRecord.getMetadata().getClientRecordId());
         TestUtils.updateRecords(Arrays.asList(updatedStepsRecord, updatedHeartRateRecord));
 
-        // Wait for some time before fetching access logs as they are updated in the background.
-        Thread.sleep(500);
-
-        List<AccessLog> newAccessLogsResponse = TestUtils.queryAccessLogs();
-        AccessLog accessLog = newAccessLogsResponse.get(newAccessLogsResponse.size() - 1);
+        List<AccessLog> newAccessLogsResponse =
+                waitForNewAccessLogsWithExpectedMinSize(
+                        HealthConnectAccessLogsTest::queryAccessLogsWithoutThrow,
+                        oldAccessLogsResponse.size() + 2,
+                        1000,
+                        200);
 
         assertThat(newAccessLogsResponse.size() - oldAccessLogsResponse.size()).isEqualTo(2);
+        AccessLog accessLog = newAccessLogsResponse.get(newAccessLogsResponse.size() - 1);
         assertThat(accessLog.getOperationType())
                 .isEqualTo(AccessLog.OperationType.OPERATION_TYPE_UPSERT);
         assertThat(accessLog.getRecordTypes()).contains(StepsRecord.class);
@@ -177,13 +200,15 @@ public class HealthConnectAccessLogsTest {
         List<Record> testRecord = Collections.singletonList(getStepsRecord());
         TestUtils.insertRecords(testRecord);
 
-        // Wait for some time before fetching access logs as they are updated in the background.
-        Thread.sleep(500);
-
-        List<AccessLog> newAccessLogsResponse = TestUtils.queryAccessLogs();
-        AccessLog accessLog = newAccessLogsResponse.get(newAccessLogsResponse.size() - 1);
+        List<AccessLog> newAccessLogsResponse =
+                waitForNewAccessLogsWithExpectedMinSize(
+                        HealthConnectAccessLogsTest::queryAccessLogsWithoutThrow,
+                        oldAccessLogsResponse.size() + 1,
+                        1000,
+                        200);
 
         assertThat(newAccessLogsResponse.size() - oldAccessLogsResponse.size()).isEqualTo(1);
+        AccessLog accessLog = newAccessLogsResponse.get(newAccessLogsResponse.size() - 1);
         assertThat(accessLog.getOperationType())
                 .isEqualTo(AccessLog.OperationType.OPERATION_TYPE_UPSERT);
         assertThat(accessLog.getRecordTypes()).contains(StepsRecord.class);
@@ -197,13 +222,15 @@ public class HealthConnectAccessLogsTest {
         List<Record> testRecord = getTestRecords();
         TestUtils.insertRecords(testRecord);
 
-        // Wait for some time before fetching access logs as they are updated in the background.
-        Thread.sleep(500);
-
-        List<AccessLog> newAccessLogsResponse = TestUtils.queryAccessLogs();
-        AccessLog accessLog = newAccessLogsResponse.get(newAccessLogsResponse.size() - 1);
+        List<AccessLog> newAccessLogsResponse =
+                waitForNewAccessLogsWithExpectedMinSize(
+                        HealthConnectAccessLogsTest::queryAccessLogsWithoutThrow,
+                        oldAccessLogsResponse.size() + 1,
+                        1000,
+                        200);
 
         assertThat(newAccessLogsResponse.size() - oldAccessLogsResponse.size()).isEqualTo(1);
+        AccessLog accessLog = newAccessLogsResponse.get(newAccessLogsResponse.size() - 1);
         assertThat(accessLog.getOperationType())
                 .isEqualTo(AccessLog.OperationType.OPERATION_TYPE_UPSERT);
         assertThat(accessLog.getRecordTypes()).contains(StepsRecord.class);
@@ -212,5 +239,66 @@ public class HealthConnectAccessLogsTest {
         assertThat(accessLog.getRecordTypes()).contains(ExerciseSessionRecord.class);
         assertThat(accessLog.getPackageName()).isEqualTo(SELF_PACKAGE_NAME);
         assertThat(accessLog.getAccessTime()).isNotNull();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD})
+    public void testAccessLogs_phrFlagOn() throws InterruptedException {
+        List<AccessLog> oldAccessLogsResponse = TestUtils.queryAccessLogs();
+        // TODO(b/337018927): Change below to upsert and read MedicalResources once we actually
+        // create access logs in serviceImpl.
+        List<Record> testRecord = Collections.singletonList(getStepsRecord());
+        TestUtils.insertRecords(testRecord);
+        TestUtils.readRecords(
+                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class).build());
+
+        List<AccessLog> newAccessLogsResponse =
+                waitForNewAccessLogsWithExpectedMinSize(
+                        HealthConnectAccessLogsTest::queryAccessLogsWithoutThrow,
+                        oldAccessLogsResponse.size() + 2,
+                        1000,
+                        200);
+
+        assertThat(newAccessLogsResponse.size() - oldAccessLogsResponse.size()).isEqualTo(2);
+        AccessLog accessLog = newAccessLogsResponse.get(newAccessLogsResponse.size() - 1);
+        assertThat(accessLog.getMedicalResourceTypes()).isEmpty();
+        assertThat(accessLog.getMedicalDataSource()).isFalse();
+    }
+
+    /**
+     * Wait for some time before fetching new access logs as they are updated in the background.
+     *
+     * @param newAccessLogsSupplier The supplier to get new AccessLogs.
+     * @param expectedMinSize The expected minimum size of the new AccessLogs.
+     * @param waitMillis The wait time before each attempt to fetch the new AccessLogs.
+     * @param timeoutMillis The hard timeout even if the new AccessLogs cannot be fetched.
+     */
+    private static List<AccessLog> waitForNewAccessLogsWithExpectedMinSize(
+            Supplier<List<AccessLog>> newAccessLogsSupplier,
+            int expectedMinSize,
+            long waitMillis,
+            long timeoutMillis)
+            throws InterruptedException {
+        long timeoutTimestamp = SystemClock.uptimeMillis() + timeoutMillis;
+        List<AccessLog> newAccessLogsResponse;
+        do {
+            // Wait for some time before fetching access logs as they are updated in the background.
+            Thread.sleep(waitMillis);
+            newAccessLogsResponse = newAccessLogsSupplier.get();
+        } while (newAccessLogsResponse.size() < expectedMinSize
+                && SystemClock.uptimeMillis() < timeoutTimestamp);
+        return newAccessLogsResponse;
+    }
+
+    /**
+     * A helper function to just wrap TestUtils.queryAccessLogs and catch the exception, which makes
+     * it easier to use as a supplier.
+     */
+    private static List<AccessLog> queryAccessLogsWithoutThrow() {
+        try {
+            return TestUtils.queryAccessLogs();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

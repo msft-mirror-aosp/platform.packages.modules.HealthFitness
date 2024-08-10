@@ -16,6 +16,7 @@
 
 package healthconnect.logging;
 
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_EXPORT_IMPORT_STATS_REPORTED;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_STORAGE_STATS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_USAGE_STATS;
 
@@ -90,6 +91,7 @@ public class DailyLoggingServiceTest {
     private static final String NOT_HEALTH_PERMISSION = "NOT_HEALTH_PERMISSION";
     private static final String USER_MOST_RECENT_ACCESS_LOG_TIME =
             "USER_MOST_RECENT_ACCESS_LOG_TIME";
+    private static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
 
     @Before
     public void mockStatsLog() {
@@ -315,6 +317,39 @@ public class DailyLoggingServiceTest {
                 () ->
                         HealthFitnessStatsLog.write(
                                 eq(HEALTH_CONNECT_USAGE_STATS), eq(0), eq(2), eq(false)),
+                times(1));
+    }
+
+    @Test
+    public void testDailyUsageStatsLogs_withConfiguredExportFrequency_logsCorrectExportFrequency() {
+        ExtendedMockito.doReturn(subtractDaysFromInstantNow(/* numberOfDays= */ 1))
+                .when(AccessLogsHelper::getLatestAccessLogTimeStamp);
+        when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
+                .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 1)));
+        when(mPreferenceHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY))
+                .thenReturn(String.valueOf(7));
+        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser);
+
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                eq(HEALTH_CONNECT_EXPORT_IMPORT_STATS_REPORTED), eq(7)),
+                times(1));
+    }
+
+    @Test
+    public void testDailyUsageStatsLogs_noConfiguredExportFrequency_logsExportFrequencyAsNever() {
+        ExtendedMockito.doReturn(subtractDaysFromInstantNow(/* numberOfDays= */ 1))
+                .when(AccessLogsHelper::getLatestAccessLogTimeStamp);
+        when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
+                .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 1)));
+        when(mPreferenceHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY)).thenReturn(null);
+        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser);
+
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                eq(HEALTH_CONNECT_EXPORT_IMPORT_STATS_REPORTED), eq(0)),
                 times(1));
     }
 

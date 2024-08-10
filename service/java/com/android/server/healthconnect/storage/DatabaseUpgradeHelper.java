@@ -22,6 +22,11 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_UNKNOWN;
 
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_GENERATED_LOCAL_TIME;
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_MINDFULNESS_SESSION;
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_PLANNED_EXERCISE_SESSIONS;
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_SKIN_TEMPERATURE;
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_UUID_BLOB;
 import static com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper.PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME;
 
 import android.annotation.NonNull;
@@ -54,29 +59,7 @@ import java.util.function.Consumer;
 
 /** Class that contains all database upgrades. */
 final class DatabaseUpgradeHelper {
-    public static final int DB_VERSION_UUID_BLOB = 9;
-    public static final int DB_VERSION_GENERATED_LOCAL_TIME = 10;
-    public static final int DB_VERSION_SKIN_TEMPERATURE = 11;
-    public static final int DB_VERSION_PLANNED_EXERCISE_SESSIONS = 12;
-    // No schema changes between version 12 and 13. See ag/26747988 for more details.
-    public static final int DB_VERSION_PLANNED_EXERCISE_SESSIONS_FLAG_RELEASE = 13;
-    public static final int DB_VERSION_MINDFULNESS_SESSION = 14;
-
-    // TODO(b/346981687): increment db version for PHR, once done with development.
-
     private static final String SQLITE_MASTER_TABLE_NAME = "sqlite_master";
-
-    // Whenever we are bumping the database version, take a look at potential problems described in:
-    // go/hc-handling-database-upgrades.
-    // This value is used to update the database to the latest version. Update this to the latest
-    // version that we want to upgrade the database to.
-    // This has to be a static method rather than a static field, otherwise the value of the static
-    // field would be calculated when the class is loaded which makes testing different scenarios
-    // with different values very difficult. See this chat:
-    // https://chat.google.com/room/AAAAl1xxgQM/uokEORpq24c.
-    static int getDatabaseVersion() {
-        return DB_VERSION_MINDFULNESS_SESSION;
-    }
 
     /**
      * The method creates the initial set of tables in the database, and then applies each upgrade

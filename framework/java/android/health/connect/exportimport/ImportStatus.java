@@ -62,13 +62,21 @@ public final class ImportStatus implements Parcelable {
      */
     public static final int DATA_IMPORT_ERROR_VERSION_MISMATCH = 3;
 
+    /**
+     * Indicates that an import was started.
+     *
+     * @hide
+     */
+    public static final int DATA_IMPORT_STARTED = 4;
+
+    // TODO(b/356393172) Clean up statuses, add DATA_IMPORT_STARTED here and remove isImportOngoing
     /** @hide */
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
         DATA_IMPORT_ERROR_NONE,
         DATA_IMPORT_ERROR_UNKNOWN,
         DATA_IMPORT_ERROR_WRONG_FILE,
-        DATA_IMPORT_ERROR_VERSION_MISMATCH
+        DATA_IMPORT_ERROR_VERSION_MISMATCH,
     })
     public @interface DataImportError {}
 
