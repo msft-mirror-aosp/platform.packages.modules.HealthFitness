@@ -30,6 +30,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -119,6 +120,30 @@ public class MedicalDataSourceHelper {
     /** Creates the medical_data_source table. */
     public static void onInitialUpgrade(@NonNull SQLiteDatabase db) {
         createTable(db, getCreateTableRequest());
+    }
+
+    /**
+     * Creates {@link ReadTableRequest} that joins with {@link AppInfoHelper#TABLE_NAME} and filters
+     * for the given list of {@code ids}, and restricts to the given apps.
+     *
+     * @param ids the data source ids to restrict to, if empty allows all data sources
+     * @param appInfoRestriction the apps to restrict to, if null allows all apps
+     */
+    @NonNull
+    public static ReadTableRequest getReadTableRequest(
+            @NonNull List<String> ids, @Nullable Long appInfoRestriction) {
+        ReadTableRequest readTableRequest = new ReadTableRequest(getMainTableName());
+        WhereClauses whereClauses;
+        if (ids.isEmpty()) {
+            whereClauses = new WhereClauses(AND);
+        } else {
+            whereClauses = getReadTableWhereClause(ids);
+        }
+        if (appInfoRestriction != null) {
+            whereClauses.addWhereInLongsClause(
+                    APP_INFO_ID_COLUMN_NAME, List.of(appInfoRestriction));
+        }
+        return readTableRequest.setWhereClause(whereClauses);
     }
 
     /**

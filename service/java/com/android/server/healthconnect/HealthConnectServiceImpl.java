@@ -766,8 +766,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         || !packageFilters.get(0).equals(callingPackageName))) {
             throw new SecurityException(
                     "Caller does not have permission to read data for the following ("
-                                + entityFailureMessage
-                                + ") from other applications.");
+                            + entityFailureMessage
+                            + ") from other applications.");
         }
     }
 
@@ -2552,7 +2552,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         // - No deletion can happen while data sync is in progress
         // - delete shares quota with write.
         // - on multi-user devices, calls will only be allowed from the foreground user.
-        // TODO: Implement package restrictions.
 
         ErrorCallback errorCallback = callback::onError;
         if (!isPersonalHealthRecordEnabled()) {
@@ -2577,29 +2576,38 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, DELETE_DATA)
                         .setPackageName(callingPackageName);
+        if (medicalResourceIds.isEmpty()) {
+            tryAndReturnResult(callback, logger);
+            logger.build().log();
+            return;
+        }
 
         scheduleLoggingHealthDataApiErrors(
                 () -> {
-                    if (medicalResourceIds.isEmpty()) {
-                        tryAndReturnResult(callback, logger);
-                        return;
-                    }
                     enforceIsForegroundUser(userHandle);
                     verifyPackageNameFromUid(uid, attributionSource);
                     throwExceptionIfDataSyncInProgress();
-                    if (!holdsDataManagementPermission) {
+                    Long appInfoRestriction;
+                    if (holdsDataManagementPermission) {
+                        appInfoRestriction = null;
+                    } else {
                         boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
                         tryAcquireApiCallQuota(
                                 uid, QuotaCategory.QUOTA_CATEGORY_WRITE, isInForeground, logger);
                         mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
                                 attributionSource);
+
+                        appInfoRestriction =
+                                mAppInfoHelper.getAppInfoId(attributionSource.getPackageName());
+                        if (appInfoRestriction == Constants.DEFAULT_LONG) {
+                            throw new IllegalArgumentException(
+                                    "Deletion not permitted as app has inserted no data.");
+                        }
                     }
 
-                    UnsupportedOperationException unsupportedException =
-                            new UnsupportedOperationException(
-                                    "Deleting MedicalResources by ids is not yet implemented.");
-                    tryAndThrowException(
-                            errorCallback, unsupportedException, ERROR_UNSUPPORTED_OPERATION);
+                    mMedicalResourceHelper.deleteMedicalResourcesByIds(
+                            medicalResourceIds, appInfoRestriction);
+                    tryAndReturnResult(callback, logger);
                 },
                 logger,
                 errorCallback,
@@ -2620,7 +2628,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         // - No deletion can happen while data sync is in progress
         // - delete shares quota with write.
         // - on multi-user devices, calls will only be allowed from the foreground user.
-        // TODO: Implement package restrictions.
 
         ErrorCallback errorCallback = callback::onError;
         if (!isPersonalHealthRecordEnabled()) {
@@ -2654,19 +2661,24 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     enforceIsForegroundUser(userHandle);
                     verifyPackageNameFromUid(uid, attributionSource);
                     throwExceptionIfDataSyncInProgress();
-                    if (!holdsDataManagementPermission) {
+                    Long appInfoRestriction;
+                    if (holdsDataManagementPermission) {
+                        appInfoRestriction = null;
+                    } else {
                         boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
                         tryAcquireApiCallQuota(
                                 uid, QuotaCategory.QUOTA_CATEGORY_WRITE, isInForeground, logger);
                         mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
                                 attributionSource);
+                        appInfoRestriction = mAppInfoHelper.getAppInfoId(callingPackageName);
+                        if (appInfoRestriction == Constants.DEFAULT_LONG) {
+                            throw new IllegalArgumentException(
+                                    "Deletion not permitted as app has inserted no data.");
+                        }
                     }
-                    UnsupportedOperationException unsupportedException =
-                            new UnsupportedOperationException(
-                                    "Deleting MedicalResources by request is not yet"
-                                            + " implemented.");
-                    tryAndThrowException(
-                            errorCallback, unsupportedException, ERROR_UNSUPPORTED_OPERATION);
+                    mMedicalResourceHelper.deleteMedicalResourcesByDataSources(
+                            new ArrayList<>(request.getDataSourceIds()), appInfoRestriction);
+                    tryAndReturnResult(callback, logger);
                 },
                 logger,
                 errorCallback,
