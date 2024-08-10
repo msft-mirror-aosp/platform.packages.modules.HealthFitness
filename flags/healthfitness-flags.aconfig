@@ -2,6 +2,16 @@
 package: "com.android.healthfitness.flags"
 container: "com.android.healthfitness"
 
+flag {
+    # Unlike "development_database" flag, this flag is for the implementation of the infrastructure
+    # that allow guarding and rolling out DB schema changes from "Staging" onwards, so this flag
+    # will eventually be rolled out to "mainline" and removed after "mainline".
+    name: "infra_to_guard_db_changes"
+    namespace: "health_fitness_aconfig"
+    description: "Flag to guard implementation of the infrastructure which will be used to flag DB schema changes."
+    bug: "340809376"
+    is_fixed_read_only: true
+}
 
 flag {
     # This flag should NEVER be turned on in prod / release for real users.
@@ -10,11 +20,11 @@ flag {
     # to add upgrade/downgrade code for, and so should only be used on development
     # devices. If this flag is enabled then the device could have data loss.
     name: "development_database"
-    is_exported: false
     namespace: "health_fitness_aconfig"
     description: "Flag for using currently being developed database tables."
     bug: "354913565"
     is_fixed_read_only: true
+    is_exported: true
 }
 
 flag {
@@ -23,6 +33,7 @@ flag {
     description: "Flag for adding new PHR features."
     bug: "329271826"
     is_fixed_read_only: true
+    is_exported: true
 }
 
 flag {
@@ -31,6 +42,7 @@ flag {
     description: "Flag for guarding DB schema changes for PHR features."
     bug: "340809376"
     is_fixed_read_only: true
+    is_exported: true
 }
 
 flag {
@@ -39,6 +51,7 @@ flag {
     description: "Flag for adding new export/import feature."
     bug: "318484000"
     is_fixed_read_only: true
+    is_exported: true
 }
 
 flag {
@@ -47,6 +60,7 @@ flag {
     description: "Enables mindfulness session data type."
     bug: "341704006"
     is_fixed_read_only: true
+    is_exported: true
 }
 
 flag {
@@ -58,6 +72,7 @@ flag {
     metadata {
         purpose: PURPOSE_BUGFIX
     }
+    is_exported: true
 }
 
 flag {
@@ -66,6 +81,7 @@ flag {
     description: "Enables dependency injection."
     bug: "341654919"
     is_fixed_read_only: true
+    is_exported: true
 }
 
 flag {
@@ -74,6 +90,7 @@ flag {
     description: "Enables new information architecture."
     bug: "291249677"
     is_fixed_read_only: true
+    is_exported: true
 }
 
 flag {
@@ -82,6 +99,7 @@ flag {
     description: "Uses new mappings for convenient data type maintenance."
     bug: "353283052"
     is_fixed_read_only: true
+    is_exported: true
 }
 
 flag {
@@ -90,4 +108,5 @@ flag {
     description: "Enables onboarding elements for users, such as banners and notifications."
     bug: "356819770"
     is_fixed_read_only: true
+    is_exported: true
 }

@@ -15,8 +15,6 @@
  */
 package android.healthconnect.cts;
 
-import static android.health.connect.MedicalPermissionCategory.ALL_MEDICAL_DATA;
-import static android.health.connect.MedicalPermissionCategory.IMMUNIZATION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalDataSource;
@@ -51,11 +49,9 @@ public class MedicalResourceTypeInfoResponseTest {
     @Test
     public void testConstructor_EmptyContributingDataSources() {
         MedicalResourceTypeInfoResponse response =
-                new MedicalResourceTypeInfoResponse(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, IMMUNIZATION, Set.of());
+                new MedicalResourceTypeInfoResponse(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, Set.of());
 
         assertThat(response.getMedicalResourceType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
-        assertThat(response.getPermissionCategoryType()).isEqualTo(IMMUNIZATION);
         assertThat(response.getContributingDataSources()).isEmpty();
     }
 
@@ -64,10 +60,9 @@ public class MedicalResourceTypeInfoResponseTest {
         Set<MedicalDataSource> dataSources = Set.of(getMedicalDataSource());
         MedicalResourceTypeInfoResponse response =
                 new MedicalResourceTypeInfoResponse(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, IMMUNIZATION, dataSources);
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
 
         assertThat(response.getMedicalResourceType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
-        assertThat(response.getPermissionCategoryType()).isEqualTo(IMMUNIZATION);
         assertThat(response.getContributingDataSources()).isEqualTo(dataSources);
     }
 
@@ -75,16 +70,7 @@ public class MedicalResourceTypeInfoResponseTest {
     public void testConstructor_invalidMedicalResourceType_throws() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> new MedicalResourceTypeInfoResponse(1000, IMMUNIZATION, Set.of()));
-    }
-
-    @Test
-    public void testConstructor_invalidPermissionCategoryType_throws() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () ->
-                        new MedicalResourceTypeInfoResponse(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION, 1000, Set.of()));
+                () -> new MedicalResourceTypeInfoResponse(1000, Set.of()));
     }
 
     @Test
@@ -92,10 +78,10 @@ public class MedicalResourceTypeInfoResponseTest {
         Set<MedicalDataSource> dataSources = Set.of(getMedicalDataSource());
         MedicalResourceTypeInfoResponse response1 =
                 new MedicalResourceTypeInfoResponse(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, IMMUNIZATION, dataSources);
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
         MedicalResourceTypeInfoResponse response2 =
                 new MedicalResourceTypeInfoResponse(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, IMMUNIZATION, dataSources);
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
 
         assertThat(response1.equals(response2)).isTrue();
         assertThat(response1.hashCode()).isEqualTo(response2.hashCode());
@@ -106,23 +92,15 @@ public class MedicalResourceTypeInfoResponseTest {
         Set<MedicalDataSource> dataSources = Set.of(getMedicalDataSource());
         MedicalResourceTypeInfoResponse response =
                 new MedicalResourceTypeInfoResponse(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, IMMUNIZATION, dataSources);
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
         MedicalResourceTypeInfoResponse responseDifferentMedicalResourceType =
-                new MedicalResourceTypeInfoResponse(
-                        MEDICAL_RESOURCE_TYPE_UNKNOWN, IMMUNIZATION, dataSources);
-        MedicalResourceTypeInfoResponse responseDifferentPermissionCategoryType =
-                new MedicalResourceTypeInfoResponse(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, ALL_MEDICAL_DATA, dataSources);
+                new MedicalResourceTypeInfoResponse(MEDICAL_RESOURCE_TYPE_UNKNOWN, dataSources);
         MedicalResourceTypeInfoResponse responseDifferentDataSources =
-                new MedicalResourceTypeInfoResponse(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, IMMUNIZATION, Set.of());
+                new MedicalResourceTypeInfoResponse(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, Set.of());
 
         assertThat(responseDifferentMedicalResourceType.equals(response)).isFalse();
-        assertThat(responseDifferentPermissionCategoryType.equals(response)).isFalse();
         assertThat(responseDifferentDataSources.equals(response)).isFalse();
         assertThat(responseDifferentMedicalResourceType.hashCode())
-                .isNotEqualTo(response.hashCode());
-        assertThat(responseDifferentPermissionCategoryType.hashCode())
                 .isNotEqualTo(response.hashCode());
         assertThat(responseDifferentDataSources.hashCode()).isNotEqualTo(response.hashCode());
     }
@@ -132,7 +110,7 @@ public class MedicalResourceTypeInfoResponseTest {
         Set<MedicalDataSource> dataSources = Set.of(getMedicalDataSource());
         MedicalResourceTypeInfoResponse original =
                 new MedicalResourceTypeInfoResponse(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, IMMUNIZATION, dataSources);
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
 
         Parcel parcel = Parcel.obtain();
         original.writeToParcel(parcel, 0);

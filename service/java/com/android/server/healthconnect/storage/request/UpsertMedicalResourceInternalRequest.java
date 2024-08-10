@@ -16,7 +16,7 @@
 
 package com.android.server.healthconnect.storage.request;
 
-import static com.android.healthfitness.flags.Flags.personalHealthRecord;
+import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
@@ -153,7 +153,7 @@ public final class UpsertMedicalResourceInternalRequest {
     @NonNull
     public static UpsertMedicalResourceInternalRequest fromUpsertRequest(
             @NonNull UpsertMedicalResourceRequest request) throws JSONException {
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             throw new UnsupportedOperationException(
                     "Convert from UpsertMedicalResourceRequest is not supported");
         }

@@ -225,6 +225,7 @@ package android.health.connect {
   @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalResourceId implements android.os.Parcelable {
     ctor public MedicalResourceId(@NonNull String, int, @NonNull String);
     method public int describeContents();
+    method @NonNull public static android.health.connect.MedicalResourceId fromFhirReference(@NonNull String, @NonNull String);
     method @NonNull public String getDataSourceId();
     method @NonNull public String getFhirResourceId();
     method public int getFhirResourceType();
@@ -1169,6 +1170,7 @@ package android.health.connect.datatypes {
     method @NonNull public String getDataSourceId();
     method @NonNull public android.health.connect.datatypes.FhirResource getFhirResource();
     method @NonNull public android.health.connect.datatypes.FhirVersion getFhirVersion();
+    method @NonNull public android.health.connect.MedicalResourceId getId();
     method public int getType();
     method public void writeToParcel(@NonNull android.os.Parcel, int);
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.datatypes.MedicalResource> CREATOR;

@@ -22,6 +22,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 
 import java.io.File;
@@ -43,14 +44,14 @@ public class HealthConnectDatabase extends SQLiteOpenHelper {
     }
 
     public HealthConnectDatabase(@NonNull Context context, String databaseName) {
-        super(context, databaseName, null, DatabaseUpgradeHelper.getDatabaseVersion());
+        super(context, databaseName, null, AconfigFlagHelper.getDbVersion());
         mContext = context;
     }
 
     @Override
     public void onCreate(@NonNull SQLiteDatabase db) {
         // We implement onCreate as a series of upgrades.
-        onUpgrade(db, 0, DatabaseUpgradeHelper.getDatabaseVersion());
+        onUpgrade(db, 0, AconfigFlagHelper.getDbVersion());
     }
 
     @Override
