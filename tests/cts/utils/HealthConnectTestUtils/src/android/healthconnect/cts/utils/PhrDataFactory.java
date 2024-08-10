@@ -109,9 +109,29 @@ public class PhrDataFactory {
                 DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME);
     }
 
+    /**
+     * Creates and returns a {@link CreateMedicalDataSourceRequest.Builder} with default arguments,
+     * with the given suffix appended to the base URI and name, to enable different data sources to
+     * be created.
+     */
+    public static CreateMedicalDataSourceRequest.Builder getCreateMedicalDataSourceRequestBuilder(
+            String suffix) {
+        return new CreateMedicalDataSourceRequest.Builder(
+                DATA_SOURCE_FHIR_BASE_URI + "/" + suffix, DATA_SOURCE_DISPLAY_NAME + " " + suffix);
+    }
+
     /** Creates and returns a {@link CreateMedicalDataSourceRequest} with default arguments. */
     public static CreateMedicalDataSourceRequest getCreateMedicalDataSourceRequest() {
         return getCreateMedicalDataSourceRequestBuilder().build();
+    }
+
+    /**
+     * Creates and returns a {@link CreateMedicalDataSourceRequest} with the default arguments, with
+     * the given suffix appended to the base URI and name, to enable different data sources to be
+     * created.
+     */
+    public static CreateMedicalDataSourceRequest getCreateMedicalDataSourceRequest(String suffix) {
+        return getCreateMedicalDataSourceRequestBuilder(suffix).build();
     }
 
     /**
