@@ -44,6 +44,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -774,12 +775,23 @@ public final class MedicalResourceHelper {
      * Deletes a list of {@link MedicalResource}s created based on the given list of {@link
      * MedicalResourceId}s into the HealthConnect database.
      *
-     * @param medicalResourceIds list of {@link UpsertMedicalResourceInternalRequest}.
+     * @param medicalResourceIds list of {@link MedicalResourceId} to delete
+     * @param appInfoIdRestriction if null, allow deletion from any package. Otherwise only allow
+     *     deletions of resources whose owning datasource belongs to the given appInfoId.
      */
-    public void deleteMedicalResourcesByIds(@NonNull List<MedicalResourceId> medicalResourceIds)
+    public void deleteMedicalResourcesByIds(
+            @NonNull List<MedicalResourceId> medicalResourceIds,
+            @Nullable Long appInfoIdRestriction)
             throws SQLiteException {
-
-        mTransactionManager.delete(getDeleteRequest(medicalResourceIds));
+        DeleteTableRequest deleteTableRequest;
+        if (appInfoIdRestriction == null) {
+            deleteTableRequest = getDeleteRequest(medicalResourceIds);
+        } else {
+            deleteTableRequest =
+                    getDeleteRequestWithAppInfoRestriction(
+                            medicalResourceIds, appInfoIdRestriction);
+        }
+        mTransactionManager.delete(deleteTableRequest);
     }
 
     /**
@@ -799,6 +811,22 @@ public final class MedicalResourceHelper {
         return new DeleteTableRequest(getMainTableName()).setIds(UUID_COLUMN_NAME, hexUuids);
     }
 
+    @NonNull
+    private DeleteTableRequest getDeleteRequestWithAppInfoRestriction(
+            @NonNull List<MedicalResourceId> medicalResourceIds, long appInfoRestriction) {
+        if (medicalResourceIds.isEmpty()) {
+            throw new IllegalArgumentException("Cannot delete without filters");
+        }
+        ReadTableRequest innerRead =
+                MedicalDataSourceHelper.getReadTableRequest(List.of(), appInfoRestriction)
+                        .setColumnNames(List.of(PRIMARY_COLUMN_NAME));
+        List<String> hexUuids = medicalResourceIdsToHexUuids(medicalResourceIds);
+
+        return new DeleteTableRequest(getMainTableName())
+                .setInnerSqlRequestFilter(DATA_SOURCE_ID_COLUMN_NAME, innerRead)
+                .setIds(UUID_COLUMN_NAME, hexUuids);
+    }
+
     /**
      * Deletes all {@link MedicalResource}s that are part of the given datasource.
      *
@@ -806,8 +834,11 @@ public final class MedicalResourceHelper {
      * filters.
      *
      * @param medicalDataSourceIds list of ids from {@link MedicalDataSource#getId()}.
+     * @param appInfoRestriction if null, allow deletion from any app. Otherwise only allow
+     *     deletions of data sources belonging to the given app
      */
-    public void deleteMedicalResourcesByDataSources(@NonNull List<String> medicalDataSourceIds)
+    public void deleteMedicalResourcesByDataSources(
+            @NonNull List<String> medicalDataSourceIds, @Nullable Long appInfoRestriction)
             throws SQLiteException {
 
         if (medicalDataSourceIds.isEmpty()) {
@@ -821,6 +852,7 @@ public final class MedicalResourceHelper {
            WHERE data_source_id IN (
              SELECT row_id FROM medical_data_source_table
              WHERE data_source_uuid IN (uuid1, uuid2, ...)
+             AND app_info_id IN (id1, id2, ...)
            )
 
            The ReadTableRequest does the inner select, and the DeleteTableRequest does the outer
@@ -829,7 +861,8 @@ public final class MedicalResourceHelper {
         */
 
         ReadTableRequest innerRead =
-                MedicalDataSourceHelper.getReadTableRequest(medicalDataSourceIds)
+                MedicalDataSourceHelper.getReadTableRequest(
+                                medicalDataSourceIds, appInfoRestriction)
                         .setColumnNames(List.of(PRIMARY_COLUMN_NAME));
         DeleteTableRequest deleteRequest =
                 new DeleteTableRequest(getMainTableName())
