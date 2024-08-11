@@ -30,6 +30,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -68,8 +69,8 @@ public class MedicalDataSourceHelper {
 
     @VisibleForTesting static final String DISPLAY_NAME_COLUMN_NAME = "display_name";
     @VisibleForTesting static final String FHIR_BASE_URI_COLUMN_NAME = "fhir_base_uri";
-    @VisibleForTesting static final String APP_INFO_ID_COLUMN_NAME = "app_info_id";
     @VisibleForTesting static final String DATA_SOURCE_UUID_COLUMN_NAME = "data_source_uuid";
+    private static final String APP_INFO_ID_COLUMN_NAME = "app_info_id";
     private static final List<Pair<String, Integer>> UNIQUE_COLUMNS_INFO =
             List.of(new Pair<>(DATA_SOURCE_UUID_COLUMN_NAME, UpsertTableRequest.TYPE_BLOB));
 
@@ -90,6 +91,11 @@ public class MedicalDataSourceHelper {
     @NonNull
     public static String getDataSourceUuidColumnName() {
         return DATA_SOURCE_UUID_COLUMN_NAME;
+    }
+
+    @NonNull
+    public static String getAppInfoIdColumnName() {
+        return APP_INFO_ID_COLUMN_NAME;
     }
 
     @NonNull
@@ -114,6 +120,30 @@ public class MedicalDataSourceHelper {
     /** Creates the medical_data_source table. */
     public static void onInitialUpgrade(@NonNull SQLiteDatabase db) {
         createTable(db, getCreateTableRequest());
+    }
+
+    /**
+     * Creates {@link ReadTableRequest} that joins with {@link AppInfoHelper#TABLE_NAME} and filters
+     * for the given list of {@code ids}, and restricts to the given apps.
+     *
+     * @param ids the data source ids to restrict to, if empty allows all data sources
+     * @param appInfoRestriction the apps to restrict to, if null allows all apps
+     */
+    @NonNull
+    public static ReadTableRequest getReadTableRequest(
+            @NonNull List<String> ids, @Nullable Long appInfoRestriction) {
+        ReadTableRequest readTableRequest = new ReadTableRequest(getMainTableName());
+        WhereClauses whereClauses;
+        if (ids.isEmpty()) {
+            whereClauses = new WhereClauses(AND);
+        } else {
+            whereClauses = getReadTableWhereClause(ids);
+        }
+        if (appInfoRestriction != null) {
+            whereClauses.addWhereInLongsClause(
+                    APP_INFO_ID_COLUMN_NAME, List.of(appInfoRestriction));
+        }
+        return readTableRequest.setWhereClause(whereClauses);
     }
 
     /**

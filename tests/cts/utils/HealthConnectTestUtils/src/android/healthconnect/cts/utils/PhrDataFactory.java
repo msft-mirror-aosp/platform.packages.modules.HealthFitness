@@ -20,6 +20,7 @@ import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_I
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.MedicalResourceId;
@@ -108,9 +109,29 @@ public class PhrDataFactory {
                 DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME);
     }
 
+    /**
+     * Creates and returns a {@link CreateMedicalDataSourceRequest.Builder} with default arguments,
+     * with the given suffix appended to the base URI and name, to enable different data sources to
+     * be created.
+     */
+    public static CreateMedicalDataSourceRequest.Builder getCreateMedicalDataSourceRequestBuilder(
+            String suffix) {
+        return new CreateMedicalDataSourceRequest.Builder(
+                DATA_SOURCE_FHIR_BASE_URI + "/" + suffix, DATA_SOURCE_DISPLAY_NAME + " " + suffix);
+    }
+
     /** Creates and returns a {@link CreateMedicalDataSourceRequest} with default arguments. */
     public static CreateMedicalDataSourceRequest getCreateMedicalDataSourceRequest() {
         return getCreateMedicalDataSourceRequestBuilder().build();
+    }
+
+    /**
+     * Creates and returns a {@link CreateMedicalDataSourceRequest} with the default arguments, with
+     * the given suffix appended to the base URI and name, to enable different data sources to be
+     * created.
+     */
+    public static CreateMedicalDataSourceRequest getCreateMedicalDataSourceRequest(String suffix) {
+        return getCreateMedicalDataSourceRequestBuilder(suffix).build();
     }
 
     /**
@@ -204,6 +225,32 @@ public class PhrDataFactory {
         return getMedicalResourceBuilder().build();
     }
 
+    /**
+     * Creates and returns a {@link MedicalResource} of type {@link
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_IMMUNIZATION} with the given {@code dataSource}.
+     */
+    public static MedicalResource createImmunizationMedicalResource(String dataSource) {
+        return new MedicalResource.Builder(
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                        dataSource,
+                        FHIR_VERSION_R4,
+                        getFhirResource())
+                .build();
+    }
+
+    /**
+     * Creates and returns a {@link MedicalResource} of type {@link
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_UNKNOWN} with the given {@code dataSource}.
+     */
+    public static MedicalResource createAllergyMedicalResource(String dataSource) {
+        return new MedicalResource.Builder(
+                        MEDICAL_RESOURCE_TYPE_UNKNOWN,
+                        dataSource,
+                        FHIR_VERSION_R4,
+                        getFhirResourceAllergy())
+                .build();
+    }
+
     /** Creates and returns a {@link UpsertMedicalResourceRequest} with default arguments. */
     public static UpsertMedicalResourceRequest getUpsertMedicalResourceRequest() {
         return new UpsertMedicalResourceRequest.Builder(
@@ -252,6 +299,31 @@ public class PhrDataFactory {
             MedicalResource medicalResource =
                     new MedicalResource.Builder(
                                     MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                                    dataSourceId,
+                                    fhirVersion,
+                                    fhirResource)
+                            .build();
+            medicalResources.add(medicalResource);
+        }
+        return medicalResources;
+    }
+
+    /**
+     * Creates a number of allergy resources based on the given {@code numOfResources} and {@code
+     * dataSourceId}.
+     */
+    public static List<MedicalResource> createAllergyMedicalResources(
+            int numOfResources, String dataSourceId) {
+        FhirVersion fhirVersion = parseFhirVersion(R4_VERSION_STRING);
+        List<MedicalResource> medicalResources = new ArrayList<>();
+        for (int i = 0; i < numOfResources; i++) {
+            FhirResource fhirResource =
+                    new FhirResource.Builder(
+                                    FHIR_RESOURCE_TYPE_UNKNOWN, "id/" + i, FHIR_DATA_ALLERGY)
+                            .build();
+            MedicalResource medicalResource =
+                    new MedicalResource.Builder(
+                                    MEDICAL_RESOURCE_TYPE_UNKNOWN,
                                     dataSourceId,
                                     fhirVersion,
                                     fhirResource)
