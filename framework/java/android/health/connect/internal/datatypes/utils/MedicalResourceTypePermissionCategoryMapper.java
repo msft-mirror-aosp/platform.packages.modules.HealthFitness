@@ -18,7 +18,7 @@ package android.health.connect.internal.datatypes.utils;
 
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 
-import static com.android.healthfitness.flags.Flags.personalHealthRecord;
+import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 
 import android.health.connect.MedicalPermissionCategory;
 import android.health.connect.datatypes.MedicalResource;
@@ -35,7 +35,7 @@ public final class MedicalResourceTypePermissionCategoryMapper {
     private MedicalResourceTypePermissionCategoryMapper() {}
 
     private static void populateMedicalResourceTypeToPermissionCategoryMap() {
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             throw new UnsupportedOperationException(
                     "populateMedicalResourceTypeToPermissionCategoryMap is not supported");
         }

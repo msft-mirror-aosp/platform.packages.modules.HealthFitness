@@ -74,6 +74,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.sqlite.SQLiteException;
+import android.health.connect.Constants;
 import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectException;
@@ -123,6 +124,7 @@ import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -225,12 +227,14 @@ public class HealthConnectServiceImplTest {
                     "queryDocumentProviders");
 
     private static final String TEST_URI = "content://com.android.server.healthconnect/testuri";
+    private static final long DEFAULT_PACKAGE_APP_INFO = 123L;
 
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(AppInfoHelper.class)
                     .mockStatic(Environment.class)
                     .mockStatic(PreferenceHelper.class)
                     .mockStatic(LocalManagerRegistry.class)
@@ -241,6 +245,7 @@ public class HealthConnectServiceImplTest {
                     .build();
 
     @Mock private TransactionManager mTransactionManager;
+    @Mock private AppInfoHelper mAppInfoHelper;
     @Mock private HealthConnectDeviceConfigManager mDeviceConfigManager;
     @Mock private HealthConnectPermissionHelper mHealthConnectPermissionHelper;
     @Mock private MigrationCleaner mMigrationCleaner;
@@ -276,6 +281,8 @@ public class HealthConnectServiceImplTest {
 
     @Before
     public void setUp() throws Exception {
+        when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
+        when(AppInfoHelper.getInstance()).thenReturn(mAppInfoHelper);
         when(UserHandle.of(anyInt())).thenCallRealMethod();
         when(UserHandle.getUserHandleForUid(anyInt())).thenCallRealMethod();
         mUserHandle = UserHandle.of(UserHandle.myUserId());
@@ -298,7 +305,6 @@ public class HealthConnectServiceImplTest {
                 .thenReturn(mAppOpsManagerLocal);
         when(mServiceContext.getSystemService(PermissionManager.class))
                 .thenReturn(mPermissionManager);
-        when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
 
         mHealthConnectService =
                 new HealthConnectServiceImpl(
@@ -690,7 +696,8 @@ public class HealthConnectServiceImplTest {
             throws RemoteException {
         setDataManagementPermission(PERMISSION_GRANTED);
         List<MedicalResourceId> ids = List.of(getMedicalResourceId());
-        when(mMedicalResourceHelper.readMedicalResourcesByIds(eq(ids))).thenReturn(List.of());
+        when(mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(eq(ids)))
+                .thenReturn(List.of());
 
         mHealthConnectService.readMedicalResourcesByIds(
                 mAttributionSource, ids, mReadMedicalResourcesResponseCallback);
@@ -729,7 +736,7 @@ public class HealthConnectServiceImplTest {
         List<MedicalResourceId> ids = List.of(getMedicalResourceId());
         ArgumentCaptor<Set<Integer>> medicalResourceTypesCapture =
                 ArgumentCaptor.forClass(Set.class);
-        when(mMedicalResourceHelper.readMedicalResourcesByIds(
+        when(mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
                         eq(ids),
                         medicalResourceTypesCapture.capture(),
                         anyString(),
@@ -757,7 +764,7 @@ public class HealthConnectServiceImplTest {
         List<MedicalResourceId> ids = List.of(getMedicalResourceId());
         ArgumentCaptor<Set<Integer>> medicalResourceTypesCapture =
                 ArgumentCaptor.forClass(Set.class);
-        when(mMedicalResourceHelper.readMedicalResourcesByIds(
+        when(mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
                         eq(ids),
                         medicalResourceTypesCapture.capture(),
                         anyString(),
@@ -785,7 +792,7 @@ public class HealthConnectServiceImplTest {
         List<MedicalResourceId> ids = List.of(getMedicalResourceId());
         ArgumentCaptor<Set<Integer>> medicalResourceTypesCapture =
                 ArgumentCaptor.forClass(Set.class);
-        when(mMedicalResourceHelper.readMedicalResourcesByIds(
+        when(mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
                         eq(ids),
                         medicalResourceTypesCapture.capture(),
                         anyString(),
@@ -812,7 +819,7 @@ public class HealthConnectServiceImplTest {
         setDataReadWritePermission(WRITE_MEDICAL_DATA, PermissionManager.PERMISSION_GRANTED);
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(true);
         List<MedicalResourceId> ids = List.of(getMedicalResourceId());
-        when(mMedicalResourceHelper.readMedicalResourcesByIds(
+        when(mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
                         eq(ids), any(), anyString(), anyBoolean(), mBooleanCaptor.capture()))
                 .thenReturn(List.of());
 
@@ -834,7 +841,7 @@ public class HealthConnectServiceImplTest {
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
         when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(false);
         List<MedicalResourceId> ids = List.of(getMedicalResourceId());
-        when(mMedicalResourceHelper.readMedicalResourcesByIds(
+        when(mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
                         eq(ids), any(), anyString(), anyBoolean(), mBooleanCaptor.capture()))
                 .thenReturn(List.of());
 
@@ -857,7 +864,7 @@ public class HealthConnectServiceImplTest {
         when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(true);
         setBackendReadPermission(PERMISSION_DENIED);
         List<MedicalResourceId> ids = List.of(getMedicalResourceId());
-        when(mMedicalResourceHelper.readMedicalResourcesByIds(
+        when(mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
                         eq(ids), any(), anyString(), anyBoolean(), mBooleanCaptor.capture()))
                 .thenReturn(List.of());
 
@@ -880,7 +887,7 @@ public class HealthConnectServiceImplTest {
         when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(true);
         setBackendReadPermission(PERMISSION_GRANTED);
         List<MedicalResourceId> ids = List.of(getMedicalResourceId());
-        when(mMedicalResourceHelper.readMedicalResourcesByIds(
+        when(mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
                         eq(ids), any(), anyString(), anyBoolean(), mBooleanCaptor.capture()))
                 .thenReturn(List.of());
 
@@ -913,7 +920,8 @@ public class HealthConnectServiceImplTest {
         setDataManagementPermission(PERMISSION_GRANTED);
         ReadMedicalResourcesRequest request =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
-        when(mMedicalResourceHelper.readMedicalResourcesByRequest(eq(request)))
+        when(mMedicalResourceHelper.readMedicalResourcesByRequestWithoutPermissionChecks(
+                        eq(request)))
                 .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null));
 
         mHealthConnectService.readMedicalResourcesByRequest(
@@ -953,7 +961,7 @@ public class HealthConnectServiceImplTest {
         setDataReadWritePermission(WRITE_MEDICAL_DATA, PermissionManager.PERMISSION_GRANTED);
         ReadMedicalResourcesRequest request =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
-        when(mMedicalResourceHelper.readMedicalResourcesByRequest(
+        when(mMedicalResourceHelper.readMedicalResourcesByRequestWithPermissionChecks(
                         eq(request), anyString(), mBooleanCaptor.capture()))
                 .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null));
 
@@ -975,7 +983,7 @@ public class HealthConnectServiceImplTest {
         setDataReadWritePermission(WRITE_MEDICAL_DATA, PermissionManager.PERMISSION_GRANTED);
         ReadMedicalResourcesRequest request =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
-        when(mMedicalResourceHelper.readMedicalResourcesByRequest(
+        when(mMedicalResourceHelper.readMedicalResourcesByRequestWithPermissionChecks(
                         eq(request), anyString(), mBooleanCaptor.capture()))
                 .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null));
 
@@ -998,7 +1006,7 @@ public class HealthConnectServiceImplTest {
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(true);
         ReadMedicalResourcesRequest request =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
-        when(mMedicalResourceHelper.readMedicalResourcesByRequest(
+        when(mMedicalResourceHelper.readMedicalResourcesByRequestWithPermissionChecks(
                         eq(request), anyString(), mBooleanCaptor.capture()))
                 .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null));
 
@@ -1023,7 +1031,7 @@ public class HealthConnectServiceImplTest {
         setBackendReadPermission(PERMISSION_DENIED);
         ReadMedicalResourcesRequest request =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
-        when(mMedicalResourceHelper.readMedicalResourcesByRequest(
+        when(mMedicalResourceHelper.readMedicalResourcesByRequestWithPermissionChecks(
                         eq(request), anyString(), mBooleanCaptor.capture()))
                 .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null));
 
@@ -1048,7 +1056,7 @@ public class HealthConnectServiceImplTest {
         setBackendReadPermission(PERMISSION_DENIED);
         ReadMedicalResourcesRequest request =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
-        when(mMedicalResourceHelper.readMedicalResourcesByRequest(
+        when(mMedicalResourceHelper.readMedicalResourcesByRequestWithPermissionChecks(
                         eq(request), anyString(), mBooleanCaptor.capture()))
                 .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null));
 
@@ -1073,7 +1081,7 @@ public class HealthConnectServiceImplTest {
         setBackendReadPermission(PERMISSION_GRANTED);
         ReadMedicalResourcesRequest request =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
-        when(mMedicalResourceHelper.readMedicalResourcesByRequest(
+        when(mMedicalResourceHelper.readMedicalResourcesByRequestWithPermissionChecks(
                         eq(request), anyString(), mBooleanCaptor.capture()))
                 .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null));
 
@@ -1278,7 +1286,7 @@ public class HealthConnectServiceImplTest {
 
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testDeleteMedicalResources_someIds_unsupported() throws RemoteException {
+    public void testDeleteMedicalResources_someIds_success() throws RemoteException {
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
 
         mHealthConnectService.deleteMedicalResourcesByIds(
@@ -1290,9 +1298,8 @@ public class HealthConnectServiceImplTest {
                                 FHIR_RESOURCE_ID_IMMUNIZATION)),
                 callback);
 
-        verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
-        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
-                .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
+        verify(callback, timeout(5000).times(1)).onResult();
+        verifyNoMoreInteractions(callback);
     }
 
     @Test
@@ -1318,7 +1325,8 @@ public class HealthConnectServiceImplTest {
 
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testDeleteMedicalResources_dataManagementPermission_unsupported() throws Exception {
+    public void testDeleteMedicalResources_dataManagementPermissionNothingThere_success()
+            throws Exception {
         setDataManagementPermission(PERMISSION_GRANTED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
 
@@ -1331,9 +1339,8 @@ public class HealthConnectServiceImplTest {
                                 FHIR_RESOURCE_ID_IMMUNIZATION)),
                 callback);
 
-        verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
-        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
-                .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
+        verify(callback, timeout(5000).times(1)).onResult();
+        verifyNoMoreInteractions(callback);
     }
 
     @Test
@@ -1371,8 +1378,30 @@ public class HealthConnectServiceImplTest {
 
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testDeleteMedicalResourcesByRequest_nonExistentRequest_notImplemented()
+    public void testDeleteMedicalResourcesByRequest_nonExistentRequest_success()
             throws RemoteException {
+        when(mAppInfoHelper.getAppInfoId(any())).thenReturn(DEFAULT_PACKAGE_APP_INFO);
+        when(mServiceContext.checkPermission(eq(MANAGE_HEALTH_DATA_PERMISSION), anyInt(), anyInt()))
+                .thenReturn(PERMISSION_DENIED);
+        when(mPermissionManager.checkPermissionForDataDelivery(
+                        WRITE_MEDICAL_DATA, mAttributionSource, null))
+                .thenReturn(PermissionManager.PERMISSION_GRANTED);
+        IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
+        DeleteMedicalResourcesRequest request =
+                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
+
+        mHealthConnectService.deleteMedicalResourcesByRequest(
+                mAttributionSource, request, callback);
+
+        verify(callback, timeout(5000).times(1)).onResult();
+        verifyNoMoreInteractions(callback);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalResourcesByRequest_unknownCallingApplication_error()
+            throws RemoteException {
+        when(mAppInfoHelper.getAppInfoId(any())).thenReturn(Constants.DEFAULT_LONG);
         setDataManagementPermission(PERMISSION_DENIED);
         setDataReadWritePermission(WRITE_MEDICAL_DATA, PermissionManager.PERMISSION_GRANTED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
@@ -1384,12 +1413,13 @@ public class HealthConnectServiceImplTest {
 
         verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
         assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
-                .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+        verifyNoMoreInteractions(callback);
     }
 
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testDeleteMedicalResourcesByRequest_nonExistentRequestHasManagement_notImplemented()
+    public void testDeleteMedicalResourcesByRequest_nonExistentRequestHasManagement_success()
             throws RemoteException {
         setDataManagementPermission(PERMISSION_GRANTED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
@@ -1399,9 +1429,8 @@ public class HealthConnectServiceImplTest {
         mHealthConnectService.deleteMedicalResourcesByRequest(
                 mAttributionSource, request, callback);
 
-        verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
-        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
-                .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
+        verify(callback, timeout(5000).times(1)).onResult();
+        verifyNoMoreInteractions(callback);
     }
 
     @Test

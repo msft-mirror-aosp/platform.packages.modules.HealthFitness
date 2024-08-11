@@ -29,10 +29,9 @@ import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.HealthPermissions.getMedicalPermissionCategory;
-import static android.health.connect.internal.datatypes.utils.MedicalResourceTypePermissionCategoryMapper.getMedicalPermissionCategory;
 import static android.health.connect.internal.datatypes.utils.MedicalResourceTypePermissionCategoryMapper.getMedicalResourceType;
 
-import static com.android.healthfitness.flags.Flags.personalHealthRecord;
+import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.GET_CHANGES;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.GET_CHANGES_TOKEN;
@@ -765,7 +764,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         if (enforceSelfRead
                 && (packageFilters.size() != 1
                         || !packageFilters.get(0).equals(callingPackageName))) {
-            throwSecurityException(
+            throw new SecurityException(
                     "Caller does not have permission to read data for the following ("
                             + entityFailureMessage
                             + ") from other applications.");
@@ -2062,7 +2061,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull CreateMedicalDataSourceRequest request,
             @NonNull IMedicalDataSourceResponseCallback callback) {
         ErrorCallback errorCallback = callback::onError;
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             HealthConnectException unsupportedException =
                     new HealthConnectException(
                             ERROR_UNSUPPORTED_OPERATION,
@@ -2135,7 +2134,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull IMedicalDataSourcesResponseCallback callback) {
         checkParamsNonNull(attributionSource, ids, callback);
         ErrorCallback errorCallback = callback::onError;
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             HealthConnectException unsupportedException =
                     new HealthConnectException(
                             ERROR_UNSUPPORTED_OPERATION,
@@ -2179,7 +2178,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull IMedicalDataSourcesResponseCallback callback) {
         checkParamsNonNull(attributionSource, request, callback);
         ErrorCallback errorCallback = callback::onError;
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             HealthConnectException unsupportedException =
                     new HealthConnectException(
                             ERROR_UNSUPPORTED_OPERATION,
@@ -2220,7 +2219,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull IEmptyResponseCallback callback) {
         ErrorCallback errorCallback = callback::onError;
         // TODO: b/350010046 - add permission check, rate-limiting and package name check
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             HealthConnectException unsupportedException =
                     new HealthConnectException(
                             ERROR_UNSUPPORTED_OPERATION,
@@ -2274,7 +2273,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull List<UpsertMedicalResourceRequest> requests,
             @NonNull IMedicalResourcesResponseCallback callback) {
         ErrorCallback errorCallback = callback::onError;
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             HealthConnectException unsupportedException =
                     new HealthConnectException(
                             ERROR_UNSUPPORTED_OPERATION,
@@ -2351,7 +2350,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull IReadMedicalResourcesResponseCallback callback) {
         checkParamsNonNull(attributionSource, medicalResourceIds, callback);
         ErrorCallback errorCallback = callback::onError;
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             HealthConnectException unsupportedException =
                     new HealthConnectException(
                             ERROR_UNSUPPORTED_OPERATION,
@@ -2382,8 +2381,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                     if (holdsDataManagementPermission) {
                         medicalResources =
-                                mMedicalResourceHelper.readMedicalResourcesByIds(
-                                        medicalResourceIds);
+                                mMedicalResourceHelper
+                                        .readMedicalResourcesByIdsWithoutPermissionChecks(
+                                                medicalResourceIds);
                     } else {
                         boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
                         logger.setCallerForegroundState(isInForeground);
@@ -2421,13 +2421,15 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                         // Pass related fields to DB to filter results.
                         medicalResources =
-                                mMedicalResourceHelper.readMedicalResourcesByIds(
-                                        medicalResourceIds,
-                                        getPopulatedMedicalResourceTypesWithReadPermissions(
-                                                grantedMedicalPermissions),
-                                        callingPackageName,
-                                        grantedMedicalPermissions.contains(WRITE_MEDICAL_DATA),
-                                        isCalledFromBgWithoutBgRead);
+                                mMedicalResourceHelper
+                                        .readMedicalResourcesByIdsWithPermissionChecks(
+                                                medicalResourceIds,
+                                                getPopulatedMedicalResourceTypesWithReadPermissions(
+                                                        grantedMedicalPermissions),
+                                                callingPackageName,
+                                                grantedMedicalPermissions.contains(
+                                                        WRITE_MEDICAL_DATA),
+                                                isCalledFromBgWithoutBgRead);
                     }
 
                     logger.setNumberOfRecords(medicalResources.size());
@@ -2450,7 +2452,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull IReadMedicalResourcesResponseCallback callback) {
         checkParamsNonNull(attributionSource, request, callback);
         ErrorCallback errorCallback = callback::onError;
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             HealthConnectException unsupportedException =
                     new HealthConnectException(
                             ERROR_UNSUPPORTED_OPERATION,
@@ -2480,7 +2482,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     ReadMedicalResourcesInternalResponse response;
 
                     if (holdsDataManagementPermission) {
-                        response = mMedicalResourceHelper.readMedicalResourcesByRequest(request);
+                        response =
+                                mMedicalResourceHelper
+                                        .readMedicalResourcesByRequestWithoutPermissionChecks(
+                                                request);
                     } else {
                         boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
                         logger.setCallerForegroundState(isInForeground);
@@ -2514,8 +2519,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         }
 
                         response =
-                                mMedicalResourceHelper.readMedicalResourcesByRequest(
-                                        request, callingPackageName, enforceSelfRead);
+                                mMedicalResourceHelper
+                                        .readMedicalResourcesByRequestWithPermissionChecks(
+                                                request, callingPackageName, enforceSelfRead);
                     }
 
                     List<MedicalResource> medicalResources = response.getMedicalResources();
@@ -2546,10 +2552,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         // - No deletion can happen while data sync is in progress
         // - delete shares quota with write.
         // - on multi-user devices, calls will only be allowed from the foreground user.
-        // TODO: Implement package restrictions.
 
         ErrorCallback errorCallback = callback::onError;
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             HealthConnectException unsupportedException =
                     new HealthConnectException(
                             ERROR_UNSUPPORTED_OPERATION,
@@ -2571,29 +2576,38 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, DELETE_DATA)
                         .setPackageName(callingPackageName);
+        if (medicalResourceIds.isEmpty()) {
+            tryAndReturnResult(callback, logger);
+            logger.build().log();
+            return;
+        }
 
         scheduleLoggingHealthDataApiErrors(
                 () -> {
-                    if (medicalResourceIds.isEmpty()) {
-                        tryAndReturnResult(callback, logger);
-                        return;
-                    }
                     enforceIsForegroundUser(userHandle);
                     verifyPackageNameFromUid(uid, attributionSource);
                     throwExceptionIfDataSyncInProgress();
-                    if (!holdsDataManagementPermission) {
+                    Long appInfoRestriction;
+                    if (holdsDataManagementPermission) {
+                        appInfoRestriction = null;
+                    } else {
                         boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
                         tryAcquireApiCallQuota(
                                 uid, QuotaCategory.QUOTA_CATEGORY_WRITE, isInForeground, logger);
                         mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
                                 attributionSource);
+
+                        appInfoRestriction =
+                                mAppInfoHelper.getAppInfoId(attributionSource.getPackageName());
+                        if (appInfoRestriction == Constants.DEFAULT_LONG) {
+                            throw new IllegalArgumentException(
+                                    "Deletion not permitted as app has inserted no data.");
+                        }
                     }
 
-                    UnsupportedOperationException unsupportedException =
-                            new UnsupportedOperationException(
-                                    "Deleting MedicalResources by ids is not yet implemented.");
-                    tryAndThrowException(
-                            errorCallback, unsupportedException, ERROR_UNSUPPORTED_OPERATION);
+                    mMedicalResourceHelper.deleteMedicalResourcesByIds(
+                            medicalResourceIds, appInfoRestriction);
+                    tryAndReturnResult(callback, logger);
                 },
                 logger,
                 errorCallback,
@@ -2614,10 +2628,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         // - No deletion can happen while data sync is in progress
         // - delete shares quota with write.
         // - on multi-user devices, calls will only be allowed from the foreground user.
-        // TODO: Implement package restrictions.
 
         ErrorCallback errorCallback = callback::onError;
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             HealthConnectException unsupportedException =
                     new HealthConnectException(
                             ERROR_UNSUPPORTED_OPERATION,
@@ -2648,19 +2661,24 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     enforceIsForegroundUser(userHandle);
                     verifyPackageNameFromUid(uid, attributionSource);
                     throwExceptionIfDataSyncInProgress();
-                    if (!holdsDataManagementPermission) {
+                    Long appInfoRestriction;
+                    if (holdsDataManagementPermission) {
+                        appInfoRestriction = null;
+                    } else {
                         boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
                         tryAcquireApiCallQuota(
                                 uid, QuotaCategory.QUOTA_CATEGORY_WRITE, isInForeground, logger);
                         mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
                                 attributionSource);
+                        appInfoRestriction = mAppInfoHelper.getAppInfoId(callingPackageName);
+                        if (appInfoRestriction == Constants.DEFAULT_LONG) {
+                            throw new IllegalArgumentException(
+                                    "Deletion not permitted as app has inserted no data.");
+                        }
                     }
-                    UnsupportedOperationException unsupportedException =
-                            new UnsupportedOperationException(
-                                    "Deleting MedicalResources by request is not yet"
-                                            + " implemented.");
-                    tryAndThrowException(
-                            errorCallback, unsupportedException, ERROR_UNSUPPORTED_OPERATION);
+                    mMedicalResourceHelper.deleteMedicalResourcesByDataSources(
+                            new ArrayList<>(request.getDataSourceIds()), appInfoRestriction);
+                    tryAndReturnResult(callback, logger);
                 },
                 logger,
                 errorCallback,
@@ -2734,7 +2752,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull IMedicalResourceTypesInfoResponseCallback callback) {
         checkParamsNonNull(callback);
         ErrorCallback errorCallback = callback::onError;
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             HealthConnectException unsupportedException =
                     new HealthConnectException(
                             ERROR_UNSUPPORTED_OPERATION,
@@ -2868,7 +2886,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             throw new IllegalStateException(packageName + " not found");
         }
         if (UserHandle.getAppId(packageUid) != UserHandle.getAppId(callingUid)) {
-            throwSecurityException(packageName + " does not belong to uid " + callingUid);
+            throw new SecurityException(packageName + " does not belong to uid " + callingUid);
         }
     }
 
@@ -2901,7 +2919,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull String claimedCallingPackage) {
         int claimedCallingUid = getPackageUid(actualCallingUserContext, claimedCallingPackage);
         if (claimedCallingUid != actualCallingUid) {
-            throwSecurityException(
+            throw new SecurityException(
                     claimedCallingPackage + " does not belong to uid " + actualCallingUid);
         }
     }
@@ -3011,13 +3029,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         return mContext.checkPermission(permission, pid, uid) == PERMISSION_GRANTED;
     }
 
-    private void enforceBinderUidIsSameAsAttributionSourceUid(
-            int binderUid, int attributionSourceUid) {
-        if (binderUid != attributionSourceUid) {
-            throw new SecurityException("Binder uid must be equal to attribution source uid.");
-        }
-    }
-
     private void logRecordTypeSpecificUpsertMetrics(
             @NonNull List<RecordInternal<?>> recordInternals, @NonNull String packageName) {
         checkParamsNonNull(recordInternals, packageName);
@@ -3051,10 +3062,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
         return recordInternals.stream()
                 .collect(Collectors.groupingBy(RecordInternal::getRecordType));
-    }
-
-    private void throwSecurityException(String message) {
-        throw new SecurityException(message);
     }
 
     private void throwExceptionIfDataSyncInProgress() {

@@ -579,7 +579,6 @@ public class HealthConnectManager {
      * @param callback Callback to receive result of performing this operation.
      * @see AggregateRecordsResponse#get
      */
-    @NonNull
     @SuppressWarnings("unchecked")
     public <T> void aggregate(
             @NonNull AggregateRecordsRequest<T> request,
@@ -1303,7 +1302,6 @@ public class HealthConnectManager {
      * @param callback Callback to receive result of performing this operation.
      * @hide
      */
-    @NonNull
     @SystemApi
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
     public void getContributorApplicationsInfo(
@@ -1566,7 +1564,6 @@ public class HealthConnectManager {
                 MANAGE_HEALTH_DATA_PERMISSION,
                 Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA
             })
-    @NonNull
     public void getHealthConnectDataState(
             @NonNull Executor executor,
             @NonNull OutcomeReceiver<HealthConnectDataState, HealthConnectException> callback) {
@@ -1602,7 +1599,6 @@ public class HealthConnectManager {
      * @throws java.lang.IllegalArgumentException If the record types list is empty.
      * @hide
      */
-    @NonNull
     @SystemApi
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
     public void queryActivityDates(
