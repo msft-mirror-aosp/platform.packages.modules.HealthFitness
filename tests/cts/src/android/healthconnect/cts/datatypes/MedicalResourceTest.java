@@ -29,6 +29,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceB
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.health.connect.MedicalResourceId;
 import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalResource;
@@ -66,6 +67,10 @@ public class MedicalResourceTest {
         assertThat(resource.getDataSourceId()).isEqualTo(DATA_SOURCE_ID);
         assertThat(resource.getFhirVersion()).isEqualTo(FHIR_VERSION_R4);
         assertThat(resource.getFhirResource()).isEqualTo(fhirResource);
+        assertThat(resource.getId())
+                .isEqualTo(
+                        new MedicalResourceId(
+                                DATA_SOURCE_ID, fhirResource.getType(), fhirResource.getId()));
     }
 
     @Test
@@ -84,6 +89,12 @@ public class MedicalResourceTest {
         assertThat(resource.getDataSourceId()).isEqualTo(DIFFERENT_DATA_SOURCE_ID);
         assertThat(resource.getFhirVersion()).isEqualTo(differentFhirVersion);
         assertThat(resource.getFhirResource()).isEqualTo(differentFhirResource);
+        assertThat(resource.getId())
+                .isEqualTo(
+                        new MedicalResourceId(
+                                DIFFERENT_DATA_SOURCE_ID,
+                                differentFhirResource.getType(),
+                                differentFhirResource.getId()));
     }
 
     @Test

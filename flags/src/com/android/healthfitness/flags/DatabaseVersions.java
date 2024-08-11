@@ -17,12 +17,18 @@
 package com.android.healthfitness.flags;
 
 /**
- * A helper class to act as the source of truth for whether a feature is enabled or not by taking
- * into account both feature flag and DB flag. See go/hc-aconfig-and-db.
+ * Class containing all DB versions of HC database.
+ *
+ * @hide
  */
-public final class AconfigFeatureFlagHelper {
-    /** Returns a boolean indicating whether PHR feature is enabled. */
-    public static boolean isPersonalHealthRecordEnabled() {
-        return Flags.personalHealthRecord() && Flags.personalHealthRecordDatabase();
-    }
+public final class DatabaseVersions {
+    public static final int DB_VERSION_UUID_BLOB = 9;
+    public static final int DB_VERSION_GENERATED_LOCAL_TIME = 10;
+    public static final int DB_VERSION_SKIN_TEMPERATURE = 11;
+    public static final int DB_VERSION_PLANNED_EXERCISE_SESSIONS = 12;
+    // No schema changes between version 12 and 13. See ag/26747988 for more details.
+    public static final int DB_VERSION_PLANNED_EXERCISE_SESSIONS_FLAG_RELEASE = 13;
+    public static final int DB_VERSION_MINDFULNESS_SESSION = 14;
+
+    private DatabaseVersions() {}
 }

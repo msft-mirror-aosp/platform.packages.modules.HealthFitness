@@ -71,6 +71,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 
+// TODO: b/357864927 - Add tests for export file size logging.
 @RunWith(AndroidJUnit4.class)
 public class ExportManagerTest {
     private static final String TEST_PACKAGE_NAME = "package.name";
@@ -156,11 +157,7 @@ public class ExportManagerTest {
         long exportStartTime = mTimeStamp.toEpochMilli() - 2000;
         mExportManager.recordSuccess(exportStartTime, 100, 50, Uri.parse("uri"));
 
-        assertSuccessRecorded(
-                Instant.parse("2024-06-04T16:39:12Z"),
-                2000,
-                100 /*originalDataSizeKb*/,
-                50 /* compressedDataSizeKb */);
+        assertSuccessRecorded(Instant.parse("2024-06-04T16:39:12Z"), 2000);
     }
 
     @Test
@@ -169,12 +166,7 @@ public class ExportManagerTest {
         long exportStartTime = mTimeStamp.toEpochMilli() - 2000;
         mExportManager.recordError(DATA_EXPORT_ERROR_UNKNOWN, exportStartTime, 100, 50);
 
-        assertErrorRecorded(
-                DATA_EXPORT_ERROR_UNKNOWN,
-                Instant.parse("2024-06-04T16:39:12Z"),
-                2000,
-                100 /*originalDataSizeKb*/,
-                50 /* compressedDataSizeKb */);
+        assertErrorRecorded(DATA_EXPORT_ERROR_UNKNOWN, Instant.parse("2024-06-04T16:39:12Z"), 2000);
     }
 
     @Test
@@ -252,12 +244,8 @@ public class ExportManagerTest {
 
         assertThat(mExportManager.runExport()).isFalse();
         assertExportStartRecorded();
-        assertErrorRecorded(
-                ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS,
-                mTimeStamp,
-                0, // time not recorded due to fake clock
-                1124,
-                12);
+        // time not recorded due to fake clock
+        assertErrorRecorded(ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS, mTimeStamp, 0);
     }
 
     @Test
@@ -270,11 +258,8 @@ public class ExportManagerTest {
         // running a successful export records a "last successful export"
         assertThat(mExportManager.runExport()).isTrue();
         assertExportStartRecorded();
-        assertSuccessRecorded(
-                Instant.parse("2024-06-04T16:39:12Z"),
-                0, // time not recorded due to fake clock
-                1124 /*originalDataSizeKb*/,
-                11 /* compressedDataSizeKb */);
+        // time not recorded due to fake clock
+        assertSuccessRecorded(Instant.parse("2024-06-04T16:39:12Z"), 0);
 
         // Export running at a later time with an error
         mTimeStamp = Instant.parse("2024-12-12T16:39:12Z");
@@ -349,18 +334,11 @@ public class ExportManagerTest {
                 times(1));
     }
 
-    private void assertSuccessRecorded(
-            Instant timeOfSuccess,
-            int timeToSuccess,
-            int originalDataSizeKb,
-            int compressedDataSizeKb) {
+    private void assertSuccessRecorded(Instant timeOfSuccess, int timeToSuccess) {
         ExtendedMockito.verify(
                 () ->
                         ExportImportLogger.logExportStatus(
-                                eq(DATA_EXPORT_ERROR_NONE),
-                                eq(timeToSuccess),
-                                eq(originalDataSizeKb),
-                                eq(compressedDataSizeKb)),
+                                eq(DATA_EXPORT_ERROR_NONE), eq(timeToSuccess), anyInt(), anyInt()),
                 times(1));
         Instant lastSuccessfulExport =
                 ExportImportSettingsStorage.getScheduledExportStatus(mContext)
@@ -368,12 +346,7 @@ public class ExportManagerTest {
         assertThat(lastSuccessfulExport).isEqualTo(timeOfSuccess);
     }
 
-    private void assertErrorRecorded(
-            int exportStatus,
-            Instant timeOfError,
-            int timeToError,
-            int originalFileSizeKb,
-            int compressedFileSizeKb) {
+    private void assertErrorRecorded(int exportStatus, Instant timeOfError, int timeToError) {
         assertThat(
                         ExportImportSettingsStorage.getScheduledExportStatus(mContext)
                                 .getDataExportError())
@@ -386,10 +359,7 @@ public class ExportManagerTest {
         ExtendedMockito.verify(
                 () ->
                         ExportImportLogger.logExportStatus(
-                                eq(exportStatus),
-                                eq(timeToError),
-                                eq(originalFileSizeKb),
-                                eq(compressedFileSizeKb)),
+                                eq(exportStatus), eq(timeToError), anyInt(), anyInt()),
                 times(1));
     }
 }

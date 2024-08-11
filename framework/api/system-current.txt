@@ -172,6 +172,8 @@ package android.health.connect.accesslog {
   public final class AccessLog implements android.os.Parcelable {
     method public int describeContents();
     method @NonNull public java.time.Instant getAccessTime();
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public boolean getMedicalDataSource();
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") @NonNull public java.util.Set<java.lang.Integer> getMedicalResourceTypes();
     method public int getOperationType();
     method @NonNull public String getPackageName();
     method @NonNull public java.util.List<java.lang.Class<? extends android.health.connect.datatypes.Record>> getRecordTypes();
