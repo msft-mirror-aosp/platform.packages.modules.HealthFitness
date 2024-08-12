@@ -1254,9 +1254,9 @@ package android.health.connect.datatypes {
     field public static final int MINDFULNESS_SESSION_TYPE_MEDITATION = 1; // 0x1
     field public static final int MINDFULNESS_SESSION_TYPE_MOVEMENT = 5; // 0x5
     field public static final int MINDFULNESS_SESSION_TYPE_MUSIC = 4; // 0x4
+    field public static final int MINDFULNESS_SESSION_TYPE_OTHER = 2; // 0x2
     field public static final int MINDFULNESS_SESSION_TYPE_UNGUIDED = 6; // 0x6
     field public static final int MINDFULNESS_SESSION_TYPE_UNKNOWN = 0; // 0x0
-    field public static final int MINDFULNESS_SESSION_TYPE_YOGA = 2; // 0x2
   }
 
   public static final class MindfulnessSessionRecord.Builder {
