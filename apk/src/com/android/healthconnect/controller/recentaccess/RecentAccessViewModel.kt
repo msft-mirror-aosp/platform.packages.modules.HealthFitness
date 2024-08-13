@@ -31,10 +31,10 @@ import com.android.healthconnect.controller.shared.dataTypeToCategory
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.postValueIfUpdated
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.Instant
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class RecentAccessViewModel
@@ -71,9 +71,7 @@ constructor(
         }
     }
 
-    private suspend fun getRecentAccessAppsClusters(
-        maxNumEntries: Int
-    ): List<RecentAccessEntry> {
+    private suspend fun getRecentAccessAppsClusters(maxNumEntries: Int): List<RecentAccessEntry> {
         val accessLogs = loadRecentAccessUseCase.invoke()
         val connectedApps = loadHealthPermissionApps.invoke()
         val inactiveApps =
@@ -89,7 +87,7 @@ constructor(
                 it.isInactive = true
             }
             if (inactiveApps.contains(it.metadata.packageName) ||
-                appInfoReader.isAppInstalled(it.metadata.packageName)) {
+                appInfoReader.isAppEnabled(it.metadata.packageName)) {
                 filteredClusters.add(it)
             }
         }
@@ -164,9 +162,7 @@ constructor(
             .take(if (maxNumEntries != -1) maxNumEntries else dataAccessEntries.size)
     }
 
-    private suspend fun initDataAccessEntryCluster(
-        accessLog: AccessLog
-    ): DataAccessEntryCluster {
+    private suspend fun initDataAccessEntryCluster(accessLog: AccessLog): DataAccessEntryCluster {
         val newCluster =
             DataAccessEntryCluster(
                 latestTime = accessLog.accessTime,
@@ -175,7 +171,9 @@ constructor(
                     RecentAccessEntry(
                         metadata =
                             appInfoReader.getAppMetadata(packageName = accessLog.packageName),
-                        appPermissionsType = healthPermissionsReader.getAppPermissionsType(packageName = accessLog.packageName)))
+                        appPermissionsType =
+                            healthPermissionsReader.getAppPermissionsType(
+                                packageName = accessLog.packageName)))
 
         updateDataAccessEntryCluster(newCluster, accessLog)
         return newCluster
@@ -216,7 +214,9 @@ constructor(
 
     sealed class RecentAccessState {
         object Loading : RecentAccessState()
+
         object Error : RecentAccessState()
+
         data class WithData(val recentAccessEntries: List<RecentAccessEntry>) : RecentAccessState()
     }
 }
