@@ -110,3 +110,14 @@ flag {
     is_fixed_read_only: true
     is_exported: true
 }
+
+flag {
+   name: "read_assets_for_disabled_apps_from_package_manager"
+   namespace: "health_fitness_aconfig"
+   description: "Enables reading of assets from PackageManager for apps that are disabled."
+   bug: "321705074"
+   is_fixed_read_only: true
+   metadata {
+       purpose: PURPOSE_BUGFIX
+   }
+}
