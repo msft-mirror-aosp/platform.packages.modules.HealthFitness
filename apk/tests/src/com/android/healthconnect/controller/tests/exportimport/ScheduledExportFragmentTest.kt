@@ -81,8 +81,9 @@ class ScheduledExportFragmentTest {
     fun setup() {
         hiltRule.inject()
         fakeHealthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays))
+            ScheduledExportSettings.Builder()
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays)
+                .build())
         val scheduledExportStatus =
             ScheduledExportStatus.Builder()
                 .setLastSuccessfulExportTime(TEST_LAST_SUCCESSFUL_TIME)
@@ -213,8 +214,9 @@ class ScheduledExportFragmentTest {
     @Test
     fun scheduledExportFragment_dailyExport_checkedButtonMatchesExportFrequency() {
         fakeHealthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays))
+            ScheduledExportSettings.Builder()
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
+                .build())
         launchFragment<ScheduledExportFragment>(Bundle())
 
         onView(withId(R.id.radio_button_daily)).check(matches(isChecked()))
@@ -223,8 +225,9 @@ class ScheduledExportFragmentTest {
     @Test
     fun scheduledExportFragment_weeklyExport_checkedButtonMatchesExportFrequency() {
         fakeHealthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays))
+            ScheduledExportSettings.Builder()
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays)
+                .build())
         launchFragment<ScheduledExportFragment>(Bundle())
 
         onView(withId(R.id.radio_button_weekly)).check(matches(isChecked()))
@@ -233,8 +236,9 @@ class ScheduledExportFragmentTest {
     @Test
     fun scheduledExportFragment_monthlyExport_checkedButtonMatchesExportFrequency() {
         fakeHealthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_MONTHLY.periodInDays))
+            ScheduledExportSettings.Builder()
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_MONTHLY.periodInDays)
+                .build())
         launchFragment<ScheduledExportFragment>(Bundle())
 
         onView(withId(R.id.radio_button_monthly)).check(matches(isChecked()))
@@ -298,8 +302,9 @@ class ScheduledExportFragmentTest {
     @Test
     fun scheduledExportFragment_selectsAnotherFrequency_updatesExportFrequency() = runTest {
         fakeHealthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays))
+            ScheduledExportSettings.Builder()
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
+                .build())
 
         launchFragment<ScheduledExportFragment>(Bundle())
 
