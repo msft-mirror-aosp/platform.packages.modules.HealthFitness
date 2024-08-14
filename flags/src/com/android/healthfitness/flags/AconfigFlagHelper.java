@@ -134,6 +134,6 @@ public final class AconfigFlagHelper {
         // TODO(b/357062401): When PHR DB schema changes is finalized:
         // return Flags.personalHealthRecord() &&
         // isDbFlagEnabled(DB_VERSION_PERSONAL_HEALTH_RECORD);
-        return Flags.personalHealthRecord() && Flags.developmentDatabase();
+        return Flags.personalHealthRecord();
     }
 }
