@@ -116,8 +116,10 @@ public class ExportImportApiTest {
         SystemUtil.runWithShellPermissionIdentity(
                 () -> {
                     mHealthConnectManager.configureScheduledExport(
-                            ScheduledExportSettings.withUriAndPeriodInDays(
-                                    mRemoteExportFileUri, /* periodInDays */ 1));
+                            new ScheduledExportSettings.Builder()
+                                    .setUri(mRemoteExportFileUri)
+                                    .setPeriodInDays(1)
+                                    .build());
                 },
                 "android.permission.MANAGE_HEALTH_DATA");
         // TODO(b/318484678): Improve tests (as possible) replacing sleep by conditions.
