@@ -506,8 +506,8 @@
     <string name="racquetball" msgid="8169482984904052538">"راکت‌بال"</string>
     <string name="rock_climbing" msgid="3123024521372083233">"صخره‌نوردی"</string>
     <string name="roller_hockey" msgid="3524872164646176686">"اسکیت هاکی"</string>
-    <string name="rowing" msgid="615898011726585442">"روئینگ"</string>
-    <string name="rowing_machine" msgid="4075255566862183370">"روئینگ با دستگاه"</string>
+    <string name="rowing" msgid="615898011726585442">"پاروزنی"</string>
+    <string name="rowing_machine" msgid="4075255566862183370">"پاروزنی با دستگاه"</string>
     <string name="rugby" msgid="5146215118571059267">"راگبی"</string>
     <string name="running" msgid="5135754380339217169">"دویدن"</string>
     <string name="running_treadmill" msgid="2083354407217486405">"دویدن روی تردمیل"</string>
@@ -790,7 +790,7 @@
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"انتقال به انتها"</string>
     <string name="reorder_button_content_description" msgid="2685032520710743533">"دکمه مخصوص کشیدن و تغییر ترتیب <xliff:g id="SELECTED_APP">%s</xliff:g> در فهرست اولویت"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"دکمه برداشتن <xliff:g id="SELECTED_APP">%s</xliff:g> از فهرست اولویت"</string>
-    <string name="reorder_button_action_description" msgid="5197462036756192214">"برای تغییر ترتیب، دوضربه بزنید و بکشید"</string>
+    <string name="reorder_button_action_description" msgid="5197462036756192214">"برای تغییر ترتیب، دو تک‌ضرب بزنید و بکشید"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"تناسب اندام، تندرستی"</string>
     <string name="search_keywords_permissions" msgid="7821010295153350533">"اجازه‌ها"</string>
     <string name="search_keywords_data" msgid="5359602744325490523">"health connect، داده‌های سلامت، دسته‌های سلامت، دسترسی به داده‌ها، فعالیت، سنجه‌های بدن، پیگیری قاعدگی، تغذیه، خواب، علائم حیاتی"</string>
@@ -873,7 +873,7 @@
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"هروقت دوباره دردسترس قرار بگیرد اعلان دریافت خواهید کرد."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"متوجه‌ام"</string>
     <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"یکپارچه‌سازی Health Connect تکمیل نشد"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"بیشتر بخوانید"</string>
+    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"جزئیات بیشتر"</string>
     <string name="migration_complete_notification_title" msgid="4988631739109332404">"یکپارچه‌سازی Health Connect تکمیل شد"</string>
     <string name="migration_complete_notification_action" msgid="5350322865206331186">"باز کردن"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"ویژگی‌های جدید"</string>

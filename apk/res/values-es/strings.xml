@@ -450,7 +450,7 @@
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Tantas repeticiones como sea posible"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Nivel de esfuerzo: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
     <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
-    <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 rep}other{# rep}}"</string>
+    <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 repetición}other{# repeticiones}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 repetición}other{# repeticiones}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segmentos de ejercicio"</string>
     <string name="exercise_laps_header" msgid="117228630553856372">"Vueltas/Largos"</string>
@@ -495,7 +495,7 @@
     <string name="ice_skating" msgid="8509270149324068230">"Patinaje sobre hielo"</string>
     <string name="jumping_jack" msgid="8751015874477795657">"Saltos de tijera"</string>
     <string name="jump_rope" msgid="3065249477862282277">"Salto de comba"</string>
-    <string name="lat_pull_down" msgid="6974730398913678563">"Jalón al frente"</string>
+    <string name="lat_pull_down" msgid="6974730398913678563">"Polea al pecho"</string>
     <string name="lunge" msgid="6557814816897990529">"Zancada"</string>
     <string name="martial_arts" msgid="3279383109083496658">"Artes marciales"</string>
     <string name="meditation" msgid="7578287714544679183">"Meditación"</string>
@@ -575,7 +575,7 @@
     <string name="sleep_stage_rem" msgid="1694477904067543104">"sueño REM"</string>
     <string name="sleep_stage_light" msgid="1070117964678317880">"sueño ligero"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"sueño profundo"</string>
-    <string name="sleep_stage_unknown" msgid="8664190491902295991">"desconocido"</string>
+    <string name="sleep_stage_unknown" msgid="8664190491902295991">"desconocida"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> min"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> h <xliff:g id="MIN">%2$s</xliff:g> min"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> h"</string>
@@ -595,13 +595,13 @@
     <string name="vo2_rockport_fitness_test" msgid="2951465532122577281">"Test de Rockport"</string>
     <string name="vo2_other" msgid="5359013487285233550">"Otro"</string>
     <string name="mucus_dry" msgid="1065582777971603874">"Seco"</string>
-    <string name="mucus_sticky" msgid="2086025099544529404">"Viscoso"</string>
-    <string name="mucus_creamy" msgid="7525290054414941569">"Espeso"</string>
+    <string name="mucus_sticky" msgid="2086025099544529404">"Pegajoso"</string>
+    <string name="mucus_creamy" msgid="7525290054414941569">"Cremoso"</string>
     <string name="mucus_watery" msgid="1875540699006472048">"Acuoso"</string>
     <string name="mucus_egg_white" msgid="5578512593433767787">"Clara de huevo"</string>
     <string name="mucus_unusual" msgid="3987847850745292757">"Inusual"</string>
     <string name="mucus_light" msgid="5309343389013086860">"Ligero"</string>
-    <string name="mucus_medium" msgid="7666848347740570566">"Medio"</string>
+    <string name="mucus_medium" msgid="7666848347740570566">"Moderado"</string>
     <string name="mucus_heavy" msgid="7864873650773259133">"Abundante"</string>
     <string name="blood_pressure" msgid="7892828162554266437">"<xliff:g id="SYSTOLIC">%1$s</xliff:g>/<xliff:g id="DIASTOLIC">%2$s</xliff:g> mmHg"</string>
     <string name="blood_pressure_long" msgid="6487761539434451764">"<xliff:g id="SYSTOLIC">%1$s</xliff:g>/<xliff:g id="DIASTOLIC">%2$s</xliff:g> milímetros de mercurio"</string>
@@ -690,7 +690,7 @@
     <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 grado Celsius}other{# grados Celsius}}"</string>
     <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}other{# K}}"</string>
-    <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}other{# kelvins}}"</string>
+    <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}other{# kélvins}}"</string>
     <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 grado Fahrenheit}other{# grados Fahrenheit}}"</string>
     <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
@@ -729,7 +729,7 @@
     <string name="height_in_compacted" msgid="6087182983411207466">"{height,plural, =1{1″}other{#″}}"</string>
     <string name="height_ft_compacted" msgid="1024585112134314039">"{height,plural, =1{1′}other{#′}}"</string>
     <string name="feet_inches_format" msgid="768610500549967860">"<xliff:g id="FT">%1$s</xliff:g><xliff:g id="IN">%2$s</xliff:g>⁠"</string>
-    <string name="feet_inches_format_long" msgid="5187265716573430363">"<xliff:g id="FT">%1$s</xliff:g> <xliff:g id="IN">%2$s</xliff:g>⁠"</string>
+    <string name="feet_inches_format_long" msgid="5187265716573430363">"<xliff:g id="FT">%1$s</xliff:g> <xliff:g id="IN">%2$s</xliff:g>"</string>
     <string name="calories_long" msgid="7225535148232419419">"{count,plural, =1{1 caloría}other{# calorías}}"</string>
     <string name="calories" msgid="320906359079319632">"{count,plural, =1{1 cal}other{# cal}}"</string>
     <string name="kj" msgid="2742876437259085714">"{count,plural, =1{1 kJ}other{# kJ}}"</string>
@@ -778,7 +778,7 @@
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Salud conectada eliminará automáticamente los datos nuevos después de # mes. También se eliminarán los datos almacenados de hace más de # mes.}other{Salud conectada eliminará automáticamente los datos nuevos después de # meses. También se eliminarán los datos almacenados de hace más de # meses.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Confirmar"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Los datos almacenados se eliminarán"</string>
-    <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Salud conectada eliminará todos los datos de hace más de # meses. Los cambios pueden tardar un día en reflejarse en tus aplicaciones conectadas.}other{Salud conectada eliminará todos los datos de hace más de # meses. Los cambios pueden tardar un día en reflejarse en tus aplicaciones conectadas.}}"</string>
+    <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Salud conectada eliminará todos los datos de hace más de # mes. Los cambios pueden tardar un día en aparecer en tus aplicaciones conectadas.}other{Salud conectada eliminará todos los datos de hace más de # meses. Los cambios pueden tardar un día en aparecer en tus aplicaciones conectadas.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Se eliminarán los datos de estas categorías"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Hecho"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Establecer prioridad de aplicaciones"</string>

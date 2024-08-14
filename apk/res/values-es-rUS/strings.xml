@@ -200,8 +200,8 @@
     <string name="ovulation_test_write_content_description" msgid="7061493310852203463">"Registrar prueba de ovulación"</string>
     <string name="sexual_activity_uppercase_label" msgid="1093238473810194127">"Actividad sexual"</string>
     <string name="sexual_activity_lowercase_label" msgid="8285364117437418834">"actividad sexual"</string>
-    <string name="sexual_activity_read_content_description" msgid="4937721417714312007">"Medir actividad sexual"</string>
-    <string name="sexual_activity_write_content_description" msgid="3063448245882840534">"Registrar actividad sexual"</string>
+    <string name="sexual_activity_read_content_description" msgid="4937721417714312007">"Leer actividad sexual"</string>
+    <string name="sexual_activity_write_content_description" msgid="3063448245882840534">"Escribir actividad sexual"</string>
     <string name="spotting_uppercase_label" msgid="5106739829390033240">"Sangrado vaginal"</string>
     <string name="spotting_lowercase_label" msgid="4361141146039580583">"sangrado vaginal"</string>
     <string name="spotting_read_content_description" msgid="5422420770022357631">"Medir sangrado vaginal"</string>
@@ -509,16 +509,16 @@
     <string name="rowing" msgid="615898011726585442">"Remo"</string>
     <string name="rowing_machine" msgid="4075255566862183370">"Máquina de remo"</string>
     <string name="rugby" msgid="5146215118571059267">"Rugby"</string>
-    <string name="running" msgid="5135754380339217169">"Correr"</string>
+    <string name="running" msgid="5135754380339217169">"Ejecución"</string>
     <string name="running_treadmill" msgid="2083354407217486405">"Correr en cinta"</string>
-    <string name="sailing" msgid="4924304145770903145">"Navegar"</string>
+    <string name="sailing" msgid="4924304145770903145">"Navegación con vela"</string>
     <string name="scuba_diving" msgid="4548778216122159229">"Buceo"</string>
     <string name="skating" msgid="7320438805566302784">"Patinaje"</string>
     <string name="skiing" msgid="6773127614153771204">"Esquí"</string>
     <string name="snowboarding" msgid="890584874325367973">"Snowboard"</string>
     <string name="snowshoeing" msgid="8932096199095096139">"Caminata con raquetas para nieve"</string>
     <string name="soccer" msgid="2631723269673549642">"Fútbol"</string>
-    <string name="softball" msgid="8389418982713908334">"Softball"</string>
+    <string name="softball" msgid="8389418982713908334">"Sóftbol"</string>
     <string name="squash" msgid="1588653991323140302">"Squash"</string>
     <string name="squat" msgid="7664163620113834611">"Sentadillas"</string>
     <string name="stair_climbing" msgid="4042085961630471238">"Subir escaleras"</string>
@@ -731,7 +731,7 @@
     <string name="feet_inches_format" msgid="768610500549967860">"<xliff:g id="FT">%1$s</xliff:g><xliff:g id="IN">%2$s</xliff:g>"</string>
     <string name="feet_inches_format_long" msgid="5187265716573430363">"<xliff:g id="FT">%1$s</xliff:g> <xliff:g id="IN">%2$s</xliff:g>"</string>
     <string name="calories_long" msgid="7225535148232419419">"{count,plural, =1{1 caloría}other{# calorías}}"</string>
-    <string name="calories" msgid="320906359079319632">"{count,plural, =1{1 cal}other{# cal}}"</string>
+    <string name="calories" msgid="320906359079319632">"{count,plural, =1{1 kcal}other{# kcal}}"</string>
     <string name="kj" msgid="2742876437259085714">"{count,plural, =1{1 kJ}other{# kJ}}"</string>
     <string name="kj_long" msgid="1837278261960345400">"{count,plural, =1{1 kilojulio}other{# kilojulios}}"</string>
     <string name="percent" formatted="false" msgid="9199428244800776575">"{value,plural, =1{1%}other{#%}}"</string>
@@ -775,7 +775,7 @@
     <string name="range_off" msgid="8178520557618184215">"No"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Cuando cambias estos parámetros de configuración, Health Connect borra los datos existentes para reflejar tus nuevas preferencias"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{¿Borrar automáticamente los datos después de # mes?}other{¿Borrar automáticamente los datos después de # meses?}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect borrará automáticamente los datos nuevos después de # mes. Este parámetro también borrará los datos existentes de más de # mes.}other{Health Connect borrará automáticamente los datos nuevos después de # meses. Este parámetro también borrará los datos existentes de más de # meses.}}"</string>
+    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect borrará automáticamente los datos nuevos después de # mes. Este parámetro de configuración también borrará los datos existentes de más de # mes.}other{Health Connect borrará automáticamente los datos nuevos después de # meses. Este parámetro de configuración también borrará los datos existentes de más de # meses.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Configurar la eliminación automática"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Se borrarán los datos existentes"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect borrará todos los datos que tengan más de # mes. Puede que estos cambios tarden un día en aparecer en las apps conectadas.}other{Health Connect borrará todos los datos que tengan más de # meses. Puede que estos cambios tarden un día en aparecer en las apps conectadas.}}"</string>
@@ -880,7 +880,7 @@
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Ya puedes acceder a Health Connect directamente desde la configuración. Desinstala la app de Health Connect en cualquier momento para liberar espacio de almacenamiento."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Entendido"</string>
     <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Restablecimiento en curso"</string>
-    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect es restableciendo datos y permisos. Este proceso puede demorar un poco en completarse."</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect está restableciendo datos y permisos. Este proceso puede demorar un poco en completarse."</string>
     <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Restablecimiento de Health Connect en curso"</string>
     <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"Entendido"</string>
     <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Actualización necesaria"</string>

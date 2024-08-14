@@ -186,8 +186,8 @@
     <string name="cervical_mucus_lowercase_label" msgid="7460634889750669420">"dịch nhầy cổ tử cung"</string>
     <string name="cervical_mucus_read_content_description" msgid="7163132301693064124">"Đọc dữ liệu về dịch nhầy cổ tử cung"</string>
     <string name="cervical_mucus_write_content_description" msgid="175802615365382752">"Ghi dữ liệu về dịch nhầy cổ tử cung"</string>
-    <string name="intermenstrual_bleeding_uppercase_label" msgid="1681956139742028987">"Máu kinh"</string>
-    <string name="intermenstrual_bleeding_lowercase_label" msgid="5284781275147619132">"máu kinh"</string>
+    <string name="intermenstrual_bleeding_uppercase_label" msgid="1681956139742028987">"Chảy máu giữa chu kỳ kinh nguyệt"</string>
+    <string name="intermenstrual_bleeding_lowercase_label" msgid="5284781275147619132">"chảy máu giữa chu kỳ kinh nguyệt"</string>
     <string name="intermenstrual_bleeding_read_content_description" msgid="5970939335115119015">"Đọc dữ liệu về máu kinh"</string>
     <string name="intermenstrual_bleeding_write_content_description" msgid="1377719923165234099">"Ghi dữ liệu về máu kinh"</string>
     <string name="menstruation_uppercase_label" msgid="9119506748428874832">"Kinh nguyệt"</string>
@@ -238,7 +238,7 @@
     <string name="heart_rate_lowercase_label" msgid="693492686337628283">"tần số tim"</string>
     <string name="heart_rate_read_content_description" msgid="4165867166260001259">"Đọc dữ liệu về nhịp tim"</string>
     <string name="heart_rate_write_content_description" msgid="2876667918366409170">"Ghi dữ liệu về nhịp tim"</string>
-    <string name="heart_rate_variability_uppercase_label" msgid="2047887230527012536">"Sự thay đổi nhịp tim"</string>
+    <string name="heart_rate_variability_uppercase_label" msgid="2047887230527012536">"Sự thay đổi tần số tim"</string>
     <string name="heart_rate_variability_lowercase_label" msgid="2332638559415663836">"sự thay đổi nhịp tim"</string>
     <string name="heart_rate_variability_read_content_description" msgid="5812707457872629556">"Đọc dữ liệu về sự thay đổi nhịp tim"</string>
     <string name="heart_rate_variability_write_content_description" msgid="3628171603035566114">"Ghi dữ liệu về sự thay đổi nhịp tim"</string>

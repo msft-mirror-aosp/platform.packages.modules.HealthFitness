@@ -114,10 +114,10 @@
     <string name="distance_lowercase_label" msgid="2287154001209381379">"адлегласць"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Счытваць даныя пра адлегласць"</string>
     <string name="distance_write_content_description" msgid="494549494589487562">"Запісваць даныя пра адлегласць"</string>
-    <string name="elevation_gained_uppercase_label" msgid="7708101940695442377">"Вышыня пад\'ёму"</string>
-    <string name="elevation_gained_lowercase_label" msgid="7532517182346738562">"вышыня пад\'ёму"</string>
-    <string name="elevation_gained_read_content_description" msgid="6018756385903843355">"Счытваць даныя пра вышыню пад\'ёму"</string>
-    <string name="elevation_gained_write_content_description" msgid="6790199544670231367">"Запісваць даныя пра вышыню пад\'ёму"</string>
+    <string name="elevation_gained_uppercase_label" msgid="7708101940695442377">"Вышыня пад’ёму"</string>
+    <string name="elevation_gained_lowercase_label" msgid="7532517182346738562">"вышыня пад’ёму"</string>
+    <string name="elevation_gained_read_content_description" msgid="6018756385903843355">"Счытваць даныя пра вышыню пад’ёму"</string>
+    <string name="elevation_gained_write_content_description" msgid="6790199544670231367">"Запісваць даныя пра вышыню пад’ёму"</string>
     <string name="floors_climbed_uppercase_label" msgid="3754372357767832441">"Пройдзеныя паверхі"</string>
     <string name="floors_climbed_lowercase_label" msgid="5326072443481377299">"пройдзеныя паверхі"</string>
     <string name="floors_climbed_read_content_description" msgid="4730764877684911752">"Счытваць даныя пра пройдзеныя паверхі"</string>
@@ -317,7 +317,7 @@
     <string name="denied_apps_banner_message_many_apps" msgid="7249805432604650982">"Дазволы на доступ да даных праграмы \"Здароўе і спорт\" выдалены для праграм \"<xliff:g id="APP_DATA_0">%1$s</xliff:g>\", \"<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>\", \"<xliff:g id="APP_DATA_THREE">%3$s</xliff:g>\" і іншых"</string>
     <string name="denied_apps_banner_button" msgid="4438480389769298412">"Глядзець падрабязнасці"</string>
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Чаму выдаляюцца дазволы праграм на доступ да даных праграмы \"Здароўе і спорт\""</string>
-    <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Калі праграма блакіруецца ці выдаляецца з Google Play, аўтаматычна выдаляюцца яе дазволы на доступ да даных у праграме \"Здароўе і спорт\".\n\nТакім чынам, заблакіраваная ці выдаленая праграма страчвае доступ да даных, захаваных у праграме \"Здароўе і спорт\". Калі такая праграма раней запісвала даныя, яна з\'явіцца ў спісе неактыўных праграм."</string>
+    <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Калі праграма блакіруецца ці выдаляецца з Google Play, аўтаматычна выдаляюцца яе дазволы на доступ да даных у праграме \"Здароўе і спорт\".\n\nТакім чынам, заблакіраваная ці выдаленая праграма страчвае доступ да даных, захаваных у праграме \"Здароўе і спорт\". Калі такая праграма раней запісвала даныя, яна з’явіцца ў спісе неактыўных праграм."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Рэзервовыя копіі і аднаўленне"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Экспарт і імпарт"</string>
@@ -473,8 +473,8 @@
     <string name="deadlift" msgid="6880561478635890617">"Станавая цяга"</string>
     <string name="dumbbell_curl_left_arm" msgid="4453594605921193509">"Згінанне левай рукі з гантэллю"</string>
     <string name="dumbbell_curl_right_arm" msgid="4680998443002425166">"Згінанне правай рукі з гантэллю"</string>
-    <string name="dumbbell_front_raise" msgid="4411281746015904879">"Пад\'ём гантэлей перад сабой"</string>
-    <string name="dumbbell_lateral_raise" msgid="5839946068429137241">"Пад\'ём гантэлей праз бакі"</string>
+    <string name="dumbbell_front_raise" msgid="4411281746015904879">"Пад’ём гантэлей перад сабой"</string>
+    <string name="dumbbell_lateral_raise" msgid="5839946068429137241">"Пад’ём гантэлей праз бакі"</string>
     <string name="dumbbell_triceps_extension_left_arm" msgid="6756023069611493063">"Французскі жым левай рукой з гантэллю"</string>
     <string name="dumbbell_triceps_extension_right_arm" msgid="1498470275564554389">"Французскі жым правай рукой з гантэллю"</string>
     <string name="dumbbell_triceps_extension_two_arm" msgid="5409860665522903159">"Французскі жым дзвюма рукамі з гантэлямі"</string>
@@ -521,8 +521,8 @@
     <string name="softball" msgid="8389418982713908334">"Софтбол"</string>
     <string name="squash" msgid="1588653991323140302">"Сквош"</string>
     <string name="squat" msgid="7664163620113834611">"Прысяданні"</string>
-    <string name="stair_climbing" msgid="4042085961630471238">"Пад\'ём па лесвіцы"</string>
-    <string name="stair_climbing_machine" msgid="4003983194733092325">"Заняткі на трэнажоры-імітатары пад\'ёму па лесвіцы"</string>
+    <string name="stair_climbing" msgid="4042085961630471238">"Пад’ём па лесвіцы"</string>
+    <string name="stair_climbing_machine" msgid="4003983194733092325">"Заняткі на трэнажоры-імітатары пад’ёму па лесвіцы"</string>
     <string name="strength_training" msgid="56772956237540768">"Сілавая трэніроўка"</string>
     <string name="stretching" msgid="8667864173383423787">"Расцягванне"</string>
     <string name="surfing" msgid="7612503593241904984">"Сёрфінг"</string>
@@ -548,21 +548,21 @@
     <string name="ball_slam" msgid="5996773678701283169">"Удары па мячы"</string>
     <string name="double_arm_triceps_extension" msgid="4010735719203872078">"Французскі жым дзвюма рукамі"</string>
     <string name="dumbbell_row" msgid="181791808359752158">"Цяга гантэлі"</string>
-    <string name="front_raise" msgid="1030939481482621384">"Пад\'ёмы рук перад сабой"</string>
+    <string name="front_raise" msgid="1030939481482621384">"Пад’ёмы рук перад сабой"</string>
     <string name="hip_thrust" msgid="8490916766767408053">"Штуршкі сцёгнамі"</string>
     <string name="hula_hoop" msgid="1651914953207761226">"Практыкаванні з абручом"</string>
     <string name="kettlebell_swing" msgid="364783119882246413">"Махі гірай"</string>
-    <string name="lateral_raise" msgid="1037404943175363734">"Пад\'ём праз бакі"</string>
+    <string name="lateral_raise" msgid="1037404943175363734">"Пад’ём праз бакі"</string>
     <string name="leg_curl" msgid="5327470513599472344">"Згінанне ног"</string>
     <string name="leg_extension" msgid="1843556289395164421">"Разгінанне ног"</string>
     <string name="leg_press" msgid="4544551493384600086">"Жым нагамі"</string>
-    <string name="leg_raise" msgid="3206754140765952088">"Пад\'ёмы ног"</string>
+    <string name="leg_raise" msgid="3206754140765952088">"Пад’ёмы ног"</string>
     <string name="mountain_climber" msgid="6666288676718010900">"Альпінізм"</string>
     <string name="pull_up" msgid="4056233737860296184">"Падцягванні"</string>
     <string name="punch" msgid="7915247952566217050">"Удары кулаком"</string>
     <string name="shoulder_press" msgid="4071573271892122319">"Жым плячамі"</string>
     <string name="single_arm_triceps_extension" msgid="4500495528709994121">"Французскі жым адной рукой"</string>
-    <string name="sit_up" msgid="1872162440154479950">"Пад\'ёмы тулава"</string>
+    <string name="sit_up" msgid="1872162440154479950">"Пад’ёмы тулава"</string>
     <string name="rest" msgid="5937058337671252210">"Адпачынак"</string>
     <string name="pause" msgid="5161459047750335691">"Перапынак"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"Аўстралійскі футбол"</string>
