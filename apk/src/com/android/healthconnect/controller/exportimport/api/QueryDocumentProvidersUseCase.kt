@@ -36,7 +36,7 @@ constructor(
     }
 
     /** Returns the available document providers. */
-    override suspend operator fun invoke(): ExportUseCaseResult<List<DocumentProvider>> =
+    override suspend operator fun invoke(): ExportImportUseCaseResult<List<DocumentProvider>> =
         withContext(Dispatchers.IO) {
             try {
                 val documentProviders: List<DocumentProvider> =
@@ -55,10 +55,10 @@ constructor(
                             provider1.info.title.compareTo(provider2.info.title)
                         }
                         .toList()
-                ExportUseCaseResult.Success(documentProviders)
+                ExportImportUseCaseResult.Success(documentProviders)
             } catch (ex: HealthConnectException) {
                 Log.e(TAG, "Query document providers error: ", ex)
-                ExportUseCaseResult.Failed(ex)
+                ExportImportUseCaseResult.Failed(ex)
             }
         }
 
@@ -74,5 +74,5 @@ constructor(
 
 interface IQueryDocumentProvidersUseCase {
     /** Returns the available document providers. */
-    suspend fun invoke(): ExportUseCaseResult<List<DocumentProvider>>
+    suspend fun invoke(): ExportImportUseCaseResult<List<DocumentProvider>>
 }

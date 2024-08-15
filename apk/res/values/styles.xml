@@ -201,19 +201,6 @@
 
     <!-- END REGION -->
 
-    <!-- REGION EDITTEXT -->
-    <style name="Widget.HealthConnect.EditText.Password" parent="Widget.AppCompat.EditText">
-        <item name="android:maxHeight">56dp</item>
-        <item name="android:paddingVertical">@dimen/spacing_large</item>
-        <item name="android:paddingHorizontal">0dp</item>
-        <item name="android:layout_marginHorizontal">0dp</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:textAppearance">?android:textAppearanceMedium</item>
-    </style>
-    <!-- END REGION -->
-
     <!-- REGION DIALOG -->
     <style name="Theme.HealthConnect.Dialog.Alert" parent="@style/Theme.AlertDialog.SettingsLib">
         <item name="textAllCaps">false</item>
@@ -233,14 +220,6 @@
         <item name="android:minHeight">@dimen/spacing_page_title</item>
     </style>
     <!-- END REGION -->
-
-    <style name="Widget.HealthConnect.CheckBox" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
-        <item name="android:textAppearance">?attr/textAppearanceSummary</item>
-        <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:paddingStart">@dimen/spacing_normal</item>
-        <item name="android:minHeight">?android:attr/listPreferredItemHeight</item>
-        <item name="android:button">@drawable/checkbox_button</item>
-    </style>
 
     <style name="Widget.HealthConnect.CalendarSpinner" parent="android:style/Widget.Material.Spinner">
         <item name="android:background">@drawable/settingslib_spinner_background</item>

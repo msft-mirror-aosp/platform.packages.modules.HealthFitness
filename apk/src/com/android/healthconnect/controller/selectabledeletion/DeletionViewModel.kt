@@ -21,7 +21,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -38,7 +38,7 @@ constructor(private val deletePermissionTypesUseCase: DeletePermissionTypesUseCa
 
     private lateinit var deletionType: DeletionType
 
-    private var setOfPermissionTypesToBeDeleted: Set<HealthPermissionType> = setOf()
+    private var setOfPermissionTypesToBeDeleted: Set<FitnessPermissionType> = setOf()
 
     private var _permissionTypesReloadNeeded = MutableLiveData(false)
 
@@ -83,7 +83,7 @@ constructor(private val deletePermissionTypesUseCase: DeletePermissionTypesUseCa
         _permissionTypesReloadNeeded.postValue(false)
     }
 
-    fun setDeleteSet(permissionTypes: Set<HealthPermissionType>) {
+    fun setDeleteSet(permissionTypes: Set<FitnessPermissionType>) {
         if (permissionTypes.isNotEmpty()) {
             setOfPermissionTypesToBeDeleted = permissionTypes.toSet()
             deletionType = DeletionType.DeletionTypeHealthPermissionTypes(setOfPermissionTypesToBeDeleted.toList())
@@ -91,7 +91,7 @@ constructor(private val deletePermissionTypesUseCase: DeletePermissionTypesUseCa
     }
 
     @VisibleForTesting
-    fun getDeleteSet(): Set<HealthPermissionType> {
+    fun getDeleteSet(): Set<FitnessPermissionType> {
         return setOfPermissionTypesToBeDeleted
     }
 

@@ -51,7 +51,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.android.healthconnect.controller.dataentries.units.PowerConverter
 import com.android.healthconnect.controller.permissions.data.HealthPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.randomInstant
@@ -131,19 +131,19 @@ fun getBodyWaterMassRecord(time: Instant, bodyWaterMass: Mass): BodyWaterMassRec
     return BodyWaterMassRecord.Builder(getMetaData(), time, bodyWaterMass).build()
 }
 
-fun getRandomRecord(healthPermissionType: HealthPermissionType, date: LocalDate): Record {
-    return when (healthPermissionType) {
-        HealthPermissionType.STEPS -> getStepsRecord(Random.nextLong(0, 5000), date.randomInstant())
-        HealthPermissionType.DISTANCE ->
+fun getRandomRecord(fitnessPermissionType: FitnessPermissionType, date: LocalDate): Record {
+    return when (fitnessPermissionType) {
+        FitnessPermissionType.STEPS -> getStepsRecord(Random.nextLong(0, 5000), date.randomInstant())
+        FitnessPermissionType.DISTANCE ->
             getDistanceRecord(
                 Length.fromMeters(Random.nextDouble(0.0, 5000.0)), date.randomInstant())
-        HealthPermissionType.TOTAL_CALORIES_BURNED ->
+        FitnessPermissionType.TOTAL_CALORIES_BURNED ->
             getTotalCaloriesBurnedRecord(
                 Energy.fromCalories(Random.nextDouble(1500.0, 5000.0)), date.randomInstant())
-        HealthPermissionType.SLEEP -> getSleepSessionRecord(date.randomInstant())
+        FitnessPermissionType.SLEEP -> getSleepSessionRecord(date.randomInstant())
         else ->
             throw IllegalArgumentException(
-                "HealthPermissionType $healthPermissionType not supported")
+                "HealthPermissionType $fitnessPermissionType not supported")
     }
 }
 
@@ -427,10 +427,12 @@ const val TEST_APP_PACKAGE_NAME_2 = "android.healthconnect.controller.test.app2"
 const val TEST_APP_PACKAGE_NAME_3 = "package.name.3"
 const val UNSUPPORTED_TEST_APP_PACKAGE_NAME = "android.healthconnect.controller.test.app3"
 const val OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME = "android.healthconnect.controller.test.app4"
+const val MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME = "android.healthconnect.controller.test.app5"
 const val TEST_APP_NAME = "Health Connect test app"
 const val TEST_APP_NAME_2 = "Health Connect test app 2"
 const val TEST_APP_NAME_3 = "Health Connect test app 3"
 const val OLD_APP_NAME = "Old permissions test app"
+const val MEDICAL_APP_NAME = "Medical permissions HC app"
 
 val TEST_APP =
     AppMetadata(packageName = TEST_APP_PACKAGE_NAME, appName = TEST_APP_NAME, icon = null)

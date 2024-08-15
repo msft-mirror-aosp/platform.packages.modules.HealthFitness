@@ -155,6 +155,7 @@ android_library {
     static_libs: [
         "com.google.android.material_material",
         "healthfitness-aconfig-flags-lib",
+        "healthfitness-aconfig-flags-helper",
         "HealthConnectPermissionsApis",
         "HealthConnectMigrationApis",
         "HealthConnectExportApis",
@@ -180,6 +181,7 @@ android_library {
         "guava",
         "hilt_android",
         "healthfitness-ui-statsd",
+        "healthfitness-aconfig-flags-helper",
     ],
     kotlincflags: ["-Xjvm-default=all"],
     apex_available: ["com.android.healthfitness"],

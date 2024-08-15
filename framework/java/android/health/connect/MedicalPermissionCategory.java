@@ -16,6 +16,8 @@
 
 package android.health.connect;
 
+import static android.health.connect.datatypes.validation.ValidationUtils.validateIntDefValue;
+
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import android.annotation.FlaggedApi;
@@ -24,6 +26,7 @@ import android.annotation.SystemApi;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Set;
 
 /**
  * Represents the permission category of a {@link android.health.connect.datatypes.MedicalResource}.
@@ -32,6 +35,8 @@ import java.lang.annotation.RetentionPolicy;
  *
  * @hide
  */
+// TODO(b/356590533): Consider removing this class because it's just a 1:1 mapping to
+// MedicalResourceType and is only used in the UI.
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 @SystemApi
 public final class MedicalPermissionCategory {
@@ -50,4 +55,26 @@ public final class MedicalPermissionCategory {
     @IntDef({UNKNOWN, ALL_MEDICAL_DATA, IMMUNIZATION})
     @Retention(RetentionPolicy.SOURCE)
     public @interface Type {}
+
+    /**
+     * Valid set of values for {@code IntDef} {@link Type}. Update this set when add new type or
+     * deprecate existing type.
+     */
+    private static final Set<Integer> VALID_TYPES = Set.of(UNKNOWN, ALL_MEDICAL_DATA, IMMUNIZATION);
+
+    /**
+     * Validates the provided {@code medicalPermissionCategoryType} is in the {@link
+     * MedicalPermissionCategory#VALID_TYPES} set.
+     *
+     * <p>Throws {@link IllegalArgumentException} if not.
+     *
+     * @hide
+     */
+    public static void validateMedicalPermissionCategoryType(
+            @Type int medicalPermissionCategoryType) {
+        validateIntDefValue(
+                medicalPermissionCategoryType,
+                VALID_TYPES,
+                MedicalPermissionCategory.Type.class.getSimpleName());
+    }
 }

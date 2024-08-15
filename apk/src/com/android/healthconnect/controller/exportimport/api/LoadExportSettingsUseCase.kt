@@ -34,20 +34,20 @@ constructor(
     }
 
     /** Returns the stored export settings. */
-    override suspend operator fun invoke(): ExportUseCaseResult<ExportFrequency> =
+    override suspend operator fun invoke(): ExportImportUseCaseResult<ExportFrequency> =
         withContext(Dispatchers.IO) {
             try {
                 val periodInDays = healthDataExportManager.getScheduledExportPeriodInDays()
                 val frequency = fromPeriodInDays(periodInDays)
-                ExportUseCaseResult.Success(frequency)
+                ExportImportUseCaseResult.Success(frequency)
             } catch (ex: HealthConnectException) {
                 Log.e(TAG, "Load export settings error: ", ex)
-                ExportUseCaseResult.Failed(ex)
+                ExportImportUseCaseResult.Failed(ex)
             }
         }
 }
 
 interface ILoadExportSettingsUseCase {
     /** Returns the stored export settings. */
-    suspend fun invoke(): ExportUseCaseResult<ExportFrequency>
+    suspend fun invoke(): ExportImportUseCaseResult<ExportFrequency>
 }

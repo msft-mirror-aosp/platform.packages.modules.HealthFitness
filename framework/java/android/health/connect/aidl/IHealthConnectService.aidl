@@ -1,41 +1,54 @@
 package android.health.connect.aidl;
 
 import android.content.AttributionSource;
+import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.DeleteMedicalResourcesRequest;
+import android.health.connect.GetMedicalDataSourcesRequest;
+import android.health.connect.MedicalResourceId;
+import android.health.connect.ReadMedicalResourcesRequest;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.aidl.ActivityDatesRequestParcel;
 import android.health.connect.aidl.AggregateDataRequestParcel;
-import android.health.connect.aidl.IAggregateRecordsResponseCallback;
-import android.health.connect.changelog.ChangeLogTokenRequest;
-import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.aidl.DeleteUsingFiltersRequestParcel;
 import android.health.connect.aidl.IAccessLogsResponseCallback;
+import android.health.connect.aidl.IActivityDatesResponseCallback;
+import android.health.connect.aidl.IActivityDatesResponseCallback;
+import android.health.connect.aidl.IAggregateRecordsResponseCallback;
+import android.health.connect.aidl.IApplicationInfoResponseCallback;
 import android.health.connect.aidl.IChangeLogsResponseCallback;
 import android.health.connect.aidl.IDataStagingFinishedCallback;
 import android.health.connect.aidl.IEmptyResponseCallback;
-import android.health.connect.aidl.IGetChangeLogTokenCallback;
-import android.health.connect.aidl.IGetPriorityResponseCallback;
-import android.health.connect.aidl.IGetHealthConnectMigrationUiStateCallback;
-import android.health.connect.aidl.IGetHealthConnectDataStateCallback;
-import android.health.connect.aidl.RecordsParcel;
-import android.health.connect.aidl.IMigrationCallback;
-import android.health.connect.migration.MigrationEntityParcel;
-import android.health.connect.aidl.IApplicationInfoResponseCallback;
 import android.health.connect.aidl.IEmptyResponseCallback;
+import android.health.connect.aidl.IGetChangeLogTokenCallback;
+import android.health.connect.aidl.IGetHealthConnectDataStateCallback;
+import android.health.connect.aidl.IGetHealthConnectMigrationUiStateCallback;
+import android.health.connect.aidl.IGetPriorityResponseCallback;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
-import android.health.connect.aidl.RecordsParcel;
-import android.health.connect.aidl.UpdatePriorityRequestParcel;
+import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
+import android.health.connect.aidl.IMedicalDataSourcesResponseCallback;
+import android.health.connect.aidl.IMedicalResourcesResponseCallback;
+import android.health.connect.aidl.IMedicalResourceTypesInfoResponseCallback;
+import android.health.connect.aidl.IMigrationCallback;
+import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
-import android.health.connect.aidl.IActivityDatesResponseCallback;
 import android.health.connect.aidl.IRecordTypeInfoResponseCallback;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
+import android.health.connect.aidl.RecordsParcel;
+import android.health.connect.aidl.RecordsParcel;
+import android.health.connect.aidl.UpdatePriorityRequestParcel;
+import android.health.connect.changelog.ChangeLogTokenRequest;
+import android.health.connect.changelog.ChangeLogsRequest;
+import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.exportimport.IImportStatusCallback;
 import android.health.connect.exportimport.IQueryDocumentProvidersCallback;
+import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.exportimport.IScheduledExportStatusCallback;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.migration.MigrationEntity;
+import android.health.connect.migration.MigrationEntityParcel;
 import android.health.connect.restore.BackupFileNamesSet;
 import android.health.connect.restore.StageRemoteDataRequest;
 import android.net.Uri;
-
 import android.os.UserHandle;
 
 import java.util.List;
@@ -381,5 +394,124 @@ interface IHealthConnectService {
     *
     * @hide
     */
-    void runImport(in UserHandle userHandle, in Uri file);
+    void runImport(in UserHandle userHandle, in Uri file, in IEmptyResponseCallback callback);
+
+    /**
+     * Creates a {@code MedicalDataSource} in HealthConnect based on the {@code request} values.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param request Creation request.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void createMedicalDataSource(
+            in AttributionSource attributionSource,
+            in CreateMedicalDataSourceRequest request,
+            in IMedicalDataSourceResponseCallback callback);
+
+    /**
+     * Gets {@code MedicalDataSource}s in HealthConnect matching the given ids.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param ids the ids for which datasources to fetch.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void getMedicalDataSourcesByIds(
+            in AttributionSource attributionSource,
+            in List<String> ids,
+            in IMedicalDataSourcesResponseCallback callback);
+
+    /**
+     * Gets {@code MedicalDataSource}s in HealthConnect based on the {@code request} values.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param request specification for which datasources to fetch.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void getMedicalDataSourcesByRequest(
+            in AttributionSource attributionSource,
+            in GetMedicalDataSourcesRequest request,
+            in IMedicalDataSourcesResponseCallback callback);
+
+    /**
+     * Deletes a {@code MedicalDataSource} in HealthConnect including all the data contained in it.
+     *
+     * <p>If the datasource does not exist, the operation will fail.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param id the datasource to delete, returned earlier from {@code createMedicalDataSource}
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void deleteMedicalDataSourceWithData(
+            in AttributionSource attributionSource,
+            in String id,
+            in IEmptyResponseCallback callback);
+
+    /**
+     * Upserts {@link MedicalResource}s in HealthConnect based on a list of {@link
+     * UpsertMedicalResourceRequest}s.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param requests A list of upsert requests.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void upsertMedicalResources(
+        in AttributionSource attributionSource,
+        in List<UpsertMedicalResourceRequest> requests,
+        in IMedicalResourcesResponseCallback callback);
+
+    /**
+     * Reads from the HealthConnect database.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param medicalResourceIds represents the ids to be read.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void readMedicalResourcesByIds(
+        in AttributionSource attributionSource,
+        in List<MedicalResourceId> medicalResourceIds,
+        in IReadMedicalResourcesResponseCallback callback);
+
+    /**
+     * Reads from the HealthConnect database.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param request Read request.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void readMedicalResourcesByRequest(
+        in AttributionSource attributionSource,
+        in ReadMedicalResourcesRequest request,
+        in IReadMedicalResourcesResponseCallback callback);
+
+    /**
+     * Delete from the HealthConnect database.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param medicalResourceIds represents the ids to be deleted.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void deleteMedicalResourcesByIds(
+        in AttributionSource attributionSource,
+        in List<MedicalResourceId> medicalResourceIds,
+        in IEmptyResponseCallback callback);
+
+    /**
+     * Delete from the HealthConnect database.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param request represents a request specifying what to delete.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void deleteMedicalResourcesByRequest(
+        in AttributionSource attributionSource,
+        in DeleteMedicalResourcesRequest request,
+        in IEmptyResponseCallback callback);
+
+    /**
+     * Returns information for each MedicalResourceType like medical permission category and
+     * contributing data sources.
+     *
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void queryAllMedicalResourceTypesInfo(in IMedicalResourceTypesInfoResponseCallback callback);
 }

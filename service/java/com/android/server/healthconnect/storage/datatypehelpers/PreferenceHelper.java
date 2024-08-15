@@ -92,9 +92,8 @@ public class PreferenceHelper extends DatabaseHelper {
         getPreferences().putAll(keyValues);
     }
 
-    @Override
     @NonNull
-    public CreateTableRequest getCreateTableRequest() {
+    public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 

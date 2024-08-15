@@ -17,6 +17,7 @@
 package com.android.healthconnect.controller.recentaccess
 
 import com.android.healthconnect.controller.shared.app.AppMetadata
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import java.time.Instant
 
 /** Represents one app that recently accessed health data. */
@@ -26,5 +27,6 @@ data class RecentAccessEntry(
     var isToday: Boolean = false,
     var isInactive: Boolean = false,
     var dataTypesWritten: MutableSet<Int> = mutableSetOf(),
-    var dataTypesRead: MutableSet<Int> = mutableSetOf()
+    var dataTypesRead: MutableSet<Int> = mutableSetOf(),
+    var appPermissionsType: AppPermissionsType = AppPermissionsType.FITNESS_PERMISSIONS_ONLY
 )

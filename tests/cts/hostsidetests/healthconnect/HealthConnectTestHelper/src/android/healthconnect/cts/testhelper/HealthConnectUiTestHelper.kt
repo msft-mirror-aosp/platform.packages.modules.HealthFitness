@@ -21,7 +21,6 @@ import android.content.pm.PackageManager
 import android.health.connect.HealthConnectManager
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.UiTestUtils
-import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.uiautomator.By
 import com.android.compatibility.common.util.NonApiTest
@@ -94,6 +93,7 @@ class HealthConnectUiTestHelper {
         context.launchMainActivity {
             UiTestUtils.skipOnboardingIfAppears()
             UiTestUtils.waitDisplayed(By.text("Data and access"))
+            UiTestUtils.scrollDownTo(By.text("Manage data"))
             UiTestUtils.clickOnText("Data and access")
 
             UiTestUtils.waitDisplayed(By.text("Browse data"))

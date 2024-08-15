@@ -39,7 +39,7 @@ constructor(
     ) {
         val deleteRequest = DeleteUsingFiltersRequest.Builder()
 
-        deletePermissionTypes.healthPermissionTypes.map { permissionType ->
+        deletePermissionTypes.fitnessPermissionTypes.map { permissionType ->
             HealthPermissionToDatatypeMapper.getDataTypes(permissionType).map { recordType ->
                 deleteRequest.addRecordType(recordType)
             }

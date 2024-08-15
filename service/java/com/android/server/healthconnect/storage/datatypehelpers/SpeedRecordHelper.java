@@ -27,6 +27,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 
 import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
@@ -99,8 +100,8 @@ public class SpeedRecordHelper
         record.setSamples(speedRecordSampleSet);
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
+    @Nullable
     public AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         switch (aggregationType.getAggregationTypeIdentifier()) {

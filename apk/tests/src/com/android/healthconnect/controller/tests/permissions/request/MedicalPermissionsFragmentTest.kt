@@ -15,10 +15,10 @@
  */
 package com.android.healthconnect.controller.tests.permissions.request
 
-import android.health.connect.HealthPermissions.READ_MEDICAL_RESOURCES_IMMUNIZATION
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION
 import android.health.connect.HealthPermissions.READ_STEPS
 import android.health.connect.HealthPermissions.WRITE_DISTANCE
-import android.health.connect.HealthPermissions.WRITE_MEDICAL_RESOURCES
+import android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
@@ -115,8 +115,8 @@ class MedicalPermissionsFragmentTest {
         `when`(viewModel.healthPermissionsList).then {
             val permissions =
                 listOf(
-                    fromPermissionString(READ_MEDICAL_RESOURCES_IMMUNIZATION),
-                    fromPermissionString(WRITE_MEDICAL_RESOURCES),
+                    fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION),
+                    fromPermissionString(WRITE_MEDICAL_DATA),
                 )
             MutableLiveData(permissions)
         }
@@ -157,8 +157,8 @@ class MedicalPermissionsFragmentTest {
         `when`(viewModel.healthPermissionsList).then {
             val permissions =
                 listOf(
-                    fromPermissionString(READ_MEDICAL_RESOURCES_IMMUNIZATION),
-                    fromPermissionString(WRITE_MEDICAL_RESOURCES),
+                    fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION),
+                    fromPermissionString(WRITE_MEDICAL_DATA),
                 )
             MutableLiveData(permissions)
         }
@@ -182,8 +182,8 @@ class MedicalPermissionsFragmentTest {
         `when`(viewModel.healthPermissionsList).then {
             val permissions =
                 listOf(
-                    fromPermissionString(READ_MEDICAL_RESOURCES_IMMUNIZATION),
-                    fromPermissionString(WRITE_MEDICAL_RESOURCES),
+                    fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION),
+                    fromPermissionString(WRITE_MEDICAL_DATA),
                 )
             MutableLiveData(permissions)
         }
@@ -206,7 +206,7 @@ class MedicalPermissionsFragmentTest {
         `when`(viewModel.healthPermissionsList).then {
             val permissions =
                 listOf(
-                    fromPermissionString(READ_MEDICAL_RESOURCES_IMMUNIZATION),
+                    fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION),
                 )
             MutableLiveData(permissions)
         }
@@ -227,7 +227,7 @@ class MedicalPermissionsFragmentTest {
         `when`(viewModel.healthPermissionsList).then {
             val permissions =
                 listOf(
-                    fromPermissionString(WRITE_MEDICAL_RESOURCES),
+                    fromPermissionString(WRITE_MEDICAL_DATA),
                 )
             MutableLiveData(permissions)
         }
@@ -248,8 +248,8 @@ class MedicalPermissionsFragmentTest {
         `when`(viewModel.healthPermissionsList).then {
             val permissions =
                 listOf(
-                    fromPermissionString(READ_MEDICAL_RESOURCES_IMMUNIZATION),
-                    fromPermissionString(WRITE_MEDICAL_RESOURCES),
+                    fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION),
+                    fromPermissionString(WRITE_MEDICAL_DATA),
                 )
             MutableLiveData(permissions)
         }
@@ -272,8 +272,8 @@ class MedicalPermissionsFragmentTest {
             listOf(
                 FitnessPermission.fromPermissionString(READ_STEPS),
                 FitnessPermission.fromPermissionString(WRITE_DISTANCE),
-                fromPermissionString(READ_MEDICAL_RESOURCES_IMMUNIZATION),
-                fromPermissionString(WRITE_MEDICAL_RESOURCES),
+                fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION),
+                fromPermissionString(WRITE_MEDICAL_DATA),
             )
         `when`(viewModel.healthPermissionsList).then { MutableLiveData(permissions) }
 
@@ -303,8 +303,8 @@ class MedicalPermissionsFragmentTest {
     fun allowAllToggleOff_updatesAllPermissions() {
         val permissions =
             listOf(
-                fromPermissionString(READ_MEDICAL_RESOURCES_IMMUNIZATION),
-                fromPermissionString(WRITE_MEDICAL_RESOURCES),
+                fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION),
+                fromPermissionString(WRITE_MEDICAL_DATA),
             )
         `when`(viewModel.healthPermissionsList).then { MutableLiveData(permissions) }
         val activityScenario = launchFragment<MedicalPermissionsFragment>(bundleOf())
@@ -327,11 +327,11 @@ class MedicalPermissionsFragmentTest {
 
     @Test
     fun allowButton_noMedicalPermissionsSelected_isDisabled() {
-        val permissions = listOf(READ_MEDICAL_RESOURCES_IMMUNIZATION, WRITE_MEDICAL_RESOURCES)
+        val permissions = listOf(READ_MEDICAL_DATA_IMMUNIZATION, WRITE_MEDICAL_DATA)
         whenever(viewModel.healthPermissionsList).then { MutableLiveData(permissions) }
         whenever(viewModel.getPermissionGrants()).then {
             mapOf(
-                HealthPermission.fromPermissionString(READ_MEDICAL_RESOURCES_IMMUNIZATION) to
+                HealthPermission.fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION) to
                     PermissionState.GRANTED,
                 HealthPermission.fromPermissionString(WRITE_DISTANCE) to PermissionState.GRANTED)
         }
@@ -345,11 +345,11 @@ class MedicalPermissionsFragmentTest {
 
     @Test
     fun allowButton_medicalPermissionsSelected_isEnabled() {
-        val permissions = listOf(READ_MEDICAL_RESOURCES_IMMUNIZATION, WRITE_MEDICAL_RESOURCES)
+        val permissions = listOf(READ_MEDICAL_DATA_IMMUNIZATION, WRITE_MEDICAL_DATA)
         whenever(viewModel.healthPermissionsList).then { MutableLiveData(permissions) }
         whenever(viewModel.grantedMedicalPermissions).then {
             MutableLiveData(
-                setOf(HealthPermission.fromPermissionString(READ_MEDICAL_RESOURCES_IMMUNIZATION)))
+                setOf(HealthPermission.fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION)))
         }
 
         launchFragment<MedicalPermissionsFragment>(bundleOf())

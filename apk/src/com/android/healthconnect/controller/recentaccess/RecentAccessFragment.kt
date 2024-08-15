@@ -30,8 +30,10 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.data.access.AppAccessMetadata
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.RecentAccessState
 import com.android.healthconnect.controller.shared.Constants
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -93,8 +95,7 @@ class RecentAccessFragment : Hilt_RecentAccessFragment() {
         fab = contentParent.findViewById(R.id.extended_fab)
         fab.isVisible = true
 
-        recyclerView = rootView?.findViewById(
-            androidx.preference.R.id.recycler_view)
+        recyclerView = rootView?.findViewById(androidx.preference.R.id.recycler_view)
         val bottomPadding =
             resources.getDimensionPixelSize(R.dimen.recent_access_fab_bottom_padding)
         recyclerView?.setPadding(0, 0, 0, bottomPadding)
@@ -175,15 +176,7 @@ class RecentAccessFragment : Hilt_RecentAccessFragment() {
                             it.setOnPreferenceClickListener {
                                 if (findNavController().currentDestination?.id ==
                                     R.id.recentAccessFragment) {
-                                    findNavController()
-                                        .navigate(
-                                            R.id
-                                                .action_recentAccessFragment_to_connectedAppFragment,
-                                            bundleOf(
-                                                Intent.EXTRA_PACKAGE_NAME to
-                                                    recentApp.metadata.packageName,
-                                                Constants.EXTRA_APP_NAME to
-                                                    recentApp.metadata.appName))
+                                    navigateToAppInfoScreen(recentApp)
                                 }
                                 true
                             }
@@ -205,5 +198,21 @@ class RecentAccessFragment : Hilt_RecentAccessFragment() {
                 }
             }
         }
+    }
+
+    private fun navigateToAppInfoScreen(recentApp: RecentAccessEntry) {
+        val appPermissionsType = recentApp.appPermissionsType
+        val navigationId =
+            when (appPermissionsType) {
+                AppPermissionsType.FITNESS_PERMISSIONS_ONLY -> R.id.action_recentAccessFragment_to_fitnessAppFragment
+                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY -> R.id.action_recentAccessFragment_to_medicalAppFragment
+                AppPermissionsType.COMBINED_PERMISSIONS -> R.id.action_recentAccessFragment_to_combinedPermissionsFragment
+            }
+        findNavController()
+            .navigate(
+                navigationId,
+                bundleOf(
+                    Intent.EXTRA_PACKAGE_NAME to recentApp.metadata.packageName,
+                    Constants.EXTRA_APP_NAME to recentApp.metadata.appName))
     }
 }

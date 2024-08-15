@@ -22,15 +22,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.data.entries.api.ILoadDataAggregationsUseCase
 import com.android.healthconnect.controller.data.entries.api.ILoadDataEntriesUseCase
+import com.android.healthconnect.controller.data.entries.api.ILoadMedicalEntriesUseCase
 import com.android.healthconnect.controller.data.entries.api.ILoadMenstruationDataUseCase
 import com.android.healthconnect.controller.data.entries.api.LoadAggregationInput
 import com.android.healthconnect.controller.data.entries.api.LoadDataEntriesInput
+import com.android.healthconnect.controller.data.entries.api.LoadMedicalEntriesInput
 import com.android.healthconnect.controller.data.entries.api.LoadMenstruationDataInput
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.DISTANCE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.TOTAL_CALORIES_BURNED
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.DISTANCE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.STEPS
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.TOTAL_CALORIES_BURNED
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
@@ -47,7 +51,8 @@ constructor(
     private val appInfoReader: AppInfoReader,
     private val loadDataEntriesUseCase: ILoadDataEntriesUseCase,
     private val loadMenstruationDataUseCase: ILoadMenstruationDataUseCase,
-    private val loadDataAggregationsUseCase: ILoadDataAggregationsUseCase
+    private val loadDataAggregationsUseCase: ILoadDataAggregationsUseCase,
+    private val loadMedicalEntriesUseCase: ILoadMedicalEntriesUseCase,
 ) : ViewModel() {
 
     companion object {
@@ -71,7 +76,13 @@ constructor(
         selectedDate: Instant,
         period: DateNavigationPeriod
     ) {
-        loadData(permissionType, packageName = null, selectedDate, period, showDataOrigin = true)
+        when (permissionType) {
+            is FitnessPermissionType ->
+                loadData(
+                    permissionType, packageName = null, selectedDate, period, showDataOrigin = true)
+            is MedicalPermissionType ->
+                loadData(permissionType, packageName = null, showDataOrigin = true)
+        }
     }
 
     fun loadEntries(
@@ -80,11 +91,16 @@ constructor(
         selectedDate: Instant,
         period: DateNavigationPeriod
     ) {
-        loadData(permissionType, packageName, selectedDate, period, showDataOrigin = false)
+        when (permissionType) {
+            is FitnessPermissionType ->
+                loadData(permissionType, packageName, selectedDate, period, showDataOrigin = false)
+            is MedicalPermissionType ->
+                loadData(permissionType, packageName, showDataOrigin = false)
+        }
     }
 
     private fun loadData(
-        permissionType: HealthPermissionType,
+        permissionType: FitnessPermissionType,
         packageName: String?,
         selectedDate: Instant,
         period: DateNavigationPeriod,
@@ -99,7 +115,7 @@ constructor(
             val entriesResults =
                 when (permissionType) {
                     // Special-casing Menstruation as it spans multiple days
-                    HealthPermissionType.MENSTRUATION -> {
+                    FitnessPermissionType.MENSTRUATION -> {
                         loadMenstruation(packageName, selectedDate, period, showDataOrigin)
                     }
                     else -> {
@@ -126,8 +142,34 @@ constructor(
         }
     }
 
+    private fun loadData(
+        permissionType: MedicalPermissionType,
+        packageName: String?,
+        showDataOrigin: Boolean
+    ) {
+        _entries.postValue(EntriesFragmentState.Loading)
+
+        viewModelScope.launch {
+            val entriesResults = loadAppEntries(permissionType, packageName, showDataOrigin)
+            when (entriesResults) {
+                is UseCaseResults.Success -> {
+                    val list = entriesResults.data
+                    if (list.isEmpty()) {
+                        _entries.postValue(EntriesFragmentState.Empty)
+                    } else {
+                        _entries.postValue(EntriesFragmentState.With(list))
+                    }
+                }
+                is UseCaseResults.Failed -> {
+                    Log.e(TAG, "Loading error ", entriesResults.exception)
+                    _entries.postValue(EntriesFragmentState.LoadingFailed)
+                }
+            }
+        }
+    }
+
     private suspend fun loadAppEntries(
-        permissionType: HealthPermissionType,
+        permissionType: FitnessPermissionType,
         packageName: String?,
         selectedDate: Instant,
         period: DateNavigationPeriod,
@@ -136,6 +178,15 @@ constructor(
         val input =
             LoadDataEntriesInput(permissionType, packageName, selectedDate, period, showDataOrigin)
         return loadDataEntriesUseCase.invoke(input)
+    }
+
+    private suspend fun loadAppEntries(
+        permissionType: MedicalPermissionType,
+        packageName: String?,
+        showDataOrigin: Boolean
+    ): UseCaseResults<List<FormattedEntry>> {
+        val input = LoadMedicalEntriesInput(permissionType, packageName, showDataOrigin)
+        return loadMedicalEntriesUseCase.invoke(input)
     }
 
     private suspend fun loadMenstruation(
@@ -149,7 +200,7 @@ constructor(
     }
 
     private suspend fun loadAggregation(
-        permissionType: HealthPermissionType,
+        permissionType: FitnessPermissionType,
         packageName: String?,
         selectedDate: Instant,
         period: DateNavigationPeriod,
@@ -166,7 +217,7 @@ constructor(
     }
 
     private suspend fun addAggregation(
-        permissionType: HealthPermissionType,
+        permissionType: FitnessPermissionType,
         packageName: String?,
         selectedDate: Instant,
         period: DateNavigationPeriod,

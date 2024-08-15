@@ -34,8 +34,8 @@ import android.app.UiAutomation;
 import android.content.Context;
 import android.provider.DeviceConfig;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 
