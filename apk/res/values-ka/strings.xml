@@ -35,6 +35,8 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{წვდომა აქვს 1 აპს}other{წვდომა აქვს # აპს}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"არცერთი"</string>
     <string name="entry_details_title" msgid="590184849040247850">"შესვლის დეტალები"</string>
+    <string name="browse_data_title" msgid="5232691805953326097">"მონაცემთა დათვალიერება"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"იხილეთ მონაცემები და რომელ აპებს შეუძლიათ მათზე წვდომა"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"ავტომატური წაშლა, მონაცემთა წყარო, სარეზერვო ასლი და აღდგენა"</string>
     <string name="backup_title" msgid="211503191266235085">"სარეზერვო ასლის შექმნა"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"მონაცემთა წყაროები და პრიორიტეტები"</string>
@@ -77,8 +79,7 @@
     <string name="can_read" msgid="4568261079308309564">"შეუძლია, წაიკითხოს <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"შეუძლია, ჩაიწეროს <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"უმოქმედო აპები"</string>
-    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
-    <skip />
+    <string name="inactive_apps_message" msgid="8335803540719022910">"ამ აპებს აღარ შეუძლიათ <xliff:g id="DATA_TYPE">%s</xliff:g>-ის წაკითხვა ან ჩაწერა, მაგრამ მონაცემები მაინც ინახება Health Connect-ში"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"აპებს აღარ შეუძლიათ <xliff:g id="DATA_TYPE_0">%1$s</xliff:g>-ის წაკითხვა და დაწერა და არ არსებობს<xliff:g id="DATA_TYPE_2">%2$s</xliff:g> დამახსოვრებული მონაცემები ჯანმრთელობის დაკავშირებაში"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"ეს მონაცემები მოიცავს ინფორმაციას, როგორიცაა აქტიური დრო, ვარჯიშის ტიპი, წრეები, გამეორებები, სესიები ან საცურაო ხაზები."</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"ეს მონაცემები მოიცავს ინფორმაციას, როგორიცაა ძილის ეტაპები და ძილის სესიები"</string>
@@ -327,8 +328,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"დამატებითი წვდომა"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"წაიშალა დამატებითი ნებართვები ამ აპისთვის"</string>
     <string name="permissions_header" msgid="6519976063360071569">"ნებართვები"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"ფიტნესის ნებართვების მართვა"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"ჯანმრთელობის ჩანაწერების ნებართვების მართვა"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"ფიტნესი და კეთილდღეობა"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"ვარჯიში, ძილი, კვება და სხვა"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"ჯანმრთელობის ჩანაწერები"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"ჯანმრთელობის ჩანაწერები"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"ლაბორატორიული შედეგები, მედიკამენტები, იმუნიზაციები და სხვა"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"აპის ნებართვები ამოიშალა"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect-მა ამოშალა <xliff:g id="APP_DATA">%s</xliff:g> აპის ნებართვები"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect-მა ამოშალა <xliff:g id="APP_DATA_0">%1$s</xliff:g> და <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> აპების ნებართვები"</string>
@@ -342,6 +346,7 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"მონაცემების ექსპორტი ვერ მოხერხდა"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g>-ის ექსპორტთან დაკავშირებით წარმოიშვა პრობლემა. დააყენეთ ახალი დაგეგმილი ექსპორტი და ცადეთ ხელახლა."</string>
     <string name="next_export_time" msgid="3138247220014510213">"შემდეგი ექსპორტი: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"შემდეგი ექსპორტი მალე დაიწყება"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"სარეზერვო კოპირება და აღდგენა"</string>
     <string name="last_export_time" msgid="9205875050823594041">"ბოლო ექსპორტი: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
@@ -378,6 +383,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"იმპორტი"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"მიმდინარეობს Health Connect-ით აღდგენა"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect-ით აღდგენა დასრულდა"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"მიმდინარეობს აღდგენა"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"მონაცემების აღდგენა დასრულდა"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect-მა ვერ მოახერხა მონაცემების აღდგენა"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"საჭიროა დამატებითი სივრცე"</string>
@@ -636,6 +642,7 @@
     <string name="rest" msgid="5937058337671252210">"დასვენება"</string>
     <string name="pause" msgid="5161459047750335691">"პაუზა"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"ავსტრალიური ფეხბურთი"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"უცნობი ტიპი"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"ძილის <xliff:g id="DURATION"> %1$s</xliff:g>"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"სიფხიზლე"</string>
@@ -989,4 +996,14 @@
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>-ის მონაცემები წაიშალა"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> ერთეული წაიშალა"</string>
     <string name="select_all" msgid="837499881590001166">"ყველას არჩევა"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connect-ის გამოყენების დაწყება"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"მოახდინეთ თქვენი პირველი აპების სინქრონიზაცია, რათა გააზიაროთ ჯანმრთელობის და ფიტნესის მონაცემები მათ შორის"</string>
+    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"ახლა არა"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"დაყენება"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"მეტი აპის დაკავშირება"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"დაიწყეთ თქვენს ტელეფონში მონაცემების გაზიარება <xliff:g id="APP_NAME">%s</xliff:g>-სა და ჯანმრთელობის აპებს შორის"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"დაყენება"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"თავსებადი აპების ნახვა"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Health Connect-ის დახმარებით იპოვეთ მეტი აპი <xliff:g id="APP_NAME">%s</xliff:g>-თან სინქრონიზაციისთვის"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"აპების მაღაზიაში ნახვა"</string>
 </resources>

@@ -57,9 +57,9 @@ import static android.health.connect.HealthPermissionCategory.WEIGHT;
 import static android.health.connect.HealthPermissionCategory.WHEELCHAIR_PUSHES;
 import static android.health.connect.MedicalPermissionCategory.IMMUNIZATION;
 
+import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 import static com.android.healthfitness.flags.Flags.FLAG_MINDFULNESS;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
-import static com.android.healthfitness.flags.Flags.personalHealthRecord;
 
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
@@ -945,7 +945,7 @@ public final class HealthPermissions {
      * @hide
      */
     public static Set<String> getAllMedicalPermissions() {
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             throw new UnsupportedOperationException("getAllMedicalPermissions is not supported");
         }
 
@@ -1241,7 +1241,7 @@ public final class HealthPermissions {
     }
 
     private static synchronized void populateReadMedicalPermissionCategoryToMedicalPermissionMap() {
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             throw new UnsupportedOperationException(
                     "populateReadMedicalPermissionsToMedicalPermissionCategoryMap is not"
                             + " supported");

@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.storage.request;
 
-import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
@@ -46,9 +45,7 @@ public class UpsertMedicalResourceInternalRequestTest {
     public void testConvertFromUpsertRequest_flagOff() {
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
-                                DATA_SOURCE_ID,
-                                parseFhirVersion(FHIR_VERSION_R4),
-                                FHIR_DATA_IMMUNIZATION)
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
                         .build();
 
         assertThrows(
@@ -61,9 +58,7 @@ public class UpsertMedicalResourceInternalRequestTest {
     public void testConvertFromUpsertRequest_setValuesFromExtractor_success() throws JSONException {
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
-                                DATA_SOURCE_ID,
-                                parseFhirVersion(FHIR_VERSION_R4),
-                                FHIR_DATA_IMMUNIZATION)
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
                         .build();
         FhirJsonExtractor extractor = new FhirJsonExtractor(request.getData());
         UpsertMedicalResourceInternalRequest expected =
@@ -72,7 +67,7 @@ public class UpsertMedicalResourceInternalRequestTest {
                         .setMedicalResourceType(extractor.getMedicalResourceType())
                         .setFhirResourceType(extractor.getFhirResourceType())
                         .setFhirResourceId(extractor.getFhirResourceId())
-                        .setFhirVersion(parseFhirVersion(FHIR_VERSION_R4))
+                        .setFhirVersion(FHIR_VERSION_R4)
                         .setData(FHIR_DATA_IMMUNIZATION);
 
         UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest =
@@ -87,7 +82,7 @@ public class UpsertMedicalResourceInternalRequestTest {
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
                                 DATA_SOURCE_ID,
-                                parseFhirVersion(FHIR_VERSION_R4),
+                                FHIR_VERSION_R4,
                                 "{\"resourceType\" : \"Immunization}")
                         .build();
 

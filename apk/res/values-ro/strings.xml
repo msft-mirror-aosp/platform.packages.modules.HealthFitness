@@ -35,8 +35,9 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{O aplicație are acces}few{# aplicații au acces}other{# de aplicații au acces}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Niciuna"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Detalii despre intrare"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"Răsfoiește datele"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Vezi datele și ce aplicații le pot accesa"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"Ștergere automată, surse de date, backup și restabilire"</string>
     <string name="backup_title" msgid="211503191266235085">"Backup"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Surse de date și prioritate"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Setează unitățile"</string>
@@ -78,8 +79,7 @@
     <string name="can_read" msgid="4568261079308309564">"Poate să citească date despre <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"Poate să scrie date despre <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Aplicații inactive"</string>
-    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
-    <skip />
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Aceste aplicații nu mai pot scrie sau citi date despre <xliff:g id="DATA_TYPE">%s</xliff:g>, dar au încă date stocate în Health Connect"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Aplicațiile nu mai pot citi sau scrie datele despre <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> și nu există date despre <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> stocate în Health Connect"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Aceste date includ informații precum durata activităților, tipul de exerciții, ture, repetiții, sesiuni sau mișcări de înot"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Aceste date includ informații precum fazele somnului și sesiunile de somn"</string>
@@ -328,8 +328,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"Acces suplimentar"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"S-au eliminat permisiunile suplimentare pentru această aplicație"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Permisiuni"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"Gestionează permisiunile pentru fitness"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"Gestionează permisiunile pentru date medicale"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Fitness și wellness"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Exerciții fizice, somn, nutriție etc."</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"Date medicale"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"date medicale"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"Rezultate lab., medicamente, imunizare"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"S-au eliminat permisiunile pentru aplicație"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect a eliminat permisiunile pentru <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect a eliminat permisiunile pentru <xliff:g id="APP_DATA_0">%1$s</xliff:g> și <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -343,6 +346,7 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Datele nu au putut fi exportate"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"A apărut o problemă legată de exportul pentru <xliff:g id="DATE">%1$s</xliff:g>. Configurează un nou export programat și încearcă din nou."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Următorul export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"Următorul export începe în curând"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Backup și restabilire"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Ultimul export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
@@ -379,6 +383,8 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Importă"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Se restabilesc datele în Health Connect"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"S-a încheiat restabilirea datelor în Health Connect"</string>
+    <!-- no translation found for import_in_progress_toast_text (3363548588078895706) -->
+    <skip />
     <string name="import_complete_toast_text" msgid="7730872919621230959">"S-au restabilit datele"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect nu a putut restabili datele"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Este necesar mai mult spațiu"</string>
@@ -637,6 +643,7 @@
     <string name="rest" msgid="5937058337671252210">"Odihnă"</string>
     <string name="pause" msgid="5161459047750335691">"Întrerupe"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"Fotbal australian"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"Tip necunoscut"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> de somn"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> de <xliff:g id="NAME">%2$s</xliff:g>⁠"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"trezire"</string>
@@ -990,4 +997,14 @@
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"S-au șters datele despre <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> elemente șterse"</string>
     <string name="select_all" msgid="837499881590001166">"Selectează tot"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Începe să folosești Health Connect"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sincronizează primele aplicații pentru a trimite date despre sănătate și fitness între ele"</string>
+    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"Nu acum"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Configurează"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Conectează mai multe aplicații"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Începe să trimiți date între <xliff:g id="APP_NAME">%s</xliff:g> și aplicațiile de sănătate de pe telefon"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"Configurează"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Vezi aplicațiile compatibile"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Găsește mai multe aplicații de sincronizat cu <xliff:g id="APP_NAME">%s</xliff:g> prin Health Connect"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Vezi în magazinul de aplicații"</string>
 </resources>

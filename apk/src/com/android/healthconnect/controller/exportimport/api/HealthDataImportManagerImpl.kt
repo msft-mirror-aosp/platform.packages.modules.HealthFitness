@@ -35,7 +35,11 @@ class HealthDataImportManagerImpl @Inject constructor(private val manager: Healt
         return manager.getImportStatus(executor, outcomeReceiver)
     }
 
-    override fun runImport(uri: Uri) {
-        return manager.runImport(uri)
+    override fun runImport(
+        uri: Uri,
+        executor: Executor,
+        outcomeReceiver: OutcomeReceiver<Void, HealthConnectException>
+    ) {
+        return manager.runImport(uri, executor, outcomeReceiver)
     }
 }

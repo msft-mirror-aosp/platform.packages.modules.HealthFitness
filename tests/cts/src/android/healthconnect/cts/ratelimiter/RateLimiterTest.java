@@ -16,7 +16,6 @@
 
 package android.healthconnect.cts.ratelimiter;
 
-import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.healthconnect.cts.utils.DataFactory.buildDevice;
 import static android.healthconnect.cts.utils.DataFactory.getCompleteStepsRecord;
@@ -235,9 +234,7 @@ public class RateLimiterTest {
         int nCopies = 1000 / mLimitsAdjustmentForTesting;
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
-                                DATA_SOURCE_ID,
-                                parseFhirVersion(FHIR_VERSION_R4),
-                                "UpsertMedicalResourceRequest")
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, "UpsertMedicalResourceRequest")
                         .build();
         List<UpsertMedicalResourceRequest> requests = Collections.nCopies(nCopies, request);
 
@@ -256,7 +253,7 @@ public class RateLimiterTest {
         List<Character> data = Collections.nCopies(nCharacters, '0');
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
-                                DATA_SOURCE_ID, parseFhirVersion(FHIR_VERSION_R4), data.toString())
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, data.toString())
                         .build();
 
         manager.upsertMedicalResources(

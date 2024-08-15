@@ -35,6 +35,8 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 programa, kuriai suteikta prieiga}one{# programa, kuriai suteikta prieiga}few{# programos, kurioms suteikta prieiga}many{# programos, kurioms suteikta prieiga}other{# programų, kurioms suteikta prieiga}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Nėra"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Išsami įvedimo informacija"</string>
+    <string name="browse_data_title" msgid="5232691805953326097">"Naršyti duomenis"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Žr. duomenis ir kurios programos gali juos pasiekti"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"Automatinis ištrynimas, duomenų šaltiniai, atsarginė kopija ir atkūrimas"</string>
     <string name="backup_title" msgid="211503191266235085">"Atsarginė kopija"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Duomenų šaltiniai ir prioritetas"</string>
@@ -77,8 +79,7 @@
     <string name="can_read" msgid="4568261079308309564">"Gali skaityti šiuos duomenis: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"Gali rašyti šiuos duomenis: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Neaktyvios programos"</string>
-    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
-    <skip />
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Šios programos nebegali skaityti ar rašyti „<xliff:g id="DATA_TYPE">%s</xliff:g>“ duomenų, bet vis dar saugo duomenis sistemoje „Health Connect“"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Programos nebegali skaityti ar rašyti šio tipo duomenų: <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> ir sistemoje „Health Connect“ nėra saugomų šio tipo duomenų: <xliff:g id="DATA_TYPE_2">%2$s</xliff:g>"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Į šiuos duomenis įtraukiama informacija, pvz., aktyvumo laikas, pratimo tipas, ratai, pakartojimai, seansai ar plaukimo mostai"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Į šiuos duomenis įtraukiama informacija, pvz., miego fazės ir miego seansai"</string>
@@ -327,8 +328,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"Papildoma prieiga"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Pašalinti papildomi šios programos leidimai"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Leidimai"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"Tvarkyti kūno rengybos duomenų leidimus"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"Tvarkyti sveikatos įrašų leidimus"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Kūno rengyba ir sveikata"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Mankšta, miegas, mityba ir kt."</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"Sveikatos įrašai"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"sveikatos įrašai"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"Laboratorijų rezultatai, vaistai, imunizacija"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Pašalinti programų leidimai"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"„Health Connect“ pašalino „<xliff:g id="APP_DATA">%s</xliff:g>“ leidimus"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"„Health Connect“ pašalino „<xliff:g id="APP_DATA_0">%1$s</xliff:g>“ ir „<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>“ leidimus"</string>
@@ -342,6 +346,7 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Nepavyko eksportuoti duomenų"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Kilo su eksportavimu (<xliff:g id="DATE">%1$s</xliff:g>) susijusi problema. Nustatykite naują suplanuotą eksportavimą ir bandykite dar kartą."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Kitas eksportavimas: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"Netrukus bus pradėtas kitas eksportavimas"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Atsarginė kopija ir atkūrimas"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Paskutinis eksportavimas: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
@@ -378,6 +383,8 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Importuoti"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Vyksta „Health Connect“ atkūrimas"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"„Health Connect“ atkūrimas baigtas"</string>
+    <!-- no translation found for import_in_progress_toast_text (3363548588078895706) -->
+    <skip />
     <string name="import_complete_toast_text" msgid="7730872919621230959">"Duomenų atkūrimas baigtas"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"„Health Connect“ nepavyko atkurti duomenų"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Reikia daugiau vietos"</string>
@@ -636,6 +643,7 @@
     <string name="rest" msgid="5937058337671252210">"Poilsis"</string>
     <string name="pause" msgid="5161459047750335691">"Pristabdyti"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"Australiškasis futbolas"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"Nežinomas tipas"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> miegojimas"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>⁠"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"nemiegojimas"</string>
@@ -989,4 +997,14 @@
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Ištrinti duomenys: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Ištrinta elementų: <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>."</string>
     <string name="select_all" msgid="837499881590001166">"Pasirinkti viską"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"„Health Connect“ naudojimo pradžia"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sinchronizuokite pirmąsias programas, kad galėtumėte bendrinti sveikatos ir kūno rengybos duomenis su jomis"</string>
+    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"Ne dabar"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Nustatyti"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Daugiau programų susiejimas"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Pradėkite bendrinti duomenis su „<xliff:g id="APP_NAME">%s</xliff:g>“ ir sveikatos programomis telefone"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"Nustatyti"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Suderinamų programų peržiūra"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Raskite daugiau programų, kurias galėtumėte sinchronizuoti su „<xliff:g id="APP_NAME">%s</xliff:g>“ naudodami „Health Connect“"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Žr. programų parduotuvėje"</string>
 </resources>

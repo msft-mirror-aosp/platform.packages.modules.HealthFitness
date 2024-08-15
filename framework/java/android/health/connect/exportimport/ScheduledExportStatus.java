@@ -16,9 +16,7 @@
 
 package android.health.connect.exportimport;
 
-import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
 
-import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
@@ -35,7 +33,6 @@ import java.time.Instant;
  *
  * @hide
  */
-@FlaggedApi(FLAG_EXPORT_IMPORT)
 public final class ScheduledExportStatus implements Parcelable {
     @NonNull
     public static final Creator<ScheduledExportStatus> CREATOR =
@@ -72,7 +69,15 @@ public final class ScheduledExportStatus implements Parcelable {
      */
     public static final int DATA_EXPORT_LOST_FILE_ACCESS = 2;
 
+    /**
+     * Indicates that an export was started and is ongoing.
+     *
+     * @hide
+     */
+    public static final int DATA_EXPORT_STARTED = 3;
+
     /** @hide */
+    // TODO(b/356393172) rename to Status & include DATA_EXPORT_STARTED during Statuses cleanup.
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({DATA_EXPORT_ERROR_UNKNOWN, DATA_EXPORT_ERROR_NONE, DATA_EXPORT_LOST_FILE_ACCESS})
     public @interface DataExportError {}

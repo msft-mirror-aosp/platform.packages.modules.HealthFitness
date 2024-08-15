@@ -35,8 +35,9 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 aplicació té accés}other{# aplicacions tenen accés}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Cap"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Detalls de l\'entrada"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"Navega per les dades"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Consulta les dades i quines aplicacions hi poden accedir"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"Supressió automàtica, font de dades, còpia de seguretat i restaurar"</string>
     <string name="backup_title" msgid="211503191266235085">"Còpia de seguretat"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Fonts de dades i prioritat"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Defineix les unitats"</string>
@@ -78,8 +79,7 @@
     <string name="can_read" msgid="4568261079308309564">"Pot llegir <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"Pot escriure <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Aplicacions inactives"</string>
-    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
-    <skip />
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Aquestes aplicacions ja no poden llegir ni escriure <xliff:g id="DATA_TYPE">%s</xliff:g>, però encara tenen dades emmagatzemades a Salut connectada"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Les aplicacions ja no poden llegir o escriure <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> i no hi ha cap dada de <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> emmagatzemada a Salut connectada"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Aquestes dades inclouen informació com ara el temps d\'activitat, el tipus d\'exercici, les voltes, les repeticions, les sessions o les braçades"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Aquestes dades inclouen informació com ara les fases del son i les sessions de son"</string>
@@ -328,8 +328,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"Accés addicional"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"S\'han suprimit els permisos addicionals per a aquesta aplicació"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Permisos"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"Gestiona els permisos de fitnes"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"Gestiona els permisos de registre de salut"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Fitnes i benestar"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Exercici, son, nutrició i altres"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"Registres de salut"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"registres de salut"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"Analítiques, medicaments, vacunes i altres"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Aplicacions amb permisos suprimits"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Salut connectada ha suprimit els permisos de <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Salut connectada ha suprimit els permisos de <xliff:g id="APP_DATA_0">%1$s</xliff:g> i <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -343,6 +346,7 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"No s\'han pogut exportar les dades"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Hi ha hagut un problema amb l\'exportació del dia <xliff:g id="DATE">%1$s</xliff:g>. Configura una exportació programada nova i torna-ho a provar."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Pròxima exportació: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"La pròxima exportació començarà aviat"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Còpia de seguretat i restauració"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Darrera exportació: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
@@ -379,6 +383,8 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Importa"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Restauració de Salut connectada en curs"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Restauració de Salut connectada completa"</string>
+    <!-- no translation found for import_in_progress_toast_text (3363548588078895706) -->
+    <skip />
     <string name="import_complete_toast_text" msgid="7730872919621230959">"La restauració de dades ha finalitzat"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Salut connectada no ha pogut restaurar les dades"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Es necessita més espai"</string>
@@ -637,6 +643,7 @@
     <string name="rest" msgid="5937058337671252210">"Repòs"</string>
     <string name="pause" msgid="5161459047750335691">"Posa en pausa"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"Futbol australià"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"Tipus desconegut"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> dormint"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"despert"</string>
@@ -990,4 +997,14 @@
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"S\'han suprimit les dades de <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"S\'han suprimit <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> elements"</string>
     <string name="select_all" msgid="837499881590001166">"Selecciona-ho tot"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Començar a utilitzar Salut connectada"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sincronitza les teves primeres aplicacions perquè comparteixin dades de salut i fitnes entre elles"</string>
+    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"Ara no"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Configura"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Connecta més aplicacions"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Comença a compartir dades entre <xliff:g id="APP_NAME">%s</xliff:g> i les aplicacions de salut del teu telèfon"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"Configura"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Mostra les aplicacions compatibles"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Cerca més aplicacions per sincronitzar amb <xliff:g id="APP_NAME">%s</xliff:g> a través de Salut connectada"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Mostra a la botiga d\'aplicacions"</string>
 </resources>

@@ -19,9 +19,13 @@ package com.android.healthconnect.controller.exportimport.api
 import android.health.connect.HealthConnectException
 import android.net.Uri
 import android.util.Log
+import androidx.core.os.asOutcomeReceiver
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
 @Singleton
@@ -29,20 +33,24 @@ class TriggerImportUseCase
 @Inject
 constructor(
     private val healthDataImportManager: HealthDataImportManager,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ITriggerImportUseCase {
     companion object {
         private const val TAG = "TriggerImportUseCase"
     }
 
+    suspend fun execute(fileToImportUri: Uri) {
+        suspendCancellableCoroutine { continuation: CancellableContinuation<Void> ->
+            healthDataImportManager.runImport(
+                fileToImportUri, Runnable::run, continuation.asOutcomeReceiver())
+        }
+    }
+
     /** Triggers the process to import and restore the user-selected backup file. */
-    override suspend operator fun invoke(
-        fileToImportUri: Uri
-    ): ExportImportUseCaseResult<ImportUiState> =
-        withContext(Dispatchers.IO) {
+    override suspend operator fun invoke(fileToImportUri: Uri): ExportImportUseCaseResult<Unit> =
+        withContext(dispatcher) {
             try {
-                healthDataImportManager.runImport(fileToImportUri)
-                ExportImportUseCaseResult.Success(
-                    ImportUiState(ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE, false))
+                ExportImportUseCaseResult.Success(execute(fileToImportUri))
             } catch (ex: HealthConnectException) {
                 Log.e(TAG, "Load export settings error: ", ex)
                 ExportImportUseCaseResult.Failed(ex)
@@ -52,5 +60,5 @@ constructor(
 
 interface ITriggerImportUseCase {
     /** Triggers the process to import and restore the user-selected backup file. */
-    suspend fun invoke(fileToImportUri: Uri): ExportImportUseCaseResult<ImportUiState>
+    suspend fun invoke(fileToImportUri: Uri): ExportImportUseCaseResult<Unit>
 }
