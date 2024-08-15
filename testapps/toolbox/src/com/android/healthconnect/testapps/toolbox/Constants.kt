@@ -158,7 +158,15 @@ object Constants {
 
     val ADDITIONAL_PERMISSIONS = arrayOf(READ_HEALTH_DATA_IN_BACKGROUND, READ_HEALTH_DATA_HISTORY)
 
-    val HEALTH_PERMISSIONS = DATA_TYPE_PERMISSIONS + ADDITIONAL_PERMISSIONS
+    const val READ_IMMUNIZATION = "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION"
+    const val WRITE_ALL_MEDICAL_DATA = "android.permission.health.WRITE_MEDICAL_DATA"
+    val MEDICAL_PERMISSIONS =
+        arrayOf(
+            WRITE_ALL_MEDICAL_DATA,
+            READ_IMMUNIZATION,
+        )
+
+    val HEALTH_PERMISSIONS = DATA_TYPE_PERMISSIONS + ADDITIONAL_PERMISSIONS + MEDICAL_PERMISSIONS
 
     /** Represents Category group for HealthConnect data. */
     enum class HealthDataCategory(

@@ -13,12 +13,12 @@ class FakeFeatureUtils : FeatureUtils {
     private var isSessionTypesEnabled = true
     private var isExerciseRoutesReadAllEnabled = true
     private var isEntryPointsEnabled = true
-    private var isNewAppPriorityEnabled = false
     private var isNewInformationArchitectureEnabled = false
     private var isBackgroundReadEnabled = false
     private var isHistoryReadEnabled = false
     private var isSkinTemperatureEnabled = false
     private var isPlannedExerciseEnabled = false
+    private var isPersonalHealthRecordEnabled = false
 
     fun setIsSessionTypesEnabled(boolean: Boolean) {
         isSessionTypesEnabled = boolean
@@ -30,10 +30,6 @@ class FakeFeatureUtils : FeatureUtils {
 
     fun setIsEntryPointsEnabled(boolean: Boolean) {
         isEntryPointsEnabled = boolean
-    }
-
-    fun setIsNewAppPriorityEnabled(boolean: Boolean) {
-        isNewAppPriorityEnabled = boolean
     }
 
     fun setIsNewInformationArchitectureEnabled(boolean: Boolean) {
@@ -56,8 +52,8 @@ class FakeFeatureUtils : FeatureUtils {
         this.isPlannedExerciseEnabled = isPlannedExerciseEnabled
     }
 
-    override fun isNewAppPriorityEnabled(): Boolean {
-        return isNewAppPriorityEnabled
+    fun setIsPersonalHealthRecordEnabled(isPersonalHealthRecordEnabled: Boolean) {
+        this.isPersonalHealthRecordEnabled = isPersonalHealthRecordEnabled
     }
 
     override fun isNewInformationArchitectureEnabled(): Boolean {
@@ -90,6 +86,10 @@ class FakeFeatureUtils : FeatureUtils {
 
     override fun isSkinTemperatureEnabled(): Boolean {
         return isSkinTemperatureEnabled
+    }
+
+    override fun isPersonalHealthRecordEnabled(): Boolean {
+        return isPersonalHealthRecordEnabled
     }
 }
 

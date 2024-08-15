@@ -24,6 +24,7 @@ import android.content.pm.PackageManager.ResolveInfoFlags
 import android.health.connect.HealthConnectManager
 import android.health.connect.HealthPermissions
 import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.google.common.annotations.VisibleForTesting
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -68,8 +69,8 @@ constructor(
 
         private val medicalPermissions =
             setOf(
-                HealthPermissions.WRITE_MEDICAL_RESOURCES,
-                HealthPermissions.READ_MEDICAL_RESOURCES_IMMUNIZATION)
+                HealthPermissions.WRITE_MEDICAL_DATA,
+                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION)
     }
 
     /**
@@ -78,36 +79,42 @@ constructor(
      */
     fun getAppsWithHealthPermissions(): List<String> {
         return try {
-            val appsWithDeclaredIntent =
-                context.packageManager
-                    .queryIntentActivities(
-                        getRationaleIntent(), ResolveInfoFlags.of(RESOLVE_INFO_FLAG))
-                    .map { it.activityInfo.packageName }
-                    .distinct()
-
-            appsWithDeclaredIntent.filter { getValidHealthPermissions(it).isNotEmpty() }
+            appsWithDeclaredIntent().filter { getValidHealthPermissions(it).isNotEmpty() }
         } catch (e: Exception) {
             emptyList()
         }
     }
 
-    fun getAppsWithDataTypePermissions(): List<String> {
+    fun getAppsWithFitnessPermissions(): List<String> {
         return try {
-            val appsWithDeclaredIntent =
-                context.packageManager
-                    .queryIntentActivities(
-                        getRationaleIntent(), ResolveInfoFlags.of(RESOLVE_INFO_FLAG))
-                    .map { it.activityInfo.packageName }
-                    .distinct()
-
-            appsWithDeclaredIntent.filter {
+            appsWithDeclaredIntent().filter {
                 getValidHealthPermissions(it)
-                    .filterIsInstance<HealthPermission.DataTypePermission>()
+                    .filterIsInstance<HealthPermission.FitnessPermission>()
                     .isNotEmpty()
             }
         } catch (e: Exception) {
             emptyList()
         }
+    }
+
+    fun getAppsWithMedicalPermissions(): List<String> {
+        return try {
+            appsWithDeclaredIntent().filter {
+                getValidHealthPermissions(it)
+                        .filterIsInstance<HealthPermission.MedicalPermission>()
+                        .isNotEmpty()
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    private fun appsWithDeclaredIntent(): List<String> {
+        return context.packageManager
+                        .queryIntentActivities(
+                                getRationaleIntent(), ResolveInfoFlags.of(RESOLVE_INFO_FLAG))
+                        .map { it.activityInfo.packageName }
+                        .distinct()
     }
 
     /**
@@ -154,6 +161,23 @@ constructor(
             appInfo.requestedPermissions?.filter { it in healthPermissions }.orEmpty()
         } catch (e: NameNotFoundException) {
             emptyList()
+        }
+    }
+
+    fun getAppPermissionsType(packageName: String) : AppPermissionsType {
+        val permissions = getValidHealthPermissions(packageName)
+        val hasAtLeastOneFitnessPermission = permissions.firstOrNull { it is HealthPermission.FitnessPermission} != null
+        val hasAtLeastOneMedicalPermission = permissions.firstOrNull { it is HealthPermission.MedicalPermission} != null
+
+        return if (hasAtLeastOneFitnessPermission && hasAtLeastOneMedicalPermission) {
+            AppPermissionsType.COMBINED_PERMISSIONS
+        } else if (hasAtLeastOneFitnessPermission) {
+            AppPermissionsType.FITNESS_PERMISSIONS_ONLY
+        } else if (hasAtLeastOneMedicalPermission) {
+            AppPermissionsType.MEDICAL_PERMISSIONS_ONLY
+        } else {
+            // All Fitness, Medical and Combined screens handle the empty state so any of those can be returned here.
+            AppPermissionsType.FITNESS_PERMISSIONS_ONLY
         }
     }
 
@@ -206,12 +230,18 @@ constructor(
         return medicalPermissions.contains(permission)
     }
 
+    fun isFitnessPermission(permission: String): Boolean {
+        return !isAdditionalPermission(permission) && !isMedicalPermission(permission)
+    }
+
     fun shouldHidePermission(permission: String): Boolean {
         return shouldHideSessionTypes(permission) ||
             shouldHideBackgroundReadPermission(permission) ||
             shouldHideSkinTemperaturePermissions(permission) ||
             shouldHidePlannedExercisePermissions(permission) ||
-            shouldHideHistoryReadPermission(permission)
+            shouldHideMindfulnessSessionPermissions(permission) ||
+            shouldHideHistoryReadPermission(permission) ||
+            shouldHideMedicalPermission(permission)
     }
 
     private fun shouldHideSkinTemperaturePermissions(permission: String): Boolean {
@@ -226,6 +256,11 @@ constructor(
             !featureUtils.isPlannedExerciseEnabled()
     }
 
+    private fun shouldHideMindfulnessSessionPermissions(permission: String): Boolean {
+        return permission == HealthPermissions.READ_MINDFULNESS ||
+            permission == HealthPermissions.WRITE_MINDFULNESS
+    }
+
     private fun shouldHideSessionTypes(permission: String): Boolean {
         return permission in sessionTypePermissions && !featureUtils.isSessionTypesEnabled()
     }
@@ -236,6 +271,10 @@ constructor(
 
     private fun shouldHideHistoryReadPermission(permission: String): Boolean {
         return permission in historyReadPermission && !featureUtils.isHistoryReadEnabled()
+    }
+
+    private fun shouldHideMedicalPermission(permission: String): Boolean {
+        return permission in medicalPermissions && !featureUtils.isPersonalHealthRecordEnabled()
     }
 
     private fun getRationaleIntent(packageName: String? = null): Intent {

@@ -37,26 +37,46 @@ constructor(
         private const val TAG = "LoadScheduledExportStatusUseCase"
     }
 
-    suspend fun execute(): ScheduledExportStatus {
+    suspend fun execute(): ScheduledExportUiState {
         val scheduledExportStatus: ScheduledExportStatus =
             suspendCancellableCoroutine { continuation ->
                 healthDataExportManager.getScheduledExportStatus(
                     Runnable::run, continuation.asOutcomeReceiver())
             }
-        return scheduledExportStatus
+        val dataExportError: ScheduledExportUiState.DataExportError =
+            when (scheduledExportStatus.dataExportError) {
+                ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN ->
+                    ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_UNKNOWN
+                ScheduledExportStatus.DATA_EXPORT_ERROR_NONE ->
+                    ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE
+                ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS ->
+                    ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS
+                else -> {
+                    ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_UNKNOWN
+                }
+            }
+        return ScheduledExportUiState(
+            scheduledExportStatus.lastSuccessfulExportTime,
+            dataExportError,
+            scheduledExportStatus.periodInDays,
+            scheduledExportStatus.lastExportFileName,
+            scheduledExportStatus.lastExportAppName,
+            scheduledExportStatus.nextExportFileName,
+            scheduledExportStatus.nextExportAppName,
+            scheduledExportStatus.lastFailedExportTime)
     }
 
-    override suspend operator fun invoke(): ExportUseCaseResult<ScheduledExportStatus> =
+    override suspend operator fun invoke(): ExportImportUseCaseResult<ScheduledExportUiState> =
         withContext(dispatcher) {
             try {
-                ExportUseCaseResult.Success(execute())
+                ExportImportUseCaseResult.Success(execute())
             } catch (exception: Exception) {
-                ExportUseCaseResult.Failed(exception)
+                ExportImportUseCaseResult.Failed(exception)
             }
         }
 }
 
 interface ILoadScheduledExportStatusUseCase {
     /** Returns the stored scheduled export status. */
-    suspend fun invoke(): ExportUseCaseResult<ScheduledExportStatus>
+    suspend fun invoke(): ExportImportUseCaseResult<ScheduledExportUiState>
 }

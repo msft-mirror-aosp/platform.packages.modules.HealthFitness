@@ -16,8 +16,7 @@
 
 package com.android.server.healthconnect.storage;
 
-import static com.android.server.healthconnect.storage.DatabaseUpgradeHelper.DATABASE_VERSION;
-import static com.android.server.healthconnect.storage.DatabaseUpgradeHelper.DB_VERSION_UUID_BLOB;
+import static com.android.healthfitness.flags.DatabaseVersions.MIN_SUPPORTED_DB_VERSION;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -26,6 +25,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import androidx.test.platform.app.InstrumentationRegistry;
+
+import com.android.healthfitness.flags.AconfigFlagHelper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,9 +56,9 @@ public class DatabaseUpgradeHelperTest {
     // TODO(b/338031465): Improve testing, check that schema indeed match.
     @Test
     public void onUpgradeCalledMultipleTimes_eachOneIsIdempotent() {
-        // The DB_VERSION_UUID_BLOB upgrade is a special case, and is not idempotent.
-        // We are testing from the version above that.
-        DatabaseUpgradeHelper.onUpgrade(mSQLiteDatabase, DB_VERSION_UUID_BLOB, DATABASE_VERSION);
-        DatabaseUpgradeHelper.onUpgrade(mSQLiteDatabase, DB_VERSION_UUID_BLOB, DATABASE_VERSION);
+        DatabaseUpgradeHelper.onUpgrade(
+                mSQLiteDatabase, MIN_SUPPORTED_DB_VERSION, AconfigFlagHelper.getDbVersion());
+        DatabaseUpgradeHelper.onUpgrade(
+                mSQLiteDatabase, MIN_SUPPORTED_DB_VERSION, AconfigFlagHelper.getDbVersion());
     }
 }

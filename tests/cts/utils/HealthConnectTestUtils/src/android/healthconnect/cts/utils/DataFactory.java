@@ -68,6 +68,10 @@ public final class DataFactory {
     public static final Instant NOW = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     public static final Instant SESSION_START_TIME = NOW.minus(10, ChronoUnit.DAYS);
     public static final Instant SESSION_END_TIME = SESSION_START_TIME.plus(1, ChronoUnit.HOURS);
+    public static final long DEFAULT_LONG = -1;
+    public static final int DEFAULT_PAGE_SIZE = 1000;
+    public static final int MINIMUM_PAGE_SIZE = 1;
+    public static final int MAXIMUM_PAGE_SIZE = 5000;
 
     public static Device buildDevice() {
         return new Device.Builder()

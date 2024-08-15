@@ -15,10 +15,7 @@
  */
 package android.health.connect.exportimport;
 
-import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
-
 import android.annotation.DrawableRes;
-import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
 import android.net.Uri;
 import android.os.Parcel;
@@ -31,7 +28,6 @@ import java.util.Objects;
  *
  * @hide
  */
-@FlaggedApi(FLAG_EXPORT_IMPORT)
 public final class ExportImportDocumentProvider implements Parcelable {
     @NonNull
     public static final Creator<ExportImportDocumentProvider> CREATOR =
@@ -67,11 +63,11 @@ public final class ExportImportDocumentProvider implements Parcelable {
             @DrawableRes int iconResource,
             @NonNull Uri rootUri,
             @NonNull String authority) {
-        mTitle = title;
-        mSummary = summary;
+        mTitle = Objects.requireNonNull(title);
+        mSummary = Objects.requireNonNull(summary);
         mIconResource = iconResource;
-        mRootUri = rootUri;
-        mAuthority = authority;
+        mRootUri = Objects.requireNonNull(rootUri);
+        mAuthority = Objects.requireNonNull(authority);
     }
 
     /** Returns the title for the document provider (usually corresponds to the app name). */

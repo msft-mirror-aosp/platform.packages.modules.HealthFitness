@@ -90,7 +90,6 @@
     <attr name="importDataIcon" format="reference" />
 
     <attr name="warningIcon" format="reference"/>
-    <attr name="passwordIcon" format="reference"/>
     <attr name="infoIcon" format="reference"/>
 
     <!-- END REGION -->
@@ -131,9 +130,6 @@
     <attr name="permissionGrantButtonList" format="reference"/>
     <attr name="permissionGrantButtonTop" format="reference"/>
     <attr name="permissionGrantButtonBottom" format="reference"/>
-
-    <!-- EditText -->
-    <attr name="editTextPasswordTheme" format="reference"/>
 
     <!-- Dialogs -->
     <attr name="alertDialogTheme" format="reference"/>

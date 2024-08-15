@@ -20,8 +20,9 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Quản lý quyền truy cập của ứng dụng vào dữ liệu sức khoẻ"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Quyền truy cập và dữ liệu"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Quản lý dữ liệu sức khoẻ và hoạt động thể dục trên điện thoại, đồng thời kiểm soát những ứng dụng nào có thể truy cập vào dữ liệu đó"</string>
+    <string name="home_subtitle" msgid="2154213430054477787">"Quản lý dữ liệu về sức khoẻ và hoạt động thể dục trên thiết bị của bạn, đồng thời kiểm soát ứng dụng nào có thể truy cập vào dữ liệu đó"</string>
     <string name="data_title" msgid="4456619761533380816">"Dữ liệu và quyền truy cập"</string>
+    <string name="browse_medical_data" msgid="6963802956096683273">"Duyệt xem hồ sơ sức khoẻ"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Tất cả các danh mục"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Xem tất cả các danh mục"</string>
     <string name="no_data" msgid="1906986019249068659">"Không có dữ liệu"</string>
@@ -34,9 +35,15 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 ứng dụng có quyền truy cập}other{# ứng dụng có quyền truy cập}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Không có"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Thông tin nhập"</string>
+    <string name="browse_data_title" msgid="5232691805953326097">"Duyệt xem dữ liệu"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Xem dữ liệu và những ứng dụng có thể truy cập vào dữ liệu đó"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"Xoá tự động, nguồn dữ liệu, sao lưu và khôi phục"</string>
     <string name="backup_title" msgid="211503191266235085">"Sao lưu"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Nguồn dữ liệu và mức độ ưu tiên"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Đặt đơn vị"</string>
+    <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Lựa chọn ưu tiên"</string>
+    <string name="manage_data_category_title" msgid="6328886061582616519">"Quản lý dữ liệu"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Xuất và nhập dữ liệu"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Lần truy cập gần đây"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Không có ứng dụng nào truy cập vào Health Connect gần đây"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Xem mọi lần truy cập gần đây"</string>
@@ -72,7 +79,7 @@
     <string name="can_read" msgid="4568261079308309564">"Có thể đọc <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"Có thể ghi <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Ứng dụng không hoạt động"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"Những ứng dụng này không thể ghi dữ liệu về <xliff:g id="DATA_TYPE">%s</xliff:g> nữa nhưng vẫn có dữ liệu được lưu trữ trong Health Connect"</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Những ứng dụng này không thể đọc hoặc ghi dữ liệu về <xliff:g id="DATA_TYPE">%s</xliff:g> nữa nhưng vẫn có dữ liệu được lưu trữ trong Health Connect"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Các ứng dụng không thể đọc hoặc ghi dữ liệu về <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> nữa và không có dữ liệu về <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> được lưu trữ trong Health Connect"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Dữ liệu này bao gồm thông tin như thời gian hoạt động, loại bài tập, số vòng, số lần lặp lại, số phiên hoặc kiểu bơi"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Dữ liệu này bao gồm thông tin như các giai đoạn ngủ và giấc ngủ"</string>
@@ -93,8 +100,8 @@
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Cho phép ứng dụng này truy cập vào tất cả dữ liệu trước đây của Health Connect"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Nếu bạn cho phép, ứng dụng này có thể truy cập vào dữ liệu trên Health Connect được thêm vào trước ngày <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Nếu bạn cho phép, ứng dụng này có thể truy cập vào tất cả dữ liệu trước đây của Health Connect."</string>
-    <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Lượng calo hoạt động đã đốt cháy"</string>
-    <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"lượng calo hoạt động đã đốt cháy"</string>
+    <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Lượng calo đã đốt cháy khi vận động"</string>
+    <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"lượng calo đã đốt cháy khi vận động"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Đọc dữ liệu về lượng calo hoạt động đã đốt cháy"</string>
     <string name="active_calories_burned_write_content_description" msgid="8794383690157452892">"Ghi dữ liệu về lượng calo hoạt động đã đốt cháy"</string>
     <string name="exercise_uppercase_label" msgid="9174662895529523172">"Hoạt động thể dục"</string>
@@ -186,16 +193,16 @@
     <string name="cervical_mucus_lowercase_label" msgid="7460634889750669420">"dịch nhầy cổ tử cung"</string>
     <string name="cervical_mucus_read_content_description" msgid="7163132301693064124">"Đọc dữ liệu về dịch nhầy cổ tử cung"</string>
     <string name="cervical_mucus_write_content_description" msgid="175802615365382752">"Ghi dữ liệu về dịch nhầy cổ tử cung"</string>
-    <string name="intermenstrual_bleeding_uppercase_label" msgid="1681956139742028987">"Máu kinh"</string>
-    <string name="intermenstrual_bleeding_lowercase_label" msgid="5284781275147619132">"máu kinh"</string>
+    <string name="intermenstrual_bleeding_uppercase_label" msgid="1681956139742028987">"Chảy máu giữa chu kỳ kinh nguyệt"</string>
+    <string name="intermenstrual_bleeding_lowercase_label" msgid="5284781275147619132">"chảy máu giữa chu kỳ kinh nguyệt"</string>
     <string name="intermenstrual_bleeding_read_content_description" msgid="5970939335115119015">"Đọc dữ liệu về máu kinh"</string>
     <string name="intermenstrual_bleeding_write_content_description" msgid="1377719923165234099">"Ghi dữ liệu về máu kinh"</string>
     <string name="menstruation_uppercase_label" msgid="9119506748428874832">"Kinh nguyệt"</string>
     <string name="menstruation_lowercase_label" msgid="8098816978006207242">"kinh nguyệt"</string>
     <string name="menstruation_read_content_description" msgid="7710047469771882021">"Đọc dữ liệu về kinh nguyệt"</string>
     <string name="menstruation_write_content_description" msgid="5142669435897047396">"Ghi dữ liệu về kinh nguyệt"</string>
-    <string name="ovulation_test_uppercase_label" msgid="1929868571862288837">"Kiểm tra sự rụng trứng"</string>
-    <string name="ovulation_test_lowercase_label" msgid="93260039417722840">"kiểm tra sự rụng trứng"</string>
+    <string name="ovulation_test_uppercase_label" msgid="1929868571862288837">"Kiểm tra tình trạng rụng trứng"</string>
+    <string name="ovulation_test_lowercase_label" msgid="93260039417722840">"kiểm tra tình trạng rụng trứng"</string>
     <string name="ovulation_test_read_content_description" msgid="8008351738285775840">"Đọc dữ liệu về việc kiểm tra sự rụng trứng"</string>
     <string name="ovulation_test_write_content_description" msgid="7061493310852203463">"Ghi dữ liệu về việc kiểm tra sự rụng trứng"</string>
     <string name="sexual_activity_uppercase_label" msgid="1093238473810194127">"Hoạt động tình dục"</string>
@@ -234,11 +241,11 @@
     <string name="body_temperature_lowercase_label" msgid="324124730971992259">"thân nhiệt"</string>
     <string name="body_temperature_read_content_description" msgid="5966765249024688738">"Đọc dữ liệu về thân nhiệt"</string>
     <string name="body_temperature_write_content_description" msgid="5498016171067859369">"Ghi dữ liệu về thân nhiệt"</string>
-    <string name="heart_rate_uppercase_label" msgid="4990167215137642430">"Nhịp tim"</string>
-    <string name="heart_rate_lowercase_label" msgid="693492686337628283">"nhịp tim"</string>
+    <string name="heart_rate_uppercase_label" msgid="4990167215137642430">"Tần số tim"</string>
+    <string name="heart_rate_lowercase_label" msgid="693492686337628283">"tần số tim"</string>
     <string name="heart_rate_read_content_description" msgid="4165867166260001259">"Đọc dữ liệu về nhịp tim"</string>
     <string name="heart_rate_write_content_description" msgid="2876667918366409170">"Ghi dữ liệu về nhịp tim"</string>
-    <string name="heart_rate_variability_uppercase_label" msgid="2047887230527012536">"Sự thay đổi nhịp tim"</string>
+    <string name="heart_rate_variability_uppercase_label" msgid="2047887230527012536">"Sự thay đổi tần số tim"</string>
     <string name="heart_rate_variability_lowercase_label" msgid="2332638559415663836">"sự thay đổi nhịp tim"</string>
     <string name="heart_rate_variability_read_content_description" msgid="5812707457872629556">"Đọc dữ liệu về sự thay đổi nhịp tim"</string>
     <string name="heart_rate_variability_write_content_description" msgid="3628171603035566114">"Ghi dữ liệu về sự thay đổi nhịp tim"</string>
@@ -250,14 +257,24 @@
     <string name="respiratory_rate_lowercase_label" msgid="8138249029197360098">"nhịp thở"</string>
     <string name="respiratory_rate_read_content_description" msgid="8545898979648419722">"Đọc dữ liệu về nhịp thở"</string>
     <string name="respiratory_rate_write_content_description" msgid="7689533746809591931">"Ghi dữ liệu về nhịp thở"</string>
-    <string name="resting_heart_rate_uppercase_label" msgid="5700827752396195453">"Nhịp tim lúc nghỉ ngơi"</string>
-    <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"nhịp tim lúc nghỉ ngơi"</string>
+    <string name="resting_heart_rate_uppercase_label" msgid="5700827752396195453">"Tần số tim lúc nghỉ ngơi"</string>
+    <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"tần số tim lúc nghỉ ngơi"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Đọc dữ liệu về nhịp tim lúc nghỉ ngơi"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Ghi dữ liệu về nhịp tim lúc nghỉ ngơi"</string>
     <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Nhiệt độ trên da"</string>
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"nhiệt độ trên da"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Đọc dữ liệu về nhiệt độ trên da"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Ghi dữ liệu về nhiệt độ trên da"</string>
+    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Tất cả dữ liệu y tế"</string>
+    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"tất cả dữ liệu y tế"</string>
+    <string name="all_medical_data_content_description" msgid="6103488863059447886">"Ghi tất cả dữ liệu y tế"</string>
+    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Dữ liệu tiêm chủng"</string>
+    <string name="immunization_lowercase_label" msgid="6464922369026887687">"dữ liệu tiêm chủng"</string>
+    <string name="immunization_content_description" msgid="2910674919337229803">"Đọc dữ liệu tiêm chủng"</string>
+    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Chánh niệm"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"chánh niệm"</string>
+    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Đọc dữ liệu về buổi tập chánh niệm"</string>
+    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Ghi dữ liệu về buổi tập chánh niệm"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Cho phép \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" đọc dữ liệu"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Cho phép \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" ghi dữ liệu"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Huỷ"</string>
@@ -310,6 +327,12 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Hiện bạn chưa cài đặt ứng dụng nào tương thích"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Quyền truy cập bổ sung"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Đã xoá các quyền bổ sung của ứng dụng này"</string>
+    <string name="permissions_header" msgid="6519976063360071569">"Quyền"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Sức khoẻ thể chất và tinh thần"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Bài tập, giấc ngủ, dinh dưỡng, v.v."</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"Hồ sơ sức khoẻ"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"hồ sơ sức khoẻ"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"Kết quả xét nghiệm, thuốc, t.chủng, v.v."</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Đã xoá quyền cho ứng dụng"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect đã xoá quyền cho <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect đã xoá quyền cho <xliff:g id="APP_DATA_0">%1$s</xliff:g> và <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -319,41 +342,76 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Lý do Health Connect xoá quyền cho ứng dụng"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Nếu một ứng dụng bị tạm ngưng hoặc bị xoá khỏi Google Play, Health Connect sẽ tự động xoá các quyền của ứng dụng đó.\n\nĐiều này có nghĩa là ứng dụng đó không thể truy cập vào dữ liệu được lưu trữ trên Health Connect nữa. Nếu đã ghi dữ liệu trước đó thì ứng dụng này sẽ xuất hiện trong danh sách ứng dụng không hoạt động."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Tôi hiểu"</string>
+    <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"Thiết lập"</string>
+    <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Không xuất được dữ liệu"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Đã xảy ra vấn đề khi xuất dữ liệu cho ngày <xliff:g id="DATE">%1$s</xliff:g>. Vui lòng thiết lập để lên lịch cho lần xuất dữ liệu mới rồi thử lại."</string>
+    <string name="next_export_time" msgid="3138247220014510213">"Lần xuất kế tiếp: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"Lần xuất dữ liệu tiếp theo sẽ sớm bắt đầu"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Sao lưu và khôi phục"</string>
-    <string name="export_and_import_title" msgid="3241901922222465397">"Xuất và nhập"</string>
+    <string name="last_export_time" msgid="9205875050823594041">"Lần xuất gần đây nhất: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Lần xuất theo lịch"</string>
     <string name="import_data" msgid="404502315533233094">"Nhập dữ liệu"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Khôi phục dữ liệu từ tệp đã xuất trước đó"</string>
+    <string name="import_error_banner_title" msgid="1480977889067027790">"Không khôi phục được dữ liệu"</string>
+    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"Chọn tệp"</string>
+    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"Không khôi phục được do tệp bạn đã chọn không tương thích. Hãy nhớ chọn đúng tệp đã xuất."</string>
+    <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"Cập nhật ngay"</string>
+    <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Hãy cập nhật hệ thống để Health Connect có thể khôi phục dữ liệu của bạn rồi thử lại."</string>
+    <string name="import_other_error_banner_button" msgid="8006947649520909176">"Thử lại"</string>
+    <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Đã xảy ra lỗi khi khôi phục dữ liệu từ bản mà bạn đã xuất."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Tính năng xuất giúp bạn lưu dữ liệu của mình để có thể chuyển dữ liệu đó sang chiếc điện thoại mới"</string>
-    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Tìm hiểu thêm"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"Giới thiệu về sao lưu và khôi phục"</string>
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Đang bật"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Đang tắt"</string>
-    <string name="choose_frequency_category" msgid="2230821549715237663">"Chọn tần suất"</string>
-    <string name="choose_frequency" msgid="1077467424225083246">"Chọn tần suất"</string>
-    <string name="choose_frequency_description" msgid="752601326653048254">"Chọn lưu dữ liệu một lần hoặc thiết lập để tự động lưu định kỳ."</string>
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"Dùng tính năng xuất theo lịch"</string>
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
+    <string name="choose_frequency_category" msgid="9094154407387676553">"Thay đổi tần suất"</string>
+    <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Nếu bạn tắt tính năng xuất theo lịch, thao tác này sẽ không xoá dữ liệu đã xuất trước đây khỏi nơi dữ liệu được lưu"</string>
+    <string name="choose_frequency" msgid="8119085390857180221">"Thiết lập tính năng xuất theo lịch"</string>
+    <string name="choose_frequency_description" msgid="7698155810053504157">"Chọn tần suất xuất dữ liệu của bạn"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Hằng ngày"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Hằng tuần"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Hằng tháng"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"Chọn nơi xuất"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"Bật tính năng mã hoá"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Dữ liệu cần được mã hoá trước khi lưu. Không một ai, kể cả Google hay Health Connect, có thể truy cập vào dữ liệu đó."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Tạo một mật khẩu để bảo vệ dữ liệu đã mã hoá của bạn. Bạn sẽ cần mật khẩu này để nhập và khôi phục dữ liệu của mình."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"Mật khẩu"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Nhập lại mật khẩu"</string>
-    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Mật khẩu không khớp"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"Nếu bạn quên mật khẩu và mất điện thoại, Health Connect không thể giúp bạn khôi phục dữ liệu đã lưu."</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"Nhập mật khẩu"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Cần có mật khẩu mã hoá để nhập dữ liệu của bạn trên Health Connect"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Bạn quên mật khẩu?"</string>
-    <string name="import_password_hint" msgid="5158553589723883063">"Mật khẩu"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Nếu vẫn còn chiếc điện thoại cũ, bạn có thể dùng mật khẩu mới để xuất lại dữ liệu"</string>
+    <string name="export_destination_title" msgid="8352929396306002479">"Chọn nơi sẽ lưu dữ liệu xuất theo lịch"</string>
+    <string name="export_invalid_storage" msgid="1459055934301871321">"Vui lòng chọn một ứng dụng bộ nhớ trên đám mây để xuất dữ liệu của bạn"</string>
+    <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
+    <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Nhập tệp này?"</string>
+    <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"<xliff:g id="FILE_NAME">%1$s</xliff:g> sẽ được nhập vào Health Connect"</string>
+    <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Huỷ"</string>
+    <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Nhập"</string>
+    <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect đang khôi phục dữ liệu"</string>
+    <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect đã khôi phục xong dữ liệu"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"Đang khôi phục"</string>
+    <string name="import_complete_toast_text" msgid="7730872919621230959">"Đã khôi phục xong dữ liệu"</string>
+    <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect không khôi phục được dữ liệu"</string>
+    <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Cần thêm dung lượng lưu trữ"</string>
+    <string name="import_notification_error_invalid_file_body_text" msgid="8877884063398886772">"Không khôi phục được do tệp bạn đã chọn không tương thích. Hãy nhớ chọn đúng tệp đã xuất."</string>
+    <string name="import_notification_error_more_space_needed_body_text" msgid="7577564968089566232">"Health Connect cần <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> dung lượng lưu trữ trên điện thoại của bạn để tiếp tục khôi phục dữ liệu."</string>
+    <string name="import_notification_error_generic_error_body_text" msgid="6562162452820282874">"Đã xảy ra lỗi khi khôi phục dữ liệu từ tệp mà bạn đã xuất."</string>
+    <string name="import_notification_error_version_mismatch_body_text" msgid="9186785816764607620">"Hãy cập nhật hệ thống để Health Connect có thể khôi phục dữ liệu của bạn rồi thử lại."</string>
+    <string name="import_notification_update_now_intent_button" msgid="2808579294292956628">"Cập nhật ngay"</string>
+    <string name="import_notification_try_again_intent_button" msgid="3833062670098674999">"Thử lại"</string>
+    <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Mở"</string>
+    <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Chọn tệp"</string>
+    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Giải phóng dung lượng"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Quay lại"</string>
     <string name="export_next_button" msgid="657930567137105172">"Tiếp theo"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"Huỷ"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Huỷ"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Tiếp theo"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Nhập từ"</string>
+    <string name="import_invalid_storage" msgid="341798262315495399">"Vui lòng chọn một ứng dụng bộ nhớ trên đám mây để nhập dữ liệu của bạn"</string>
+    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"Nhấn để chọn một tài khoản"</string>
+    <string name="export_import_choose_account_title" msgid="1047021319012735232">"Chọn một tài khoản"</string>
+    <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Huỷ"</string>
+    <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Xong"</string>
+    <string name="export_import_no_apps_text" msgid="6403119325024893690">"Không có ứng dụng nào. Hãy cài đặt ứng dụng bộ nhớ trên đám mây để xem được tại đây"</string>
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"Để có thêm lựa chọn, hãy cài đặt các ứng dụng bộ nhớ trên đám mây nếu bạn muốn thấy các ứng dụng đó tại đây"</string>
+    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Chuyển tới Cửa hàng Play"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Làm quen với Health Connect"</string>
-    <string name="onboarding_description" msgid="4873129122057931161">"Health Connect lưu trữ dữ liệu về sức khoẻ và hoạt động thể dục của bạn, qua đó mang lại cho bạn một cách đơn giản để đồng bộ hoá nhiều ứng dụng trên điện thoại"</string>
+    <string name="onboarding_description" msgid="3479157507808350452">"Health Connect lưu trữ dữ liệu về sức khoẻ và hoạt động thể dục của bạn, qua đó mang lại cho bạn một cách đơn giản để đồng bộ hoá nhiều ứng dụng trên thiết bị"</string>
     <string name="share_data" msgid="3481932156368883946">"Chia sẻ dữ liệu với ứng dụng"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Chọn dữ liệu mà mỗi ứng dụng có thể đọc hoặc ghi vào Health Connect"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Quản lý chế độ cài đặt và quyền riêng tư"</string>
@@ -363,12 +421,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"Xoá dữ liệu"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Vào chế độ xoá"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Thoát khỏi chế độ xoá"</string>
-    <string name="time_range_title" msgid="6831605283322600165">"Chọn dữ liệu cần xoá"</string>
+    <string name="time_range_title" msgid="5777596779865648336">"Chọn dữ liệu cần xoá khỏi Health Connect"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Tiếp theo"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Thao tác này sẽ xoá vĩnh viễn tất cả dữ liệu được thêm vào Health Connect trong khoảng thời gian đã chọn"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"Thao tác này sẽ xoá vĩnh viễn dữ liệu về <xliff:g id="DATA_TYPE">%s</xliff:g> được thêm vào Health Connect trong khoảng thời gian đã chọn"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"Thao tác này sẽ xoá vĩnh viễn dữ liệu <xliff:g id="CATEGORY">%s</xliff:g> được thêm vào Health Connect trong khoảng thời gian đã chọn"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"Thao tác này sẽ xoá vĩnh viễn dữ liệu của <xliff:g id="APP_DATA">%s</xliff:g> được thêm vào Health Connect trong khoảng thời gian đã chọn"</string>
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"Thao tác này sẽ xoá vĩnh viễn dữ liệu <xliff:g id="DATA_TYPE">%1$s</xliff:g> do <xliff:g id="APP_DATA">%2$s</xliff:g> thêm vào Health Connect trong khoảng thời gian đã chọn"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"Xoá dữ liệu trong 24 giờ qua"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"Xoá dữ liệu trong 7 ngày qua"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"Xoá dữ liệu trong 30 ngày qua"</string>
@@ -389,17 +448,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"Xoá vĩnh viễn dữ liệu của <xliff:g id="APP_DATA">%s</xliff:g> trong 24 giờ qua?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"Xoá vĩnh viễn dữ liệu của <xliff:g id="APP_DATA">%s</xliff:g> trong 7 ngày qua?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"Xoá vĩnh viễn dữ liệu của <xliff:g id="APP_DATA">%s</xliff:g> trong 30 ngày qua?"</string>
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"Xoá vĩnh viễn dữ liệu <xliff:g id="DATA_TYPE">%1$s</xliff:g> do <xliff:g id="APP_DATA">%2$s</xliff:g> thêm từ trước đến nay?"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"Xoá vĩnh viễn dữ liệu <xliff:g id="DATA_TYPE">%1$s</xliff:g> do <xliff:g id="APP_DATA">%2$s</xliff:g> thêm trong 24 giờ qua?"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"Xoá vĩnh viễn dữ liệu <xliff:g id="DATA_TYPE">%1$s</xliff:g> do <xliff:g id="APP_DATA">%2$s</xliff:g> thêm trong 7 ngày qua?"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"Xoá vĩnh viễn dữ liệu <xliff:g id="DATA_TYPE">%1$s</xliff:g> do <xliff:g id="APP_DATA">%2$s</xliff:g> thêm trong 30 ngày qua?"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Đồng thời xoá mọi quyền của <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> khỏi Health Connect"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Xoá vĩnh viễn mọi dữ liệu về <xliff:g id="DATA_TYPE">%1$s</xliff:g> mà <xliff:g id="APP_DATA">%2$s</xliff:g> đã thêm vào?"</string>
-    <string name="confirming_question_single_entry" msgid="330919962071369305">"Xoá vĩnh viễn mục này?"</string>
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"Xoá vĩnh viễn mục này khỏi Health Connect?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Các ứng dụng đã kết nối sẽ không thể truy cập được vào dữ liệu này từ Health Connect nữa"</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"Thao tác này sẽ xoá tất cả mục dữ liệu về kinh nguyệt từ ngày <xliff:g id="START_DATE">%1$s</xliff:g> đến ngày <xliff:g id="END_DATE">%2$s</xliff:g>."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Xoá"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Quay lại"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Xong"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"Đóng"</string>
-    <string name="delete_dialog_success_title" msgid="5009733262743173477">"Đã xoá dữ liệu"</string>
-    <string name="delete_dialog_success_message" msgid="2451953113522118128">"Health Connect không còn lưu trữ dữ liệu này nữa."</string>
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"Đã xoá dữ liệu khỏi Health Connect"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"Nếu bạn muốn xoá hoàn toàn dữ liệu khỏi các ứng dụng đã kết nối, hãy kiểm tra từng ứng dụng có thể đã lưu dữ liệu của bạn."</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"Xong"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"Xem các ứng dụng đã kết nối"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"Đang xoá dữ liệu"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"Không xoá được dữ liệu"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"Đã xảy ra sự cố nên Health Connect không xoá được dữ liệu của bạn"</string>
@@ -577,6 +642,7 @@
     <string name="rest" msgid="5937058337671252210">"Nghỉ ngơi"</string>
     <string name="pause" msgid="5161459047750335691">"Tạm dừng"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"Bóng bầu dục Úc"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"Loại không xác định"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> ngủ"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>⁠"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"thức"</string>
@@ -786,12 +852,14 @@
     <string name="range_off" msgid="8178520557618184215">"Đang tắt"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Khi bạn thay đổi những chế độ cài đặt này, Health Connect sẽ xoá dữ liệu hiện có dựa trên các lựa chọn ưu tiên mới của bạn"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Tự động xoá dữ liệu sau # tháng?}other{Tự động xoá dữ liệu sau # tháng?}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect sẽ tự động xoá dữ liệu mới sau # tháng. Chế độ cài đặt này cũng sẽ xoá dữ liệu hiện có đã lưu hơn # tháng.}other{Health Connect sẽ tự động xoá dữ liệu mới sau # tháng. Chế độ cài đặt này cũng sẽ xoá dữ liệu hiện có đã lưu hơn # tháng.}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Thao tác này cũng xoá dữ liệu đã lưu hơn # tháng khỏi Health Connect.\n\nNếu bạn muốn xoá hoàn toàn dữ liệu khỏi các ứng dụng đã kết nối, hãy kiểm tra từng ứng dụng có thể đã lưu dữ liệu của bạn.}other{Thao tác này cũng xoá dữ liệu đã lưu hơn # tháng khỏi Health Connect.\n\nNếu bạn muốn xoá hoàn toàn dữ liệu khỏi các ứng dụng đã kết nối, hãy kiểm tra từng ứng dụng có thể đã lưu dữ liệu của bạn.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Thiết lập tính năng xoá tự động"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Dữ liệu hiện tại sẽ bị xoá"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect sẽ xoá mọi dữ liệu đã lưu hơn # tháng. Có thể mất một ngày để những thay đổi này xuất hiện trong các ứng dụng mà bạn đã kết nối.}other{Health Connect sẽ xoá mọi dữ liệu đã lưu hơn # tháng. Có thể mất một ngày để những thay đổi này xuất hiện trong các ứng dụng mà bạn đã kết nối.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Dữ liệu sẽ bị xoá khỏi các danh mục sau"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Xong"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Tính năng Xoá tự động ở trạng thái bật. Dữ liệu đã lưu hơn # tháng sẽ bị xoá}other{Tính năng Xoá tự động ở trạng thái bật. Dữ liệu đã lưu hơn # tháng sẽ bị xoá}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"Tính năng Xoá tự động ở trạng thái tắt"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Đặt thứ tự ưu tiên của ứng dụng"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Nếu nhiều ứng dụng thêm dữ liệu <xliff:g id="DATA_TYPE">%s</xliff:g>, Health Connect sẽ ưu tiên ứng dụng ở vị trí cao nhất trong danh sách này. Bạn có thể kéo các ứng dụng để sắp xếp lại chúng."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"Lưu"</string>
@@ -927,4 +995,15 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Đã xoá toàn bộ dữ liệu"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Đã xoá dữ liệu về <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Đã xoá <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> mục"</string>
+    <string name="select_all" msgid="837499881590001166">"Chọn tất cả"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Bắt đầu sử dụng Health Connect"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Hãy đồng bộ hoá những ứng dụng đầu tiên của bạn để chia sẻ dữ liệu về sức khoẻ và hoạt động thể dục giữa những ứng dụng đó"</string>
+    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"Để sau"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Thiết lập"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Kết nối với các ứng dụng khác"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Bắt đầu chia sẻ dữ liệu giữa <xliff:g id="APP_NAME">%s</xliff:g> và ứng dụng sức khoẻ trên điện thoại của bạn"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"Thiết lập"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Xem các ứng dụng tương thích"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Tìm các ứng dụng khác để đồng bộ hoá với <xliff:g id="APP_NAME">%s</xliff:g> qua Health Connect"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Xem trên cửa hàng ứng dụng"</string>
 </resources>

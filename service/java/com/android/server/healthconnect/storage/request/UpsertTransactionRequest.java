@@ -26,7 +26,6 @@ import android.annotation.Nullable;
 import android.content.Context;
 import android.health.connect.Constants;
 import android.health.connect.datatypes.RecordTypeIdentifier;
-import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.ArrayMap;
 import android.util.ArraySet;
@@ -35,7 +34,6 @@ import android.util.Slog;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
@@ -102,27 +100,6 @@ public class UpsertTransactionRequest {
                 Collections.emptyMap());
     }
 
-    // TODO(b/341044947): update this to take in InsertMedicalResourceRequest once that is
-    // checked in.
-    public UpsertTransactionRequest(
-            @NonNull String packageName,
-            @NonNull List<MedicalResourceInternal> medicalResourceInternals) {
-        this(packageName, medicalResourceInternals, /* skipPackageNameAndLogs= */ false);
-    }
-
-    private UpsertTransactionRequest(
-            @NonNull String packageName,
-            @NonNull List<MedicalResourceInternal> medicalResourceInternals,
-            boolean skipPackageNameAndLogs) {
-        mSkipPackageNameAndLogs = skipPackageNameAndLogs;
-        for (MedicalResourceInternal medicalResourceInternal : medicalResourceInternals) {
-            addNameBasedUUIDTo(medicalResourceInternal);
-            addRequest(medicalResourceInternal);
-        }
-        // TODO(b/337018927): Add support for change logs and access logs.
-        // TODO(b/337020806): Add support for updating medical resources.
-    }
-
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private UpsertTransactionRequest(
             @Nullable String packageName,
@@ -168,9 +145,8 @@ public class UpsertTransactionRequest {
         if (!mRecordTypes.isEmpty()) {
             if (!mSkipPackageNameAndLogs) {
                 mAccessLogs.add(
-                        AccessLogsHelper.getInstance()
-                                .getUpsertTableRequest(
-                                        packageName, new ArrayList<>(mRecordTypes), UPSERT));
+                        AccessLogsHelper.getUpsertTableRequest(
+                                packageName, new ArrayList<>(mRecordTypes), UPSERT));
             }
 
             if (Constants.DEBUG) {
@@ -222,14 +198,6 @@ public class UpsertTransactionRequest {
             request.setUpdateWhereClauses(generateWhereClausesForUpdate(recordInternal));
         }
         request.setRecordInternal(recordInternal);
-        mUpsertRequests.add(request);
-    }
-
-    private void addRequest(@NonNull MedicalResourceInternal medicalResourceInternal) {
-        MedicalResourceHelper medicalResourceHelper = MedicalResourceHelper.getInstance();
-
-        UpsertTableRequest request =
-                medicalResourceHelper.getUpsertTableRequest(medicalResourceInternal);
         mUpsertRequests.add(request);
     }
 }

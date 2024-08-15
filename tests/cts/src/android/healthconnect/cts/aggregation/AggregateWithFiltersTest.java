@@ -399,7 +399,7 @@ public class AggregateWithFiltersTest {
         insertRecords(
                 List.of(
                         // fully in range
-                        getStepsRecord(123, Instant.EPOCH, Instant.ofEpochMilli(456)),
+                        getStepsRecord(123, Instant.EPOCH, Instant.ofEpochSecond(456)),
                         // partially in range (29/30)
                         getStepsRecord(
                                 30000,

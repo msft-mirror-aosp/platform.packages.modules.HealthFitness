@@ -6,7 +6,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.datasources.AggregationCardInfo
 import com.android.healthconnect.controller.datasources.api.LoadMostRecentAggregationsUseCase
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadDataAggregationsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadLastDateWithPriorityDataUseCase
@@ -85,11 +85,11 @@ class LoadMostRecentAggregationsUseCaseTest {
         val caloriesDate = LocalDate.of(2023, 4, 19)
 
         loadLastDateWithPriorityDataUseCase.setLastDateWithPriorityDataForHealthPermissionType(
-            HealthPermissionType.STEPS, stepsDate)
+            FitnessPermissionType.STEPS, stepsDate)
         loadLastDateWithPriorityDataUseCase.setLastDateWithPriorityDataForHealthPermissionType(
-            HealthPermissionType.DISTANCE, distanceDate)
+            FitnessPermissionType.DISTANCE, distanceDate)
         loadLastDateWithPriorityDataUseCase.setLastDateWithPriorityDataForHealthPermissionType(
-            HealthPermissionType.TOTAL_CALORIES_BURNED, caloriesDate)
+            FitnessPermissionType.TOTAL_CALORIES_BURNED, caloriesDate)
 
         loadDataAggregationsUseCase.updateAggregationResponses(
             listOf(stepsAggregation, distanceAggregation, caloriesAggregation))
@@ -100,15 +100,15 @@ class LoadMostRecentAggregationsUseCaseTest {
             .isEqualTo(
                 listOf(
                     AggregationCardInfo(
-                        HealthPermissionType.STEPS,
+                        FitnessPermissionType.STEPS,
                         stepsAggregation,
                         stepsDate.toInstantAtStartOfDay()),
                     AggregationCardInfo(
-                        HealthPermissionType.DISTANCE,
+                        FitnessPermissionType.DISTANCE,
                         distanceAggregation,
                         distanceDate.toInstantAtStartOfDay()),
                     AggregationCardInfo(
-                        HealthPermissionType.TOTAL_CALORIES_BURNED,
+                        FitnessPermissionType.TOTAL_CALORIES_BURNED,
                         caloriesAggregation,
                         caloriesDate.toInstantAtStartOfDay()),
                 ))
@@ -122,11 +122,11 @@ class LoadMostRecentAggregationsUseCaseTest {
             val caloriesDate = LocalDate.of(2023, 4, 19)
 
             loadLastDateWithPriorityDataUseCase.setLastDateWithPriorityDataForHealthPermissionType(
-                HealthPermissionType.STEPS, stepsDate)
+                FitnessPermissionType.STEPS, stepsDate)
             loadLastDateWithPriorityDataUseCase.setLastDateWithPriorityDataForHealthPermissionType(
-                HealthPermissionType.DISTANCE, distanceDate)
+                FitnessPermissionType.DISTANCE, distanceDate)
             loadLastDateWithPriorityDataUseCase.setLastDateWithPriorityDataForHealthPermissionType(
-                HealthPermissionType.TOTAL_CALORIES_BURNED, caloriesDate)
+                FitnessPermissionType.TOTAL_CALORIES_BURNED, caloriesDate)
 
             loadDataAggregationsUseCase.updateAggregationResponses(
                 listOf(distanceAggregation, caloriesAggregation))
@@ -137,11 +137,11 @@ class LoadMostRecentAggregationsUseCaseTest {
                 .isEqualTo(
                     listOf(
                         AggregationCardInfo(
-                            HealthPermissionType.DISTANCE,
+                            FitnessPermissionType.DISTANCE,
                             distanceAggregation,
                             distanceDate.toInstantAtStartOfDay()),
                         AggregationCardInfo(
-                            HealthPermissionType.TOTAL_CALORIES_BURNED,
+                            FitnessPermissionType.TOTAL_CALORIES_BURNED,
                             caloriesAggregation,
                             caloriesDate.toInstantAtStartOfDay()),
                     ))
@@ -155,11 +155,11 @@ class LoadMostRecentAggregationsUseCaseTest {
             val caloriesDate = LocalDate.of(2023, 4, 19)
 
             loadLastDateWithPriorityDataUseCase.setLastDateWithPriorityDataForHealthPermissionType(
-                HealthPermissionType.STEPS, stepsDate)
+                FitnessPermissionType.STEPS, stepsDate)
             loadLastDateWithPriorityDataUseCase.setLastDateWithPriorityDataForHealthPermissionType(
-                HealthPermissionType.DISTANCE, distanceDate)
+                FitnessPermissionType.DISTANCE, distanceDate)
             loadLastDateWithPriorityDataUseCase.setLastDateWithPriorityDataForHealthPermissionType(
-                HealthPermissionType.TOTAL_CALORIES_BURNED, caloriesDate)
+                FitnessPermissionType.TOTAL_CALORIES_BURNED, caloriesDate)
 
             loadDataAggregationsUseCase.updateAggregationResponses(
                 listOf(stepsAggregation, caloriesAggregation))
@@ -170,11 +170,11 @@ class LoadMostRecentAggregationsUseCaseTest {
                 .isEqualTo(
                     listOf(
                         AggregationCardInfo(
-                            HealthPermissionType.STEPS,
+                            FitnessPermissionType.STEPS,
                             stepsAggregation,
                             stepsDate.toInstantAtStartOfDay()),
                         AggregationCardInfo(
-                            HealthPermissionType.TOTAL_CALORIES_BURNED,
+                            FitnessPermissionType.TOTAL_CALORIES_BURNED,
                             caloriesAggregation,
                             caloriesDate.toInstantAtStartOfDay()),
                     ))
@@ -188,11 +188,11 @@ class LoadMostRecentAggregationsUseCaseTest {
             val caloriesDate = null
 
             loadLastDateWithPriorityDataUseCase.setLastDateWithPriorityDataForHealthPermissionType(
-                HealthPermissionType.STEPS, stepsDate)
+                FitnessPermissionType.STEPS, stepsDate)
             loadLastDateWithPriorityDataUseCase.setLastDateWithPriorityDataForHealthPermissionType(
-                HealthPermissionType.DISTANCE, distanceDate)
+                FitnessPermissionType.DISTANCE, distanceDate)
             loadLastDateWithPriorityDataUseCase.setLastDateWithPriorityDataForHealthPermissionType(
-                HealthPermissionType.TOTAL_CALORIES_BURNED, caloriesDate)
+                FitnessPermissionType.TOTAL_CALORIES_BURNED, caloriesDate)
 
             loadDataAggregationsUseCase.updateAggregationResponses(
                 listOf(stepsAggregation, distanceAggregation))
@@ -203,11 +203,11 @@ class LoadMostRecentAggregationsUseCaseTest {
                 .isEqualTo(
                     listOf(
                         AggregationCardInfo(
-                            HealthPermissionType.STEPS,
+                            FitnessPermissionType.STEPS,
                             stepsAggregation,
                             stepsDate.toInstantAtStartOfDay()),
                         AggregationCardInfo(
-                            HealthPermissionType.DISTANCE,
+                            FitnessPermissionType.DISTANCE,
                             distanceAggregation,
                             distanceDate.toInstantAtStartOfDay())))
         }
@@ -225,7 +225,7 @@ class LoadMostRecentAggregationsUseCaseTest {
             val startDate = LocalDate.of(2023, 4, 5).randomInstant()
             val endDate = LocalDate.of(2023, 4, 5).randomInstant()
             loadLastDateWithPriorityDataUseCase.setLastDateWithPriorityDataForHealthPermissionType(
-                HealthPermissionType.SLEEP, startDate.toLocalDate())
+                FitnessPermissionType.SLEEP, startDate.toLocalDate())
             sleepSessionHelper.setDatePair(startDate, endDate)
             val expectedSleepAggregation = formattedAggregation("14h 5m")
             loadDataAggregationsUseCase.updateAggregationResponses(listOf(expectedSleepAggregation))
@@ -236,7 +236,7 @@ class LoadMostRecentAggregationsUseCaseTest {
                 .isEqualTo(
                     listOf(
                         AggregationCardInfo(
-                            healthPermissionType = HealthPermissionType.SLEEP,
+                            fitnessPermissionType = FitnessPermissionType.SLEEP,
                             aggregation = expectedSleepAggregation,
                             startDate = startDate,
                             endDate = endDate)))
@@ -249,7 +249,7 @@ class LoadMostRecentAggregationsUseCaseTest {
             val endDate = LocalDate.of(2023, 4, 7).randomInstant()
 
             loadLastDateWithPriorityDataUseCase.setLastDateWithPriorityDataForHealthPermissionType(
-                HealthPermissionType.SLEEP, startDate.toLocalDate())
+                FitnessPermissionType.SLEEP, startDate.toLocalDate())
 
             sleepSessionHelper.setDatePair(startDate, endDate)
 
@@ -262,7 +262,7 @@ class LoadMostRecentAggregationsUseCaseTest {
                 .isEqualTo(
                     listOf(
                         AggregationCardInfo(
-                            healthPermissionType = HealthPermissionType.SLEEP,
+                            fitnessPermissionType = FitnessPermissionType.SLEEP,
                             aggregation = expectedSleepAggregation,
                             startDate = startDate,
                             endDate = endDate)))
@@ -291,7 +291,7 @@ class LoadMostRecentAggregationsUseCaseTest {
         val stepsDate = LocalDate.of(2023, 2, 13)
 
         loadLastDateWithPriorityDataUseCase.setLastDateWithPriorityDataForHealthPermissionType(
-            HealthPermissionType.STEPS, stepsDate)
+            FitnessPermissionType.STEPS, stepsDate)
         loadDataAggregationsUseCase.setFailure("Exception")
 
         val result = loadMostRecentAggregationsUseCase.invoke(HealthDataCategory.ACTIVITY)
@@ -304,7 +304,7 @@ class LoadMostRecentAggregationsUseCaseTest {
         val sleepDate = LocalDate.of(2023, 2, 13)
 
         loadLastDateWithPriorityDataUseCase.setLastDateWithPriorityDataForHealthPermissionType(
-            HealthPermissionType.SLEEP, sleepDate)
+            FitnessPermissionType.SLEEP, sleepDate)
         loadDataAggregationsUseCase.setFailure("Exception")
 
         val result = loadMostRecentAggregationsUseCase.invoke(HealthDataCategory.SLEEP)
@@ -317,7 +317,7 @@ class LoadMostRecentAggregationsUseCaseTest {
         val sleepDate = LocalDate.of(2023, 2, 13)
 
         loadLastDateWithPriorityDataUseCase.setLastDateWithPriorityDataForHealthPermissionType(
-            HealthPermissionType.SLEEP, sleepDate)
+            FitnessPermissionType.SLEEP, sleepDate)
         sleepSessionHelper.setFailure("Exception")
 
         val result = loadMostRecentAggregationsUseCase.invoke(HealthDataCategory.SLEEP)

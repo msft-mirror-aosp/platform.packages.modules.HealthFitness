@@ -41,11 +41,13 @@ public final class MedicalDataSource implements Parcelable {
     @NonNull
     public static final Creator<MedicalDataSource> CREATOR =
             new Creator<MedicalDataSource>() {
+                @NonNull
                 @Override
-                public MedicalDataSource createFromParcel(Parcel in) {
+                public MedicalDataSource createFromParcel(@NonNull Parcel in) {
                     return new MedicalDataSource(in);
                 }
 
+                @NonNull
                 @Override
                 public MedicalDataSource[] newArray(int size) {
                     return new MedicalDataSource[size];
@@ -76,11 +78,12 @@ public final class MedicalDataSource implements Parcelable {
         mDisplayName = displayName;
     }
 
-    private MedicalDataSource(Parcel in) {
-        mId = in.readString();
-        mPackageName = in.readString();
-        mFhirBaseUri = in.readString();
-        mDisplayName = in.readString();
+    private MedicalDataSource(@NonNull Parcel in) {
+        requireNonNull(in);
+        mId = requireNonNull(in.readString());
+        mPackageName = requireNonNull(in.readString());
+        mFhirBaseUri = requireNonNull(in.readString());
+        mDisplayName = requireNonNull(in.readString());
     }
 
     /** Returns the identifier. */
@@ -152,10 +155,10 @@ public final class MedicalDataSource implements Parcelable {
 
     /** Builder class for {@link MedicalDataSource} */
     public static final class Builder {
-        @NonNull private String mId = "";
-        @NonNull private String mPackageName = "";
-        @NonNull private String mFhirBaseUri = "";
-        @NonNull private String mDisplayName = "";
+        @NonNull private String mId;
+        @NonNull private String mPackageName;
+        @NonNull private String mFhirBaseUri;
+        @NonNull private String mDisplayName;
 
         /**
          * @param id The unique identifier of this data source, assigned by the Android Health

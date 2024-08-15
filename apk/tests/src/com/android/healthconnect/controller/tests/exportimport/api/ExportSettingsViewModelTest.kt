@@ -17,8 +17,6 @@
 package com.android.healthconnect.controller.tests.exportimport.api
 
 import android.health.connect.Constants.DEFAULT_INT
-import android.health.connect.HealthConnectManager
-import android.health.connect.exportimport.ScheduledExportStatus
 import android.net.Uri
 import com.android.healthconnect.controller.exportimport.api.DocumentProvider
 import com.android.healthconnect.controller.exportimport.api.DocumentProviderInfo
@@ -29,17 +27,14 @@ import com.android.healthconnect.controller.exportimport.api.ExportFrequency.EXP
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency.EXPORT_FREQUENCY_WEEKLY
 import com.android.healthconnect.controller.exportimport.api.ExportSettings
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
-import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadExportSettingsUseCase
-import com.android.healthconnect.controller.tests.utils.di.FakeLoadScheduledExportStatusUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeQueryDocumentProvidersUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeUpdateExportSettingsUseCase
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -56,7 +51,6 @@ import org.junit.Test
 @HiltAndroidTest
 class ExportSettingsViewModelTest {
     companion object {
-        private const val TEST_EXPORT_FREQUENCY_IN_DAYS = 7
         private val TEST_URI: Uri = Uri.parse("content://com.android.server.healthconnect/testuri")
 
         private val TEST_DOCUMENT_PROVIDER_TITLE = "Document provider"
@@ -76,7 +70,6 @@ class ExportSettingsViewModelTest {
     private lateinit var viewModel: ExportSettingsViewModel
     private val loadExportSettingsUseCase = FakeLoadExportSettingsUseCase()
     private val updateExportSettingsUseCase = FakeUpdateExportSettingsUseCase()
-    private val loadScheduledExportStatusUseCase = FakeLoadScheduledExportStatusUseCase()
     private val queryDocumentProvidersUseCase = FakeQueryDocumentProvidersUseCase()
 
     @Before
@@ -87,7 +80,6 @@ class ExportSettingsViewModelTest {
             ExportSettingsViewModel(
                 loadExportSettingsUseCase,
                 updateExportSettingsUseCase,
-                loadScheduledExportStatusUseCase,
                 queryDocumentProvidersUseCase)
     }
 
@@ -109,24 +101,6 @@ class ExportSettingsViewModelTest {
 
         assertThat(testObserver.getLastValue())
             .isEqualTo(ExportSettings.WithData(EXPORT_FREQUENCY_WEEKLY))
-    }
-
-    @Test
-    fun loadScheduledExportStatus() = runTest {
-        val testObserver = TestObserver<ScheduledExportUiStatus>()
-        viewModel.storedScheduledExportStatus.observeForever(testObserver)
-        val scheduledExportStatus =
-            ScheduledExportStatus(
-                Instant.ofEpochMilli(100),
-                HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS,
-                TEST_EXPORT_FREQUENCY_IN_DAYS)
-        loadScheduledExportStatusUseCase.updateExportStatus(scheduledExportStatus)
-
-        viewModel.loadScheduledExportStatus()
-        advanceUntilIdle()
-
-        assertThat(testObserver.getLastValue())
-            .isEqualTo(ScheduledExportUiStatus.WithData(scheduledExportStatus))
     }
 
     @Test
@@ -205,5 +179,23 @@ class ExportSettingsViewModelTest {
         viewModel.updatePreviousExportFrequency(EXPORT_FREQUENCY_DAILY)
 
         assertThat(viewModel.previousExportFrequency.value).isEqualTo(EXPORT_FREQUENCY_DAILY)
+    }
+
+    @Test
+    fun updateSelectedExportFrequency() {
+        viewModel.updateSelectedFrequency(EXPORT_FREQUENCY_DAILY)
+
+        assertThat(viewModel.selectedExportFrequency.value).isEqualTo(EXPORT_FREQUENCY_DAILY)
+    }
+
+    @Test
+    fun updateExportUriWithSelectedFrequency_updatesSetting() = runTest {
+        viewModel.updateSelectedFrequency(EXPORT_FREQUENCY_DAILY)
+        viewModel.updateExportUriWithSelectedFrequency(TEST_URI)
+        advanceUntilIdle()
+
+        assertThat(updateExportSettingsUseCase.mostRecentSettings.uri).isEqualTo(TEST_URI)
+        assertThat(updateExportSettingsUseCase.mostRecentSettings.periodInDays)
+            .isEqualTo(EXPORT_FREQUENCY_DAILY.periodInDays)
     }
 }

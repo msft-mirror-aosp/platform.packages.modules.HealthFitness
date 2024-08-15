@@ -23,11 +23,11 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.PersistableBundle;
-
-import androidx.annotation.NonNull;
+import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectDailyService;
+import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -38,24 +38,60 @@ import java.util.Objects;
  * @hide
  */
 public class ExportImportJobs {
+    private static final String TAG = "HealthConnectExportJobs";
     private static final int MIN_JOB_ID = ExportImportJobs.class.hashCode();
 
+    @VisibleForTesting static final String IS_FIRST_EXPORT = "is_first_export";
     @VisibleForTesting static final String NAMESPACE = "HEALTH_CONNECT_IMPORT_EXPORT_JOBS";
 
     public static final String PERIODIC_EXPORT_JOB_NAME = "periodic_export_job";
 
     /** Schedule the periodic export job. */
     public static void schedulePeriodicExportJob(Context context, int userId) {
-        ComponentName componentName = new ComponentName(context, HealthConnectDailyService.class);
-        final PersistableBundle extras = new PersistableBundle();
+        int periodInDays = ExportImportSettingsStorage.getScheduledExportPeriodInDays();
+        if (periodInDays <= 0) {
+            return;
+        }
+
+        PersistableBundle extras = new PersistableBundle();
         extras.putInt(HealthConnectDailyService.EXTRA_USER_ID, userId);
         extras.putString(HealthConnectDailyService.EXTRA_JOB_NAME_KEY, PERIODIC_EXPORT_JOB_NAME);
+
+        long periodInMillis = Duration.ofDays(periodInDays).toMillis();
+        long flexInMillis = Duration.ofHours(6).toMillis();
+        if (periodInDays >= 7) {
+            // For weekly / monthly export, allow export to happen at least one day before.
+            flexInMillis = Duration.ofDays(1).toMillis();
+        }
+        if (ExportImportSettingsStorage.getLastSuccessfulExportTime() == null
+                || !ExportImportSettingsStorage.getUri()
+                        .equals(ExportImportSettingsStorage.getLastSuccessfulExportUri())) {
+
+            // Shorten the period for the first export to any new URI.
+            // This will be changed back once the first export to any new location is done.
+            periodInMillis = Duration.ofHours(1).toMillis();
+            flexInMillis = periodInMillis;
+
+            extras.putBoolean(IS_FIRST_EXPORT, true);
+        }
+        Slog.i(
+                TAG,
+                "Scheduling export job with period (millis) = "
+                        + periodInMillis
+                        + " flex = "
+                        + flexInMillis);
+
+        ComponentName componentName = new ComponentName(context, HealthConnectDailyService.class);
         JobInfo.Builder builder =
                 new JobInfo.Builder(MIN_JOB_ID + userId, componentName)
                         .setRequiresCharging(true)
                         .setRequiresDeviceIdle(true)
-                        // TODO(b/325599089): Fetch duration from export settings.
-                        .setPeriodic(Duration.ofDays(1).toMillis(), Duration.ofHours(4).toMillis())
+                        .setPeriodic(
+                                periodInMillis,
+                                // Flex interval.
+                                // The flex period begins after (periodInMillis - flexInMillis)
+                                // Flex is the max of the specified time, or 5% of periodInMillis.
+                                flexInMillis)
                         .setExtras(extras);
 
         HealthConnectDailyService.schedule(
@@ -65,13 +101,24 @@ public class ExportImportJobs {
                 builder.build());
     }
 
-    /** Execute the periodic export job. */
-    public static void executePeriodicExportJob(@NonNull Context context) {
-        // TODO(b/325599089): Add checking for frequency greater than 0.
-        if (exportImport()) {
-            ExportManager exportManager = new ExportManager(context);
-            exportManager.runExport();
+    /**
+     * Execute the periodic export job. It returns true if the export was successful (no need to
+     * reschedule the job). False otherwise.
+     */
+    // TODO(b/318484778): Use dependency injection instead of passing an instance to the method.
+    public static boolean executePeriodicExportJob(
+            Context context, int userId, PersistableBundle extras, ExportManager exportManager) {
+        if (!exportImport() || ExportImportSettingsStorage.getScheduledExportPeriodInDays() <= 0) {
+            // If there is no need to run the export, it counts like a success regarding job
+            // reschedule.
+            return true;
         }
+        boolean exportSuccess = exportManager.runExport();
+        boolean firstExport = extras.getBoolean(IS_FIRST_EXPORT, false);
+        if (exportSuccess && firstExport) {
+            schedulePeriodicExportJob(context, userId);
+        }
+        return exportSuccess;
 
         // TODO(b/325599089): Cancel job if flag is off.
 

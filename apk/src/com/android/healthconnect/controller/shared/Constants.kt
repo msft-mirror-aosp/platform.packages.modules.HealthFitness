@@ -30,4 +30,10 @@ object Constants {
 
     // Connected apps
     const val EXTRA_APP_NAME = "app_name_extras"
+    const val SHOW_MANAGE_APP_SECTION = "show_manage_app_section"
+
+    // Onboarding banners
+    const val START_USING_HC_BANNER_SEEN = "start_using_hc_seen"
+    const val CONNECT_MORE_APPS_BANNER_SEEN = "connect_more_apps_seen"
+    const val SEE_MORE_COMPATIBLE_APPS_BANNER_SEEN = "see_more_apps_seen"
 }

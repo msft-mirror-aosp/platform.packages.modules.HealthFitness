@@ -27,6 +27,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
 import android.health.connect.DeleteUsingFiltersRequest;
+import android.health.connect.HealthConnectManager;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
@@ -38,8 +39,11 @@ import android.health.connect.datatypes.BloodPressureRecord;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.internal.datatypes.RecordInternal;
+import android.os.Environment;
+import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
+import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -52,6 +56,7 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.quality.Strictness;
 
 import java.time.Instant;
 import java.util.List;
@@ -60,15 +65,35 @@ import java.util.UUID;
 public class TransactionManagerTest {
     private static final String TEST_PACKAGE_NAME = "package.name";
 
-    @Rule public final HealthConnectDatabaseTestRule testRule = new HealthConnectDatabaseTestRule();
+    // SetFlagsRule needs to be executed before any rules that accesses aconfig flags. Otherwise,
+    // we will get failure like in b/344587256.
+    // This is a workaround due to b/335666574, however the tests are still relevant even if the
+    // rules have to run in this order. So we won't have to revert this even when b/335666574 is
+    // fixed.
+    // See https://chat.google.com/room/AAAAoLBF6rc/4N8gVXyQY5E
+    @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    @Rule(order = 2)
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(HealthConnectManager.class)
+                    .mockStatic(Environment.class)
+                    .setStrictness(Strictness.LENIENT)
+                    .build();
+
+    @Rule(order = 3)
+    public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
+            new com.android.server.healthconnect.storage.datatypehelpers
+                    .HealthConnectDatabaseTestRule();
 
     private TransactionTestUtils mTransactionTestUtils;
     private TransactionManager mTransactionManager;
 
     @Before
     public void setup() {
-        HealthConnectUserContext context = testRule.getUserContext();
-        mTransactionManager = testRule.getTransactionManager();
+        HealthConnectUserContext context = mHealthConnectDatabaseTestRule.getUserContext();
+        mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
     }

@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -61,6 +62,7 @@ public final class HealthConnectPermissionHelper {
     private final Set<String> mHealthPermissions;
     private final HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
     private final FirstGrantTimeManager mFirstGrantTimeManager;
+    private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
 
     /**
      * Constructs a {@link HealthConnectPermissionHelper}.
@@ -79,11 +81,28 @@ public final class HealthConnectPermissionHelper {
             Set<String> healthPermissions,
             HealthPermissionIntentAppsTracker permissionIntentTracker,
             FirstGrantTimeManager firstGrantTimeManager) {
+        this(
+                context,
+                packageManager,
+                healthPermissions,
+                permissionIntentTracker,
+                firstGrantTimeManager,
+                HealthDataCategoryPriorityHelper.getInstance());
+    }
+
+    public HealthConnectPermissionHelper(
+            Context context,
+            PackageManager packageManager,
+            Set<String> healthPermissions,
+            HealthPermissionIntentAppsTracker permissionIntentTracker,
+            FirstGrantTimeManager firstGrantTimeManager,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
         mContext = context;
         mPackageManager = packageManager;
         mHealthPermissions = healthPermissions;
         mPermissionIntentAppsTracker = permissionIntentTracker;
         mFirstGrantTimeManager = firstGrantTimeManager;
+        mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
     }
 
     /**
@@ -250,20 +269,17 @@ public final class HealthConnectPermissionHelper {
      * Returns the date from which an app can read / write health data. See {@link
      * HealthConnectManager#getHealthDataHistoricalAccessStartDate}
      */
-    @Nullable
-    public Instant getHealthDataStartDateAccess(String packageName, UserHandle user)
+    public Optional<Instant> getHealthDataStartDateAccess(String packageName, UserHandle user)
             throws IllegalArgumentException {
         Objects.requireNonNull(packageName);
         enforceManageHealthPermissions(/* message= */ "getHealthDataStartDateAccess");
         UserHandle checkedUser = UserHandle.of(handleIncomingUser(user.getIdentifier()));
         enforceValidPackage(packageName, checkedUser);
 
-        Instant grantTimeDate = mFirstGrantTimeManager.getFirstGrantTime(packageName, checkedUser);
-        if (grantTimeDate == null) {
-            return null;
-        }
-
-        return grantTimeDate.minus(GRANT_TIME_TO_START_ACCESS_DATE_PERIOD);
+        return mFirstGrantTimeManager
+                .getFirstGrantTime(packageName, checkedUser)
+                .map(grantTime -> grantTime.minus(GRANT_TIME_TO_START_ACCESS_DATE_PERIOD))
+                .or(Optional::empty);
     }
 
     /**
@@ -271,14 +287,13 @@ public final class HealthConnectPermissionHelper {
      * throws {@link IllegalAccessException} if health permission is in an incorrect state where
      * first grant time can't be fetched.
      */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @NonNull
     public Instant getHealthDataStartDateAccessOrThrow(String packageName, UserHandle user) {
-        Instant startDateAccess = getHealthDataStartDateAccess(packageName, user);
-        if (startDateAccess == null) {
+        Optional<Instant> startDateAccess = getHealthDataStartDateAccess(packageName, user);
+        if (startDateAccess.isEmpty()) {
             throwExceptionIncorrectPermissionState();
         }
-        return startDateAccess;
+        return startDateAccess.get();
     }
 
     private void throwExceptionIncorrectPermissionState() {
@@ -292,25 +307,21 @@ public final class HealthConnectPermissionHelper {
 
     private void addToPriorityListIfRequired(String packageName, String permissionName) {
         if (HealthPermissions.isWritePermission(permissionName)) {
-            HealthDataCategoryPriorityHelper.getInstance()
-                    .appendToPriorityList(
-                            packageName,
-                            HealthPermissions.getHealthDataCategoryForWritePermission(
-                                    permissionName),
-                            mContext,
-                            /* isInactiveApp= */ false);
+            mHealthDataCategoryPriorityHelper.appendToPriorityList(
+                    packageName,
+                    HealthPermissions.getHealthDataCategoryForWritePermission(permissionName),
+                    mContext,
+                    /* isInactiveApp= */ false);
         }
     }
 
     private void removeFromPriorityListIfRequired(String packageName, String permissionName) {
         if (HealthPermissions.isWritePermission(permissionName)) {
-            HealthDataCategoryPriorityHelper.getInstance()
-                    .maybeRemoveAppFromPriorityList(
-                            packageName,
-                            HealthPermissions.getHealthDataCategoryForWritePermission(
-                                    permissionName),
-                            this,
-                            mContext.getUser());
+            mHealthDataCategoryPriorityHelper.maybeRemoveAppFromPriorityList(
+                    packageName,
+                    HealthPermissions.getHealthDataCategoryForWritePermission(permissionName),
+                    this,
+                    mContext.getUser());
         }
     }
 

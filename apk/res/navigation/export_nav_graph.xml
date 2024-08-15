@@ -32,5 +32,15 @@
         <action
             android:id="@+id/action_exportDestinationFragment_to_exportFrequencyFragment"
             app:destination="@id/exportFrequencyFragment" />
+        <action
+            android:id="@+id/action_exportDestinationFragment_to_playStore"
+            app:destination="@id/play_store_activity" />
     </fragment>
+
+    <activity
+        android:id="@+id/play_store_activity"
+        app:action="android.intent.action.VIEW"
+        android:label="@string/playstore_app_title"
+        app:data="@string/playstore_url"
+        app:targetPackage="@string/playstore_package_name" />
 </navigation>

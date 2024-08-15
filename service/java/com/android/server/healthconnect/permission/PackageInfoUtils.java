@@ -18,6 +18,8 @@ package com.android.server.healthconnect.permission;
 
 import static android.content.pm.PackageManager.GET_PERMISSIONS;
 
+import static java.util.Objects.requireNonNull;
+
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.Context;
@@ -29,11 +31,10 @@ import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Log;
 
-import com.android.internal.annotations.VisibleForTesting;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -41,8 +42,8 @@ import java.util.Set;
  *
  * @hide
  */
-public class PackageInfoUtils {
-    private static final String TAG = "HealthConnectPackageInfoUtils";
+public final class PackageInfoUtils {
+    private static final String TAG = "HCPackageInfoUtils";
 
     @Nullable private static volatile PackageInfoUtils sPackageInfoUtils;
 
@@ -54,24 +55,14 @@ public class PackageInfoUtils {
 
     private PackageInfoUtils() {}
 
+    /** Returns singleton instance of PackageInfoUtils */
     @NonNull
     public static synchronized PackageInfoUtils getInstance() {
         if (sPackageInfoUtils == null) {
             sPackageInfoUtils = new PackageInfoUtils();
         }
 
-        return sPackageInfoUtils;
-    }
-
-    /**
-     * Set an instance of {@link PackageInfoUtils} for testing purposes, such as a mock.
-     *
-     * <p>Passing {@code null} as {@code instance} would result in the actual implementation of
-     * {@link PackageInfoUtils}.
-     */
-    @VisibleForTesting
-    public static synchronized void setInstanceForTest(@Nullable PackageInfoUtils instance) {
-        sPackageInfoUtils = instance;
+        return requireNonNull(sPackageInfoUtils);
     }
 
     @NonNull
@@ -119,8 +110,7 @@ public class PackageInfoUtils {
     }
 
     @Nullable
-    String[] getPackagesForUid(
-            @NonNull int packageUid, @NonNull UserHandle user, @NonNull Context context) {
+    String[] getPackagesForUid(int packageUid, @NonNull UserHandle user, @NonNull Context context) {
         return getPackageManagerAsUser(user, context).getPackagesForUid(packageUid);
     }
 
@@ -132,7 +122,7 @@ public class PackageInfoUtils {
      * @return If the given package is connected to Health Connect.
      */
     public static boolean anyRequestedHealthPermissionGranted(
-            @NonNull Context context, @NonNull PackageInfo packageInfo) {
+            @Nullable Context context, @Nullable PackageInfo packageInfo) {
         if (context == null || packageInfo == null || packageInfo.requestedPermissions == null) {
             Log.w(TAG, "Can't extract requested permissions from the package info.");
             return false;
@@ -166,19 +156,17 @@ public class PackageInfoUtils {
 
     @Nullable
     String getSharedUserNameFromUid(int uid, Context context) {
-        @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-        String[] packages =
-                mUsersPackageManager
-                        .get(UserHandle.getUserHandleForUid(uid))
-                        .getPackagesForUid(uid);
+        UserHandle user = UserHandle.getUserHandleForUid(uid);
+        PackageManager packageManager = getPackageManagerAsUser(user, context);
+        String[] packages = packageManager.getPackagesForUid(uid);
         if (packages == null || packages.length == 0) {
             Log.e(TAG, "Can't get package names for UID: " + uid);
             return null;
         }
         try {
             PackageInfo info =
-                    getPackageManagerAsUser(UserHandle.getUserHandleForUid(uid), context)
-                            .getPackageInfo(packages[0], PackageManager.PackageInfoFlags.of(0));
+                    packageManager.getPackageInfo(
+                            packages[0], PackageManager.PackageInfoFlags.of(0));
             return info.sharedUserId;
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(TAG, "Package " + packages[0] + " not found.");
@@ -186,24 +174,23 @@ public class PackageInfoUtils {
         }
     }
 
-    @Nullable
-    String getPackageNameFromUid(int uid) {
+    Optional<String> getPackageNameFromUid(int uid) {
         String[] packages = getPackageNamesForUid(uid);
-        if (packages == null || packages.length != 1) {
+        if (packages.length != 1) {
             Log.w(TAG, "Can't get one package name for UID: " + uid);
-            return null;
+            return Optional.empty();
         }
-        return packages[0];
+        return Optional.of(packages[0]);
     }
 
-    @Nullable
     String[] getPackageNamesForUid(int uid) {
-        @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-        String[] packages =
-                mUsersPackageManager
-                        .get(UserHandle.getUserHandleForUid(uid))
-                        .getPackagesForUid(uid);
-        return packages;
+        PackageManager packageManager =
+                mUsersPackageManager.get(UserHandle.getUserHandleForUid(uid));
+        if (packageManager == null) {
+            return new String[] {};
+        }
+        String[] packages = packageManager.getPackagesForUid(uid);
+        return packages != null ? packages : new String[] {};
     }
 
     @Nullable

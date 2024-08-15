@@ -24,7 +24,4 @@
     <com.android.healthconnect.controller.shared.preference.HealthPreference
         android:key="set_units"
         android:title="@string/set_units_title"/>
-    <com.android.healthconnect.controller.shared.preference.HealthPreference
-        android:key="backup_and_restore"
-        android:title="@string/backup_and_restore_settings_screen_title"/>
 </PreferenceScreen>

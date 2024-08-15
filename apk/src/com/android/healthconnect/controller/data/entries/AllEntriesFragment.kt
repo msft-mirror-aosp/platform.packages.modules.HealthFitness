@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.VERTICAL
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.Empty
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.Loading
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.LoadingFailed
@@ -35,9 +36,10 @@ import com.android.healthconnect.controller.data.entries.EntriesViewModel.Entrie
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationView
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsFragment
-import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings.Companion.fromPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
-import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.permissions.data.fromPermissionTypeName
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
@@ -73,14 +75,13 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                     .navigate(
                         R.id.action_entriesAndAccessFragment_to_dataEntryDetailsFragment,
                         DataEntryDetailsFragment.createBundle(
-                            permissionType, id, showDataOrigin = true))
+                            permissionType as FitnessPermissionType, id, showDataOrigin = true))
             }
         }
     }
-    private val aggregationViewBinder by lazy {
-        com.android.healthconnect.controller.data.entries.AggregationViewBinder()
-    }
+    private val aggregationViewBinder by lazy { AggregationViewBinder() }
     private val entryViewBinder by lazy { EntryItemViewBinder() }
+    private val medicalEntryViewBinder by lazy { MedicalEntryItemViewBinder() }
     private val sectionTitleViewBinder by lazy { SectionTitleViewBinder() }
     private val sleepSessionViewBinder by lazy {
         SleepSessionItemViewBinder(onItemClickedListener = onClickEntryListener)
@@ -99,12 +100,13 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     ): View? {
 
         val view = inflater.inflate(R.layout.fragment_entries, container, false)
-        if (requireArguments().containsKey(PERMISSION_TYPE_KEY)) {
-            permissionType =
-                arguments?.getSerializable(PERMISSION_TYPE_KEY, HealthPermissionType::class.java)
-                    ?: throw IllegalArgumentException("PERMISSION_TYPE_KEY can't be null!")
+        if (requireArguments().containsKey(PERMISSION_TYPE_NAME_KEY)) {
+            val permissionTypeName =
+                arguments?.getString(PERMISSION_TYPE_NAME_KEY)
+                    ?: throw IllegalArgumentException("PERMISSION_TYPE_NAME_KEY can't be null!")
+            permissionType = fromPermissionTypeName(permissionTypeName)
         }
-        setTitle(fromPermissionType(permissionType).uppercaseLabel)
+        setTitle(permissionType.upperCaseLabel())
         setupMenu(R.menu.set_data_units_with_send_feedback_and_help, viewLifecycleOwner, logger) {
             menuItem ->
             when (menuItem.itemId) {
@@ -120,12 +122,17 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         logger.logImpression(ToolbarElement.TOOLBAR_SETTINGS_BUTTON)
 
         dateNavigationView = view.findViewById(R.id.date_navigation_view)
+        if (permissionType is MedicalPermissionType) {
+            dateNavigationView.isVisible = false
+        }
         noDataView = view.findViewById(R.id.no_data_view)
         errorView = view.findViewById(R.id.error_view)
         loadingView = view.findViewById(R.id.loading)
         adapter =
             RecyclerViewAdapter.Builder()
                 .setViewBinder(FormattedEntry.FormattedDataEntry::class.java, entryViewBinder)
+                .setViewBinder(
+                    FormattedEntry.FormattedMedicalDataEntry::class.java, medicalEntryViewBinder)
                 .setViewBinder(FormattedEntry.SleepSessionEntry::class.java, sleepSessionViewBinder)
                 .setViewBinder(
                     FormattedEntry.ExerciseSessionEntry::class.java, exerciseSessionItemViewBinder)
@@ -162,7 +169,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
 
     override fun onResume() {
         super.onResume()
-        setTitle(fromPermissionType(permissionType).uppercaseLabel)
+        setTitle(permissionType.upperCaseLabel())
         if (entriesViewModel.currentSelectedDate.value != null &&
             entriesViewModel.period.value != null) {
             val date = entriesViewModel.currentSelectedDate.value!!

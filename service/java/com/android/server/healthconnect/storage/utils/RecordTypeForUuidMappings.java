@@ -39,6 +39,7 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_LEAN_BODY_MASS;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_MENSTRUATION_FLOW;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_MENSTRUATION_PERIOD;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_NUTRITION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_OVULATION_TEST;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_OXYGEN_SATURATION;
@@ -115,6 +116,7 @@ public final class RecordTypeForUuidMappings {
         sInternalTypeToSpecialTypeMap.put(RECORD_TYPE_INTERMENSTRUAL_BLEEDING, 70);
         sInternalTypeToSpecialTypeMap.put(RECORD_TYPE_SKIN_TEMPERATURE, 71);
         sInternalTypeToSpecialTypeMap.put(RECORD_TYPE_PLANNED_EXERCISE_SESSION, 72);
+        sInternalTypeToSpecialTypeMap.put(RECORD_TYPE_MINDFULNESS_SESSION, 73);
     }
 
     private RecordTypeForUuidMappings() {}

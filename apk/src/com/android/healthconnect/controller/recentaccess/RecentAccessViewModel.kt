@@ -24,22 +24,24 @@ import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.RecentAccessState.Loading
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
+import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
 import com.android.healthconnect.controller.shared.dataTypeToCategory
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.postValueIfUpdated
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.Instant
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class RecentAccessViewModel
 @Inject
 constructor(
     private val appInfoReader: AppInfoReader,
+    private val healthPermissionsReader: HealthPermissionReader,
     private val loadHealthPermissionApps: ILoadHealthPermissionApps,
     private val loadRecentAccessUseCase: ILoadRecentAccessUseCase,
     private val timeSource: TimeSource
@@ -69,9 +71,7 @@ constructor(
         }
     }
 
-    private suspend fun getRecentAccessAppsClusters(
-        maxNumEntries: Int
-    ): List<RecentAccessEntry> {
+    private suspend fun getRecentAccessAppsClusters(maxNumEntries: Int): List<RecentAccessEntry> {
         val accessLogs = loadRecentAccessUseCase.invoke()
         val connectedApps = loadHealthPermissionApps.invoke()
         val inactiveApps =
@@ -87,7 +87,7 @@ constructor(
                 it.isInactive = true
             }
             if (inactiveApps.contains(it.metadata.packageName) ||
-                appInfoReader.isAppInstalled(it.metadata.packageName)) {
+                appInfoReader.isAppEnabled(it.metadata.packageName)) {
                 filteredClusters.add(it)
             }
         }
@@ -162,9 +162,7 @@ constructor(
             .take(if (maxNumEntries != -1) maxNumEntries else dataAccessEntries.size)
     }
 
-    private suspend fun initDataAccessEntryCluster(
-        accessLog: AccessLog
-    ): DataAccessEntryCluster {
+    private suspend fun initDataAccessEntryCluster(accessLog: AccessLog): DataAccessEntryCluster {
         val newCluster =
             DataAccessEntryCluster(
                 latestTime = accessLog.accessTime,
@@ -172,7 +170,10 @@ constructor(
                 recentDataAccessEntry =
                     RecentAccessEntry(
                         metadata =
-                            appInfoReader.getAppMetadata(packageName = accessLog.packageName)))
+                            appInfoReader.getAppMetadata(packageName = accessLog.packageName),
+                        appPermissionsType =
+                            healthPermissionsReader.getAppPermissionsType(
+                                packageName = accessLog.packageName)))
 
         updateDataAccessEntryCluster(newCluster, accessLog)
         return newCluster
@@ -213,7 +214,9 @@ constructor(
 
     sealed class RecentAccessState {
         object Loading : RecentAccessState()
+
         object Error : RecentAccessState()
+
         data class WithData(val recentAccessEntries: List<RecentAccessEntry>) : RecentAccessState()
     }
 }

@@ -67,8 +67,14 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
     private final Object mPriorityMigrationHelperInstanceLock = new Object();
     private Map<Integer, List<Long>> mPreMigrationPriorityCache;
 
+    private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private final TransactionManager mTransactionManager;
+
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private PriorityMigrationHelper() {}
+    private PriorityMigrationHelper() {
+        mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
+        mTransactionManager = TransactionManager.getInitialisedInstance();
+    }
 
     /**
      * Populate the pre-migration priority table by copying entries from priority table at the start
@@ -77,9 +83,7 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
     public void populatePreMigrationPriority() {
         synchronized (mPriorityMigrationHelperInstanceLock) {
             // Populating table only if it was not already populated.
-            if (TransactionManager.getInitialisedInstance()
-                            .getNumberOfEntriesInTheTable(PRE_MIGRATION_TABLE_NAME)
-                    == 0) {
+            if (mTransactionManager.getNumberOfEntriesInTheTable(PRE_MIGRATION_TABLE_NAME) == 0) {
                 populatePreMigrationTable();
             }
         }
@@ -105,9 +109,8 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
      */
     private void cachePreMigrationTable() {
         Map<Integer, List<Long>> preMigrationCategoryPriorityMap = new HashMap<>();
-        TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
         try (Cursor cursor =
-                transactionManager.read(new ReadTableRequest(PRE_MIGRATION_TABLE_NAME))) {
+                mTransactionManager.read(new ReadTableRequest(PRE_MIGRATION_TABLE_NAME))) {
             while (cursor.moveToNext()) {
                 int dataCategory = cursor.getInt(cursor.getColumnIndex(CATEGORY_COLUMN_NAME));
                 List<Long> appIdsInOrder =
@@ -130,7 +133,7 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
 
     /** Returns a requests for creating pre-migration priority table. */
     @NonNull
-    public CreateTableRequest getCreateTableRequest() {
+    public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(PRE_MIGRATION_TABLE_NAME, getColumnInfo());
     }
 
@@ -145,10 +148,9 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
      */
     private void populatePreMigrationTable() {
         Map<Integer, List<Long>> existingPriority =
-                HealthDataCategoryPriorityHelper.getInstance()
+                mHealthDataCategoryPriorityHelper
                         .getHealthDataCategoryToAppIdPriorityMapImmutable();
 
-        TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
         existingPriority.forEach(
                 (category, priority) -> {
                     if (!priority.isEmpty()) {
@@ -157,7 +159,7 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
                                         PRE_MIGRATION_TABLE_NAME,
                                         getContentValuesFor(category, priority),
                                         UNIQUE_COLUMN_INFO);
-                        transactionManager.insert(request);
+                        mTransactionManager.insert(request);
                     }
                 });
         if (existingPriority.values().stream()
@@ -174,16 +176,15 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
                             PRE_MIGRATION_TABLE_NAME,
                             getContentValuesFor(HealthDataCategory.UNKNOWN, new ArrayList<>()),
                             UNIQUE_COLUMN_INFO);
-            transactionManager.insert(request);
+            mTransactionManager.insert(request);
         }
     }
 
     /**
      * This implementation should return the column names with which the table should be created.
      */
-    @Override
     @NonNull
-    protected List<Pair<String, String>> getColumnInfo() {
+    private static List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(CATEGORY_COLUMN_NAME, INTEGER_UNIQUE));
         columnInfo.add(new Pair<>(PRIORITY_ORDER_COLUMN_NAME, TEXT_NOT_NULL));
@@ -213,5 +214,14 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
         }
 
         return sPriorityMigrationHelper;
+    }
+
+    /** Used in testing to clear the instance to clear and re-reference the mocks. */
+    @VisibleForTesting
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    static void clearInstanceForTest() {
+        synchronized (sPriorityMigrationHelperLock) {
+            sPriorityMigrationHelper = null;
+        }
     }
 }
