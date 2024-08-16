@@ -155,7 +155,12 @@
             android:name=".exportimport.ImportFlowActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.HealthConnect" />
+            android:theme="@style/Theme.HealthConnect">
+            <intent-filter android:priority="1">
+                <action android:name="android.health.connect.action.START_IMPORT_FLOW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <provider
             android:name=".searchindexables.HealthConnectSearchIndexablesProvider"

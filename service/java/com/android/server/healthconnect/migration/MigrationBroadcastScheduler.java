@@ -52,14 +52,17 @@ public final class MigrationBroadcastScheduler {
     static final String MIGRATION_BROADCAST_NAMESPACE = "HEALTH_CONNECT_MIGRATION_BROADCAST";
 
     private final Object mLock = new Object();
-    private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager =
-            HealthConnectDeviceConfigManager.getInitialisedInstance();
+    private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
+    private final MigrationStateManager mMigrationStateManager;
 
     @GuardedBy("mLock")
     private int mUserId;
 
     public MigrationBroadcastScheduler(int userId) {
         mUserId = userId;
+        mHealthConnectDeviceConfigManager =
+                HealthConnectDeviceConfigManager.getInitialisedInstance();
+        mMigrationStateManager = MigrationStateManager.getInitialisedInstance();
     }
 
     /** Sets userId. Invoked when the user is switched. */
@@ -79,7 +82,7 @@ public final class MigrationBroadcastScheduler {
      */
     public void scheduleNewJobs(Context context) {
         synchronized (mLock) {
-            int migrationState = MigrationStateManager.getInitialisedInstance().getMigrationState();
+            int migrationState = mMigrationStateManager.getMigrationState();
 
             if (Constants.DEBUG) {
                 Slog.d(TAG, "Current migration state: " + migrationState);

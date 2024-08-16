@@ -21,6 +21,7 @@ import static android.health.connect.datatypes.AggregationType.AggregationTypeId
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.ELEVATION_RECORD_ELEVATION_GAINED_TOTAL;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.EXERCISE_SESSION_DURATION_TOTAL;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.FLOORS_CLIMBED_RECORD_FLOORS_CLIMBED_TOTAL;
+import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.MINDFULNESS_SESSION_DURATION_TOTAL;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.SLEEP_SESSION_DURATION_TOTAL;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.STEPS_RECORD_COUNT_TOTAL;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.WHEEL_CHAIR_PUSHES_RECORD_COUNT_TOTAL;
@@ -56,7 +57,7 @@ public class PriorityRecordsAggregator {
     private final Map<Integer, ZoneOffset> mGroupToFirstZoneOffset;
     private final int mNumberOfGroups;
     private int mCurrentGroup = -1;
-    private long mLatestPopulatedStart = -1;
+    private long mLatestPopulatedStart = Long.MIN_VALUE;
     @AggregationType.AggregationTypeIdentifier private final int mAggregationType;
 
     private final TreeSet<AggregationTimestamp> mTimestampsBuffer;
@@ -187,7 +188,6 @@ public class PriorityRecordsAggregator {
         if (HealthConnectDeviceConfigManager.getInitialisedInstance()
                         .isAggregationSourceControlsEnabled()
                 && priority == Integer.MIN_VALUE) {
-            Slog.d(TAG, "App out of priority list, ignoring data " + data);
             return null;
         }
 
@@ -195,7 +195,6 @@ public class PriorityRecordsAggregator {
         // solution
         if (data.getStartTime() > data.getEndTime()) {
             // skip records with start time > end time to keep the algorithm functional
-            Slog.w(TAG, "Problematic data point, skip");
             return null;
         }
 
@@ -208,7 +207,6 @@ public class PriorityRecordsAggregator {
     AggregationRecordData readNewData(Cursor cursor) {
         AggregationRecordData data = createAggregationRecordData();
         data.populateAggregationData(cursor, mUseLocalTime, mAppIdToPriority);
-        Slog.d(TAG, "Reading data " + data + " useLocalTime = " + mUseLocalTime);
         return data;
     }
 
@@ -235,7 +233,9 @@ public class PriorityRecordsAggregator {
                     new ValueColumnAggregationData(
                             mExtraParams.getColumnToAggregateName(),
                             mExtraParams.getColumnToAggregateType());
-            case SLEEP_SESSION_DURATION_TOTAL, EXERCISE_SESSION_DURATION_TOTAL ->
+            case SLEEP_SESSION_DURATION_TOTAL,
+                            EXERCISE_SESSION_DURATION_TOTAL,
+                            MINDFULNESS_SESSION_DURATION_TOTAL ->
                     new SessionDurationAggregationData(
                             mExtraParams.getExcludeIntervalStartColumnName(),
                             mExtraParams.getExcludeIntervalEndColumnName());
@@ -277,7 +277,9 @@ public class PriorityRecordsAggregator {
             mGroupToAggregationResult.put(mCurrentGroup, 0.0d);
         }
 
-        Slog.d(TAG, "Update result with: " + mOpenIntervals.last());
+        if (Constants.DEBUG) {
+            Slog.d(TAG, "Update result with: " + mOpenIntervals.last());
+        }
 
         mGroupToAggregationResult.put(
                 mCurrentGroup,

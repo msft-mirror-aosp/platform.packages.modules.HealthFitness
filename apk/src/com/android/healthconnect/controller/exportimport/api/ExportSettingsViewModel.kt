@@ -40,6 +40,8 @@ constructor(
     private val _selectedExportFrequency = MutableLiveData<ExportFrequency>()
     private val _previousExportFrequency = MutableLiveData<ExportFrequency?>()
     private val _documentProviders = MutableLiveData<DocumentProviders>()
+    private val _selectedDocumentProvider = MutableLiveData<DocumentProviderInfo?>()
+    private val _selectedDocumentProviderRoot = MutableLiveData<DocumentProviderRoot?>()
 
     /** Holds the export settings that is stored in the Health Connect service. */
     val storedExportSettings: LiveData<ExportSettings>
@@ -57,6 +59,14 @@ constructor(
     val documentProviders: LiveData<DocumentProviders>
         get() = _documentProviders
 
+    /** Holds the user selected document provider. */
+    val selectedDocumentProvider: LiveData<DocumentProviderInfo?>
+        get() = _selectedDocumentProvider
+
+    /** Holds the user selected document provider. */
+    val selectedDocumentProviderRoot: LiveData<DocumentProviderRoot?>
+        get() = _selectedDocumentProviderRoot
+
     init {
         loadExportSettings()
         loadDocumentProviders()
@@ -68,10 +78,10 @@ constructor(
         _storedExportSettings.postValue(ExportSettings.Loading)
         viewModelScope.launch {
             when (val result = loadExportSettingsUseCase.invoke()) {
-                is ExportUseCaseResult.Success -> {
+                is ExportImportUseCaseResult.Success -> {
                     _storedExportSettings.postValue(ExportSettings.WithData(result.data))
                 }
-                is ExportUseCaseResult.Failed -> {
+                is ExportImportUseCaseResult.Failed -> {
                     _storedExportSettings.postValue(ExportSettings.LoadingFailed)
                 }
             }
@@ -83,10 +93,10 @@ constructor(
         _documentProviders.postValue(DocumentProviders.Loading)
         viewModelScope.launch {
             when (val result = queryDocumentProvidersUseCase.invoke()) {
-                is ExportUseCaseResult.Success -> {
+                is ExportImportUseCaseResult.Success -> {
                     _documentProviders.postValue(DocumentProviders.WithData(result.data))
                 }
-                is ExportUseCaseResult.Failed -> {
+                is ExportImportUseCaseResult.Failed -> {
                     _documentProviders.postValue(DocumentProviders.LoadingFailed)
                 }
             }
@@ -102,7 +112,7 @@ constructor(
 
     /** Updates the uri to write to in scheduled exports of Health Connect data. */
     fun updateExportUri(uri: Uri) {
-        val settings = ScheduledExportSettings.withUri(uri)
+        val settings = ScheduledExportSettings.Builder().setUri(uri).build()
         updateExportSettings(settings)
     }
 
@@ -112,17 +122,19 @@ constructor(
      */
     fun updateExportUriWithSelectedFrequency(uri: Uri) {
         val settings =
-            ScheduledExportSettings.withUriAndPeriodInDays(
-                uri,
-                _selectedExportFrequency.value?.periodInDays
-                    ?: ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays
-            )
+            ScheduledExportSettings.Builder()
+                .setPeriodInDays(
+                    _selectedExportFrequency.value?.periodInDays
+                        ?: ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays)
+                .setUri(uri)
+                .build()
         updateExportSettings(settings)
     }
 
     /** Updates the frequency of scheduled exports of Health Connect data. */
     fun updateExportFrequency(frequency: ExportFrequency) {
-        val settings = ScheduledExportSettings.withPeriodInDays(frequency.periodInDays)
+        val settings =
+            ScheduledExportSettings.Builder().setPeriodInDays(frequency.periodInDays).build()
         updateExportSettings(settings)
     }
 
@@ -131,16 +143,25 @@ constructor(
         _selectedExportFrequency.value = frequency
     }
 
+    /** Updates the selected document provider. */
+    fun updateSelectedDocumentProvider(
+        documentProvider: DocumentProviderInfo,
+        documentProviderRoot: DocumentProviderRoot
+    ) {
+        _selectedDocumentProvider.value = documentProvider
+        _selectedDocumentProviderRoot.value = documentProviderRoot
+    }
+
     private fun updateExportSettings(settings: ScheduledExportSettings) {
         viewModelScope.launch {
             when (updateExportSettingsUseCase.invoke(settings)) {
-                is ExportUseCaseResult.Success -> {
+                is ExportImportUseCaseResult.Success -> {
                     if (settings.periodInDays != DEFAULT_INT) {
                         val frequency = fromPeriodInDays(settings.periodInDays)
                         _storedExportSettings.postValue(ExportSettings.WithData(frequency))
                     }
                 }
-                is ExportUseCaseResult.Failed -> {
+                is ExportImportUseCaseResult.Failed -> {
                     _storedExportSettings.postValue(ExportSettings.LoadingFailed)
                 }
             }

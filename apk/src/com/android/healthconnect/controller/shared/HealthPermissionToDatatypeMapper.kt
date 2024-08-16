@@ -38,6 +38,7 @@ import android.health.connect.datatypes.IntermenstrualBleedingRecord
 import android.health.connect.datatypes.LeanBodyMassRecord
 import android.health.connect.datatypes.MenstruationFlowRecord
 import android.health.connect.datatypes.MenstruationPeriodRecord
+import android.health.connect.datatypes.MindfulnessSessionRecord
 import android.health.connect.datatypes.NutritionRecord
 import android.health.connect.datatypes.OvulationTestRecord
 import android.health.connect.datatypes.OxygenSaturationRecord
@@ -56,44 +57,45 @@ import android.health.connect.datatypes.TotalCaloriesBurnedRecord
 import android.health.connect.datatypes.Vo2MaxRecord
 import android.health.connect.datatypes.WeightRecord
 import android.health.connect.datatypes.WheelchairPushesRecord
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.ACTIVE_CALORIES_BURNED
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.BASAL_BODY_TEMPERATURE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.BASAL_METABOLIC_RATE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.BLOOD_GLUCOSE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.BLOOD_PRESSURE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.BODY_FAT
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.BODY_TEMPERATURE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.BODY_WATER_MASS
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.BONE_MASS
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.CERVICAL_MUCUS
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.DISTANCE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.ELEVATION_GAINED
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.EXERCISE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.FLOORS_CLIMBED
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.HEART_RATE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.HEART_RATE_VARIABILITY
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.HEIGHT
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.HYDRATION
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.INTERMENSTRUAL_BLEEDING
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.LEAN_BODY_MASS
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.MENSTRUATION
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.NUTRITION
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.OVULATION_TEST
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.OXYGEN_SATURATION
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.PLANNED_EXERCISE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.POWER
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.RESPIRATORY_RATE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.RESTING_HEART_RATE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.SEXUAL_ACTIVITY
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.SKIN_TEMPERATURE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.SLEEP
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.SPEED
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.STEPS
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.TOTAL_CALORIES_BURNED
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.VO2_MAX
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.WEIGHT
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.WHEELCHAIR_PUSHES
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.ACTIVE_CALORIES_BURNED
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.BASAL_BODY_TEMPERATURE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.BASAL_METABOLIC_RATE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.BLOOD_GLUCOSE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.BLOOD_PRESSURE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.BODY_FAT
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.BODY_TEMPERATURE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.BODY_WATER_MASS
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.BONE_MASS
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.CERVICAL_MUCUS
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.DISTANCE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.ELEVATION_GAINED
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.EXERCISE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.FLOORS_CLIMBED
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.HEART_RATE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.HEART_RATE_VARIABILITY
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.HEIGHT
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.HYDRATION
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.INTERMENSTRUAL_BLEEDING
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.LEAN_BODY_MASS
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.MENSTRUATION
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.MINDFULNESS
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.NUTRITION
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.OVULATION_TEST
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.OXYGEN_SATURATION
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.PLANNED_EXERCISE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.POWER
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.RESPIRATORY_RATE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.RESTING_HEART_RATE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.SEXUAL_ACTIVITY
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.SKIN_TEMPERATURE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.SLEEP
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.SPEED
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.TOTAL_CALORIES_BURNED
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.VO2_MAX
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.WEIGHT
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.WHEELCHAIR_PUSHES
 
 object HealthPermissionToDatatypeMapper {
     private val map =
@@ -136,13 +138,15 @@ object HealthPermissionToDatatypeMapper {
             INTERMENSTRUAL_BLEEDING to listOf(IntermenstrualBleedingRecord::class.java),
             HEART_RATE_VARIABILITY to listOf(HeartRateVariabilityRmssdRecord::class.java),
             SKIN_TEMPERATURE to listOf(SkinTemperatureRecord::class.java),
-            PLANNED_EXERCISE to listOf(PlannedExerciseSessionRecord::class.java))
+            PLANNED_EXERCISE to listOf(PlannedExerciseSessionRecord::class.java),
+            MINDFULNESS to listOf(MindfulnessSessionRecord::class.java),
+            )
 
-    fun getDataTypes(permissionType: HealthPermissionType): List<Class<out Record>> {
+    fun getDataTypes(permissionType: FitnessPermissionType): List<Class<out Record>> {
         return map[permissionType].orEmpty()
     }
 
-    fun getAllDataTypes(): Map<HealthPermissionType, List<Class<out Record>>> {
+    fun getAllDataTypes(): Map<FitnessPermissionType, List<Class<out Record>>> {
         return map
     }
 }

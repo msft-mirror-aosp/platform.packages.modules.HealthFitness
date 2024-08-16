@@ -41,7 +41,7 @@ class CategoryListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val recyclerView: RecyclerView = view.findViewById(R.id.list_recycler_view)
+        val recyclerView: RecyclerView = view.requireViewById(R.id.list_recycler_view)
         mDataSet = HealthDataCategory.values().asList()
         mNavigationController = findNavController()
 

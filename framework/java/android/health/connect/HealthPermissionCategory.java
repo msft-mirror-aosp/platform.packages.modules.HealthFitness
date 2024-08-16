@@ -170,7 +170,7 @@ public class HealthPermissionCategory {
     // WELLNESS
     /** Permission category for {@link MindfulnessSessionRecord}. */
     @FlaggedApi(FLAG_MINDFULNESS)
-    public static final int MINDFULNESS_SESSION = 41;
+    public static final int MINDFULNESS = 41;
 
     private HealthPermissionCategory() {}
 
@@ -214,7 +214,7 @@ public class HealthPermissionCategory {
         RESTING_HEART_RATE,
         SKIN_TEMPERATURE,
         PLANNED_EXERCISE,
-        MINDFULNESS_SESSION
+        MINDFULNESS
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Type {}

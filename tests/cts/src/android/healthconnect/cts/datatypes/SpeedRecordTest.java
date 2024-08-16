@@ -54,7 +54,7 @@ import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Assert;

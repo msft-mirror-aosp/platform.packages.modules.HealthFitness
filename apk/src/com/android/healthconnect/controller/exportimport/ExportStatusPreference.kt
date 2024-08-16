@@ -18,6 +18,8 @@ package com.android.healthconnect.controller.exportimport
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.TextView
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
@@ -27,6 +29,7 @@ import com.android.healthconnect.controller.R
 class ExportStatusPreference(
     context: Context,
     private val exportTime: String,
+    private val exportLocation: String?,
     attrs: AttributeSet? = null
 ) : Preference(context, attrs) {
     // TODO: b/325914485 - Add proper logging for this preference.
@@ -45,5 +48,13 @@ class ExportStatusPreference(
 
         val exportTimeTextView = holder.findViewById(R.id.export_time) as TextView
         exportTimeTextView.text = this.exportTime
+
+        val exportLocationTextView = holder.findViewById(R.id.export_file_location) as TextView
+        if (this.exportLocation.isNullOrEmpty()) {
+            exportLocationTextView.visibility = GONE
+        } else {
+            exportLocationTextView.visibility = VISIBLE
+            exportLocationTextView.text = this.exportLocation
+        }
     }
 }

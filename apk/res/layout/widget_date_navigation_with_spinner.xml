@@ -67,7 +67,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/navigation_selected_day"
-            android:textAppearance="?attr/textAppearanceLabel"
-            style="?attr/spinnerStyle" />
+            style="?attr/spinnerStyle"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

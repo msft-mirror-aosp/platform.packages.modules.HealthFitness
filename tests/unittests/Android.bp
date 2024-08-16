@@ -36,6 +36,9 @@ android_test {
     static_libs: [
         "service-healthfitness.impl",
         "framework-healthfitness.impl",
+        "healthfitness-aconfig-flags-lib",
+        "healthfitness-aconfig-flags-helper",
+        "flag-junit",
         "androidx.test.runner",
         "mockito-target-extended-minus-junit4",
         "truth",
@@ -43,7 +46,6 @@ android_test {
         "androidx.test.ext.truth",
         "cts-healthconnect-utils",
         "flag-junit",
-        "healthfitness-aconfig-flags-lib",
         "truth-java8-extension",
     ],
     jni_libs: [

@@ -28,6 +28,7 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.api.DocumentProvider
+import com.android.healthconnect.controller.exportimport.api.DocumentProviderInfo
 import com.android.healthconnect.controller.exportimport.api.DocumentProviderRoot
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.utils.logging.ErrorPageElement
@@ -36,9 +37,11 @@ import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 class DocumentProvidersViewBinder {
     fun bindDocumentProvidersView(
         documentProviders: List<DocumentProvider>,
+        selectedDocumentProvider: DocumentProviderInfo?,
+        selectedDocumentProviderRoot: DocumentProviderRoot?,
         documentProvidersView: ViewGroup,
         inflater: LayoutInflater,
-        onSelectionChanged: (root: DocumentProviderRoot) -> Unit
+        onSelectionChanged: (provider: DocumentProviderInfo, root: DocumentProviderRoot) -> Unit
     ) {
         for (documentProvider in documentProviders) {
             val documentProviderView =
@@ -65,17 +68,30 @@ class DocumentProvidersViewBinder {
                 val root = documentProvider.roots[0]
 
                 summaryView.setText(root.summary)
-                summaryView.setVisibility(VISIBLE)
+                if (root.summary.isNotEmpty()) {
+                    summaryView.setVisibility(VISIBLE)
+                } else {
+                    summaryView.setVisibility(GONE)
+                }
 
-                documentProviderView.setOnClickListener {
-                    uncheckRadioButtons(documentProvidersView)
+                if (documentProviders.size == 1) {
                     radioButtonView.setChecked(true)
+                    onSelectionChanged(documentProvider.info, root)
+                } else {
+                    documentProviderView.setOnClickListener {
+                        uncheckRadioButtons(documentProvidersView)
+                        radioButtonView.setChecked(true)
 
-                    onSelectionChanged(root)
+                        onSelectionChanged(documentProvider.info, root)
+                    }
                 }
             } else {
-                summaryView.setText("")
-                summaryView.setVisibility(GONE)
+                if (documentProviders.size == 1) {
+                    summaryView.setText(R.string.export_import_tap_to_choose_account)
+                } else {
+                    summaryView.setText("")
+                    summaryView.setVisibility(GONE)
+                }
 
                 documentProviderView.setOnClickListener {
                     showChooseAccountDialog(inflater, documentProvider.roots) { root ->
@@ -85,7 +101,21 @@ class DocumentProvidersViewBinder {
                         summaryView.setText(root.summary)
                         summaryView.setVisibility(VISIBLE)
 
-                        onSelectionChanged(root)
+                        onSelectionChanged(documentProvider.info, root)
+                    }
+                }
+            }
+
+            selectedDocumentProvider?.let { selectedProvider ->
+                if (documentProvider.info == selectedProvider) {
+                    uncheckRadioButtons(documentProvidersView)
+                    radioButtonView.setChecked(true)
+
+                    selectedDocumentProviderRoot?.let { selectedRoot ->
+                        summaryView.setText(selectedRoot.summary)
+                        summaryView.setVisibility(VISIBLE)
+
+                        onSelectionChanged(documentProvider.info, selectedRoot)
                     }
                 }
             }
@@ -118,7 +148,7 @@ class DocumentProvidersViewBinder {
         // TODO: b/339189778 - Add proper logging for the account picker dialog.
         AlertDialogBuilder(inflater.context, ErrorPageElement.UNKNOWN_ELEMENT)
             .setView(view)
-            .setNegativeButton(
+            .setNeutralButton(
                 R.string.export_import_choose_account_cancel_button,
                 ErrorPageElement.UNKNOWN_ELEMENT)
             .setPositiveButton(

@@ -53,6 +53,7 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.util.ArrayMap;
 import android.util.Pair;
+import android.util.Slog;
 
 import androidx.annotation.Nullable;
 
@@ -65,6 +66,7 @@ import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.OrderByClause;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
+import com.android.server.healthconnect.storage.utils.TableColumnPair;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.lang.reflect.InvocationTargetException;
@@ -185,9 +187,10 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     /**
      * Used to get the Aggregate result for aggregate types
      *
-     * @return {@link AggregateResult} for {@link AggregationType}
+     * @return {@link AggregateResult} for {@link AggregationType} or null if that aggregation type
+     *     is not handled.
      */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    @Nullable
     public AggregateResult<?> getAggregateResult(
             Cursor cursor, AggregationType<?> aggregationType) {
         return null;
@@ -221,7 +224,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     public final CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(getMainTableName(), getColumnInfo())
                 .addForeignKey(
-                        DeviceInfoHelper.getInstance().getTableName(),
+                        DeviceInfoHelper.getInstance().getMainTableName(),
                         Collections.singletonList(DEVICE_INFO_ID_COLUMN_NAME),
                         Collections.singletonList(PRIMARY_COLUMN_NAME))
                 .addForeignKey(
@@ -569,6 +572,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                 | IllegalAccessException
                 | NoSuchMethodException
                 | InvocationTargetException exception) {
+            Slog.e("HealthConnectRecordHelper", "Failed to read", exception);
             throw new IllegalArgumentException(exception);
         }
     }
@@ -913,24 +917,5 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     public List<ReadTableRequest> getReadRequestsForRecordsModifiedByUpsertion(
             UUID upsertedRecordId, UpsertTableRequest upsertTableRequest) {
         return Collections.emptyList();
-    }
-
-    /** Represents a table and a column within that table. */
-    public static final class TableColumnPair {
-        TableColumnPair(String tableName, String columnName) {
-            this.mTableName = tableName;
-            this.mColumnName = columnName;
-        }
-
-        public String getTableName() {
-            return mTableName;
-        }
-
-        public String getColumnName() {
-            return mColumnName;
-        }
-
-        private final String mTableName;
-        private final String mColumnName;
     }
 }

@@ -30,6 +30,7 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 /** ViewBinder for ExerciseSessionEntry. */
 class ExerciseSessionItemViewBinder(
     private val showSecondAction: Boolean = true,
@@ -43,7 +44,9 @@ class ExerciseSessionItemViewBinder(
         val context = parent.context.applicationContext
         val hiltEntryPoint =
             EntryPointAccessors.fromApplication(
-                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
+                context.applicationContext,
+                HealthConnectLoggerEntryPoint::class.java,
+            )
         logger = hiltEntryPoint.logger()
         return LayoutInflater.from(parent.context)
             .inflate(R.layout.item_exercise_session_entry, parent, false)
@@ -78,12 +81,14 @@ class ExerciseSessionItemViewBinder(
 
         deleteButton.contentDescription =
             view.resources.getString(
-                R.string.data_point_action_content_description, data.headerA11y)
+                R.string.data_point_action_content_description,
+                data.headerA11y,
+            )
         deleteButton.setOnClickListener {
             logger.logInteraction(DataEntriesElement.DATA_ENTRY_DELETE_BUTTON)
             onDeleteEntryClicked?.onDeleteEntry(data.uuid, data.dataType, index)
         }
-        if (showSecondAction) {
+        if (showSecondAction && data.isClickable) {
             container.setOnClickListener {
                 logger.logInteraction(DataEntriesElement.EXERCISE_SESSION_ENTRY_BUTTON)
                 onItemClickedListener?.onItemClicked(data.uuid, index)

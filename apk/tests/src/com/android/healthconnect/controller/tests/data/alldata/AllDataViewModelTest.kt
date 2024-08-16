@@ -29,13 +29,14 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.alldata.AllDataViewModel
 import com.android.healthconnect.controller.data.appdata.AppDataUseCase
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.getDataOrigin
 import com.android.healthconnect.controller.tests.utils.setLocale
+import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -88,28 +89,32 @@ class AllDataViewModelTest {
     }
 
     @Test
-    fun loadAllData_noData_returnsEmptyList() = runTest {
+    fun loadAllData_noFitnessData_returnsEmptyList() = runTest {
         doAnswer(prepareAnswer(mapOf())).`when`(manager).queryAllRecordTypesInfo(any(), any())
 
         val testObserver = TestObserver<AllDataViewModel.AllDataState>()
         viewModel.allData.observeForever(testObserver)
-        viewModel.loadAllData()
+        viewModel.loadAllFitnessData()
         advanceUntilIdle()
 
         val expected =
-            listOf(
+            listOfNotNull(
                 PermissionTypesPerCategory(HealthDataCategory.ACTIVITY, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.BODY_MEASUREMENTS, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.CYCLE_TRACKING, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.NUTRITION, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.SLEEP, listOf()),
-                PermissionTypesPerCategory(HealthDataCategory.VITALS, listOf()))
+                PermissionTypesPerCategory(HealthDataCategory.VITALS, listOf()),
+                PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()).takeIf {
+                    Flags.mindfulness()
+                },
+            )
         assertThat(testObserver.getLastValue())
             .isEqualTo(AllDataViewModel.AllDataState.WithData(expected))
     }
 
     @Test
-    fun loadAllData_hasData_returnsDataWrittenByAllApps() = runTest {
+    fun loadAllData_hasData_returnsDataWrittenByAllFitnessApps() = runTest {
         val recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse> =
             mapOf(
                 StepsRecord::class.java to
@@ -118,57 +123,74 @@ class AllDataViewModelTest {
                         HealthDataCategory.ACTIVITY,
                         listOf(
                             getDataOrigin(TEST_APP_PACKAGE_NAME),
-                            getDataOrigin(TEST_APP_PACKAGE_NAME_2))),
+                            getDataOrigin(TEST_APP_PACKAGE_NAME_2),
+                        ),
+                    ),
                 WeightRecord::class.java to
                     RecordTypeInfoResponse(
                         HealthPermissionCategory.WEIGHT,
                         HealthDataCategory.BODY_MEASUREMENTS,
-                        listOf((getDataOrigin(TEST_APP_PACKAGE_NAME_2)))),
+                        listOf((getDataOrigin(TEST_APP_PACKAGE_NAME_2))),
+                    ),
                 HeartRateRecord::class.java to
                     RecordTypeInfoResponse(
                         HealthPermissionCategory.HEART_RATE,
                         HealthDataCategory.VITALS,
-                        listOf((getDataOrigin(TEST_APP_PACKAGE_NAME)))))
+                        listOf((getDataOrigin(TEST_APP_PACKAGE_NAME))),
+                    ),
+            )
         doAnswer(prepareAnswer(recordTypeInfoMap))
             .`when`(manager)
             .queryAllRecordTypesInfo(any(), any())
 
         val testObserver = TestObserver<AllDataViewModel.AllDataState>()
         viewModel.allData.observeForever(testObserver)
-        viewModel.loadAllData()
+        viewModel.loadAllFitnessData()
         advanceUntilIdle()
 
         val expected =
-            listOf(
+            listOfNotNull(
                 PermissionTypesPerCategory(
-                    HealthDataCategory.ACTIVITY, listOf(HealthPermissionType.STEPS)),
+                    HealthDataCategory.ACTIVITY,
+                    listOf(FitnessPermissionType.STEPS),
+                ),
                 PermissionTypesPerCategory(
-                    HealthDataCategory.BODY_MEASUREMENTS, listOf(HealthPermissionType.WEIGHT)),
+                    HealthDataCategory.BODY_MEASUREMENTS,
+                    listOf(FitnessPermissionType.WEIGHT),
+                ),
                 PermissionTypesPerCategory(HealthDataCategory.CYCLE_TRACKING, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.NUTRITION, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.SLEEP, listOf()),
                 PermissionTypesPerCategory(
-                    HealthDataCategory.VITALS, listOf(HealthPermissionType.HEART_RATE)))
+                    HealthDataCategory.VITALS,
+                    listOf(FitnessPermissionType.HEART_RATE),
+                ),
+                PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()).takeIf {
+                    Flags.mindfulness()
+                },
+            )
         assertThat(testObserver.getLastValue())
             .isEqualTo(AllDataViewModel.AllDataState.WithData(expected))
     }
 
     @Test
     fun addToDeleteSet_updatesDeleteSetCorrectly() = runTest {
-        assertThat(viewModel.getDeleteSet()).isEmpty()
+        assertThat(viewModel.setOfPermissionTypesToBeDeleted.value.orEmpty()).isEmpty()
 
-        viewModel.addToDeleteSet(HealthPermissionType.DISTANCE)
+        viewModel.addToDeleteSet(FitnessPermissionType.DISTANCE)
 
-        assertThat(viewModel.getDeleteSet()).containsExactly(HealthPermissionType.DISTANCE)
+        assertThat(viewModel.setOfPermissionTypesToBeDeleted.value)
+            .containsExactly(FitnessPermissionType.DISTANCE)
     }
 
     @Test
     fun removeFromDeleteSet_updatesDeleteSetCorrectly() {
-        viewModel.addToDeleteSet(HealthPermissionType.DISTANCE)
-        viewModel.addToDeleteSet(HealthPermissionType.MENSTRUATION)
-        viewModel.removeFromDeleteSet(HealthPermissionType.DISTANCE)
+        viewModel.addToDeleteSet(FitnessPermissionType.DISTANCE)
+        viewModel.addToDeleteSet(FitnessPermissionType.MENSTRUATION)
+        viewModel.removeFromDeleteSet(FitnessPermissionType.DISTANCE)
 
-        assertThat(viewModel.getDeleteSet()).containsExactly(HealthPermissionType.MENSTRUATION)
+        assertThat(viewModel.setOfPermissionTypesToBeDeleted.value)
+            .containsExactly(FitnessPermissionType.MENSTRUATION)
     }
 
     @Test
@@ -187,11 +209,11 @@ class AllDataViewModelTest {
 
     @Test
     fun resetDeleteSet_emptiesDeleteSet() {
-        viewModel.addToDeleteSet(HealthPermissionType.MENSTRUATION)
-        viewModel.addToDeleteSet(HealthPermissionType.DISTANCE)
+        viewModel.addToDeleteSet(FitnessPermissionType.MENSTRUATION)
+        viewModel.addToDeleteSet(FitnessPermissionType.DISTANCE)
         viewModel.resetDeleteSet()
 
-        assertThat(viewModel.getDeleteSet()).isEmpty()
+        assertThat(viewModel.setOfPermissionTypesToBeDeleted.value).isEmpty()
     }
 
     private fun prepareAnswer(

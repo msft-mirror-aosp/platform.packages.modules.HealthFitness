@@ -17,25 +17,25 @@ package com.android.healthconnect.controller.selectabledeletion
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.DataType
 
 /** Represents the types of deletion that the user can perform. */
 sealed class DeletionType : Parcelable {
     data class DeletionTypeHealthPermissionTypes(
-        val healthPermissionTypes: List<HealthPermissionType>
+        val fitnessPermissionTypes: List<FitnessPermissionType>
     ) : DeletionType() {
         constructor(
             parcel: Parcel
         ) : this(
             (parcel.createStringArray()
-                    ?: arrayOf(HealthPermissionType.ACTIVE_CALORIES_BURNED.toString()))
-                .map { string -> HealthPermissionType.valueOf(string) }
+                    ?: arrayOf(FitnessPermissionType.ACTIVE_CALORIES_BURNED.toString()))
+                .map { string -> FitnessPermissionType.valueOf(string) }
                 .toList()) {}
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeStringArray(
-                healthPermissionTypes
+                fitnessPermissionTypes
                     .map { permissionType -> permissionType.toString() }
                     .toTypedArray())
         }
@@ -56,7 +56,7 @@ sealed class DeletionType : Parcelable {
     }
 
     data class DeletionTypeHealthPermissionTypesFromApp(
-        val healthPermissionTypes: List<HealthPermissionType>,
+        val fitnessPermissionTypes: List<FitnessPermissionType>,
         val packageName: String,
         val appName: String
     ) : DeletionType() {
@@ -64,15 +64,15 @@ sealed class DeletionType : Parcelable {
             parcel: Parcel
         ) : this(
             (parcel.createStringArray()
-                    ?: arrayOf(HealthPermissionType.ACTIVE_CALORIES_BURNED.toString()))
+                    ?: arrayOf(FitnessPermissionType.ACTIVE_CALORIES_BURNED.toString()))
                 .toList()
-                .map { string -> HealthPermissionType.valueOf(string) },
+                .map { string -> FitnessPermissionType.valueOf(string) },
             parcel.readString() ?: "",
             parcel.readString() ?: "") {}
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeStringArray(
-                healthPermissionTypes
+                fitnessPermissionTypes
                     .map { permissionType -> permissionType.toString() }
                     .toTypedArray())
             parcel.writeString(packageName)

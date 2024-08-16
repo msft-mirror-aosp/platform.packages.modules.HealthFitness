@@ -26,7 +26,7 @@ import android.health.connect.datatypes.MenstruationPeriodRecord
 import android.health.connect.datatypes.SleepSessionRecord
 import android.health.connect.datatypes.StepsCadenceRecord
 import android.health.connect.datatypes.StepsRecord
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeletionTypeHealthPermissionTypesFromApp
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesFromAppUseCase
 import com.google.common.truth.Truth.assertThat
@@ -70,11 +70,11 @@ class DeletePermissionTypeUseCaseTest {
         val deletePermissionTypes =
             DeletionTypeHealthPermissionTypesFromApp(
                 listOf(
-                    HealthPermissionType.STEPS,
-                    HealthPermissionType.HEART_RATE,
-                    HealthPermissionType.SLEEP,
-                    HealthPermissionType.EXERCISE,
-                    HealthPermissionType.MENSTRUATION),
+                    FitnessPermissionType.STEPS,
+                    FitnessPermissionType.HEART_RATE,
+                    FitnessPermissionType.SLEEP,
+                    FitnessPermissionType.EXERCISE,
+                    FitnessPermissionType.MENSTRUATION),
                 packageName = "package.name",
                 appName = "APP_NAME")
 

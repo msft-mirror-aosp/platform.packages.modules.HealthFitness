@@ -47,20 +47,19 @@ public class DeleteTableRequest {
     private final String mTableName;
     @RecordTypeIdentifier.RecordType private final int mRecordType;
 
-    private String mIdColumnName;
-    private String mPackageColumnName;
-    private String mTimeColumnName;
-    private List<Long> mPackageFilters;
+    @Nullable private String mIdColumnName;
+    @Nullable private String mPackageColumnName;
+    @Nullable private String mTimeColumnName;
+    @Nullable private List<Long> mPackageFilters;
     private long mStartTime = DEFAULT_LONG;
     private long mEndTime = DEFAULT_LONG;
     private boolean mRequiresUuId;
-    private List<String> mIds;
+    @Nullable private List<String> mIds;
     private boolean mEnforcePackageCheck;
     private int mNumberOfUuidsToDelete;
-    private WhereClauses mCustomWhereClauses;
-    private long mLessThanOrEqualValue;
+    @Nullable private String mInnerReadColumnName;
+    @Nullable private ReadTableRequest mInnerReadRequest;
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     public DeleteTableRequest(
             @NonNull String tableName, @RecordTypeIdentifier.RecordType int recordType) {
         Objects.requireNonNull(tableName);
@@ -77,6 +76,7 @@ public class DeleteTableRequest {
         mRecordType = RECORD_TYPE_UNKNOWN;
     }
 
+    @Nullable
     public String getPackageColumnName() {
         return mPackageColumnName;
     }
@@ -152,6 +152,22 @@ public class DeleteTableRequest {
         return this;
     }
 
+    /**
+     * Add a restriction on the delete that {@code innerReadColumnName} has a value in the values
+     * read by the {@code innerRead} {@link ReadTableRequest}.
+     *
+     * @param columnName the column to restrict the delete on.
+     * @param innerReadRequest a request that will SELECT the values to restrict on.
+     * @return this Request with the values set.
+     */
+    @NonNull
+    public DeleteTableRequest setInnerSqlRequestFilter(
+            String columnName, ReadTableRequest innerReadRequest) {
+        mInnerReadColumnName = columnName;
+        mInnerReadRequest = innerReadRequest;
+        return this;
+    }
+
     @NonNull
     public String getDeleteCommand() {
         return "DELETE FROM " + mTableName + getWhereCommand();
@@ -168,11 +184,14 @@ public class DeleteTableRequest {
     }
 
     public String getWhereCommand() {
-        WhereClauses whereClauses =
-                Objects.isNull(mCustomWhereClauses) ? new WhereClauses(AND) : mCustomWhereClauses;
+        WhereClauses whereClauses = new WhereClauses(AND);
         whereClauses.addWhereInLongsClause(mPackageColumnName, mPackageFilters);
         whereClauses.addWhereBetweenTimeClause(mTimeColumnName, mStartTime, mEndTime);
         whereClauses.addWhereInClauseWithoutQuotes(mIdColumnName, mIds);
+
+        if (mInnerReadColumnName != null && mInnerReadRequest != null) {
+            whereClauses.addWhereInSQLRequestClause(mInnerReadColumnName, mInnerReadRequest);
+        }
 
         if (Constants.DEBUG) {
             Slog.d(
@@ -215,11 +234,17 @@ public class DeleteTableRequest {
     /**
      * Total number of records deleted.
      *
+     * <p>This method should only be called in a state after a delete, when either a pre-read has
+     * been done, or a list of ids set.
+     *
      * @return Number of records deleted by this request
      */
     public int getTotalNumberOfRecordsDeleted() {
         if (requiresRead()) {
             return mNumberOfUuidsToDelete;
+        }
+        if (mIds == null) {
+            throw new IllegalStateException("Called with no required reads and no list of ids set");
         }
         return mIds.size();
     }

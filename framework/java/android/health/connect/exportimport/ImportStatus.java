@@ -16,9 +16,7 @@
 
 package android.health.connect.exportimport;
 
-import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
 
-import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.os.Parcel;
@@ -32,24 +30,21 @@ import java.lang.annotation.RetentionPolicy;
  *
  * @hide
  */
-@FlaggedApi(FLAG_EXPORT_IMPORT)
 public final class ImportStatus implements Parcelable {
-
-    /**
-     * Unknown error during the last data import.
-     *
-     * @hide
-     */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
-    public static final int DATA_IMPORT_ERROR_UNKNOWN = 0;
 
     /**
      * No error during the last data import.
      *
      * @hide
      */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
-    public static final int DATA_IMPORT_ERROR_NONE = 1;
+    public static final int DATA_IMPORT_ERROR_NONE = 0;
+
+    /**
+     * Unknown error during the last data import.
+     *
+     * @hide
+     */
+    public static final int DATA_IMPORT_ERROR_UNKNOWN = 1;
 
     /**
      * Indicates that the last import failed because the user picked a file that was not exported by
@@ -57,7 +52,6 @@ public final class ImportStatus implements Parcelable {
      *
      * @hide
      */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
     public static final int DATA_IMPORT_ERROR_WRONG_FILE = 2;
 
     /**
@@ -66,16 +60,23 @@ public final class ImportStatus implements Parcelable {
      *
      * @hide
      */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
     public static final int DATA_IMPORT_ERROR_VERSION_MISMATCH = 3;
 
+    /**
+     * Indicates that an import was started.
+     *
+     * @hide
+     */
+    public static final int DATA_IMPORT_STARTED = 4;
+
+    // TODO(b/356393172) Clean up statuses, add DATA_IMPORT_STARTED here and remove isImportOngoing
     /** @hide */
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
-        DATA_IMPORT_ERROR_UNKNOWN,
         DATA_IMPORT_ERROR_NONE,
+        DATA_IMPORT_ERROR_UNKNOWN,
         DATA_IMPORT_ERROR_WRONG_FILE,
-        DATA_IMPORT_ERROR_VERSION_MISMATCH
+        DATA_IMPORT_ERROR_VERSION_MISMATCH,
     })
     public @interface DataImportError {}
 
