@@ -30,6 +30,8 @@ import com.android.healthconnect.controller.data.appdata.AppDataUseCase
 import com.android.healthconnect.controller.data.appdata.AppDataViewModel
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.MEDICAL
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -37,9 +39,12 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.getDataOrigin
 import com.android.healthconnect.controller.tests.utils.setLocale
+import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import java.util.Locale
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -56,8 +61,6 @@ import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import org.mockito.invocation.InvocationOnMock
-import java.util.Locale
-import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
@@ -96,18 +99,22 @@ class AppDataViewModelTest {
         doAnswer(prepareAnswer(mapOf())).`when`(manager).queryAllRecordTypesInfo(any(), any())
 
         val testObserver = TestObserver<AppDataViewModel.AppDataState>()
-        viewModel.appData.observeForever(testObserver)
+        viewModel.appFitnessData.observeForever(testObserver)
         viewModel.loadAppData(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
 
         val expected =
-            listOf(
+            listOfNotNull(
                 PermissionTypesPerCategory(HealthDataCategory.ACTIVITY, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.BODY_MEASUREMENTS, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.CYCLE_TRACKING, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.NUTRITION, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.SLEEP, listOf()),
-                PermissionTypesPerCategory(HealthDataCategory.VITALS, listOf()))
+                PermissionTypesPerCategory(HealthDataCategory.VITALS, listOf()),
+                PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()).takeIf {
+                    Flags.mindfulness()
+                },
+            )
         assertThat(testObserver.getLastValue())
             .isEqualTo(AppDataViewModel.AppDataState.WithData(expected))
     }
@@ -122,36 +129,110 @@ class AppDataViewModelTest {
                         HealthDataCategory.ACTIVITY,
                         listOf(
                             getDataOrigin(TEST_APP_PACKAGE_NAME),
-                            getDataOrigin(TEST_APP_PACKAGE_NAME_2))),
+                            getDataOrigin(TEST_APP_PACKAGE_NAME_2),
+                        ),
+                    ),
                 WeightRecord::class.java to
                     RecordTypeInfoResponse(
                         HealthPermissionCategory.WEIGHT,
                         HealthDataCategory.BODY_MEASUREMENTS,
-                        listOf((getDataOrigin(TEST_APP_PACKAGE_NAME_2)))),
+                        listOf((getDataOrigin(TEST_APP_PACKAGE_NAME_2))),
+                    ),
                 HeartRateRecord::class.java to
                     RecordTypeInfoResponse(
                         HealthPermissionCategory.HEART_RATE,
                         HealthDataCategory.VITALS,
-                        listOf((getDataOrigin(TEST_APP_PACKAGE_NAME)))))
+                        listOf((getDataOrigin(TEST_APP_PACKAGE_NAME))),
+                    ),
+            )
         doAnswer(prepareAnswer(recordTypeInfoMap))
             .`when`(manager)
             .queryAllRecordTypesInfo(any(), any())
 
         val testObserver = TestObserver<AppDataViewModel.AppDataState>()
-        viewModel.appData.observeForever(testObserver)
+        viewModel.appFitnessData.observeForever(testObserver)
         viewModel.loadAppData(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
 
         val expected =
-            listOf(
+            listOfNotNull(
                 PermissionTypesPerCategory(
-                    HealthDataCategory.ACTIVITY, listOf(FitnessPermissionType.STEPS)),
+                    HealthDataCategory.ACTIVITY,
+                    listOf(FitnessPermissionType.STEPS),
+                ),
                 PermissionTypesPerCategory(HealthDataCategory.BODY_MEASUREMENTS, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.CYCLE_TRACKING, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.NUTRITION, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.SLEEP, listOf()),
                 PermissionTypesPerCategory(
-                    HealthDataCategory.VITALS, listOf(FitnessPermissionType.HEART_RATE)))
+                    HealthDataCategory.VITALS,
+                    listOf(FitnessPermissionType.HEART_RATE),
+                ),
+                PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()).takeIf {
+                    Flags.mindfulness()
+                },
+            )
+        assertThat(testObserver.getLastValue())
+            .isEqualTo(AppDataViewModel.AppDataState.WithData(expected))
+    }
+
+    // TODO(b/355793284): Update once API is ready and add more tests.
+    @Test
+    fun loadAppData_fitnessAndMedicalData_returnsDataWrittenByGivenApp() = runTest {
+        val recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse> =
+            mapOf(
+                StepsRecord::class.java to
+                    RecordTypeInfoResponse(
+                        HealthPermissionCategory.STEPS,
+                        HealthDataCategory.ACTIVITY,
+                        listOf(
+                            getDataOrigin(TEST_APP_PACKAGE_NAME),
+                            getDataOrigin(TEST_APP_PACKAGE_NAME_2),
+                        ),
+                    ),
+                WeightRecord::class.java to
+                    RecordTypeInfoResponse(
+                        HealthPermissionCategory.WEIGHT,
+                        HealthDataCategory.BODY_MEASUREMENTS,
+                        listOf((getDataOrigin(TEST_APP_PACKAGE_NAME_2))),
+                    ),
+                HeartRateRecord::class.java to
+                    RecordTypeInfoResponse(
+                        HealthPermissionCategory.HEART_RATE,
+                        HealthDataCategory.VITALS,
+                        listOf((getDataOrigin(TEST_APP_PACKAGE_NAME))),
+                    ),
+            )
+        doAnswer(prepareAnswer(recordTypeInfoMap))
+            .`when`(manager)
+            .queryAllRecordTypesInfo(any(), any())
+
+        val testObserver = TestObserver<AppDataViewModel.AppDataState>()
+        viewModel.fitnessAndMedicalData.observeForever(testObserver)
+        viewModel.loadAppData(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        val expected =
+            listOfNotNull(
+                PermissionTypesPerCategory(
+                    HealthDataCategory.ACTIVITY,
+                    listOf(FitnessPermissionType.STEPS),
+                ),
+                PermissionTypesPerCategory(HealthDataCategory.BODY_MEASUREMENTS, listOf()),
+                PermissionTypesPerCategory(HealthDataCategory.CYCLE_TRACKING, listOf()),
+                PermissionTypesPerCategory(HealthDataCategory.NUTRITION, listOf()),
+                PermissionTypesPerCategory(HealthDataCategory.SLEEP, listOf()),
+                PermissionTypesPerCategory(
+                    HealthDataCategory.VITALS,
+                    listOf(FitnessPermissionType.HEART_RATE),
+                ),
+                PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()).takeIf {
+                    Flags.mindfulness()
+                },
+                // TODO(b/355793284): This Immunization is fake data for now, update once API is
+                // ready.
+                PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATION)),
+            )
         assertThat(testObserver.getLastValue())
             .isEqualTo(AppDataViewModel.AppDataState.WithData(expected))
     }

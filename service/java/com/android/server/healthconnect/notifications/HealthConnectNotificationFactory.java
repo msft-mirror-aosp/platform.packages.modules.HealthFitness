@@ -16,9 +16,6 @@
 
 package com.android.server.healthconnect.notifications;
 
-import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
-
-import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.Notification;
@@ -37,7 +34,6 @@ import java.util.Optional;
  *
  * @hide
  */
-@FlaggedApi(FLAG_EXPORT_IMPORT)
 public interface HealthConnectNotificationFactory {
 
     /** Returns a {@link Notification} depending on the specified type. */

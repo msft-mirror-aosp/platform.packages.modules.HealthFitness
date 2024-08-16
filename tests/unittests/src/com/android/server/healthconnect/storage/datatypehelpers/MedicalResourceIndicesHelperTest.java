@@ -19,12 +19,12 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.MEDICAL_RESOURCE_TABLE_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getPrimaryColumn;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getChildTableUpsertRequests;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getCreateMedicalResourceIndicesTableRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getParentColumnReference;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getTableName;
-import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -52,7 +52,7 @@ public class MedicalResourceIndicesHelperTest {
                         .addForeignKey(
                                 MEDICAL_RESOURCE_TABLE_NAME,
                                 Collections.singletonList(getParentColumnReference()),
-                                Collections.singletonList(PRIMARY_COLUMN_NAME));
+                                Collections.singletonList(getPrimaryColumn()));
 
         CreateTableRequest result = getCreateMedicalResourceIndicesTableRequest();
 

@@ -35,6 +35,8 @@ import java.util.Set;
  *
  * @hide
  */
+// TODO(b/356590533): Consider removing this class because it's just a 1:1 mapping to
+// MedicalResourceType and is only used in the UI.
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 @SystemApi
 public final class MedicalPermissionCategory {

@@ -34,8 +34,7 @@ import com.android.healthconnect.controller.deletion.DeletionFragment
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.filters.ChipPreference
 import com.android.healthconnect.controller.filters.FilterChip
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings.Companion.fromPermissionType
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.lowercaseTitle
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
@@ -195,7 +194,7 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
         mManageDataCategory?.addPreference(newPriorityButton)
     }
 
-    private fun updatePermissionTypesList(permissionTypeList: List<FitnessPermissionType>) {
+    private fun updatePermissionTypesList(permissionTypeList: List<HealthPermissionType>) {
         mDeleteCategoryData?.isEnabled = permissionTypeList.isNotEmpty()
         mPermissionTypes?.removeAll()
         if (permissionTypeList.isEmpty()) {
@@ -206,7 +205,7 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
         permissionTypeList.forEach { permissionType ->
             mPermissionTypes?.addPreference(
                 HealthPreference(requireContext()).also {
-                    it.setTitle(fromPermissionType(permissionType).uppercaseLabel)
+                    it.setTitle(permissionType.upperCaseLabel())
                     it.logName = PermissionTypesElement.PERMISSION_TYPE_BUTTON
                     it.setOnPreferenceClickListener {
                         findNavController()

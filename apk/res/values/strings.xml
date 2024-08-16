@@ -34,6 +34,8 @@
     <string name="connected_apps_connected_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens when all possible apps are connected. [ICU SYNTAX][CHAR_LIMIT=NONE]">{count, plural, =1 {1 app has access} other {# apps have access}}</string>
     <string name="connected_apps_button_no_permissions_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens, when no apps are connected. [CHAR_LIMIT=NONE]">None</string>
     <string name="entry_details_title" description="Label for a screen that list an entry details. [CHAR_LIMIT=40]">Entry details</string>
+    <string name="browse_data_title" description="Label for button that allows the user to browse data [CHAR_LIMIT=NONE]">Browse data</string>
+    <string name="browse_data_subtitle" description="Description for button that allows the user to browse data [CHAR_LIMIT=NONE]">See data and which apps can access it</string>
     <string name="manage_data_summary" description="Summary for the manage data preference. [CHAR_LIMIT=NONE]">Auto-delete, data sources, backup and restore</string>
     <!--  endregion -->
 
@@ -79,6 +81,9 @@
 
     <string name="nutrition_category_uppercase" description="Uppercase name for nutrition category, displaying user data related to nutrition (such as calories consumed, hydration, etc.) [CHAR LIMIT=30]">Nutrition</string>
     <string name="nutrition_category_lowercase" description="Lowercase name for nutrition category, displaying user data related to nutrition (such as calories consumed, hydration, etc.) [CHAR LIMIT=30]">nutrition</string>
+
+    <string name="wellness_category_uppercase" description="Uppercase name for wellness category, displaying user data related to wellness (e.g. mindfulness) [CHAR LIMIT=30]">Wellness</string>
+    <string name="wellness_category_lowercase" description="Lowercase name for wellness category, displaying user data related to wellness (e.g. mindfulness) [CHAR LIMIT=30]">wellness</string>
 
     <string name="browse_data_category" description="Uppercase name for a section that contains user data grouped by categories. [CHAR_LIMIT=50]">Browse data</string>
     <string name="manage_data_section" description="Uppercase name for a section that has different user actions like deleting data. [CHAR_LIMIT=50]">Manage data</string>
@@ -431,10 +436,11 @@
     <string name="additional_access_label" description="Label of a button that opens additional permissions access for an app. [CHAR_LIMIT=40]">Additional access</string>
     <string name="removed_additional_permissions_toast" description="Message letting the user know that additional permissions have also been removed for this app">Removed additional permissions for this app</string>
     <string name="permissions_header" description="Title shown for section that lists permissions. [CHAR_LIMIT=40]">Permissions</string>
-    <string name="manage_fitness_permissions" description="Label of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Fitness and wellness</string>
-    <string name="manage_fitness_permissions_summary" description="Summary of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Exercise, sleep, nutrition and others</string>
-    <string name="manage_medical_permissions" description="Label of a button that opens the medical permissions screen. [CHAR_LIMIT=40]">Health records</string>
-    <string name="manage_medical_permissions_summary" description="Summary of a button that opens the medical permissions screen. [CHAR_LIMIT=40]">Lab results, medications, immunizations and others</string>
+    <string name="fitness_permissions" description="Label of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Fitness and wellness</string>
+    <string name="fitness_permissions_summary" description="Summary of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Exercise, sleep, nutrition and others</string>
+    <string name="medical_permissions" description="Uppercase name of medical data category that contains lab results, immunizations, medications, etc. [CHAR_LIMIT=40]">Health records</string>
+    <string name="medical_permissions_lowercase" description="Lowercase name of medical data category that contains lab results, immunizations, medications, etc. [CHAR_LIMIT=40]">health records</string>
+    <string name="medical_permissions_summary" description="Summary of a button that opens the medical permissions screen. [CHAR_LIMIT=40]">Lab results, medications, immunizations and others</string>
     <!--endregion-->
 
     <!--region Denied Apps -->
@@ -453,7 +459,8 @@
     <string name="export_file_access_error_banner_button" description="Button of banner prompting the user to set up the scheduled export again due to the lost file access. [CHAR LIMIT=50]">Set up</string>
     <string name="export_file_access_error_banner_title" description="Title of banner prompting the user to set up the scheduled export again due to the lost file access. [CHAR LIMIT=50]">Couldn\'t export data</string>
     <string name="export_file_access_error_banner_summary" description="Summary of banner prompting the user to set up the scheduled export again due to the lost file access. [CHAR LIMIT=NONE]">There was a problem with the export for <xliff:g example="May 21" id="date">%1$s</xliff:g>. Please set up a new scheduled export and try again.</string>
-    <string name="next_export_time" description="Text to shown when the next export will be [CHAR LIMIT=40]">Next export: <xliff:g example="May 21" id="date">%1$s</xliff:g></string>
+    <string name="next_export_time" description="Text to show when the next export will be [CHAR LIMIT=40]">Next export: <xliff:g example="May 21" id="date">%1$s</xliff:g></string>
+    <string name="next_export_text" description="Text to show when the next export will start soon [CHAR LIMIT=60]">Next export starting soon</string>
 
     <string name="backup_and_restore_settings_screen_title" description="Title of the 'backup and restore' screen where users can set up configurations to export and import Health Connect data. [CHAR_LIMIT=40]">Backup and restore</string>
     <string name="last_export_time" description="Text to show when the last successful export was [CHAR LIMIT=40]">Last export: <xliff:g example="May 21" id="date">%1$s</xliff:g></string>
@@ -498,6 +505,7 @@
     <string name="import_notification_import_in_progress_title" description="Title text of notification displayed when import is in progress. [CHAR_LIMIT=NONE]">Health&#160;Connect restore in progress</string>
     <string name="import_notification_import_complete_title" description="Title text of notification displayed when import has completed successfully. [CHAR_LIMIT=NONE]">Health&#160;Connect restore complete</string>
 
+    <string name="import_in_progress_toast_text" description="Toast text displayed when import is in progress. [CHAR_LIMIT=40]">Restore in progress</string>
     <string name="import_complete_toast_text" description="Toast text displayed when import completes successfully. [CHAR_LIMIT=40]">Finished restoring data</string>
 
     <string name="import_notification_error_generic_error_title" description="Title text of notification displayed when import fails due to generic error. [CHAR_LIMIT=NONE]">Health&#160;Connect couldn\'t restore data</string>
@@ -836,6 +844,7 @@
     <string name="rest" description="Auto-detected periods of rest during an activity session. There should be no user movement detected during rest and any movement detected should finish rest event. [CHAR LIMIT=50]">Rest</string>
     <string name="pause" description="Explicit pause during an activity session, requested by the user. [CHAR LIMIT=50]">Pause</string>
     <string name="activity_type_australian_football" translation_description="Activity type: playing australian football. [CHAR LIMIT=40]">Australian football</string>
+    <string name="unknown_type" description="Unknown exercise type">Unknown type</string>
     <!--  endregion-->
 
     <!--  region sleep -->
@@ -852,6 +861,16 @@
     <string name="sleep_stage_deep" description="Deep sleep stage throughout the sleep session. [CHAR LIMIT=50]">deep sleep</string>
     <string name="sleep_stage_unknown" description="Unknown sleep stage throughout the sleep session. [CHAR LIMIT=50]">unknown</string>
     <!--  endregion -->
+
+    <!-- region Mindfulness -->
+    <string name="mindfulness_type_breathing" description="Mindfulness session type: Breathing. [CHAR LIMIT=20]">Breathing</string>
+    <string name="mindfulness_type_meditation" description="Mindfulness session type: Meditation. [CHAR LIMIT=20]">Meditation</string>
+    <string name="mindfulness_type_movement" description="Mindfulness session type: Movement. [CHAR LIMIT=20]">Movement</string>
+    <string name="mindfulness_type_music" description="Mindfulness session type: Music. [CHAR LIMIT=20]">Music</string>
+    <string name="mindfulness_type_other" description="Mindfulness session type: Other. [CHAR LIMIT=20]">Other</string>
+    <string name="mindfulness_type_unguided" description="Mindfulness session type: Unguided. [CHAR LIMIT=20]">Unguided</string>
+    <!--endregion-->
+    <!-- endregion -->
 
     <!-- region Duration -->
     <string name="minute_duration" translation_description="minute duration representation [CHAR LIMIT=8]"><xliff:g example="1" id="minute">%1$s</xliff:g>m</string>
@@ -1169,6 +1188,7 @@
     <!--  region Menu Items -->
     <string name="help" description="Menu option for accessing help [CHAR LIMIT=50]">Help</string>
     <string name="hc_get_started_link" description="Link that helps to learn more about Health Connect. [CHAR_LIMIT=50]" translatable="false">https://support.google.com/android?p=get_started_hc</string>
+    <string name="hc_backup_and_restore_link" description="Link that helps to learn more about Health Connect backup and restore. [CHAR_LIMIT=NONE]" translatable="false">https://support.google.com/android?p=healthconnect_backup_restore</string>
 
     <!--  endregion-->
 
@@ -1361,5 +1381,22 @@
     <!-- endregion -->
 
     <string name="select_all" description="Label for a button that selects all data for deletion [CHAR_LIMIT=40]">Select all</string>
+
+    <!-- region Onboarding -->
+    <string name="start_using_hc_banner_title" description="Title for banner shown when users have not connected their first fitness app">Start using Health&#160;Connect</string>
+    <string name="start_using_hc_banner_content" description="Content for banner shown when users have not connected their first fitness app">Sync your first apps to share health and fitness data between them</string>
+    <string name="start_using_hc_not_now_button" description="Button that dismisses banner shown when users have not connected their first fitness app">Not now</string>
+    <string name="start_using_hc_set_up_button" description="Button that takes users to the connected apps page, for banner shown when users have not connected their first fitness app">Set up</string>
+
+    <string name="connect_more_apps_banner_title" description="Title for banner shown when users have not connected their second fitness app">Connect more apps</string>
+    <string name="connect_more_apps_banner_content" description="Content for banner shown when users have not connected their second fitness app">Start sharing data between <xliff:g example="Run Tracker" id="app_name">%s</xliff:g> and the health apps on your phone</string>
+    <string name="connect_more_apps_set_up_button" description="Button that takes users to the connected apps page, for banner shown when users have not connected their second fitness app">Set up</string>
+
+    <string name="see_compatible_apps_banner_title" description="Title for banner shown when users only have one available fitness app">See compatible apps</string>
+    <string name="see_compatible_apps_banner_content" description="Content for banner shown when users only have one available fitness app">Find more apps to sync with <xliff:g example="Run Tracker" id="app_name">%s</xliff:g> via Health&#160;Connect</string>
+    <string name="see_compatible_apps_set_up_button" description="Button that takes users to the app store, for banner shown when users only have one available fitness app">See on app store</string>
+
+    <!-- endregion -->
+
 
 </resources>

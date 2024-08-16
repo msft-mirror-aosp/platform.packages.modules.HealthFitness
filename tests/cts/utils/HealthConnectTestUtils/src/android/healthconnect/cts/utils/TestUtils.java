@@ -51,14 +51,14 @@ import static android.healthconnect.test.app.TestAppReceiver.EXTRA_TIMES;
 import static com.android.compatibility.common.util.FeatureUtil.AUTOMOTIVE_FEATURE;
 import static com.android.compatibility.common.util.FeatureUtil.hasSystemFeature;
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
-import static com.android.healthfitness.flags.Flags.personalHealthRecord;
-import static com.android.healthfitness.flags.Flags.personalHealthRecordDatabase;
+import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
+import android.Manifest;
 import android.app.UiAutomation;
 import android.content.Context;
 import android.content.Intent;
@@ -68,7 +68,6 @@ import android.health.connect.AggregateRecordsGroupedByPeriodResponse;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.ApplicationInfoResponse;
-import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.FetchDataOriginsPriorityOrderResponse;
 import android.health.connect.GetMedicalDataSourcesRequest;
@@ -454,10 +453,7 @@ public final class TestUtils {
      * Delete all medical data (datasources, resources etc) stored in the Health Connect database.
      */
     public static void deleteAllMedicalData() throws InterruptedException {
-        if (!personalHealthRecord()) {
-            return;
-        }
-        if (!personalHealthRecordDatabase()) {
+        if (!isPersonalHealthRecordEnabled()) {
             return;
         }
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
@@ -562,6 +558,17 @@ public final class TestUtils {
         }
     }
 
+    /** Calls {@link #startMigration()} ()} with shell permission identity. */
+    public static void startMigrationWithShellPermissionIdentity() {
+        runWithShellPermissionIdentity(
+                () -> {
+                    startMigration();
+                    assertThat(TestUtils.getHealthConnectDataMigrationState())
+                            .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
+                },
+                Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+    }
+
     public static void startMigration() throws InterruptedException {
         MigrationReceiver receiver = new MigrationReceiver();
         getHealthConnectManager().startMigration(Executors.newSingleThreadExecutor(), receiver);
@@ -580,6 +587,12 @@ public final class TestUtils {
         MigrationReceiver receiver = new MigrationReceiver();
         getHealthConnectManager().finishMigration(Executors.newSingleThreadExecutor(), receiver);
         receiver.verifyNoExceptionOrThrow();
+    }
+
+    /** Calls {@link #finishMigration()} with shell permission identity. */
+    public static void finishMigrationWithShellPermissionIdentity() {
+        runWithShellPermissionIdentity(
+                TestUtils::finishMigration, Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
     }
 
     public static void insertMinDataMigrationSdkExtensionVersion(int version)
@@ -1240,17 +1253,6 @@ public final class TestUtils {
     /** Extracts and returns ids of the provided records. */
     public static List<String> getRecordIds(List<? extends Record> records) {
         return records.stream().map(Record::getMetadata).map(Metadata::getId).toList();
-    }
-
-    /**
-     * Helper function to delete medical resources from the DB by a {@link
-     * DeleteMedicalResourcesRequest}, using HealthConnectManager.
-     */
-    public static void deleteMedicalResourcesByRequest(DeleteMedicalResourcesRequest request)
-            throws InterruptedException {
-        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
-        getHealthConnectManager()
-                .deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
     }
 
     /**

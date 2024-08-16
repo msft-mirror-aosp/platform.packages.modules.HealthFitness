@@ -35,8 +35,9 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 యాప్‌నకు యాక్సెస్ ఉంది}other{# యాప్‌లకు యాక్సెస్ ఉంది}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"ఏదీ లేదు"</string>
     <string name="entry_details_title" msgid="590184849040247850">"ఎంట్రీ వివరాలు"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"డేటాను బ్రౌజ్ చేయండి"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"డేటాను, ఏ యాప్‌లు దీన్ని యాక్సెస్ చేయవచ్చో చూడండి"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"ఆటోమేటిక్ తొలగింపు, డేటా సోర్స్‌లు, బ్యాకప్, రీస్టోర్"</string>
     <string name="backup_title" msgid="211503191266235085">"బ్యాకప్"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"డేటా సోర్స్‌లు, ప్రాధాన్యత"</string>
     <string name="set_units_title" msgid="2657822539603758029">"యూనిట్‌లను సెట్ చేయండి"</string>
@@ -78,8 +79,7 @@
     <string name="can_read" msgid="4568261079308309564">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>‌ను రీడ్ చేయగలదు."</string>
     <string name="can_write" msgid="5082414937218423823">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>‌ను రాయగలదు"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"ఇన్‌యాక్టివ్ యాప్‌లు"</string>
-    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
-    <skip />
+    <string name="inactive_apps_message" msgid="8335803540719022910">"ఈ యాప్‌లు ఇకపై <xliff:g id="DATA_TYPE">%s</xliff:g>‌ను చదవలేవు, రాయలేవు, అయితే ఇప్పటికీ Health Connectలో స్టోర్ అయిన డేటాను కలిగి ఉంటాయి"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"యాప్‌లు ఇకపై <xliff:g id="DATA_TYPE_0">%1$s</xliff:g>‌ను చదవలేవు లేదా రాయలేవు, Health Connectలో స్టోర్ చేయబడిన <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> డేటా లేదు"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"ఈ డేటాలో యాక్టివ్ టైమ్, వ్యాయామ రకం, ల్యాప్‌లు, రిపిటీషన్‌లు, సెషన్‌లు, లేదా స్విమ్మింగ్ స్ట్రోక్‌లు వంటి సమాచారం ఉంటుంది"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"ఈ డేటాలో నిద్ర దశలు, నిద్ర సెషన్‌ల వంటి సమాచారం ఉంటుంది"</string>
@@ -328,8 +328,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"అదనపు యాక్సెస్‌"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"ఈ యాప్‌నకు సంబంధించిన అదనపు అనుమతులు తీసివేయబడ్డాయి"</string>
     <string name="permissions_header" msgid="6519976063360071569">"అనుమతులు"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"ఫిట్‌నెస్ అనుమతులను మేనేజ్ చేయండి"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"ఆరోగ్య సమాచారం అనుమతులను మేనేజ్ చేయండి"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"ఫిట్‌నెస్, వెల్‌నెస్"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"వ్యాయామం, నిద్ర, న్యూట్రిషన్, ఇంకా ఇతరం"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"ఆరోగ్య సమాచారాలు"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"ఆరోగ్య సమాచారాలు"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"ల్యాబ్ ఫలితాలు, మందులు, రోగ నిరోధకత,ఇతరం"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"యాప్ అనుమతులు తీసివేయబడ్డాయి"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect <xliff:g id="APP_DATA">%s</xliff:g>‌కు అనుమతులను తీసివేసింది"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect <xliff:g id="APP_DATA_0">%1$s</xliff:g>, <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>‌కు అనుమతులను తీసివేసింది"</string>
@@ -343,6 +346,7 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"డేటాను ఎగుమతి చేయడం సాధ్యపడలేదు"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g>న ఎగుమతి చేయడంలో సమస్య ఏర్పడింది. దయచేసి కొత్త ఎగుమతి షెడ్యూల్‌ను సెటప్ చేసి, మళ్లీ ట్రై చేయండి."</string>
     <string name="next_export_time" msgid="3138247220014510213">"తదుపరి ఎగుమతి తేదీ: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"తర్వాతి ఎగుమతి త్వరలో ప్రారంభం అవుతుంది"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"బ్యాకప్, రీస్టోర్"</string>
     <string name="last_export_time" msgid="9205875050823594041">"చివరగా ఎగుమతి చేసిన తేదీ: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
@@ -379,6 +383,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"దిగుమతి చేయండి"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect రీస్టోర్ ప్రోగ్రెస్‌లో ఉంది"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect రీస్టోర్ పూర్తయింది"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"రీస్టోర్ ప్రోగ్రెస్‌లో ఉంది"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"డేటాను రీస్టోర్ చేయడం పూర్తయింది"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect డేటాను రీస్టోర్ చేయలేకపోయింది"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"మరింత స్పేస్ అవసరం"</string>
@@ -637,6 +642,7 @@
     <string name="rest" msgid="5937058337671252210">"విశ్రాంతి తీసుకోండి"</string>
     <string name="pause" msgid="5161459047750335691">"పాజ్ చేయండి"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"ఆస్ట్రేలియన్ ఫుట్‌బాల్"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"తెలియని రకం"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> స్లీపింగ్"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>⁠"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"మేల్కొని ఉన్న సమయం"</string>
@@ -990,4 +996,14 @@
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> డేటా తొలగించబడింది"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> ఐటెమ్‌లు తొలగించబడ్డాయి"</string>
     <string name="select_all" msgid="837499881590001166">"అన్నింటినీ ఎంచుకోండి"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connectను ఉపయోగించడాన్ని ప్రారంభించండి"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"మీ మొదటి యాప్స్ మధ్య ఆరోగ్యం, ఫిట్‌నెస్ డేటాను షేర్ చేయడానికి వాటిని సింక్ చేయండి"</string>
+    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"ఇప్పుడు కాదు"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"సెటప్ చేయండి"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"మరిన్ని యాప్స్‌ను కనెక్ట్ చేయండి"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"మీ ఫోన్‌లో ఉన్న <xliff:g id="APP_NAME">%s</xliff:g>, హెల్త్ యాప్స్ మధ్య డేటాను షేర్ చేయడాన్ని ప్రారంభించండి"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"సెటప్ చేయండి"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"అనుకూల యాప్స్‌ను చూడండి"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Health Connect ద్వారా <xliff:g id="APP_NAME">%s</xliff:g>‌తో సింక్ చేయడానికి మరిన్ని యాప్స్‌ను కనుగొనండి"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"యాప్ స్టోర్‌లో చూడండి"</string>
 </resources>

@@ -20,8 +20,8 @@ import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
+import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 
-import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import android.Manifest;
@@ -317,30 +317,6 @@ public class HealthConnectManager {
      * @hide
      */
     @SystemApi public static final int DATA_DOWNLOAD_COMPLETE = 4;
-
-    /**
-     * No error during the last data export.
-     *
-     * @hide
-     */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
-    public static final int DATA_EXPORT_ERROR_NONE = 0;
-
-    /**
-     * Unknown error during the last data export.
-     *
-     * @hide
-     */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
-    public static final int DATA_EXPORT_ERROR_UNKNOWN = 1;
-
-    /**
-     * Indicates that the last export failed because we lost access to the export file location.
-     *
-     * @hide
-     */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
-    public static final int DATA_EXPORT_LOST_FILE_ACCESS = 2;
 
     /**
      * Activity action: Launch activity exported by client application that handles onboarding to
@@ -1758,11 +1734,6 @@ public class HealthConnectManager {
         }
     }
 
-    /** @hide */
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({DATA_EXPORT_ERROR_UNKNOWN, DATA_EXPORT_ERROR_NONE, DATA_EXPORT_LOST_FILE_ACCESS})
-    public @interface DataExportError {}
-
     /**
      * Configures the settings for the scheduled export of Health Connect data.
      *
@@ -1787,7 +1758,6 @@ public class HealthConnectManager {
      * @throws RuntimeException for internal errors
      * @hide
      */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
     @WorkerThread
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
     public void getScheduledExportStatus(
@@ -1822,7 +1792,6 @@ public class HealthConnectManager {
      * @throws RuntimeException for internal errors
      * @hide
      */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
     @WorkerThread
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
     public void getImportStatus(
@@ -1857,13 +1826,31 @@ public class HealthConnectManager {
      * @throws RuntimeException for internal errors
      * @hide
      */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
     @WorkerThread
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
-    public void runImport(@NonNull Uri file) {
+    public void runImport(
+            @NonNull Uri file,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
         Objects.requireNonNull(file);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
         try {
-            mService.runImport(mContext.getUser(), file);
+            mService.runImport(
+                    mContext.getUser(),
+                    file,
+                    new IEmptyResponseCallback.Stub() {
+                        @Override
+                        public void onResult() {
+                            Binder.clearCallingIdentity();
+                            executor.execute(() -> callback.onResult(null));
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
         } catch (RemoteException e) {
             e.rethrowFromSystemServer();
         }
@@ -1897,7 +1884,6 @@ public class HealthConnectManager {
      * @throws RuntimeException for internal errors
      * @hide
      */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
     @WorkerThread
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
     public void queryDocumentProviders(
@@ -2265,13 +2251,27 @@ public class HealthConnectManager {
 
     /**
      * Deletes {@link MedicalResource}s based on given filters in {@link
-     * DeleteMedicalResourcesRequest}. *
+     * DeleteMedicalResourcesRequest}.
      *
-     * @param request The read request.
+     * <p>Regarding permissions:
+     *
+     * <ul>
+     *   <li>Callers with system permission {@link HealthPermissions#MANAGE_HEALTH_DATA_PERMISSION}
+     *       can delete any data.
+     *   <li>Other callers require permission {@link HealthPermissions#WRITE_MEDICAL_DATA} to
+     *       delete, and may only delete data written by themself.
+     *   <li>Deletes are permitted in the foreground or background.
+     * </ul>
+     *
+     * @param request The delete request.
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    // Suppress missing because API flagged out. Suppress Requires because javadoc explains the
+    // the difference between the permissions.
+    @SuppressWarnings({"MissingPermission", "RequiresPermission"})
+    @RequiresPermission(anyOf = {WRITE_MEDICAL_DATA, MANAGE_HEALTH_DATA_PERMISSION})
     public void deleteMedicalResources(
             @NonNull DeleteMedicalResourcesRequest request,
             @NonNull Executor executor,
@@ -2305,11 +2305,26 @@ public class HealthConnectManager {
      *
      * <p>Deletions are performed in a transaction i.e. either all will be deleted or none.
      *
+     * <p>Regarding permissions:
+     *
+     * <ul>
+     *   <li>Callers with system permission {@link HealthPermissions#MANAGE_HEALTH_DATA_PERMISSION}
+     *       can delete any data.
+     *   <li>Other callers require permission {@link HealthPermissions#WRITE_MEDICAL_DATA} to
+     *       delete, and may only delete data written by themself.
+     *   <li>Deletes are permitted in the foreground or background.
+     * </ul>
+     *
      * @param ids The ids to delete.
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    // Suppress missing because API flagged out. Suppress Requires because javadoc explains the
+    // the difference between the permissions.
+    // TODO: b/355156275 - remove suppression once API not flagged out.
+    @SuppressWarnings({"MissingPermission", "RequiresPermission"})
+    @RequiresPermission(anyOf = {WRITE_MEDICAL_DATA, MANAGE_HEALTH_DATA_PERMISSION})
     public void deleteMedicalResources(
             @NonNull List<MedicalResourceId> ids,
             @NonNull Executor executor,

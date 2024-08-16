@@ -22,8 +22,10 @@ import android.content.Context;
 
 import androidx.test.InstrumentationRegistry;
 
+import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,14 +35,16 @@ import org.mockito.MockitoAnnotations;
 public class HealthConnectInjectorTest {
 
     private Context mContext;
-    @Mock PackageInfoUtils mPackageInfoUtils;
-    @Mock TransactionManager mTransactionManager;
+    @Mock private PackageInfoUtils mPackageInfoUtils;
+    @Mock private TransactionManager mTransactionManager;
+    @Mock private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
         mContext = InstrumentationRegistry.getContext();
+        HealthConnectDeviceConfigManager.initializeInstance(mContext);
     }
 
     @Test
@@ -63,21 +67,22 @@ public class HealthConnectInjectorTest {
     }
 
     @Test
-    public void setFakeTransactionManager_injectorReturnsFakeTransactionManager() {
+    public void setFakeHealthDataCategoryPriorityHelper_injectorReturnsFakeTransactionManager() {
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
-                        .setTransactionManager(mTransactionManager)
+                        .setHealthDataCategoryPriorityHelper(mHealthDataCategoryPriorityHelper)
                         .build();
 
-        assertThat(healthConnectInjector.getTransactionManager()).isEqualTo(mTransactionManager);
+        assertThat(healthConnectInjector.getHealthDataCategoryPriorityHelper())
+                .isEqualTo(mHealthDataCategoryPriorityHelper);
     }
 
     @Test
-    public void testProductionInjector_injectorReturnsOriginalTransactionManager() {
+    public void testProductionInjector_injectorReturnsOriginalHealthDataCategoryPriorityHelper() {
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext).build();
 
-        assertThat(healthConnectInjector.getTransactionManager())
-                .isEqualTo(TransactionManager.getInitialisedInstance());
+        assertThat(healthConnectInjector.getHealthDataCategoryPriorityHelper())
+                .isEqualTo(HealthDataCategoryPriorityHelper.getInstance());
     }
 }

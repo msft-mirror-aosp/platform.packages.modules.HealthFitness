@@ -23,7 +23,6 @@ import android.annotation.Nullable;
 import android.content.ContentProviderClient;
 import android.content.Context;
 import android.database.Cursor;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.exportimport.ImportStatus;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
@@ -144,7 +143,7 @@ public final class ExportImportSettingsStorage {
 
     /** Set errors and time during the last failed export attempt. */
     public static void setLastExportError(
-            @HealthConnectManager.DataExportError int error, Instant instant) {
+            @ScheduledExportStatus.DataExportError int error, Instant instant) {
         PreferenceHelper.getInstance()
                 .insertOrReplacePreference(LAST_EXPORT_ERROR_PREFERENCE_KEY, String.valueOf(error));
         PreferenceHelper.getInstance()
@@ -193,7 +192,7 @@ public final class ExportImportSettingsStorage {
                                 : Instant.ofEpochMilli(Long.parseLong(lastFailedExportTime)))
                 .setDataExportError(
                         lastExportError == null
-                                ? HealthConnectManager.DATA_EXPORT_ERROR_NONE
+                                ? ScheduledExportStatus.DATA_EXPORT_ERROR_NONE
                                 : Integer.parseInt(lastExportError))
                 .setPeriodInDays(periodInDays == null ? 0 : Integer.parseInt(periodInDays))
                 .setLastExportFileName(lastExportFileName)
