@@ -35,8 +35,9 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 app heeft toegang}other{# apps hebben toegang}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Geen"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Invoerdetails"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"Door gegevens browsen"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Bekijk gegevens en welke apps er toegang toe hebben"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"Automatisch verwijderen, gegevensbronnen, back-up en herstel"</string>
     <string name="backup_title" msgid="211503191266235085">"Back-up"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Gegevensbronnen en prioriteit"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Eenheden instellen"</string>
@@ -78,7 +79,7 @@
     <string name="can_read" msgid="4568261079308309564">"Mag gegevens van het type <xliff:g id="PERMISSION_TYPE">%s</xliff:g> lezen"</string>
     <string name="can_write" msgid="5082414937218423823">"Mag gegevens van het type <xliff:g id="PERMISSION_TYPE">%s</xliff:g> schrijven"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Inactieve apps"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"Deze apps kunnen geen gegevens van het type <xliff:g id="DATA_TYPE">%s</xliff:g> meer schrijven, maar hebben nog steeds gegevens opgeslagen in Health Connect"</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Deze apps kunnen geen gegevens van het type <xliff:g id="DATA_TYPE">%s</xliff:g> meer lezen of schrijven, maar hebben nog steeds gegevens opgeslagen in Health Connect"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Apps kunnen <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> niet meer lezen of schrijven en er worden geen gegevens voor <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> opgeslagen in Health Connect"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Deze gegevens omvatten informatie zoals tijd actief, type beweging, ronden, herhalingen, sessies of zwemslagen"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Deze gegevens omvatten informatie zoals slaapfasen en slaapsessies"</string>
@@ -327,8 +328,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"Aanvullende toegang"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Aanvullende rechten voor deze app verwijderd"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Rechten"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"Fitnessrechten beheren"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"Rechten voor medische dossiers beheren"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Fitness en wellness"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Training, slaap, voeding en andere"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"Medische dossiers"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"medische dossiers"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"Labuitslagen, medicatie, vaccinaties en andere"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"App-rechten verwijderd"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect heeft rechten verwijderd voor <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect heeft rechten verwijderd voor <xliff:g id="APP_DATA_0">%1$s</xliff:g> en <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -342,6 +346,7 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Kan gegevens niet exporteren"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Er is een probleem met de export voor <xliff:g id="DATE">%1$s</xliff:g>. Stel een nieuwe geplande export in en probeer het opnieuw."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Volgende export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"Volgende export begint binnenkort"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Back-up maken en terugzetten"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Laatste export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
@@ -360,8 +365,7 @@
     <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Aan"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Uit"</string>
-    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
-    <skip />
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"Geplande export gebruiken"</string>
     <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"Frequentie wijzigen"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Als je geplande export uitzet, worden eerder geëxporteerde gegevens niet verwijderd uit de opslaglocatie"</string>
@@ -379,6 +383,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Importeren"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect-herstel is bezig"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect-herstel is afgerond"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"Herstel is bezig"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"Gegevens herstellen is afgerond"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect kan geen gegevens herstellen"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Meer ruimte nodig"</string>
@@ -392,9 +397,8 @@
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Bestand kiezen"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Ruimte vrijmaken"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Terug"</string>
-    <!-- no translation found for export_cancel_button (1952360582645412410) -->
-    <skip />
     <string name="export_next_button" msgid="657930567137105172">"Volgende"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"Annuleren"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Annuleren"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Volgende"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Importeren vanuit"</string>
@@ -638,6 +642,7 @@
     <string name="rest" msgid="5937058337671252210">"Rust"</string>
     <string name="pause" msgid="5161459047750335691">"Pauze"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"Australian football"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"Onbekend type"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> slaap"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"wakker"</string>
@@ -991,4 +996,14 @@
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Gegevens voor <xliff:g id="PERMISSION_TYPE">%s</xliff:g> verwijderd"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> items verwijderd"</string>
     <string name="select_all" msgid="837499881590001166">"Alles selecteren"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connect gebruiken"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Synchroniseer je eerste apps om gezondheids- en fitnessgegevens tussen ze te delen"</string>
+    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"Niet nu"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Instellen"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Meer apps koppelen"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Start het delen van gegevens tussen <xliff:g id="APP_NAME">%s</xliff:g> en de gezondheids-apps op je telefoon"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"Instellen"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Compatibele apps bekijken"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Vind meer apps om te synchroniseren met <xliff:g id="APP_NAME">%s</xliff:g> via Health Connect"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Bekijken in appstore"</string>
 </resources>

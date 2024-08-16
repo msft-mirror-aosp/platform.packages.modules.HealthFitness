@@ -39,7 +39,7 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionSt
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.shared.Constants
-import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromFitnessPermissionType
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.inactiveapp.InactiveAppPreference
@@ -57,6 +57,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /** Fragment displaying health data access information. */
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 @AndroidEntryPoint(HealthPreferenceFragment::class)
 class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
 
@@ -171,7 +172,7 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mDataAccessHeader?.icon = fromHealthPermissionType(permissionType).icon(requireContext())
+        mDataAccessHeader?.icon = fromFitnessPermissionType(permissionType).icon(requireContext())
         mDataAccessHeader?.title = getString(fromPermissionType(permissionType).uppercaseLabel)
         viewModel.loadAppMetaDataMap(permissionType)
         viewModel.appMetadataMap.observe(viewLifecycleOwner) { state ->

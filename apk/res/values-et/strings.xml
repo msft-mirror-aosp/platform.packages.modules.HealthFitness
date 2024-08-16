@@ -35,8 +35,9 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{Ühel rakendusel on juurdepääs}other{# rakendusel on juurdepääs}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Pole"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Kirje üksikasjad"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"Sirvi andmeid"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Andmete ja neile juurdepääsevate rakenduste kuvamine"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"Automaatne kustutamine, andmeallikad, varundamine ja taastamine"</string>
     <string name="backup_title" msgid="211503191266235085">"Varundamine"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Andmeallikad ja prioriteet"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Ühikute määramine"</string>
@@ -78,7 +79,7 @@
     <string name="can_read" msgid="4568261079308309564">"Saab lugeda: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"Saab kirjutada: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Inaktiivsed rakendused"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"Need rakendused ei saa enam seda tüüpi andmeid (<xliff:g id="DATA_TYPE">%s</xliff:g>) kirjutada, ent nende andmeid võib siiski olla Health Connecti salvestatud."</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Need rakendused ei saa enam seda tüüpi andmeid (<xliff:g id="DATA_TYPE">%s</xliff:g>) lugeda ega kirjutada, ent nende andmeid võib siiski olla Health Connecti salvestatud."</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Rakendused ei saa enam lugeda ega kirjutada järgmist tüüpi andmeid: <xliff:g id="DATA_TYPE_0">%1$s</xliff:g>. Samuti pole seda tüüpi andmeid (<xliff:g id="DATA_TYPE_2">%2$s</xliff:g>) Health Connecti salvestatud."</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Need andmed hõlmavad teavet, nagu aktiveerimisaeg, treeningu tüüp, ringid, kordused, seansid või ujumise tõmbed"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Need andmed hõlmavad teavet, nagu unefaasid ja uneseansid"</string>
@@ -327,8 +328,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"Täiendav juurdepääs"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Selle rakenduse lisaload eemaldati"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Load"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"Treeninguandmete lubade haldamine"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"Terviseandmete lubade haldamine"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Vormisolek ja heaolu"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Treening, uni, toitumine ja muu"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"Terviseandmed"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"terviseandmed"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"Laboritulemused, ravimid, immuniseerimised ja muu"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Rakendused, mille load eemaldati"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect eemaldas rakenduse <xliff:g id="APP_DATA">%s</xliff:g> load"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect eemaldas rakenduste <xliff:g id="APP_DATA_0">%1$s</xliff:g> ja <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> load"</string>
@@ -342,10 +346,10 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Andmeid ei saanud eksportida"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Kuupäeva <xliff:g id="DATE">%1$s</xliff:g> eksportimisel ilmnes probleem. Seadistage uus ajastatud eksportimine ja proovige uuesti."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Järgmine eksportimine: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"Järgmine eksportimine algab peagi"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Varundamine ja taastamine"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Viimane eksportimine: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for last_export_file_location (4069435932524304633) -->
-    <skip />
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Ajastatud eksportimine"</string>
     <string name="import_data" msgid="404502315533233094">"Andmete importimine"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Taastage andmed varem eksporditud faili kaudu"</string>
@@ -358,14 +362,11 @@
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Teie ekspordist andmete taastamisel ilmnes probleem."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Eksportimine võimaldab teil andmeid salvestada, et saaksite need uude telefoni üle viia"</string>
     <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"Varundamise ja taastamise teave"</string>
-    <!-- no translation found for automatic_export_status (4407131306281440230) -->
-    <skip />
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Sees"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Väljas"</string>
-    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
-    <skip />
-    <!-- no translation found for next_export_file_location (2117071837862240540) -->
-    <skip />
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"Kasuta ajastatud eksporti"</string>
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"Sageduse muutmine"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Kui lülitate ajastatud eskportimise välja, ei kustutata varem eksporditud andmeid kohtadest, kuhu need salvestati"</string>
     <string name="choose_frequency" msgid="8119085390857180221">"Ajastatud eksportimise seadistamine"</string>
@@ -382,6 +383,8 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Impordi"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connecti taastamine on pooleli"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connecti taastamine on lõpule viidud"</string>
+    <!-- no translation found for import_in_progress_toast_text (3363548588078895706) -->
+    <skip />
     <string name="import_complete_toast_text" msgid="7730872919621230959">"Andmete taastamine lõpetati"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect ei saanud andmeid taastada"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Vaja on rohkem ruumi"</string>
@@ -395,9 +398,8 @@
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Valige fail"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Ruumi vabastamine"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Tagasi"</string>
-    <!-- no translation found for export_cancel_button (1952360582645412410) -->
-    <skip />
     <string name="export_next_button" msgid="657930567137105172">"Järgmine"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"Tühista"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Loobu"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Järgmine"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Importimine asukohast"</string>
@@ -420,15 +422,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"Kustuta andmed"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Alusta kustutamist"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Tühista kustutamine"</string>
-    <!-- no translation found for time_range_title (5777596779865648336) -->
-    <skip />
+    <string name="time_range_title" msgid="5777596779865648336">"Andmed, mis rakendusest Health Connect kustutada"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Järgmine"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Jäädavalt kustutatakse kõik andmed, mis lisati valitud ajavahemikus rakendusse Health Connect."</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"Jäädavalt kustutatakse kõik <xliff:g id="DATA_TYPE">%s</xliff:g>-tüüpi andmed, mis lisati valitud ajavahemikus rakendusse Health Connect."</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"Jäädavalt kustutatakse kõik kategooria <xliff:g id="CATEGORY">%s</xliff:g> andmed, mis lisati valitud ajavahemikus rakendusse Health Connect."</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"Jäädavalt kustutatakse kõik rakenduse <xliff:g id="APP_DATA">%s</xliff:g> andmed, mis lisati valitud ajavahemikus rakendusse Health Connect."</string>
-    <!-- no translation found for time_range_message_permission_type_app_data (1613568925588480588) -->
-    <skip />
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"Jäädavalt kustutatakse kõik kategooria <xliff:g id="DATA_TYPE">%1$s</xliff:g> andmed, mille rakendus <xliff:g id="APP_DATA">%2$s</xliff:g> valitud ajavahemikus rakendusse Health Connect lisas."</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"Kustuta viimase 24 tunni andmed"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"Kustuta viimase 7 päeva andmed"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"Kustuta viimase 30 päeva andmed"</string>
@@ -449,32 +449,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"Kas kustutada jäädavalt kõik rakenduse <xliff:g id="APP_DATA">%s</xliff:g> viimase 24 tunni andmed?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"Kas kustutada jäädavalt kõik rakenduse <xliff:g id="APP_DATA">%s</xliff:g> viimase 7 päeva andmed?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"Kas kustutada jäädavalt kõik rakenduse <xliff:g id="APP_DATA">%s</xliff:g> viimase 30 päeva andmed?"</string>
-    <!-- no translation found for confirming_question_permission_type_app_data_all (1210052631467085849) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_day (4377296923865256246) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_week (2253468260502709170) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_month (1656927839079630144) -->
-    <skip />
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"Kas kustutada jäädavalt kõik kategooria <xliff:g id="DATA_TYPE">%1$s</xliff:g> andmed, mille rakendus <xliff:g id="APP_DATA">%2$s</xliff:g> on lisanud?"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"Kas kustutada jäädavalt kõik kategooria <xliff:g id="DATA_TYPE">%1$s</xliff:g> andmed, mille rakendus <xliff:g id="APP_DATA">%2$s</xliff:g> on viimase 24 tunni jooksul lisanud?"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"Kas kustutada jäädavalt kõik kategooria <xliff:g id="DATA_TYPE">%1$s</xliff:g> andmed, mille rakendus <xliff:g id="APP_DATA">%2$s</xliff:g> on viimase 7 päeva jooksul lisanud?"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"Kas kustutada jäädavalt kõik kategooria <xliff:g id="DATA_TYPE">%1$s</xliff:g> andmed, mille rakendus <xliff:g id="APP_DATA">%2$s</xliff:g> on viimase 30 päeva jooksul lisanud?"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Eemalda Health Connectist ka kõik rakenduse <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> load"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Kas soovite jäädavalt kustutada kõik rakenduse <xliff:g id="APP_DATA">%2$s</xliff:g> lisatud andmed, mille tüüp on <xliff:g id="DATA_TYPE">%1$s</xliff:g>?"</string>
-    <!-- no translation found for confirming_question_single_entry (2064578008447638932) -->
-    <skip />
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"Kas kustutada see kirje jäädavalt rakendusest Health Connect?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Ühendatud rakendused ei pääse enam nendele andmetele rakenduse Health Connect kaudu juurde."</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"See kustutab kõik menstruatsioonitsükli kirjed vahemikus <xliff:g id="START_DATE">%1$s</xliff:g> - <xliff:g id="END_DATE">%2$s</xliff:g>."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Kustuta"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Mine tagasi"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Valmis"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"Sule"</string>
-    <!-- no translation found for delete_dialog_success_title (900884533930984889) -->
-    <skip />
-    <!-- no translation found for delete_dialog_success_message (7454086333205881294) -->
-    <skip />
-    <!-- no translation found for delete_dialog_done_button (1371340030947835493) -->
-    <skip />
-    <!-- no translation found for delete_dialog_see_connected_apps_button (2975631672738138716) -->
-    <skip />
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"Andmed kustutati rakendusest Health Connect"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"Kui soovite ühendatud rakendustest kõik andmed kustutada, märkige iga rakendus, millesse võib olla andmeid salvestatud."</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"Valmis"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"Kuva ühendatud rakendused"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"Andmete kustutamine"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"Andmeid ei õnnestunud kustutada"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"Midagi läks valesti ja Health Connect ei saanud teie andmeid kustutada"</string>
@@ -652,6 +643,7 @@
     <string name="rest" msgid="5937058337671252210">"Puhkus"</string>
     <string name="pause" msgid="5161459047750335691">"Peata"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"Austraalia jalgpall"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"Tundmatu tüüp"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> und"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>⁠"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"ärkvel"</string>
@@ -861,17 +853,14 @@
     <string name="range_off" msgid="8178520557618184215">"Väljas"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Kui muudate neid seadeid, siis kustutab Health Connect teie olemasolevad andmed, et kajastada teie uusi eelistusi."</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Kas kustutada automaatselt # kuu möödudes?}other{Kas kustutada automaatselt # kuu möödudes?}}"</string>
-    <!-- no translation found for confirming_message_x_months (986840333220382321) -->
-    <skip />
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{See kustutab Health Connectist ka andmed, mis on vanemad kui # kuu.\n\nKui soovite ühendatud rakendustest kõik andmed kustutada, märkige iga rakendus, millesse võib olla andmeid salvestatud.}other{See kustutab Health Connectist ka andmed, mis on vanemad kui # kuud.\n\nKui soovite ühendatud rakendustest kõik andmed kustutada, märkige iga rakendus, millesse võib olla andmeid salvestatud.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Seadista automaatne kustutamine"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Olemasolevad andmed kustutatakse"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect kustutab kõik andmed, mis on vanemad kui # kuud. Nende muudatuste kajastamiseks teie ühendatud rakendustes võib kuluda päev.}other{Health Connect kustutab kõik andmed, mis on vanemad kui # kuud. Nende muudatuste kajastamiseks teie ühendatud rakendustes võib kuluda päev.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Nende kategooriate andmed kustutatakse"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Valmis"</string>
-    <!-- no translation found for auto_delete_confirmation_toast (7161651426400701306) -->
-    <skip />
-    <!-- no translation found for auto_delete_off_toast (6530926709108821768) -->
-    <skip />
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Automaatne kustutamine on sisse lülitatud. Andmed, mis on vanemad kui # kuu, kustutatakse.}other{Automaatne kustutamine on sisse lülitatud. Andmed, mis on vanemad kui # kuud, kustutatakse.}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"Automaatne kustutamine on välja lülitatud"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Rakenduste prioriteetsuse määramine"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Kui rohkem kui üks rakendus lisab seda tüüpi andmeid (<xliff:g id="DATA_TYPE">%s</xliff:g>), prioriseerib Health Connect rakendust, mis on selles loendis kõige kõrgemal. Järjekorra muutmiseks lohistage rakendusi."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"Salvesta"</string>
@@ -1007,6 +996,15 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Kõik andmed kustutati"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Tüübi <xliff:g id="PERMISSION_TYPE">%s</xliff:g> andmed kustutati"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> üksust kustutati"</string>
-    <!-- no translation found for select_all (837499881590001166) -->
-    <skip />
+    <string name="select_all" msgid="837499881590001166">"Vali kõik"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Alustage Health Connecti kasutamist"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sünkroonige oma esimesed rakendused, et nende vahel tervise- ja treeninguandmeid jagada"</string>
+    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"Mitte praegu"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Seadistamine"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Ühendage veel rakendusi"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Alustake andmete jagamist rakenduse <xliff:g id="APP_NAME">%s</xliff:g> ja teiste oma telefonis olevate terviserakenduste vahel"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"Seadistamine"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Vaadake ühilduvaid rakendusi"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Leidke veel rakendusi, mida rakendusega <xliff:g id="APP_NAME">%s</xliff:g> Health Connecti kaudu sünkroonida"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Kuva rakenduste poes"</string>
 </resources>

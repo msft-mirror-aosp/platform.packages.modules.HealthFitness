@@ -57,9 +57,9 @@ import static android.health.connect.HealthPermissionCategory.WEIGHT;
 import static android.health.connect.HealthPermissionCategory.WHEELCHAIR_PUSHES;
 import static android.health.connect.MedicalPermissionCategory.IMMUNIZATION;
 
+import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 import static com.android.healthfitness.flags.Flags.FLAG_MINDFULNESS;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
-import static com.android.healthfitness.flags.Flags.personalHealthRecord;
 
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
@@ -829,7 +829,8 @@ public final class HealthPermissions {
                             WRITE_RESPIRATORY_RATE,
                             WRITE_RESTING_HEART_RATE,
                             WRITE_SKIN_TEMPERATURE,
-                            WRITE_PLANNED_EXERCISE));
+                            WRITE_PLANNED_EXERCISE,
+                            WRITE_MINDFULNESS));
 
     private static final Map<String, Integer> sWriteHealthPermissionToHealthDataCategoryMap =
             new ArrayMap<>();
@@ -944,7 +945,7 @@ public final class HealthPermissions {
      * @hide
      */
     public static Set<String> getAllMedicalPermissions() {
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             throw new UnsupportedOperationException("getAllMedicalPermissions is not supported");
         }
 
@@ -1229,7 +1230,8 @@ public final class HealthPermissions {
                     WRITE_HEART_RATE_VARIABILITY,
                     WRITE_OXYGEN_SATURATION,
                     WRITE_RESPIRATORY_RATE,
-                    WRITE_RESTING_HEART_RATE
+                    WRITE_RESTING_HEART_RATE,
+                    WRITE_SKIN_TEMPERATURE
                 });
 
         if (Flags.mindfulness()) {
@@ -1239,7 +1241,7 @@ public final class HealthPermissions {
     }
 
     private static synchronized void populateReadMedicalPermissionCategoryToMedicalPermissionMap() {
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             throw new UnsupportedOperationException(
                     "populateReadMedicalPermissionsToMedicalPermissionCategoryMap is not"
                             + " supported");

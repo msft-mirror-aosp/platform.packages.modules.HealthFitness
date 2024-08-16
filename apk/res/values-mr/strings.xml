@@ -35,8 +35,9 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{१ ॲपला अ‍ॅक्सेस आहे}other{# अ‍ॅप्सना अ‍ॅक्सेस आहे}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"काहीही नाही"</string>
     <string name="entry_details_title" msgid="590184849040247850">"एंट्रीचे तपशील"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"डेटा ब्राउझ करा"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"डेटा आणि कोणती अ‍ॅप्स तो अ‍ॅक्सेस करू शकतात ते पाहा"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"ऑटो-डिलीट, डेटा स्रोत, बॅकअप आणि रिस्टोअर करणे"</string>
     <string name="backup_title" msgid="211503191266235085">"बॅकअप"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"डेटा स्रोत आणि प्राधान्य"</string>
     <string name="set_units_title" msgid="2657822539603758029">"युनिट सेट करा"</string>
@@ -78,7 +79,7 @@
     <string name="can_read" msgid="4568261079308309564">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> रीड करू शकते"</string>
     <string name="can_write" msgid="5082414937218423823">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> राइट करू शकते"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"इनॅक्टिव्ह अ‍ॅप्स"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"ही अ‍ॅप्स यापुढे <xliff:g id="DATA_TYPE">%s</xliff:g> राइट करू शकत नाहीत, पण तरीही Health Connect मध्ये डेटा स्टोअर केलेला राहील"</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"ही अ‍ॅप्स यापुढे <xliff:g id="DATA_TYPE">%s</xliff:g> ला रीड किंवा राइट करू शकत नाहीत, पण तरीही Health Connect मध्ये डेटा स्टोअर केलेला राहील"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"अ‍ॅप्स यापुढे <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> रीड किंवा राइट करू शकत नाहीत आणि Health Connect मध्ये कोणताही <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> डेटा स्टोअर केलेला नाही"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"या डेटामध्ये अ‍ॅक्टिव्ह वेळ, व्यायामाचा प्रकार, लॅप, पुनरावृत्ती, सेशन किंवा स्विमिंग स्‍ट्रोक यांसारख्या माहितीचा समावेश आहे"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"या डेटामध्ये झोपेचे टप्पे आणि झोपेची सेशन यांसारख्या माहितीचा समावेश आहे"</string>
@@ -327,8 +328,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"अतिरिक्त अ‍ॅक्सेस"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"या ॲपसाठीच्या अतिरिक्त परवानग्या काढून टाकल्या आहेत"</string>
     <string name="permissions_header" msgid="6519976063360071569">"परवानग्या"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"फिटनेससंबंधी परवानग्या व्यवस्थापित करा"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"आरोग्यविषयक माहितीच्या परवानग्या व्यवस्थापित करा"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"सुदृढता आणि स्वास्थ्य"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"व्यायाम, झोप, पोषण आणि इतर गोष्टी"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"आरोग्यविषयक माहिती"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"आरोग्यविषयक माहिती"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"लॅब निकाल, औषधे, लसीकरण आणि इतर गोष्टी"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"काढून टाकलेल्या अ‍ॅप परवानग्या"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect ने <xliff:g id="APP_DATA">%s</xliff:g> साठी परवानग्या काढून टाकल्या"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect ने <xliff:g id="APP_DATA_0">%1$s</xliff:g> आणि <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> साठी परवानग्या काढून टाकल्या"</string>
@@ -342,6 +346,7 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"डेटा एक्सपोर्ट करता आला नाही"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g> च्या एक्सपोर्टमध्ये समस्या आली. कृपया शेड्यूल केलेले नवीन एक्सपोर्ट सेट करा आणि पुन्हा प्रयत्न करा."</string>
     <string name="next_export_time" msgid="3138247220014510213">"पुढील एक्सपोर्ट: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"पुढील एक्सपोर्ट लवकरच सुरू होत आहे"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"बॅकअप घ्या आणि रिस्टोअर करा"</string>
     <string name="last_export_time" msgid="9205875050823594041">"मागील एक्सपोर्ट: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
@@ -360,8 +365,7 @@
     <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"सुरू आहे"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"बंद आहे"</string>
-    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
-    <skip />
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"शेड्यूल केलेले एक्सपोर्ट वापरा"</string>
     <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"वारंवारता बदला"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"तुम्ही शेड्यूल केलेले एक्सपोर्ट बंद केल्यास, यामुळे पूर्वी एक्सपोर्ट केलेला डेटा जिथे सेव्ह केला होता तिथून तो हटवला जाणार नाही"</string>
@@ -379,6 +383,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"इंपोर्ट करा"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect चे रिस्टोअर करणे प्रगतीपथावर आहे"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect चे रिस्टोअर करणे पूर्ण झाले"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"रिस्टोअर करणे प्रगतीपथावर आहे"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"डेटा रिस्टोअर करणे पूर्ण झाले"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect ला डेटा रिस्टोअर करता आला नाही"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"आणखी जागा आवश्यक आहे"</string>
@@ -392,9 +397,8 @@
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"फाइल निवडा"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"जागा मोकळी करा"</string>
     <string name="export_back_button" msgid="3550795479165524982">"मागे जा"</string>
-    <!-- no translation found for export_cancel_button (1952360582645412410) -->
-    <skip />
     <string name="export_next_button" msgid="657930567137105172">"पुढे जा"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"रद्द करा"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"रद्द करा"</string>
     <string name="import_next_button" msgid="5706322508691854289">"पुढील"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"यावरून इंपोर्ट करा"</string>
@@ -638,6 +642,7 @@
     <string name="rest" msgid="5937058337671252210">"विश्रांती"</string>
     <string name="pause" msgid="5161459047750335691">"थांबवा"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"ऑस्ट्रेलियन फुटबॉल"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"अज्ञात प्रकार"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> झोपलेले"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>⁠"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"जागे"</string>
@@ -991,4 +996,14 @@
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> संबंधित डेटा हटवला आहे"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> आयटम हटवले आहेत"</string>
     <string name="select_all" msgid="837499881590001166">"सर्व निवडा"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connect वापरण्यास सुरुवात करा"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"अ‍ॅप्सदरम्यान आरोग्य आणि फिटनेससंबंधित डेटा शेअर करण्यासाठी तुमची सुरुवातीची अ‍ॅप्स सिंक करा"</string>
+    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"आता नको"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"सेट करा"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"अधिक अ‍ॅप्स कनेक्ट करा"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"<xliff:g id="APP_NAME">%s</xliff:g> आणि तुमच्या फोनवरील आरोग्यविषयक अ‍ॅप्सदरम्यान डेटा शेअर करण्यास सुरुवात करा"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"सेट करा"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"कंपॅटिबल अ‍ॅप्स पहा"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Health Connect द्वारे <xliff:g id="APP_NAME">%s</xliff:g> सह सिंक करण्यासाठी अधिक अ‍ॅप्स शोधा"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"अ‍ॅप स्टोअरवर पहा"</string>
 </resources>

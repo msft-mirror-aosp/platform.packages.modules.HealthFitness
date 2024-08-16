@@ -83,7 +83,7 @@ import android.os.UserHandle;
 import android.os.ext.SdkExtensions;
 
 import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.google.common.truth.Expect;
 

@@ -23,8 +23,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceCategory
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
 import com.android.healthconnect.controller.shared.Constants
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.MEDICAL
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
 import com.android.healthconnect.controller.shared.preference.HealthPreference
@@ -40,7 +40,7 @@ open class AppDataFragment : Hilt_AppDataFragment() {
 
     companion object {
         private const val TAG = "AppDataFragmentTag"
-        const val PERMISSION_TYPE_KEY = "permission_type_key"
+        const val PERMISSION_TYPE_NAME_KEY = "permission_type_name_key"
     }
 
     init {
@@ -83,7 +83,7 @@ open class AppDataFragment : Hilt_AppDataFragment() {
             }
         }
 
-        viewModel.appData.observe(viewLifecycleOwner) { state ->
+        viewModel.fitnessAndMedicalData.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is AppDataViewModel.AppDataState.Loading -> {
                     setLoading(isLoading = true)
@@ -106,11 +106,7 @@ open class AppDataFragment : Hilt_AppDataFragment() {
         preferenceScreen?.removeAll()
         preferenceScreen.addPreference(header)
 
-        val populatedCategories =
-            permissionTypesPerCategoryList
-                .filter { it.data.isNotEmpty() }
-                .sortedBy { getString(it.category.uppercaseTitle()) }
-
+        val populatedCategories = sortAndAddMedicalToLast(permissionTypesPerCategoryList)
         if (populatedCategories.isEmpty()) {
             preferenceScreen.addPreference(NoDataPreference(requireContext()))
             preferenceScreen.addPreference(
@@ -127,16 +123,14 @@ open class AppDataFragment : Hilt_AppDataFragment() {
             preferenceScreen.addPreference(preferenceCategory)
 
             permissionTypesPerCategory.data
-                .sortedBy {
-                    getString(FitnessPermissionStrings.fromPermissionType(it).uppercaseLabel)
-                }
+                .sortedBy { getString(it.upperCaseLabel()) }
                 .forEach { permissionType ->
                     preferenceCategory.addPreference(
                         HealthPreference(requireContext()).also {
                             it.icon = categoryIcon
-                            it.setTitle(
-                                FitnessPermissionStrings.fromPermissionType(permissionType)
-                                    .uppercaseLabel)
+                            // TODO(b/342156345): Map different medical icons for each
+                            // permissionType
+                            it.setTitle(permissionType.upperCaseLabel())
                             it.setOnPreferenceClickListener {
                                 // TODO(b/281811925): Add in upcoming cl.
                                 // it.logName = AppDataElement.PERMISSION_TYPE_BUTTON
@@ -146,11 +140,30 @@ open class AppDataFragment : Hilt_AppDataFragment() {
                                         bundleOf(
                                             EXTRA_PACKAGE_NAME to packageName,
                                             Constants.EXTRA_APP_NAME to appName,
-                                            PERMISSION_TYPE_KEY to permissionType))
+                                            PERMISSION_TYPE_NAME_KEY to permissionType.name))
                                 true
                             }
                         })
                 }
+        }
+    }
+
+    /** Sorts fitness categories alphabetically and appends the medical category to the end. */
+    private fun sortAndAddMedicalToLast(
+        permissionTypesPerCategoryList: List<PermissionTypesPerCategory>
+    ): List<PermissionTypesPerCategory> {
+        val populatedFitnessCategories =
+            permissionTypesPerCategoryList
+                .filter { it.data.isNotEmpty() && it.category != MEDICAL }
+                .sortedBy { getString(it.category.uppercaseTitle()) }
+
+        val medicalCategory =
+            permissionTypesPerCategoryList.find { it.category == MEDICAL && it.data.isNotEmpty() }
+
+        return if (medicalCategory != null) {
+            populatedFitnessCategories + medicalCategory
+        } else {
+            populatedFitnessCategories
         }
     }
 }

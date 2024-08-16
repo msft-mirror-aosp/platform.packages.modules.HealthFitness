@@ -16,63 +16,106 @@
 
 package com.android.healthconnect.controller.tests.backuprestore
 
+import android.app.Activity
+import android.app.Instrumentation.ActivityResult
 import android.content.Context
+import android.content.Intent
 import android.health.connect.exportimport.ImportStatus.*
+import android.net.Uri
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
+import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.backuprestore.BackupAndRestoreSettingsFragment
+import com.android.healthconnect.controller.exportimport.ImportFlowActivity
+import com.android.healthconnect.controller.exportimport.api.DocumentProviders
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.ExportSettings
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
 import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
+import com.android.healthconnect.controller.exportimport.api.ImportFlowViewModel
 import com.android.healthconnect.controller.exportimport.api.ImportStatusViewModel
 import com.android.healthconnect.controller.exportimport.api.ImportUiState
 import com.android.healthconnect.controller.exportimport.api.ImportUiStatus
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
+import com.android.healthconnect.controller.tests.TestActivity
+import com.android.healthconnect.controller.tests.utils.ClearTimeFormatRule
+import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.NOW
+import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.whenever
+import com.android.healthconnect.controller.utils.DeviceInfoUtils
+import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
+import com.android.healthconnect.controller.utils.ToastManager
+import com.android.healthconnect.controller.utils.ToastManagerModule
 import com.android.healthconnect.controller.utils.logging.BackupAndRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
+import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
+@UninstallModules(DeviceInfoUtilsModule::class, ToastManagerModule::class)
 class BackupAndRestoreSettingsFragmentTest {
 
     companion object {
         private const val TEST_EXPORT_PERIOD_IN_DAYS = 1
         private const val TEST_LAST_EXPORT_APP_NAME = "Drive"
         private const val TEST_LAST_EXPORT_FILE_NAME = "healthconnect.zip"
+        private const val TEST_LAST_IMPORT_URI = "content://com.android.documents.testFile"
+        private const val IMPORT_FILE_URI_KEY = "selectedUri"
+        private val TEST_LAST_IMPORT_COMPLETION_TIME = Instant.parse("2022-09-20T07:06:05.432Z")
     }
 
-    @get:Rule val hiltRule = HiltAndroidRule(this)
+    private val testDispatcher = StandardTestDispatcher()
 
-    // TODO: b/330484311 - Replace the mock with a fake.
+    @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val clearTimeFormatRule = ClearTimeFormatRule()
+    @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    // TODO: b/348591669 - Replace the mock with a fake and investigate the UI tests.
     @BindValue
     val exportSettingsViewModel: ExportSettingsViewModel =
         Mockito.mock(ExportSettingsViewModel::class.java)
@@ -85,7 +128,14 @@ class BackupAndRestoreSettingsFragmentTest {
     val importStatusViewModel: ImportStatusViewModel =
         Mockito.mock(ImportStatusViewModel::class.java)
 
+    @BindValue
+    val importFlowViewModel: ImportFlowViewModel = Mockito.mock(ImportFlowViewModel::class.java)
+
+    @BindValue var toastManager: ToastManager = mock()
+
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
+    @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
+    val fakeDeviceInfoUtils = deviceInfoUtils as FakeDeviceInfoUtils
 
     private var previousDefaultTimeZone: TimeZone? = null
     private var previousLocale: Locale? = null
@@ -95,6 +145,9 @@ class BackupAndRestoreSettingsFragmentTest {
 
     @Before
     fun setup() {
+        MockitoAnnotations.initMocks(this)
+        Dispatchers.setMain(testDispatcher)
+
         previousDefaultTimeZone = TimeZone.getDefault()
         previousLocale = Locale.getDefault()
 
@@ -105,33 +158,36 @@ class BackupAndRestoreSettingsFragmentTest {
         context = InstrumentationRegistry.getInstrumentation().context
         navHostController = TestNavHostController(context)
 
+        Intents.init()
+
         whenever(importStatusViewModel.storedImportStatus).then {
             MutableLiveData(
                 ImportUiStatus.WithData(
                     ImportUiState(
-                        ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
-                        /** isImportOngoing= */
-                        false,
-                    )))
+                        dataImportError = ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
+                        isImportOngoing = false)))
         }
         whenever(exportStatusViewModel.storedScheduledExportStatus).then {
             MutableLiveData(
                 ScheduledExportUiStatus.WithData(
                     ScheduledExportUiState(
-                        null,
-                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-                        /** periodInDays= */
-                        0,
-                        TEST_LAST_EXPORT_FILE_NAME,
-                        TEST_LAST_EXPORT_APP_NAME,
-                        null,
-                        null)))
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        periodInDays = 0,
+                        lastExportFileName = TEST_LAST_EXPORT_FILE_NAME,
+                        lastExportAppName = TEST_LAST_EXPORT_APP_NAME)))
+        }
+        whenever(importFlowViewModel.lastImportCompletionInstant).then {
+            MutableLiveData(TEST_LAST_IMPORT_COMPLETION_TIME)
         }
     }
 
     @After
     fun tearDown() {
+        Dispatchers.resetMain()
         reset(healthConnectLogger)
+        fakeDeviceInfoUtils.reset()
+        Intents.release()
 
         TimeZone.setDefault(previousDefaultTimeZone)
         previousLocale?.let { locale -> Locale.setDefault(locale) }
@@ -147,9 +203,7 @@ class BackupAndRestoreSettingsFragmentTest {
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
                         TEST_EXPORT_PERIOD_IN_DAYS,
                         TEST_LAST_EXPORT_FILE_NAME,
-                        TEST_LAST_EXPORT_APP_NAME,
-                        null,
-                        null)))
+                        TEST_LAST_EXPORT_APP_NAME)))
         }
         whenever(exportSettingsViewModel.storedExportSettings).then {
             MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
@@ -190,13 +244,10 @@ class BackupAndRestoreSettingsFragmentTest {
             MutableLiveData(
                 ScheduledExportUiStatus.WithData(
                     ScheduledExportUiState(
-                        null,
-                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-                        TEST_EXPORT_PERIOD_IN_DAYS,
-                        null,
-                        null,
-                        null,
-                        null)))
+                        lastSuccessfulExportTime = null,
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        periodInDays = TEST_EXPORT_PERIOD_IN_DAYS)))
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
@@ -212,13 +263,11 @@ class BackupAndRestoreSettingsFragmentTest {
             MutableLiveData(
                 ScheduledExportUiStatus.WithData(
                     ScheduledExportUiState(
-                        NOW,
-                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-                        TEST_EXPORT_PERIOD_IN_DAYS,
-                        null,
-                        TEST_LAST_EXPORT_APP_NAME,
-                        null,
-                        null)))
+                        lastSuccessfulExportTime = NOW,
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        periodInDays = TEST_EXPORT_PERIOD_IN_DAYS,
+                        lastExportAppName = TEST_LAST_EXPORT_APP_NAME)))
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
@@ -234,13 +283,11 @@ class BackupAndRestoreSettingsFragmentTest {
             MutableLiveData(
                 ScheduledExportUiStatus.WithData(
                     ScheduledExportUiState(
-                        NOW,
-                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-                        TEST_EXPORT_PERIOD_IN_DAYS,
-                        TEST_LAST_EXPORT_FILE_NAME,
-                        null,
-                        null,
-                        null)))
+                        lastSuccessfulExportTime = NOW,
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        periodInDays = TEST_EXPORT_PERIOD_IN_DAYS,
+                        lastExportFileName = TEST_LAST_EXPORT_FILE_NAME)))
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
@@ -248,19 +295,87 @@ class BackupAndRestoreSettingsFragmentTest {
     }
 
     @Test
+    fun backupAndRestoreSettingsFragment_whenImportStarted_importPreferenceDisabled() = runTest {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
+        }
+        whenever(exportSettingsViewModel.documentProviders).then {
+            MutableLiveData(DocumentProviders.WithData(listOf()))
+        }
+
+        val expectedResult =
+            ActivityResult(
+                Activity.RESULT_OK, Intent().putExtra(IMPORT_FILE_URI_KEY, TEST_LAST_IMPORT_URI))
+        intending(hasComponent(ImportFlowActivity::class.java.name)).respondWith(expectedResult)
+
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Import data")).check(matches(isEnabled()))
+        onView(withText("Import data")).perform(click())
+        onView(withText("Import data")).check(matches(not(isEnabled())))
+
+        intended(hasComponent(ImportFlowActivity::class.java.name))
+        verify(importFlowViewModel).triggerImportOfSelectedFile(Uri.parse(TEST_LAST_IMPORT_URI))
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_whenImportTriggered_importStatusToastsShown() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
+        }
+        whenever(exportSettingsViewModel.documentProviders).then {
+            MutableLiveData(DocumentProviders.WithData(listOf()))
+        }
+        whenever(importFlowViewModel.setLastCompletionInstant(Instant.now())).then {
+            MutableLiveData(Instant.now())
+        }
+
+        val expectedInProgressMessage: Int = R.string.import_in_progress_toast_text
+        val expectedCompleteMessage: Int = R.string.import_complete_toast_text
+
+        val expectedResult =
+            ActivityResult(
+                Activity.RESULT_OK, Intent().putExtra(IMPORT_FILE_URI_KEY, TEST_LAST_IMPORT_URI))
+        intending(hasComponent(ImportFlowActivity::class.java.name)).respondWith(expectedResult)
+
+        val scenario: ActivityScenario<TestActivity> =
+            launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Import data")).perform(click())
+
+        intended(hasComponent(ImportFlowActivity::class.java.name))
+        verify(importFlowViewModel).triggerImportOfSelectedFile(Uri.parse(TEST_LAST_IMPORT_URI))
+
+        scenario.onActivity { activity: TestActivity ->
+            verify(toastManager)
+                .showToast(eq(activity), eq(expectedInProgressMessage), ArgumentMatchers.anyInt())
+            verify(toastManager)
+                .showToast(eq(activity), eq(expectedCompleteMessage), ArgumentMatchers.anyInt())
+        }
+    }
+
+    @Test
     fun backupAndRestoreSettingsFragment_clicksImportData_navigatesToImportFlowActivity() {
         whenever(exportSettingsViewModel.storedExportSettings).then {
             MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
         }
-        launchFragment<BackupAndRestoreSettingsFragment>(Bundle()) {
-            navHostController.setGraph(R.navigation.nav_graph)
-            navHostController.setCurrentDestination(R.id.backupAndRestoreSettingsFragment)
-            Navigation.setViewNavController(this.requireView(), navHostController)
+        whenever(exportSettingsViewModel.documentProviders).then {
+            MutableLiveData(DocumentProviders.WithData(listOf()))
         }
 
+        val expectedResult =
+            ActivityResult(
+                Activity.RESULT_OK, Intent().putExtra(IMPORT_FILE_URI_KEY, TEST_LAST_IMPORT_URI))
+        intending(hasComponent(ImportFlowActivity::class.java.name)).respondWith(expectedResult)
+
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Import data")).check(matches(isDisplayed()))
+        onView(withText("Import data")).check(matches(isEnabled()))
         onView(withText("Import data")).perform(click())
 
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.importFlowActivity)
+        intended(hasComponent(ImportFlowActivity::class.java.name))
+
         verify(healthConnectLogger).logInteraction(BackupAndRestoreElement.RESTORE_DATA_BUTTON)
     }
 
@@ -346,9 +461,9 @@ class BackupAndRestoreSettingsFragmentTest {
             MutableLiveData(
                 ImportUiStatus.WithData(
                     ImportUiState(
-                        ImportUiState.DataImportError.DATA_IMPORT_ERROR_WRONG_FILE,
-                        /** isImportOngoing= */
-                        false,
+                        dataImportError =
+                            ImportUiState.DataImportError.DATA_IMPORT_ERROR_WRONG_FILE,
+                        isImportOngoing = false,
                     )))
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
@@ -428,13 +543,25 @@ class BackupAndRestoreSettingsFragmentTest {
             MutableLiveData(
                 ImportUiStatus.WithData(
                     ImportUiState(
-                        ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
-                        /** isImportOngoing= */
-                        false,
-                    )))
+                        dataImportError = ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
+                        isImportOngoing = false)))
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
         onView(withText("Couldn't restore data")).check(doesNotExist())
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_clicksAboutBackupAndRestore_showsHelpCenterLink() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
+
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("About backup and restore")).check(matches(isDisplayed()))
+
+        onView(withText("About backup and restore")).perform(scrollTo(), click())
+        assertThat(fakeDeviceInfoUtils.backupAndRestoreHelpCenterInvoked).isTrue()
     }
 }

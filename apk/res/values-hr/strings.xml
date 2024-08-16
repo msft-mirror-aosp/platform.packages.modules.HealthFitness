@@ -35,8 +35,9 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 aplikacija ima pristup}one{# aplikacija ima pristup}few{# aplikacije imaju pristup}other{# aplikacija ima pristup}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Ništa"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Pojedinosti o unosu"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"Pregledajte podatke"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Pogledajte podatke i koje im aplikacije mogu pristupiti"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"Automatsko brisanje, izvori podataka, sigurnosno kopiranje i vraćanje"</string>
     <string name="backup_title" msgid="211503191266235085">"Sigurnosna kopija"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Izvori podataka i prioritet"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Postavite jedinice"</string>
@@ -78,7 +79,7 @@
     <string name="can_read" msgid="4568261079308309564">"Može čitati podatke tipa <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"Može bilježiti podatke tipa <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Neaktivne aplikacije"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"Ove aplikacije više ne mogu bilježiti <xliff:g id="DATA_TYPE">%s</xliff:g>, no i dalje imaju pohranjene podatke u Health Connectu"</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Ove aplikacije više ne mogu čitati ni bilježiti vrstu podataka: <xliff:g id="DATA_TYPE">%s</xliff:g>, no i dalje imaju pohranjene podatke na Health Connectu"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Aplikacije više ne mogu čitati niti bilježiti podatke za <xliff:g id="DATA_TYPE_0">%1$s</xliff:g>, a u Health Connectu nisu pohranjeni podaci za <xliff:g id="DATA_TYPE_2">%2$s</xliff:g>"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Ovi podaci uključuju informacije kao što su aktivno vrijeme, vrsta vježbe, krugovi, ponavljanja, sesije ili plivački zamasi"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Ovi podaci uključuju informacije kao što su faze spavanja i sesije spavanja"</string>
@@ -327,8 +328,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"Dodatni pristup"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Uklonjena su dodatna dopuštenja za ovu aplikaciju"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Dopuštenja"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"Upravljajte dopuštenjima za fitness"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"Upravljajte dopuštenjima za zdravstveni profil"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Fitness i wellness"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Vježbanje, spavanje, prehrana i drugo"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"Podaci o zdravstvenom stanju"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"podaci o zdravstvenom stanju"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"Lab. nalazi, lijekovi, imunizacija itd."</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Uklonjena dopuštenja aplikacije"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect uklonio je dopuštenja za aplikaciju <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect uklonio je dopuštenja za aplikacije <xliff:g id="APP_DATA_0">%1$s</xliff:g> i <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -342,10 +346,10 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Izvoz podataka nije uspio"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Došlo je do problema pri izvozu za <xliff:g id="DATE">%1$s</xliff:g>. Postavite novi zakazani izvoz i pokušajte ponovno."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Datum sljedećeg izvoza: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"Sljedeći izvoz uskoro započinje"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Stvaranje sigurnosne kopije i vraćanje"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Datum posljednjeg izvoza: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for last_export_file_location (4069435932524304633) -->
-    <skip />
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Zakazani izvoz"</string>
     <string name="import_data" msgid="404502315533233094">"Uvoz podataka"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Vratite podatke iz prethodno izvezene datoteke"</string>
@@ -358,14 +362,11 @@
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Došlo je do problema prilikom vraćanja podataka iz vašeg uvoza."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Izvoz vam omogućuje spremanje podataka da biste ih mogli prenijeti na novi telefon"</string>
     <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"O sigurnosnom kopiranju i vraćanju"</string>
-    <!-- no translation found for automatic_export_status (4407131306281440230) -->
-    <skip />
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Uključeno"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Isključeno"</string>
-    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
-    <skip />
-    <!-- no translation found for next_export_file_location (2117071837862240540) -->
-    <skip />
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"Upotreba zakazanog izvoza"</string>
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"Promijenite učestalost"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Ako isključite zakazani izvoz, prethodno izvezeni podaci neće se izbrisati s mjesta na kojem su spremljeni"</string>
     <string name="choose_frequency" msgid="8119085390857180221">"Postavite zakazani izvoz"</string>
@@ -382,6 +383,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Uvezi"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Vraćanje Health Connecta je u tijeku"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Vraćanje Health Connecta je dovršeno"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"Vraćanje je u tijeku"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"Vraćanje podataka je dovršeno"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect nije mogao vratiti podatke"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Potrebno je više prostora"</string>
@@ -395,9 +397,8 @@
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Odaberite datoteku"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Oslobodi prostor"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Natrag"</string>
-    <!-- no translation found for export_cancel_button (1952360582645412410) -->
-    <skip />
     <string name="export_next_button" msgid="657930567137105172">"Dalje"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"Odustani"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Odustani"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Dalje"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Uvoz iz:"</string>
@@ -641,6 +642,7 @@
     <string name="rest" msgid="5937058337671252210">"Odmor"</string>
     <string name="pause" msgid="5161459047750335691">"Pauza"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"Australski nogomet"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"Nepoznata vrsta"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> spavanja"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"budan/budna"</string>
@@ -993,6 +995,15 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Svi su podaci izbrisani"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Izbrisani su podaci za dopuštenje <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Izbrisane stavke: <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>"</string>
-    <!-- no translation found for select_all (837499881590001166) -->
-    <skip />
+    <string name="select_all" msgid="837499881590001166">"Odaberi sve"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Započnite upotrebljavati Health Connect"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sinkronizirajte svoje prve aplikacije da biste dijelili podatke o zdravlju i sportskim aktivnostima između njih"</string>
+    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"Ne sad"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Postavi"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Povežite više aplikacija"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Započnite s dijeljenjem podataka između aplikacije <xliff:g id="APP_NAME">%s</xliff:g> i aplikacija za zdravlje na vašem telefonu"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"Postavi"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Pregled kompatibilnih aplikacija"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Pronađite više aplikacija za sinkronizaciju s aplikacijom <xliff:g id="APP_NAME">%s</xliff:g> putem aplikacije Health Connect"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Prikaži u trgovini aplikacija"</string>
 </resources>

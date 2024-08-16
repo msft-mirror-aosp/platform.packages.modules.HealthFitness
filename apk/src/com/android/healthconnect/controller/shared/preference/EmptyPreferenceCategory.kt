@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.android.healthconnect.controller.shared.preference
 
-package com.android.healthfitness.flags;
+import android.content.Context
+import android.util.AttributeSet
+import androidx.preference.PreferenceCategory
+import com.android.healthconnect.controller.R
 
-/**
- * A helper class to act as the source of truth for whether a feature is enabled or not by taking
- * into account both feature flag and DB flag. See go/hc-aconfig-and-db.
- */
-public final class AconfigFeatureFlagHelper {
-    /** Returns a boolean indicating whether PHR feature is enabled. */
-    public static boolean isPersonalHealthRecordEnabled() {
-        return Flags.personalHealthRecord() && Flags.personalHealthRecordDatabase();
+class EmptyPreferenceCategory
+@JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null) : PreferenceCategory(context, attrs) {
+
+    init {
+        layoutResource = R.layout.widget_empty_preference_category
     }
 }

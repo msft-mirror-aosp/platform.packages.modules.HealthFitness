@@ -40,7 +40,7 @@ constructor(
 
                 when (val priorityAppsResult =
                     loadPriorityListUseCase.invoke(
-                        HealthDataCategoryExtensions.fromHealthPermissionType(
+                        HealthDataCategoryExtensions.fromFitnessPermissionType(
                             fitnessPermissionType))) {
                     is UseCaseResults.Success -> {
                         val priorityApps = priorityAppsResult.data

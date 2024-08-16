@@ -62,6 +62,7 @@ import android.util.ArraySet;
 import android.util.Log;
 import android.util.Slog;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.exportimport.DatabaseContext;
@@ -312,6 +313,7 @@ public final class BackupRestore {
             try {
                 if (exceptionsByFileName.isEmpty()) {
                     callback.onResult();
+                    Slog.i(TAG, "Restore response sent successfully to caller.");
                 } else {
                     Slog.i(TAG, "Exceptions encountered during staging.");
                     setDataRestoreError(RESTORE_ERROR_FETCHING_DATA);
@@ -336,7 +338,11 @@ public final class BackupRestore {
     public void getAllDataForBackup(
             @NonNull StageRemoteDataRequest stageRemoteDataRequest,
             @NonNull UserHandle userHandle) {
-        Slog.d(TAG, "Incoming request to get all data for backup");
+        Slog.i(
+                TAG,
+                "getAllDataForBackup, number of files to backup = "
+                        + stageRemoteDataRequest.getPfdsByFileName().size());
+
         Map<String, ParcelFileDescriptor> pfdsByFileName =
                 stageRemoteDataRequest.getPfdsByFileName();
 
@@ -358,10 +364,15 @@ public final class BackupRestore {
                         }
                     }
                 });
+
+        if (Flags.d2dFileDeletionBugFix()) {
+            deleteBackupFiles(userHandle);
+        }
     }
 
     /** Get the file names of all the files that are transported during backup / restore. */
     public BackupFileNamesSet getAllBackupFileNames(boolean forDeviceToDevice) {
+        Slog.i(TAG, "getAllBackupFileNames, forDeviceToDevice = " + forDeviceToDevice);
         ArraySet<String> backupFileNames = new ArraySet<>();
         if (forDeviceToDevice) {
             backupFileNames.add(STAGED_DATABASE_NAME);
@@ -638,6 +649,13 @@ public final class BackupRestore {
         }
 
         return backupFilesByFileNames;
+    }
+
+    private void deleteBackupFiles(UserHandle userHandle) {
+        // We only create a backup copy for grant times. DB is copied from source.
+        File backupDataDir = getBackupDataDirectoryForUser(userHandle.getIdentifier());
+        File grantTimeFile = new File(backupDataDir, GRANT_TIME_FILE_NAME);
+        grantTimeFile.delete();
     }
 
     @DataDownloadState
@@ -949,15 +967,20 @@ public final class BackupRestore {
     }
 
     private void mergeGrantTimes(DatabaseContext dbContext) {
-        Slog.i(TAG, "Merging grant times.");
         File restoredGrantTimeFile = new File(dbContext.getDatabaseDir(), GRANT_TIME_FILE_NAME);
+        Slog.i(TAG, "Merging grant times.");
+
         UserGrantTimeState userGrantTimeState =
                 GrantTimeXmlHelper.parseGrantTime(restoredGrantTimeFile);
         mFirstGrantTimeManager.applyAndStageGrantTimeStateForUser(
                 mCurrentForegroundUser, userGrantTimeState);
+
+        if (Flags.d2dFileDeletionBugFix()) {
+            Slog.i(TAG, "Deleting staged grant times after merging.");
+            restoredGrantTimeFile.delete();
+        }
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private void mergeDatabase(DatabaseContext dbContext) {
         synchronized (mMergingLock) {
             if (!dbContext.getDatabasePath(STAGED_DATABASE_NAME).exists()) {
@@ -965,6 +988,7 @@ public final class BackupRestore {
                 // no db was staged
                 return;
             }
+            Slog.i(TAG, "Merging health connect db.");
 
             mDatabaseMerger.merge(new HealthConnectDatabase(dbContext, STAGED_DATABASE_NAME));
 

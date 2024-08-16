@@ -16,7 +16,6 @@
 
 package android.healthconnect.cts.ratelimiter;
 
-import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.healthconnect.cts.utils.DataFactory.buildDevice;
 import static android.healthconnect.cts.utils.DataFactory.getCompleteStepsRecord;
@@ -26,8 +25,8 @@ import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.utils.PhrDataFactory.getUpsertMedicalResourceRequest;
 
+import static com.android.healthfitness.flags.Flags.FLAG_DEVELOPMENT_DATABASE;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
-import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -38,9 +37,11 @@ import android.app.UiAutomation;
 import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.TimeInstantRangeFilter;
@@ -67,8 +68,8 @@ import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 import android.provider.DeviceConfig;
 
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.android.compatibility.common.util.ApiTest;
 import com.android.modules.utils.build.SdkLevel;
@@ -150,7 +151,7 @@ public class RateLimiterTest {
 
     @Test
     @ApiTest(apis = {"android.health.connect#createMedicalDataSource"})
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
     public void testTryAcquireApiCallQuota_createMedicalDataSource_writeLimitExceeded()
             throws InterruptedException {
         exception.expect(HealthConnectException.class);
@@ -159,8 +160,28 @@ public class RateLimiterTest {
     }
 
     @Test
+    @ApiTest(apis = {"android.health.connect#deleteMedicalResource"})
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testTryAcquireApiCallQuota_deleteMedicalResourcesById_writeLimitExceeded()
+            throws InterruptedException {
+        exception.expect(HealthConnectException.class);
+        exception.expectMessage(containsString("API call quota exceeded"));
+        exceedWriteQuotaWithDeleteMedicalDataSourceByIds();
+    }
+
+    @Test
+    @ApiTest(apis = {"android.health.connect#deleteMedicalResource"})
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testTryAcquireApiCallQuota_deleteMedicalResourcesByRequest_writeLimitExceeded()
+            throws InterruptedException {
+        exception.expect(HealthConnectException.class);
+        exception.expectMessage(containsString("API call quota exceeded"));
+        exceedWriteQuotaWithDeleteMedicalDataSourceByRequest();
+    }
+
+    @Test
     @ApiTest(apis = {"android.health.connect#upsertMedicalResources"})
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
     public void testTryAcquireApiCallQuota_upsertMedicalResources_writeLimitExceeded_throws() {
         HealthConnectException thrown =
                 assertThrows(
@@ -206,48 +227,39 @@ public class RateLimiterTest {
     // TODO(b/346256048): re-evaluate the "magic number"s in the tests below once we turn on the PHR
     // flags on pre/post submit.
     @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testMedicalResourcesChunkSizeLimitExceeded() {
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testMedicalResourcesChunkSizeLimitExceeded() throws InterruptedException {
         HealthConnectManager manager = TestUtils.getHealthConnectManager();
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
         int nCopies = 1000 / mLimitsAdjustmentForTesting;
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
-                                DATA_SOURCE_ID,
-                                parseFhirVersion(FHIR_VERSION_R4),
-                                "UpsertMedicalResourceRequest")
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, "UpsertMedicalResourceRequest")
                         .build();
         List<UpsertMedicalResourceRequest> requests = Collections.nCopies(nCopies, request);
 
-        HealthConnectException thrown =
-                assertThrows(
-                        HealthConnectException.class,
-                        () ->
-                                manager.upsertMedicalResources(
-                                        requests, Executors.newSingleThreadExecutor(), receiver));
+        manager.upsertMedicalResources(requests, Executors.newSingleThreadExecutor(), receiver);
+
+        HealthConnectException thrown = receiver.assertAndGetException();
         assertThat(thrown.getMessage()).contains("Records chunk size exceeded the max chunk limit");
     }
 
     @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testMedicalResourceSizeLimitExceeded() {
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testMedicalResourceSizeLimitExceeded() throws InterruptedException {
         HealthConnectManager manager = TestUtils.getHealthConnectManager();
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
         int nCharacters = 200000 / mLimitsAdjustmentForTesting;
         List<Character> data = Collections.nCopies(nCharacters, '0');
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
-                                DATA_SOURCE_ID, parseFhirVersion(FHIR_VERSION_R4), data.toString())
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, data.toString())
                         .build();
 
-        HealthConnectException thrown =
-                assertThrows(
-                        HealthConnectException.class,
-                        () ->
-                                manager.upsertMedicalResources(
-                                        List.of(request),
-                                        Executors.newSingleThreadExecutor(),
-                                        receiver));
+        manager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+
+        HealthConnectException thrown = receiver.assertAndGetException();
         assertThat(thrown.getMessage())
                 .contains("Record size exceeded the single record size limit");
     }
@@ -322,6 +334,7 @@ public class RateLimiterTest {
             request.setFhirBaseUri(DATA_SOURCE_FHIR_BASE_URI + count);
             manager.createMedicalDataSource(
                     request.build(), Executors.newSingleThreadExecutor(), receiver);
+            receiver.verifyNoExceptionOrThrow();
             quotaAcquired--;
         }
         int tryWriteWithBuffer = 20;
@@ -330,7 +343,54 @@ public class RateLimiterTest {
             request.setFhirBaseUri(DATA_SOURCE_FHIR_BASE_URI + count);
             manager.createMedicalDataSource(
                     request.build(), Executors.newSingleThreadExecutor(), receiver);
+            receiver.verifyNoExceptionOrThrow();
+            tryWriteWithBuffer--;
+        }
+    }
 
+    private void exceedWriteQuotaWithDeleteMedicalDataSourceByIds() throws InterruptedException {
+        float quotaAcquired = acquireCallQuotaForWrite();
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
+        HealthConnectManager manager = TestUtils.getHealthConnectManager();
+        // We will try to delete an id that doesn't exist. This doesn't matter.
+        List<MedicalResourceId> request = List.of(PhrDataFactory.getMedicalResourceId());
+
+        while (quotaAcquired > 1) {
+            // Using a non-existent id is fine for quota check.
+            manager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+            receiver.verifyNoExceptionOrThrow();
+            quotaAcquired--;
+        }
+        int tryWriteWithBuffer = 20;
+        while (tryWriteWithBuffer > 0) {
+            // Using a non-existent id is fine for quota check.
+            manager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+            receiver.verifyNoExceptionOrThrow();
+            tryWriteWithBuffer--;
+        }
+    }
+
+    private void exceedWriteQuotaWithDeleteMedicalDataSourceByRequest()
+            throws InterruptedException {
+        float quotaAcquired = acquireCallQuotaForWrite();
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
+        HealthConnectManager manager = TestUtils.getHealthConnectManager();
+        // We will try to delete a data source that doesn't exist. This doesn't matter for quota
+        // check.
+        DeleteMedicalResourcesRequest request =
+                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
+
+        while (quotaAcquired > 1) {
+            // Using a non-existent id is fine for quota check.
+            manager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+            receiver.verifyNoExceptionOrThrow();
+            quotaAcquired--;
+        }
+        int tryWriteWithBuffer = 20;
+        while (tryWriteWithBuffer > 0) {
+            // Using a non-existent id is fine for quota check.
+            manager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+            receiver.verifyNoExceptionOrThrow();
             tryWriteWithBuffer--;
         }
     }

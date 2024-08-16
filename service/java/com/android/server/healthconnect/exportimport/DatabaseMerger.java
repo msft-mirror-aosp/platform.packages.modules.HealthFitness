@@ -77,6 +77,7 @@ public final class DatabaseMerger {
     private final TransactionManager mTransactionManager;
     private final AppInfoHelper mAppInfoHelper;
     private final RecordMapper mRecordMapper;
+    private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
 
     /*
      * Record types in this list will always be migrated such that the ordering here is respected.
@@ -97,6 +98,7 @@ public final class DatabaseMerger {
         mTransactionManager = TransactionManager.getInitialisedInstance();
         mAppInfoHelper = AppInfoHelper.getInstance();
         mRecordMapper = RecordMapper.getInstance();
+        mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
     }
 
     /** Merge data */
@@ -190,8 +192,6 @@ public final class DatabaseMerger {
             }
         }
 
-        HealthDataCategoryPriorityHelper priorityHelper =
-                HealthDataCategoryPriorityHelper.getInstance();
         importPriorityMap.forEach(
                 (category, importPriorityList) -> {
                     if (importPriorityList.isEmpty()) {
@@ -199,12 +199,12 @@ public final class DatabaseMerger {
                     }
 
                     List<String> currentPriorityList =
-                            priorityHelper.getPriorityOrder(category, mContext);
+                            mHealthDataCategoryPriorityHelper.getPriorityOrder(category, mContext);
                     List<String> newPriorityList =
                             Stream.concat(currentPriorityList.stream(), importPriorityList.stream())
                                     .distinct()
                                     .toList();
-                    priorityHelper.setPriorityOrder(category, newPriorityList);
+                    mHealthDataCategoryPriorityHelper.setPriorityOrder(category, newPriorityList);
                     Slog.d(
                             TAG,
                             "Added "

@@ -13,7 +13,6 @@ class FakeFeatureUtils : FeatureUtils {
     private var isSessionTypesEnabled = true
     private var isExerciseRoutesReadAllEnabled = true
     private var isEntryPointsEnabled = true
-    private var isNewAppPriorityEnabled = false
     private var isNewInformationArchitectureEnabled = false
     private var isBackgroundReadEnabled = false
     private var isHistoryReadEnabled = false
@@ -31,10 +30,6 @@ class FakeFeatureUtils : FeatureUtils {
 
     fun setIsEntryPointsEnabled(boolean: Boolean) {
         isEntryPointsEnabled = boolean
-    }
-
-    fun setIsNewAppPriorityEnabled(boolean: Boolean) {
-        isNewAppPriorityEnabled = boolean
     }
 
     fun setIsNewInformationArchitectureEnabled(boolean: Boolean) {
@@ -59,10 +54,6 @@ class FakeFeatureUtils : FeatureUtils {
 
     fun setIsPersonalHealthRecordEnabled(isPersonalHealthRecordEnabled: Boolean) {
         this.isPersonalHealthRecordEnabled = isPersonalHealthRecordEnabled
-    }
-
-    override fun isNewAppPriorityEnabled(): Boolean {
-        return isNewAppPriorityEnabled
     }
 
     override fun isNewInformationArchitectureEnabled(): Boolean {

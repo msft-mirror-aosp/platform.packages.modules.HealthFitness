@@ -31,15 +31,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.autodelete.AutoDeleteRange
-import com.android.healthconnect.controller.autodelete.AutoDeleteViewModel
-import com.android.healthconnect.controller.autodelete.AutoDeleteViewModel.AutoDeleteState
 import com.android.healthconnect.controller.categories.HealthCategoryUiState
 import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.WithData
-import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.whenever
@@ -88,16 +84,9 @@ class HealthDataCategoriesFragmentTest {
         Mockito.mock(HealthDataCategoryViewModel::class.java)
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
-    @BindValue
-    val autoDeleteViewModel: AutoDeleteViewModel = Mockito.mock(AutoDeleteViewModel::class.java)
-
     @Before
     fun setup() {
         hiltRule.inject()
-        whenever(autoDeleteViewModel.storedAutoDeleteRange).then {
-            MutableLiveData(AutoDeleteState.WithData(AutoDeleteRange.AUTO_DELETE_RANGE_NEVER))
-        }
-        (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(false)
         context = InstrumentationRegistry.getInstrumentation().context
         navHostController = TestNavHostController(context)
         toggleAnimation(false)
@@ -148,25 +137,6 @@ class HealthDataCategoriesFragmentTest {
     }
 
     @Test
-    fun oldIA_autoDelete_navigatesToAutoDelete() {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(false)
-        whenever(viewModel.categoriesData).then {
-            MutableLiveData<CategoriesFragmentState>(WithData(HEALTH_DATA_ALL_CATEGORIES))
-        }
-        launchFragment<HealthDataCategoriesFragment>(Bundle()) {
-            navHostController.setGraph(R.navigation.data_nav_graph)
-            navHostController.setCurrentDestination(R.id.healthDataCategoriesFragment)
-            Navigation.setViewNavController(this.requireView(), navHostController)
-        }
-
-        onView(withText("Auto-delete")).check(matches(isDisplayed()))
-        onView(withText("Auto-delete")).perform(click())
-
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.autoDeleteFragment)
-        verify(healthConnectLogger).logInteraction(CategoriesElement.AUTO_DELETE_BUTTON)
-    }
-
-    @Test
     fun categoriesFragment_isDisplayed() {
         whenever(viewModel.categoriesData).then {
             MutableLiveData<CategoriesFragmentState>(WithData(emptyList()))
@@ -175,21 +145,6 @@ class HealthDataCategoriesFragmentTest {
 
         onView(withText("Browse data")).check(matches(isDisplayed()))
         onView(withText("Manage data")).check(matches(isDisplayed()))
-        onView(withText("Off")).check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun categoriesFragment_whenNewAppPriorityEnabled_autoDeleteNotDisplayed() {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(true)
-        whenever(viewModel.categoriesData).then {
-            MutableLiveData<CategoriesFragmentState>(WithData(emptyList()))
-        }
-        launchFragment<HealthDataCategoriesFragment>(Bundle())
-
-        onView(withText("Browse data")).check(matches(isDisplayed()))
-        onView(withText("Manage data")).check(matches(isDisplayed()))
-        onView(withText("Auto-delete")).check(doesNotExist())
-        onView(withText("Off")).check(doesNotExist())
     }
 
     @Test
@@ -217,7 +172,6 @@ class HealthDataCategoriesFragmentTest {
         verify(healthConnectLogger).logPageImpression()
         verify(healthConnectLogger).logImpression(CategoriesElement.SEE_ALL_CATEGORIES_BUTTON)
         verify(healthConnectLogger, times(2)).logImpression(CategoriesElement.CATEGORY_BUTTON)
-        verify(healthConnectLogger).logImpression(CategoriesElement.AUTO_DELETE_BUTTON)
         verify(healthConnectLogger).logImpression(CategoriesElement.DELETE_ALL_DATA_BUTTON)
     }
 

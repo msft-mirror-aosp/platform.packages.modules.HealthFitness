@@ -23,7 +23,6 @@ import android.annotation.Nullable;
 import android.content.ContentProviderClient;
 import android.content.Context;
 import android.database.Cursor;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.exportimport.ImportStatus;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
@@ -50,6 +49,7 @@ public final class ExportImportSettingsStorage {
     // Scheduled Export State
     private static final String LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY =
             "last_successful_export_key";
+    private static final String LAST_FAILED_EXPORT_PREFERENCE_KEY = "last_failed_export_key";
     private static final String LAST_EXPORT_ERROR_PREFERENCE_KEY = "last_export_error_key";
     private static final String LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY =
             "last_successful_export_uri_key";
@@ -106,6 +106,21 @@ public final class ExportImportSettingsStorage {
         return Uri.parse(result);
     }
 
+    /** Get the uri of the last successful export. */
+    public static @Nullable Uri getLastSuccessfulExportUri() {
+        String result =
+                PreferenceHelper.getInstance()
+                        .getPreference(LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY);
+        return result == null ? null : Uri.parse(result);
+    }
+
+    /** Get the time of the last successful export. */
+    public static @Nullable Instant getLastSuccessfulExportTime() {
+        String result =
+                PreferenceHelper.getInstance().getPreference(LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY);
+        return result == null ? null : Instant.ofEpochMilli(Long.parseLong(result));
+    }
+
     /** Gets scheduled export period for exporting Health Connect data. */
     public static int getScheduledExportPeriodInDays() {
         String result = PreferenceHelper.getInstance().getPreference(EXPORT_PERIOD_PREFERENCE_KEY);
@@ -115,24 +130,32 @@ public final class ExportImportSettingsStorage {
     }
 
     /** Set the last successful export time for the currently configured export. */
-    public static void setLastSuccessfulExport(Instant instant) {
+    public static void setLastSuccessfulExport(Instant instant, Uri uri) {
         PreferenceHelper.getInstance()
                 .insertOrReplacePreference(
                         LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY,
                         String.valueOf(instant.toEpochMilli()));
         PreferenceHelper.getInstance().removeKey(LAST_EXPORT_ERROR_PREFERENCE_KEY);
+        PreferenceHelper.getInstance()
+                .insertOrReplacePreference(
+                        LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY, uri.toString());
     }
 
-    /** Set errors during the last failed export attempt. */
-    public static void setLastExportError(@HealthConnectManager.DataExportError int error) {
+    /** Set errors and time during the last failed export attempt. */
+    public static void setLastExportError(
+            @ScheduledExportStatus.DataExportError int error, Instant instant) {
         PreferenceHelper.getInstance()
                 .insertOrReplacePreference(LAST_EXPORT_ERROR_PREFERENCE_KEY, String.valueOf(error));
+        PreferenceHelper.getInstance()
+                .insertOrReplacePreference(
+                        LAST_FAILED_EXPORT_PREFERENCE_KEY, String.valueOf(instant.toEpochMilli()));
     }
 
     /** Get the status of the currently scheduled export. */
     public static ScheduledExportStatus getScheduledExportStatus(Context context) {
         PreferenceHelper prefHelper = PreferenceHelper.getInstance();
         String lastExportTime = prefHelper.getPreference(LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY);
+        String lastFailedExportTime = prefHelper.getPreference(LAST_FAILED_EXPORT_PREFERENCE_KEY);
         String lastExportError = prefHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY);
         String periodInDays = prefHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY);
 
@@ -158,18 +181,25 @@ public final class ExportImportSettingsStorage {
             lastExportFileName = getExportFileName(context, uri);
         }
 
-        return new ScheduledExportStatus(
-                lastExportTime == null
-                        ? null
-                        : Instant.ofEpochMilli(Long.parseLong(lastExportTime)),
-                lastExportError == null
-                        ? HealthConnectManager.DATA_EXPORT_ERROR_NONE
-                        : Integer.parseInt(lastExportError),
-                periodInDays == null ? 0 : Integer.parseInt(periodInDays),
-                lastExportFileName,
-                lastExportAppName,
-                nextExportFileName,
-                nextExportAppName);
+        return new ScheduledExportStatus.Builder()
+                .setLastSuccessfulExportTime(
+                        lastExportTime == null
+                                ? null
+                                : Instant.ofEpochMilli(Long.parseLong(lastExportTime)))
+                .setLastFailedExportTime(
+                        lastFailedExportTime == null
+                                ? null
+                                : Instant.ofEpochMilli(Long.parseLong(lastFailedExportTime)))
+                .setDataExportError(
+                        lastExportError == null
+                                ? ScheduledExportStatus.DATA_EXPORT_ERROR_NONE
+                                : Integer.parseInt(lastExportError))
+                .setPeriodInDays(periodInDays == null ? 0 : Integer.parseInt(periodInDays))
+                .setLastExportFileName(lastExportFileName)
+                .setLastExportAppName(lastExportAppName)
+                .setNextExportFileName(nextExportFileName)
+                .setNextExportAppName(nextExportAppName)
+                .build();
     }
 
     /** Set to true when an import starts and to false when a data import completes */
@@ -204,18 +234,12 @@ public final class ExportImportSettingsStorage {
         try (Cursor cursor =
                 context.getContentResolver().query(destinationUri, null, null, null, null)) {
             if (cursor != null && cursor.moveToFirst()) {
-                return cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-            } else {
-                return destinationUri.getLastPathSegment();
+                return cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME));
             }
+        } catch (IllegalArgumentException exception) {
+            Slog.i(TAG, "Failed to get the file name", exception);
         }
-    }
-
-    /** Set the uri of the last successful export. */
-    public static void setLastSuccessfulExportUri(Uri uri) {
-        PreferenceHelper.getInstance()
-                .insertOrReplacePreference(
-                        LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY, uri.toString());
+        return null;
     }
 
     /** Get the app name of the either the last or the next export, depending on the passed uri. */
@@ -229,16 +253,14 @@ public final class ExportImportSettingsStorage {
                     if (contentProviderCursor != null && contentProviderCursor.moveToFirst()) {
                         String appName =
                                 contentProviderCursor.getString(
-                                        contentProviderCursor.getColumnIndex(
+                                        contentProviderCursor.getColumnIndexOrThrow(
                                                 DocumentsContract.Root.COLUMN_TITLE));
                         return appName;
                     }
                 }
             }
-        } catch (RemoteException exception) {
+        } catch (RemoteException | SecurityException | IllegalArgumentException exception) {
             Slog.e(TAG, "Failed to get the app name", exception);
-        } catch (SecurityException exception) {
-            Slog.e(TAG, "Failed to query the app name", exception);
         }
         return null;
     }

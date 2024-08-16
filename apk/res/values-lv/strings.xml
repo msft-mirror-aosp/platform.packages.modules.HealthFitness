@@ -35,8 +35,9 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 lietotnei ir piekļuve}zero{# lietotnēm ir piekļuve}one{# lietotnei ir piekļuve}other{# lietotnēm ir piekļuve}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Nav"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Detalizēta informācija par ierakstu"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"Pārlūkot datus"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Skatīt datus un lietotnes, kuras var piekļūt datiem"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"Automātiska dzēšana, datu avoti, dublēšana un atjaunošana"</string>
     <string name="backup_title" msgid="211503191266235085">"Dublēšana"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Datu avoti un prioritāte"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Iestatīt mērvienības"</string>
@@ -78,7 +79,7 @@
     <string name="can_read" msgid="4568261079308309564">"Var lasīt šāda veida datus: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"Var rakstīt šāda veida datus: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Neaktīvās lietotnes"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"Šīs lietotnes vairs nevar rakstīt šī veida datus (<xliff:g id="DATA_TYPE">%s</xliff:g>), taču dati joprojām tiek glabāti platformā Health Connect."</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Šīs lietotnes vairs nevar rakstīt vai lasīt šāda veida datus (<xliff:g id="DATA_TYPE">%s</xliff:g>), taču to dati joprojām tiek glabāti platformā Health Connect."</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Lietotnes vairs nevar lasīt un rakstīt šī veida datus (<xliff:g id="DATA_TYPE_0">%1$s</xliff:g>), kā arī platformā Health Connect nav saglabāti šī veida dati (<xliff:g id="DATA_TYPE_2">%2$s</xliff:g>)."</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Šie dati ietver tādu informāciju kā aktivitātes ilgums, treniņa veids, apļu skaits, atkārtojumi, sesijas vai peldēšanas vēzieni."</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Šie dati ietver tādu informāciju kā miega fāzes un miega sesijas."</string>
@@ -327,8 +328,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"Papildu piekļuve"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Šai lietotnei ir noņemtas papildu atļaujas."</string>
     <string name="permissions_header" msgid="6519976063360071569">"Atļaujas"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"Pārvaldīt fitnesa datu atļaujas"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"Pārvaldīt veselības datu atļaujas"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Fitness un labsajūta"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Treniņi, miegs, uzturs un citas atļaujas"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"Veselības dati"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"veselības dati"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"Laboratorijas rezultāti, zāles, potes…"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Noņemtas lietotņu atļaujas"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Platformā Health Connect tika noņemtas lietotnes <xliff:g id="APP_DATA">%s</xliff:g> atļaujas."</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Platformā Health Connect tika noņemtas lietotņu <xliff:g id="APP_DATA_0">%1$s</xliff:g> un <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> atļaujas."</string>
@@ -342,10 +346,10 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Nevarēja eksportēt datus"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Radās problēma ar eksportēšanu šajā datumā: <xliff:g id="DATE">%1$s</xliff:g>. Lūdzu, no jauna iestatiet ieplānoto eksportēšanu un mēģiniet vēlreiz."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Nākamā eksportēšanas reize: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"Drīz sāksies nākamā eksportēšana"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Dublēšana un atjaunošana"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Pēdējā eksportēšanas reize: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for last_export_file_location (4069435932524304633) -->
-    <skip />
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Ieplānota eksportēšana"</string>
     <string name="import_data" msgid="404502315533233094">"Importēt datus"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Atjaunojiet datus no iepriekš eksportēta faila"</string>
@@ -358,14 +362,11 @@
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Atjaunojot eksportētos datus, radās problēma."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Eksportējot varat saglabāt savus datus, lai tos pārsūtītu uz jaunu tālruni"</string>
     <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"Par dublēšanu un atjaunošanu"</string>
-    <!-- no translation found for automatic_export_status (4407131306281440230) -->
-    <skip />
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Ieslēgta"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Izslēgta"</string>
-    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
-    <skip />
-    <!-- no translation found for next_export_file_location (2117071837862240540) -->
-    <skip />
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"Izmantot ieplānoto eksportēšanu"</string>
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"Mainīt biežumu"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Ja izslēgsiet ieplānoto eksportēšanu, netiks dzēsti iepriekš eksportētie dati no vietas, kur tie tika saglabāti."</string>
     <string name="choose_frequency" msgid="8119085390857180221">"Ieplānotās eksportēšanas iestatīšana"</string>
@@ -382,6 +383,8 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Importēt"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Notiek Health Connect datu atjaunošana"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect datu atjaunošana ir pabeigta"</string>
+    <!-- no translation found for import_in_progress_toast_text (3363548588078895706) -->
+    <skip />
     <string name="import_complete_toast_text" msgid="7730872919621230959">"Datu atjaunošana ir pabeigta."</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect nevarēja atjaunot datus"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Nepieciešams vairāk vietas"</string>
@@ -395,9 +398,8 @@
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Izvēlēties failu"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Atbrīvot vietu"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Atpakaļ"</string>
-    <!-- no translation found for export_cancel_button (1952360582645412410) -->
-    <skip />
     <string name="export_next_button" msgid="657930567137105172">"Tālāk"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"Atcelt"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Atcelt"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Tālāk"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Importēšana no"</string>
@@ -420,15 +422,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"Dzēst datus"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Sākt dzēšanu"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Iziet no dzēšanas"</string>
-    <!-- no translation found for time_range_title (5777596779865648336) -->
-    <skip />
+    <string name="time_range_title" msgid="5777596779865648336">"Izvēlieties, kurus datus dzēst no Health Connect"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Tālāk"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Tiks neatgriezeniski dzēsti visi dati, kas izvēlētajā periodā ir pievienoti platformā Health Connect"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"Tiks neatgriezeniski dzēsti dati (<xliff:g id="DATA_TYPE">%s</xliff:g>), kas izvēlētajā periodā ir pievienoti platformā Health Connect"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"Tiks neatgriezeniski dzēsti dati (<xliff:g id="CATEGORY">%s</xliff:g>), kas izvēlētajā periodā ir pievienoti platformā Health Connect"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"Tiks neatgriezeniski dzēsti dati (<xliff:g id="APP_DATA">%s</xliff:g>), kas izvēlētajā periodā ir pievienoti platformā Health Connect"</string>
-    <!-- no translation found for time_range_message_permission_type_app_data (1613568925588480588) -->
-    <skip />
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"Tiks neatgriezeniski izdzēsti šī veida dati (<xliff:g id="DATA_TYPE">%1$s</xliff:g>), ko izvēlētajā laika periodā platformai Health Connect pievienoja <xliff:g id="APP_DATA">%2$s</xliff:g>."</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"Dzēst pēdējo 24 stundu datus"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"Dzēst pēdējo septiņu dienu datus"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"Dzēst pēdējo 30 dienu datus"</string>
@@ -449,32 +449,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"Vai neatgriezeniski dzēst šos datus (<xliff:g id="APP_DATA">%s</xliff:g>) par pēdējām 24 stundām?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"Vai neatgriezeniski dzēst šos datus (<xliff:g id="APP_DATA">%s</xliff:g>) par pēdējām septiņām dienām?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"Vai neatgriezeniski dzēst šos datus (<xliff:g id="APP_DATA">%s</xliff:g>) par pēdējām 30 dienām?"</string>
-    <!-- no translation found for confirming_question_permission_type_app_data_all (1210052631467085849) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_day (4377296923865256246) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_week (2253468260502709170) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_month (1656927839079630144) -->
-    <skip />
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"Vai vēlaties neatgriezeniski izdzēst visus lietotnes <xliff:g id="APP_DATA">%2$s</xliff:g> pievienotos šī veida datus (<xliff:g id="DATA_TYPE">%1$s</xliff:g>) neatkarīgi no pievienošanas laika?"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"Vai vēlaties neatgriezeniski izdzēst visus šī veida datus (<xliff:g id="DATA_TYPE">%1$s</xliff:g>), ko pievienoja <xliff:g id="APP_DATA">%2$s</xliff:g> pēdējās 24 stundās?"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"Vai vēlaties neatgriezeniski izdzēst visus šī veida datus (<xliff:g id="DATA_TYPE">%1$s</xliff:g>), ko pievienoja <xliff:g id="APP_DATA">%2$s</xliff:g> pēdējās septiņās dienās?"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"Vai vēlaties neatgriezeniski izdzēst visus šī veida datus (<xliff:g id="DATA_TYPE">%1$s</xliff:g>), ko pievienoja <xliff:g id="APP_DATA">%2$s</xliff:g> pēdējās 30 dienās?"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Noņemt arī visas <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> atļaujas no Health Connect"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Vai neatgriezeniski dzēst visus šī veida datus (<xliff:g id="DATA_TYPE">%1$s</xliff:g>), kas pievienoti no lietotnes <xliff:g id="APP_DATA">%2$s</xliff:g>?"</string>
-    <!-- no translation found for confirming_question_single_entry (2064578008447638932) -->
-    <skip />
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"Vai vēlaties neatgriezeniski izdzēst šo ierakstu no Health Connect?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Pievienotās lietotnes vairs nevarēs piekļūt šiem datiem no platformas Health Connect."</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"Tādējādi tiks dzēsti visi menstruāciju dati šajā laika periodā: <xliff:g id="START_DATE">%1$s</xliff:g>–<xliff:g id="END_DATE">%2$s</xliff:g>."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Dzēst"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Atpakaļ"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Gatavs"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"Aizvērt"</string>
-    <!-- no translation found for delete_dialog_success_title (900884533930984889) -->
-    <skip />
-    <!-- no translation found for delete_dialog_success_message (7454086333205881294) -->
-    <skip />
-    <!-- no translation found for delete_dialog_done_button (1371340030947835493) -->
-    <skip />
-    <!-- no translation found for delete_dialog_see_connected_apps_button (2975631672738138716) -->
-    <skip />
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"Dati ir izdzēsti no platformas Health Connect"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"Ja vēlaties pilnīgi izdzēst datus no pievienotajām lietotnēm, pārbaudiet katru lietotni, kurā dati varētu būt saglabāti."</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"Gatavs"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"Skatīt pievienotās lietotnes"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"Notiek datu dzēšana."</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"Nevarēja izdzēst datus"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"Radās problēma, un Health Connect nevarēja izdzēst jūsu datus"</string>
@@ -652,6 +643,7 @@
     <string name="rest" msgid="5937058337671252210">"Atpūta"</string>
     <string name="pause" msgid="5161459047750335691">"Pārtraukt"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"Austrāliešu futbols"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"Nezināms veids"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g>: gulēšana"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g>: <xliff:g id="NAME">%2$s</xliff:g>⁠"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"nomodā"</string>
@@ -861,17 +853,14 @@
     <string name="range_off" msgid="8178520557618184215">"Izslēgts"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Ja maināt šos iestatījumus, esošie dati platformā Health Connect tiek dzēsti atbilstoši jūsu jaunajām preferencēm"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Vai vēlaties automātiski dzēst datus pēc # mēneša?}zero{Vai vēlaties automātiski dzēst datus pēc # mēnešiem?}one{Vai vēlaties automātiski dzēst datus pēc # mēneša?}other{Vai vēlaties automātiski dzēst datus pēc # mēnešiem?}}"</string>
-    <!-- no translation found for confirming_message_x_months (986840333220382321) -->
-    <skip />
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Dati, kuru vecums pārsniedz # mēnesi, tiks izdzēsti arī no Health Connect.\n\nJa vēlaties pilnīgi izdzēst datus no pievienotajām lietotnēm, pārbaudiet katru lietotni, kurā dati varētu būt saglabāti.}zero{Dati, kuru vecums pārsniedz # mēnešus, tiks izdzēsti arī no Health Connect.\n\nJa vēlaties pilnīgi izdzēst datus no pievienotajām lietotnēm, pārbaudiet katru lietotni, kurā dati varētu būt saglabāti.}one{Dati, kuru vecums pārsniedz # mēnesi, tiks izdzēsti arī no Health Connect.\n\nJa vēlaties pilnīgi izdzēst datus no pievienotajām lietotnēm, pārbaudiet katru lietotni, kurā dati varētu būt saglabāti.}other{Dati, kuru vecums pārsniedz # mēnešus, tiks izdzēsti arī no Health Connect.\n\nJa vēlaties pilnīgi izdzēst datus no pievienotajām lietotnēm, pārbaudiet katru lietotni, kurā dati varētu būt saglabāti.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Iestatīt automātisku dzēšanu"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Tiks dzēsti noteikti iepriekš saglabāti dati"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Platformā Health Connect tiks dzēsti visi dati, kas vecāki par # mēnesi. Šo izmaiņu ieviešana pievienotajās lietotnēs var ilgt vienu dienu.}zero{Platformā Health Connect tiks dzēsti visi dati, kas vecāki par # mēnešiem. Šo izmaiņu ieviešana pievienotajās lietotnēs var ilgt vienu dienu.}one{Platformā Health Connect tiks dzēsti visi dati, kas vecāki par # mēnesi. Šo izmaiņu ieviešana pievienotajās lietotnēs var ilgt vienu dienu.}other{Platformā Health Connect tiks dzēsti visi dati, kas vecāki par # mēnešiem. Šo izmaiņu ieviešana pievienotajās lietotnēs var ilgt vienu dienu.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Dzēšamo datu kategorijas"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Gatavs"</string>
-    <!-- no translation found for auto_delete_confirmation_toast (7161651426400701306) -->
-    <skip />
-    <!-- no translation found for auto_delete_off_toast (6530926709108821768) -->
-    <skip />
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Automātiska dzēšana ir ieslēgta. Dati, kuru vecums pārsniedz # mēnesi, tiks izdzēsti.}zero{Automātiska dzēšana ir ieslēgta. Dati, kuru vecums pārsniedz # mēnešus, tiks izdzēsti.}one{Automātiska dzēšana ir ieslēgta. Dati, kuru vecums pārsniedz # mēnesi, tiks izdzēsti.}other{Automātiska dzēšana ir ieslēgta. Dati, kuru vecums pārsniedz # mēnešus, tiks izdzēsti.}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"Automātiska dzēšana ir izslēgta."</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Lietotņu prioritāšu iestatīšana"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Ja šāda veida datus (<xliff:g id="DATA_TYPE">%s</xliff:g>) pievieno vairākas lietotnes, lietotnē Health Connect prioritāte tiek piešķirta lietotnei, kas sarakstā atrodas visaugstāk. Velciet lietotnes, lai mainītu to secību."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"Saglabāt"</string>
@@ -1007,6 +996,15 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Visi dati ir izdzēsti."</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Ir izdzēsti šādi dati: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>."</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Izdzēsto vienumu skaits ir <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>."</string>
-    <!-- no translation found for select_all (837499881590001166) -->
-    <skip />
+    <string name="select_all" msgid="837499881590001166">"Atlasīt visu"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Sāciet lietot Health Connect"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sinhronizējiet pirmās lietotnes, starp kurām sinhronizēt veselības un fitnesa datus"</string>
+    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"Vēlāk"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Iestatīt"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Pievienojiet citas lietotnes"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Sāciet kopīgot datus starp lietotni <xliff:g id="APP_NAME">%s</xliff:g> un veselības lietotnēm jūsu tālrunī"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"Iestatīt"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Skatiet saderīgas lietotnes"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Atrodiet citas lietotnes, ar ko sinhronizēt lietotnes <xliff:g id="APP_NAME">%s</xliff:g> datus, izmantojot Health Connect"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Skatīt lietotņu veikalā"</string>
 </resources>

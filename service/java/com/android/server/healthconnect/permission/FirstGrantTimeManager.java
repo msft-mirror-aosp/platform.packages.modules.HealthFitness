@@ -77,17 +77,31 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
     private final MigrationStateManager mMigrationStateManager;
 
     public FirstGrantTimeManager(
-            @NonNull Context context,
-            @NonNull HealthPermissionIntentAppsTracker tracker,
-            @NonNull FirstGrantTimeDatastore datastore) {
+            Context context,
+            HealthPermissionIntentAppsTracker tracker,
+            FirstGrantTimeDatastore datastore) {
+        this(
+                context,
+                tracker,
+                datastore,
+                PackageInfoUtils.getInstance(),
+                HealthDataCategoryPriorityHelper.getInstance());
+    }
+
+    public FirstGrantTimeManager(
+            Context context,
+            HealthPermissionIntentAppsTracker tracker,
+            FirstGrantTimeDatastore datastore,
+            PackageInfoUtils packageInfoUtils,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
         mTracker = tracker;
         mDatastore = datastore;
         mPackageManager = context.getPackageManager();
         mUserManager = context.getSystemService(UserManager.class);
         mUidToGrantTimeCache = new UidToGrantTimeCache();
         mContext = context;
-        mPackageInfoHelper = PackageInfoUtils.getInstance();
-        mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
+        mPackageInfoHelper = packageInfoUtils;
+        mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
         mMigrationStateManager = MigrationStateManager.getInitialisedInstance();
         mPackageManager.addOnPermissionsChangeListener(this);
     }
@@ -410,6 +424,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
             List<PackageInfo> validHealthApps =
                     mPackageInfoHelper.getPackagesHoldingHealthPermissions(
                             user, getUserContext(user));
+
             logIfInDebugMode(
                     "Packages holding health perms of user " + user + " :", validHealthApps);
 
@@ -651,9 +666,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
                     mPackageInfoHelper
                             .getPackageNameFromUid(uid)
                             .ifPresent(
-                                    packageName -> {
-                                        packageNameToGrantTime.put(packageName, time);
-                                    });
+                                    packageName -> packageNameToGrantTime.put(packageName, time));
                 }
             }
 

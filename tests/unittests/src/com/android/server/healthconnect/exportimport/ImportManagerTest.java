@@ -36,15 +36,18 @@ import static org.mockito.Mockito.verify;
 import android.Manifest;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.UserHandle;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
 
+import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.notifications.HealthConnectNotificationSender;
@@ -66,6 +69,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.quality.Strictness;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -85,7 +89,15 @@ public class ImportManagerTest {
 
     private static final String CHANNEL_ID = "healthconnect-channel";
 
-    @Rule
+    @Rule(order = 1)
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(HealthConnectManager.class)
+                    .mockStatic(Environment.class)
+                    .setStrictness(Strictness.LENIENT)
+                    .build();
+
+    @Rule(order = 2)
     public final HealthConnectDatabaseTestRule mDatabaseTestRule =
             new HealthConnectDatabaseTestRule();
 
@@ -103,6 +115,7 @@ public class ImportManagerTest {
         InstrumentationRegistry.getInstrumentation()
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
+        HealthDataCategoryPriorityHelper.clearInstanceForTest();
         mContext = mDatabaseTestRule.getUserContext();
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(mContext, mTransactionManager);
@@ -111,7 +124,6 @@ public class ImportManagerTest {
         mNotificationSender = mock(HealthConnectNotificationSender.class);
         mImportManager = new ImportManager(mContext, mNotificationSender);
         HealthConnectDeviceConfigManager.initializeInstance(mContext);
-        HealthDataCategoryPriorityHelper.clearInstanceForTest();
 
         mPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
         mPriorityHelper.setPriorityOrder(HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME));
