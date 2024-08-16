@@ -68,6 +68,7 @@ import java.time.Instant
 import javax.inject.Inject
 
 /** Fragment to show health data entries by date. */
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 @AndroidEntryPoint(Fragment::class)
 class DataEntriesFragment : Hilt_DataEntriesFragment() {
 

@@ -31,8 +31,6 @@ import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Log;
 
-import com.android.internal.annotations.VisibleForTesting;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +43,7 @@ import java.util.Set;
  * @hide
  */
 public final class PackageInfoUtils {
-    private static final String TAG = "HealthConnectPackageInfoUtils";
+    private static final String TAG = "HCPackageInfoUtils";
 
     @Nullable private static volatile PackageInfoUtils sPackageInfoUtils;
 
@@ -57,6 +55,7 @@ public final class PackageInfoUtils {
 
     private PackageInfoUtils() {}
 
+    /** Returns singleton instance of PackageInfoUtils */
     @NonNull
     public static synchronized PackageInfoUtils getInstance() {
         if (sPackageInfoUtils == null) {
@@ -64,17 +63,6 @@ public final class PackageInfoUtils {
         }
 
         return requireNonNull(sPackageInfoUtils);
-    }
-
-    /** Reset singleton instance {@link PackageInfoUtils}. */
-    public static void clearInstance() {
-        sPackageInfoUtils = null;
-    }
-
-    /** Set an instance of {@link PackageInfoUtils} for testing purposes, such as a mock. */
-    @VisibleForTesting
-    static synchronized void setInstanceForTest(@NonNull PackageInfoUtils instance) {
-        sPackageInfoUtils = instance;
     }
 
     @NonNull

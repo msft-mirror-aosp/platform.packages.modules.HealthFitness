@@ -13,9 +13,9 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsFragment
 import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsViewModel
 import com.android.healthconnect.controller.permissions.connectedapps.searchapps.SearchAppsFragment
+import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
@@ -25,11 +25,10 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_3
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME_2
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME_3
-import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
+import com.android.healthconnect.controller.tests.utils.isAbove
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.whenever
-import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -155,7 +154,12 @@ class SearchAppsFragmentTest {
 
     @Test
     fun appName_navigatesToFitnessAppPermissions() {
-        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ConnectedAppStatus.ALLOWED, permissionsType = AppPermissionsType.FITNESS_PERMISSIONS_ONLY))
+        val connectApp =
+            listOf(
+                ConnectedAppMetadata(
+                    TEST_APP,
+                    status = ConnectedAppStatus.ALLOWED,
+                    permissionsType = AppPermissionsType.FITNESS_PERMISSIONS_ONLY))
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
 
         launchFragment<SearchAppsFragment>(Bundle()) {
@@ -166,12 +170,18 @@ class SearchAppsFragmentTest {
 
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText(TEST_APP_NAME)).perform(ViewActions.click())
-        Truth.assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.fitnessAppFragment)
+        Truth.assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.fitnessAppFragment)
     }
 
     @Test
     fun appName_navigatesToMedicalAppPermissions() {
-        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ConnectedAppStatus.ALLOWED, permissionsType = AppPermissionsType.MEDICAL_PERMISSIONS_ONLY))
+        val connectApp =
+            listOf(
+                ConnectedAppMetadata(
+                    TEST_APP,
+                    status = ConnectedAppStatus.ALLOWED,
+                    permissionsType = AppPermissionsType.MEDICAL_PERMISSIONS_ONLY))
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
 
         launchFragment<SearchAppsFragment>(Bundle()) {
@@ -182,12 +192,18 @@ class SearchAppsFragmentTest {
 
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText(TEST_APP_NAME)).perform(ViewActions.click())
-        Truth.assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.medicalAppFragment)
+        Truth.assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.medicalAppFragment)
     }
 
     @Test
     fun appName_navigatesToCombinedPermissions() {
-        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ConnectedAppStatus.ALLOWED, permissionsType = AppPermissionsType.COMBINED_PERMISSIONS))
+        val connectApp =
+            listOf(
+                ConnectedAppMetadata(
+                    TEST_APP,
+                    status = ConnectedAppStatus.ALLOWED,
+                    permissionsType = AppPermissionsType.COMBINED_PERMISSIONS))
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
 
         launchFragment<SearchAppsFragment>(Bundle()) {
@@ -198,6 +214,79 @@ class SearchAppsFragmentTest {
 
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText(TEST_APP_NAME)).perform(ViewActions.click())
-        Truth.assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.combinedPermissionsFragment)
+        Truth.assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.combinedPermissionsFragment)
+    }
+
+    @Test
+    fun allowedApps_displayedAlphabetically() {
+        val connectedApps =
+            listOf(
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package3", appName = "thirdApp", icon = null),
+                    status = ConnectedAppStatus.ALLOWED),
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package1", appName = "firstApp", icon = null),
+                    status = ConnectedAppStatus.ALLOWED),
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package2", appName = "secondApp", icon = null),
+                    status = ConnectedAppStatus.ALLOWED),
+            )
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectedApps) }
+
+        launchFragment<SearchAppsFragment>(Bundle())
+        onView(withText("firstApp")).check(matches(isDisplayed()))
+        onView(withText("secondApp")).perform(ViewActions.scrollTo()).check(matches(isDisplayed()))
+        onView(withText("firstApp")).check(matches(isAbove(withText("secondApp"))))
+        onView(withText("thirdApp")).perform(ViewActions.scrollTo()).check(matches(isDisplayed()))
+        onView(withText("secondApp")).check(matches(isAbove(withText("thirdApp"))))
+    }
+
+    @Test
+    fun notAllowedApps_displayedAlphabetically() {
+        val connectedApps =
+            listOf(
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package3", appName = "thirdApp", icon = null),
+                    status = ConnectedAppStatus.DENIED),
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package1", appName = "firstApp", icon = null),
+                    status = ConnectedAppStatus.DENIED),
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package2", appName = "secondApp", icon = null),
+                    status = ConnectedAppStatus.DENIED),
+            )
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectedApps) }
+
+        launchFragment<SearchAppsFragment>(Bundle())
+        onView(withText("firstApp")).check(matches(isDisplayed()))
+        onView(withText("secondApp")).perform(ViewActions.scrollTo()).check(matches(isDisplayed()))
+        onView(withText("firstApp")).check(matches(isAbove(withText("secondApp"))))
+        onView(withText("thirdApp")).perform(ViewActions.scrollTo()).check(matches(isDisplayed()))
+        onView(withText("secondApp")).check(matches(isAbove(withText("thirdApp"))))
+    }
+
+    @Test
+    fun inactiveApps_displayedAlphabetically() {
+        val connectedApps =
+            listOf(
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package3", appName = "thirdApp", icon = null),
+                    status = ConnectedAppStatus.INACTIVE),
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package1", appName = "firstApp", icon = null),
+                    status = ConnectedAppStatus.INACTIVE),
+                ConnectedAppMetadata(
+                    AppMetadata(packageName = "package2", appName = "secondApp", icon = null),
+                    status = ConnectedAppStatus.INACTIVE),
+            )
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectedApps) }
+
+        launchFragment<SearchAppsFragment>(Bundle())
+        onView(withText("firstApp")).check(matches(isDisplayed()))
+        onView(withText("secondApp")).perform(ViewActions.scrollTo()).check(matches(isDisplayed()))
+        onView(withText("firstApp")).check(matches(isAbove(withText("secondApp"))))
+        onView(withText("thirdApp")).perform(ViewActions.scrollTo()).check(matches(isDisplayed()))
+        onView(withText("secondApp")).check(matches(isAbove(withText("thirdApp"))))
     }
 }

@@ -22,8 +22,11 @@ import static com.android.server.healthconnect.storage.datatypehelpers.Transacti
 import static com.google.common.truth.Truth.assertThat;
 
 import android.database.Cursor;
+import android.health.connect.HealthConnectManager;
 import android.health.connect.internal.datatypes.RecordInternal;
+import android.os.Environment;
 
+import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
@@ -35,12 +38,22 @@ import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.quality.Strictness;
 
 import java.util.List;
 import java.util.UUID;
 
 public class NoMockAutoDeleteServiceTest {
-    @Rule public final HealthConnectDatabaseTestRule testRule = new HealthConnectDatabaseTestRule();
+    @Rule(order = 1)
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(HealthConnectManager.class)
+                    .mockStatic(Environment.class)
+                    .setStrictness(Strictness.LENIENT)
+                    .build();
+
+    @Rule(order = 2)
+    public final HealthConnectDatabaseTestRule testRule = new HealthConnectDatabaseTestRule();
 
     private static final String TEST_PACKAGE_NAME = "package.name";
 

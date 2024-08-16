@@ -276,7 +276,7 @@ constructor(
                 EXERCISE_SESSION_TYPE_WHEELCHAIR -> context.getString(R.string.wheelchair)
                 EXERCISE_SESSION_TYPE_YOGA -> context.getString(R.string.yoga)
                 EXERCISE_SESSION_TYPE_PARAGLIDING -> context.getString(R.string.paragliding)
-                else -> throw IllegalArgumentException("Unknown exercise session type $type")
+                else -> context.getString(R.string.unknown_type)
             }
         }
     }

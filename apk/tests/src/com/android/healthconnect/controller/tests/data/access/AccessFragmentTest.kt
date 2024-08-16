@@ -22,7 +22,6 @@ import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -36,19 +35,21 @@ import com.android.healthconnect.controller.data.access.AccessViewModel.AccessSc
 import com.android.healthconnect.controller.data.access.AccessViewModel.AccessScreenState.WithData
 import com.android.healthconnect.controller.data.access.AppAccessMetadata
 import com.android.healthconnect.controller.data.access.AppAccessState
-import com.android.healthconnect.controller.dataaccess.HealthDataAccessFragment
+import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
-import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import java.util.Locale
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Rule
@@ -69,73 +70,84 @@ class AccessFragmentTest {
         hiltRule.inject()
         context = InstrumentationRegistry.getInstrumentation().context
         navHostController = TestNavHostController(context)
+        context.setLocale(Locale.US)
     }
 
     @Test
     fun dataAccessFragment_noSections_noneDisplayed() {
         whenever(viewModel.appMetadataMap).then {
-            MutableLiveData<AccessViewModel.AccessScreenState>(WithData(emptyMap()))
+            MutableLiveData<AccessScreenState>(WithData(emptyMap()))
         }
-        launchFragment<HealthDataAccessFragment>(distanceBundle())
+        launchFragment<AccessFragment>(distanceBundle)
 
         onView(withText("Can read distance")).check(doesNotExist())
         onView(withText("Can write distance")).check(doesNotExist())
         onView(withText("Inactive apps")).check(doesNotExist())
         onView(
                 withText(
-                    "These apps can no longer write distance, but still have data stored in Health\u00A0Connect"))
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
             .check(doesNotExist())
-        onView(withText("Manage data")).check(matches(isDisplayed()))
-        onView(withText("See all entries")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Delete this data")).perform(scrollTo()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun dataAccessFragment_medicalPermissionNoSections_noneDisplayed() {
+        whenever(viewModel.appMetadataMap).then {
+            MutableLiveData<AccessScreenState>(WithData(emptyMap()))
+        }
+        launchFragment<AccessFragment>(allMedicalDataBundle)
+
+        onView(withText("Can read distance")).check(doesNotExist())
+        onView(withText("Can write distance")).check(doesNotExist())
+        onView(withText("Inactive apps")).check(doesNotExist())
+        onView(
+                withText(
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
+            .check(doesNotExist())
     }
 
     @Test
     fun dataAccessFragment_readSection_isDisplayed() {
         val map =
             mapOf(
-                AppAccessState.Read to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
+                AppAccessState.Read to
+                    listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
                 AppAccessState.Write to emptyList(),
                 AppAccessState.Inactive to emptyList())
         whenever(viewModel.appMetadataMap).then {
             MutableLiveData<AccessScreenState>(WithData(map))
         }
-        launchFragment<HealthDataAccessFragment>(distanceBundle())
+        launchFragment<AccessFragment>(distanceBundle)
 
         onView(withText("Can read distance")).check(matches(isDisplayed()))
         onView(withText("Can write distance")).check(doesNotExist())
         onView(withText("Inactive apps")).check(doesNotExist())
         onView(
                 withText(
-                    "These apps can no longer write distance, but still have data stored in Health\u00A0Connect"))
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
             .check(doesNotExist())
-        onView(withText("Manage data")).check(matches(isDisplayed()))
-        onView(withText("See all entries")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Delete this data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
     @Test
     fun dataAccessFragment_readAndWriteSections_isDisplayed() {
         val map =
             mapOf(
-                AppAccessState.Read to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
-                AppAccessState.Write to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
+                AppAccessState.Read to
+                    listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
+                AppAccessState.Write to
+                    listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
                 AppAccessState.Inactive to emptyList())
         whenever(viewModel.appMetadataMap).then {
             MutableLiveData<AccessScreenState>(WithData(map))
         }
-        launchFragment<HealthDataAccessFragment>(distanceBundle())
+        launchFragment<AccessFragment>(distanceBundle)
 
         onView(withText("Can read distance")).check(matches(isDisplayed()))
         onView(withText("Can write distance")).check(matches(isDisplayed()))
         onView(withText("Inactive apps")).check(doesNotExist())
         onView(
                 withText(
-                    "These apps can no longer write distance, but still have data stored in Health\u00A0Connect"))
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
             .check(doesNotExist())
-        onView(withText("Manage data")).check(matches(isDisplayed()))
-        onView(withText("See all entries")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Delete this data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
     @Test
@@ -144,22 +156,20 @@ class AccessFragmentTest {
             mapOf(
                 AppAccessState.Read to emptyList(),
                 AppAccessState.Write to emptyList(),
-                AppAccessState.Inactive to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))))
+                AppAccessState.Inactive to
+                    listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))))
         whenever(viewModel.appMetadataMap).then {
-            MutableLiveData<AccessViewModel.AccessScreenState>(WithData(map))
+            MutableLiveData<AccessScreenState>(WithData(map))
         }
-        launchFragment<HealthDataAccessFragment>(distanceBundle())
+        launchFragment<AccessFragment>(distanceBundle)
 
         onView(withText("Can read distance")).check(doesNotExist())
         onView(withText("Can write distance")).check(doesNotExist())
         onView(withText("Inactive apps")).check(matches(isDisplayed()))
         onView(
                 withText(
-                    "These apps can no longer write distance, but still have data stored in Health\u00A0Connect"))
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
             .check(matches(isDisplayed()))
-        onView(withText("Manage data")).check(matches(isDisplayed()))
-        onView(withText("See all entries")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Delete this data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
     @Test
@@ -167,7 +177,7 @@ class AccessFragmentTest {
         whenever(viewModel.appMetadataMap).then {
             MutableLiveData<AccessScreenState>(AccessScreenState.Loading)
         }
-        launchFragment<HealthDataAccessFragment>(distanceBundle())
+        launchFragment<AccessFragment>(distanceBundle)
         onView(withId(R.id.progress_indicator)).check(matches(isDisplayed()))
     }
 
@@ -176,7 +186,7 @@ class AccessFragmentTest {
         whenever(viewModel.appMetadataMap).then {
             MutableLiveData<AccessScreenState>(WithData(emptyMap()))
         }
-        launchFragment<HealthDataAccessFragment>(distanceBundle())
+        launchFragment<AccessFragment>(distanceBundle)
         onView(withId(R.id.progress_indicator)).check(matches(not(isDisplayed())))
     }
 
@@ -185,7 +195,7 @@ class AccessFragmentTest {
         whenever(viewModel.appMetadataMap).then {
             MutableLiveData<AccessScreenState>(AccessScreenState.Error)
         }
-        launchFragment<HealthDataAccessFragment>(distanceBundle())
+        launchFragment<AccessFragment>(distanceBundle)
         onView(withId(R.id.progress_indicator)).check(matches(not(isDisplayed())))
         onView(withId(R.id.error_view)).check(matches(isDisplayed()))
     }
@@ -202,7 +212,7 @@ class AccessFragmentTest {
             MutableLiveData<AccessScreenState>(WithData(map))
         }
 
-        launchFragment<AccessFragment>(distanceBundle()) {
+        launchFragment<AccessFragment>(distanceBundle) {
             navHostController.setGraph(R.navigation.data_nav_graph_new_ia)
             navHostController.setCurrentDestination(R.id.entriesAndAccessFragment)
             Navigation.setViewNavController(this.requireView(), navHostController)
@@ -217,7 +227,9 @@ class AccessFragmentTest {
     fun whenAppNameClicked_navigatesToMedicalApp() {
         val map =
             mapOf(
-                AppAccessState.Read to listOf(AppAccessMetadata(TEST_APP, AppPermissionsType.MEDICAL_PERMISSIONS_ONLY)),
+                AppAccessState.Read to
+                    listOf(
+                        AppAccessMetadata(TEST_APP, AppPermissionsType.MEDICAL_PERMISSIONS_ONLY)),
                 AppAccessState.Write to emptyList(),
                 AppAccessState.Inactive to emptyList())
 
@@ -225,7 +237,7 @@ class AccessFragmentTest {
             MutableLiveData<AccessScreenState>(WithData(map))
         }
 
-        launchFragment<AccessFragment>(distanceBundle()) {
+        launchFragment<AccessFragment>(distanceBundle) {
             navHostController.setGraph(R.navigation.data_nav_graph_new_ia)
             navHostController.setCurrentDestination(R.id.entriesAndAccessFragment)
             Navigation.setViewNavController(this.requireView(), navHostController)
@@ -236,12 +248,12 @@ class AccessFragmentTest {
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.medicalAppFragment)
     }
 
-
     @Test
     fun whenAppNameClicked_navigatesToCombinedPermissions() {
         val map =
             mapOf(
-                AppAccessState.Read to listOf(AppAccessMetadata(TEST_APP, AppPermissionsType.COMBINED_PERMISSIONS)),
+                AppAccessState.Read to
+                    listOf(AppAccessMetadata(TEST_APP, AppPermissionsType.COMBINED_PERMISSIONS)),
                 AppAccessState.Write to emptyList(),
                 AppAccessState.Inactive to emptyList())
 
@@ -249,7 +261,7 @@ class AccessFragmentTest {
             MutableLiveData<AccessScreenState>(WithData(map))
         }
 
-        launchFragment<AccessFragment>(distanceBundle()) {
+        launchFragment<AccessFragment>(distanceBundle) {
             navHostController.setGraph(R.navigation.data_nav_graph_new_ia)
             navHostController.setCurrentDestination(R.id.entriesAndAccessFragment)
             Navigation.setViewNavController(this.requireView(), navHostController)
@@ -257,12 +269,72 @@ class AccessFragmentTest {
 
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText(TEST_APP_NAME)).perform(click())
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.combinedPermissionsFragment)
+        assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.combinedPermissionsFragment)
     }
 
-    private fun distanceBundle(): Bundle {
-        val bundle = Bundle()
-        bundle.putSerializable(PERMISSION_TYPE_KEY, FitnessPermissionType.DISTANCE)
-        return bundle
+    @Test
+    fun dataAccessFragment_medicalPermission_readSectionOnly() {
+        val map =
+            mapOf(
+                AppAccessState.Read to
+                    listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
+                AppAccessState.Write to emptyList(),
+                AppAccessState.Inactive to emptyList())
+        whenever(viewModel.appMetadataMap).then {
+            MutableLiveData<AccessScreenState>(WithData(map))
+        }
+        launchFragment<AccessFragment>(immunizationBundle)
+
+        onView(withText("Can read immunization")).check(matches(isDisplayed()))
+        onView(withText("Can write immunization")).check(doesNotExist())
+        onView(withText("Inactive apps")).check(doesNotExist())
+        onView(
+                withText(
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
+            .check(doesNotExist())
     }
+
+    @Test
+    fun dataAccessFragment_medicalPermission_writeSectionOnly() {
+        val map =
+            mapOf(
+                AppAccessState.Read to emptyList(),
+                AppAccessState.Write to
+                    listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
+                AppAccessState.Inactive to emptyList())
+        whenever(viewModel.appMetadataMap).then {
+            MutableLiveData<AccessScreenState>(WithData(map))
+        }
+        launchFragment<AccessFragment>(allMedicalDataBundle)
+
+        onView(withText("Can read all medical data")).check(doesNotExist())
+        onView(withText("Can write all medical data")).check(matches(isDisplayed()))
+        onView(withText("Inactive apps")).check(doesNotExist())
+        onView(
+                withText(
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
+            .check(doesNotExist())
+    }
+
+    private val distanceBundle: Bundle
+        get() {
+            val bundle = Bundle()
+            bundle.putString(PERMISSION_TYPE_NAME_KEY, FitnessPermissionType.DISTANCE.name)
+            return bundle
+        }
+
+    private val immunizationBundle: Bundle
+        get() {
+            val bundle = Bundle()
+            bundle.putString(PERMISSION_TYPE_NAME_KEY, MedicalPermissionType.IMMUNIZATION.name)
+            return bundle
+        }
+
+    private val allMedicalDataBundle: Bundle
+        get() {
+            val bundle = Bundle()
+            bundle.putString(PERMISSION_TYPE_NAME_KEY, MedicalPermissionType.ALL_MEDICAL_DATA.name)
+            return bundle
+        }
 }

@@ -16,7 +16,15 @@
 
 package com.android.server.healthconnect.phr;
 
+import static android.health.connect.internal.datatypes.utils.FhirResourceTypeStringToIntMapper.getFhirResourceTypeInt;
+
+import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
+
 import android.annotation.NonNull;
+import android.health.connect.datatypes.FhirResource;
+import android.health.connect.datatypes.FhirResource.FhirResourceType;
+import android.health.connect.datatypes.MedicalResource;
+import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,31 +35,58 @@ import org.json.JSONObject;
  * @hide
  */
 public class FhirJsonExtractor {
-    @NonNull private String mFhirJson = "";
-    private JSONObject mFhirJsonObj;
-    private static final String RESOURCE_TYPE = "resourceType";
-    private static final String RESOURCE_ID = "id";
+    private static final String FHIR_RESOURCE_TYPE_FIELD_NAME = "resourceType";
+    private static final String FHIR_RESOURCE_ID_FIELD_NAME = "id";
+
+    private final int mFhirResourceTypeInt;
+    private final int mMedicalResourceTypeInt;
+    @NonNull private final String mFhirResourceId;
 
     public FhirJsonExtractor(@NonNull String fhirJson) throws JSONException {
-        mFhirJson = fhirJson;
-        mFhirJsonObj = new JSONObject(mFhirJson);
+        JSONObject fhirJsonObj = new JSONObject(fhirJson);
+        String fhirResourceTypeString = fhirJsonObj.getString(FHIR_RESOURCE_TYPE_FIELD_NAME);
+        mFhirResourceId = fhirJsonObj.getString(FHIR_RESOURCE_ID_FIELD_NAME);
+        mFhirResourceTypeInt = getFhirResourceTypeInt(fhirResourceTypeString);
+        mMedicalResourceTypeInt = calculateMedicalResourceTypeInt();
     }
 
-    /** Returns the FHIR JSON string. */
-    @NonNull
-    public String getFhirJson() {
-        return mFhirJson;
+    /**
+     * Returns the FHIR resource type. This is extracted from the "resourceType" field in {@code
+     * mFhirJsonObj}, and mapped into an {@code IntDef} {@link FhirResourceType}.
+     */
+    @FhirResourceType
+    public int getFhirResourceType() {
+        return mFhirResourceTypeInt;
     }
 
-    /** Returns the FHIR resource type. */
-    @NonNull
-    public String getFhirResourceType() throws JSONException {
-        return mFhirJsonObj.getString(RESOURCE_TYPE);
+    /** Returns the {@code IntDef} {@link MedicalResourceType}. */
+    @MedicalResourceType
+    public int getMedicalResourceType() {
+        return mMedicalResourceTypeInt;
     }
 
     /** Returns the FHIR resource id. */
     @NonNull
-    public String getFhirResourceId() throws JSONException {
-        return mFhirJsonObj.getString(RESOURCE_ID);
+    public String getFhirResourceId() {
+        return mFhirResourceId;
+    }
+
+    /**
+     * Returns the corresponding {@code IntDef} {@link MedicalResourceType} of the given {@code
+     * mFhirJsonObj}.
+     */
+    @MedicalResourceType
+    private int calculateMedicalResourceTypeInt() {
+        if (isPersonalHealthRecordEnabled()) {
+            if (mFhirResourceTypeInt == FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION) {
+                return MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+            }
+            // TODO(b/342574702): add mapping logic for more FHIR resources type and remove the
+            // default value once we have validation.
+            return MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
+        }
+        throw new UnsupportedOperationException(
+                "this case should never happen because we have a check at the top of the API impl"
+                        + " in HealthConnectServiceImpl");
     }
 }

@@ -18,9 +18,11 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY_AUTOINCREMENT;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorIntegerList;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
@@ -33,7 +35,9 @@ import android.health.connect.accesslog.AccessLog.OperationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.util.Pair;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.request.AlterTableRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -57,6 +61,12 @@ public final class AccessLogsHelper extends DatabaseHelper {
     private static final String APP_ID_COLUMN_NAME = "app_id";
     private static final String ACCESS_TIME_COLUMN_NAME = "access_time";
     private static final String OPERATION_TYPE_COLUMN_NAME = "operation_type";
+
+    @VisibleForTesting
+    static final String MEDICAL_RESOURCE_TYPE_COLUMN_NAME = "medical_resource_type";
+
+    @VisibleForTesting static final String MEDICAL_DATA_SOURCE_COLUMN_NAME = "medical_data_source";
+
     private static final int NUM_COLS = 5;
     private static final int DEFAULT_ACCESS_LOG_TIME_PERIOD_IN_DAYS = 7;
 
@@ -93,7 +103,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
     }
 
     /**
-     * Returns the timestamp of the latest access log and {@link Long.MIN_VALUE} if there is no
+     * Returns the timestamp of the latest access log and {@link Long#MIN_VALUE} if there is no
      * access log.
      */
     public static long getLatestAccessLogTimeStamp() {
@@ -155,6 +165,16 @@ public final class AccessLogsHelper extends DatabaseHelper {
                                 .toEpochMilli());
     }
 
+    /**
+     * Creates an {@link AlterTableRequest} for adding PHR specific columns, {@link
+     * AccessLogsHelper#MEDICAL_RESOURCE_TYPE_COLUMN_NAME} and {@link
+     * AccessLogsHelper#MEDICAL_DATA_SOURCE_COLUMN_NAME} to the access_logs_table.
+     */
+    @NonNull
+    public static AlterTableRequest getAlterTableRequestForPhrAccessLogs() {
+        return new AlterTableRequest(TABLE_NAME, getPhrAccessLogsColumnInfo());
+    }
+
     @NonNull
     private static List<Pair<String, String>> getColumnInfo() {
         List<Pair<String, String>> columnInfo = new ArrayList<>(NUM_COLS);
@@ -163,8 +183,18 @@ public final class AccessLogsHelper extends DatabaseHelper {
         columnInfo.add(new Pair<>(RECORD_TYPE_COLUMN_NAME, TEXT_NOT_NULL));
         columnInfo.add(new Pair<>(ACCESS_TIME_COLUMN_NAME, INTEGER_NOT_NULL));
         columnInfo.add(new Pair<>(OPERATION_TYPE_COLUMN_NAME, INTEGER_NOT_NULL));
-
         return columnInfo;
+    }
+
+    @NonNull
+    private static List<Pair<String, String>> getPhrAccessLogsColumnInfo() {
+        return List.of(
+                // This is list of comma separated integers that represent
+                // the medicalResourceTypes accessed.
+                Pair.create(MEDICAL_RESOURCE_TYPE_COLUMN_NAME, TEXT_NULL),
+                // This represents a boolean, which tells us whether
+                // the MedicalDataSource data is accessed.
+                Pair.create(MEDICAL_DATA_SOURCE_COLUMN_NAME, INTEGER));
     }
 
     @Override

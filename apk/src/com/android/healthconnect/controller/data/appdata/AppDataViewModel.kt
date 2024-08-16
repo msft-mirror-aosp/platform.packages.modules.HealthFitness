@@ -18,6 +18,7 @@
 package com.android.healthconnect.controller.data.appdata
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,6 +27,7 @@ import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 /** View model for the [AppDataFragment] . */
@@ -41,29 +43,80 @@ constructor(
         private const val TAG = "AppDataViewModel"
     }
 
-    private val _appData = MutableLiveData<AppDataState>()
-    private val _appInfo = MutableLiveData<AppMetadata>()
+    private val _appFitnessData = MutableLiveData<AppDataState>()
+    private val _appMedicalData = MutableLiveData<AppDataState>()
 
-    /** Provides a list of [PermissionTypesPerCategory]s to be displayed in [AppDataFragment]. */
-    val appData: LiveData<AppDataState>
-        get() = _appData
+    /** Provides a list of [PermissionTypesPerCategory]s of [FitnessPermissionType]s. */
+    val appFitnessData: LiveData<AppDataState>
+        get() = _appFitnessData
+
+    /** Provides a list of [PermissionTypesPerCategory]s of [MedicalPermissionType]s. */
+    val appMedicalData: LiveData<AppDataState>
+        get() = _appMedicalData
+
+    /**
+     * Provides a list of all [PermissionTypesPerCategory]s to be displayed in [AppDataFragment].
+     */
+    val fitnessAndMedicalData: MediatorLiveData<AppDataState> =
+        MediatorLiveData<AppDataState>().apply {
+            value = AppDataState.Loading
+            addSource(_appFitnessData) {
+                postValue(getCombinedAppData(appFitnessData, appMedicalData))
+            }
+            addSource(_appMedicalData) {
+                postValue(getCombinedAppData(appFitnessData, appMedicalData))
+            }
+        }
+
+    private val _appInfo = MutableLiveData<AppMetadata>()
 
     val appInfo: LiveData<AppMetadata>
         get() = _appInfo
 
     fun loadAppData(packageName: String) {
-        _appData.postValue(AppDataState.Loading)
+        _appFitnessData.postValue(AppDataState.Loading)
+        _appMedicalData.postValue(AppDataState.Loading)
 
         viewModelScope.launch {
-            when (val result = loadAppDataUseCase.loadAppData(packageName)) {
-                is UseCaseResults.Success -> {
-                    _appData.postValue(AppDataState.WithData(result.data))
-                }
-                is UseCaseResults.Failed -> {
-                    _appData.postValue(AppDataState.Error)
-                }
-            }
+            val fitnessData = async { loadAppDataUseCase.loadFitnessAppData(packageName) }
+            val medicalData = async { loadAppDataUseCase.loadMedicalAppData(packageName) }
+
+            handleResult(fitnessData.await(), _appFitnessData)
+            handleResult(medicalData.await(), _appMedicalData)
         }
+    }
+
+    private fun handleResult(
+        result: UseCaseResults<List<PermissionTypesPerCategory>>,
+        liveData: MutableLiveData<AppDataState>
+    ) {
+        when (result) {
+            is UseCaseResults.Success -> liveData.postValue(AppDataState.WithData(result.data))
+            is UseCaseResults.Failed -> liveData.postValue(AppDataState.Error)
+        }
+    }
+
+    private fun getCombinedAppData(
+        appFitnessData: LiveData<AppDataState>,
+        appMedicalData: LiveData<AppDataState>
+    ): AppDataState {
+        val fitnessData = appFitnessData.value ?: AppDataState.Loading
+        val medicalData = appMedicalData.value ?: AppDataState.Loading
+
+        if (fitnessData is AppDataState.WithData && medicalData is AppDataState.WithData) {
+            val combinedData = fitnessData.dataMap + medicalData.dataMap
+            return AppDataState.WithData(combinedData)
+        }
+        if (fitnessData is AppDataState.WithData) {
+            return fitnessData
+        }
+        if (medicalData is AppDataState.WithData) {
+            return medicalData
+        }
+        if (fitnessData is AppDataState.Error && medicalData is AppDataState.Error) {
+            return AppDataState.Error
+        }
+        return AppDataState.Loading
     }
 
     fun loadAppInfo(packageName: String) {

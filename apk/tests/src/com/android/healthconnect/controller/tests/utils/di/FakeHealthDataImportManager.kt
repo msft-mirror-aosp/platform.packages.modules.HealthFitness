@@ -44,9 +44,14 @@ class FakeHealthDataImportManager : HealthDataImportManager {
 
     private var importFileUri: Uri? = null
 
-    override fun runImport(uri: Uri) {
-        importFileUri = uri
-        runImportException?.let { throw it } ?: run { importStatus = IN_PROGRESS_IMPORT_STATUS }
+    override fun runImport(
+        uri: Uri,
+        executor: Executor,
+        outcomeReceiver: OutcomeReceiver<Void, HealthConnectException>
+    ) {
+        importStatus
+        runImportException?.let { outcomeReceiver.onError(it) }
+            ?: run { outcomeReceiver.onResult(null) }
     }
 
     fun setRunImportException(exception: HealthConnectException?) {
@@ -72,10 +77,7 @@ class FakeHealthDataImportManager : HealthDataImportManager {
     fun reset() {
         importStatus = DEFAULT_IMPORT_STATUS
         getImportStatusException = null
+        runImportException = null
         importFileUri = null
-    }
-
-    fun getImportFileUri(): Uri? {
-        return importFileUri
     }
 }

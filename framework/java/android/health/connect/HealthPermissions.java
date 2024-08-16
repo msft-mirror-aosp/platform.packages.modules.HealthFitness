@@ -57,9 +57,9 @@ import static android.health.connect.HealthPermissionCategory.WEIGHT;
 import static android.health.connect.HealthPermissionCategory.WHEELCHAIR_PUSHES;
 import static android.health.connect.MedicalPermissionCategory.IMMUNIZATION;
 
+import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 import static com.android.healthfitness.flags.Flags.FLAG_MINDFULNESS;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
-import static com.android.healthfitness.flags.Flags.personalHealthRecord;
 
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
@@ -70,6 +70,8 @@ import android.content.pm.PackageInfo;
 import android.health.connect.datatypes.ExerciseRoute;
 import android.util.ArrayMap;
 import android.util.ArraySet;
+
+import com.android.healthfitness.flags.Flags;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -827,7 +829,8 @@ public final class HealthPermissions {
                             WRITE_RESPIRATORY_RATE,
                             WRITE_RESTING_HEART_RATE,
                             WRITE_SKIN_TEMPERATURE,
-                            WRITE_PLANNED_EXERCISE));
+                            WRITE_PLANNED_EXERCISE,
+                            WRITE_MINDFULNESS));
 
     private static final Map<String, Integer> sWriteHealthPermissionToHealthDataCategoryMap =
             new ArrayMap<>();
@@ -839,6 +842,9 @@ public final class HealthPermissions {
             new ArrayMap<>();
 
     private static final Map<Integer, String> sMedicalCategoryToReadPermissionMap =
+            new ArrayMap<>();
+
+    private static final Map<String, Integer> sMedicalReadPermissionToCategoryMap =
             new ArrayMap<>();
 
     private HealthPermissions() {}
@@ -909,9 +915,22 @@ public final class HealthPermissions {
     }
 
     /** @hide */
+    public static @MedicalPermissionCategory.Type int getMedicalPermissionCategory(
+            String permission) {
+        populateReadMedicalPermissionToCategoryMap();
+
+        if (sMedicalReadPermissionToCategoryMap.containsKey(permission)) {
+            return sMedicalReadPermissionToCategoryMap.get(permission);
+        }
+
+        throw new IllegalArgumentException(
+                "Medical permission category not found for " + permission);
+    }
+
+    /** @hide */
     public static String getMedicalReadPermission(
             @MedicalPermissionCategory.Type int permissionCategory) {
-        populateReadMedicalPermissionsToMedicalPermissionCategoryMap();
+        populateReadMedicalPermissionCategoryToMedicalPermissionMap();
         String medicalReadPermission = sMedicalCategoryToReadPermissionMap.get(permissionCategory);
         Objects.requireNonNull(
                 medicalReadPermission,
@@ -926,11 +945,11 @@ public final class HealthPermissions {
      * @hide
      */
     public static Set<String> getAllMedicalPermissions() {
-        if (!personalHealthRecord()) {
+        if (!isPersonalHealthRecordEnabled()) {
             throw new UnsupportedOperationException("getAllMedicalPermissions is not supported");
         }
 
-        populateReadMedicalPermissionsToMedicalPermissionCategoryMap();
+        populateReadMedicalPermissionCategoryToMedicalPermissionMap();
         Set<String> permissions = new HashSet<>(sMedicalCategoryToReadPermissionMap.values());
         permissions.add(WRITE_MEDICAL_DATA);
         return permissions;
@@ -1152,6 +1171,9 @@ public final class HealthPermissions {
         sWriteHealthPermissionToHealthDataCategoryMap.put(
                 WRITE_RESTING_HEART_RATE, HealthDataCategory.VITALS);
 
+        sWriteHealthPermissionToHealthDataCategoryMap.put(
+                WRITE_MINDFULNESS, HealthDataCategory.WELLNESS);
+
         sDataCategoryToWritePermissionsMap.put(
                 HealthDataCategory.ACTIVITY,
                 new String[] {
@@ -1208,16 +1230,18 @@ public final class HealthPermissions {
                     WRITE_HEART_RATE_VARIABILITY,
                     WRITE_OXYGEN_SATURATION,
                     WRITE_RESPIRATORY_RATE,
-                    WRITE_RESTING_HEART_RATE
+                    WRITE_RESTING_HEART_RATE,
+                    WRITE_SKIN_TEMPERATURE
                 });
 
-        sDataCategoryToWritePermissionsMap.put(
-                HealthDataCategory.WELLNESS, new String[] {WRITE_MINDFULNESS});
+        if (Flags.mindfulness()) {
+            sDataCategoryToWritePermissionsMap.put(
+                    HealthDataCategory.WELLNESS, new String[] {WRITE_MINDFULNESS});
+        }
     }
 
-    private static synchronized void
-            populateReadMedicalPermissionsToMedicalPermissionCategoryMap() {
-        if (!personalHealthRecord()) {
+    private static synchronized void populateReadMedicalPermissionCategoryToMedicalPermissionMap() {
+        if (!isPersonalHealthRecordEnabled()) {
             throw new UnsupportedOperationException(
                     "populateReadMedicalPermissionsToMedicalPermissionCategoryMap is not"
                             + " supported");
@@ -1228,5 +1252,18 @@ public final class HealthPermissions {
         }
         // Populate permission category to read permission map
         sMedicalCategoryToReadPermissionMap.put(IMMUNIZATION, READ_MEDICAL_DATA_IMMUNIZATION);
+    }
+
+    private static synchronized void populateReadMedicalPermissionToCategoryMap() {
+        if (!sMedicalReadPermissionToCategoryMap.isEmpty()) {
+            return;
+        }
+
+        populateReadMedicalPermissionCategoryToMedicalPermissionMap();
+        sMedicalCategoryToReadPermissionMap.forEach(
+                (key, value) -> {
+                    // Populate a second map swapping values with the keys
+                    sMedicalReadPermissionToCategoryMap.put(value, key);
+                });
     }
 }

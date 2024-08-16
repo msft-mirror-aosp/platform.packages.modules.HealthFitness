@@ -22,6 +22,7 @@ import static com.android.server.healthconnect.storage.utils.WhereClauses.Logica
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.annotation.StringDef;
 import android.health.connect.Constants;
 import android.util.Slog;
 
@@ -31,6 +32,8 @@ import com.android.server.healthconnect.storage.utils.OrderByClause;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -42,7 +45,16 @@ import java.util.Objects;
  */
 public class ReadTableRequest {
     private static final String TAG = "HealthConnectRead";
-    private static final String UNION_ALL = " UNION ALL ";
+    public static final String UNION_ALL = " UNION ALL ";
+    public static final String UNION = " UNION ";
+
+    /** @hide */
+    @StringDef(
+            value = {
+                UNION, UNION_ALL,
+            })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface UnionType {}
 
     private final String mTableName;
     private RecordHelper<?> mRecordHelper;
@@ -54,6 +66,7 @@ public class ReadTableRequest {
     private String mLimitClause = "";
     private List<ReadTableRequest> mExtraReadRequests;
     private List<ReadTableRequest> mUnionReadRequests;
+    private String mUnionType = UNION_ALL;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     public ReadTableRequest(@NonNull String tableName) {
@@ -102,6 +115,17 @@ public class ReadTableRequest {
         return this;
     }
 
+    /**
+     * Returns this {@link ReadTableRequest} with union type set. If not set, the default uses
+     * {@link ReadTableRequest#UNION_ALL}.
+     */
+    @NonNull
+    public ReadTableRequest setUnionType(@NonNull @UnionType String unionType) {
+        Objects.requireNonNull(unionType);
+        mUnionType = unionType;
+        return this;
+    }
+
     /** Returns SQL statement to perform read operation. */
     @NonNull
     public String getReadCommand() {
@@ -134,7 +158,7 @@ public class ReadTableRequest {
                 builder.append("SELECT * FROM (");
                 builder.append(unionReadRequest.getReadCommand());
                 builder.append(")");
-                builder.append(UNION_ALL);
+                builder.append(mUnionType);
             }
 
             builder.append(readQuery);

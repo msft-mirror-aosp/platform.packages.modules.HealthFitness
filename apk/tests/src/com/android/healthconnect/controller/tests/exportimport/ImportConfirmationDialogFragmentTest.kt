@@ -17,12 +17,16 @@
 package com.android.healthconnect.controller.tests.exportimport
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import androidx.core.os.bundleOf
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -37,7 +41,6 @@ import com.android.healthconnect.controller.tests.utils.di.FakeHealthDataImportM
 import com.android.healthconnect.controller.tests.utils.launchDialog
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.ImportConfirmationDialogElement
-import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -72,6 +75,7 @@ class ImportConfirmationDialogFragmentTest {
     @Before
     fun setup() {
         hiltRule.inject()
+        Intents.init()
         context = InstrumentationRegistry.getInstrumentation().context
         navHostController = TestNavHostController(context)
         importFile = File.createTempFile("testFile", ".zip")
@@ -80,15 +84,16 @@ class ImportConfirmationDialogFragmentTest {
     @After
     fun tearDown() {
         importFile.delete()
+        Intents.release()
         reset(healthConnectLogger)
     }
 
     @Test
     fun importConfirmationDialogFragment_isDisplayedCorrectly() {
+        val importFileUri: Uri = Uri.fromFile(importFile)
         launchDialog<ImportConfirmationDialogFragment>(
             bundleOf(
-                ImportConfirmationDialogFragment.IMPORT_FILE_URI_KEY to
-                    Uri.fromFile(importFile).toString()))
+                ImportConfirmationDialogFragment.IMPORT_FILE_URI_KEY to importFileUri.toString()))
 
         onView(withText(R.string.import_confirmation_dialog_title))
             .inRoot(isDialog())
@@ -106,10 +111,12 @@ class ImportConfirmationDialogFragmentTest {
             onView(withText(R.string.import_confirmation_dialog_import_button)).inRoot(isDialog())
         dialogImportButton.check(matches(isDisplayed()))
         dialogImportButton.check(matches(isClickable()))
+        verify(healthConnectLogger)
+            .logImpression(ImportConfirmationDialogElement.IMPORT_CONFIRMATION_CONTAINER)
     }
 
     @Test
-    fun importConfirmationDialogFragment_importButtonClicked_runsImport() {
+    fun importConfirmationDialogFragment_importButtonClicked_returnsToBackupAndRestoreSettingsFragment() {
         val importFileUri: Uri = Uri.fromFile(importFile)
         launchDialog<ImportConfirmationDialogFragment>(
             bundleOf(
@@ -119,8 +126,8 @@ class ImportConfirmationDialogFragmentTest {
             onView(withText(R.string.import_confirmation_dialog_import_button)).inRoot(isDialog())
         dialogImportButton.perform(click())
 
-        assertThat((healthDataImportManager as FakeHealthDataImportManager).getImportFileUri())
-            .isEqualTo(importFileUri)
+        intended(hasAction(Intent.ACTION_MAIN))
+
         verify(healthConnectLogger)
             .logInteraction(ImportConfirmationDialogElement.IMPORT_CONFIRMATION_DONE_BUTTON)
     }
