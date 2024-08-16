@@ -30,5 +30,9 @@ public final class DatabaseVersions {
     public static final int DB_VERSION_PLANNED_EXERCISE_SESSIONS_FLAG_RELEASE = 13;
     public static final int DB_VERSION_MINDFULNESS_SESSION = 14;
 
+    // TODO(b/357076280): add g3doc link
+    // For historical reasons, we do not support versions below this
+    public static final int MIN_SUPPORTED_DB_VERSION = DB_VERSION_UUID_BLOB;
+
     private DatabaseVersions() {}
 }
