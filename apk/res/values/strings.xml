@@ -82,6 +82,9 @@
     <string name="nutrition_category_uppercase" description="Uppercase name for nutrition category, displaying user data related to nutrition (such as calories consumed, hydration, etc.) [CHAR LIMIT=30]">Nutrition</string>
     <string name="nutrition_category_lowercase" description="Lowercase name for nutrition category, displaying user data related to nutrition (such as calories consumed, hydration, etc.) [CHAR LIMIT=30]">nutrition</string>
 
+    <string name="wellness_category_uppercase" description="Uppercase name for wellness category, displaying user data related to wellness (e.g. mindfulness) [CHAR LIMIT=30]">Wellness</string>
+    <string name="wellness_category_lowercase" description="Lowercase name for wellness category, displaying user data related to wellness (e.g. mindfulness) [CHAR LIMIT=30]">wellness</string>
+
     <string name="browse_data_category" description="Uppercase name for a section that contains user data grouped by categories. [CHAR_LIMIT=50]">Browse data</string>
     <string name="manage_data_section" description="Uppercase name for a section that has different user actions like deleting data. [CHAR_LIMIT=50]">Manage data</string>
     <string name="export_data_button" description="Uppercase name for a button that allows a user to export their data. [CHAR_LIMIT=50]">Export data</string>
@@ -858,6 +861,16 @@
     <string name="sleep_stage_deep" description="Deep sleep stage throughout the sleep session. [CHAR LIMIT=50]">deep sleep</string>
     <string name="sleep_stage_unknown" description="Unknown sleep stage throughout the sleep session. [CHAR LIMIT=50]">unknown</string>
     <!--  endregion -->
+
+    <!-- region Mindfulness -->
+    <string name="mindfulness_type_breathing" description="Mindfulness session type: Breathing. [CHAR LIMIT=20]">Breathing</string>
+    <string name="mindfulness_type_meditation" description="Mindfulness session type: Meditation. [CHAR LIMIT=20]">Meditation</string>
+    <string name="mindfulness_type_movement" description="Mindfulness session type: Movement. [CHAR LIMIT=20]">Movement</string>
+    <string name="mindfulness_type_music" description="Mindfulness session type: Music. [CHAR LIMIT=20]">Music</string>
+    <string name="mindfulness_type_other" description="Mindfulness session type: Other. [CHAR LIMIT=20]">Other</string>
+    <string name="mindfulness_type_unguided" description="Mindfulness session type: Unguided. [CHAR LIMIT=20]">Unguided</string>
+    <!--endregion-->
+    <!-- endregion -->
 
     <!-- region Duration -->
     <string name="minute_duration" translation_description="minute duration representation [CHAR LIMIT=8]"><xliff:g example="1" id="minute">%1$s</xliff:g>m</string>
