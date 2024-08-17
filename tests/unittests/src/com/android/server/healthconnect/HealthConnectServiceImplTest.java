@@ -563,7 +563,8 @@ public class HealthConnectServiceImplTest {
     public void testConfigureScheduledExport_schedulesAnInternalTask() throws Exception {
         long taskCount = mInternalTaskScheduler.getCompletedTaskCount();
         mHealthConnectService.configureScheduledExport(
-                ScheduledExportSettings.withUri(Uri.parse(TEST_URI)), mUserHandle);
+                new ScheduledExportSettings.Builder().setUri(Uri.parse(TEST_URI)).build(),
+                mUserHandle);
         Thread.sleep(500);
 
         assertThat(mInternalTaskScheduler.getCompletedTaskCount()).isEqualTo(taskCount + 1);

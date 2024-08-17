@@ -19,7 +19,6 @@ import android.health.connect.datatypes.ExercisePerformanceGoal
 import android.health.connect.datatypes.ExerciseRoute
 import android.health.connect.datatypes.PlannedExerciseBlock
 import android.health.connect.datatypes.PlannedExerciseStep
-import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.shared.DataType
 import java.time.Instant
 
@@ -32,15 +31,15 @@ sealed class FormattedEntry(open val uuid: String) {
         val titleA11y: String,
         val dataType: DataType,
         val startTime: Instant? = null,
-        val endTime: Instant? = null
+        val endTime: Instant? = null,
     ) : FormattedEntry(uuid)
 
     data class FormattedMedicalDataEntry(
-            val header: String,
-            val headerA11y: String,
-            val title: String,
-            val titleA11y: String,
-            val time: Instant? = null,
+        val header: String,
+        val headerA11y: String,
+        val title: String,
+        val titleA11y: String,
+        val time: Instant? = null,
     ) : FormattedEntry(uuid = "")
 
     data class SleepSessionEntry(
@@ -50,7 +49,7 @@ sealed class FormattedEntry(open val uuid: String) {
         val title: String,
         val titleA11y: String,
         val dataType: DataType,
-        val notes: String?
+        val notes: String?,
     ) : FormattedEntry(uuid)
 
     data class ExerciseSessionEntry(
@@ -61,7 +60,8 @@ sealed class FormattedEntry(open val uuid: String) {
         val titleA11y: String,
         val dataType: DataType,
         val notes: String?,
-        val route: ExerciseRoute? = null
+        val route: ExerciseRoute? = null,
+        val isClickable: Boolean = true,
     ) : FormattedEntry(uuid)
 
     data class SeriesDataEntry(
@@ -70,7 +70,7 @@ sealed class FormattedEntry(open val uuid: String) {
         val headerA11y: String,
         val title: String,
         val titleA11y: String,
-        val dataType: DataType
+        val dataType: DataType,
     ) : FormattedEntry(uuid)
 
     data class SessionHeader(val header: String) : FormattedEntry(uuid = "")
@@ -101,12 +101,10 @@ sealed class FormattedEntry(open val uuid: String) {
     data class FormattedAggregation(
         val aggregation: String,
         val aggregationA11y: String,
-        val contributingApps: String
+        val contributingApps: String,
     ) : FormattedEntry(aggregation)
 
-    data class EntryDateSectionHeader(
-        val date: String,
-    ) : FormattedEntry(date)
+    data class EntryDateSectionHeader(val date: String) : FormattedEntry(date)
 
     data class PlannedExerciseSessionEntry(
         override val uuid: String,
@@ -115,19 +113,19 @@ sealed class FormattedEntry(open val uuid: String) {
         val title: String,
         val dataType: DataType,
         val titleA11y: String,
-        val notes: String?
+        val notes: String?,
     ) : FormattedEntry(uuid)
 
     data class PlannedExerciseBlockEntry(
         val block: PlannedExerciseBlock,
         val title: String,
-        val titleA11y: String
+        val titleA11y: String,
     ) : FormattedEntry(uuid = "")
 
     data class PlannedExerciseStepEntry(
         val step: PlannedExerciseStep,
         val title: String,
-        val titleA11y: String
+        val titleA11y: String,
     ) : FormattedEntry(uuid = "")
 
     data class PlannedExerciseSessionNotesEntry(val notes: String) : FormattedEntry(uuid = "")
@@ -135,6 +133,6 @@ sealed class FormattedEntry(open val uuid: String) {
     data class ExercisePerformanceGoalEntry(
         val goal: ExercisePerformanceGoal,
         val title: String,
-        val titleA11y: String
+        val titleA11y: String,
     ) : FormattedEntry(uuid = "")
 }
