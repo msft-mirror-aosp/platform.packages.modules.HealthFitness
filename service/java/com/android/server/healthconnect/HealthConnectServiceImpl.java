@@ -28,8 +28,6 @@ import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMIS
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
-import static android.health.connect.HealthPermissions.getMedicalPermissionCategory;
-import static android.health.connect.internal.datatypes.utils.MedicalResourceTypePermissionCategoryMapper.getMedicalResourceType;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_DATA;
@@ -126,6 +124,7 @@ import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
+import android.health.connect.internal.datatypes.utils.MedicalResourceTypePermissionMapper;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.health.connect.migration.HealthConnectMigrationUiState;
 import android.health.connect.migration.MigrationEntityParcel;
@@ -3018,11 +3017,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             Set<String> grantedMedicalPermissions) {
         return grantedMedicalPermissions.stream()
                 .filter(permissionString -> !permissionString.equals(WRITE_MEDICAL_DATA))
-                .map(
-                        permissionString -> {
-                            int permissionCategory = getMedicalPermissionCategory(permissionString);
-                            return getMedicalResourceType(permissionCategory);
-                        })
+                .map(MedicalResourceTypePermissionMapper::getMedicalResourceType)
                 .collect(toSet());
     }
 
