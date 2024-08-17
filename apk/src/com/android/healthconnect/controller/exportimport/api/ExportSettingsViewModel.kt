@@ -112,7 +112,7 @@ constructor(
 
     /** Updates the uri to write to in scheduled exports of Health Connect data. */
     fun updateExportUri(uri: Uri) {
-        val settings = ScheduledExportSettings.withUri(uri)
+        val settings = ScheduledExportSettings.Builder().setUri(uri).build()
         updateExportSettings(settings)
     }
 
@@ -122,16 +122,19 @@ constructor(
      */
     fun updateExportUriWithSelectedFrequency(uri: Uri) {
         val settings =
-            ScheduledExportSettings.withUriAndPeriodInDays(
-                uri,
-                _selectedExportFrequency.value?.periodInDays
-                    ?: ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays)
+            ScheduledExportSettings.Builder()
+                .setPeriodInDays(
+                    _selectedExportFrequency.value?.periodInDays
+                        ?: ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays)
+                .setUri(uri)
+                .build()
         updateExportSettings(settings)
     }
 
     /** Updates the frequency of scheduled exports of Health Connect data. */
     fun updateExportFrequency(frequency: ExportFrequency) {
-        val settings = ScheduledExportSettings.withPeriodInDays(frequency.periodInDays)
+        val settings =
+            ScheduledExportSettings.Builder().setPeriodInDays(frequency.periodInDays).build()
         updateExportSettings(settings)
     }
 

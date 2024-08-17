@@ -24,6 +24,7 @@ import android.util.Log;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper;
@@ -45,7 +46,7 @@ public class DevelopmentDatabaseHelper {
      * The current version number for the development database features. Increment this whenever you
      * make a breaking schema change to a development feature.
      */
-    @VisibleForTesting static final int CURRENT_VERSION = 1;
+    @VisibleForTesting static final int CURRENT_VERSION = 2;
 
     /** The name of the table to store development specific key value pairs. */
     private static final String SETTINGS_TABLE_NAME = "development_database_settings";
@@ -114,6 +115,15 @@ public class DevelopmentDatabaseHelper {
         dropTableIfExists(db, MedicalDataSourceHelper.getMainTableName());
         MedicalDataSourceHelper.onInitialUpgrade(db);
         MedicalResourceHelper.onInitialUpgrade(db);
+        addPhrColumnsToAccessLogsTable(db);
+    }
+
+    private static void addPhrColumnsToAccessLogsTable(@NonNull SQLiteDatabase db) {
+        // Alter the table to add new columns.
+        DatabaseUpgradeHelper.executeSqlStatements(
+                db,
+                AccessLogsHelper.getAlterTableRequestForPhrAccessLogs()
+                        .getAlterTableAddColumnsCommands());
     }
 
     @VisibleForTesting
