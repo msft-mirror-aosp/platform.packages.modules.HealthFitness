@@ -293,12 +293,6 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         return newPriorityOrder;
     }
 
-    @Override
-    protected synchronized void clearData(@NonNull TransactionManager transactionManager) {
-        clearCache();
-        super.clearData(transactionManager);
-    }
-
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
     public synchronized void clearCache() {
