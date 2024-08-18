@@ -36,6 +36,7 @@ import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 
@@ -201,6 +202,9 @@ public class DevelopmentDatabaseHelperTest {
         try (SQLiteDatabase db = createEmptyDatabase()) {
             DevelopmentDatabaseHelper.dropAndCreateDevelopmentSettingsTable(
                     db, DevelopmentDatabaseHelper.CURRENT_VERSION - 1);
+            // We need to create access_logs_table, since we are altering the table
+            // in onOpen.
+            HealthConnectDatabase.createTable(db, AccessLogsHelper.getCreateTableRequest());
 
             DevelopmentDatabaseHelper.onOpen(db);
 
@@ -208,6 +212,7 @@ public class DevelopmentDatabaseHelperTest {
                     .isEqualTo(DevelopmentDatabaseHelper.CURRENT_VERSION);
             // Check PHR is created
             usePhrDataSourceTable(db);
+            usePhrAccessLogsColumns(db);
         }
     }
 
@@ -225,6 +230,20 @@ public class DevelopmentDatabaseHelperTest {
         ReadTableRequest request =
                 MedicalDataSourceHelper.getReadTableRequest(List.of(uuid.toString()));
         try (Cursor cursor = db.rawQuery(request.getReadCommand(), new String[] {})) {
+            assertThat(cursor.getCount()).isEqualTo(0);
+        }
+    }
+
+    /**
+     * Check that the PHR columns for access logs were added to the {@link
+     * AccessLogsHelper#TABLE_NAME}. If the columns don't exist we expect an SQLException, if the
+     * columns do exist nothing should happen.
+     */
+    private static void usePhrAccessLogsColumns(SQLiteDatabase db) {
+        try (Cursor cursor =
+                db.rawQuery(
+                        "SELECT medical_resource_type, medical_data_source FROM access_logs_table",
+                        new String[] {})) {
             assertThat(cursor.getCount()).isEqualTo(0);
         }
     }

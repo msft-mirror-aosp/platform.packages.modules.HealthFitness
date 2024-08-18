@@ -240,7 +240,9 @@ public class ExportManagerTest {
                 ScheduledExportStatus.DATA_EXPORT_ERROR_NONE, mTimeStamp);
         // Set export location to inaccessible directory.
         ExportImportSettingsStorage.configure(
-                ScheduledExportSettings.withUri(Uri.fromFile(new File("inaccessible"))));
+                new ScheduledExportSettings.Builder()
+                        .setUri(Uri.fromFile(new File("inaccessible")))
+                        .build());
 
         assertThat(mExportManager.runExport()).isFalse();
         assertExportStartRecorded();
@@ -264,7 +266,9 @@ public class ExportManagerTest {
         // Export running at a later time with an error
         mTimeStamp = Instant.parse("2024-12-12T16:39:12Z");
         ExportImportSettingsStorage.configure(
-                ScheduledExportSettings.withUri(Uri.fromFile(new File("inaccessible"))));
+                new ScheduledExportSettings.Builder()
+                        .setUri(Uri.fromFile(new File("inaccessible")))
+                        .build());
         assertThat(mExportManager.runExport()).isFalse();
 
         // Last successful export should hold the previous timestamp as the last export failed
@@ -297,7 +301,9 @@ public class ExportManagerTest {
 
         // Export running at a later time with an error
         ExportImportSettingsStorage.configure(
-                ScheduledExportSettings.withUri(Uri.fromFile(new File("inaccessible"))));
+                new ScheduledExportSettings.Builder()
+                        .setUri(Uri.fromFile(new File("inaccessible")))
+                        .build());
         assertThat(mExportManager.runExport()).isFalse();
 
         // Last successful export should hold the previous file name as the last export failed
@@ -309,10 +315,12 @@ public class ExportManagerTest {
 
     private void configureExportUri() {
         ExportImportSettingsStorage.configure(
-                ScheduledExportSettings.withUri(
-                        Uri.fromFile(
-                                (mExportedDbContext.getDatabasePath(
-                                        REMOTE_EXPORT_ZIP_FILE_NAME)))));
+                new ScheduledExportSettings.Builder()
+                        .setUri(
+                                Uri.fromFile(
+                                        (mExportedDbContext.getDatabasePath(
+                                                REMOTE_EXPORT_ZIP_FILE_NAME))))
+                        .build());
     }
 
     private void assertTableSize(HealthConnectDatabase database, String tableName, int tableRows) {

@@ -76,10 +76,6 @@ public class DeviceInfoHelper extends DatabaseHelper {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 
-    public String getTableName() {
-        return TABLE_NAME;
-    }
-
     /** Populates record with deviceInfoId */
     public void populateDeviceInfoId(@NonNull RecordInternal<?> recordInternal) {
         String manufacturer = recordInternal.getManufacturer();
