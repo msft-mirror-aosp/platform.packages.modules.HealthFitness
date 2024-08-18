@@ -502,7 +502,9 @@ class FakeLoadExportSettingsUseCase : ILoadExportSettingsUseCase {
 
 class FakeUpdateExportSettingsUseCase : IUpdateExportSettingsUseCase {
     var mostRecentSettings: ScheduledExportSettings =
-        ScheduledExportSettings.withPeriodInDays(EXPORT_FREQUENCY_NEVER.periodInDays)
+        ScheduledExportSettings.Builder()
+            .setPeriodInDays(EXPORT_FREQUENCY_NEVER.periodInDays)
+            .build()
 
     override suspend fun invoke(
         settings: ScheduledExportSettings
@@ -513,7 +515,9 @@ class FakeUpdateExportSettingsUseCase : IUpdateExportSettingsUseCase {
 
     fun reset() {
         mostRecentSettings =
-            ScheduledExportSettings.withPeriodInDays(EXPORT_FREQUENCY_NEVER.periodInDays)
+            ScheduledExportSettings.Builder()
+                .setPeriodInDays(EXPORT_FREQUENCY_NEVER.periodInDays)
+                .build()
     }
 }
 

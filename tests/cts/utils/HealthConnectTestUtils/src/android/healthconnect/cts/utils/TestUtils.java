@@ -58,6 +58,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
+import android.Manifest;
 import android.app.UiAutomation;
 import android.content.Context;
 import android.content.Intent;
@@ -557,6 +558,17 @@ public final class TestUtils {
         }
     }
 
+    /** Calls {@link #startMigration()} ()} with shell permission identity. */
+    public static void startMigrationWithShellPermissionIdentity() {
+        runWithShellPermissionIdentity(
+                () -> {
+                    startMigration();
+                    assertThat(TestUtils.getHealthConnectDataMigrationState())
+                            .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
+                },
+                Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+    }
+
     public static void startMigration() throws InterruptedException {
         MigrationReceiver receiver = new MigrationReceiver();
         getHealthConnectManager().startMigration(Executors.newSingleThreadExecutor(), receiver);
@@ -575,6 +587,12 @@ public final class TestUtils {
         MigrationReceiver receiver = new MigrationReceiver();
         getHealthConnectManager().finishMigration(Executors.newSingleThreadExecutor(), receiver);
         receiver.verifyNoExceptionOrThrow();
+    }
+
+    /** Calls {@link #finishMigration()} with shell permission identity. */
+    public static void finishMigrationWithShellPermissionIdentity() {
+        runWithShellPermissionIdentity(
+                TestUtils::finishMigration, Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
     }
 
     public static void insertMinDataMigrationSdkExtensionVersion(int version)

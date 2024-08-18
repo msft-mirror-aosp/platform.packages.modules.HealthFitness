@@ -20,6 +20,7 @@ import android.annotation.NonNull;
 import android.util.Pair;
 import android.util.Slog;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,29 +55,30 @@ public final class AlterTableRequest {
         return this;
     }
 
-    /** Returns command for alter table request to add new columns */
-    public String getAlterTableAddColumnsCommand() {
-        final StringBuilder builder = new StringBuilder(ALTER_TABLE_COMMAND);
-        builder.append(mTableName);
+    /** Returns a list of alter table SQL statements to add new columns */
+    public List<String> getAlterTableAddColumnsCommands() {
+        List<String> statements = new ArrayList<>();
         for (int i = 0; i < mColumnInfo.size(); i++) {
+            StringBuilder statement = new StringBuilder(ALTER_TABLE_COMMAND);
+            statement.append(mTableName);
             String columnName = mColumnInfo.get(i).first;
             String columnType = mColumnInfo.get(i).second;
-            builder.append(ADD_COLUMN_COMMAND).append(columnName).append(" ").append(columnType);
+            statement.append(ADD_COLUMN_COMMAND).append(columnName).append(" ").append(columnType);
             if (mForeignKeyConstraints.containsKey(columnName)) {
-                builder.append(" ");
-                builder.append("REFERENCES ");
-                builder.append(mForeignKeyConstraints.get(columnName).first);
-                builder.append("(");
-                builder.append(mForeignKeyConstraints.get(columnName).second);
-                builder.append(")");
-                builder.append(" ON DELETE SET NULL");
+                statement.append(" ");
+                statement.append("REFERENCES ");
+                statement.append(mForeignKeyConstraints.get(columnName).first);
+                statement.append("(");
+                statement.append(mForeignKeyConstraints.get(columnName).second);
+                statement.append(")");
+                statement.append(" ON DELETE SET NULL");
             }
-            builder.append(", ");
+            statement.append(";");
+            statements.add(statement.toString());
         }
-        builder.setLength(builder.length() - 2); // Remove the last 2 char i.e. ", "
-        Slog.d(TAG, "Alter table: " + builder);
+        Slog.d(TAG, "Alter table: " + statements);
 
-        return builder.toString();
+        return statements;
     }
 
     public static String getAlterTableCommandToAddGeneratedColumn(
