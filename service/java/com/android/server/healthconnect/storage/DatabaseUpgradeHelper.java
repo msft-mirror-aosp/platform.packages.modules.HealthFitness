@@ -26,7 +26,7 @@ import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_GENERA
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_MINDFULNESS_SESSION;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_PLANNED_EXERCISE_SESSIONS;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_SKIN_TEMPERATURE;
-import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_UUID_BLOB;
+import static com.android.healthfitness.flags.DatabaseVersions.MIN_SUPPORTED_DB_VERSION;
 import static com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper.PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME;
 
 import android.annotation.NonNull;
@@ -62,25 +62,26 @@ final class DatabaseUpgradeHelper {
     private static final String SQLITE_MASTER_TABLE_NAME = "sqlite_master";
 
     /**
-     * The method creates the initial set of tables in the database, and then applies each upgrade
-     * one after the other.
+     * Applies db upgrades to bring the current schema to the latest supported version.
      *
-     * <p>Keep the upgrades idempotent, since module rollbacks can mean that some upgrades are
-     * applied twice.
+     * <p>To upgrade an existing schema from a version before the {@link MIN_SUPPORTED_DB_VERSION},
+     * it drops tables and brings it to the minimum supported version. Note that this is not
+     * idempotent and might cause data loss.
+     *
+     * <p>Above the {@link MIN_SUPPORTED_DB_VERSION}, we keep the upgrades idempotent, since module
+     * rollbacks can bring the version number (not schema) all the way back to the minimum supported
+     * version, which mean that some upgrades are applied multiple times.
      *
      * <p>See go/hc-handling-database-upgrades for things to be taken care of when upgrading.
      */
     static void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Note: This first upgrade is not idempotent since it only drops the set of initial tables.
-        // Some tables are left around, which can break foreign key constraints.
-        if (oldVersion < DB_VERSION_UUID_BLOB) {
-            // Only drop the tables if the db existed beforehand.
-            if (oldVersion > 0) {
-                dropInitialSetOfTables(db);
-            }
-            createInitialSetOfTables(db);
+        if (isUnsupported(oldVersion)) {
+            dropInitialSetOfTables(db);
         }
 
+        if (oldVersion < MIN_SUPPORTED_DB_VERSION) {
+            createTablesForMinSupportedVersion(db);
+        }
         if (oldVersion < DB_VERSION_GENERATED_LOCAL_TIME) {
             forEachRecordHelper(it -> it.applyGeneratedLocalTimeUpgrade(db));
         }
@@ -100,7 +101,11 @@ final class DatabaseUpgradeHelper {
         }
     }
 
-    private static void createInitialSetOfTables(@NonNull SQLiteDatabase db) {
+    private static boolean isUnsupported(int version) {
+        return version != 0 && version < MIN_SUPPORTED_DB_VERSION;
+    }
+
+    private static void createTablesForMinSupportedVersion(@NonNull SQLiteDatabase db) {
         for (CreateTableRequest createTableRequest : getInitialCreateTableRequests()) {
             HealthConnectDatabase.createTable(db, createTableRequest);
         }
@@ -119,7 +124,8 @@ final class DatabaseUpgradeHelper {
     private static List<CreateTableRequest> getInitialCreateTableRequests() {
         List<CreateTableRequest> requests = new ArrayList<>();
 
-        // Add all records that were part of the initial schema.
+        // Add all records that were part of the initial schema. This is everything added before
+        // SKIN_TEMPERATURE.
         Map<Integer, RecordHelper<?>> recordHelperMap = RecordHelperProvider.getRecordHelpers();
         recordHelperMap.entrySet().stream()
                 .filter(
@@ -159,16 +165,31 @@ final class DatabaseUpgradeHelper {
         PlannedExerciseSessionRecordHelper recordHelper =
                 getRecordHelper(RECORD_TYPE_PLANNED_EXERCISE_SESSION);
         HealthConnectDatabase.createTable(db, recordHelper.getCreateTableRequest());
-        db.execSQL(
+        executeSqlStatements(
+                db,
                 recordHelper
                         .getAlterTableRequestForPlannedExerciseFeature()
-                        .getAlterTableAddColumnsCommand());
+                        .getAlterTableAddColumnsCommands());
         ExerciseSessionRecordHelper exerciseRecordHelper =
                 getRecordHelper(RECORD_TYPE_EXERCISE_SESSION);
-        db.execSQL(
+        executeSqlStatements(
+                db,
                 exerciseRecordHelper
                         .getAlterTableRequestForPlannedExerciseFeature()
-                        .getAlterTableAddColumnsCommand());
+                        .getAlterTableAddColumnsCommands());
+    }
+
+    /** Executes a list of SQL statements one after another, in a transaction. */
+    public static void executeSqlStatements(SQLiteDatabase db, List<String> statements) {
+        db.beginTransaction();
+        try {
+            for (String statement : statements) {
+                db.execSQL(statement);
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
     }
 
     private static boolean doesTableAlreadyExist(SQLiteDatabase db, String tableName) {

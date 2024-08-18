@@ -41,10 +41,11 @@ import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IM
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
+import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
 import static android.healthconnect.cts.utils.TestUtils.getRecordById;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
+import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
 
-import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 import static com.android.healthfitness.flags.Flags.FLAG_DEVELOPMENT_DATABASE;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
@@ -58,7 +59,6 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
 import static java.time.temporal.ChronoUnit.MINUTES;
 
-import android.Manifest;
 import android.app.UiAutomation;
 import android.content.Context;
 import android.health.connect.AggregateRecordsGroupedByDurationResponse;
@@ -1559,14 +1559,7 @@ public class HealthConnectManagerTest {
     public void testDataApis_migrationInProgress_apisBlocked() throws InterruptedException {
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
         uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
-
-        runWithShellPermissionIdentity(
-                () -> {
-                    TestUtils.startMigration();
-                    assertThat(TestUtils.getHealthConnectDataMigrationState())
-                            .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
-                },
-                Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+        startMigrationWithShellPermissionIdentity();
 
         StepsRecord testRecord = DataFactory.getStepsRecord();
 
@@ -1665,7 +1658,6 @@ public class HealthConnectManagerTest {
         }
 
         try {
-
             TestUtils.getChangeLogs(new ChangeLogsRequest.Builder(/* token */ "").build());
             Assert.fail();
         } catch (HealthConnectException exception) {
@@ -1720,32 +1712,42 @@ public class HealthConnectManagerTest {
                     .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
         }
 
-        runWithShellPermissionIdentity(
-                TestUtils::finishMigration, Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+        finishMigrationWithShellPermissionIdentity();
     }
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
     public void testCreateMedicalDataSource_migrationInProgress_apiBlocked()
             throws InterruptedException {
+        startMigrationWithShellPermissionIdentity();
         ExecutorService executor = Executors.newSingleThreadExecutor();
         HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
-        runWithShellPermissionIdentity(
-                () -> {
-                    TestUtils.startMigration();
-                    assertThat(TestUtils.getHealthConnectDataMigrationState())
-                            .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
-                },
-                Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
 
         mManager.createMedicalDataSource(getCreateMedicalDataSourceRequest(), executor, receiver);
 
-        HealthConnectException exception = receiver.assertAndGetException();
-        assertThat(exception.getErrorCode())
+        assertThat(receiver.assertAndGetException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
 
-        runWithShellPermissionIdentity(
-                TestUtils::finishMigration, Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+        finishMigrationWithShellPermissionIdentity();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testReadMedicalResourcesByRequest_migrationInProgress_apiBlocked()
+            throws InterruptedException {
+        startMigrationWithShellPermissionIdentity();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesRequest request =
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
+
+        mManager.readMedicalResources(request, executor, receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
+
+        finishMigrationWithShellPermissionIdentity();
     }
 
     @Test
