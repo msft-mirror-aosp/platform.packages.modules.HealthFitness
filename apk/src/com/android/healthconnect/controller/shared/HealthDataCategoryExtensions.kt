@@ -30,7 +30,9 @@ import com.android.healthconnect.controller.shared.CategoriesMappers.MEDICAL_PER
 import com.android.healthconnect.controller.shared.CategoriesMappers.NUTRITION_PERMISSION_GROUPS
 import com.android.healthconnect.controller.shared.CategoriesMappers.SLEEP_PERMISSION_GROUPS
 import com.android.healthconnect.controller.shared.CategoriesMappers.VITALS_PERMISSION_GROUPS
+import com.android.healthconnect.controller.shared.CategoriesMappers.WELLNESS_PERMISSION_GROUPS
 import com.android.healthconnect.controller.utils.AttributeResolver
+import com.android.healthfitness.flags.Flags
 
 object HealthDataCategoryExtensions {
     /** Additional category for medical permission types. */
@@ -44,6 +46,7 @@ object HealthDataCategoryExtensions {
             HealthDataCategory.NUTRITION -> NUTRITION_PERMISSION_GROUPS
             HealthDataCategory.SLEEP -> SLEEP_PERMISSION_GROUPS
             HealthDataCategory.VITALS -> VITALS_PERMISSION_GROUPS
+            HealthDataCategory.WELLNESS -> WELLNESS_PERMISSION_GROUPS
             MEDICAL -> MEDICAL_PERMISSION_GROUPS
             else -> throw IllegalArgumentException("Category $this is not supported.")
         }
@@ -58,6 +61,7 @@ object HealthDataCategoryExtensions {
             HealthDataCategory.NUTRITION -> R.string.nutrition_category_lowercase
             HealthDataCategory.SLEEP -> R.string.sleep_category_lowercase
             HealthDataCategory.VITALS -> R.string.vitals_category_lowercase
+            HealthDataCategory.WELLNESS -> R.string.wellness_category_lowercase
             MEDICAL -> R.string.medical_permissions_lowercase
             else -> throw IllegalArgumentException("Category $this is not supported.")
         }
@@ -72,6 +76,7 @@ object HealthDataCategoryExtensions {
             HealthDataCategory.NUTRITION -> R.string.nutrition_category_uppercase
             HealthDataCategory.SLEEP -> R.string.sleep_category_uppercase
             HealthDataCategory.VITALS -> R.string.vitals_category_uppercase
+            HealthDataCategory.WELLNESS -> R.string.wellness_category_uppercase
             MEDICAL -> R.string.medical_permissions
             else -> throw IllegalArgumentException("Category $this is not supported.")
         }
@@ -86,6 +91,7 @@ object HealthDataCategoryExtensions {
                 HealthDataCategory.NUTRITION -> R.attr.nutritionCategoryIcon
                 HealthDataCategory.SLEEP -> R.attr.sleepCategoryIcon
                 HealthDataCategory.VITALS -> R.attr.vitalsCategoryIcon
+                HealthDataCategory.WELLNESS -> R.attr.wellnessCategoryIcon
                 // TODO(b/342156345): Add default medical icon.
                 MEDICAL -> R.attr.vitalsCategoryIcon
                 else -> throw IllegalArgumentException("Category $this is not supported.")
@@ -95,12 +101,16 @@ object HealthDataCategoryExtensions {
 
     @HealthDataCategoryInt
     fun fromFitnessPermissionType(type: FitnessPermissionType): Int {
-        for (category in FITNESS_DATA_CATEGORIES) {
-            if (category.healthPermissionTypes().contains(type)) {
-                return category
-            }
+        val result = safelyFromFitnessPermissionType(type)
+        return result
+            ?: throw IllegalArgumentException("No Category for fitness permission type $type")
+    }
+
+    @HealthDataCategoryInt
+    fun safelyFromFitnessPermissionType(type: FitnessPermissionType): Int? {
+        return getAllFitnessDataCategories().firstOrNull {
+            it.healthPermissionTypes().contains(type)
         }
-        throw IllegalArgumentException("No Category for fitness permission type $type")
     }
 }
 
@@ -131,7 +141,8 @@ private object CategoriesMappers {
             FitnessPermissionType.BONE_MASS,
             FitnessPermissionType.HEIGHT,
             FitnessPermissionType.LEAN_BODY_MASS,
-            FitnessPermissionType.WEIGHT)
+            FitnessPermissionType.WEIGHT,
+        )
 
     val CYCLE_TRACKING_PERMISSION_GROUPS =
         listOf(
@@ -139,7 +150,8 @@ private object CategoriesMappers {
             FitnessPermissionType.INTERMENSTRUAL_BLEEDING,
             FitnessPermissionType.MENSTRUATION,
             FitnessPermissionType.OVULATION_TEST,
-            FitnessPermissionType.SEXUAL_ACTIVITY)
+            FitnessPermissionType.SEXUAL_ACTIVITY,
+        )
 
     val NUTRITION_PERMISSION_GROUPS =
         listOf(FitnessPermissionType.HYDRATION, FitnessPermissionType.NUTRITION)
@@ -157,21 +169,32 @@ private object CategoriesMappers {
             FitnessPermissionType.OXYGEN_SATURATION,
             FitnessPermissionType.RESPIRATORY_RATE,
             FitnessPermissionType.RESTING_HEART_RATE,
-            FitnessPermissionType.SKIN_TEMPERATURE)
+            FitnessPermissionType.SKIN_TEMPERATURE,
+        )
+
+    val WELLNESS_PERMISSION_GROUPS = listOf(FitnessPermissionType.MINDFULNESS)
 
     val MEDICAL_PERMISSION_GROUPS =
         listOf(MedicalPermissionType.IMMUNIZATION, MedicalPermissionType.ALL_MEDICAL_DATA)
 }
 
 /** List of available Health data categories. */
-val FITNESS_DATA_CATEGORIES =
-    listOf(
+val FITNESS_DATA_CATEGORIES = getAllFitnessDataCategories()
+
+/**
+ * List of available Health data categories.
+ *
+ * Allows code being unit tested with different flag values.
+ */
+fun getAllFitnessDataCategories() =
+    listOfNotNull(
         HealthDataCategory.ACTIVITY,
         HealthDataCategory.BODY_MEASUREMENTS,
         HealthDataCategory.CYCLE_TRACKING,
         HealthDataCategory.NUTRITION,
         HealthDataCategory.SLEEP,
         HealthDataCategory.VITALS,
+        HealthDataCategory.WELLNESS.takeIf { Flags.mindfulness() },
     )
 
 /** Denotes that the annotated [Integer] represents a [HealthDataCategory]. */
@@ -183,5 +206,6 @@ val FITNESS_DATA_CATEGORIES =
     AnnotationTarget.PROPERTY_SETTER,
     AnnotationTarget.LOCAL_VARIABLE,
     AnnotationTarget.FIELD,
-    AnnotationTarget.TYPE)
+    AnnotationTarget.TYPE,
+)
 annotation class HealthDataCategoryInt

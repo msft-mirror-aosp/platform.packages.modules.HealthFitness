@@ -35,10 +35,8 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{Unha aplicación ten acceso}other{# aplicacións teñen acceso}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Ningunha"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Detalles da entrada"</string>
-    <!-- no translation found for browse_data_title (5232691805953326097) -->
-    <skip />
-    <!-- no translation found for browse_data_subtitle (7025164374898103993) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"Consultar datos"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Ver os datos e as aplicacións que poden acceder a eles"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"Eliminación automática, fontes de datos, copia de seguranza e restauración"</string>
     <string name="backup_title" msgid="211503191266235085">"Copia de seguranza"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Prioridade e fontes de datos"</string>
@@ -330,14 +328,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"Acceso adicional"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Quitáronse os permisos adicionais para esta aplicación"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Permisos"</string>
-    <!-- no translation found for manage_fitness_permissions (3363128122122446755) -->
-    <skip />
-    <!-- no translation found for manage_fitness_permissions_summary (2558503899466623148) -->
-    <skip />
-    <!-- no translation found for manage_medical_permissions (3772912800582350567) -->
-    <skip />
-    <!-- no translation found for manage_medical_permissions_summary (2624707097284112258) -->
-    <skip />
+    <string name="fitness_permissions" msgid="586264186537460254">"Forma física e benestar"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Exercicio, sono, nutrición e máis"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"Rexistros de información sanitaria"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"rexistros de información sanitaria"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"Análises, medicación, vacinas e máis"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Permisos de aplicacións quitados"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Saúde conectada quitou os permisos de <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Saúde conectada quitou os permisos de <xliff:g id="APP_DATA_0">%1$s</xliff:g> e <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -351,8 +346,7 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Non se puideron exportar os datos"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Produciuse un problema coa exportación do día <xliff:g id="DATE">%1$s</xliff:g>. Programa outra e téntao de novo."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Próxima exportación: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for next_export_text (6726252793571403846) -->
-    <skip />
+    <string name="next_export_text" msgid="6726252793571403846">"A seguinte exportación comezará axiña"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Copia de seguranza e restauración"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Última exportación: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
@@ -389,6 +383,8 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Importar"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"A restauración dos datos de Saúde conectada está en curso"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Completouse a restauración dos datos de Saúde conectada"</string>
+    <!-- no translation found for import_in_progress_toast_text (3363548588078895706) -->
+    <skip />
     <string name="import_complete_toast_text" msgid="7730872919621230959">"Completouse a restauración dos datos"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Saúde conectada non puido restaurar os datos"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Precísase máis espazo"</string>
@@ -647,6 +643,7 @@
     <string name="rest" msgid="5937058337671252210">"Repouso"</string>
     <string name="pause" msgid="5161459047750335691">"Pór en pausa"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"Fútbol australiano"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"Tipo descoñecido"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> durmindo"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g>⁠<xliff:g id="NAME">%2$s</xliff:g>"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"sen durmir"</string>
@@ -1000,4 +997,14 @@
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Elimináronse os datos de <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Elementos eliminados: <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>"</string>
     <string name="select_all" msgid="837499881590001166">"Seleccionar todo"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Empeza a usar Saúde conectada"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sincroniza as primeiras aplicacións para compartir datos de saúde e forma física entre elas"</string>
+    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"Agora non"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Configurar"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Conecta máis aplicacións"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Empeza a compartir datos entre <xliff:g id="APP_NAME">%s</xliff:g> e as aplicacións de saúde do teu teléfono"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"Configurar"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Consulta as aplicacións compatibles"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Atopa máis aplicacións que sincronizar con <xliff:g id="APP_NAME">%s</xliff:g> a través de Saúde conectada"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Ver na tenda de aplicacións"</string>
 </resources>

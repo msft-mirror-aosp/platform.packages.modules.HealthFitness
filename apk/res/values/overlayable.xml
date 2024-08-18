@@ -42,6 +42,7 @@
             <item type="drawable" name="ic_category_nutrition"/>
             <item type="drawable" name="ic_category_sleep"/>
             <item type="drawable" name="ic_category_vitals"/>
+            <item type="drawable" name="ic_category_wellness"/>
 
             <!-- Permission types page -->
             <item type="drawable" name="ic_view_list"/>

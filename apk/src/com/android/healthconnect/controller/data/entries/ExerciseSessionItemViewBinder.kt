@@ -31,9 +31,8 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEnt
 import dagger.hilt.android.EntryPointAccessors
 
 /** ViewBinder for ExerciseSessionEntry. */
-class ExerciseSessionItemViewBinder(
-    private val onItemClickedListener: OnClickEntryListener?,
-) : ViewBinder<ExerciseSessionEntry, View> {
+class ExerciseSessionItemViewBinder(private val onItemClickedListener: OnClickEntryListener?) :
+    ViewBinder<ExerciseSessionEntry, View> {
 
     private lateinit var logger: HealthConnectLogger
 
@@ -41,7 +40,9 @@ class ExerciseSessionItemViewBinder(
         val context = parent.context.applicationContext
         val hiltEntryPoint =
             EntryPointAccessors.fromApplication(
-                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
+                context.applicationContext,
+                HealthConnectLoggerEntryPoint::class.java,
+            )
         logger = hiltEntryPoint.logger()
         return LayoutInflater.from(parent.context)
             .inflate(R.layout.item_exercise_session_entry, parent, false)
@@ -69,9 +70,13 @@ class ExerciseSessionItemViewBinder(
         if (data.route != null) {
             mapView.setRoute(data.route)
         }
-        container.setOnClickListener {
-            logger.logInteraction(DataEntriesElement.EXERCISE_SESSION_ENTRY_BUTTON)
-            onItemClickedListener?.onItemClicked(data.uuid, index)
+        if (data.isClickable) {
+            container.setOnClickListener {
+                logger.logInteraction(DataEntriesElement.EXERCISE_SESSION_ENTRY_BUTTON)
+                onItemClickedListener?.onItemClicked(data.uuid, index)
+            }
+        } else {
+            container.isClickable = false
         }
     }
 }
