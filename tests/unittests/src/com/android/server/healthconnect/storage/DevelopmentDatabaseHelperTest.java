@@ -242,7 +242,8 @@ public class DevelopmentDatabaseHelperTest {
     private static void usePhrAccessLogsColumns(SQLiteDatabase db) {
         try (Cursor cursor =
                 db.rawQuery(
-                        "SELECT medical_resource_type, medical_data_source FROM access_logs_table",
+                        "SELECT medical_resource_type, medical_data_source_accessed FROM"
+                                + " access_logs_table",
                         new String[] {})) {
             assertThat(cursor.getCount()).isEqualTo(0);
         }
