@@ -45,6 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_normal"
+                android:focusableInTouchMode="true"
                 android:text="@string/export_destination_title"
                 android:textAppearance="?attr/textAppearanceHeadline2" />
 
@@ -54,6 +55,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/spacing_large"
                 android:orientation="vertical" />
+
+            <include layout="@layout/widget_export_import_footer" />
 
         </LinearLayout>
 

@@ -42,9 +42,12 @@ import java.util.Objects;
 final class UsageStatsCollector {
     private static final String USER_MOST_RECENT_ACCESS_LOG_TIME =
             "USER_MOST_RECENT_ACCESS_LOG_TIME";
+    private static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
     private static final int NUMBER_OF_DAYS_FOR_USER_TO_BE_MONTHLY_ACTIVE = 30;
     private final Context mContext;
     private final List<PackageInfo> mAllPackagesInstalledForUser;
+
+    private final PreferenceHelper mPreferenceHelper;
 
     UsageStatsCollector(@NonNull Context context, @NonNull UserHandle userHandle) {
         Objects.requireNonNull(userHandle);
@@ -55,6 +58,7 @@ final class UsageStatsCollector {
                 context.createContextAsUser(userHandle, /* flag= */ 0)
                         .getPackageManager()
                         .getInstalledPackages(PackageManager.PackageInfoFlags.of(GET_PERMISSIONS));
+        mPreferenceHelper = PreferenceHelper.getInstance();
     }
 
     /**
@@ -92,11 +96,22 @@ final class UsageStatsCollector {
         return count;
     }
 
-    boolean isUserMonthlyActive() {
-        PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
+    /**
+     * Returns the configured export frequency of the user.
+     *
+     * @return Export frequency of the current user.
+     */
+    int getExportFrequency() {
+        String result = mPreferenceHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY);
+        if (result == null) {
+            return 0;
+        }
+        return Integer.parseInt(result);
+    }
 
+    boolean isUserMonthlyActive() {
         String latestAccessLogTimeStampString =
-                preferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME);
+                mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME);
 
         // Return false if preference is empty and make sure latest access was within past
         // 30 days.
@@ -110,16 +125,14 @@ final class UsageStatsCollector {
     }
 
     void upsertLastAccessLogTimeStamp() {
-        PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
 
-        long latestAccessLogTimeStamp =
-                AccessLogsHelper.getInstance().getLatestAccessLogTimeStamp();
+        long latestAccessLogTimeStamp = AccessLogsHelper.getLatestAccessLogTimeStamp();
 
         // Access logs are only stored for 7 days, therefore only update this value if there is an
         // access log. Last access timestamp can be before 7 days and might already exist in
         // preference and in that case we should not overwrite the existing value.
         if (latestAccessLogTimeStamp != Long.MIN_VALUE) {
-            preferenceHelper.insertOrReplacePreference(
+            mPreferenceHelper.insertOrReplacePreference(
                     USER_MOST_RECENT_ACCESS_LOG_TIME, String.valueOf(latestAccessLogTimeStamp));
         }
     }

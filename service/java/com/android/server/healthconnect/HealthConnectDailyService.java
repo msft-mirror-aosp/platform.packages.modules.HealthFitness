@@ -101,6 +101,9 @@ public class HealthConnectDailyService extends JobService {
                         () -> {
                             boolean isExportSuccessful =
                                     ExportImportJobs.executePeriodicExportJob(
+                                            getApplicationContext(),
+                                            userId,
+                                            params.getExtras(),
                                             new ExportManager(
                                                     getApplicationContext(), Clock.systemUTC()));
                             // If the export is not successful, reschedule the job.

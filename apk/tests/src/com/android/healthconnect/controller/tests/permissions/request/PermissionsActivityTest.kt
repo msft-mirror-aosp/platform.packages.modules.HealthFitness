@@ -34,11 +34,11 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.health.connect.HealthPermissions.READ_EXERCISE
 import android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY
 import android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND
-import android.health.connect.HealthPermissions.READ_MEDICAL_RESOURCES_IMMUNIZATION
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION
 import android.health.connect.HealthPermissions.READ_SKIN_TEMPERATURE
 import android.health.connect.HealthPermissions.READ_SLEEP
 import android.health.connect.HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED
-import android.health.connect.HealthPermissions.WRITE_MEDICAL_RESOURCES
+import android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA
 import android.health.connect.HealthPermissions.WRITE_SKIN_TEMPERATURE
 import android.health.connect.HealthPermissions.WRITE_SLEEP
 import android.widget.Button
@@ -105,15 +105,15 @@ class PermissionsActivityTest {
         private val fitnessPermissions =
             arrayOf(READ_EXERCISE, READ_SLEEP, WRITE_SKIN_TEMPERATURE, WRITE_ACTIVE_CALORIES_BURNED)
         private val fitnessAndMedicalPermissions =
-            arrayOf(READ_EXERCISE, READ_MEDICAL_RESOURCES_IMMUNIZATION)
+            arrayOf(READ_EXERCISE, READ_MEDICAL_DATA_IMMUNIZATION)
         private val fitnessAndAdditionalPermissions =
             arrayOf(WRITE_SLEEP, READ_HEALTH_DATA_IN_BACKGROUND)
         private val medicalPermissions =
-            arrayOf(READ_MEDICAL_RESOURCES_IMMUNIZATION, WRITE_MEDICAL_RESOURCES)
+            arrayOf(READ_MEDICAL_DATA_IMMUNIZATION, WRITE_MEDICAL_DATA)
         private val medicalAndAdditionalPermissions =
-            arrayOf(READ_MEDICAL_RESOURCES_IMMUNIZATION, READ_HEALTH_DATA_IN_BACKGROUND)
+            arrayOf(READ_MEDICAL_DATA_IMMUNIZATION, READ_HEALTH_DATA_IN_BACKGROUND)
         private val allThreeCombined =
-            arrayOf(READ_HEALTH_DATA_IN_BACKGROUND, READ_SLEEP, READ_MEDICAL_RESOURCES_IMMUNIZATION)
+            arrayOf(READ_HEALTH_DATA_IN_BACKGROUND, READ_SLEEP, READ_MEDICAL_DATA_IMMUNIZATION)
     }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -657,7 +657,7 @@ class PermissionsActivityTest {
     fun requestMedicalAndAdditionalPermissions_backgroundAndHistory_showBoth() {
         val permissions =
             arrayOf(
-                READ_MEDICAL_RESOURCES_IMMUNIZATION,
+                READ_MEDICAL_DATA_IMMUNIZATION,
                 READ_HEALTH_DATA_IN_BACKGROUND,
                 READ_HEALTH_DATA_HISTORY)
         (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)

@@ -18,9 +18,11 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY_AUTOINCREMENT;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorIntegerList;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
@@ -33,7 +35,9 @@ import android.health.connect.accesslog.AccessLog.OperationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.util.Pair;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.request.AlterTableRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -57,13 +61,14 @@ public final class AccessLogsHelper extends DatabaseHelper {
     private static final String APP_ID_COLUMN_NAME = "app_id";
     private static final String ACCESS_TIME_COLUMN_NAME = "access_time";
     private static final String OPERATION_TYPE_COLUMN_NAME = "operation_type";
+
+    @VisibleForTesting
+    static final String MEDICAL_RESOURCE_TYPE_COLUMN_NAME = "medical_resource_type";
+
+    @VisibleForTesting static final String MEDICAL_DATA_SOURCE_COLUMN_NAME = "medical_data_source";
+
     private static final int NUM_COLS = 5;
     private static final int DEFAULT_ACCESS_LOG_TIME_PERIOD_IN_DAYS = 7;
-
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private static volatile AccessLogsHelper sAccessLogsHelper;
-
-    private AccessLogsHelper() {}
 
     @NonNull
     public static CreateTableRequest getCreateTableRequest() {
@@ -73,7 +78,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
     /**
      * @return AccessLog list
      */
-    public List<AccessLog> queryAccessLogs() {
+    public static List<AccessLog> queryAccessLogs() {
         final ReadTableRequest readTableRequest = new ReadTableRequest(TABLE_NAME);
 
         List<AccessLog> accessLogsList = new ArrayList<>();
@@ -82,9 +87,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
         try (Cursor cursor = transactionManager.read(readTableRequest)) {
             while (cursor.moveToNext()) {
                 String packageName =
-                        String.valueOf(
-                                appInfoHelper.getPackageName(
-                                        getCursorLong(cursor, APP_ID_COLUMN_NAME)));
+                        appInfoHelper.getPackageName(getCursorLong(cursor, APP_ID_COLUMN_NAME));
                 @RecordTypeIdentifier.RecordType
                 List<Integer> recordTypes =
                         getCursorIntegerList(cursor, RECORD_TYPE_COLUMN_NAME, DELIMITER);
@@ -100,10 +103,10 @@ public final class AccessLogsHelper extends DatabaseHelper {
     }
 
     /**
-     * Returns the timestamp of the latest access log and {@link Long.MIN_VALUE} if there is no
+     * Returns the timestamp of the latest access log and {@link Long#MIN_VALUE} if there is no
      * access log.
      */
-    public long getLatestAccessLogTimeStamp() {
+    public static long getLatestAccessLogTimeStamp() {
 
         final ReadTableRequest readTableRequest =
                 new ReadTableRequest(TABLE_NAME)
@@ -124,7 +127,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
     }
 
     /** Adds an entry in to the access logs table for every insert or read operation request */
-    public void addAccessLog(
+    public static void addAccessLog(
             String packageName,
             @RecordTypeIdentifier.RecordType List<Integer> recordTypeList,
             @OperationType.OperationTypes int operationType) {
@@ -134,7 +137,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
     }
 
     @NonNull
-    public UpsertTableRequest getUpsertTableRequest(
+    public static UpsertTableRequest getUpsertTableRequest(
             String packageName, List<Integer> recordTypeList, int operationType) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(
@@ -152,7 +155,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
      * Returns an instance of {@link DeleteTableRequest} to delete entries in access logs table
      * older than a week.
      */
-    public DeleteTableRequest getDeleteRequestForAutoDelete() {
+    public static DeleteTableRequest getDeleteRequestForAutoDelete() {
         return new DeleteTableRequest(TABLE_NAME)
                 .setTimeFilter(
                         ACCESS_TIME_COLUMN_NAME,
@@ -160,6 +163,16 @@ public final class AccessLogsHelper extends DatabaseHelper {
                         Instant.now()
                                 .minus(DEFAULT_ACCESS_LOG_TIME_PERIOD_IN_DAYS, ChronoUnit.DAYS)
                                 .toEpochMilli());
+    }
+
+    /**
+     * Creates an {@link AlterTableRequest} for adding PHR specific columns, {@link
+     * AccessLogsHelper#MEDICAL_RESOURCE_TYPE_COLUMN_NAME} and {@link
+     * AccessLogsHelper#MEDICAL_DATA_SOURCE_COLUMN_NAME} to the access_logs_table.
+     */
+    @NonNull
+    public static AlterTableRequest getAlterTableRequestForPhrAccessLogs() {
+        return new AlterTableRequest(TABLE_NAME, getPhrAccessLogsColumnInfo());
     }
 
     @NonNull
@@ -170,20 +183,22 @@ public final class AccessLogsHelper extends DatabaseHelper {
         columnInfo.add(new Pair<>(RECORD_TYPE_COLUMN_NAME, TEXT_NOT_NULL));
         columnInfo.add(new Pair<>(ACCESS_TIME_COLUMN_NAME, INTEGER_NOT_NULL));
         columnInfo.add(new Pair<>(OPERATION_TYPE_COLUMN_NAME, INTEGER_NOT_NULL));
-
         return columnInfo;
+    }
+
+    @NonNull
+    private static List<Pair<String, String>> getPhrAccessLogsColumnInfo() {
+        return List.of(
+                // This is list of comma separated integers that represent
+                // the medicalResourceTypes accessed.
+                Pair.create(MEDICAL_RESOURCE_TYPE_COLUMN_NAME, TEXT_NULL),
+                // This represents a boolean, which tells us whether
+                // the MedicalDataSource data is accessed.
+                Pair.create(MEDICAL_DATA_SOURCE_COLUMN_NAME, INTEGER));
     }
 
     @Override
     protected String getMainTableName() {
         return TABLE_NAME;
-    }
-
-    public static synchronized AccessLogsHelper getInstance() {
-        if (sAccessLogsHelper == null) {
-            sAccessLogsHelper = new AccessLogsHelper();
-        }
-
-        return sAccessLogsHelper;
     }
 }

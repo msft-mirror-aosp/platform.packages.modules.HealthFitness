@@ -23,11 +23,11 @@ import android.content.Intent
 import android.health.connect.exportimport.ExportImportDocumentProvider
 import android.net.Uri
 import android.os.Bundle
-import android.os.OutcomeReceiver
 import android.provider.DocumentsContract
 import android.view.View
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
+import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -52,26 +52,33 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.ImportSourceLocationFragment
 import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
 import com.android.healthconnect.controller.service.HealthDataExportManagerModule
+import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
+import com.android.healthconnect.controller.tests.utils.di.FakeHealthDataExportManager
 import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.utils.DeviceInfoUtils
+import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.ImportSourceLocationElement
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import java.io.File
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
+import org.hamcrest.Matchers.startsWith
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito
-import org.mockito.invocation.InvocationOnMock
-import org.mockito.kotlin.any
-import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.verify
 
 @HiltAndroidTest
-@UninstallModules(HealthDataExportManagerModule::class)
+@UninstallModules(DeviceInfoUtilsModule::class, HealthDataExportManagerModule::class)
 class ImportSourceLocationFragmentTest {
     companion object {
         private val TEST_DOCUMENT_PROVIDER_1_TITLE = "Document provider 1"
@@ -108,10 +115,10 @@ class ImportSourceLocationFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
-    // TODO: b/330484311 - Replace the mock with a fake.
-    @BindValue
-    val healthDataExportManager: HealthDataExportManager =
-        Mockito.mock(HealthDataExportManager::class.java)
+    @BindValue val healthDataExportManager: HealthDataExportManager = FakeHealthDataExportManager()
+    val fakeHealthDataExportManager = healthDataExportManager as FakeHealthDataExportManager
+    @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
@@ -123,14 +130,14 @@ class ImportSourceLocationFragmentTest {
         navHostController = TestNavHostController(context)
         Intents.init()
 
-        doAnswer(prepareAnswer(listOf()))
-            .`when`(healthDataExportManager)
-            .queryDocumentProviders(any(), any())
+        fakeHealthDataExportManager.setExportImportDocumentProviders(listOf())
     }
 
     @After
     fun tearDown() {
         Intents.release()
+        fakeHealthDataExportManager.reset()
+        reset(healthConnectLogger)
     }
 
     @Test
@@ -144,10 +151,24 @@ class ImportSourceLocationFragmentTest {
     }
 
     @Test
+    fun importSourceLocationFragment_impressionsLogged() {
+        launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger)
+            .logImpression(ImportSourceLocationElement.IMPORT_SOURCE_LOCATION_NEXT_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(ImportSourceLocationElement.IMPORT_SOURCE_LOCATION_CANCEL_BUTTON)
+    }
+
+    @Test
     fun importSourceLocationFragment_cancelButton_isClickable() {
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
         onView(withId(R.id.export_import_cancel_button)).check(matches(isClickable()))
+        onView(withId(R.id.export_import_cancel_button)).perform(click())
+        verify(healthConnectLogger)
+            .logInteraction(ImportSourceLocationElement.IMPORT_SOURCE_LOCATION_CANCEL_BUTTON)
     }
 
     @Test
@@ -173,9 +194,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
                     TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
-        doAnswer(prepareAnswer(documentProviders))
-            .`when`(healthDataExportManager)
-            .queryDocumentProviders(any(), any())
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE))
@@ -210,9 +229,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
                     TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
-        doAnswer(prepareAnswer(documentProviders))
-            .`when`(healthDataExportManager)
-            .queryDocumentProviders(any(), any())
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE))
@@ -243,9 +260,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
                     TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
-        doAnswer(prepareAnswer(documentProviders))
-            .`when`(healthDataExportManager)
-            .queryDocumentProviders(any(), any())
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
@@ -273,9 +288,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
                     TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
-        doAnswer(prepareAnswer(documentProviders))
-            .`when`(healthDataExportManager)
-            .queryDocumentProviders(any(), any())
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
@@ -309,9 +322,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
                     TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
-        doAnswer(prepareAnswer(documentProviders))
-            .`when`(healthDataExportManager)
-            .queryDocumentProviders(any(), any())
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
@@ -335,9 +346,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
                     TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
-        doAnswer(prepareAnswer(documentProviders))
-            .`when`(healthDataExportManager)
-            .queryDocumentProviders(any(), any())
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
@@ -346,10 +355,12 @@ class ImportSourceLocationFragmentTest {
         intended(hasAction(Intent.ACTION_OPEN_DOCUMENT))
         intended(hasType("application/zip"))
         intended(hasExtra(DocumentsContract.EXTRA_INITIAL_URI, TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI))
+        verify(healthConnectLogger)
+            .logInteraction(ImportSourceLocationElement.IMPORT_SOURCE_LOCATION_NEXT_BUTTON)
     }
 
     @Test
-    fun importSourceLocationFragment_chooseFile_navigatesToImportSourceDecryptionFragment() {
+    fun importSourceLocationFragment_chooseFile_navigatesToImportConfirmationDialogFragment() {
         val documentProviders =
             listOf(
                 ExportImportDocumentProvider(
@@ -364,24 +375,27 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
                     TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
-        doAnswer(prepareAnswer(documentProviders))
-            .`when`(healthDataExportManager)
-            .queryDocumentProviders(any(), any())
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.import_nav_graph)
             navHostController.setCurrentDestination(R.id.importSourceLocationFragment)
             Navigation.setViewNavController(this.requireView(), navHostController)
         }
+
+        val testFile = File.createTempFile("testFile", ".zip")
+
         intending(hasAction(Intent.ACTION_OPEN_DOCUMENT))
-            .respondWith(
-                ActivityResult(
-                    RESULT_OK, Intent().setData(TEST_DOCUMENT_PROVIDER_1_ROOT_1_DOCUMENT_URI)))
+            .respondWith(ActivityResult(RESULT_OK, Intent().setData(Uri.fromFile(testFile))))
 
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
         onView(withId(R.id.export_import_next_button)).perform(click())
 
-        assertThat(navHostController.currentDestination?.id)
-            .isEqualTo(R.id.importDecryptionFragment)
+        onView(withText("Import this file?")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withId(R.id.dialog_custom_message))
+            .inRoot(isDialog())
+            .check(matches(withText(startsWith(testFile.name))))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Import")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
 
     @Test
@@ -394,9 +408,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
                     TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
-        doAnswer(prepareAnswer(documentProviders))
-            .`when`(healthDataExportManager)
-            .queryDocumentProviders(any(), any())
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.import_nav_graph)
             navHostController.setCurrentDestination(R.id.importSourceLocationFragment)
@@ -422,9 +434,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
                     TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
-        doAnswer(prepareAnswer(documentProviders))
-            .`when`(healthDataExportManager)
-            .queryDocumentProviders(any(), any())
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.import_nav_graph)
             navHostController.setCurrentDestination(R.id.importSourceLocationFragment)
@@ -462,9 +472,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
                     TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
-        doAnswer(prepareAnswer(documentProviders))
-            .`when`(healthDataExportManager)
-            .queryDocumentProviders(any(), any())
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE))
@@ -496,9 +504,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
                     TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
-        doAnswer(prepareAnswer(documentProviders))
-            .`when`(healthDataExportManager)
-            .queryDocumentProviders(any(), any())
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
@@ -536,9 +542,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
                     TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
-        doAnswer(prepareAnswer(documentProviders))
-            .`when`(healthDataExportManager)
-            .queryDocumentProviders(any(), any())
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
@@ -576,9 +580,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
                     TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
-        doAnswer(prepareAnswer(documentProviders))
-            .`when`(healthDataExportManager)
-            .queryDocumentProviders(any(), any())
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
@@ -593,16 +595,422 @@ class ImportSourceLocationFragmentTest {
         intended(hasExtra(DocumentsContract.EXTRA_INITIAL_URI, TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI))
     }
 
-    private fun prepareAnswer(
-        documentProviders: List<ExportImportDocumentProvider>
-    ): (InvocationOnMock) -> Nothing? {
-        val answer = { args: InvocationOnMock ->
-            val receiver =
-                args.arguments[1] as OutcomeReceiver<List<ExportImportDocumentProvider>, *>
-            receiver.onResult(documentProviders)
-            null
+    @Test
+    fun importSourceLocationFragment_noProviders_nextButtonNotEnabled() {
+        fakeHealthDataExportManager.setExportImportDocumentProviders(listOf())
+        launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(withId(R.id.export_import_next_button)).check(matches(isNotEnabled()))
+    }
+
+    @Test
+    fun importSourceLocationFragment_noProvidersAndPlayStoreNotAvailable_showsNoAppsText() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(false)
+
+        fakeHealthDataExportManager.setExportImportDocumentProviders(listOf())
+        launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(withText(R.string.export_import_no_apps_text)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun importSourceLocationFragment_noProvidersAndPlayStoreNotAvailable_doesNotShowPlayStoreButton() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(false)
+
+        fakeHealthDataExportManager.setExportImportDocumentProviders(listOf())
+        launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(withText(R.string.export_import_go_to_play_store_text))
+            .check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun importSourceLocationFragment_noProvidersAndPlayStoreAvailable_showsNoAppsText() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(true)
+
+        fakeHealthDataExportManager.setExportImportDocumentProviders(listOf())
+        launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(withText(R.string.export_import_no_apps_text)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun importSourceLocationFragment_noProvidersAndPlayStoreAvailable_showsPlayStoreButton() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(true)
+
+        fakeHealthDataExportManager.setExportImportDocumentProviders(listOf())
+        launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(withText(R.string.export_import_go_to_play_store_text)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun importSourceLocationFragment_noProvidersAndPlayStoreAvailable_goToPlayStoreClicked_launchesPlayStore() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(true)
+
+        fakeHealthDataExportManager.setExportImportDocumentProviders(listOf())
+        launchFragment<ImportSourceLocationFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.import_nav_graph)
+            navHostController.setCurrentDestination(R.id.importSourceLocationFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
         }
-        return answer
+
+        onView(withId(R.id.export_import_go_to_play_store)).perform(click())
+
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.play_store_activity)
+    }
+
+    @Test
+    fun importSourceLocationFragment_singleProvider_hasRadioButtonChecked() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(withId(R.id.item_document_provider_radio_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.item_document_provider_radio_button)).check(matches(isChecked()))
+    }
+
+    @Test
+    fun importSourceLocationFragment_singleProviderSingleAccount_showsAccountSummary() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun importSourceLocationFragment_singleProviderSingleAccount_nextButtonClicked_startsDocumentsUi() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(withText("Next")).perform(click())
+
+        intended(hasAction(Intent.ACTION_OPEN_DOCUMENT))
+        intended(hasType("application/zip"))
+        intended(hasExtra(DocumentsContract.EXTRA_INITIAL_URI, TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI))
+    }
+
+    @Test
+    fun importSourceLocationFragment_singleProviderMultipleAccounts_showsTapToSelectAccount() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(withText(R.string.export_import_tap_to_choose_account)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun importSourceLocationFragment_singleProviderMultipleAccountsClicked_showsAccountPicker() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
+
+        onView(withText("Choose an account")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Done")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun importSourceLocationFragment_singleProviderMultipleAccountsClickedAndAccountChosen_updatesSummary() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
+        onView(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY))
+            .inRoot(isDialog())
+            .perform(click())
+        onView(withText("Done")).inRoot(isDialog()).perform(click())
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE))
+            .check(
+                matches(
+                    hasDescendant(
+                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY), isDisplayed()))))
+    }
+
+    @Test
+    fun importSourceLocationFragment_singleProviderMultipleAccountsClickedAndAccountChosen_nextButtonClicked_startsDocumentsUi() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
+        onView(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY))
+            .inRoot(isDialog())
+            .perform(click())
+        onView(withText("Done")).inRoot(isDialog()).perform(click())
+        onView(withText("Next")).perform(click())
+
+        intended(hasAction(Intent.ACTION_OPEN_DOCUMENT))
+        intended(hasType("application/zip"))
+        intended(hasExtra(DocumentsContract.EXTRA_INITIAL_URI, TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI))
+    }
+
+    @Test
+    fun importSourceLocationFragment_singleProviderAndPlayStoreNotAvailable_showsInstallAppsText() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(false)
+
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(withText(R.string.export_import_install_apps_text)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun importSourceLocationFragment_singleProviderAndPlayStoreNotAvailable_doesNotShowPlayStoreButton() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(false)
+
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(withText(R.string.export_import_go_to_play_store_text))
+            .check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun importSourceLocationFragment_singleProviderAndPlayStoreAvailable_showsInstallAppsText() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(true)
+
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(withText(R.string.export_import_install_apps_text)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun importSourceLocationFragment_singleProviderAndPlayStoreAvailable_showsPlayStoreButton() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(true)
+
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(withText(R.string.export_import_go_to_play_store_text)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun importSourceLocationFragment_singleProviderAndPlayStoreAvailable_goToPlayStoreClicked_launchesPlayStore() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(true)
+
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        launchFragment<ImportSourceLocationFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.import_nav_graph)
+            navHostController.setCurrentDestination(R.id.importSourceLocationFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withId(R.id.export_import_go_to_play_store)).perform(click())
+
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.play_store_activity)
+    }
+
+    @Test
+    fun importSourceLocationFragment_orientationChanged_keepsSelection() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_2_TITLE,
+                    TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        val scenario = launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
+        onView(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY))
+            .inRoot(isDialog())
+            .perform(click())
+        onView(withText("Done")).inRoot(isDialog()).perform(click())
+
+        scenario.recreate()
+        onIdle()
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE))
+            .check(
+                matches(
+                    hasDescendant(
+                        allOf(withId(R.id.item_document_provider_radio_button), isChecked()))))
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE))
+            .check(
+                matches(
+                    hasDescendant(
+                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY), isDisplayed()))))
+    }
+
+    @Test
+    fun importSourceLocationFragment_orientationChanged_nextButtonClicked_startsDocumentsUi() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_2_TITLE,
+                    TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        val scenario = launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
+        onView(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY))
+            .inRoot(isDialog())
+            .perform(click())
+        onView(withText("Done")).inRoot(isDialog()).perform(click())
+
+        scenario.recreate()
+        onIdle()
+        onView(withText("Next")).perform(click())
+
+        intended(hasAction(Intent.ACTION_OPEN_DOCUMENT))
+        intended(hasType("application/zip"))
+        intended(hasExtra(DocumentsContract.EXTRA_INITIAL_URI, TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI))
     }
 
     private fun documentProviderWithTitle(title: String): Matcher<View>? =

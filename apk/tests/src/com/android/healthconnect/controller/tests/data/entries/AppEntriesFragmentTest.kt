@@ -27,6 +27,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
 import com.android.healthconnect.controller.data.entries.AppEntriesFragment
 import com.android.healthconnect.controller.data.entries.EntriesViewModel
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.Empty
@@ -35,8 +36,7 @@ import com.android.healthconnect.controller.data.entries.EntriesViewModel.Entrie
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.With
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedDataEntry
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.STEPS
-import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
@@ -87,7 +87,7 @@ class AppEntriesFragmentTest {
     fun appEntriesInit_showsDateNavigationPreference() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(emptyList())))
 
-        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.date_picker_spinner)).check(matches(isDisplayed()))
     }
@@ -96,7 +96,7 @@ class AppEntriesFragmentTest {
     fun appEntriesInit_noData_showsNoData() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Empty))
 
-        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.no_data_view)).check(matches(isDisplayed()))
     }
@@ -105,7 +105,7 @@ class AppEntriesFragmentTest {
     fun appEntriesInit_error_showsNoData() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(LoadingFailed))
 
-        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.error_view)).check(matches(isDisplayed()))
     }
@@ -114,7 +114,7 @@ class AppEntriesFragmentTest {
     fun appEntriesInit_loading_showsLoading() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Loading))
 
-        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.loading)).check(matches(isDisplayed()))
     }
@@ -123,7 +123,7 @@ class AppEntriesFragmentTest {
     fun appEntriesInit_withData_showsListOfEntries() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
 
-        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("12 steps")).check(matches(isDisplayed()))
@@ -135,7 +135,7 @@ class AppEntriesFragmentTest {
     fun appEntries_withData_notShowingDeleteAction() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
 
-        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withIndex(withId(R.id.item_data_entry_delete), 0))
             .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))

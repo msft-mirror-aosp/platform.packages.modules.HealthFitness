@@ -103,6 +103,8 @@ android_test {
         "framework-healthfitness.impl",
     ],
     static_libs: [
+        // TODO(b/318484678): Remove this dependency.
+        "service-healthfitness.impl",
         "androidx.test.rules",
         "compatibility-device-util-axt",
         "androidx.test.ext.truth",
@@ -118,6 +120,7 @@ android_test {
     test_config: "AndroidTestExportImport.xml",
     manifest: "AndroidManifestExportImport.xml",
     data: [
+        ":HealthFitnessCtsTestApp",
         ":HealthFitnessTestDocumentProviderApp",
         ":HealthFitnessTestDocumentProviderApp2",
     ],

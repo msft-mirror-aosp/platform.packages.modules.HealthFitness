@@ -21,7 +21,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.HEIGHT
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.HEIGHT
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType.WRITE
 import org.junit.Before
 import org.junit.Test

@@ -16,41 +16,77 @@
 
 package com.android.healthconnect.controller.backuprestore
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Slog
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.ExportStatusPreference
+import com.android.healthconnect.controller.exportimport.ImportFlowActivity
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.ExportSettings
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
 import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
+import com.android.healthconnect.controller.exportimport.api.ImportFlowViewModel
+import com.android.healthconnect.controller.exportimport.api.ImportStatusViewModel
+import com.android.healthconnect.controller.exportimport.api.ImportUiState
+import com.android.healthconnect.controller.exportimport.api.ImportUiStatus
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
+import com.android.healthconnect.controller.shared.preference.BannerPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
-import com.android.healthconnect.controller.utils.DeviceInfoUtilsImpl
+import com.android.healthconnect.controller.utils.AttributeResolver
+import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
+import com.android.healthconnect.controller.utils.ToastManager
+import com.android.healthconnect.controller.utils.logging.BackupAndRestoreElement
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
 import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /** Fragment displaying backup and restore settings. */
 @AndroidEntryPoint(HealthPreferenceFragment::class)
 class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment() {
-    // TODO: b/330169060 - Add proper logging for the backup and restore settings fragment.
 
     companion object {
         const val SCHEDULED_EXPORT_PREFERENCE_KEY = "scheduled_export"
         const val IMPORT_DATA_PREFERENCE_KEY = "import_data"
         const val EXPORT_IMPORT_SETTINGS_CATEGORY_PREFERENCE_KEY = "settings_category"
+        const val IMPORT_ERROR_BANNER_KEY = "import_error_banner"
+        const val IMPORT_ERROR_BANNER_ORDER = 0
+        const val PREVIOUS_EXPORT_STATUS_ORDER = 2
+        const val IMPORT_FILE_URI_KEY = "selectedUri"
+        const val TAG = "BackupAndRestoreSettingsFragment"
     }
+
+    init {
+        this.setPageName(PageName.BACKUP_AND_RESTORE_PAGE)
+    }
+
+    @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
+    @Inject lateinit var toastManager: ToastManager
 
     private val exportSettingsViewModel: ExportSettingsViewModel by viewModels()
     private val exportStatusViewModel: ExportStatusViewModel by viewModels()
+    private val importStatusViewModel: ImportStatusViewModel by viewModels()
+    private val importFlowViewModel: ImportFlowViewModel by viewModels()
+
+    private val contract = ActivityResultContracts.StartActivityForResult()
+    private val triggerImportLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(contract, ::onRequestImport)
 
     private val scheduledExportPreference: HealthPreference? by lazy {
         preferenceScreen.findPreference(SCHEDULED_EXPORT_PREFERENCE_KEY)
@@ -76,18 +112,19 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
 
         footerPreference.setLearnMoreText(getString(R.string.backup_and_restore_footer_link_text))
         footerPreference.setLearnMoreAction {
-            DeviceInfoUtilsImpl().openHCGetStartedLink(requireActivity())
+            deviceInfoUtils.openHCBackupAndRestoreLink(requireActivity())
         }
 
+        scheduledExportPreference?.logName = BackupAndRestoreElement.SCHEDULED_EXPORT_BUTTON
         scheduledExportPreference?.setOnPreferenceClickListener {
             findNavController()
                 .navigate(R.id.action_backupAndRestoreSettingsFragment_to_exportSetupActivity)
             true
         }
 
+        importDataPreference?.logName = BackupAndRestoreElement.RESTORE_DATA_BUTTON
         importDataPreference?.setOnPreferenceClickListener {
-            findNavController()
-                .navigate(R.id.action_backupAndRestoreSettingsFragment_to_importFlowActivity)
+            triggerImport()
             true
         }
     }
@@ -95,8 +132,26 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        importStatusViewModel.storedImportStatus.observe(viewLifecycleOwner) {
+            importUiStatus: ImportUiStatus ->
+            when (importUiStatus) {
+                is ImportUiStatus.WithData -> {
+                    maybeShowImportErrorBanner(importUiStatus.importUiState)
+                }
+                else -> {
+                    // Do nothing.
+                }
+            }
+        }
+
+        importFlowViewModel.lastImportCompletionInstant.observe(viewLifecycleOwner) {
+            importDataPreference?.setEnabled(true)
+            toastManager.showToast(requireActivity(), R.string.import_complete_toast_text)
+            importStatusViewModel.loadImportStatus()
+        }
+
         exportStatusViewModel.storedScheduledExportStatus.observe(viewLifecycleOwner) {
-            scheduledExportUiStatus ->
+            scheduledExportUiStatus: ScheduledExportUiStatus ->
             when (scheduledExportUiStatus) {
                 is ScheduledExportUiStatus.WithData -> {
                     maybeShowPreviousExportStatus(scheduledExportUiStatus.scheduledExportUiState)
@@ -107,7 +162,8 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
             }
         }
 
-        exportSettingsViewModel.storedExportSettings.observe(viewLifecycleOwner) { exportSettings ->
+        exportSettingsViewModel.storedExportSettings.observe(viewLifecycleOwner) {
+            exportSettings: ExportSettings ->
             when (exportSettings) {
                 is ExportSettings.WithData -> {
                     val frequency = exportSettings.frequency
@@ -140,6 +196,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
     override fun onResume() {
         super.onResume()
         exportSettingsViewModel.loadExportSettings()
+        importStatusViewModel.loadImportStatus()
     }
 
     private fun buildSummary(frequency: ExportFrequency): String {
@@ -158,13 +215,129 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
 
     private fun maybeShowPreviousExportStatus(scheduledExportUiState: ScheduledExportUiState) {
         val lastSuccessfulExportTime = scheduledExportUiState.lastSuccessfulExportTime
-        if (lastSuccessfulExportTime != null) {
+        if (lastSuccessfulExportTime != null &&
+            settingsCategory?.findPreference<Preference>(
+                ExportStatusPreference.EXPORT_STATUS_PREFERENCE) == null) {
             val lastExportTime =
                 getString(
                     R.string.last_export_time,
-                    dateFormatter.formatLongDate(lastSuccessfulExportTime))
+                    dateFormatter.formatDateAndTime(lastSuccessfulExportTime))
+            val exportLocation = getExportLocationString(scheduledExportUiState)
             settingsCategory?.addPreference(
-                ExportStatusPreference(requireContext(), lastExportTime).also { it.order = 1 })
+                ExportStatusPreference(requireContext(), lastExportTime, exportLocation).also {
+                    it.order = PREVIOUS_EXPORT_STATUS_ORDER
+                })
+        }
+    }
+
+    private fun getExportLocationString(scheduledExportUiState: ScheduledExportUiState): String? {
+        if (scheduledExportUiState.lastExportAppName != null &&
+            scheduledExportUiState.lastExportFileName != null) {
+            return getString(
+                R.string.last_export_file_location,
+                scheduledExportUiState.lastExportAppName,
+                scheduledExportUiState.lastExportFileName)
+        } else if (scheduledExportUiState.lastExportFileName != null) {
+            return scheduledExportUiState.lastExportFileName
+        } else if (scheduledExportUiState.lastExportAppName != null) {
+            return scheduledExportUiState.lastExportAppName
+        }
+        return null
+    }
+
+    private fun maybeShowImportErrorBanner(importUiState: ImportUiState) {
+        val importErrorBanner = preferenceScreen.findPreference<Preference>(IMPORT_ERROR_BANNER_KEY)
+        if (importErrorBanner != null) {
+            preferenceScreen.removePreferenceRecursively(IMPORT_ERROR_BANNER_KEY)
+        }
+        when (importUiState.dataImportError) {
+            ImportUiState.DataImportError.DATA_IMPORT_ERROR_WRONG_FILE -> {
+                preferenceScreen.addPreference(getImportWrongFileErrorBanner())
+            }
+            ImportUiState.DataImportError.DATA_IMPORT_ERROR_VERSION_MISMATCH -> {
+                preferenceScreen.addPreference(getImportVersionMismatchErrorBanner())
+            }
+            ImportUiState.DataImportError.DATA_IMPORT_ERROR_UNKNOWN -> {
+                preferenceScreen.addPreference(getImportOtherErrorBanner())
+            }
+            ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE -> {
+                // Do nothing.
+            }
+        }
+    }
+
+    private fun getImportWrongFileErrorBanner(): BannerPreference {
+        return BannerPreference(
+                requireContext(), BackupAndRestoreElement.IMPORT_WRONG_FILE_ERROR_BANNER)
+            .also {
+                it.setPrimaryButton(
+                    getString(R.string.import_wrong_file_error_banner_button),
+                    BackupAndRestoreElement.IMPORT_WRONG_FILE_ERROR_BANNER_BUTTON,
+                )
+                it.title = getString(R.string.import_error_banner_title)
+                it.key = IMPORT_ERROR_BANNER_KEY
+                it.summary = getString(R.string.import_wrong_file_error_banner_summary)
+                it.icon =
+                    AttributeResolver.getNullableDrawable(requireContext(), R.attr.warningIcon)
+                it.setPrimaryButtonOnClickListener { triggerImport() }
+                it.order = IMPORT_ERROR_BANNER_ORDER
+            }
+    }
+
+    private fun getImportVersionMismatchErrorBanner(): BannerPreference {
+        return BannerPreference(
+                requireContext(), BackupAndRestoreElement.IMPORT_VERSION_MISMATCH_ERROR_BANNER)
+            .also {
+                it.setPrimaryButton(
+                    getString(R.string.import_version_mismatch_error_banner_button),
+                    BackupAndRestoreElement.IMPORT_VERSION_MISMATCH_ERROR_BANNER_BUTTON,
+                )
+                it.title = getString(R.string.import_error_banner_title)
+                it.key = IMPORT_ERROR_BANNER_KEY
+                it.summary = getString(R.string.import_version_mismatch_error_banner_summary)
+                it.icon =
+                    AttributeResolver.getNullableDrawable(requireContext(), R.attr.warningIcon)
+                it.setPrimaryButtonOnClickListener {
+                    findNavController()
+                        .navigate(
+                            R.id.action_backupAndRestoreSettingsFragment_to_systemUpdateActivity)
+                }
+                it.order = IMPORT_ERROR_BANNER_ORDER
+            }
+    }
+
+    private fun getImportOtherErrorBanner(): BannerPreference {
+        return BannerPreference(
+                requireContext(), BackupAndRestoreElement.IMPORT_GENERAL_ERROR_BANNER)
+            .also {
+                it.setPrimaryButton(
+                    getString(R.string.import_other_error_banner_button),
+                    BackupAndRestoreElement.IMPORT_GENERAL_ERROR_BANNER_BUTTON,
+                )
+                it.title = getString(R.string.import_error_banner_title)
+                it.key = IMPORT_ERROR_BANNER_KEY
+                it.summary = getString(R.string.import_other_error_banner_summary)
+                it.icon =
+                    AttributeResolver.getNullableDrawable(requireContext(), R.attr.warningIcon)
+                it.setPrimaryButtonOnClickListener { triggerImport() }
+                it.order = IMPORT_ERROR_BANNER_ORDER
+            }
+    }
+
+    private fun triggerImport() {
+        val importRequestIntent = Intent(requireActivity(), ImportFlowActivity::class.java)
+        triggerImportLauncher.launch(importRequestIntent)
+    }
+
+    private fun onRequestImport(result: ActivityResult) {
+        if (result.resultCode == Activity.RESULT_OK) {
+            val uriString = result.data?.extras?.getString(IMPORT_FILE_URI_KEY)
+            Slog.i(TAG, "uri: $uriString")
+            if (uriString != null) {
+                importDataPreference?.setEnabled(false)
+                toastManager.showToast(requireActivity(), R.string.import_in_progress_toast_text)
+                importFlowViewModel.triggerImportOfSelectedFile(Uri.parse(uriString))
+            }
         }
     }
 }

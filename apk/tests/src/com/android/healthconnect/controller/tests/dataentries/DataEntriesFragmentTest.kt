@@ -34,8 +34,8 @@ import com.android.healthconnect.controller.dataentries.DataEntriesFragmentViewM
 import com.android.healthconnect.controller.dataentries.DataEntriesFragmentViewModel.DataEntriesFragmentState.Loading
 import com.android.healthconnect.controller.dataentries.DataEntriesFragmentViewModel.DataEntriesFragmentState.LoadingFailed
 import com.android.healthconnect.controller.dataentries.DataEntriesFragmentViewModel.DataEntriesFragmentState.WithData
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.PLANNED_EXERCISE
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType.STEPS
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.PLANNED_EXERCISE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.launchFragment

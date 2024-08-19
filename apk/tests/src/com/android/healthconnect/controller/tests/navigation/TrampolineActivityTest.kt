@@ -27,6 +27,9 @@ import android.content.Intent.makeMainActivity
 import android.health.connect.HealthConnectManager.ACTION_HEALTH_HOME_SETTINGS
 import android.health.connect.HealthConnectManager.ACTION_MANAGE_HEALTH_DATA
 import android.health.connect.HealthConnectManager.ACTION_MANAGE_HEALTH_PERMISSIONS
+import android.health.connect.HealthDataCategory
+import android.platform.test.annotations.DisableFlags
+import android.platform.test.annotations.EnableFlags
 import android.platform.test.flag.junit.SetFlagsRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MediatorLiveData
@@ -41,11 +44,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.autodelete.AutoDeleteRange.*
-import com.android.healthconnect.controller.autodelete.AutoDeleteViewModel
-import com.android.healthconnect.controller.autodelete.AutoDeleteViewModel.AutoDeleteState
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.*
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.WithData
+import com.android.healthconnect.controller.data.alldata.AllDataViewModel
+import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
@@ -57,8 +60,8 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.navigation.TrampolineActivity
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.TEST_APP
@@ -69,6 +72,7 @@ import com.android.healthconnect.controller.tests.utils.showOnboarding
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
+import com.android.healthfitness.flags.Flags
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -78,6 +82,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mockito
 import org.mockito.Mockito.*
 
 @HiltAndroidTest
@@ -89,7 +94,6 @@ class TrampolineActivityTest {
 
     @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
     @BindValue val migrationViewModel: MigrationViewModel = mock(MigrationViewModel::class.java)
-    @BindValue val autoDeleteViewModel: AutoDeleteViewModel = mock(AutoDeleteViewModel::class.java)
     @BindValue
     val exportStatusViewModel: ExportStatusViewModel = mock(ExportStatusViewModel::class.java)
     @BindValue
@@ -97,6 +101,7 @@ class TrampolineActivityTest {
         mock(HealthDataCategoryViewModel::class.java)
     @BindValue
     val appPermissionViewModel: AppPermissionViewModel = mock(AppPermissionViewModel::class.java)
+    @BindValue val allDataViewModel: AllDataViewModel = Mockito.mock(AllDataViewModel::class.java)
 
     private val context = InstrumentationRegistry.getInstrumentation().context
 
@@ -134,29 +139,43 @@ class TrampolineActivityTest {
                         NOW, ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE, 1)))
         }
         val writePermission =
-            FitnessPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
         val readPermission =
-            FitnessPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
+            FitnessPermission(FitnessPermissionType.DISTANCE, PermissionsAccessType.READ)
         whenever(appPermissionViewModel.appInfo).then { MutableLiveData(TEST_APP) }
         whenever(
                 appPermissionViewModel.shouldNavigateToAppPermissionsFragment(
                     TEST_APP_PACKAGE_NAME))
             .then { true }
-        whenever(appPermissionViewModel.appPermissions).then {
+        whenever(appPermissionViewModel.fitnessPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
-        whenever(appPermissionViewModel.grantedPermissions).then {
+        whenever(appPermissionViewModel.grantedFitnessPermissions).then {
             MutableLiveData(setOf(writePermission))
         }
-        whenever(appPermissionViewModel.revokeAllPermissionsState).then {
+        whenever(appPermissionViewModel.revokeAllHealthPermissionsState).then {
             MutableLiveData(AppPermissionViewModel.RevokeAllState.NotStarted)
         }
-        whenever(appPermissionViewModel.allAppPermissionsGranted).then { MediatorLiveData(false) }
-        whenever(appPermissionViewModel.atLeastOnePermissionGranted).then { MediatorLiveData(true) }
+        whenever(appPermissionViewModel.allFitnessPermissionsGranted).then {
+            MediatorLiveData(false)
+        }
+        whenever(appPermissionViewModel.atLeastOneFitnessPermissionGranted).then {
+            MediatorLiveData(true)
+        }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
         whenever(appPermissionViewModel.loadAccessDate(anyString())).thenReturn(accessDate)
         whenever(appPermissionViewModel.lastReadPermissionDisconnected).then {
             MutableLiveData(false)
+        }
+        whenever(allDataViewModel.allData).then {
+            MutableLiveData<AllDataViewModel.AllDataState>(
+                AllDataViewModel.AllDataState.WithData(
+                    listOf(
+                        PermissionTypesPerCategory(
+                            HealthDataCategory.ACTIVITY, listOf(FitnessPermissionType.STEPS)))))
+        }
+        whenever(allDataViewModel.setOfPermissionTypesToBeDeleted).then {
+            MutableLiveData<Set<FitnessPermissionType>>(emptySet())
         }
     }
 
@@ -200,11 +219,9 @@ class TrampolineActivityTest {
     }
 
     @Test
-    fun manageHealthDataIntent_launchesDataManagementActivity() {
+    @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
+    fun manageHealthDataIntent_launchesDataManagementActivity_oldIA() {
         // setup data management screen.
-        whenever(autoDeleteViewModel.storedAutoDeleteRange).then {
-            MutableLiveData(AutoDeleteState.WithData(AUTO_DELETE_RANGE_NEVER))
-        }
         whenever(categoryViewModel.categoriesData).then {
             MutableLiveData<CategoriesFragmentState>(WithData(emptyList()))
         }
@@ -213,6 +230,21 @@ class TrampolineActivityTest {
 
         onIdle()
         onView(withText("Browse data")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
+    fun manageHealthDataIntent_launchesDataManagementActivity_newIA() {
+        // setup data management screen.
+        whenever(categoryViewModel.categoriesData).then {
+            MutableLiveData<CategoriesFragmentState>(WithData(emptyList()))
+        }
+
+        launchActivityForResult<TrampolineActivity>(createStartIntent(ACTION_MANAGE_HEALTH_DATA))
+
+        onIdle()
+        onView(withText("Activity")).check(matches(isDisplayed()))
+        onView(withText("Steps")).check(matches(isDisplayed()))
     }
 
     @Test

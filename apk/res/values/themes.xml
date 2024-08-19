@@ -45,6 +45,7 @@
         <item name="nutritionCategoryIcon">@drawable/ic_category_nutrition</item>
         <item name="sleepCategoryIcon">@drawable/ic_category_sleep</item>
         <item name="vitalsCategoryIcon">@drawable/ic_category_vitals</item>
+        <item name="wellnessCategoryIcon">@drawable/ic_category_wellness</item>
 
         <!-- Permission types page -->
         <item name="appPriorityIcon">@drawable/ic_view_list</item>
@@ -91,7 +92,6 @@
         <item name="importDataIcon">@drawable/ic_import_data</item>
 
         <item name="warningIcon">@drawable/ic_warning</item>
-        <item name="passwordIcon">@drawable/ic_password</item>
         <item name="infoIcon">@drawable/ic_info</item>
 
         <!-- END REGION -->
@@ -132,14 +132,10 @@
         <item name="permissionGrantButtonTop">@style/PermissionGrantButtonTop</item>
         <item name="permissionGrantButtonBottom">@style/PermissionGrantButtonBottom</item>
 
-        <!-- EditText -->
-        <item name="editTextPasswordTheme">@style/Widget.HealthConnect.EditText.Password</item>
-
         <!-- Dialogs -->
         <item name="alertDialogTheme">@style/Theme.HealthConnect.Dialog.Alert</item>
         <item name="dialogButtonBar">@style/Widget.HealthConnect.Dialog.ButtonBar</item>
 
-        <item name="android:checkboxStyle">@style/Widget.HealthConnect.CheckBox</item>
         <item name="chipStyle">@style/Widget.HealthConnect.RadioButton.Chip</item>
         <item name="spinnerStyle">@style/Widget.HealthConnect.CalendarSpinner</item>
         <item name="tabStyle">@style/Widget.HealthConnect.TabLayout</item>
@@ -158,6 +154,11 @@
 
         <!-- Popup Menu -->
         <item name="android:itemBackground">@color/settingslib_dialog_background</item>
+        <!-- END REGION -->
+
+        <!-- REGION CLIPPING -->
+        <item name="android:clipToPadding">true</item>
+        <item name="android:clipChildren">true</item>
         <!-- END REGION -->
     </style>
 

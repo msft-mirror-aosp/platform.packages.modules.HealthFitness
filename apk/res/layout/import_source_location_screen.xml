@@ -40,6 +40,8 @@
                 android:layout_marginVertical="@dimen/spacing_large"
                 android:orientation="vertical" />
 
+            <include layout="@layout/widget_export_import_footer" />
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

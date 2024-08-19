@@ -29,7 +29,7 @@ import com.android.healthconnect.controller.datasources.api.LoadPotentialPriorit
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.permissiontypes.api.LoadPriorityListUseCase
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -125,19 +125,19 @@ class LoadPotentialPriorityListUseCaseTest {
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
             .thenReturn(
                 listOf(
-                    FitnessPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.WRITE)
+                    FitnessPermission(FitnessPermissionType.DISTANCE, PermissionsAccessType.WRITE)
                         .toString()))
 
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME_2))
             .thenReturn(
                 listOf(
-                    FitnessPermission(HealthPermissionType.SLEEP, PermissionsAccessType.WRITE)
+                    FitnessPermission(FitnessPermissionType.SLEEP, PermissionsAccessType.WRITE)
                         .toString()))
 
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME_3))
             .thenReturn(
                 listOf(
-                    FitnessPermission(HealthPermissionType.HEART_RATE, PermissionsAccessType.READ)
+                    FitnessPermission(FitnessPermissionType.HEART_RATE, PermissionsAccessType.READ)
                         .toString()))
 
         val result =
@@ -156,19 +156,19 @@ class LoadPotentialPriorityListUseCaseTest {
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
             .thenReturn(
                 listOf(
-                    FitnessPermission(HealthPermissionType.SLEEP, PermissionsAccessType.READ)
+                    FitnessPermission(FitnessPermissionType.SLEEP, PermissionsAccessType.READ)
                         .toString()))
 
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME_2))
             .thenReturn(
                 listOf(
-                    FitnessPermission(HealthPermissionType.SLEEP, PermissionsAccessType.WRITE)
+                    FitnessPermission(FitnessPermissionType.SLEEP, PermissionsAccessType.WRITE)
                         .toString()))
 
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME_3))
             .thenReturn(
                 listOf(
-                    FitnessPermission(HealthPermissionType.HEART_RATE, PermissionsAccessType.READ)
+                    FitnessPermission(FitnessPermissionType.HEART_RATE, PermissionsAccessType.READ)
                         .toString()))
 
         val result =
@@ -182,22 +182,22 @@ class LoadPotentialPriorityListUseCaseTest {
         val map = mutableMapOf<Class<out Record>, RecordTypeInfoResponse>()
         map[StepsRecord::class.java] =
             RecordTypeInfoResponse(
-                HealthPermissionType.STEPS.category,
+                FitnessPermissionType.STEPS.category,
                 HealthDataCategory.ACTIVITY,
                 listOf(getDataOriginTestApp()))
         map[DistanceRecord::class.java] =
             RecordTypeInfoResponse(
-                HealthPermissionType.DISTANCE.category,
+                FitnessPermissionType.DISTANCE.category,
                 HealthDataCategory.ACTIVITY,
                 listOf(getDataOriginTestApp2()))
         map[HeartRateRecord::class.java] =
             RecordTypeInfoResponse(
-                HealthPermissionType.HEART_RATE.category,
+                FitnessPermissionType.HEART_RATE.category,
                 HealthDataCategory.VITALS,
                 listOf(getDataOriginTestApp3()))
         map[SleepSessionRecord::class.java] =
             RecordTypeInfoResponse(
-                HealthPermissionType.SLEEP.category,
+                FitnessPermissionType.SLEEP.category,
                 HealthDataCategory.SLEEP,
                 listOf(getDataOriginTestApp2()))
         return map

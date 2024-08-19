@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 import android.database.Cursor;
 import android.health.connect.HealthDataCategory;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -82,7 +82,7 @@ public class PriorityMigrationHelperTest {
         when(HealthDataCategoryPriorityHelper.getInstance())
                 .thenReturn(mHealthDataCategoryPriorityHelper);
         when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
-
+        PriorityMigrationHelper.clearInstanceForTest();
         mPriorityMigrationHelper = PriorityMigrationHelper.getInstance();
     }
 

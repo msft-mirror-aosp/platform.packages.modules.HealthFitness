@@ -52,7 +52,7 @@ import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewMod
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewModel.DateEntryFragmentState.Loading
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewModel.DateEntryFragmentState.LoadingFailed
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewModel.DateEntryFragmentState.WithData
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter
@@ -72,7 +72,7 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
         const val SHOW_DATA_ORIGIN_KEY = "show_data_origin_key"
 
         fun createBundle(
-            permissionType: HealthPermissionType,
+            permissionType: FitnessPermissionType,
             entryId: String,
             showDataOrigin: Boolean
         ): Bundle {
@@ -87,7 +87,7 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
 
     private val viewModel: DataEntryDetailsViewModel by viewModels()
 
-    private lateinit var permissionType: HealthPermissionType
+    private lateinit var permissionType: FitnessPermissionType
     private lateinit var recyclerView: RecyclerView
     private lateinit var entryId: String
     private lateinit var loadingView: View
@@ -161,7 +161,7 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
         val view = inflater.inflate(R.layout.fragment_data_entry_details, container, false)
         permissionType =
             requireArguments()
-                .getSerializable(PERMISSION_TYPE_KEY, HealthPermissionType::class.java)
+                .getSerializable(PERMISSION_TYPE_KEY, FitnessPermissionType::class.java)
                 ?: throw IllegalArgumentException("PERMISSION_TYPE_KEY can't be null!")
 
         entryId =

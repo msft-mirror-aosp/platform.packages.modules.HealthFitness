@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import android.annotation.NonNull;
 
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -35,25 +34,25 @@ public abstract class DatabaseHelper {
         return Set.of(
                 DeviceInfoHelper.getInstance(),
                 AppInfoHelper.getInstance(),
-                ActivityDateHelper.getInstance(),
-                ChangeLogsHelper.getInstance(),
-                ChangeLogsRequestHelper.getInstance(),
+                new ActivityDateHelper(),
+                new ChangeLogsHelper(),
+                new ChangeLogsRequestHelper(),
                 HealthDataCategoryPriorityHelper.getInstance(),
                 PreferenceHelper.getInstance(),
-                AccessLogsHelper.getInstance(),
-                MigrationEntityHelper.getInstance(),
+                new AccessLogsHelper(),
+                new MigrationEntityHelper(),
                 PriorityMigrationHelper.getInstance());
     }
 
     /**
-     * Deletes all entries from the database for the helper class and clears the cache. This
-     * function is only used for testing, do not use in production.
+     * Deletes all entries from the database and clears the cache for all the helper class.
+     *
+     * <p>This function is only used for testing, do not use in production.
      */
-    public static void clearAllData(@NonNull TransactionManager transactionManager) {
+    public static void clearAllData(TransactionManager transactionManager) {
         for (DatabaseHelper databaseHelper : getDatabaseHelpers()) {
             databaseHelper.clearData(transactionManager);
         }
-        clearAllCache();
     }
 
     public static void clearAllCache() {
@@ -62,8 +61,10 @@ public abstract class DatabaseHelper {
         }
     }
 
-    protected void clearData(@NonNull TransactionManager transactionManager) {
+    /** Deletes all entries from the database and clears the cache for the helper class. */
+    public void clearData(TransactionManager transactionManager) {
         transactionManager.delete(new DeleteTableRequest(getMainTableName()));
+        clearCache();
     }
 
     protected void clearCache() {}
