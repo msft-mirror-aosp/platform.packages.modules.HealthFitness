@@ -97,9 +97,7 @@ object UiTestUtils {
      */
     fun findObject(selector: BySelector): UiObject2 {
         return findObjectOrNull(selector)
-            ?: throw UiDumpUtils.wrapWithUiDump(
-                UiObjectNotFoundException("Object not found $selector")
-            )
+            ?: throw objectNotFoundExceptionWithDump("Object not found $selector")
     }
 
     /**
@@ -153,7 +151,11 @@ object UiTestUtils {
 
     /** Quickly scrolls down to the bottom. */
     fun scrollToEnd() {
-        UiScrollable(UiSelector().scrollable(true)).flingToEnd(Integer.MAX_VALUE)
+        val scrollable = UiScrollable(UiSelector().scrollable(true))
+        if (!scrollable.waitForExists(FIND_OBJECT_TIMEOUT.toMillis())) {
+            throw objectNotFoundExceptionWithDump("scrollToEnd: scrollable not found")
+        }
+        scrollable.flingToEnd(Integer.MAX_VALUE)
     }
 
     fun scrollDownTo(selector: BySelector) {
@@ -311,6 +313,10 @@ object UiTestUtils {
         }
 
         throw TimeoutException("Timed out waiting for $message")
+    }
+
+    private fun objectNotFoundExceptionWithDump(message: String): Exception {
+        return UiDumpUtils.wrapWithUiDump(UiObjectNotFoundException(message))
     }
 
     fun stepsRecordFromTestApp(): StepsRecord {
