@@ -64,6 +64,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
@@ -457,10 +458,10 @@ public final class TransactionManager {
      * @return list of distinct packageNames corresponding to the input table name after querying
      *     the table.
      */
-    public HashMap<Integer, HashSet<String>> getDistinctPackageNamesForRecordsTable(
+    public Map<Integer, Set<String>> getDistinctPackageNamesForRecordsTable(
             Set<Integer> recordTypes) throws SQLiteException {
         final SQLiteDatabase db = getReadableDb();
-        HashMap<Integer, HashSet<String>> packagesForRecordTypeMap = new HashMap<>();
+        HashMap<Integer, Set<String>> packagesForRecordTypeMap = new HashMap<>();
         for (Integer recordType : recordTypes) {
             RecordHelper<?> recordHelper =
                     RecordHelperProvider.getInstance().getRecordHelper(recordType);
