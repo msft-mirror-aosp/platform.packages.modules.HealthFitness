@@ -2136,12 +2136,14 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final ErrorCallback errorCallback = callback::onError;
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
+        final UserHandle userHandle = Binder.getCallingUserHandle();
         final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
         final String callingPackageName =
                 Objects.requireNonNull(attributionSource.getPackageName());
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, READ_DATA)
                         .setPackageName(callingPackageName);
+
         scheduleLoggingHealthDataApiErrors(
                 () -> {
                     if (!isPersonalHealthRecordEnabled()) {
@@ -2156,12 +2158,68 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 unsupportedException.getErrorCode());
                         return;
                     }
+                    if (ids.isEmpty()) {
+                        tryAndReturnResult(callback, List.of(), logger);
+                        return;
+                    }
+                    enforceIsForegroundUser(userHandle);
+                    verifyPackageNameFromUid(uid, attributionSource);
+                    throwExceptionIfDataSyncInProgress();
+                    List<MedicalDataSource> medicalDataSources;
+                    if (holdsDataManagementPermission) {
+                        medicalDataSources =
+                                mMedicalDataSourceHelper
+                                        .getMedicalDataSourcesByIdsWithoutPermissionChecks(ids);
+                    } else {
+                        boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
+                        logger.setCallerForegroundState(isInForeground);
 
-                    // TODO: b/350010186 - Add rate limiting, permission checking, package name
-                    // checking.
-                    List<MedicalDataSource> result =
-                            mMedicalDataSourceHelper.getMedicalDataSources(ids);
-                    tryAndReturnResult(callback, result, logger);
+                        tryAcquireApiCallQuota(
+                                uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, logger);
+
+                        Set<String> grantedMedicalPermissions =
+                                mMedicalDataPermissionEnforcer
+                                        .getGrantedMedicalPermissionsForPreflight(
+                                                attributionSource);
+
+                        // Enforce caller has permission granted to at least one PHR permission
+                        // before reading from DB.
+                        if (grantedMedicalPermissions.isEmpty()) {
+                            throw new SecurityException(
+                                    "Caller doesn't have permission to read or write medical"
+                                            + " data");
+                        }
+
+                        // If reading from background while Background Read feature is disabled
+                        // or READ_HEALTH_DATA_IN_BACKGROUND permission is not granted, then
+                        // enforce self read.
+                        boolean isCalledFromBgWithoutBgRead =
+                                !isInForeground && isOnlySelfReadInBackgroundAllowed(uid, pid);
+
+                        if (Constants.DEBUG) {
+                            Slog.d(
+                                    TAG,
+                                    "Enforce self read for package "
+                                            + callingPackageName
+                                            + ":"
+                                            + isCalledFromBgWithoutBgRead);
+                        }
+
+                        // Pass related fields to DB to filter results.
+                        medicalDataSources =
+                                mMedicalDataSourceHelper
+                                        .getMedicalDataSourcesByIdsWithPermissionChecks(
+                                                ids,
+                                                getPopulatedMedicalResourceTypesWithReadPermissions(
+                                                        grantedMedicalPermissions),
+                                                callingPackageName,
+                                                grantedMedicalPermissions.contains(
+                                                        WRITE_MEDICAL_DATA),
+                                                isCalledFromBgWithoutBgRead);
+                        // TODO(b/343921816): Creates access logs if necessary.
+                    }
+                    logger.setNumberOfRecords(medicalDataSources.size());
+                    tryAndReturnResult(callback, medicalDataSources, logger);
                 },
                 logger,
                 errorCallback,

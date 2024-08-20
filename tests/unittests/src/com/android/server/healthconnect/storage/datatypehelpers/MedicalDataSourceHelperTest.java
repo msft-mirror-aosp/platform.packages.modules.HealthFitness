@@ -336,7 +336,8 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> result =
-                mMedicalDataSourceHelper.getMedicalDataSources(List.of(expected.getId()));
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        List.of(expected.getId()));
 
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0)).isEqualTo(expected);
@@ -353,7 +354,8 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> result =
-                mMedicalDataSourceHelper.getMedicalDataSources(List.of(dataSource1.getId()));
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        List.of(dataSource1.getId()));
 
         assertThat(result).containsExactly(dataSource1);
     }
@@ -375,7 +377,7 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> result =
-                mMedicalDataSourceHelper.getMedicalDataSources(
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
                         List.of(dataSource1.getId(), dataSource2.getId()));
 
         assertThat(result).containsExactly(dataSource1, dataSource2);
@@ -399,7 +401,7 @@ public class MedicalDataSourceHelperTest {
         List<MedicalDataSource> expected = List.of(dataSource1, dataSource2);
 
         List<MedicalDataSource> result =
-                mMedicalDataSourceHelper.getMedicalDataSources(
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
                         List.of(dataSource1.getId(), dataSource2.getId()));
 
         assertThat(result.size()).isEqualTo(2);
@@ -425,7 +427,7 @@ public class MedicalDataSourceHelperTest {
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> result =
-                mMedicalDataSourceHelper.getMedicalDataSources(
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
                         List.of(dataSource1.getId(), dataSource2.getId()));
 
         assertThat(result).containsExactly(dataSource1, dataSource2);
@@ -507,7 +509,8 @@ public class MedicalDataSourceHelperTest {
                 });
 
         List<MedicalDataSource> result =
-                mMedicalDataSourceHelper.getMedicalDataSources(List.of(existing.getId()));
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        List.of(existing.getId()));
         assertThat(result).containsExactly(existing);
     }
 
@@ -524,7 +527,8 @@ public class MedicalDataSourceHelperTest {
         MedicalDataSourceHelper.deleteMedicalDataSource(existing.getId());
 
         List<MedicalDataSource> result =
-                mMedicalDataSourceHelper.getMedicalDataSources(List.of(existing.getId()));
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        List.of(existing.getId()));
         assertThat(result).isEmpty();
     }
 
@@ -548,7 +552,7 @@ public class MedicalDataSourceHelperTest {
         MedicalDataSourceHelper.deleteMedicalDataSource(dataSource1.getId());
 
         List<MedicalDataSource> result =
-                mMedicalDataSourceHelper.getMedicalDataSources(
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
                         List.of(dataSource1.getId(), dataSource2.getId()));
         assertThat(result).containsExactly(dataSource2);
     }
