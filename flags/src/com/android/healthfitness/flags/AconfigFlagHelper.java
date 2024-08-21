@@ -16,7 +16,7 @@
 
 package com.android.healthfitness.flags;
 
-import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_MINDFULNESS_SESSION;
+import static com.android.healthfitness.flags.DatabaseVersions.LAST_ROLLED_OUT_DB_VERSION;
 import static com.android.internal.annotations.VisibleForTesting.Visibility.PRIVATE;
 
 import com.android.internal.annotations.VisibleForTesting;
@@ -98,14 +98,6 @@ public final class AconfigFlagHelper {
     // won't be changed again, they will be assigned a DB version and a DB flag, if further changes
     // are required to the DB schema, then new DB version and DB flag are required.
     // =============================================================================================
-    /**
-     * DB version of the last feature that has been rolled out.
-     *
-     * <p>This should be updated whenever a flag is being removed for a db change after rolling out
-     * to "mainline" in Gantry. See TODO(b/357076280) link to the g3doc here.
-     */
-    @VisibleForTesting(visibility = PRIVATE)
-    static final int LAST_ROLLED_OUT_DB_VERSION = DB_VERSION_MINDFULNESS_SESSION;
 
     /**
      * Returns a map of DB version => DB flag with the DB versions being keys and ordered.
