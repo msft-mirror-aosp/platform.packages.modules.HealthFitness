@@ -34,5 +34,8 @@ public final class DatabaseVersions {
     // For historical reasons, we do not support versions below this
     public static final int MIN_SUPPORTED_DB_VERSION = DB_VERSION_UUID_BLOB;
 
+    // DB version of the last feature that has been fully rolled out to public.
+    public static final int LAST_ROLLED_OUT_DB_VERSION = DB_VERSION_MINDFULNESS_SESSION;
+
     private DatabaseVersions() {}
 }

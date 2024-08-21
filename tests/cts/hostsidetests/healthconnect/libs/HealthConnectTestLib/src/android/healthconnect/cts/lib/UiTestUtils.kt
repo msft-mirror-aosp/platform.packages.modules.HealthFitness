@@ -86,8 +86,8 @@ object UiTestUtils {
      *
      * This method does _not_ scroll in an attempt to find the object.
      */
-    private fun findObjectOrNull(selector: BySelector): UiObject2? {
-        return getUiDevice().wait(Until.findObject(selector), FIND_OBJECT_TIMEOUT.toMillis())
+    private fun findObjectOrNull(selector: BySelector, timeout: Duration = FIND_OBJECT_TIMEOUT): UiObject2? {
+        return getUiDevice().wait(Until.findObject(selector), timeout.toMillis())
     }
 
     /**
@@ -95,8 +95,8 @@ object UiTestUtils {
      *
      * Use this if the object is expected to be visible on the screen without scrolling.
      */
-    fun findObject(selector: BySelector): UiObject2 {
-        return findObjectOrNull(selector)
+    fun findObject(selector: BySelector, timeout: Duration = FIND_OBJECT_TIMEOUT): UiObject2 {
+        return findObjectOrNull(selector, timeout)
             ?: throw objectNotFoundExceptionWithDump("Object not found $selector")
     }
 
@@ -153,7 +153,8 @@ object UiTestUtils {
     fun scrollToEnd() {
         val scrollable = UiScrollable(UiSelector().scrollable(true))
         if (!scrollable.waitForExists(FIND_OBJECT_TIMEOUT.toMillis())) {
-            throw objectNotFoundExceptionWithDump("scrollToEnd: scrollable not found")
+            // Scrollable either doesn't exist or the view fully fits inside the screen.
+            return
         }
         scrollable.flingToEnd(Integer.MAX_VALUE)
     }
@@ -163,10 +164,14 @@ object UiTestUtils {
     }
 
     fun scrollDownToAndClick(selector: BySelector) {
-        getUiDevice()
-            .findObject(By.scrollable(true))
-            .scrollUntil(Direction.DOWN, Until.findObject(selector))
-            .click()
+           try {
+            waitDisplayed(selector) { it.click() }
+        } catch (e: Exception) {
+            getUiDevice()
+                .findObject(By.scrollable(true))
+                .scrollUntil(Direction.DOWN, Until.findObject(selector))
+                .click()
+        }
         getUiDevice().waitForIdle()
     }
 
