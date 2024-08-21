@@ -67,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"cycle tracking"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Nutrition"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"nutrition"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"Wellness"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"wellness"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"Browse data"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Manage data"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Export data"</string>
@@ -653,6 +655,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"light sleep"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"deep sleep"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"unknown"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"Breathing"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"Meditation"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"Movement"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"Music"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"Other"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Unguided"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g>m"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g>h <xliff:g id="MIN">%2$s</xliff:g>m"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g>h"</string>
