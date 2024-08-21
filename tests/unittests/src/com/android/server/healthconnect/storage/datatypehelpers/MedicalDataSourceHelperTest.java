@@ -53,6 +53,8 @@ import android.graphics.drawable.Drawable;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
+import android.healthconnect.cts.utils.PhrDataFactory;
 import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -65,6 +67,7 @@ import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
+import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
@@ -557,6 +560,42 @@ public class MedicalDataSourceHelperTest {
         assertThat(result).containsExactly(dataSource2);
     }
 
+    @Test
+    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    public void delete_removesAssociatedResource() throws NameNotFoundException {
+        setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource =
+                createDataSource(
+                        DATA_SOURCE_FHIR_BASE_URI,
+                        DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_PACKAGE_NAME);
+        MedicalResourceHelper resourceHelper =
+                new MedicalResourceHelper(mTransactionManager, mMedicalDataSourceHelper);
+        MedicalResource medicalResource =
+                PhrDataFactory.createImmunizationMedicalResource(dataSource.getId());
+        UpsertMedicalResourceInternalRequest upsertRequest =
+                new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(medicalResource.getType())
+                        .setFhirResourceId(medicalResource.getFhirResource().getId())
+                        .setFhirResourceType(medicalResource.getFhirResource().getType())
+                        .setFhirVersion(medicalResource.getFhirVersion())
+                        .setData(medicalResource.getFhirResource().getData())
+                        .setDataSourceId(dataSource.getId());
+        MedicalResource resource =
+                resourceHelper.upsertMedicalResources(List.of(upsertRequest)).get(0);
+
+        MedicalDataSourceHelper.deleteMedicalDataSource(dataSource.getId());
+
+        List<MedicalDataSource> result =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        List.of(dataSource.getId()));
+        assertThat(result).isEmpty();
+        List<MedicalResource> resourceResult =
+                resourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
+                        List.of(resource.getId()));
+        assertThat(resourceResult).isEmpty();
+    }
+
     private void setUpMocksForAppInfo(String packageName) throws NameNotFoundException {
         ApplicationInfo appInfo = getApplicationInfo(packageName);
         when(mPackageManager.getApplicationInfo(eq(packageName), any())).thenReturn(appInfo);
@@ -589,6 +628,4 @@ public class MedicalDataSourceHelperTest {
         }
         return result;
     }
-
-    // TODO: b/351166557 - add unit tests that deleting datasource deletes associated records
 }

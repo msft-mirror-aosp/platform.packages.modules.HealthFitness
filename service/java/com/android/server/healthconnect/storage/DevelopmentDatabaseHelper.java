@@ -39,7 +39,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceI
  *
  * @hide
  */
-public class DevelopmentDatabaseHelper {
+public final class DevelopmentDatabaseHelper {
     private static final String TAG = "HealthConnectDevDb";
 
     /**

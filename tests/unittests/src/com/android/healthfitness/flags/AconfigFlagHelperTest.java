@@ -17,9 +17,9 @@
 package com.android.healthfitness.flags;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.DB_VERSION_TO_DB_FLAG_MAP;
-import static com.android.healthfitness.flags.AconfigFlagHelper.LAST_ROLLED_OUT_DB_VERSION;
 import static com.android.healthfitness.flags.AconfigFlagHelper.getDbVersion;
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
+import static com.android.healthfitness.flags.DatabaseVersions.LAST_ROLLED_OUT_DB_VERSION;
 
 import static com.google.common.truth.Truth.assertThat;
 
