@@ -55,6 +55,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -273,8 +274,32 @@ public class MedicalDataSourceHelper {
      * @return List of {@link MedicalDataSource}s read from medical_data_source table based on ids.
      */
     @NonNull
-    public List<MedicalDataSource> getMedicalDataSources(@NonNull List<String> ids)
+    public List<MedicalDataSource> getMedicalDataSourcesByIdsWithoutPermissionChecks(
+            @NonNull List<String> ids) throws SQLiteException {
+        ReadTableRequest readTableRequest = getReadTableRequestJoinWithAppInfo(ids);
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+            return getMedicalDataSources(cursor);
+        }
+    }
+
+    /**
+     * Reads the {@link MedicalDataSource}s stored in the HealthConnect database using the given
+     * list of {@code ids} based on the {@code callingPackageName}'s permissions.
+     *
+     * @return List of {@link MedicalDataSource}s read from medical_data_source table based on ids.
+     * @throws IllegalStateException if {@code hasWritePermission} is false and {@code
+     *     grantedReadMedicalResourceTypes} is empty.
+     */
+    @NonNull
+    public List<MedicalDataSource> getMedicalDataSourcesByIdsWithPermissionChecks(
+            @NonNull List<String> ids,
+            @NonNull Set<Integer> ignoredGrantedReadMedicalResourceTypes,
+            @NonNull String ignoredCallingPackageName,
+            boolean ignoredHasWritePermission,
+            boolean ignoredIsCalledFromBgWithoutBgRead)
             throws SQLiteException {
+        // TODO(b/350436076): Use ignored fields for permission checks in read table request.
+        // TODO(b/359892459): Add CTS tests once it is properly implemented.
         ReadTableRequest readTableRequest = getReadTableRequestJoinWithAppInfo(ids);
         try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
             return getMedicalDataSources(cursor);
