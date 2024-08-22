@@ -16,6 +16,7 @@
 
 package android.healthconnect.cts.testhelper;
 
+import static android.healthconnect.cts.lib.BundleHelper.CREATE_MEDICAL_DATA_SOURCE_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.DELETE_RECORDS_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.GET_CHANGE_LOG_TOKEN_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.INSERT_RECORDS_QUERY;
@@ -27,23 +28,30 @@ import static android.healthconnect.cts.lib.BundleHelper.READ_RECORDS_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.READ_RECORDS_USING_IDS_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.SELF_REVOKE_PERMISSION_REQUEST;
 import static android.healthconnect.cts.lib.BundleHelper.UPDATE_RECORDS_QUERY;
+import static android.healthconnect.cts.lib.BundleHelper.UPSERT_MEDICAL_RESOURCES_QUERY;
 
 import android.content.Context;
 import android.content.Intent;
+import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogTokenResponse;
 import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.healthconnect.cts.lib.BundleHelper;
+import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.TestUtils;
 import android.os.Bundle;
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
 final class TestAppHelper {
 
@@ -69,10 +77,13 @@ final class TestAppHelper {
             case READ_RECORDS_USING_IDS_QUERY -> handleReadRecordsUsingIds(context, bundle);
             case READ_CHANGE_LOGS_QUERY -> handleGetChangeLogs(context, bundle);
             case GET_CHANGE_LOG_TOKEN_QUERY -> handleGetChangeLogToken(context, bundle);
+            case CREATE_MEDICAL_DATA_SOURCE_QUERY -> handleCreateMedicalDataSource(context, bundle);
+            case UPSERT_MEDICAL_RESOURCES_QUERY -> handleUpsertMedicalResource(context, bundle);
             case SELF_REVOKE_PERMISSION_REQUEST -> handleSelfRevoke(context, bundle);
             case KILL_SELF_REQUEST -> handleKillSelf();
-            default -> throw new IllegalStateException(
-                    "Unknown query received from launcher app: " + queryType);
+            default ->
+                    throw new IllegalStateException(
+                            "Unknown query received from launcher app: " + queryType);
         };
     }
 
@@ -117,6 +128,26 @@ final class TestAppHelper {
         ChangeLogTokenRequest request = BundleHelper.toChangeLogTokenRequest(bundle);
         ChangeLogTokenResponse response = TestUtils.getChangeLogToken(request, context);
         return BundleHelper.fromChangeLogTokenResponse(response.getToken());
+    }
+
+    private static Bundle handleCreateMedicalDataSource(Context context, Bundle bundle)
+            throws Exception {
+        CreateMedicalDataSourceRequest request =
+                BundleHelper.toCreateMedicalDataSourceRequest(bundle);
+        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
+        TestUtils.getHealthConnectManager(context)
+                .createMedicalDataSource(request, Executors.newSingleThreadExecutor(), receiver);
+        return BundleHelper.fromMedicalDataSource(receiver.getResponse());
+    }
+
+    private static Bundle handleUpsertMedicalResource(Context context, Bundle bundle)
+            throws Exception {
+        List<UpsertMedicalResourceRequest> requests =
+                BundleHelper.toUpsertMedicalResourceRequests(bundle);
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        TestUtils.getHealthConnectManager(context)
+                .upsertMedicalResources(requests, Executors.newSingleThreadExecutor(), receiver);
+        return BundleHelper.fromMedicalResources(receiver.getResponse());
     }
 
     private static Bundle handleSelfRevoke(Context context, Bundle bundle) throws Exception {

@@ -353,9 +353,13 @@ public class MedicalDataSourceHelper {
      * <p>Note that this deletes without producing change logs, or access logs.
      *
      * @param id the id to delete.
-     * @throws IllegalArgumentException if the id does not exist
+     * @param appInfoIdRestriction if non-null, restricts any deletions to data sources owned by the
+     *     given app. If null allows deletions of any data sources.
+     * @throws IllegalArgumentException if the id does not exist, or there is an
+     *     appInfoIdRestriction and the data source is owned by a different app
      */
-    public static void deleteMedicalDataSource(@NonNull String id) throws SQLiteException {
+    public void deleteMedicalDataSource(@NonNull String id, @Nullable Long appInfoIdRestriction)
+            throws SQLiteException {
         UUID uuid;
         try {
             uuid = UUID.fromString(id);
@@ -367,14 +371,16 @@ public class MedicalDataSourceHelper {
                         .setIds(
                                 DATA_SOURCE_UUID_COLUMN_NAME,
                                 StorageUtils.getListOfHexStrings(List.of(uuid)));
-        ReadTableRequest readTableRequest = getReadTableRequest(List.of(id));
-        TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
+        if (appInfoIdRestriction != null) {
+            request.setPackageFilter(APP_INFO_ID_COLUMN_NAME, List.of(appInfoIdRestriction));
+        }
+        ReadTableRequest readTableRequest = getReadTableRequest(List.of(id), appInfoIdRestriction);
         boolean success =
-                transactionManager.runAsTransaction(
+                mTransactionManager.runAsTransaction(
                         (TransactionManager.TransactionRunnableWithReturn<Boolean, SQLiteException>)
                                 db -> {
                                     try (Cursor cursor =
-                                            transactionManager.read(db, readTableRequest)) {
+                                            mTransactionManager.read(db, readTableRequest)) {
                                         if (cursor.getCount() != 1) {
                                             return false;
                                         }
@@ -382,11 +388,16 @@ public class MedicalDataSourceHelper {
                                     // This also deletes the contained data, because they are
                                     // referenced by foreign key, and so are handled by ON DELETE
                                     // CASCADE in the db.
-                                    transactionManager.delete(db, request);
+                                    mTransactionManager.delete(db, request);
                                     return true;
                                 });
         if (!success) {
-            throw new IllegalArgumentException("Id " + id + " does not exist");
+            if (appInfoIdRestriction == null) {
+                throw new IllegalArgumentException("Id " + id + " does not exist");
+            } else {
+                throw new IllegalArgumentException(
+                        "Id " + id + " does not exist or is owned by another app");
+            }
         }
     }
 

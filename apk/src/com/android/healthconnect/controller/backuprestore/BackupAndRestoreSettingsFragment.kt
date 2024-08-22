@@ -30,6 +30,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
+import com.android.healthfitness.flags.Flags.exportImportFastFollow
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.ExportStatusPreference
 import com.android.healthconnect.controller.exportimport.ImportFlowActivity
@@ -197,6 +198,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
         super.onResume()
         exportSettingsViewModel.loadExportSettings()
         importStatusViewModel.loadImportStatus()
+        exportStatusViewModel.loadScheduledExportStatus()
     }
 
     private fun buildSummary(frequency: ExportFrequency): String {
@@ -214,10 +216,9 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
     }
 
     private fun maybeShowPreviousExportStatus(scheduledExportUiState: ScheduledExportUiState) {
+        settingsCategory?.removePreferenceRecursively(ExportStatusPreference.EXPORT_STATUS_PREFERENCE)
         val lastSuccessfulExportTime = scheduledExportUiState.lastSuccessfulExportTime
-        if (lastSuccessfulExportTime != null &&
-            settingsCategory?.findPreference<Preference>(
-                ExportStatusPreference.EXPORT_STATUS_PREFERENCE) == null) {
+        if (lastSuccessfulExportTime != null) {
             val lastExportTime =
                 getString(
                     R.string.last_export_time,
@@ -226,7 +227,15 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
             settingsCategory?.addPreference(
                 ExportStatusPreference(requireContext(), lastExportTime, exportLocation).also {
                     it.order = PREVIOUS_EXPORT_STATUS_ORDER
-                })
+            })
+        } else if (exportImportFastFollow() && scheduledExportUiState.lastFailedExportTime == null &&
+                scheduledExportUiState.periodInDays !=
+                    ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays) {
+            val lastExportMessage = getString(R.string.no_last_export_message)
+            settingsCategory?.addPreference(
+                ExportStatusPreference(requireContext(), lastExportMessage, null).also {
+                    it.order = PREVIOUS_EXPORT_STATUS_ORDER
+            })
         }
     }
 

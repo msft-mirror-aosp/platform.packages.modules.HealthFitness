@@ -16,6 +16,7 @@
 
 package com.android.healthconnect.controller.tests.backuprestore
 
+import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation.ActivityResult
 import android.content.Context
@@ -23,6 +24,8 @@ import android.content.Intent
 import android.health.connect.exportimport.ImportStatus.*
 import android.net.Uri
 import android.os.Bundle
+import android.platform.test.annotations.EnableFlags
+import android.platform.test.flag.junit.SetFlagsRule
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
@@ -67,6 +70,7 @@ import com.android.healthconnect.controller.utils.ToastManager
 import com.android.healthconnect.controller.utils.ToastManagerModule
 import com.android.healthconnect.controller.utils.logging.BackupAndRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -114,6 +118,7 @@ class BackupAndRestoreSettingsFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @get:Rule val clearTimeFormatRule = ClearTimeFormatRule()
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val setFlagsRule = SetFlagsRule()
 
     // TODO: b/348591669 - Replace the mock with a fake and investigate the UI tests.
     @BindValue
@@ -155,6 +160,10 @@ class BackupAndRestoreSettingsFragmentTest {
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
 
         hiltRule.inject()
+        // Required for aconfig flag reading for tests run on pre V devices
+        InstrumentationRegistry.getInstrumentation()
+                .getUiAutomation()
+                .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG)
         context = InstrumentationRegistry.getInstrumentation().context
         navHostController = TestNavHostController(context)
 
@@ -252,6 +261,27 @@ class BackupAndRestoreSettingsFragmentTest {
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
         onView(withText("Last export: Oct 20, 7:06 AM")).check(doesNotExist())
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW)
+    fun backupAndRestoreSettingsFragment_withNoLastExport_showsCorrectMessage() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        lastSuccessfulExportTime = null,
+                        lastFailedExportTime = null,
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        periodInDays = TEST_EXPORT_PERIOD_IN_DAYS)))
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Last export: none")).check(matches(isDisplayed()))
     }
 
     @Test

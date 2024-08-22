@@ -33,6 +33,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
+import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_PACKAGE_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
@@ -147,6 +148,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeoutException;
 
@@ -1435,11 +1437,72 @@ public class HealthConnectServiceImplTest {
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testDeleteMedicalDataSourceWithData_badId_fails() throws RemoteException {
+        setDataManagementPermission(PERMISSION_GRANTED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
+        doThrow(new IllegalArgumentException())
+                .when(mMedicalDataSourceHelper)
+                .deleteMedicalDataSource(any(), any());
 
         mHealthConnectService.deleteMedicalDataSourceWithData(mAttributionSource, "foo", callback);
 
         verify(callback, timeout(5000)).onError(mErrorCaptor.capture());
+        HealthConnectException exception = mErrorCaptor.getValue().getHealthConnectException();
+        assertThat(exception.getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+        verifyNoMoreInteractions(callback);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalDataSourceWithData_noPermission_fails() throws RemoteException {
+        setDataManagementPermission(PERMISSION_DENIED);
+        setDataReadWritePermission(WRITE_MEDICAL_DATA, PERMISSION_DENIED);
+        IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
+        String id = UUID.randomUUID().toString();
+        MedicalDataSource datasource =
+                new MedicalDataSource.Builder(
+                                id,
+                                DATA_SOURCE_PACKAGE_NAME,
+                                DATA_SOURCE_FHIR_BASE_URI,
+                                DATA_SOURCE_DISPLAY_NAME)
+                        .build();
+        when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        List.of(id)))
+                .thenReturn(List.of(datasource));
+
+        mHealthConnectService.deleteMedicalDataSourceWithData(mAttributionSource, id, callback);
+
+        verify(callback, timeout(5000)).onError(mErrorCaptor.capture());
+        HealthConnectException exception = mErrorCaptor.getValue().getHealthConnectException();
+        assertThat(exception.getErrorCode()).isEqualTo(ERROR_SECURITY);
+        verifyNoMoreInteractions(callback);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalDataSourceWithData_wrongPackage_fails() throws RemoteException {
+        setDataManagementPermission(PERMISSION_DENIED);
+        setDataReadWritePermission(WRITE_MEDICAL_DATA, PERMISSION_GRANTED);
+        IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
+        String id = UUID.randomUUID().toString();
+        MedicalDataSource datasource =
+                new MedicalDataSource.Builder(
+                                id,
+                                DIFFERENT_DATA_SOURCE_PACKAGE_NAME,
+                                DATA_SOURCE_FHIR_BASE_URI,
+                                DATA_SOURCE_DISPLAY_NAME)
+                        .build();
+        when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        List.of(id)))
+                .thenReturn(List.of(datasource));
+        doThrow(new IllegalArgumentException())
+                .when(mMedicalDataSourceHelper)
+                .deleteMedicalDataSource(any(), any());
+
+        mHealthConnectService.deleteMedicalDataSourceWithData(mAttributionSource, id, callback);
+
+        verify(callback, timeout(5000)).onError(mErrorCaptor.capture());
+        verifyNoMoreInteractions(callback);
         HealthConnectException exception = mErrorCaptor.getValue().getHealthConnectException();
         assertThat(exception.getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
@@ -1448,8 +1511,9 @@ public class HealthConnectServiceImplTest {
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testDeleteMedicalDataSourceWithData_existingId_succeeds() throws RemoteException {
+        setDataManagementPermission(PERMISSION_GRANTED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
-        String id = "aDatasourceId";
+        String id = UUID.randomUUID().toString();
         MedicalDataSource datasource =
                 new MedicalDataSource.Builder(
                                 id,
@@ -1464,6 +1528,7 @@ public class HealthConnectServiceImplTest {
         mHealthConnectService.deleteMedicalDataSourceWithData(mAttributionSource, id, callback);
 
         verify(callback, timeout(5000)).onResult();
+        verifyNoMoreInteractions(callback);
     }
 
     @Test

@@ -52,8 +52,7 @@ public final class MedicalResourceId implements Parcelable {
     /**
      * @param dataSourceId The unique identifier of where the data comes from.
      * @param fhirResourceType The FHIR resource type. This is the "resourceType" field from a JSON
-     *     representation of FHIR resource data, and mapped into an {@code IntDef} {@link
-     *     FhirResourceType}.
+     *     representation of FHIR resource data.
      * @param fhirResourceId The FHIR resource ID. This is the "id" field from a JSON representation
      *     of FHIR resource data.
      */
@@ -70,7 +69,8 @@ public final class MedicalResourceId implements Parcelable {
     }
 
     /**
-     * Creates a {@link MedicalResourceId} instance from {@code dataSourceId} and {fhirReference}.
+     * Creates a {@link MedicalResourceId} instance from {@code dataSourceId} and {@code
+     * fhirReference}.
      *
      * @param dataSourceId The unique identifier of a data source where the data comes from.
      * @param fhirReference The FHIR reference string typically extracted from the "reference" field
@@ -131,7 +131,7 @@ public final class MedicalResourceId implements Parcelable {
         return mDataSourceId;
     }
 
-    /** Returns the FHIR resource type as an {@code IntDef} {@link FhirResourceType}. */
+    /** Returns the FHIR resource type. */
     @FhirResourceType
     public int getFhirResourceType() {
         return mFhirResourceType;

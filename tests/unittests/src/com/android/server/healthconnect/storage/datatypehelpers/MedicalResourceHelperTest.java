@@ -17,6 +17,8 @@
 package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
@@ -31,7 +33,10 @@ import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IM
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.utils.PhrDataFactory.R4_VERSION_STRING;
 import static android.healthconnect.cts.utils.PhrDataFactory.addCompletedStatus;
+import static android.healthconnect.cts.utils.PhrDataFactory.createAllergyMedicalResource;
+import static android.healthconnect.cts.utils.PhrDataFactory.createImmunizationMedicalResource;
 import static android.healthconnect.cts.utils.PhrDataFactory.createImmunizationMedicalResources;
+import static android.healthconnect.cts.utils.PhrDataFactory.createUpdatedImmunizationMedicalResource;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResource;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceAllergy;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceBuilder;
@@ -72,6 +77,7 @@ import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesRequest;
+import android.health.connect.accesslog.AccessLog;
 import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalDataSource;
@@ -333,7 +339,7 @@ public class MedicalResourceHelperTest {
 
         List<MedicalResource> upsertedResources =
                 mMedicalResourceHelper.upsertMedicalResources(
-                        List.of(upsertImmunizationResourceRequest));
+                        DATA_SOURCE_PACKAGE_NAME, List.of(upsertImmunizationResourceRequest));
         ReadMedicalResourcesRequest readUnknownRequest =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_UNKNOWN).build();
         ReadMedicalResourcesInternalResponse result =
@@ -388,6 +394,7 @@ public class MedicalResourceHelperTest {
                 makeUpsertRequest(allergy);
         List<MedicalResource> upsertedResources =
                 mMedicalResourceHelper.upsertMedicalResources(
+                        DATA_SOURCE_PACKAGE_NAME,
                         List.of(
                                 upsertMedicalResourceInternalRequest1,
                                 upsertMedicalResourceInternalRequest2,
@@ -450,6 +457,7 @@ public class MedicalResourceHelperTest {
                 makeUpsertRequest(allergy);
         List<MedicalResource> upsertedResources =
                 mMedicalResourceHelper.upsertMedicalResources(
+                        DATA_SOURCE_PACKAGE_NAME,
                         List.of(
                                 upsertMedicalResourceInternalRequest1,
                                 upsertMedicalResourceInternalRequest2,
@@ -491,6 +499,7 @@ public class MedicalResourceHelperTest {
                         IllegalArgumentException.class,
                         () ->
                                 mMedicalResourceHelper.upsertMedicalResources(
+                                        DATA_SOURCE_PACKAGE_NAME,
                                         List.of(upsertMedicalResourceInternalRequest)));
         assertThat(thrown)
                 .hasMessageThat()
@@ -529,6 +538,7 @@ public class MedicalResourceHelperTest {
 
         List<MedicalResource> upsertedMedicalResources =
                 mMedicalResourceHelper.upsertMedicalResources(
+                        DATA_SOURCE_PACKAGE_NAME,
                         List.of(
                                 upsertMedicalResourceInternalRequest1,
                                 upsertMedicalResourceInternalRequest2));
@@ -560,14 +570,14 @@ public class MedicalResourceHelperTest {
 
         List<MedicalResource> result =
                 mMedicalResourceHelper.upsertMedicalResources(
-                        List.of(upsertMedicalResourceInternalRequest));
+                        DATA_SOURCE_PACKAGE_NAME, List.of(upsertMedicalResourceInternalRequest));
 
         assertThat(result).containsExactly(expectedResource);
     }
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
-    public void insertSingleMedicalResource_readSingleResource() throws JSONException {
+    public void insertSingleMedicalResource_readSingleResource() {
         MedicalDataSource dataSource = insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         FhirResource fhirResource = getFhirResource();
         MedicalResource expectedResource =
@@ -583,7 +593,7 @@ public class MedicalResourceHelperTest {
 
         List<MedicalResource> upsertedMedicalResources =
                 mMedicalResourceHelper.upsertMedicalResources(
-                        List.of(upsertMedicalResourceInternalRequest));
+                        DATA_SOURCE_PACKAGE_NAME, List.of(upsertMedicalResourceInternalRequest));
         List<MedicalResource> result =
                 mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(ids);
         List<Integer> indicesResult = readEntriesInMedicalResourceIndicesTable();
@@ -937,6 +947,40 @@ public class MedicalResourceHelperTest {
     }
 
     @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void readByRequest_isNotEnforceSelfRead_createsAccessLog() {
+        ReadMedicalResourcesRequest readRequest =
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
+        mMedicalResourceHelper.readMedicalResourcesByRequestWithPermissionChecks(
+                readRequest, DATA_SOURCE_PACKAGE_NAME, /* enforceSelfRead= */ false);
+
+        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs();
+        AccessLog accessLog = accessLogs.get(0);
+
+        assertThat(accessLogs).hasSize(1);
+        assertThat(accessLog.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+        assertThat(accessLog.getMedicalResourceTypes())
+                .isEqualTo(Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION));
+        assertThat(accessLog.getRecordTypes()).isEmpty();
+        assertThat(accessLog.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
+        assertThat(accessLog.getMedicalDataSource()).isFalse();
+        assertThat(accessLog.getAccessTime()).isNotNull();
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void readByRequest_isEnforceSelfRead_doesNotCreateAccessLog() {
+        ReadMedicalResourcesRequest readRequest =
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
+        mMedicalResourceHelper.readMedicalResourcesByRequestWithPermissionChecks(
+                readRequest, DATA_SOURCE_PACKAGE_NAME, /* enforceSelfRead= */ true);
+
+        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs();
+
+        assertThat(accessLogs).hasSize(0);
+    }
+
+    @Test
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE})
     public void readByRequest_isNotEnforceSelfRead_immunizationFilter_canReadAllImmunizations() {
         String dataSource1 = insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME).getId();
@@ -1054,8 +1098,7 @@ public class MedicalResourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
-    public void insertMultipleMedicalResourcesWithSameDataSource_readMultipleResources()
-            throws JSONException {
+    public void insertMultipleMedicalResourcesWithSameDataSource_readMultipleResources() {
         // TODO(b/351992434): Create test utilities to make these large repeated code blocks
         // clearer.
         MedicalDataSource dataSource = insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
@@ -1083,6 +1126,7 @@ public class MedicalResourceHelperTest {
 
         List<MedicalResource> upsertedMedicalResources =
                 mMedicalResourceHelper.upsertMedicalResources(
+                        DATA_SOURCE_PACKAGE_NAME,
                         List.of(
                                 upsertMedicalResourceInternalRequest1,
                                 upsertMedicalResourceInternalRequest2));
@@ -1094,6 +1138,92 @@ public class MedicalResourceHelperTest {
         assertThat(upsertedMedicalResources).containsExactly(resource1, resource2);
         assertThat(indicesResult)
                 .containsExactly(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, MEDICAL_RESOURCE_TYPE_UNKNOWN);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
+    public void insertMedicalResourcesOfSameType_createsAccessLog_success() {
+        String dataSource = insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME).getId();
+        upsertResources(
+                PhrDataFactory::createImmunizationMedicalResources,
+                /* numOfResources= */ 6,
+                dataSource);
+
+        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs();
+        AccessLog accessLog = accessLogs.get(0);
+
+        assertThat(accessLogs).hasSize(1);
+        assertThat(accessLog.getMedicalResourceTypes())
+                .isEqualTo(Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION));
+        assertThat(accessLog.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+        assertThat(accessLog.getRecordTypes()).isEmpty();
+        assertThat(accessLog.getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
+        assertThat(accessLog.getMedicalDataSource()).isFalse();
+        assertThat(accessLog.getAccessTime()).isNotNull();
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
+    public void insertMedicalResourcesOfDifferentTypes_createsAccessLog_success() {
+        String dataSource = insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME).getId();
+        MedicalResource immunization = createImmunizationMedicalResource(dataSource);
+        MedicalResource allergy = createAllergyMedicalResource(dataSource);
+        mMedicalResourceHelper.upsertMedicalResources(
+                DATA_SOURCE_PACKAGE_NAME,
+                createUpsertMedicalResourceRequests(List.of(immunization, allergy), dataSource));
+
+        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs();
+        AccessLog accessLog = accessLogs.get(0);
+
+        assertThat(accessLogs).hasSize(1);
+        assertThat(accessLog.getMedicalResourceTypes())
+                .isEqualTo(
+                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, MEDICAL_RESOURCE_TYPE_UNKNOWN));
+        assertThat(accessLog.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+        assertThat(accessLog.getRecordTypes()).isEmpty();
+        assertThat(accessLog.getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
+        assertThat(accessLog.getMedicalDataSource()).isFalse();
+        assertThat(accessLog.getAccessTime()).isNotNull();
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
+    public void insertAndUpdateMedicalResources_createsAccessLog_success() throws JSONException {
+        String dataSource = insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME).getId();
+        MedicalResource immunization = createImmunizationMedicalResource(dataSource);
+        MedicalResource allergy = createAllergyMedicalResource(dataSource);
+        MedicalResource updatedImmunization = createUpdatedImmunizationMedicalResource(dataSource);
+        // initial insert
+        mMedicalResourceHelper.upsertMedicalResources(
+                DATA_SOURCE_PACKAGE_NAME,
+                createUpsertMedicalResourceRequests(List.of(immunization, allergy), dataSource));
+        // update the immunization resource
+        mMedicalResourceHelper.upsertMedicalResources(
+                DATA_SOURCE_PACKAGE_NAME,
+                createUpsertMedicalResourceRequests(List.of(updatedImmunization), dataSource));
+
+        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs();
+        AccessLog accessLog1 = accessLogs.get(0);
+        AccessLog accessLog2 = accessLogs.get(1);
+
+        assertThat(accessLogs).hasSize(2);
+
+        assertThat(accessLog1.getMedicalResourceTypes())
+                .isEqualTo(
+                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, MEDICAL_RESOURCE_TYPE_UNKNOWN));
+        assertThat(accessLog1.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+        assertThat(accessLog1.getRecordTypes()).isEmpty();
+        assertThat(accessLog1.getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
+        assertThat(accessLog1.getMedicalDataSource()).isFalse();
+        assertThat(accessLog1.getAccessTime()).isNotNull();
+
+        assertThat(accessLog2.getMedicalResourceTypes())
+                .isEqualTo(Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION));
+        assertThat(accessLog2.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+        assertThat(accessLog2.getRecordTypes()).isEmpty();
+        assertThat(accessLog2.getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
+        assertThat(accessLog2.getMedicalDataSource()).isFalse();
+        assertThat(accessLog2.getAccessTime()).isNotNull();
     }
 
     @Test
@@ -1124,6 +1254,7 @@ public class MedicalResourceHelperTest {
 
         List<MedicalResource> upsertedMedicalResources =
                 mMedicalResourceHelper.upsertMedicalResources(
+                        DATA_SOURCE_PACKAGE_NAME,
                         List.of(
                                 upsertMedicalResourceInternalRequest1,
                                 upsertMedicalResourceInternalRequest2));
@@ -1164,9 +1295,11 @@ public class MedicalResourceHelperTest {
                 makeUpsertRequest(expectedUpdatedMedicalResource);
         List<MedicalResourceId> ids = List.of(expectedUpdatedMedicalResource.getId());
 
-        mMedicalResourceHelper.upsertMedicalResources(List.of(originalUpsertRequest));
+        mMedicalResourceHelper.upsertMedicalResources(
+                DATA_SOURCE_PACKAGE_NAME, List.of(originalUpsertRequest));
         List<MedicalResource> updatedMedicalResource =
-                mMedicalResourceHelper.upsertMedicalResources(List.of(updateRequest));
+                mMedicalResourceHelper.upsertMedicalResources(
+                        DATA_SOURCE_PACKAGE_NAME, List.of(updateRequest));
         List<MedicalResource> result =
                 mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(ids);
         List<Integer> indicesResult = readEntriesInMedicalResourceIndicesTable();
@@ -1216,11 +1349,13 @@ public class MedicalResourceHelperTest {
 
         List<MedicalResource> upsertedMedicalResources =
                 mMedicalResourceHelper.upsertMedicalResources(
+                        DATA_SOURCE_PACKAGE_NAME,
                         List.of(
                                 upsertMedicalResourceInternalRequest1,
                                 upsertMedicalResourceInternalRequest2));
         List<MedicalResource> updatedMedicalResource =
                 mMedicalResourceHelper.upsertMedicalResources(
+                        DATA_SOURCE_PACKAGE_NAME,
                         List.of(upsertMedicalResourceInternalRequestUpdated1));
         List<MedicalResource> result =
                 mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
@@ -1282,11 +1417,13 @@ public class MedicalResourceHelperTest {
 
         List<MedicalResource> upsertedMedicalResources =
                 mMedicalResourceHelper.upsertMedicalResources(
+                        DATA_SOURCE_PACKAGE_NAME,
                         List.of(
                                 upsertMedicalResourceInternalRequest1,
                                 upsertMedicalResourceInternalRequest2));
         List<MedicalResource> updatedMedicalResource =
                 mMedicalResourceHelper.upsertMedicalResources(
+                        DATA_SOURCE_PACKAGE_NAME,
                         List.of(
                                 upsertMedicalResourceInternalRequestUpdated1,
                                 upsertMedicalResourceInternalRequestUpdated2));
@@ -1315,7 +1452,8 @@ public class MedicalResourceHelperTest {
                 createUpsertMedicalResourceRequests(resources, dataSource.getId());
 
         List<MedicalResource> upsertedMedicalResources =
-                mMedicalResourceHelper.upsertMedicalResources(upsertRequests);
+                mMedicalResourceHelper.upsertMedicalResources(
+                        DATA_SOURCE_PACKAGE_NAME, upsertRequests);
         assertThat(upsertedMedicalResources).containsExactlyElementsIn(resources);
 
         ReadMedicalResourcesRequest readRequest =
@@ -1369,7 +1507,7 @@ public class MedicalResourceHelperTest {
                 createUpsertMedicalResourceRequests(resources, dataSource.getId());
 
         List<MedicalResource> upsertedMedicalResources =
-                mMedicalResourceHelper.upsertMedicalResources(requests);
+                mMedicalResourceHelper.upsertMedicalResources(DATA_SOURCE_PACKAGE_NAME, requests);
         ReadMedicalResourcesRequest readRequest =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .setPageSize(10)
@@ -1650,7 +1788,8 @@ public class MedicalResourceHelperTest {
     private MedicalResource upsertResource(MedicalResourceCreator creator, String dataSourceId) {
         MedicalResource medicalResource = creator.create(dataSourceId);
         return mMedicalResourceHelper
-                .upsertMedicalResources(List.of(makeUpsertRequest(medicalResource)))
+                .upsertMedicalResources(
+                        DATA_SOURCE_PACKAGE_NAME, List.of(makeUpsertRequest(medicalResource)))
                 .get(0);
     }
 
@@ -1658,6 +1797,7 @@ public class MedicalResourceHelperTest {
             MedicalResourcesCreator creator, int numOfResources, String dataSourceId) {
         List<MedicalResource> medicalResources = creator.create(numOfResources, dataSourceId);
         return mMedicalResourceHelper.upsertMedicalResources(
+                DATA_SOURCE_PACKAGE_NAME,
                 medicalResources.stream()
                         .map(MedicalResourceHelperTest::makeUpsertRequest)
                         .toList());

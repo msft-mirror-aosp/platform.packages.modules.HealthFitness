@@ -464,6 +464,7 @@
 
     <string name="backup_and_restore_settings_screen_title" description="Title of the 'backup and restore' screen where users can set up configurations to export and import Health Connect data. [CHAR_LIMIT=40]">Backup and restore</string>
     <string name="last_export_time" description="Text to show when the last successful export was [CHAR LIMIT=40]">Last export: <xliff:g example="May 21" id="date">%1$s</xliff:g></string>
+    <string name="no_last_export_message" description="Text to show when there is no previous export after scheduling an export [CHAR_LIMIT=NONE]">Last export: none</string>
     <string name="last_export_file_location" description="Label to indicate the file location of the last successful export. [CHAR_LIMIT=NONE]"><xliff:g example="Drive" id="export_app_name">%1$s</xliff:g> • <xliff:g example="healthconnect.zip" id="export_file_name">%2$s</xliff:g></string>
     <string name="scheduled_export" description="Menu item where users can click to configure scheduled data export. [CHAR_LIMIT=40]">Scheduled export</string>
     <string name="import_data" description="Menu item where users can click to import their data. [CHAR_LIMIT=40]">Import data</string>
