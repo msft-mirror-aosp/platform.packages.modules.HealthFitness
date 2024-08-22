@@ -77,10 +77,14 @@ object UiTestUtils {
     }
 
     fun scrollDownToAndClick(selector: BySelector) {
-        getUiDevice()
-            .findObject(By.scrollable(true))
-            .scrollUntil(Direction.DOWN, Until.findObject(selector))
-            .click()
+           try {
+            waitDisplayed(selector) { it.click() }
+        } catch (e: Exception) {
+            getUiDevice()
+                .findObject(By.scrollable(true))
+                .scrollUntil(Direction.DOWN, Until.findObject(selector))
+                .click()
+        }
         getUiDevice().waitForIdle()
     }
 
