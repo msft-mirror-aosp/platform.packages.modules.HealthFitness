@@ -43,6 +43,7 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.AlterTableRequest;
 
 import org.junit.Before;
@@ -71,6 +72,7 @@ public class AccessLogsHelperTest {
             new HealthConnectDatabaseTestRule();
 
     private TransactionTestUtils mTransactionTestUtils;
+    private TransactionManager mTransactionManager;
 
     @Before
     public void setup() {
@@ -78,6 +80,7 @@ public class AccessLogsHelperTest {
                 new TransactionTestUtils(
                         /* context= */ null,
                         mHealthConnectDatabaseTestRule.getTransactionManager());
+        mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
     }
 
     @Test
@@ -99,11 +102,15 @@ public class AccessLogsHelperTest {
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
     public void testAddAccessLogsPhr_accessedSingleMedicalResourceType_success() {
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
-        AccessLogsHelper.addAccessLog(
-                DATA_SOURCE_PACKAGE_NAME,
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
-                OPERATION_TYPE_READ,
-                /* isMedicalDataSource= */ false);
+        mTransactionManager.runAsTransaction(
+                (TransactionManager.TransactionRunnable<RuntimeException>)
+                        db ->
+                                AccessLogsHelper.addAccessLog(
+                                        db,
+                                        DATA_SOURCE_PACKAGE_NAME,
+                                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                                        OPERATION_TYPE_READ,
+                                        /* accessedMedicalDataSource= */ false));
 
         List<AccessLog> result = queryAccessLogs();
         AccessLog accessLog = result.get(0);
@@ -122,11 +129,17 @@ public class AccessLogsHelperTest {
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
     public void testAddAccessLogsPhr_accessedMultipleMedicalResourceTypes_success() {
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
-        AccessLogsHelper.addAccessLog(
-                DATA_SOURCE_PACKAGE_NAME,
-                Set.of(MEDICAL_RESOURCE_TYPE_UNKNOWN, MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
-                OPERATION_TYPE_READ,
-                /* isMedicalDataSource= */ false);
+        mTransactionManager.runAsTransaction(
+                (TransactionManager.TransactionRunnable<RuntimeException>)
+                        db ->
+                                AccessLogsHelper.addAccessLog(
+                                        db,
+                                        DATA_SOURCE_PACKAGE_NAME,
+                                        Set.of(
+                                                MEDICAL_RESOURCE_TYPE_UNKNOWN,
+                                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                                        OPERATION_TYPE_READ,
+                                        /* accessedMedicalDataSource= */ false));
 
         List<AccessLog> result = queryAccessLogs();
         AccessLog accessLog = result.get(0);
@@ -146,11 +159,15 @@ public class AccessLogsHelperTest {
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
     public void testAddAccessLogsPhr_accessedMedicalDataSource_success() {
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
-        AccessLogsHelper.addAccessLog(
-                DATA_SOURCE_PACKAGE_NAME,
-                /* medicalResourceTypes= */ Set.of(),
-                OPERATION_TYPE_READ,
-                /* isMedicalDataSource= */ true);
+        mTransactionManager.runAsTransaction(
+                (TransactionManager.TransactionRunnable<RuntimeException>)
+                        db ->
+                                AccessLogsHelper.addAccessLog(
+                                        db,
+                                        DATA_SOURCE_PACKAGE_NAME,
+                                        /* medicalResourceTypes= */ Set.of(),
+                                        OPERATION_TYPE_READ,
+                                        /* accessedMedicalDataSource= */ true));
 
         List<AccessLog> result = queryAccessLogs();
         AccessLog accessLog = result.get(0);
@@ -189,16 +206,21 @@ public class AccessLogsHelperTest {
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
     public void testAddAccessLogsPhr_multipleAccessLogs_success() {
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
-        AccessLogsHelper.addAccessLog(
-                DATA_SOURCE_PACKAGE_NAME,
-                /* medicalResourceTypes= */ Set.of(),
-                OPERATION_TYPE_READ,
-                /* isMedicalDataSource= */ true);
-        AccessLogsHelper.addAccessLog(
-                DATA_SOURCE_PACKAGE_NAME,
-                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
-                OPERATION_TYPE_UPSERT,
-                /* isMedicalDataSource= */ false);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    AccessLogsHelper.addAccessLog(
+                            db,
+                            DATA_SOURCE_PACKAGE_NAME,
+                            /* medicalResourceTypes= */ Set.of(),
+                            OPERATION_TYPE_READ,
+                            /* accessedMedicalDataSource= */ true);
+                    AccessLogsHelper.addAccessLog(
+                            db,
+                            DATA_SOURCE_PACKAGE_NAME,
+                            Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                            OPERATION_TYPE_UPSERT,
+                            /* accessedMedicalDataSource= */ false);
+                });
 
         List<AccessLog> result = queryAccessLogs();
         AccessLog accessLog1 = result.get(0);

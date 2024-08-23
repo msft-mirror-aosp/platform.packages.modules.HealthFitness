@@ -32,6 +32,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.accesslog.AccessLog.OperationType;
 import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
@@ -171,14 +172,18 @@ public final class AccessLogsHelper extends DatabaseHelper {
      * operation request for medicalResourceTypes.
      */
     public static void addAccessLog(
+            @NonNull SQLiteDatabase db,
             @NonNull String packageName,
             @NonNull @MedicalResourceType Set<Integer> medicalResourceTypes,
             @OperationType.OperationTypes int operationType,
-            boolean isMedicalDataSource) {
+            boolean accessedMedicalDataSource) {
         UpsertTableRequest request =
                 getUpsertTableRequestForPhr(
-                        packageName, medicalResourceTypes, operationType, isMedicalDataSource);
-        TransactionManager.getInitialisedInstance().insert(request);
+                        packageName,
+                        medicalResourceTypes,
+                        operationType,
+                        accessedMedicalDataSource);
+        TransactionManager.getInitialisedInstance().insert(db, request);
     }
 
     @NonNull

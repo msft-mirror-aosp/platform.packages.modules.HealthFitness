@@ -235,6 +235,13 @@ public class HealthConnectManagerService extends SystemService {
         mMigrationUiStateManager.setUserHandle(mCurrentForegroundUser);
         mPermissionPackageChangesOrchestrator.setUserHandle(mCurrentForegroundUser);
 
+        if (Flags.clearCachesAfterSwitchingUser()) {
+            // Clear all caches again after the user switching is done as there's a race condition
+            // with tasks re-populating the caches between clearing the cache and TransactionManager
+            // switching user, see b/355426144.
+            DatabaseHelper.clearAllCache();
+        }
+
         HealthConnectDailyJobs.cancelAllJobs(mContext);
 
         HealthConnectThreadScheduler.scheduleInternalTask(
