@@ -18,6 +18,8 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
 import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 
 import static com.android.server.healthconnect.storage.HealthConnectDatabase.createTable;
@@ -77,6 +79,7 @@ import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -283,19 +286,31 @@ public final class MedicalResourceHelper {
      * @return a {@link ReadMedicalResourcesInternalResponse}.
      */
     // TODO(b/354872929): Add cts tests for read by request.
+    // TODO(b/360352345): Add cts tests for access logs being created per API call.
     @NonNull
     public ReadMedicalResourcesInternalResponse readMedicalResourcesByRequestWithPermissionChecks(
             @NonNull ReadMedicalResourcesRequest request,
             @NonNull String callingPackageName,
             boolean enforceSelfRead) {
-        ReadMedicalResourcesInternalResponse response;
-        ReadTableRequest readTableRequest =
-                getReadTableRequestUsingRequestBasedOnPermissionFilters(
-                        request, callingPackageName, enforceSelfRead);
-        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
-            response = getMedicalResources(cursor, request);
-        }
-        return response;
+        return mTransactionManager.runAsTransaction(
+                db -> {
+                    ReadMedicalResourcesInternalResponse response;
+                    ReadTableRequest readTableRequest =
+                            getReadTableRequestUsingRequestBasedOnPermissionFilters(
+                                    request, callingPackageName, enforceSelfRead);
+                    try (Cursor cursor = mTransactionManager.read(db, readTableRequest)) {
+                        response = getMedicalResources(cursor, request);
+                    }
+                    if (!enforceSelfRead) {
+                        AccessLogsHelper.addAccessLog(
+                                db,
+                                callingPackageName,
+                                Set.of(request.getMedicalResourceType()),
+                                OPERATION_TYPE_READ,
+                                /* accessedMedicalDataSource= */ false);
+                    }
+                    return response;
+                });
     }
 
     @NonNull
@@ -567,6 +582,7 @@ public final class MedicalResourceHelper {
      *     order as their associated {@link UpsertMedicalResourceInternalRequest}s.
      */
     public List<MedicalResource> upsertMedicalResources(
+            @NonNull String callingPackageName,
             @NonNull
                     List<UpsertMedicalResourceInternalRequest>
                             upsertMedicalResourceInternalRequests)
@@ -581,17 +597,19 @@ public final class MedicalResourceHelper {
                             + "(s).");
         }
 
-        // TODO(b/337018927): Add support for change logs and access logs.
         // TODO(b/350697473): Add cts tests covering upsert journey with data source creation.
         return mTransactionManager.runAsTransaction(
                 (TransactionRunnableWithReturn<List<MedicalResource>, RuntimeException>)
                         db ->
                                 readDataSourcesAndUpsertMedicalResources(
-                                        db, upsertMedicalResourceInternalRequests));
+                                        db,
+                                        callingPackageName,
+                                        upsertMedicalResourceInternalRequests));
     }
 
     private List<MedicalResource> readDataSourcesAndUpsertMedicalResources(
             @NonNull SQLiteDatabase db,
+            @NonNull String callingPackageName,
             @NonNull
                     List<UpsertMedicalResourceInternalRequest>
                             upsertMedicalResourceInternalRequests) {
@@ -608,11 +626,22 @@ public final class MedicalResourceHelper {
         mTransactionManager.insertOrReplaceAll(db, requests);
 
         List<MedicalResource> upsertedMedicalResources = new ArrayList<>();
+        Set<Integer> resourceTypes = new HashSet<>();
         for (UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest :
                 upsertMedicalResourceInternalRequests) {
-            upsertedMedicalResources.add(
-                    buildMedicalResource(upsertMedicalResourceInternalRequest));
+            MedicalResource medicalResource =
+                    buildMedicalResource(upsertMedicalResourceInternalRequest);
+            resourceTypes.add(medicalResource.getType());
+            upsertedMedicalResources.add(medicalResource);
         }
+
+        AccessLogsHelper.addAccessLog(
+                db,
+                callingPackageName,
+                resourceTypes,
+                OPERATION_TYPE_UPSERT,
+                /* accessedMedicalDataSource= */ false);
+
         return upsertedMedicalResources;
     }
 
