@@ -240,6 +240,21 @@ public class PhrDataFactory {
 
     /**
      * Creates and returns a {@link MedicalResource} of type {@link
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_IMMUNIZATION} with the given {@code dataSource} with
+     * the default {@link PhrDataFactory#FHIR_DATA_IMMUNIZATION}'s status field added.
+     */
+    public static MedicalResource createUpdatedImmunizationMedicalResource(String dataSource)
+            throws JSONException {
+        return new MedicalResource.Builder(
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                        dataSource,
+                        FHIR_VERSION_R4,
+                        getUpdatedImmunizationFhirResource())
+                .build();
+    }
+
+    /**
+     * Creates and returns a {@link MedicalResource} of type {@link
      * MedicalResource#MEDICAL_RESOURCE_TYPE_UNKNOWN} with the given {@code dataSource}.
      */
     public static MedicalResource createAllergyMedicalResource(String dataSource) {

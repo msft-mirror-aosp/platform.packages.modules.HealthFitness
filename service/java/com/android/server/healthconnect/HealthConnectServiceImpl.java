@@ -2285,6 +2285,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final ErrorCallback errorCallback = callback::onError;
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
+        final UserHandle userHandle = Binder.getCallingUserHandle();
         final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
         final String callingPackageName =
                 Objects.requireNonNull(attributionSource.getPackageName());
@@ -2294,8 +2295,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
         scheduleLoggingHealthDataApiErrors(
                 () -> {
-                    // TODO: b/350010046 - add permission check, rate-limiting and package name
-                    // check
                     if (!isPersonalHealthRecordEnabled()) {
                         HealthConnectException unsupportedException =
                                 new HealthConnectException(
@@ -2316,15 +2315,30 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 ERROR_INVALID_ARGUMENT);
                         return;
                     }
-                    // First try to see if the id exists, and if not give an exception
-                    try {
-                        // This also deletes the contained data, because they are referenced
-                        // by foreign key, and so are handled by ON DELETE CASCADE in the db.
-                        mMedicalDataSourceHelper.deleteMedicalDataSource(id);
-                    } catch (IllegalArgumentException e) {
-                        // The datasource did not exist
-                        tryAndThrowException(errorCallback, e, ERROR_INVALID_ARGUMENT);
+                    enforceIsForegroundUser(userHandle);
+                    verifyPackageNameFromUid(uid, attributionSource);
+                    throwExceptionIfDataSyncInProgress();
+                    Long appInfoIdRestriction;
+                    if (holdsDataManagementPermission) {
+                        appInfoIdRestriction = null;
+                    } else {
+                        boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
+                        logger.setCallerForegroundState(isInForeground);
+                        tryAcquireApiCallQuota(
+                                uid, QuotaCategory.QUOTA_CATEGORY_WRITE, isInForeground, logger);
+                        mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
+                                attributionSource);
+                        appInfoIdRestriction =
+                                mAppInfoHelper.getAppInfoId(attributionSource.getPackageName());
+                        if (appInfoIdRestriction == Constants.DEFAULT_LONG) {
+                            throw new IllegalArgumentException(
+                                    "Deletion not permitted as app has inserted no data.");
+                        }
                     }
+
+                    // This also deletes the contained data, because they are referenced
+                    // by foreign key, and so are handled by ON DELETE CASCADE in the db.
+                    mMedicalDataSourceHelper.deleteMedicalDataSource(id, appInfoIdRestriction);
                     tryAndReturnResult(callback, logger);
                 },
                 logger,
@@ -2399,7 +2413,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         medicalResourcesToUpsert.add(upsertMedicalResourceInternalRequest);
                     }
                     List<MedicalResource> medicalResources =
-                            mMedicalResourceHelper.upsertMedicalResources(medicalResourcesToUpsert);
+                            mMedicalResourceHelper.upsertMedicalResources(
+                                    callingPackageName, medicalResourcesToUpsert);
                     logger.setNumberOfRecords(medicalResources.size());
 
                     tryAndReturnResult(callback, medicalResources, logger);
@@ -2598,7 +2613,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     List<MedicalResource> medicalResources = response.getMedicalResources();
                     logger.setNumberOfRecords(medicalResources.size());
 
-                    // TODO(b/343921816): Creates access log.
                     callback.onResult(
                             new ReadMedicalResourcesResponse(
                                     medicalResources, response.getPageToken()));
