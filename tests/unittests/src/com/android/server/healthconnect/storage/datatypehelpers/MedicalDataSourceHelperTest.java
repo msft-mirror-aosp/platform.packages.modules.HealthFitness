@@ -80,6 +80,7 @@ import org.mockito.quality.Strictness;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class MedicalDataSourceHelperTest {
@@ -453,7 +454,8 @@ public class MedicalDataSourceHelperTest {
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> dataSources =
-                mMedicalDataSourceHelper.getMedicalDataSourcesByPackage(List.of());
+                mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithoutPermissionChecks(
+                        Set.of());
 
         assertThat(dataSources).containsExactly(dataSource1, dataSource2);
     }
@@ -475,11 +477,11 @@ public class MedicalDataSourceHelperTest {
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> dataSources1 =
-                mMedicalDataSourceHelper.getMedicalDataSourcesByPackage(
-                        List.of(DATA_SOURCE_PACKAGE_NAME));
+                mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithoutPermissionChecks(
+                        Set.of(DATA_SOURCE_PACKAGE_NAME));
         List<MedicalDataSource> dataSources2 =
-                mMedicalDataSourceHelper.getMedicalDataSourcesByPackage(
-                        List.of(DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+                mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithoutPermissionChecks(
+                        Set.of(DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
 
         assertThat(dataSources1).containsExactly(dataSource1);
         assertThat(dataSources2).containsExactly(dataSource2);

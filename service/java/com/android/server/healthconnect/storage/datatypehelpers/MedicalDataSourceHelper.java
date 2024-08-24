@@ -298,7 +298,7 @@ public class MedicalDataSourceHelper {
             boolean ignoredHasWritePermission,
             boolean ignoredIsCalledFromBgWithoutBgRead)
             throws SQLiteException {
-        // TODO(b/350436076): Use ignored fields for permission checks in read table request.
+        // TODO(b/360785035): Use ignored fields for permission checks in read table request.
         // TODO(b/359892459): Add CTS tests once it is properly implemented.
         ReadTableRequest readTableRequest = getReadTableRequestJoinWithAppInfo(ids);
         try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
@@ -310,19 +310,50 @@ public class MedicalDataSourceHelper {
      * Returns the {@link MedicalDataSource}s stored in the HealthConnect database, optionally
      * restricted by package name.
      *
-     * <p>If {@code packageNames} is empty, returns all datasources, otherwise returns only
-     * datasources belonging to the given apps,
+     * <p>If {@code packageNames} is empty, returns all dataSources, otherwise returns only
+     * dataSources belonging to the given apps.
      *
      * @param packageNames list of packageNames of apps to restrict to
      */
     @NonNull
-    public List<MedicalDataSource> getMedicalDataSourcesByPackage(List<String> packageNames)
-            throws SQLiteException {
+    public List<MedicalDataSource> getMedicalDataSourcesByPackageWithoutPermissionChecks(
+            Set<String> packageNames) throws SQLiteException {
         ReadTableRequest readTableRequest =
                 new ReadTableRequest(getMainTableName())
                         .setJoinClause(getJoinClauseWithAppInfoTable());
         if (!packageNames.isEmpty()) {
-            List<Long> appInfoIds = mAppInfoHelper.getAppInfoIds(packageNames);
+            List<Long> appInfoIds = mAppInfoHelper.getAppInfoIds(packageNames.stream().toList());
+            readTableRequest.setWhereClause(
+                    new WhereClauses(AND)
+                            .addWhereInLongsClause(APP_INFO_ID_COLUMN_NAME, appInfoIds));
+        }
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+            return getMedicalDataSources(cursor);
+        }
+    }
+
+    /**
+     * Returns the {@link MedicalDataSource}s stored in the HealthConnect database, optionally
+     * restricted by package name.
+     *
+     * <p>If {@code packageNames} is empty, returns all dataSources, otherwise returns only
+     * dataSources belonging to the given apps.
+     */
+    @NonNull
+    public List<MedicalDataSource> getMedicalDataSourcesByPackageWithPermissionChecks(
+            Set<String> packageNames,
+            @NonNull Set<Integer> ignoredGrantedReadMedicalResourceTypes,
+            @NonNull String ignoredCallingPackageName,
+            boolean ignoredHasWritePermission,
+            boolean ignoredIsCalledFromBgWithoutBgRead)
+            throws SQLiteException {
+        // TODO(b/361540290): Use ignored fields for permission checks in read table request.
+        // TODO(b/359892459): Add CTS tests once it is properly implemented.
+        ReadTableRequest readTableRequest =
+                new ReadTableRequest(getMainTableName())
+                        .setJoinClause(getJoinClauseWithAppInfoTable());
+        if (!packageNames.isEmpty()) {
+            List<Long> appInfoIds = mAppInfoHelper.getAppInfoIds(packageNames.stream().toList());
             readTableRequest.setWhereClause(
                     new WhereClauses(AND)
                             .addWhereInLongsClause(APP_INFO_ID_COLUMN_NAME, appInfoIds));
