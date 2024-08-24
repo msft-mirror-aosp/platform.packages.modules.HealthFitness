@@ -910,7 +910,7 @@ public final class TestUtils {
     }
 
     @NonNull
-    private static HealthConnectManager getHealthConnectManager(Context context) {
+    public static HealthConnectManager getHealthConnectManager(Context context) {
         return requireNonNull(context.getSystemService(HealthConnectManager.class));
     }
 

@@ -17,6 +17,7 @@
 package com.android.server.healthconnect.storage;
 
 import static com.android.healthfitness.flags.Flags.FLAG_DEVELOPMENT_DATABASE;
+import static com.android.server.healthconnect.storage.DatabaseTestUtils.createEmptyDatabase;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -32,7 +33,6 @@ import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
-import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
@@ -71,18 +71,13 @@ public class DevelopmentDatabaseHelperTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         mDatabasePath = getMockDatabasePath();
-        if (mDatabasePath.exists()) {
-            Preconditions.checkState(mDatabasePath.delete());
-        }
-        when(mContext.getDatabasePath(anyString())).thenReturn(getMockDatabasePath());
+        DatabaseTestUtils.clearDatabase(mDatabasePath);
+        when(mContext.getDatabasePath(anyString())).thenReturn(mDatabasePath);
     }
 
     @After
     public void clearDatabase() {
-        File databasePath = getMockDatabasePath();
-        if (databasePath.exists()) {
-            Preconditions.checkState(databasePath.delete());
-        }
+        DatabaseTestUtils.clearDatabase(getMockDatabasePath());
     }
 
     private static File getMockDatabasePath() {
@@ -216,10 +211,6 @@ public class DevelopmentDatabaseHelperTest {
         }
     }
 
-    private @NonNull SQLiteDatabase createEmptyDatabase() {
-        return SQLiteDatabase.openOrCreateDatabase(mDatabasePath, /* cursorFactory= */ null);
-    }
-
     /**
      * Check that the PHR tables were created on a database by attempting to read a random UUID
      * datasource. If the table doesn't exist we expect an SQLException, if the table does exist
@@ -242,7 +233,8 @@ public class DevelopmentDatabaseHelperTest {
     private static void usePhrAccessLogsColumns(SQLiteDatabase db) {
         try (Cursor cursor =
                 db.rawQuery(
-                        "SELECT medical_resource_type, medical_data_source FROM access_logs_table",
+                        "SELECT medical_resource_type, medical_data_source_accessed FROM"
+                                + " access_logs_table",
                         new String[] {})) {
             assertThat(cursor.getCount()).isEqualTo(0);
         }

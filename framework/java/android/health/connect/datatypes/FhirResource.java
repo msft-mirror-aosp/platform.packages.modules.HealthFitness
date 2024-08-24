@@ -34,9 +34,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Set;
 
 /**
- * Captures the FHIR resource data. This is the class used for all FHIR resource types, and the type
- * is specified via {@link FhirResourceType}, which is a subset of the resource list in <a
- * href="https://build.fhir.org/resourcelist.html">the official FHIR website</a>.
+ * Captures the FHIR resource data. This is the class used for all supported FHIR resource types,
+ * which is a subset of the resource list in <a href="https://build.fhir.org/resourcelist.html">the
+ * official FHIR website</a>.
  */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class FhirResource implements Parcelable {
@@ -91,8 +91,8 @@ public final class FhirResource implements Parcelable {
             };
 
     /**
-     * Returns the FHIR resource type. This is extracted from the "resourceType" field in {@code
-     * data}, and mapped into an {@code IntDef} {@link FhirResourceType}.
+     * Returns the FHIR resource type. This is extracted from the "resourceType" field in {@link
+     * #getData}.
      */
     @FhirResourceType
     public int getType() {
@@ -183,7 +183,7 @@ public final class FhirResource implements Parcelable {
 
         /**
          * @param type The FHIR resource type extracted from the "resourceType" field in {@code
-         *     data}, and mapped into an {@code IntDef} {@link FhirResourceType}.
+         *     data}.
          * @param id The FHIR resource ID extracted from the "id" field in {@code data}.
          * @param data The FHIR resource data in JSON representation.
          */
@@ -221,7 +221,7 @@ public final class FhirResource implements Parcelable {
 
         /**
          * Sets the FHIR resource type. This is extracted from the "resourceType" field in {@code
-         * data}, and mapped into an {@code IntDef} {@link FhirResourceType}.
+         * data}.
          */
         @NonNull
         public Builder setType(@FhirResourceType int type) {
