@@ -67,6 +67,10 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"seguimiento del ciclo"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Nutrición"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"nutrición"</string>
+    <!-- no translation found for wellness_category_uppercase (5900304317921557780) -->
+    <skip />
+    <!-- no translation found for wellness_category_lowercase (1327642415424743588) -->
+    <skip />
     <string name="browse_data_category" msgid="4813955610391357638">"Explorar datos"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Administrar datos"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Exportar datos"</string>
@@ -383,8 +387,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Importar"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Restablecimiento de Health Connect en curso"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Se completó el restablecimiento de Health Connect"</string>
-    <!-- no translation found for import_in_progress_toast_text (3363548588078895706) -->
-    <skip />
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"Restablecimiento en curso"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"Se terminaron de restablecer los datos"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect no pudo restablecer los datos"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Necesitas más espacio"</string>
@@ -654,6 +657,18 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"de sueño ligero"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"de sueño profundo"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"en estado desconocido"</string>
+    <!-- no translation found for mindfulness_type_breathing (3175952922332753437) -->
+    <skip />
+    <!-- no translation found for mindfulness_type_meditation (4453014833652749254) -->
+    <skip />
+    <!-- no translation found for mindfulness_type_movement (600930756800362680) -->
+    <skip />
+    <!-- no translation found for mindfulness_type_music (7041364137895485917) -->
+    <skip />
+    <!-- no translation found for mindfulness_type_other (793524328911038908) -->
+    <skip />
+    <!-- no translation found for mindfulness_type_unguided (2367259868577157922) -->
+    <skip />
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> min"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> h <xliff:g id="MIN">%2$s</xliff:g> min"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> h"</string>

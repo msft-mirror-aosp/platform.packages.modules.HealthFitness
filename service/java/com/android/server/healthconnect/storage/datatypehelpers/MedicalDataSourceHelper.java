@@ -55,6 +55,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -273,8 +274,32 @@ public class MedicalDataSourceHelper {
      * @return List of {@link MedicalDataSource}s read from medical_data_source table based on ids.
      */
     @NonNull
-    public List<MedicalDataSource> getMedicalDataSources(@NonNull List<String> ids)
+    public List<MedicalDataSource> getMedicalDataSourcesByIdsWithoutPermissionChecks(
+            @NonNull List<String> ids) throws SQLiteException {
+        ReadTableRequest readTableRequest = getReadTableRequestJoinWithAppInfo(ids);
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+            return getMedicalDataSources(cursor);
+        }
+    }
+
+    /**
+     * Reads the {@link MedicalDataSource}s stored in the HealthConnect database using the given
+     * list of {@code ids} based on the {@code callingPackageName}'s permissions.
+     *
+     * @return List of {@link MedicalDataSource}s read from medical_data_source table based on ids.
+     * @throws IllegalStateException if {@code hasWritePermission} is false and {@code
+     *     grantedReadMedicalResourceTypes} is empty.
+     */
+    @NonNull
+    public List<MedicalDataSource> getMedicalDataSourcesByIdsWithPermissionChecks(
+            @NonNull List<String> ids,
+            @NonNull Set<Integer> ignoredGrantedReadMedicalResourceTypes,
+            @NonNull String ignoredCallingPackageName,
+            boolean ignoredHasWritePermission,
+            boolean ignoredIsCalledFromBgWithoutBgRead)
             throws SQLiteException {
+        // TODO(b/360785035): Use ignored fields for permission checks in read table request.
+        // TODO(b/359892459): Add CTS tests once it is properly implemented.
         ReadTableRequest readTableRequest = getReadTableRequestJoinWithAppInfo(ids);
         try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
             return getMedicalDataSources(cursor);
@@ -285,19 +310,50 @@ public class MedicalDataSourceHelper {
      * Returns the {@link MedicalDataSource}s stored in the HealthConnect database, optionally
      * restricted by package name.
      *
-     * <p>If {@code packageNames} is empty, returns all datasources, otherwise returns only
-     * datasources belonging to the given apps,
+     * <p>If {@code packageNames} is empty, returns all dataSources, otherwise returns only
+     * dataSources belonging to the given apps.
      *
      * @param packageNames list of packageNames of apps to restrict to
      */
     @NonNull
-    public List<MedicalDataSource> getMedicalDataSourcesByPackage(List<String> packageNames)
-            throws SQLiteException {
+    public List<MedicalDataSource> getMedicalDataSourcesByPackageWithoutPermissionChecks(
+            Set<String> packageNames) throws SQLiteException {
         ReadTableRequest readTableRequest =
                 new ReadTableRequest(getMainTableName())
                         .setJoinClause(getJoinClauseWithAppInfoTable());
         if (!packageNames.isEmpty()) {
-            List<Long> appInfoIds = mAppInfoHelper.getAppInfoIds(packageNames);
+            List<Long> appInfoIds = mAppInfoHelper.getAppInfoIds(packageNames.stream().toList());
+            readTableRequest.setWhereClause(
+                    new WhereClauses(AND)
+                            .addWhereInLongsClause(APP_INFO_ID_COLUMN_NAME, appInfoIds));
+        }
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+            return getMedicalDataSources(cursor);
+        }
+    }
+
+    /**
+     * Returns the {@link MedicalDataSource}s stored in the HealthConnect database, optionally
+     * restricted by package name.
+     *
+     * <p>If {@code packageNames} is empty, returns all dataSources, otherwise returns only
+     * dataSources belonging to the given apps.
+     */
+    @NonNull
+    public List<MedicalDataSource> getMedicalDataSourcesByPackageWithPermissionChecks(
+            Set<String> packageNames,
+            @NonNull Set<Integer> ignoredGrantedReadMedicalResourceTypes,
+            @NonNull String ignoredCallingPackageName,
+            boolean ignoredHasWritePermission,
+            boolean ignoredIsCalledFromBgWithoutBgRead)
+            throws SQLiteException {
+        // TODO(b/361540290): Use ignored fields for permission checks in read table request.
+        // TODO(b/359892459): Add CTS tests once it is properly implemented.
+        ReadTableRequest readTableRequest =
+                new ReadTableRequest(getMainTableName())
+                        .setJoinClause(getJoinClauseWithAppInfoTable());
+        if (!packageNames.isEmpty()) {
+            List<Long> appInfoIds = mAppInfoHelper.getAppInfoIds(packageNames.stream().toList());
             readTableRequest.setWhereClause(
                     new WhereClauses(AND)
                             .addWhereInLongsClause(APP_INFO_ID_COLUMN_NAME, appInfoIds));
@@ -328,9 +384,13 @@ public class MedicalDataSourceHelper {
      * <p>Note that this deletes without producing change logs, or access logs.
      *
      * @param id the id to delete.
-     * @throws IllegalArgumentException if the id does not exist
+     * @param appInfoIdRestriction if non-null, restricts any deletions to data sources owned by the
+     *     given app. If null allows deletions of any data sources.
+     * @throws IllegalArgumentException if the id does not exist, or there is an
+     *     appInfoIdRestriction and the data source is owned by a different app
      */
-    public static void deleteMedicalDataSource(@NonNull String id) throws SQLiteException {
+    public void deleteMedicalDataSource(@NonNull String id, @Nullable Long appInfoIdRestriction)
+            throws SQLiteException {
         UUID uuid;
         try {
             uuid = UUID.fromString(id);
@@ -342,14 +402,16 @@ public class MedicalDataSourceHelper {
                         .setIds(
                                 DATA_SOURCE_UUID_COLUMN_NAME,
                                 StorageUtils.getListOfHexStrings(List.of(uuid)));
-        ReadTableRequest readTableRequest = getReadTableRequest(List.of(id));
-        TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
+        if (appInfoIdRestriction != null) {
+            request.setPackageFilter(APP_INFO_ID_COLUMN_NAME, List.of(appInfoIdRestriction));
+        }
+        ReadTableRequest readTableRequest = getReadTableRequest(List.of(id), appInfoIdRestriction);
         boolean success =
-                transactionManager.runAsTransaction(
+                mTransactionManager.runAsTransaction(
                         (TransactionManager.TransactionRunnableWithReturn<Boolean, SQLiteException>)
                                 db -> {
                                     try (Cursor cursor =
-                                            transactionManager.read(db, readTableRequest)) {
+                                            mTransactionManager.read(db, readTableRequest)) {
                                         if (cursor.getCount() != 1) {
                                             return false;
                                         }
@@ -357,11 +419,16 @@ public class MedicalDataSourceHelper {
                                     // This also deletes the contained data, because they are
                                     // referenced by foreign key, and so are handled by ON DELETE
                                     // CASCADE in the db.
-                                    transactionManager.delete(db, request);
+                                    mTransactionManager.delete(db, request);
                                     return true;
                                 });
         if (!success) {
-            throw new IllegalArgumentException("Id " + id + " does not exist");
+            if (appInfoIdRestriction == null) {
+                throw new IllegalArgumentException("Id " + id + " does not exist");
+            } else {
+                throw new IllegalArgumentException(
+                        "Id " + id + " does not exist or is owned by another app");
+            }
         }
     }
 

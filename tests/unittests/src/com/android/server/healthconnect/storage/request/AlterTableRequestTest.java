@@ -16,8 +16,13 @@
 
 package com.android.server.healthconnect.storage.request;
 
+import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
+
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
+import android.database.SQLException;
 import android.util.Pair;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -59,5 +64,13 @@ public class AlterTableRequestTest {
                 .containsExactly(
                         "ALTER TABLE sample_table ADD COLUMN sample_column_1 INTEGER;",
                         "ALTER TABLE sample_table ADD COLUMN sample_column_2 INTEGER;");
+    }
+
+    @Test
+    public void testAlterTableRequest_notNullColumnUsed_expectException() {
+        List<Pair<String, String>> columnInfo = List.of(Pair.create(COLUMN_NAME_1, TEXT_NOT_NULL));
+        AlterTableRequest alterTableRequest = new AlterTableRequest(TABLE_NAME, columnInfo);
+
+        assertThrows(SQLException.class, alterTableRequest::getAlterTableAddColumnsCommands);
     }
 }
