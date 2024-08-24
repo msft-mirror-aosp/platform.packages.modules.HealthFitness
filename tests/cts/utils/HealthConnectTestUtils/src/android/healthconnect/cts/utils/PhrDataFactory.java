@@ -23,6 +23,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.FhirResource;
@@ -35,6 +36,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class PhrDataFactory {
     public static final String DATA_SOURCE_ID = "123";
@@ -98,6 +100,18 @@ public class PhrDataFactory {
     /** Creates and returns a {@link MedicalResource} with default arguments. */
     public static MedicalDataSource getMedicalDataSource() {
         return getMedicalDataSourceBuilder().build();
+    }
+
+    /**
+     * Creates and returns a {@link GetMedicalDataSourcesRequest} with given {@code packageNames}.
+     */
+    public static GetMedicalDataSourcesRequest getGetMedicalDataSourceRequest(
+            Set<String> packageNames) {
+        GetMedicalDataSourcesRequest.Builder builder = new GetMedicalDataSourcesRequest.Builder();
+        for (String packageName : packageNames) {
+            builder.addPackageName(packageName);
+        }
+        return builder.build();
     }
 
     /**
