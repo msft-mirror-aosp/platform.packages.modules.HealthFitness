@@ -100,6 +100,7 @@ import android.health.connect.datatypes.units.Mass;
 import android.health.connect.datatypes.units.Power;
 import android.health.connect.datatypes.units.Volume;
 import android.health.connect.restore.StageRemoteDataException;
+import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.DataFactory;
 import android.healthconnect.cts.utils.HealthConnectReceiver;
@@ -2057,7 +2058,7 @@ public class HealthConnectManagerTest {
         mManager.createMedicalDataSource(
                 getCreateMedicalDataSourceRequest(), executor, createReceiver);
         MedicalDataSource dataSource = createReceiver.getResponse();
-        MedicalResource resource = upsertMedicalData(dataSource, FHIR_DATA_IMMUNIZATION);
+        MedicalResource resource = upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
 
         mManager.deleteMedicalDataSourceWithData(dataSource.getId(), executor, callback);
@@ -2075,6 +2076,37 @@ public class HealthConnectManagerTest {
         mManager.createMedicalDataSource(
                 getCreateMedicalDataSourceRequest(), executor, secondCreateReceiver);
         secondCreateReceiver.verifyNoExceptionOrThrow();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testHealthConnectManager_deleteMedicalDataSourceDifferentPackage_denied()
+            throws Exception {
+        // Create the datasource
+        MedicalDataSource dataSource =
+                TestAppProxy.APP_WRITE_PERMS_ONLY.createMedicalDataSource(
+                        getCreateMedicalDataSourceRequest());
+        MedicalResource resource =
+                TestAppProxy.APP_WRITE_PERMS_ONLY.upsertMedicalResource(
+                        dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalDataSourceWithData(dataSource.getId(), executor, callback);
+
+        assertThat(callback.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+        // Check for existence of data
+        HealthConnectReceiver<List<MedicalResource>> readResourceReceiver =
+                new HealthConnectReceiver<>();
+        mManager.readMedicalResources(List.of(resource.getId()), executor, readResourceReceiver);
+        assertThat(readResourceReceiver.getResponse()).isEmpty();
+        // Check for existence of datasource
+        HealthConnectReceiver<List<MedicalDataSource>> getDataSourceReceiver =
+                new HealthConnectReceiver<>();
+        mManager.getMedicalDataSources(
+                List.of(dataSource.getId()), executor, getDataSourceReceiver);
+        assertThat(getDataSourceReceiver.getResponse()).containsExactly(dataSource);
     }
 
     // TODO(b/343923754): Add more upsert/readMedicalResources tests once deleteAll can be called.
@@ -2258,8 +2290,9 @@ public class HealthConnectManagerTest {
             throws InterruptedException {
         MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
         // Insert some data
-        MedicalResource resource1 = upsertMedicalData(dataSource, FHIR_DATA_IMMUNIZATION);
-        MedicalResource resource2 = upsertMedicalData(dataSource, DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        MedicalResource resource1 = upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource resource2 =
+                upsertMedicalData(dataSource.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
 
         SystemUtil.runWithShellPermissionIdentity(
@@ -2293,8 +2326,8 @@ public class HealthConnectManagerTest {
         MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
         // Insert some data
-        MedicalResource resource1 = upsertMedicalData(dataSource1, FHIR_DATA_IMMUNIZATION);
-        MedicalResource resource2 = upsertMedicalData(dataSource2, FHIR_DATA_IMMUNIZATION);
+        MedicalResource resource1 = upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource resource2 = upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
 
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
         DeleteMedicalResourcesRequest request =
@@ -2373,11 +2406,11 @@ public class HealthConnectManagerTest {
         return createReceiver.getResponse();
     }
 
-    private MedicalResource upsertMedicalData(MedicalDataSource dataSource, String data)
+    private MedicalResource upsertMedicalData(String dataSourceId, String data)
             throws InterruptedException {
         HealthConnectReceiver<List<MedicalResource>> dataReceiver = new HealthConnectReceiver<>();
         UpsertMedicalResourceRequest request =
-                new UpsertMedicalResourceRequest.Builder(dataSource.getId(), FHIR_VERSION_R4, data)
+                new UpsertMedicalResourceRequest.Builder(dataSourceId, FHIR_VERSION_R4, data)
                         .build();
         mManager.upsertMedicalResources(
                 List.of(request), Executors.newSingleThreadExecutor(), dataReceiver);
