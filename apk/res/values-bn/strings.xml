@@ -67,6 +67,10 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"সাইকেল ট্র্যাক করা"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"পুষ্টি সংক্রান্ত ডেটা"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"পুষ্টি সংক্রান্ত ডেটা"</string>
+    <!-- no translation found for wellness_category_uppercase (5900304317921557780) -->
+    <skip />
+    <!-- no translation found for wellness_category_lowercase (1327642415424743588) -->
+    <skip />
     <string name="browse_data_category" msgid="4813955610391357638">"ডেটা ব্রাউজ করুন"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"ডেটা ম্যানেজ করুন"</string>
     <string name="export_data_button" msgid="7783329820434117744">"ডেটা এক্সপোর্ট করুন"</string>
@@ -332,7 +336,7 @@
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"ব্যায়াম, ঘুম, পুষ্টি ও অন্যান্য"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"স্বাস্থ্য বিষয়ক রেকর্ড"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"স্বাস্থ্য বিষয়ক রেকর্ড"</string>
-    <string name="medical_permissions_summary" msgid="5553982055903211592">"ল্যাবের ফলাফল, ওষুধ, টীকা ও অন্যান্য"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"ল্যাবের ফলাফল, ওষুধ, টিকা ও অন্যান্য"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"অ্যাপকে দেওয়া অনুমতি সরানো হয়েছে"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect <xliff:g id="APP_DATA">%s</xliff:g>-এর জন্য অনুমতি সরিয়ে দিয়েছে"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect <xliff:g id="APP_DATA_0">%1$s</xliff:g> ও <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>-এর জন্য অনুমতি সরিয়ে দিয়েছে"</string>
@@ -383,8 +387,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"ইমপোর্ট করুন"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect-এর ডেটা ফিরিয়ে আনার প্রসেস চলছে"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect ফিরিয়ে আনার প্রসেস সম্পূর্ণ হয়েছে"</string>
-    <!-- no translation found for import_in_progress_toast_text (3363548588078895706) -->
-    <skip />
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"ফিরিয়ে আনার প্রসেস চলছে"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"ডেটা ফিরিয়ে আনার প্রসেস সম্পূর্ণ হয়েছে"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect ডেটা ফিরিয়ে আনতে পারবে না"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"আরও জায়গা প্রয়োজন"</string>
@@ -654,6 +657,18 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"হাল্কা ঘুম"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"গভীর ঘুম"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"অজানা"</string>
+    <!-- no translation found for mindfulness_type_breathing (3175952922332753437) -->
+    <skip />
+    <!-- no translation found for mindfulness_type_meditation (4453014833652749254) -->
+    <skip />
+    <!-- no translation found for mindfulness_type_movement (600930756800362680) -->
+    <skip />
+    <!-- no translation found for mindfulness_type_music (7041364137895485917) -->
+    <skip />
+    <!-- no translation found for mindfulness_type_other (793524328911038908) -->
+    <skip />
+    <!-- no translation found for mindfulness_type_unguided (2367259868577157922) -->
+    <skip />
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> মিনিট"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> ঘণ্টা <xliff:g id="MIN">%2$s</xliff:g> মিনিট"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> ঘণ্টা"</string>
