@@ -74,8 +74,11 @@ class BannerPreference constructor(context: Context, private val logName: Elemen
     }
 
     fun setPrimaryButtonOnClickListener(onClickListener: OnClickListener?) {
-        logger.logInteraction(buttonPrimaryLogName)
-        this.buttonPrimaryAction = onClickListener
+        val loggableClickListener = OnClickListener {
+            logger.logInteraction(buttonPrimaryLogName)
+            onClickListener?.onClick(it)
+        }
+        this.buttonPrimaryAction = loggableClickListener
     }
 
     fun setPrimaryButtonVisibility(visibility: Int) {
@@ -89,8 +92,11 @@ class BannerPreference constructor(context: Context, private val logName: Elemen
     }
 
     fun setSecondaryButtonOnClickListener(onClickListener: OnClickListener?) {
-        logger.logInteraction(buttonSecondaryLogName)
-        this.buttonSecondaryAction = onClickListener
+        val loggableClickListener = OnClickListener {
+            logger.logInteraction(buttonSecondaryLogName)
+            onClickListener?.onClick(it)
+        }
+        this.buttonSecondaryAction = loggableClickListener
     }
 
     fun setIsDismissable(isDismissable: Boolean) {
@@ -99,8 +105,11 @@ class BannerPreference constructor(context: Context, private val logName: Elemen
 
     fun setDismissAction(logName: ElementName, onClickListener: OnClickListener?) {
         dismissActionLogName = logName
-        logger.logInteraction(dismissActionLogName)
-        this.dismissAction = onClickListener
+        val loggableClickListener = OnClickListener {
+            logger.logInteraction(dismissActionLogName)
+            onClickListener?.onClick(it)
+        }
+        this.dismissAction = loggableClickListener
     }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {

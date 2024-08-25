@@ -50,6 +50,7 @@ import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.children
+import com.android.healthconnect.controller.shared.dialog.ProgressDialogFragment
 import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
@@ -178,7 +179,7 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
         }
 
         appPermissionViewModel.showDisableExerciseRouteEvent.observe(viewLifecycleOwner) { event ->
-            if (event.shouldShowDialog) {
+            if (savedInstanceState == null && event.shouldShowDialog) {
                 DisableExerciseRoutePermissionDialog.createDialog(packageName, event.appName)
                     .show(childFragmentManager, DISABLE_EXERCISE_ROUTE_DIALOG_TAG)
             }
