@@ -35,6 +35,7 @@ import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.scrollToEnd
 import android.healthconnect.cts.lib.UiTestUtils.verifyObjectNotFound
 import android.healthconnect.cts.lib.UiTestUtils.verifyTextNotFound
+import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.lib.UiTestUtils.waitForObjectNotFound
 import android.healthconnect.cts.utils.AssumptionCheckerRule
 import android.healthconnect.cts.utils.TestUtils
@@ -224,7 +225,7 @@ class MindfulnessTest : HealthConnectBaseTest() {
     fun dataAndAccess_seeAllCategories_flagDisabled_doesNotShowWellness() {
         context.launchMainActivity {
             findTextAndClick("Data and access")
-            findObject(By.text("Activity").enabled(true))
+            findObject(By.text("Activity").enabled(true), timeout = Duration.ofSeconds(2))
             verifyTextNotFound("Wellness")
 
             findTextAndClick("See all categories")
@@ -240,8 +241,9 @@ class MindfulnessTest : HealthConnectBaseTest() {
             scrollToEnd()
             findTextAndClick("App permissions")
             findTextAndClick("Health Connect cts test app")
-            scrollToEnd()
-            findText("Body fat")
+            scrollDownTo(By.text("Steps"))
+            findText("Height")
+            findText("Steps")
             verifyTextNotFound("Mindfulness")
         }
     }

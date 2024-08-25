@@ -17,6 +17,8 @@
 package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.BOOLEAN_FALSE_VALUE;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.BOOLEAN_TRUE_VALUE;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
@@ -30,11 +32,14 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.accesslog.AccessLog.OperationType;
+import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.util.Pair;
 
+import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.AlterTableRequest;
@@ -47,7 +52,9 @@ import com.android.server.healthconnect.storage.utils.OrderByClause;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -65,7 +72,8 @@ public final class AccessLogsHelper extends DatabaseHelper {
     @VisibleForTesting
     static final String MEDICAL_RESOURCE_TYPE_COLUMN_NAME = "medical_resource_type";
 
-    @VisibleForTesting static final String MEDICAL_DATA_SOURCE_COLUMN_NAME = "medical_data_source";
+    @VisibleForTesting
+    static final String MEDICAL_DATA_SOURCE_ACCESSED_COLUMN_NAME = "medical_data_source_accessed";
 
     private static final int NUM_COLS = 5;
     private static final int DEFAULT_ACCESS_LOG_TIME_PERIOD_IN_DAYS = 7;
@@ -94,8 +102,28 @@ public final class AccessLogsHelper extends DatabaseHelper {
                 long accessTime = getCursorLong(cursor, ACCESS_TIME_COLUMN_NAME);
                 @OperationType.OperationTypes
                 int operationType = getCursorInt(cursor, OPERATION_TYPE_COLUMN_NAME);
-                accessLogsList.add(
-                        new AccessLog(packageName, recordTypes, accessTime, operationType));
+                if (!recordTypes.isEmpty()) {
+                    accessLogsList.add(
+                            new AccessLog(packageName, recordTypes, accessTime, operationType));
+                }
+                if (AconfigFlagHelper.isPersonalHealthRecordEnabled()) {
+                    @MedicalResourceType
+                    List<Integer> medicalResourceTypes =
+                            getCursorIntegerList(
+                                    cursor, MEDICAL_RESOURCE_TYPE_COLUMN_NAME, DELIMITER);
+                    boolean isMedicalDataSource =
+                            getCursorInt(cursor, MEDICAL_DATA_SOURCE_ACCESSED_COLUMN_NAME)
+                                    == BOOLEAN_TRUE_VALUE;
+                    if (!medicalResourceTypes.isEmpty() || isMedicalDataSource) {
+                        accessLogsList.add(
+                                new AccessLog(
+                                        packageName,
+                                        accessTime,
+                                        operationType,
+                                        new HashSet<>(medicalResourceTypes),
+                                        isMedicalDataSource));
+                    }
+                }
             }
         }
 
@@ -126,9 +154,12 @@ public final class AccessLogsHelper extends DatabaseHelper {
         return mostRecentAccessTime;
     }
 
-    /** Adds an entry in to the access logs table for every insert or read operation request */
+    /**
+     * Adds an entry into the {@link AccessLogsHelper#TABLE_NAME} for every insert or read operation
+     * request for record datatypes.
+     */
     public static void addAccessLog(
-            String packageName,
+            @NonNull String packageName,
             @RecordTypeIdentifier.RecordType List<Integer> recordTypeList,
             @OperationType.OperationTypes int operationType) {
         UpsertTableRequest request =
@@ -136,19 +167,71 @@ public final class AccessLogsHelper extends DatabaseHelper {
         TransactionManager.getInitialisedInstance().insert(request);
     }
 
+    /**
+     * Adds an entry into the {@link AccessLogsHelper#TABLE_NAME} for every upsert/read/delete
+     * operation request for medicalResourceTypes.
+     */
+    public static void addAccessLog(
+            @NonNull SQLiteDatabase db,
+            @NonNull String packageName,
+            @NonNull @MedicalResourceType Set<Integer> medicalResourceTypes,
+            @OperationType.OperationTypes int operationType,
+            boolean accessedMedicalDataSource) {
+        UpsertTableRequest request =
+                getUpsertTableRequestForPhr(
+                        packageName,
+                        medicalResourceTypes,
+                        operationType,
+                        accessedMedicalDataSource);
+        TransactionManager.getInitialisedInstance().insert(db, request);
+    }
+
+    @NonNull
+    private static UpsertTableRequest getUpsertTableRequestForPhr(
+            @NonNull String packageName,
+            @NonNull Set<Integer> medicalResourceTypes,
+            @OperationType.OperationTypes int operationType,
+            boolean isMedicalDataSource) {
+        // We need to populate RECORD_TYPE_COLUMN_NAME with an empty list, as the column is set
+        // to NOT_NULL.
+        ContentValues contentValues =
+                populateCommonColumns(packageName, /* recordTypeList= */ List.of(), operationType);
+        contentValues.put(
+                MEDICAL_RESOURCE_TYPE_COLUMN_NAME, concatDataTypeIds(medicalResourceTypes));
+        contentValues.put(
+                MEDICAL_DATA_SOURCE_ACCESSED_COLUMN_NAME,
+                isMedicalDataSource ? BOOLEAN_TRUE_VALUE : BOOLEAN_FALSE_VALUE);
+        return new UpsertTableRequest(TABLE_NAME, contentValues);
+    }
+
     @NonNull
     public static UpsertTableRequest getUpsertTableRequest(
-            String packageName, List<Integer> recordTypeList, int operationType) {
+            @NonNull String packageName,
+            @NonNull List<Integer> recordTypeList,
+            @OperationType.OperationTypes int operationType) {
+        ContentValues contentValues =
+                populateCommonColumns(packageName, recordTypeList, operationType);
+        return new UpsertTableRequest(TABLE_NAME, contentValues);
+    }
+
+    @NonNull
+    private static ContentValues populateCommonColumns(
+            @NonNull String packageName,
+            @NonNull List<Integer> recordTypeList,
+            @OperationType.OperationTypes int operationType) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(
-                RECORD_TYPE_COLUMN_NAME,
-                recordTypeList.stream().map(String::valueOf).collect(Collectors.joining(",")));
         contentValues.put(
                 APP_ID_COLUMN_NAME, AppInfoHelper.getInstance().getAppInfoId(packageName));
         contentValues.put(ACCESS_TIME_COLUMN_NAME, Instant.now().toEpochMilli());
         contentValues.put(OPERATION_TYPE_COLUMN_NAME, operationType);
+        contentValues.put(
+                RECORD_TYPE_COLUMN_NAME, concatDataTypeIds(new HashSet<>(recordTypeList)));
+        return contentValues;
+    }
 
-        return new UpsertTableRequest(TABLE_NAME, contentValues);
+    @NonNull
+    private static String concatDataTypeIds(@NonNull Set<Integer> dataTypes) {
+        return dataTypes.stream().map(String::valueOf).collect(Collectors.joining(","));
     }
 
     /**
@@ -168,7 +251,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
     /**
      * Creates an {@link AlterTableRequest} for adding PHR specific columns, {@link
      * AccessLogsHelper#MEDICAL_RESOURCE_TYPE_COLUMN_NAME} and {@link
-     * AccessLogsHelper#MEDICAL_DATA_SOURCE_COLUMN_NAME} to the access_logs_table.
+     * AccessLogsHelper#MEDICAL_DATA_SOURCE_ACCESSED_COLUMN_NAME} to the access_logs_table.
      */
     @NonNull
     public static AlterTableRequest getAlterTableRequestForPhrAccessLogs() {
@@ -194,7 +277,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
                 Pair.create(MEDICAL_RESOURCE_TYPE_COLUMN_NAME, TEXT_NULL),
                 // This represents a boolean, which tells us whether
                 // the MedicalDataSource data is accessed.
-                Pair.create(MEDICAL_DATA_SOURCE_COLUMN_NAME, INTEGER));
+                Pair.create(MEDICAL_DATA_SOURCE_ACCESSED_COLUMN_NAME, INTEGER));
     }
 
     @Override
