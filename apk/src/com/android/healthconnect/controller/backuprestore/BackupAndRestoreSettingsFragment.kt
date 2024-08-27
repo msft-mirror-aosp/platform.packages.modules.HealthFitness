@@ -30,7 +30,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
-import com.android.healthfitness.flags.Flags.exportImportFastFollow
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.ExportStatusPreference
 import com.android.healthconnect.controller.exportimport.ImportFlowActivity
@@ -50,12 +49,22 @@ import com.android.healthconnect.controller.shared.preference.HealthPreferenceFr
 import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
+import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.ToastManager
 import com.android.healthconnect.controller.utils.logging.BackupAndRestoreElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
+import com.android.healthconnect.controller.utils.toInstant
+import com.android.healthconnect.controller.utils.withinOneDayAfter
+import com.android.healthconnect.controller.utils.withinOneHourAfter
+import com.android.healthconnect.controller.utils.withinOneMinuteAfter
+import com.android.healthconnect.controller.utils.withinOneYearAfter
+import com.android.healthfitness.flags.Flags.exportImportFastFollow
 import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.Duration
+import java.time.Instant
+import java.time.LocalDate
 import javax.inject.Inject
 
 /** Fragment displaying backup and restore settings. */
@@ -79,6 +88,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
 
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
     @Inject lateinit var toastManager: ToastManager
+    @Inject lateinit var timeSource: TimeSource
 
     private val exportSettingsViewModel: ExportSettingsViewModel by viewModels()
     private val exportStatusViewModel: ExportStatusViewModel by viewModels()
@@ -146,7 +156,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
         }
 
         importFlowViewModel.lastImportCompletionInstant.observe(viewLifecycleOwner) {
-            importDataPreference?.setEnabled(true)
+            importDataPreference?.isEnabled = true
             toastManager.showToast(requireActivity(), R.string.import_complete_toast_text)
             importStatusViewModel.loadImportStatus()
         }
@@ -173,7 +183,8 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
                             findNavController()
                                 .navigate(
                                     R.id
-                                        .action_backupAndRestoreSettingsFragment_to_exportSetupActivity)
+                                        .action_backupAndRestoreSettingsFragment_to_exportSetupActivity
+                                )
                             true
                         }
                     } else {
@@ -181,7 +192,8 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
                             findNavController()
                                 .navigate(
                                     R.id
-                                        .action_backupAndRestoreSettingsFragment_to_scheduledExportFragment)
+                                        .action_backupAndRestoreSettingsFragment_to_scheduledExportFragment
+                                )
                             true
                         }
                     }
@@ -216,36 +228,43 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
     }
 
     private fun maybeShowPreviousExportStatus(scheduledExportUiState: ScheduledExportUiState) {
-        settingsCategory?.removePreferenceRecursively(ExportStatusPreference.EXPORT_STATUS_PREFERENCE)
+        settingsCategory?.removePreferenceRecursively(
+            ExportStatusPreference.EXPORT_STATUS_PREFERENCE
+        )
         val lastSuccessfulExportTime = scheduledExportUiState.lastSuccessfulExportTime
         if (lastSuccessfulExportTime != null) {
-            val lastExportTime =
-                getString(
-                    R.string.last_export_time,
-                    dateFormatter.formatDateAndTime(lastSuccessfulExportTime))
+            val lastExportTime = getLastExportTime(lastSuccessfulExportTime)
             val exportLocation = getExportLocationString(scheduledExportUiState)
             settingsCategory?.addPreference(
                 ExportStatusPreference(requireContext(), lastExportTime, exportLocation).also {
                     it.order = PREVIOUS_EXPORT_STATUS_ORDER
-            })
-        } else if (exportImportFastFollow() && scheduledExportUiState.lastFailedExportTime == null &&
+                }
+            )
+        } else if (
+            exportImportFastFollow() &&
+                scheduledExportUiState.lastFailedExportTime == null &&
                 scheduledExportUiState.periodInDays !=
-                    ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays) {
+                    ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays
+        ) {
             val lastExportMessage = getString(R.string.no_last_export_message)
             settingsCategory?.addPreference(
                 ExportStatusPreference(requireContext(), lastExportMessage, null).also {
                     it.order = PREVIOUS_EXPORT_STATUS_ORDER
-            })
+                }
+            )
         }
     }
 
     private fun getExportLocationString(scheduledExportUiState: ScheduledExportUiState): String? {
-        if (scheduledExportUiState.lastExportAppName != null &&
-            scheduledExportUiState.lastExportFileName != null) {
+        if (
+            scheduledExportUiState.lastExportAppName != null &&
+                scheduledExportUiState.lastExportFileName != null
+        ) {
             return getString(
                 R.string.last_export_file_location,
                 scheduledExportUiState.lastExportAppName,
-                scheduledExportUiState.lastExportFileName)
+                scheduledExportUiState.lastExportFileName,
+            )
         } else if (scheduledExportUiState.lastExportFileName != null) {
             return scheduledExportUiState.lastExportFileName
         } else if (scheduledExportUiState.lastExportAppName != null) {
@@ -277,7 +296,9 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
 
     private fun getImportWrongFileErrorBanner(): BannerPreference {
         return BannerPreference(
-                requireContext(), BackupAndRestoreElement.IMPORT_WRONG_FILE_ERROR_BANNER)
+                requireContext(),
+                BackupAndRestoreElement.IMPORT_WRONG_FILE_ERROR_BANNER,
+            )
             .also {
                 it.setPrimaryButton(
                     getString(R.string.import_wrong_file_error_banner_button),
@@ -295,7 +316,9 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
 
     private fun getImportVersionMismatchErrorBanner(): BannerPreference {
         return BannerPreference(
-                requireContext(), BackupAndRestoreElement.IMPORT_VERSION_MISMATCH_ERROR_BANNER)
+                requireContext(),
+                BackupAndRestoreElement.IMPORT_VERSION_MISMATCH_ERROR_BANNER,
+            )
             .also {
                 it.setPrimaryButton(
                     getString(R.string.import_version_mismatch_error_banner_button),
@@ -309,7 +332,8 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
                 it.setPrimaryButtonOnClickListener {
                     findNavController()
                         .navigate(
-                            R.id.action_backupAndRestoreSettingsFragment_to_systemUpdateActivity)
+                            R.id.action_backupAndRestoreSettingsFragment_to_systemUpdateActivity
+                        )
                 }
                 it.order = IMPORT_ERROR_BANNER_ORDER
             }
@@ -317,7 +341,9 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
 
     private fun getImportOtherErrorBanner(): BannerPreference {
         return BannerPreference(
-                requireContext(), BackupAndRestoreElement.IMPORT_GENERAL_ERROR_BANNER)
+                requireContext(),
+                BackupAndRestoreElement.IMPORT_GENERAL_ERROR_BANNER,
+            )
             .also {
                 it.setPrimaryButton(
                     getString(R.string.import_other_error_banner_button),
@@ -331,6 +357,46 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
                 it.setPrimaryButtonOnClickListener { triggerImport() }
                 it.order = IMPORT_ERROR_BANNER_ORDER
             }
+    }
+
+    private fun getLastExportTime(lastSuccessfulExportTime: Instant): String {
+        if (!exportImportFastFollow()) {
+            return getString(
+                R.string.last_export_time,
+                dateFormatter.formatDateAndTime(lastSuccessfulExportTime),
+            )
+        }
+        // Format for the last export string:
+        // - Now (when <1min)
+        // - X minutes ago (when >=1min & <1h)
+        // - X hours ago (when >=1h & <24h)
+        // - DD Mmmm, HH:MM (when >=24h & <1yr)
+        // - DD Mmmm, YYYY (>=1yr)
+        val now: Instant = timeSource.currentTimeMillis().toInstant()
+        if (now.withinOneMinuteAfter(lastSuccessfulExportTime)) {
+            return getString(R.string.last_export_time_now)
+        } else if (now.withinOneHourAfter(lastSuccessfulExportTime)) {
+            val timeDiffInMinutes = Duration.between(lastSuccessfulExportTime, now).toMinutes()
+            return getString(R.string.last_export_time_minutes_ago, timeDiffInMinutes.toString())
+        } else if (now.withinOneDayAfter(lastSuccessfulExportTime)) {
+            val timeDiffInHours = Duration.between(lastSuccessfulExportTime, now).toHours()
+            return getString(R.string.last_export_time_hours_ago, timeDiffInHours.toString())
+        } else if (
+            LocalDate.ofInstant(now, timeSource.deviceZoneOffset())
+                .withinOneYearAfter(
+                    LocalDate.ofInstant(lastSuccessfulExportTime, timeSource.deviceZoneOffset())
+                )
+        ) {
+            return getString(
+                R.string.last_export_time,
+                dateFormatter.formatDateAndTime(lastSuccessfulExportTime),
+            )
+        } else {
+            return getString(
+                R.string.last_export_time,
+                dateFormatter.formatLongDate(lastSuccessfulExportTime),
+            )
+        }
     }
 
     private fun triggerImport() {
