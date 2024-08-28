@@ -67,10 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"சுழற்சியைக் கண்காணித்தல்"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"ஊட்டச்சத்து"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"ஊட்டச்சத்து"</string>
-    <!-- no translation found for wellness_category_uppercase (5900304317921557780) -->
-    <skip />
-    <!-- no translation found for wellness_category_lowercase (1327642415424743588) -->
-    <skip />
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"நல்வாழ்வு"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"நல்வாழ்வு"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"தரவைக் கண்டறிதல்"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"தரவை நிர்வகித்தல்"</string>
     <string name="export_data_button" msgid="7783329820434117744">"தரவைப் பதிவிறக்கு"</string>
@@ -353,6 +351,8 @@
     <string name="next_export_text" msgid="6726252793571403846">"அடுத்த பதிவிறக்கம் விரைவில் தொடங்கும்"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"காப்புப் பிரதி மற்றும் மீட்டெடுத்தல்"</string>
     <string name="last_export_time" msgid="9205875050823594041">"கடைசியாகப் பதிவிறக்கம் செய்தது: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <!-- no translation found for no_last_export_message (8138900854579872667) -->
+    <skip />
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"திட்டமிடப்பட்ட பதிவேற்றம்"</string>
     <string name="import_data" msgid="404502315533233094">"தரவைப் பதிவிறக்குதல்"</string>
@@ -657,18 +657,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"லேசாக உறங்கிய நேரம்"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"ஆழ்ந்து உறங்கிய நேரம்"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"தெரியவில்லை"</string>
-    <!-- no translation found for mindfulness_type_breathing (3175952922332753437) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_meditation (4453014833652749254) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_movement (600930756800362680) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_music (7041364137895485917) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_other (793524328911038908) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_unguided (2367259868577157922) -->
-    <skip />
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"மூச்சுப்பயிற்சி"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"தியானம்"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"அசைவு"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"இசை"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"மற்றவை"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"வழிகாட்டல் இல்லை"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g>நி"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g>ம.நே <xliff:g id="MIN">%2$s</xliff:g>நி"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g>ம.நே"</string>
