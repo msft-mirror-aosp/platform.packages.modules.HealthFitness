@@ -21,6 +21,8 @@ import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXP
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS;
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_STARTED;
 
+import static com.android.healthfitness.flags.Flags.exportImportFastFollow;
+import static com.android.server.healthconnect.exportimport.ExportImportNotificationSender.NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR;
 import static com.android.server.healthconnect.logging.ExportImportLogger.NO_VALUE_RECORDED;
 
 import static java.util.Objects.requireNonNull;
@@ -34,6 +36,7 @@ import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.logging.ExportImportLogger;
+import com.android.server.healthconnect.notifications.HealthConnectNotificationSender;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -67,6 +70,7 @@ public class ExportManager {
 
     private final Clock mClock;
     private final TransactionManager mTransactionManager;
+    private final UserHandle mUserHandle;
 
     // Tables to drop instead of tables to keep to avoid risk of bugs if new data types are added.
 
@@ -80,17 +84,27 @@ public class ExportManager {
             List.of(AccessLogsHelper.TABLE_NAME, ChangeLogsHelper.TABLE_NAME);
 
     private final DatabaseContext mDatabaseContext;
+    private final HealthConnectNotificationSender mNotificationSender;
 
     public ExportManager(@NonNull Context context, Clock clock) {
+        this(context, clock, ExportImportNotificationSender.createSender(context));
+    }
+
+    public ExportManager(
+            @NonNull Context context,
+            Clock clock,
+            HealthConnectNotificationSender notificationSender) {
         requireNonNull(context);
         requireNonNull(clock);
+        requireNonNull(notificationSender);
 
-        UserHandle user = context.getUser();
-        Context userContext = context.createContextAsUser(user, 0);
+        mUserHandle = context.getUser();
+        Context userContext = context.createContextAsUser(mUserHandle, 0);
 
         mClock = clock;
-        mDatabaseContext = DatabaseContext.create(userContext, LOCAL_EXPORT_DIR_NAME, user);
+        mDatabaseContext = DatabaseContext.create(userContext, LOCAL_EXPORT_DIR_NAME, mUserHandle);
         mTransactionManager = TransactionManager.getInitialisedInstance();
+        mNotificationSender = notificationSender;
     }
 
     /**
@@ -114,13 +128,13 @@ public class ExportManager {
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to create local file for export", e);
                 Slog.d(TAG, "original file size: " + intSizeInKb(localExportDbFile));
-
                 recordError(
                         DATA_EXPORT_ERROR_UNKNOWN,
                         startTimeMillis,
                         intSizeInKb(localExportDbFile),
                         /* Compressed size will be 0, not yet compressed */
                         intSizeInKb(localExportZipFile));
+                sendNotificationIfEnabled(NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR);
                 return false;
             }
 
@@ -129,28 +143,29 @@ public class ExportManager {
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to prepare local file for export", e);
                 Slog.d(TAG, "original file size: " + intSizeInKb(localExportDbFile));
-
                 recordError(
                         DATA_EXPORT_ERROR_UNKNOWN,
                         startTimeMillis,
                         intSizeInKb(localExportDbFile),
                         /* Compressed size will be 0, not yet compressed */
                         intSizeInKb(localExportZipFile));
+                sendNotificationIfEnabled(NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR);
                 return false;
             }
+
             try {
                 Compressor.compress(
                         localExportDbFile, LOCAL_EXPORT_DATABASE_FILE_NAME, localExportZipFile);
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to compress local file for export", e);
                 Slog.d(TAG, "original file size: " + intSizeInKb(localExportDbFile));
-
                 recordError(
                         DATA_EXPORT_ERROR_UNKNOWN,
                         startTimeMillis,
                         intSizeInKb(localExportDbFile),
                         /* Compressed size will be 0, not yet compressed */
                         intSizeInKb(localExportZipFile));
+                sendNotificationIfEnabled(NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR);
                 return false;
             }
 
@@ -160,27 +175,26 @@ public class ExportManager {
             } catch (FileNotFoundException e) {
                 Slog.e(TAG, "Lost access to export location", e);
                 Slog.d(TAG, "original file size: " + intSizeInKb(localExportDbFile));
-
                 recordError(
                         DATA_EXPORT_LOST_FILE_ACCESS,
                         startTimeMillis,
                         intSizeInKb(localExportDbFile),
                         intSizeInKb(localExportZipFile));
+                sendNotificationIfEnabled(NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR);
                 return false;
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to export to URI", e);
                 Slog.d(TAG, "original file size: " + intSizeInKb(localExportDbFile));
-
                 recordError(
                         DATA_EXPORT_ERROR_UNKNOWN,
                         startTimeMillis,
                         intSizeInKb(localExportDbFile),
                         intSizeInKb(localExportZipFile));
+                sendNotificationIfEnabled(NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR);
                 return false;
             }
             Slog.i(TAG, "Export completed.");
             Slog.d(TAG, "original file size: " + intSizeInKb(localExportDbFile));
-
             recordSuccess(
                     startTimeMillis,
                     intSizeInKb(localExportDbFile),
@@ -279,5 +293,12 @@ public class ExportManager {
      */
     private int intSizeInKb(File file) {
         return (int) (file.length() / 1024.0);
+    }
+
+    /** Sends export status notification if export_import_fast_follow flag enabled. */
+    private void sendNotificationIfEnabled(int notificationType) {
+        if (exportImportFastFollow()) {
+            mNotificationSender.sendNotificationAsUser(notificationType, mUserHandle);
+        }
     }
 }

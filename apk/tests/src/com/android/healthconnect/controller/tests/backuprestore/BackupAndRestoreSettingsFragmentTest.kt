@@ -347,7 +347,31 @@ class BackupAndRestoreSettingsFragmentTest {
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
-        onView(withText("Last export: 30 minute(s) ago")).check(matches(isDisplayed()))
+        onView(withText("Last export: 30 minutes ago")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW)
+    fun backupAndRestoreSettingsFragment_lastExportAt1MinAgo_showsLastExportAs1MinuteAgo() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        // The fake 'now' is 2022-10-20T07:06:05.432Z.
+                        lastSuccessfulExportTime = Instant.parse("2022-10-20T07:05:05.432Z"),
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        periodInDays = TEST_EXPORT_PERIOD_IN_DAYS,
+                    )
+                )
+            )
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Last export: 1 minute ago")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -371,7 +395,31 @@ class BackupAndRestoreSettingsFragmentTest {
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
-        onView(withText("Last export: 23 hour(s) ago")).check(matches(isDisplayed()))
+        onView(withText("Last export: 23 hours ago")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW)
+    fun backupAndRestoreSettingsFragment_lastExportAt1HourAgo_showsLastExportAs1HourAgo() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        // The fake 'now' is 2022-10-20T07:06:05.432Z.
+                        lastSuccessfulExportTime = Instant.parse("2022-10-20T06:06:05.432Z"),
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        periodInDays = TEST_EXPORT_PERIOD_IN_DAYS,
+                    )
+                )
+            )
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Last export: 1 hour ago")).check(matches(isDisplayed()))
     }
 
     @Test
