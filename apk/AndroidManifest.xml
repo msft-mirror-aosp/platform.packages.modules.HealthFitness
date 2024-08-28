@@ -149,7 +149,12 @@
             android:name=".exportimport.ExportSetupActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.HealthConnect" />
+            android:theme="@style/Theme.HealthConnect">
+            <intent-filter android:priority="1">
+                <action android:name="android.health.connect.action.START_EXPORT_SETUP" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+    </activity>
 
         <activity
             android:name=".exportimport.ImportFlowActivity"
