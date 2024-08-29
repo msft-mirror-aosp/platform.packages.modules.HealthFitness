@@ -18,6 +18,7 @@ package com.android.healthconnect.controller.backuprestore
 
 import android.app.Activity
 import android.content.Intent
+import android.icu.text.MessageFormat
 import android.net.Uri
 import android.os.Bundle
 import android.util.Slog
@@ -377,10 +378,16 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
             return getString(R.string.last_export_time_now)
         } else if (now.withinOneHourAfter(lastSuccessfulExportTime)) {
             val timeDiffInMinutes = Duration.between(lastSuccessfulExportTime, now).toMinutes()
-            return getString(R.string.last_export_time_minutes_ago, timeDiffInMinutes.toString())
+            return MessageFormat.format(
+                requireContext().getString(R.string.last_export_time_minutes_ago),
+                mapOf("count" to timeDiffInMinutes),
+            )
         } else if (now.withinOneDayAfter(lastSuccessfulExportTime)) {
             val timeDiffInHours = Duration.between(lastSuccessfulExportTime, now).toHours()
-            return getString(R.string.last_export_time_hours_ago, timeDiffInHours.toString())
+            return MessageFormat.format(
+                requireContext().getString(R.string.last_export_time_hours_ago),
+                mapOf("count" to timeDiffInHours),
+            )
         } else if (
             LocalDate.ofInstant(now, timeSource.deviceZoneOffset())
                 .withinOneYearAfter(
