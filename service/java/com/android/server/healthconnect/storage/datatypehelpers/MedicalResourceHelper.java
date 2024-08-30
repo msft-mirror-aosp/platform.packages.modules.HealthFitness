@@ -265,6 +265,7 @@ public final class MedicalResourceHelper {
      * @param request a {@link ReadMedicalResourcesRequest}.
      * @return a {@link ReadMedicalResourcesInternalResponse}.
      */
+    // TODO(b/360833189): Support request.getDataSourceIds().
     // TODO(b/354872929): Add cts tests for read by request.
     @NonNull
     public ReadMedicalResourcesInternalResponse
@@ -285,6 +286,7 @@ public final class MedicalResourceHelper {
      *
      * @return a {@link ReadMedicalResourcesInternalResponse}.
      */
+    // TODO(b/360833189): Support request.getDataSourceIds().
     // TODO(b/354872929): Add cts tests for read by request.
     // TODO(b/360352345): Add cts tests for access logs being created per API call.
     @NonNull

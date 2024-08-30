@@ -58,7 +58,7 @@ public final class AccessLog implements Parcelable {
     @OperationType.OperationTypes private final int mOperationType;
     @NonNull private final List<Class<? extends Record>> mRecordTypesList = new ArrayList<>();
     @NonNull @MedicalResourceType private Set<Integer> mMedicalResourceTypes = new HashSet<>();
-    private boolean mMedicalDataSource = false;
+    private boolean mIsMedicalDataSourceAccessed = false;
 
     /**
      * Creates an access logs object that can be used to get access log request for {@code
@@ -96,7 +96,7 @@ public final class AccessLog implements Parcelable {
      * @param accessTimeInMillis time when the access was requested
      * @param operationType Type of access
      * @param medicalResourceTypes Set of {@link MedicalResourceType}s that was accessed by the app
-     * @param medicalDataSource Whether or not any {@link MedicalDataSource}s was accessed
+     * @param isMedicalDataSourceAccessed Whether or not any {@link MedicalDataSource}s was accessed
      * @hide
      */
     public AccessLog(
@@ -104,7 +104,7 @@ public final class AccessLog implements Parcelable {
             long accessTimeInMillis,
             @OperationType.OperationTypes int operationType,
             @NonNull @MedicalResourceType Set<Integer> medicalResourceTypes,
-            boolean medicalDataSource) {
+            boolean isMedicalDataSourceAccessed) {
         if (!personalHealthRecord()) {
             throw new UnsupportedOperationException(
                     "Constructing AccessLog for medical data is not supported");
@@ -119,7 +119,7 @@ public final class AccessLog implements Parcelable {
         mAccessTime = Instant.ofEpochMilli(accessTimeInMillis);
         mOperationType = operationType;
         mMedicalResourceTypes = medicalResourceTypes;
-        mMedicalDataSource = medicalDataSource;
+        mIsMedicalDataSourceAccessed = isMedicalDataSourceAccessed;
     }
 
     private AccessLog(Parcel in) {
@@ -137,7 +137,7 @@ public final class AccessLog implements Parcelable {
             for (@MedicalResourceType int medicalResourceType : medicalResourceTypes) {
                 mMedicalResourceTypes.add(medicalResourceType);
             }
-            mMedicalDataSource = in.readBoolean();
+            mIsMedicalDataSourceAccessed = in.readBoolean();
         }
     }
 
@@ -189,8 +189,8 @@ public final class AccessLog implements Parcelable {
 
     /** Returns whether or not any {@link MedicalDataSource}s was accessed by the app */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
-    public boolean getMedicalDataSource() {
-        return mMedicalDataSource;
+    public boolean isMedicalDataSourceAccessed() {
+        return mIsMedicalDataSourceAccessed;
     }
 
     /** Identifier for Operation type. */
@@ -252,7 +252,7 @@ public final class AccessLog implements Parcelable {
         if (personalHealthRecord()) {
             dest.writeIntArray(
                     mMedicalResourceTypes.stream().mapToInt(Integer::intValue).toArray());
-            dest.writeBoolean(mMedicalDataSource);
+            dest.writeBoolean(mIsMedicalDataSourceAccessed);
         }
     }
 }

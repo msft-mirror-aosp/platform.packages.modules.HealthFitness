@@ -192,7 +192,7 @@ public class ExportManagerTest {
     }
 
     @Test
-    public void deletesLocalCopies() {
+    public void runExport_whenCompleted_deletesLocalCopies() {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
@@ -202,6 +202,20 @@ public class ExportManagerTest {
 
         DatabaseContext databaseContext =
                 DatabaseContext.create(mContext, LOCAL_EXPORT_DIR_NAME, mContext.getUser());
+        assertThat(databaseContext.getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME).exists())
+                .isFalse();
+        assertThat(databaseContext.getDatabasePath(LOCAL_EXPORT_ZIP_FILE_NAME).exists()).isFalse();
+    }
+
+    @Test
+    public void deleteLocalExportFiles_deletesLocalCopies() {
+        DatabaseContext databaseContext =
+                DatabaseContext.create(mContext, LOCAL_EXPORT_DIR_NAME, mContext.getUser());
+        new File(databaseContext.getDatabaseDir(), LOCAL_EXPORT_DATABASE_FILE_NAME).mkdirs();
+        new File(databaseContext.getDatabaseDir(), LOCAL_EXPORT_ZIP_FILE_NAME).mkdirs();
+
+        mExportManager.deleteLocalExportFiles();
+
         assertThat(databaseContext.getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME).exists())
                 .isFalse();
         assertThat(databaseContext.getDatabasePath(LOCAL_EXPORT_ZIP_FILE_NAME).exists()).isFalse();

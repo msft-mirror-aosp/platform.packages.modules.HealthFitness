@@ -963,7 +963,7 @@ public class MedicalResourceHelperTest {
                 .isEqualTo(Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION));
         assertThat(accessLog.getRecordTypes()).isEmpty();
         assertThat(accessLog.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
-        assertThat(accessLog.getMedicalDataSource()).isFalse();
+        assertThat(accessLog.isMedicalDataSourceAccessed()).isFalse();
         assertThat(accessLog.getAccessTime()).isNotNull();
     }
 
@@ -1158,7 +1158,7 @@ public class MedicalResourceHelperTest {
         assertThat(accessLog.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(accessLog.getRecordTypes()).isEmpty();
         assertThat(accessLog.getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
-        assertThat(accessLog.getMedicalDataSource()).isFalse();
+        assertThat(accessLog.isMedicalDataSourceAccessed()).isFalse();
         assertThat(accessLog.getAccessTime()).isNotNull();
     }
 
@@ -1182,7 +1182,7 @@ public class MedicalResourceHelperTest {
         assertThat(accessLog.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(accessLog.getRecordTypes()).isEmpty();
         assertThat(accessLog.getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
-        assertThat(accessLog.getMedicalDataSource()).isFalse();
+        assertThat(accessLog.isMedicalDataSourceAccessed()).isFalse();
         assertThat(accessLog.getAccessTime()).isNotNull();
     }
 
@@ -1214,7 +1214,7 @@ public class MedicalResourceHelperTest {
         assertThat(accessLog1.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(accessLog1.getRecordTypes()).isEmpty();
         assertThat(accessLog1.getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
-        assertThat(accessLog1.getMedicalDataSource()).isFalse();
+        assertThat(accessLog1.isMedicalDataSourceAccessed()).isFalse();
         assertThat(accessLog1.getAccessTime()).isNotNull();
 
         assertThat(accessLog2.getMedicalResourceTypes())
@@ -1222,7 +1222,7 @@ public class MedicalResourceHelperTest {
         assertThat(accessLog2.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(accessLog2.getRecordTypes()).isEmpty();
         assertThat(accessLog2.getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
-        assertThat(accessLog2.getMedicalDataSource()).isFalse();
+        assertThat(accessLog2.isMedicalDataSourceAccessed()).isFalse();
         assertThat(accessLog2.getAccessTime()).isNotNull();
     }
 
