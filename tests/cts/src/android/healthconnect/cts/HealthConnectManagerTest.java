@@ -75,7 +75,7 @@ import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.MedicalResourceId;
-import android.health.connect.MedicalResourceTypeInfoResponse;
+import android.health.connect.MedicalResourceTypeInfo;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequestUsingIds;
@@ -2368,18 +2368,16 @@ public class HealthConnectManagerTest {
 
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testQueryAllMedicalResourceTypesInfo_succeeds() throws InterruptedException {
+    public void testQueryAllMedicalResourceTypeInfos_succeeds() throws InterruptedException {
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
         uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
-        HealthConnectReceiver<List<MedicalResourceTypeInfoResponse>> receiver =
+        HealthConnectReceiver<List<MedicalResourceTypeInfo>> receiver =
                 new HealthConnectReceiver<>();
-        List<MedicalResourceTypeInfoResponse> expectedResponses =
-                List.of(
-                        new MedicalResourceTypeInfoResponse(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION, Set.of()));
+        List<MedicalResourceTypeInfo> expectedResponses =
+                List.of(new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, Set.of()));
 
         try {
-            mManager.queryAllMedicalResourceTypesInfo(
+            mManager.queryAllMedicalResourceTypeInfos(
                     Executors.newSingleThreadExecutor(), receiver);
         } finally {
             uiAutomation.dropShellPermissionIdentity();

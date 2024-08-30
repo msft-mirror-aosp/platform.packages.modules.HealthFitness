@@ -23,6 +23,8 @@ import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.readAllRecords;
 
+import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import android.content.Context;
@@ -39,6 +41,7 @@ import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.net.Uri;
 import android.os.OutcomeReceiver;
+import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.util.Slog;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -70,6 +73,7 @@ public class ExportImportApiTest {
     private static final String REMOTE_EXPORT_DATABASE_DIR_NAME = "export_import";
     private static final String REMOTE_EXPORT_ZIP_FILE_NAME = "remote_file.zip";
     private static final String REMOTE_EXPORT_DATABASE_FILE_NAME = "remote_file.db";
+    private static final int SLEEP_TIME_MS = 1000;
 
     private Context mContext;
     private HealthConnectManager mHealthConnectManager;
@@ -123,9 +127,9 @@ public class ExportImportApiTest {
                 },
                 "android.permission.MANAGE_HEALTH_DATA");
         // TODO(b/318484678): Improve tests (as possible) replacing sleep by conditions.
-        Thread.sleep(1000);
+        Thread.sleep(SLEEP_TIME_MS);
         runShellCommandForHCJob("run -f -n");
-        Thread.sleep(1000);
+        Thread.sleep(SLEEP_TIME_MS);
 
         deleteRecords(stepsRecords);
         List<StepsRecord> stepsRecordsAfterDeletion = readAllRecords(StepsRecord.class);
@@ -146,14 +150,50 @@ public class ExportImportApiTest {
                         latch.countDown();
                     }
                 });
-        Thread.sleep(1000);
+        Thread.sleep(SLEEP_TIME_MS);
         List<StepsRecord> stepsRecordsAfterImport = readAllRecords(StepsRecord.class);
         assertThat(stepsRecordsAfterImport).isEqualTo(stepsRecords);
     }
 
+    @RequiresFlagsEnabled({FLAG_EXPORT_IMPORT_FAST_FOLLOW})
+    @Test
+    public void exportOn_thenExportOff_noJobScheduled() throws Exception {
+        SystemUtil.runWithShellPermissionIdentity(
+                () -> {
+                    mHealthConnectManager.configureScheduledExport(
+                            new ScheduledExportSettings.Builder()
+                                    .setUri(mRemoteExportFileUri)
+                                    .setPeriodInDays(1)
+                                    .build());
+                },
+                "android.permission.MANAGE_HEALTH_DATA");
+        // TODO(b/318484678): Improve tests (as possible) replacing sleep by conditions.
+        Thread.sleep(SLEEP_TIME_MS);
+        runShellCommandForHCJob("run -f -n");
+        assertThat(isExportImportJobScheduled()).isTrue();
+
+        SystemUtil.runWithShellPermissionIdentity(
+                () -> {
+                    mHealthConnectManager.configureScheduledExport(
+                            new ScheduledExportSettings.Builder()
+                                    .setUri(mRemoteExportFileUri)
+                                    .setPeriodInDays(0)
+                                    .build());
+                },
+                "android.permission.MANAGE_HEALTH_DATA");
+        Thread.sleep(SLEEP_TIME_MS);
+        runShellCommandForHCJob("run -f -n");
+        assertThat(isExportImportJobScheduled()).isFalse();
+    }
+
+    private boolean isExportImportJobScheduled() throws Exception {
+        String dumpsysOutput = TestUtils.runShellCommand("dumpsys jobscheduler");
+        return dumpsysOutput.contains("HEALTH_CONNECT_IMPORT_EXPORT_JOBS:");
+    }
+
     private void runShellCommandForHCJob(String command) throws Exception {
         String dumpsysOutput = TestUtils.runShellCommand("dumpsys jobscheduler");
-        if (!dumpsysOutput.contains("HEALTH_CONNECT_IMPORT_EXPORT_JOBS:")) {
+        if (!isExportImportJobScheduled()) {
             Slog.i(TAG, "No HC jobs scheduled!");
             return;
         }
