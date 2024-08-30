@@ -262,7 +262,7 @@ public class HealthConnectAccessLogsTest {
         assertThat(newAccessLogsResponse.size() - oldAccessLogsResponse.size()).isEqualTo(2);
         AccessLog accessLog = newAccessLogsResponse.get(newAccessLogsResponse.size() - 1);
         assertThat(accessLog.getMedicalResourceTypes()).isEmpty();
-        assertThat(accessLog.getMedicalDataSource()).isFalse();
+        assertThat(accessLog.isMedicalDataSourceAccessed()).isFalse();
     }
 
     /**

@@ -27,6 +27,7 @@ import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
 import android.annotation.SystemApi;
 import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import android.health.connect.internal.ParcelUtils;
 import android.os.Parcel;
@@ -37,28 +38,24 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A class to hold the following information for a specific {@link MedicalResourceType}, used in the
- * response for {@link HealthConnectManager#queryAllMedicalResourceTypesInfo}:
- *
- * <ul>
- *   <li>The {@link MedicalResourceType}.
- *   <li>Contributing {@link MedicalDataSource}s of the above {@link MedicalResourceType}.
- * </ul>
+ * A class to represent a set of {@link MedicalDataSource}s that contributed data to a certain
+ * {@link MedicalResource} type. This is used in the response for {@link
+ * HealthConnectManager#queryAllMedicalResourceTypeInfos}.
  *
  * @hide
  */
 @SystemApi
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
-public final class MedicalResourceTypeInfoResponse implements Parcelable {
+public final class MedicalResourceTypeInfo implements Parcelable {
     @MedicalResourceType private final int mMedicalResourceType;
     @NonNull private final Set<MedicalDataSource> mContributingDataSources;
 
     /**
-     * @param medicalResourceType The {@link MedicalResourceType}.
+     * @param medicalResourceType The {@link MedicalResource} type.
      * @param contributingDataSources The contributing {@link MedicalDataSource}s of the {@code
      *     medicalResourceType}.
      */
-    public MedicalResourceTypeInfoResponse(
+    public MedicalResourceTypeInfo(
             @MedicalResourceType int medicalResourceType,
             @NonNull Set<MedicalDataSource> contributingDataSources) {
         validateMedicalResourceType(medicalResourceType);
@@ -67,7 +64,7 @@ public final class MedicalResourceTypeInfoResponse implements Parcelable {
         mContributingDataSources = contributingDataSources;
     }
 
-    private MedicalResourceTypeInfoResponse(@NonNull Parcel in) {
+    private MedicalResourceTypeInfo(@NonNull Parcel in) {
         requireNonNull(in);
         in = ParcelUtils.getParcelForSharedMemoryIfRequired(in);
         mMedicalResourceType = in.readInt();
@@ -80,20 +77,20 @@ public final class MedicalResourceTypeInfoResponse implements Parcelable {
     }
 
     @NonNull
-    public static final Creator<MedicalResourceTypeInfoResponse> CREATOR =
+    public static final Creator<MedicalResourceTypeInfo> CREATOR =
             new Creator<>() {
                 @Override
-                public MedicalResourceTypeInfoResponse createFromParcel(Parcel in) {
-                    return new MedicalResourceTypeInfoResponse(in);
+                public MedicalResourceTypeInfo createFromParcel(Parcel in) {
+                    return new MedicalResourceTypeInfo(in);
                 }
 
                 @Override
-                public MedicalResourceTypeInfoResponse[] newArray(int size) {
-                    return new MedicalResourceTypeInfoResponse[size];
+                public MedicalResourceTypeInfo[] newArray(int size) {
+                    return new MedicalResourceTypeInfo[size];
                 }
             };
 
-    /** Returns the {@link MedicalResourceType}. */
+    /** Returns the {@link MedicalResource} type. */
     @MedicalResourceType
     public int getMedicalResourceType() {
         return mMedicalResourceType;
@@ -126,7 +123,7 @@ public final class MedicalResourceTypeInfoResponse implements Parcelable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MedicalResourceTypeInfoResponse that)) return false;
+        if (!(o instanceof MedicalResourceTypeInfo that)) return false;
         return getMedicalResourceType() == that.getMedicalResourceType()
                 && getContributingDataSources().equals(that.getContributingDataSources());
     }

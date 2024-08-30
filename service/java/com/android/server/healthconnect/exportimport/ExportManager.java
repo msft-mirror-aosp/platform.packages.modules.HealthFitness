@@ -71,6 +71,8 @@ public class ExportManager {
     private final Clock mClock;
     private final TransactionManager mTransactionManager;
     private final UserHandle mUserHandle;
+    private final File mLocalExportDbFile;
+    private final File mLocalExportZipFile;
 
     // Tables to drop instead of tables to keep to avoid risk of bugs if new data types are added.
 
@@ -105,6 +107,10 @@ public class ExportManager {
         mDatabaseContext = DatabaseContext.create(userContext, LOCAL_EXPORT_DIR_NAME, mUserHandle);
         mTransactionManager = TransactionManager.getInitialisedInstance();
         mNotificationSender = notificationSender;
+        mLocalExportDbFile =
+                new File(mDatabaseContext.getDatabaseDir(), LOCAL_EXPORT_DATABASE_FILE_NAME);
+        mLocalExportZipFile =
+                new File(mDatabaseContext.getDatabaseDir(), LOCAL_EXPORT_ZIP_FILE_NAME);
     }
 
     /**
@@ -117,23 +123,18 @@ public class ExportManager {
                 DATA_EXPORT_STARTED, NO_VALUE_RECORDED, NO_VALUE_RECORDED, NO_VALUE_RECORDED);
         Slog.i(TAG, "Export started.");
 
-        File localExportDbFile =
-                new File(mDatabaseContext.getDatabaseDir(), LOCAL_EXPORT_DATABASE_FILE_NAME);
-        File localExportZipFile =
-                new File(mDatabaseContext.getDatabaseDir(), LOCAL_EXPORT_ZIP_FILE_NAME);
-
         try {
             try {
-                exportLocally(localExportDbFile);
+                exportLocally(mLocalExportDbFile);
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to create local file for export", e);
-                Slog.d(TAG, "original file size: " + intSizeInKb(localExportDbFile));
+                Slog.d(TAG, "original file size: " + intSizeInKb(mLocalExportDbFile));
                 recordError(
                         DATA_EXPORT_ERROR_UNKNOWN,
                         startTimeMillis,
-                        intSizeInKb(localExportDbFile),
+                        intSizeInKb(mLocalExportDbFile),
                         /* Compressed size will be 0, not yet compressed */
-                        intSizeInKb(localExportZipFile));
+                        intSizeInKb(mLocalExportZipFile));
                 sendNotificationIfEnabled(NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR);
                 return false;
             }
@@ -142,74 +143,67 @@ public class ExportManager {
                 deleteLogTablesContent();
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to prepare local file for export", e);
-                Slog.d(TAG, "original file size: " + intSizeInKb(localExportDbFile));
+                Slog.d(TAG, "original file size: " + intSizeInKb(mLocalExportDbFile));
                 recordError(
                         DATA_EXPORT_ERROR_UNKNOWN,
                         startTimeMillis,
-                        intSizeInKb(localExportDbFile),
+                        intSizeInKb(mLocalExportDbFile),
                         /* Compressed size will be 0, not yet compressed */
-                        intSizeInKb(localExportZipFile));
+                        intSizeInKb(mLocalExportZipFile));
                 sendNotificationIfEnabled(NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR);
                 return false;
             }
 
             try {
                 Compressor.compress(
-                        localExportDbFile, LOCAL_EXPORT_DATABASE_FILE_NAME, localExportZipFile);
+                        mLocalExportDbFile, LOCAL_EXPORT_DATABASE_FILE_NAME, mLocalExportZipFile);
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to compress local file for export", e);
-                Slog.d(TAG, "original file size: " + intSizeInKb(localExportDbFile));
+                Slog.d(TAG, "original file size: " + intSizeInKb(mLocalExportDbFile));
                 recordError(
                         DATA_EXPORT_ERROR_UNKNOWN,
                         startTimeMillis,
-                        intSizeInKb(localExportDbFile),
+                        intSizeInKb(mLocalExportDbFile),
                         /* Compressed size will be 0, not yet compressed */
-                        intSizeInKb(localExportZipFile));
+                        intSizeInKb(mLocalExportZipFile));
                 sendNotificationIfEnabled(NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR);
                 return false;
             }
 
             Uri destinationUri = ExportImportSettingsStorage.getUri();
             try {
-                exportToUri(localExportZipFile, destinationUri);
+                exportToUri(mLocalExportZipFile, destinationUri);
             } catch (FileNotFoundException e) {
                 Slog.e(TAG, "Lost access to export location", e);
-                Slog.d(TAG, "original file size: " + intSizeInKb(localExportDbFile));
+                Slog.d(TAG, "original file size: " + intSizeInKb(mLocalExportDbFile));
                 recordError(
                         DATA_EXPORT_LOST_FILE_ACCESS,
                         startTimeMillis,
-                        intSizeInKb(localExportDbFile),
-                        intSizeInKb(localExportZipFile));
+                        intSizeInKb(mLocalExportDbFile),
+                        intSizeInKb(mLocalExportZipFile));
                 sendNotificationIfEnabled(NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR);
                 return false;
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to export to URI", e);
-                Slog.d(TAG, "original file size: " + intSizeInKb(localExportDbFile));
+                Slog.d(TAG, "original file size: " + intSizeInKb(mLocalExportDbFile));
                 recordError(
                         DATA_EXPORT_ERROR_UNKNOWN,
                         startTimeMillis,
-                        intSizeInKb(localExportDbFile),
-                        intSizeInKb(localExportZipFile));
+                        intSizeInKb(mLocalExportDbFile),
+                        intSizeInKb(mLocalExportZipFile));
                 sendNotificationIfEnabled(NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR);
                 return false;
             }
             Slog.i(TAG, "Export completed.");
-            Slog.d(TAG, "original file size: " + intSizeInKb(localExportDbFile));
+            Slog.d(TAG, "original file size: " + intSizeInKb(mLocalExportDbFile));
             recordSuccess(
                     startTimeMillis,
-                    intSizeInKb(localExportDbFile),
-                    intSizeInKb(localExportZipFile),
+                    intSizeInKb(mLocalExportDbFile),
+                    intSizeInKb(mLocalExportZipFile),
                     destinationUri);
             return true;
         } finally {
-            Slog.i(TAG, "Delete local export files started.");
-            if (localExportDbFile.exists()) {
-                SQLiteDatabase.deleteDatabase(localExportDbFile);
-            }
-            if (localExportZipFile.exists()) {
-                localExportZipFile.delete();
-            }
-            Slog.i(TAG, "Delete local export files completed.");
+            deleteLocalExportFiles();
         }
     }
 
@@ -242,6 +236,17 @@ public class ExportManager {
         int timeToErrorMillis = (int) (mClock.millis() - startTimeMillis);
         ExportImportLogger.logExportStatus(
                 exportStatus, timeToErrorMillis, originalDataSizeKb, compressedDataSizeKb);
+    }
+
+    void deleteLocalExportFiles() {
+        Slog.i(TAG, "Delete local export files started.");
+        if (mLocalExportDbFile.exists()) {
+            SQLiteDatabase.deleteDatabase(mLocalExportDbFile);
+        }
+        if (mLocalExportZipFile.exists()) {
+            mLocalExportZipFile.delete();
+        }
+        Slog.i(TAG, "Delete local export files completed.");
     }
 
     private void exportLocally(File destination) throws IOException {
