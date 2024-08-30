@@ -27,7 +27,7 @@ import android.health.connect.aidl.IInsertRecordsResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourcesResponseCallback;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
-import android.health.connect.aidl.IMedicalResourceTypesInfoResponseCallback;
+import android.health.connect.aidl.IMedicalResourceTypeInfosCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
@@ -513,5 +513,5 @@ interface IHealthConnectService {
      *
      * @param callback Callback to receive result of performing this operation.
      */
-    void queryAllMedicalResourceTypesInfo(in IMedicalResourceTypesInfoResponseCallback callback);
+    void queryAllMedicalResourceTypeInfos(in IMedicalResourceTypeInfosCallback callback);
 }

@@ -62,7 +62,7 @@ import android.health.connect.HealthConnectManager.DataDownloadState;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.MedicalResourceId;
-import android.health.connect.MedicalResourceTypeInfoResponse;
+import android.health.connect.MedicalResourceTypeInfo;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
@@ -92,7 +92,7 @@ import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourcesResponseCallback;
-import android.health.connect.aidl.IMedicalResourceTypesInfoResponseCallback;
+import android.health.connect.aidl.IMedicalResourceTypeInfosCallback;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
@@ -2887,12 +2887,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     /**
-     * Retrieves {@link MedicalResourceTypeInfoResponse} for each {@link
+     * Retrieves {@link MedicalResourceTypeInfo} for each {@link
      * MedicalResource.MedicalResourceType}.
      */
     @Override
-    public void queryAllMedicalResourceTypesInfo(
-            @NonNull IMedicalResourceTypesInfoResponseCallback callback) {
+    public void queryAllMedicalResourceTypeInfos(
+            @NonNull IMedicalResourceTypeInfosCallback callback) {
         checkParamsNonNull(callback);
         final ErrorCallback errorCallback = callback::onError;
         final int uid = Binder.getCallingUid();
@@ -2917,7 +2917,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         enforceIsForegroundUser(userHandle);
                         mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
                         throwExceptionIfDataSyncInProgress();
-                        callback.onResult(getPopulatedMedicalResourceTypeInfoResponses());
+                        callback.onResult(getPopulatedMedicalResourceTypeInfos());
                     } catch (SQLiteException sqLiteException) {
                         tryAndThrowException(
                                 errorCallback, sqLiteException, HealthConnectException.ERROR_IO);
@@ -3126,15 +3126,14 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         return recordTypeInfoResponses;
     }
 
-    private List<MedicalResourceTypeInfoResponse> getPopulatedMedicalResourceTypeInfoResponses() {
+    private List<MedicalResourceTypeInfo> getPopulatedMedicalResourceTypeInfos() {
         // TODO(b/350010200): Get valid types from validator once we have it.
         List<Integer> validTypes = List.of(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
         return validTypes.stream()
                 .map(
                         medicalResourceType -> {
                             // TODO(b/350014259): Get contributing data sources from DB.
-                            return new MedicalResourceTypeInfoResponse(
-                                    medicalResourceType, Set.of());
+                            return new MedicalResourceTypeInfo(medicalResourceType, Set.of());
                         })
                 .collect(toList());
     }

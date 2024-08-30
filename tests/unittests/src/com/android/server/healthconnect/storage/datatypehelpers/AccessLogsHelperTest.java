@@ -121,7 +121,7 @@ public class AccessLogsHelperTest {
                 .isEqualTo(Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION));
         assertThat(accessLog.getRecordTypes()).isEmpty();
         assertThat(accessLog.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
-        assertThat(accessLog.getMedicalDataSource()).isFalse();
+        assertThat(accessLog.isMedicalDataSourceAccessed()).isFalse();
         assertThat(accessLog.getAccessTime()).isNotNull();
     }
 
@@ -151,7 +151,7 @@ public class AccessLogsHelperTest {
                         Set.of(MEDICAL_RESOURCE_TYPE_UNKNOWN, MEDICAL_RESOURCE_TYPE_IMMUNIZATION));
         assertThat(accessLog.getRecordTypes()).isEmpty();
         assertThat(accessLog.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
-        assertThat(accessLog.getMedicalDataSource()).isFalse();
+        assertThat(accessLog.isMedicalDataSourceAccessed()).isFalse();
         assertThat(accessLog.getAccessTime()).isNotNull();
     }
 
@@ -177,7 +177,7 @@ public class AccessLogsHelperTest {
         assertThat(accessLog.getMedicalResourceTypes()).isEmpty();
         assertThat(accessLog.getRecordTypes()).isEmpty();
         assertThat(accessLog.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
-        assertThat(accessLog.getMedicalDataSource()).isTrue();
+        assertThat(accessLog.isMedicalDataSourceAccessed()).isTrue();
         assertThat(accessLog.getAccessTime()).isNotNull();
     }
 
@@ -198,7 +198,7 @@ public class AccessLogsHelperTest {
         assertThat(accessLog.getMedicalResourceTypes()).isEmpty();
         assertThat(accessLog.getRecordTypes()).isEqualTo(List.of(StepsRecord.class));
         assertThat(accessLog.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
-        assertThat(accessLog.getMedicalDataSource()).isFalse();
+        assertThat(accessLog.isMedicalDataSourceAccessed()).isFalse();
         assertThat(accessLog.getAccessTime()).isNotNull();
     }
 
@@ -232,7 +232,7 @@ public class AccessLogsHelperTest {
         assertThat(accessLog1.getMedicalResourceTypes()).isEmpty();
         assertThat(accessLog1.getRecordTypes()).isEmpty();
         assertThat(accessLog1.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
-        assertThat(accessLog1.getMedicalDataSource()).isTrue();
+        assertThat(accessLog1.isMedicalDataSourceAccessed()).isTrue();
         assertThat(accessLog1.getAccessTime()).isNotNull();
 
         assertThat(accessLog2.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
@@ -240,7 +240,7 @@ public class AccessLogsHelperTest {
                 .isEqualTo(Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION));
         assertThat(accessLog2.getRecordTypes()).isEmpty();
         assertThat(accessLog2.getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
-        assertThat(accessLog2.getMedicalDataSource()).isFalse();
+        assertThat(accessLog2.isMedicalDataSourceAccessed()).isFalse();
         assertThat(accessLog2.getAccessTime()).isNotNull();
     }
 }

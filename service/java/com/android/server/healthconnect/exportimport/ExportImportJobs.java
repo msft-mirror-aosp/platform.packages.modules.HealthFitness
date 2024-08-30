@@ -17,6 +17,7 @@
 package com.android.server.healthconnect.exportimport;
 
 import static com.android.healthfitness.flags.Flags.exportImport;
+import static com.android.healthfitness.flags.Flags.exportImportFastFollow;
 
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -29,6 +30,7 @@ import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectDailyService;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.util.Objects;
 
@@ -41,14 +43,34 @@ public class ExportImportJobs {
     private static final String TAG = "HealthConnectExportJobs";
     private static final int MIN_JOB_ID = ExportImportJobs.class.hashCode();
 
-    @VisibleForTesting static final String IS_FIRST_EXPORT = "is_first_export";
+    @VisibleForTesting static final String SHOULD_SCHEDULE_EARLY = "should_schedule_early";
     @VisibleForTesting static final String NAMESPACE = "HEALTH_CONNECT_IMPORT_EXPORT_JOBS";
 
     public static final String PERIODIC_EXPORT_JOB_NAME = "periodic_export_job";
 
     /** Schedule the periodic export job. */
     public static void schedulePeriodicExportJob(Context context, int userId) {
+        schedulePeriodicExportJob(context, userId, /* isRescheduled= */ true);
+    }
+
+    @VisibleForTesting
+    static void schedulePeriodicExportJob(Context context, int userId, boolean isRescheduled) {
         int periodInDays = ExportImportSettingsStorage.getScheduledExportPeriodInDays();
+        if (exportImportFastFollow() && periodInDays <= 0) {
+            ExportManager exportManager = new ExportManager(context, Clock.systemUTC());
+
+            // If period is 0 the user has turned export off, so we should cancel the job.
+            Objects.requireNonNull(context.getSystemService(JobScheduler.class))
+                    .forNamespace(NAMESPACE)
+                    .cancelAll();
+            // If export is off we try to delete the local files, just in case it happened the
+            // rare case where those files weren't delete after the last export.
+            exportManager.deleteLocalExportFiles();
+
+            return;
+        }
+        // TODO(b/325599089): Remove once exportImportFastFollow flag has been deployed and
+        //  without concerns of needing to roll-back.
         if (periodInDays <= 0) {
             return;
         }
@@ -65,14 +87,15 @@ public class ExportImportJobs {
         }
         if (ExportImportSettingsStorage.getLastSuccessfulExportTime() == null
                 || !ExportImportSettingsStorage.getUri()
-                        .equals(ExportImportSettingsStorage.getLastSuccessfulExportUri())) {
+                        .equals(ExportImportSettingsStorage.getLastSuccessfulExportUri())
+                || (isRescheduled && exportImportFastFollow())) {
 
             // Shorten the period for the first export to any new URI.
             // This will be changed back once the first export to any new location is done.
             periodInMillis = Duration.ofHours(1).toMillis();
             flexInMillis = periodInMillis;
 
-            extras.putBoolean(IS_FIRST_EXPORT, true);
+            extras.putBoolean(SHOULD_SCHEDULE_EARLY, true);
         }
         Slog.i(
                 TAG,
@@ -113,14 +136,13 @@ public class ExportImportJobs {
             // reschedule.
             return true;
         }
+
         boolean exportSuccess = exportManager.runExport();
-        boolean firstExport = extras.getBoolean(IS_FIRST_EXPORT, false);
-        if (exportSuccess && firstExport) {
-            schedulePeriodicExportJob(context, userId);
+        boolean shouldScheduleEarly = extras.getBoolean(SHOULD_SCHEDULE_EARLY, false);
+        if (exportSuccess && shouldScheduleEarly) {
+            schedulePeriodicExportJob(context, userId, /* isRescheduled= */ false);
         }
         return exportSuccess;
-
-        // TODO(b/325599089): Cancel job if flag is off.
 
         // TODO(b/325599089): Do we need an additional periodic / one-off task to make sure a single
         //  export completes? We need to test if JobScheduler will call the job again if jobFinished
