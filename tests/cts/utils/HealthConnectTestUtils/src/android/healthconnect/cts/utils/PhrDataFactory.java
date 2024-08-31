@@ -54,12 +54,18 @@ public class PhrDataFactory {
     public static final String DIFFERENT_FHIR_DATA_IMMUNIZATION =
             "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization2\"}";
     public static final String DIFFERENT_FHIR_RESOURCE_ID_IMMUNIZATION = "Immunization2";
+    public static final String FHIR_RESOURCE_TYPE_STRING_IMMUNIZATION = "Immunization";
 
     public static final String FHIR_DATA_IMMUNIZATION_ID_NOT_EXISTS =
             "{\"resourceType\" : \"Immunization\"}";
+    public static final String FHIR_DATA_IMMUNIZATION_ID_EMPTY =
+            "{\"resourceType\" : \"StructureDefinition\", \"id\" : \"\"}";
     public static final String FHIR_DATA_IMMUNIZATION_RESOURCE_TYPE_NOT_EXISTS =
             "{\"id\" : \"Immunization1\"}";
     public static final String FHIR_DATA_IMMUNIZATION_FIELD_MISSING_INVALID = "{\"id\" : }";
+    public static final String FHIR_RESOURCE_TYPE_UNSUPPORTED = "StructureDefinition";
+    public static final String FHIR_DATA_IMMUNIZATION_UNSUPPORTED_RESOURCE_TYPE =
+            "{\"resourceType\" : \"StructureDefinition\", \"id\" : \"Immunization1\"}";
     public static final String FHIR_RESOURCE_ID_IMMUNIZATION = "Immunization1";
 
     public static final String FHIR_DATA_ALLERGY =
@@ -85,6 +91,10 @@ public class PhrDataFactory {
 
     /** {@link FhirVersion} for FHIR version <a href="https://www.hl7.org/fhir/R4B/">R4B</a>. */
     public static final FhirVersion FHIR_VERSION_R4B = parseFhirVersion(R4B_VERSION_STRING);
+
+    public static final String UNSUPPORTED_VERSION_STRING = "4.5.5";
+    public static final FhirVersion FHIR_VERSION_UNSUPPORTED =
+            parseFhirVersion(UNSUPPORTED_VERSION_STRING);
 
     public static final String PAGE_TOKEN = "111";
 
@@ -280,11 +290,17 @@ public class PhrDataFactory {
                 .build();
     }
 
+    /**
+     * Creates and returns a {@link UpsertMedicalResourceRequest.Builder} with default arguments.
+     */
+    public static UpsertMedicalResourceRequest.Builder getUpsertMedicalResourceRequestBuilder() {
+        return new UpsertMedicalResourceRequest.Builder(
+                DATA_SOURCE_ID, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION);
+    }
+
     /** Creates and returns a {@link UpsertMedicalResourceRequest} with default arguments. */
     public static UpsertMedicalResourceRequest getUpsertMedicalResourceRequest() {
-        return new UpsertMedicalResourceRequest.Builder(
-                        DATA_SOURCE_ID, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
-                .build();
+        return getUpsertMedicalResourceRequestBuilder().build();
     }
 
     /**

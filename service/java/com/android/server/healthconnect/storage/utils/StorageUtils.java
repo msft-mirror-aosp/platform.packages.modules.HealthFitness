@@ -85,6 +85,9 @@ public final class StorageUtils {
     public static final String BLOB_UNIQUE_NON_NULL = "BLOB NOT NULL UNIQUE";
     public static final String BLOB_NON_NULL = "BLOB NOT NULL";
     public static final String SELECT_ALL = "SELECT * FROM ";
+    public static final String SELECT = "SELECT ";
+    public static final String FROM = " FROM ";
+    public static final String DISTINCT = "DISTINCT ";
     public static final String LIMIT_SIZE = " LIMIT ";
     public static final int BOOLEAN_FALSE_VALUE = 0;
     public static final int BOOLEAN_TRUE_VALUE = 1;

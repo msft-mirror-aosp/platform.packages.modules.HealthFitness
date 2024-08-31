@@ -84,13 +84,17 @@ public final class SqlJoin {
      * Returns query by applying JOIN condition on the innerQuery
      *
      * @param innerQuery An inner query to be used for the JOIN
+     * @param selectStatement the outer select statement where you can specify column names,
+     *     DISTINCT, etc.
      * @return Final query with JOIN condition
      */
-    public String getJoinWithQueryCommand(String innerQuery) {
+    @NonNull
+    public String getJoinWithQueryCommand(
+            @NonNull String selectStatement, @NonNull String innerQuery) {
         if (innerQuery == null) {
             throw new IllegalArgumentException("Inner query cannot be null");
         }
-        return SELECT_ALL
+        return selectStatement
                 + "( "
                 + innerQuery
                 + " ) AS "

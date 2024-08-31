@@ -26,10 +26,10 @@ import com.android.healthconnect.controller.permissions.api.RevokeAllHealthPermi
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
 import com.android.healthconnect.controller.permissions.app.LoadAppPermissionsStatusUseCase
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -116,7 +116,10 @@ class AppPermissionViewModelTest {
         Dispatchers.setMain(testDispatcher)
         loadAppPermissionsStatusUseCase =
             LoadAppPermissionsStatusUseCase(
-                getGrantedHealthPermissionsUseCase, healthPermissionReader, Dispatchers.Main)
+                getGrantedHealthPermissionsUseCase,
+                healthPermissionReader,
+                Dispatchers.Main,
+            )
         appPermissionViewModel =
             AppPermissionViewModel(
                 appInfoReader,
@@ -130,7 +133,8 @@ class AppPermissionViewModelTest {
                 loadExerciseRoutePermissionUseCase,
                 healthPermissionReader,
                 featureUtils,
-                Dispatchers.Main)
+                Dispatchers.Main,
+            )
     }
 
     @After
@@ -155,12 +159,14 @@ class AppPermissionViewModelTest {
         val grantedFitnessPermissionsObserver = TestObserver<Set<FitnessPermission>>()
         appPermissionViewModel.fitnessPermissions.observeForever(fitnessPermissionsObserver)
         appPermissionViewModel.grantedFitnessPermissions.observeForever(
-            grantedFitnessPermissionsObserver)
+            grantedFitnessPermissionsObserver
+        )
         val medicalPermissionsObserver = TestObserver<List<MedicalPermission>>()
         val grantedMedicalPermissionsObserver = TestObserver<Set<MedicalPermission>>()
         appPermissionViewModel.medicalPermissions.observeForever(medicalPermissionsObserver)
         appPermissionViewModel.grantedMedicalPermissions.observeForever(
-            grantedMedicalPermissionsObserver)
+            grantedMedicalPermissionsObserver
+        )
 
         appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
@@ -176,7 +182,9 @@ class AppPermissionViewModelTest {
                     readExercisePermission,
                     readNutritionPermission,
                     writeSleepPermission,
-                    writeDistancePermission))
+                    writeDistancePermission,
+                )
+            )
         assertThat(grantedFitnessPermissionsResult)
             .containsExactlyElementsIn(setOf(readExercisePermission, writeDistancePermission))
         assertThat(medicalPermissionsResult).containsExactlyElementsIn(listOf<MedicalPermission>())
@@ -193,10 +201,12 @@ class AppPermissionViewModelTest {
         val grantedMedicalPermissionsObserver = TestObserver<Set<MedicalPermission>>()
         appPermissionViewModel.fitnessPermissions.observeForever(fitnessPermissionsObserver)
         appPermissionViewModel.grantedFitnessPermissions.observeForever(
-            grantedFitnessPermissionsObserver)
+            grantedFitnessPermissionsObserver
+        )
         appPermissionViewModel.medicalPermissions.observeForever(medicalPermissionsObserver)
         appPermissionViewModel.grantedMedicalPermissions.observeForever(
-            grantedMedicalPermissionsObserver)
+            grantedMedicalPermissionsObserver
+        )
 
         appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
@@ -211,7 +221,9 @@ class AppPermissionViewModelTest {
                     readExercisePermission,
                     readNutritionPermission,
                     writeSleepPermission,
-                    writeDistancePermission))
+                    writeDistancePermission,
+                )
+            )
         assertThat(grantedFitnessPermissionsResult)
             .containsExactlyElementsIn(setOf(readExercisePermission))
         assertThat(medicalPermissionsResult)
@@ -226,17 +238,21 @@ class AppPermissionViewModelTest {
         whenever(healthPermissionReader.getValidHealthPermissions(any()))
             .thenReturn(listOf(readImmunization, writeMedicalData))
         getGrantedHealthPermissionsUseCase.updateData(
-            TEST_APP_PACKAGE_NAME, listOf(writeMedicalData.toString()))
+            TEST_APP_PACKAGE_NAME,
+            listOf(writeMedicalData.toString()),
+        )
         val fitnessPermissionsObserver = TestObserver<List<FitnessPermission>>()
         val grantedFitnessPermissionsObserver = TestObserver<Set<FitnessPermission>>()
         val medicalPermissionsObserver = TestObserver<List<MedicalPermission>>()
         val grantedMedicalPermissionsObserver = TestObserver<Set<MedicalPermission>>()
         appPermissionViewModel.fitnessPermissions.observeForever(fitnessPermissionsObserver)
         appPermissionViewModel.grantedFitnessPermissions.observeForever(
-            grantedFitnessPermissionsObserver)
+            grantedFitnessPermissionsObserver
+        )
         appPermissionViewModel.medicalPermissions.observeForever(medicalPermissionsObserver)
         appPermissionViewModel.grantedMedicalPermissions.observeForever(
-            grantedMedicalPermissionsObserver)
+            grantedMedicalPermissionsObserver
+        )
 
         appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
@@ -263,19 +279,25 @@ class AppPermissionViewModelTest {
                     readExercisePermission,
                     readNutritionPermission,
                     writeSleepPermission,
-                    writeDistancePermission))
+                    writeDistancePermission,
+                )
+            )
         getGrantedHealthPermissionsUseCase.updateData(
-            TEST_APP_PACKAGE_NAME, listOf(readExercisePermission.toString()))
+            TEST_APP_PACKAGE_NAME,
+            listOf(readExercisePermission.toString()),
+        )
         val fitnessPermissionsObserver = TestObserver<List<FitnessPermission>>()
         val grantedFitnessPermissionsObserver = TestObserver<Set<FitnessPermission>>()
         val medicalPermissionsObserver = TestObserver<List<MedicalPermission>>()
         val grantedMedicalPermissionsObserver = TestObserver<Set<MedicalPermission>>()
         appPermissionViewModel.fitnessPermissions.observeForever(fitnessPermissionsObserver)
         appPermissionViewModel.grantedFitnessPermissions.observeForever(
-            grantedFitnessPermissionsObserver)
+            grantedFitnessPermissionsObserver
+        )
         appPermissionViewModel.medicalPermissions.observeForever(medicalPermissionsObserver)
         appPermissionViewModel.grantedMedicalPermissions.observeForever(
-            grantedMedicalPermissionsObserver)
+            grantedMedicalPermissionsObserver
+        )
 
         appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
@@ -299,17 +321,21 @@ class AppPermissionViewModelTest {
         whenever(healthPermissionReader.getValidHealthPermissions(any()))
             .thenReturn(listOf(writeMedicalData, readImmunization))
         getGrantedHealthPermissionsUseCase.updateData(
-            TEST_APP_PACKAGE_NAME, listOf(writeMedicalData.toString()))
+            TEST_APP_PACKAGE_NAME,
+            listOf(writeMedicalData.toString()),
+        )
         val fitnessPermissionsObserver = TestObserver<List<FitnessPermission>>()
         val grantedFitnessPermissionsObserver = TestObserver<Set<FitnessPermission>>()
         val medicalPermissionsObserver = TestObserver<List<MedicalPermission>>()
         val grantedMedicalPermissionsObserver = TestObserver<Set<MedicalPermission>>()
         appPermissionViewModel.fitnessPermissions.observeForever(fitnessPermissionsObserver)
         appPermissionViewModel.grantedFitnessPermissions.observeForever(
-            grantedFitnessPermissionsObserver)
+            grantedFitnessPermissionsObserver
+        )
         appPermissionViewModel.medicalPermissions.observeForever(medicalPermissionsObserver)
         appPermissionViewModel.grantedMedicalPermissions.observeForever(
-            grantedMedicalPermissionsObserver)
+            grantedMedicalPermissionsObserver
+        )
 
         appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
@@ -337,20 +363,25 @@ class AppPermissionViewModelTest {
                     readImmunization,
                     writeSleepPermission,
                     writeDistancePermission,
-                    writeMedicalData))
+                    writeMedicalData,
+                )
+            )
         getGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME,
-            listOf(readExercisePermission.toString(), writeMedicalData.toString()))
+            listOf(readExercisePermission.toString(), writeMedicalData.toString()),
+        )
         val fitnessPermissionsObserver = TestObserver<List<FitnessPermission>>()
         val grantedFitnessPermissionsObserver = TestObserver<Set<FitnessPermission>>()
         val medicalPermissionsObserver = TestObserver<List<MedicalPermission>>()
         val grantedMedicalPermissionsObserver = TestObserver<Set<MedicalPermission>>()
         appPermissionViewModel.fitnessPermissions.observeForever(fitnessPermissionsObserver)
         appPermissionViewModel.grantedFitnessPermissions.observeForever(
-            grantedFitnessPermissionsObserver)
+            grantedFitnessPermissionsObserver
+        )
         appPermissionViewModel.medicalPermissions.observeForever(medicalPermissionsObserver)
         appPermissionViewModel.grantedMedicalPermissions.observeForever(
-            grantedMedicalPermissionsObserver)
+            grantedMedicalPermissionsObserver
+        )
 
         appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
@@ -377,7 +408,10 @@ class AppPermissionViewModelTest {
 
         val result =
             appPermissionViewModel.updatePermission(
-                TEST_APP_PACKAGE_NAME, readExercisePermission, true)
+                TEST_APP_PACKAGE_NAME,
+                readExercisePermission,
+                true,
+            )
         advanceUntilIdle()
 
         assertThat(grantedPermissionsObserver.getLastValue())
@@ -395,7 +429,10 @@ class AppPermissionViewModelTest {
 
         val result =
             appPermissionViewModel.updatePermission(
-                TEST_APP_PACKAGE_NAME, readExercisePermission, true)
+                TEST_APP_PACKAGE_NAME,
+                readExercisePermission,
+                true,
+            )
         advanceUntilIdle()
 
         assertThat(grantedPermissionsObserver.getLastValue()).isEmpty()
@@ -422,13 +459,18 @@ class AppPermissionViewModelTest {
                     readExercisePermission,
                     readNutritionPermission,
                     writeSleepPermission,
-                    writeDistancePermission))
+                    writeDistancePermission,
+                )
+            )
         assertThat(grantedPermissionsResult)
             .containsExactlyElementsIn(setOf(readExercisePermission, writeDistancePermission))
 
         val result =
             appPermissionViewModel.updatePermission(
-                TEST_APP_PACKAGE_NAME, writeDistancePermission, false)
+                TEST_APP_PACKAGE_NAME,
+                writeDistancePermission,
+                false,
+            )
         advanceUntilIdle()
 
         assertThat(grantedPermissionsObserver.getLastValue())
@@ -449,7 +491,8 @@ class AppPermissionViewModelTest {
                     readHistoryDataPermission,
                     writeSleepPermission,
                     writeDistancePermission,
-                ))
+                )
+            )
         getGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME,
             listOf(
@@ -457,12 +500,16 @@ class AppPermissionViewModelTest {
                 writeDistancePermission.toString(),
                 readExerciseRoutesPermission.additionalPermission,
                 readHistoryDataPermission.additionalPermission,
-                readDataInBackgroundPermission.additionalPermission))
+                readDataInBackgroundPermission.additionalPermission,
+            ),
+        )
 
         loadExerciseRoutePermissionUseCase.setExerciseRouteState(
             ExerciseRouteState(
                 exerciseRoutePermissionState = PermissionUiState.ALWAYS_ALLOW,
-                exercisePermissionState = PermissionUiState.ALWAYS_ALLOW))
+                exercisePermissionState = PermissionUiState.ALWAYS_ALLOW,
+            )
+        )
 
         val appPermissionsObserver = TestObserver<List<FitnessPermission>>()
         val grantedPermissionsObserver = TestObserver<Set<FitnessPermission>>()
@@ -481,13 +528,18 @@ class AppPermissionViewModelTest {
                     readExercisePermission,
                     readNutritionPermission,
                     writeSleepPermission,
-                    writeDistancePermission))
+                    writeDistancePermission,
+                )
+            )
         assertThat(grantedPermissionsResult)
             .containsExactlyElementsIn(setOf(readNutritionPermission, writeDistancePermission))
 
         val result =
             appPermissionViewModel.updatePermission(
-                TEST_APP_PACKAGE_NAME, readNutritionPermission, false)
+                TEST_APP_PACKAGE_NAME,
+                readNutritionPermission,
+                false,
+            )
         advanceUntilIdle()
 
         assertThat(grantedPermissionsObserver.getLastValue())
@@ -514,19 +566,24 @@ class AppPermissionViewModelTest {
                     readHistoryDataPermission,
                     writeSleepPermission,
                     writeDistancePermission,
-                ))
+                )
+            )
         getGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME,
             listOf(
                 readExercisePermission.toString(),
                 writeDistancePermission.toString(),
                 readHistoryDataPermission.additionalPermission,
-                readDataInBackgroundPermission.additionalPermission))
+                readDataInBackgroundPermission.additionalPermission,
+            ),
+        )
 
         loadExerciseRoutePermissionUseCase.setExerciseRouteState(
             ExerciseRouteState(
                 exerciseRoutePermissionState = PermissionUiState.ASK_EVERY_TIME,
-                exercisePermissionState = PermissionUiState.ALWAYS_ALLOW))
+                exercisePermissionState = PermissionUiState.ALWAYS_ALLOW,
+            )
+        )
 
         val appPermissionsObserver = TestObserver<List<FitnessPermission>>()
         val grantedPermissionsObserver = TestObserver<Set<FitnessPermission>>()
@@ -545,13 +602,18 @@ class AppPermissionViewModelTest {
                     readExercisePermission,
                     readNutritionPermission,
                     writeSleepPermission,
-                    writeDistancePermission))
+                    writeDistancePermission,
+                )
+            )
         assertThat(grantedPermissionsResult)
             .containsExactlyElementsIn(setOf(readExercisePermission, writeDistancePermission))
 
         val result =
             appPermissionViewModel.updatePermission(
-                TEST_APP_PACKAGE_NAME, readExercisePermission, false)
+                TEST_APP_PACKAGE_NAME,
+                readExercisePermission,
+                false,
+            )
         advanceUntilIdle()
 
         assertThat(grantedPermissionsObserver.getLastValue())
@@ -586,14 +648,19 @@ class AppPermissionViewModelTest {
                     readExercisePermission,
                     readNutritionPermission,
                     writeSleepPermission,
-                    writeDistancePermission))
+                    writeDistancePermission,
+                )
+            )
         assertThat(grantedPermissionsResult)
             .containsExactlyElementsIn(setOf(readExercisePermission, writeDistancePermission))
 
         whenever(grantPermissionsUseCase.invoke(any(), any())).thenThrow(RuntimeException("Error!"))
         val result =
             appPermissionViewModel.updatePermission(
-                TEST_APP_PACKAGE_NAME, readExercisePermission, true)
+                TEST_APP_PACKAGE_NAME,
+                readExercisePermission,
+                true,
+            )
         advanceUntilIdle()
 
         assertThat(grantedPermissionsObserver.getLastValue())
@@ -622,7 +689,9 @@ class AppPermissionViewModelTest {
                     readExercisePermission,
                     readNutritionPermission,
                     writeSleepPermission,
-                    writeDistancePermission))
+                    writeDistancePermission,
+                )
+            )
         assertThat(grantedPermissionsResult)
             .containsExactlyElementsIn(setOf(readExercisePermission, writeDistancePermission))
 
@@ -635,7 +704,9 @@ class AppPermissionViewModelTest {
                     readExercisePermission,
                     readNutritionPermission,
                     writeSleepPermission,
-                    writeDistancePermission))
+                    writeDistancePermission,
+                )
+            )
         assertThat(result).isTrue()
     }
 
@@ -646,7 +717,8 @@ class AppPermissionViewModelTest {
         val grantedMedicalPermissionsObserver = TestObserver<Set<MedicalPermission>>()
         appPermissionViewModel.medicalPermissions.observeForever(medicalPermissionsObserver)
         appPermissionViewModel.grantedMedicalPermissions.observeForever(
-            grantedMedicalPermissionsObserver)
+            grantedMedicalPermissionsObserver
+        )
 
         appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
@@ -686,7 +758,9 @@ class AppPermissionViewModelTest {
                     readExercisePermission,
                     readNutritionPermission,
                     writeSleepPermission,
-                    writeDistancePermission))
+                    writeDistancePermission,
+                )
+            )
         assertThat(grantedPermissionsResult)
             .containsExactlyElementsIn(setOf(readExercisePermission, writeDistancePermission))
 
@@ -706,7 +780,8 @@ class AppPermissionViewModelTest {
         val grantedMedicalPermissionsObserver = TestObserver<Set<MedicalPermission>>()
         appPermissionViewModel.medicalPermissions.observeForever(medicalPermissionsObserver)
         appPermissionViewModel.grantedMedicalPermissions.observeForever(
-            grantedMedicalPermissionsObserver)
+            grantedMedicalPermissionsObserver
+        )
 
         appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
@@ -736,10 +811,12 @@ class AppPermissionViewModelTest {
         val grantedMedicalPermissionsObserver = TestObserver<Set<MedicalPermission>>()
         appPermissionViewModel.fitnessPermissions.observeForever(fitnessPermissionsObserver)
         appPermissionViewModel.grantedFitnessPermissions.observeForever(
-            grantedFitnessPermissionsObserver)
+            grantedFitnessPermissionsObserver
+        )
         appPermissionViewModel.medicalPermissions.observeForever(medicalPermissionsObserver)
         appPermissionViewModel.grantedMedicalPermissions.observeForever(
-            grantedMedicalPermissionsObserver)
+            grantedMedicalPermissionsObserver
+        )
 
         appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
@@ -755,7 +832,9 @@ class AppPermissionViewModelTest {
                     readExercisePermission,
                     readNutritionPermission,
                     writeSleepPermission,
-                    writeDistancePermission))
+                    writeDistancePermission,
+                )
+            )
         assertThat(grantedFitnessPermissionsResult)
             .containsExactlyElementsIn(setOf(readExercisePermission))
         assertThat(medicalPermissionsResult)
@@ -782,10 +861,12 @@ class AppPermissionViewModelTest {
         val grantedMedicalPermissionsObserver = TestObserver<Set<MedicalPermission>>()
         appPermissionViewModel.fitnessPermissions.observeForever(fitnessPermissionsObserver)
         appPermissionViewModel.grantedFitnessPermissions.observeForever(
-            grantedFitnessPermissionsObserver)
+            grantedFitnessPermissionsObserver
+        )
         appPermissionViewModel.medicalPermissions.observeForever(medicalPermissionsObserver)
         appPermissionViewModel.grantedMedicalPermissions.observeForever(
-            grantedMedicalPermissionsObserver)
+            grantedMedicalPermissionsObserver
+        )
 
         appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
@@ -814,7 +895,7 @@ class AppPermissionViewModelTest {
     }
 
     @Test
-    fun revokeAllFitnessPermissions_whenSuccessful_returnsTrue() = runTest {
+    fun revokeAllPermissions_fitnessPermissionsDeclaredOnly_revokesFitness() = runTest {
         setupDeclaredAndGrantedFitnessPermissions()
         val appPermissionsObserver = TestObserver<List<FitnessPermission>>()
         val grantedPermissionsObserver = TestObserver<Set<FitnessPermission>>()
@@ -832,7 +913,9 @@ class AppPermissionViewModelTest {
                     readExercisePermission,
                     readNutritionPermission,
                     writeSleepPermission,
-                    writeDistancePermission))
+                    writeDistancePermission,
+                )
+            )
         assertThat(grantedPermissionsResult)
             .containsExactlyElementsIn(setOf(readExercisePermission, writeDistancePermission))
 
@@ -851,10 +934,12 @@ class AppPermissionViewModelTest {
         val grantedMedicalPermissionsObserver = TestObserver<Set<MedicalPermission>>()
         appPermissionViewModel.fitnessPermissions.observeForever(fitnessPermissionsObserver)
         appPermissionViewModel.grantedFitnessPermissions.observeForever(
-            grantedFitnessPermissionsObserver)
+            grantedFitnessPermissionsObserver
+        )
         appPermissionViewModel.medicalPermissions.observeForever(medicalPermissionsObserver)
         appPermissionViewModel.grantedMedicalPermissions.observeForever(
-            grantedMedicalPermissionsObserver)
+            grantedMedicalPermissionsObserver
+        )
 
         appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
@@ -869,7 +954,9 @@ class AppPermissionViewModelTest {
                     readExercisePermission,
                     readNutritionPermission,
                     writeSleepPermission,
-                    writeDistancePermission))
+                    writeDistancePermission,
+                )
+            )
         assertThat(grantedFitnessPermissionsResult)
             .containsExactlyElementsIn(setOf(readExercisePermission))
         assertThat(medicalPermissionsResult)
@@ -882,6 +969,82 @@ class AppPermissionViewModelTest {
         assertThat(grantedFitnessPermissionsObserver.getLastValue()).isEmpty()
         assertThat(grantedMedicalPermissionsObserver.getLastValue()).isEmpty()
         assertThat(result).isTrue()
+    }
+
+    @Test
+    fun revokeAllFitnessPermissions_fitnessAndMedical_revokesFitnessOnly() = runTest {
+        setupDeclaredAndGrantedFitnessAndMedicalPermissions()
+        val fitnessObserver = TestObserver<List<FitnessPermission>>()
+        val grantedFitnessObserver = TestObserver<Set<FitnessPermission>>()
+        val medicalObserver = TestObserver<List<MedicalPermission>>()
+        val grantedMedicalObserver = TestObserver<Set<MedicalPermission>>()
+        appPermissionViewModel.fitnessPermissions.observeForever(fitnessObserver)
+        appPermissionViewModel.grantedFitnessPermissions.observeForever(grantedFitnessObserver)
+        appPermissionViewModel.medicalPermissions.observeForever(medicalObserver)
+        appPermissionViewModel.grantedMedicalPermissions.observeForever(grantedMedicalObserver)
+        appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+        assertThat(fitnessObserver.getLastValue())
+            .containsExactlyElementsIn(
+                listOf(
+                    readExercisePermission,
+                    readNutritionPermission,
+                    writeSleepPermission,
+                    writeDistancePermission,
+                )
+            )
+        assertThat(grantedFitnessObserver.getLastValue())
+            .containsExactlyElementsIn(setOf(readExercisePermission))
+        assertThat(medicalObserver.getLastValue())
+            .containsExactlyElementsIn(listOf(readImmunization, writeMedicalData))
+        assertThat(grantedMedicalObserver.getLastValue())
+            .containsExactlyElementsIn(setOf(readImmunization))
+
+        val result = appPermissionViewModel.revokeAllFitnessPermissions(TEST_APP_PACKAGE_NAME)
+
+        advanceUntilIdle()
+        assertThat(result).isTrue()
+        assertThat(grantedFitnessObserver.getLastValue()).isEmpty()
+        assertThat(grantedMedicalObserver.getLastValue())
+            .containsExactlyElementsIn(setOf(readImmunization))
+    }
+
+    @Test
+    fun revokeAllMedicalPermissions_fitnessAndMedical_revokesMedicalOnly() = runTest {
+        setupDeclaredAndGrantedFitnessAndMedicalPermissions()
+        val fitnessObserver = TestObserver<List<FitnessPermission>>()
+        val grantedFitnessObserver = TestObserver<Set<FitnessPermission>>()
+        val medicalObserver = TestObserver<List<MedicalPermission>>()
+        val grantedMedicalObserver = TestObserver<Set<MedicalPermission>>()
+        appPermissionViewModel.fitnessPermissions.observeForever(fitnessObserver)
+        appPermissionViewModel.grantedFitnessPermissions.observeForever(grantedFitnessObserver)
+        appPermissionViewModel.medicalPermissions.observeForever(medicalObserver)
+        appPermissionViewModel.grantedMedicalPermissions.observeForever(grantedMedicalObserver)
+        appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+        assertThat(fitnessObserver.getLastValue())
+            .containsExactlyElementsIn(
+                listOf(
+                    readExercisePermission,
+                    readNutritionPermission,
+                    writeSleepPermission,
+                    writeDistancePermission,
+                )
+            )
+        assertThat(grantedFitnessObserver.getLastValue())
+            .containsExactlyElementsIn(setOf(readExercisePermission))
+        assertThat(medicalObserver.getLastValue())
+            .containsExactlyElementsIn(listOf(readImmunization, writeMedicalData))
+        assertThat(grantedMedicalObserver.getLastValue())
+            .containsExactlyElementsIn(setOf(readImmunization))
+
+        val result = appPermissionViewModel.revokeAllMedicalPermissions(TEST_APP_PACKAGE_NAME)
+
+        advanceUntilIdle()
+        assertThat(result).isTrue()
+        assertThat(grantedFitnessObserver.getLastValue())
+            .containsExactlyElementsIn(setOf(readExercisePermission))
+        assertThat(grantedMedicalObserver.getLastValue()).isEmpty()
     }
 
     // TODO (b/324247426) unignore when we can mock suspend functions
@@ -903,14 +1066,16 @@ class AppPermissionViewModelTest {
                     readExercisePermission,
                     readNutritionPermission,
                     writeSleepPermission,
-                    writeDistancePermission))
+                    writeDistancePermission,
+                )
+            )
         getGrantedHealthPermissionsUseCase.updateData(TEST_APP_PACKAGE_NAME, listOf())
 
         advanceUntilIdle()
 
         assertThat(
-                appPermissionViewModel.shouldNavigateToAppPermissionsFragment(
-                    TEST_APP_PACKAGE_NAME))
+                appPermissionViewModel.shouldNavigateToAppPermissionsFragment(TEST_APP_PACKAGE_NAME)
+            )
             .isTrue()
     }
 
@@ -923,15 +1088,19 @@ class AppPermissionViewModelTest {
                     readExercisePermission,
                     readNutritionPermission,
                     writeSleepPermission,
-                    writeDistancePermission))
+                    writeDistancePermission,
+                )
+            )
         getGrantedHealthPermissionsUseCase.updateData(
-            TEST_APP_PACKAGE_NAME, listOf(writeSleepPermission.toString()))
+            TEST_APP_PACKAGE_NAME,
+            listOf(writeSleepPermission.toString()),
+        )
 
         advanceUntilIdle()
 
         assertThat(
-                appPermissionViewModel.shouldNavigateToAppPermissionsFragment(
-                    TEST_APP_PACKAGE_NAME))
+                appPermissionViewModel.shouldNavigateToAppPermissionsFragment(TEST_APP_PACKAGE_NAME)
+            )
             .isTrue()
     }
 
@@ -945,14 +1114,18 @@ class AppPermissionViewModelTest {
                         readExercisePermission,
                         readNutritionPermission,
                         writeSleepPermission,
-                        writeDistancePermission))
+                        writeDistancePermission,
+                    )
+                )
             getGrantedHealthPermissionsUseCase.updateData(TEST_APP_PACKAGE_NAME, listOf())
 
             advanceUntilIdle()
 
             assertThat(
                     appPermissionViewModel.shouldNavigateToAppPermissionsFragment(
-                        TEST_APP_PACKAGE_NAME))
+                        TEST_APP_PACKAGE_NAME
+                    )
+                )
                 .isFalse()
         }
 
@@ -961,7 +1134,6 @@ class AppPermissionViewModelTest {
         appPermissionViewModel.isPackageSupported(TEST_APP_PACKAGE_NAME)
         verify(healthPermissionReader).isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME)
     }
-
 
     @Test
     fun grantAllFitnessPermissions_isAllFitnessPermissionsGranted_returnTrue() = runTest {
@@ -972,7 +1144,7 @@ class AppPermissionViewModelTest {
         appPermissionViewModel.grantAllFitnessPermissions(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
 
-        appPermissionViewModel.allFitnessPermissionsGranted.observeForever{
+        appPermissionViewModel.allFitnessPermissionsGranted.observeForever {
             assertThat(it).isTrue()
         }
     }
@@ -986,7 +1158,7 @@ class AppPermissionViewModelTest {
         appPermissionViewModel.grantAllFitnessPermissions(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
 
-        appPermissionViewModel.allMedicalPermissionsGranted.observeForever{
+        appPermissionViewModel.allMedicalPermissionsGranted.observeForever {
             assertThat(it).isFalse()
         }
     }
@@ -1000,7 +1172,7 @@ class AppPermissionViewModelTest {
         appPermissionViewModel.grantAllMedicalPermissions(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
 
-        appPermissionViewModel.allFitnessPermissionsGranted.observeForever{
+        appPermissionViewModel.allFitnessPermissionsGranted.observeForever {
             assertThat(it).isFalse()
         }
     }
@@ -1014,7 +1186,7 @@ class AppPermissionViewModelTest {
         appPermissionViewModel.grantAllMedicalPermissions(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
 
-        appPermissionViewModel.allMedicalPermissionsGranted.observeForever{
+        appPermissionViewModel.allMedicalPermissionsGranted.observeForever {
             assertThat(it).isTrue()
         }
     }
@@ -1027,10 +1199,13 @@ class AppPermissionViewModelTest {
                     readExercisePermission,
                     readNutritionPermission,
                     writeSleepPermission,
-                    writeDistancePermission))
+                    writeDistancePermission,
+                )
+            )
         getGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME,
-            listOf(readExercisePermission.toString(), writeDistancePermission.toString()))
+            listOf(readExercisePermission.toString(), writeDistancePermission.toString()),
+        )
     }
 
     private fun setupDeclaredAndGrantedFitnessAndMedicalPermissions() {
@@ -1043,9 +1218,12 @@ class AppPermissionViewModelTest {
                     readImmunization,
                     writeSleepPermission,
                     writeDistancePermission,
-                    writeMedicalData))
+                    writeMedicalData,
+                )
+            )
         getGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME,
-            listOf(readExercisePermission.toString(), readImmunization.toString()))
+            listOf(readExercisePermission.toString(), readImmunization.toString()),
+        )
     }
 }
