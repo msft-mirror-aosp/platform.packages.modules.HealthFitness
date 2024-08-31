@@ -395,20 +395,6 @@ class HomeFragment : Hilt_HomeFragment() {
             banner.setPrimaryButtonOnClickListener {
                 findNavController().navigate(R.id.action_homeFragment_to_connectedAppsFragment)
             }
-            banner.setSecondaryButton(
-                resources.getString(R.string.start_using_hc_not_now_button),
-                ErrorPageElement.UNKNOWN_ELEMENT,
-            )
-            banner.setSecondaryButtonOnClickListener {
-                val sharedPreference =
-                    requireActivity()
-                        .getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
-                sharedPreference.edit().apply {
-                    putBoolean(Constants.START_USING_HC_BANNER_SEEN, true)
-                    apply()
-                }
-                preferenceScreen.removePreference(banner)
-            }
             banner.setIsDismissable(true)
             banner.setDismissAction(ErrorPageElement.UNKNOWN_ELEMENT) {
                 val sharedPreference =
