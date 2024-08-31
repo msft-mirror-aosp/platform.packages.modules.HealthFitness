@@ -30,7 +30,6 @@ import com.android.healthconnect.controller.data.appdata.AppDataUseCase
 import com.android.healthconnect.controller.data.appdata.AppDataViewModel
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
-import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.MEDICAL
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
@@ -229,9 +228,7 @@ class AppDataViewModelTest {
                 PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()).takeIf {
                     Flags.mindfulness()
                 },
-                // TODO(b/355793284): This Immunization is fake data for now, update once API is
-                // ready.
-                PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATION)),
+                PermissionTypesPerCategory(MEDICAL, emptyList()),
             )
         assertThat(testObserver.getLastValue())
             .isEqualTo(AppDataViewModel.AppDataState.WithData(expected))

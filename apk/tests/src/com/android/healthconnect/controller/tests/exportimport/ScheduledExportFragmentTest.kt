@@ -61,7 +61,6 @@ import org.mockito.kotlin.verify
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 class ScheduledExportFragmentTest {
     companion object {
-        private const val TEST_EXPORT_PERIOD_IN_DAYS = 1
         private const val TEST_NEXT_EXPORT_FILE_NAME = "hc.zip"
         private const val TEST_NEXT_EXPORT_APP_NAME = "Dropbox"
         // The fake 'now' is 2022-10-20T07:06:05.432Z.
@@ -80,15 +79,11 @@ class ScheduledExportFragmentTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        fakeHealthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.Builder()
-                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays)
-                .build())
         val scheduledExportStatus =
             ScheduledExportStatus.Builder()
                 .setLastSuccessfulExportTime(TEST_LAST_SUCCESSFUL_TIME)
                 .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
-                .setPeriodInDays(0)
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays)
                 .setNextExportAppName(TEST_NEXT_EXPORT_APP_NAME)
                 .setNextExportFileName(TEST_NEXT_EXPORT_FILE_NAME)
                 .build()
@@ -106,7 +101,7 @@ class ScheduledExportFragmentTest {
             ScheduledExportStatus.Builder()
                 .setLastSuccessfulExportTime(TEST_LAST_SUCCESSFUL_TIME)
                 .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
-                .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
                 .setNextExportAppName(TEST_NEXT_EXPORT_APP_NAME)
                 .setNextExportFileName(TEST_NEXT_EXPORT_FILE_NAME)
                 .build()
@@ -122,7 +117,9 @@ class ScheduledExportFragmentTest {
         onView(withText("Next export starting soon")).check(matches(isDisplayed()))
         onView(
                 withText(
-                    "If you turn off scheduled export, this won't delete previously exported data from where it was saved"))
+                    "If you turn off scheduled export, this won't delete previously exported data from where it was saved"
+                )
+            )
             .check(matches(isDisplayed()))
         onView(withText("Dropbox • hc.zip")).check(matches(isDisplayed()))
     }
@@ -133,7 +130,7 @@ class ScheduledExportFragmentTest {
             ScheduledExportStatus.Builder()
                 .setLastSuccessfulExportTime(TEST_LAST_SUCCESSFUL_TIME)
                 .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
-                .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
                 .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
 
@@ -155,7 +152,7 @@ class ScheduledExportFragmentTest {
             ScheduledExportStatus.Builder()
                 .setLastSuccessfulExportTime(TEST_LAST_SUCCESSFUL_TIME)
                 .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
-                .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
                 .setNextExportAppName(TEST_NEXT_EXPORT_APP_NAME)
                 .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
@@ -171,7 +168,7 @@ class ScheduledExportFragmentTest {
             ScheduledExportStatus.Builder()
                 .setLastSuccessfulExportTime(TEST_LAST_SUCCESSFUL_TIME)
                 .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
-                .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
                 .setNextExportFileName(TEST_NEXT_EXPORT_FILE_NAME)
                 .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
@@ -187,7 +184,7 @@ class ScheduledExportFragmentTest {
             ScheduledExportStatus.Builder()
                 .setLastSuccessfulExportTime(null)
                 .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
-                .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
                 .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
 
@@ -202,7 +199,7 @@ class ScheduledExportFragmentTest {
             ScheduledExportStatus.Builder()
                 .setLastSuccessfulExportTime(NOW)
                 .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
-                .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
                 .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
 
@@ -216,7 +213,8 @@ class ScheduledExportFragmentTest {
         fakeHealthDataExportManager.configureScheduledExport(
             ScheduledExportSettings.Builder()
                 .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
-                .build())
+                .build()
+        )
         launchFragment<ScheduledExportFragment>(Bundle())
 
         onView(withId(R.id.radio_button_daily)).check(matches(isChecked()))
@@ -227,7 +225,8 @@ class ScheduledExportFragmentTest {
         fakeHealthDataExportManager.configureScheduledExport(
             ScheduledExportSettings.Builder()
                 .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays)
-                .build())
+                .build()
+        )
         launchFragment<ScheduledExportFragment>(Bundle())
 
         onView(withId(R.id.radio_button_weekly)).check(matches(isChecked()))
@@ -238,7 +237,8 @@ class ScheduledExportFragmentTest {
         fakeHealthDataExportManager.configureScheduledExport(
             ScheduledExportSettings.Builder()
                 .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_MONTHLY.periodInDays)
-                .build())
+                .build()
+        )
         launchFragment<ScheduledExportFragment>(Bundle())
 
         onView(withId(R.id.radio_button_monthly)).check(matches(isChecked()))
@@ -274,7 +274,7 @@ class ScheduledExportFragmentTest {
             ScheduledExportStatus.Builder()
                 .setLastSuccessfulExportTime(TEST_LAST_SUCCESSFUL_TIME)
                 .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
-                .setPeriodInDays(TEST_EXPORT_PERIOD_IN_DAYS)
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
                 .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
 
@@ -287,6 +287,11 @@ class ScheduledExportFragmentTest {
 
     @Test
     fun scheduledExportFragment_turnsOffControlAndOnAgain_exportFrequencyNotChanged() = runTest {
+        fakeHealthDataExportManager.configureScheduledExport(
+            ScheduledExportSettings.Builder()
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays)
+                .build()
+        )
         launchFragment<ScheduledExportFragment>(Bundle())
 
         onView(withText("Use scheduled export")).perform(click())
@@ -304,7 +309,8 @@ class ScheduledExportFragmentTest {
         fakeHealthDataExportManager.configureScheduledExport(
             ScheduledExportSettings.Builder()
                 .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
-                .build())
+                .build()
+        )
 
         launchFragment<ScheduledExportFragment>(Bundle())
 

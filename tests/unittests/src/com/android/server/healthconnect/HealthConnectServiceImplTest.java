@@ -89,7 +89,7 @@ import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourcesResponseCallback;
-import android.health.connect.aidl.IMedicalResourceTypesInfoResponseCallback;
+import android.health.connect.aidl.IMedicalResourceTypeInfosCallback;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
@@ -209,7 +209,7 @@ public class HealthConnectServiceImplTest {
                     "upsertMedicalResources",
                     "readMedicalResourcesByIds",
                     "readMedicalResourcesByRequest",
-                    "queryAllMedicalResourceTypesInfo");
+                    "queryAllMedicalResourceTypeInfos");
 
     /** Health connect service APIs that do not block calls when data sync is in progress. */
     public static final Set<String> DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST =
@@ -1932,11 +1932,10 @@ public class HealthConnectServiceImplTest {
 
     @Test
     @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testQueryAllMedicalResourceTypesInfo_flagOff_throws() throws Exception {
-        IMedicalResourceTypesInfoResponseCallback callback =
-                mock(IMedicalResourceTypesInfoResponseCallback.class);
+    public void testQueryAllMedicalResourceTypeInfos_flagOff_throws() throws Exception {
+        IMedicalResourceTypeInfosCallback callback = mock(IMedicalResourceTypeInfosCallback.class);
 
-        mHealthConnectService.queryAllMedicalResourceTypesInfo(callback);
+        mHealthConnectService.queryAllMedicalResourceTypeInfos(callback);
 
         verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
         assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
@@ -1945,15 +1944,14 @@ public class HealthConnectServiceImplTest {
 
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testQueryAllMedicalResourceTypesInfo_noDataManagementPermission_throws()
+    public void testQueryAllMedicalResourceTypeInfos_noDataManagementPermission_throws()
             throws Exception {
         doThrow(SecurityException.class)
                 .when(mServiceContext)
                 .enforcePermission(eq(MANAGE_HEALTH_DATA_PERMISSION), anyInt(), anyInt(), isNull());
-        IMedicalResourceTypesInfoResponseCallback callback =
-                mock(IMedicalResourceTypesInfoResponseCallback.class);
+        IMedicalResourceTypeInfosCallback callback = mock(IMedicalResourceTypeInfosCallback.class);
 
-        mHealthConnectService.queryAllMedicalResourceTypesInfo(callback);
+        mHealthConnectService.queryAllMedicalResourceTypeInfos(callback);
 
         verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
         assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())

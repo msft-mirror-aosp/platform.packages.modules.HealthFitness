@@ -82,7 +82,7 @@ class MedicalAllDataViewModelTest {
         viewModel.loadAllMedicalData()
         advanceUntilIdle()
 
-        val expected = listOf(MedicalPermissionType.IMMUNIZATION)
+        val expected = emptyList<MedicalPermissionType>()
         assertThat(testObserver.getLastValue())
             .isEqualTo(MedicalAllDataViewModel.AllDataState.WithData(expected))
     }
