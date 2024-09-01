@@ -351,6 +351,7 @@
     <string name="next_export_text" msgid="6726252793571403846">"एक्स्पोर्ट गर्ने अर्को प्रक्रिया चाँडै सुरु हुँदै छ"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ब्याकअप र रिस्टोर"</string>
     <string name="last_export_time" msgid="9205875050823594041">"पछिल्लो पटक एक्स्पोर्ट गरिएको मिति: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"अन्तिम पटक एक्स्पोर्ट गरिएको मिति र समय: कुनै पनि छैन"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"समय तोकिएको एक्स्पोर्ट"</string>
     <string name="import_data" msgid="404502315533233094">"डेटा इम्पोर्ट गर्नुहोस्"</string>

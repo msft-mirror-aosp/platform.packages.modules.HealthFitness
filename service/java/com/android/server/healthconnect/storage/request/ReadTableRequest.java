@@ -17,7 +17,11 @@
 package com.android.server.healthconnect.storage.request;
 
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.DISTINCT;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.FROM;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.LIMIT_SIZE;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.SELECT;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.SELECT_ALL;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
@@ -129,23 +133,14 @@ public class ReadTableRequest {
     /** Returns SQL statement to perform read operation. */
     @NonNull
     public String getReadCommand() {
-        StringBuilder builder = new StringBuilder("SELECT ");
-        if (mDistinct) {
-            builder.append("DISTINCT ");
-            builder.append(getColumnsToFetch());
-        } else {
-            builder.append(getColumnsToFetch());
-        }
-        builder.append(" FROM ");
-        builder.append(mTableName);
+        String selectStatement = buildSelectStatement();
 
-        builder.append(mWhereClauses.get(/* withWhereKeyword */ true));
-        builder.append(mOrderByClause.getOrderBy());
-        builder.append(mLimitClause);
-
-        String readQuery = builder.toString();
+        String readQuery;
         if (mJoinClause != null) {
-            readQuery = mJoinClause.getJoinWithQueryCommand(readQuery);
+            String innerQuery = buildReadQuery(SELECT_ALL);
+            readQuery = mJoinClause.getJoinWithQueryCommand(selectStatement, innerQuery);
+        } else {
+            readQuery = buildReadQuery(selectStatement);
         }
 
         if (Constants.DEBUG) {
@@ -153,7 +148,7 @@ public class ReadTableRequest {
         }
 
         if (mUnionReadRequests != null && !mUnionReadRequests.isEmpty()) {
-            builder = new StringBuilder();
+            StringBuilder builder = new StringBuilder();
             for (ReadTableRequest unionReadRequest : mUnionReadRequests) {
                 builder.append("SELECT * FROM (");
                 builder.append(unionReadRequest.getReadCommand());
@@ -167,6 +162,26 @@ public class ReadTableRequest {
         }
 
         return readQuery;
+    }
+
+    @NonNull
+    private String buildSelectStatement() {
+        StringBuilder selectStatement = new StringBuilder(SELECT);
+        if (mDistinct) {
+            selectStatement.append(DISTINCT);
+        }
+        selectStatement.append(getColumnsToFetch());
+        selectStatement.append(FROM);
+        return selectStatement.toString();
+    }
+
+    @NonNull
+    private String buildReadQuery(@NonNull String selectStatement) {
+        return selectStatement
+                + mTableName
+                + mWhereClauses.get(/* withWhereKeyword */ true)
+                + mOrderByClause.getOrderBy()
+                + mLimitClause;
     }
 
     /** Get requests for populating extra data */
