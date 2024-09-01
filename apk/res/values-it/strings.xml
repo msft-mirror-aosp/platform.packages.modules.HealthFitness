@@ -351,6 +351,8 @@
     <string name="next_export_text" msgid="6726252793571403846">"La prossima esportazione inizierà a breve"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Backup e ripristino"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Ultima esportazione: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <!-- no translation found for no_last_export_message (8138900854579872667) -->
+    <skip />
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Esportazione programmata"</string>
     <string name="import_data" msgid="404502315533233094">"Importa dati"</string>

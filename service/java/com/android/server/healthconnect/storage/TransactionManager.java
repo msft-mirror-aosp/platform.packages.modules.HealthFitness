@@ -240,6 +240,7 @@ public final class TransactionManager {
             for (DeleteTableRequest deleteTableRequest : request.getDeleteTableRequests()) {
                 final RecordHelper<?> recordHelper =
                         RecordHelperProvider.getRecordHelper(deleteTableRequest.getRecordType());
+                int innerRequestRecordsDeleted;
                 if (deleteTableRequest.requiresRead()) {
                     /*
                     Delete request needs UUID before the entry can be
@@ -285,10 +286,17 @@ public final class TransactionManager {
                                 cursorAdditionalUuids.close();
                             }
                         }
-                        deleteTableRequest.setNumberOfUuidsToDelete(numberOfUuidsToDelete);
+                        innerRequestRecordsDeleted = numberOfUuidsToDelete;
                     }
+                } else {
+                    List<String> ids = deleteTableRequest.getIds();
+                    if (ids == null) {
+                        throw new IllegalStateException(
+                                "Called with no required reads and no list of ids set");
+                    }
+                    innerRequestRecordsDeleted = ids.size();
                 }
-                numberOfRecordsDeleted += deleteTableRequest.getTotalNumberOfRecordsDeleted();
+                numberOfRecordsDeleted += innerRequestRecordsDeleted;
                 db.execSQL(deleteTableRequest.getDeleteCommand());
             }
 
