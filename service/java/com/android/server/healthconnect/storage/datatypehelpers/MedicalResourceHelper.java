@@ -18,6 +18,7 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_DELETE;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
 import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
@@ -84,6 +85,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Helper class for MedicalResource table.
@@ -190,18 +192,63 @@ public final class MedicalResourceHelper {
             boolean hasWritePermission,
             boolean isCalledFromBgWithoutBgRead)
             throws SQLiteException {
-        List<MedicalResource> medicalResources;
-        ReadTableRequest readTableRequest =
-                getReadTableRequestBasedOnPermissionFilters(
-                        medicalResourceIds,
-                        grantedReadMedicalResourceTypes,
-                        callingPackageName,
-                        hasWritePermission,
-                        isCalledFromBgWithoutBgRead);
-        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
-            medicalResources = getMedicalResources(cursor);
-        }
-        return medicalResources;
+
+        return mTransactionManager.runAsTransaction(
+                db -> {
+                    List<MedicalResource> medicalResources;
+                    ReadTableRequest readTableRequest =
+                            getReadTableRequestBasedOnPermissionFilters(
+                                    medicalResourceIds,
+                                    grantedReadMedicalResourceTypes,
+                                    callingPackageName,
+                                    hasWritePermission,
+                                    isCalledFromBgWithoutBgRead);
+                    try (Cursor cursor = mTransactionManager.read(db, readTableRequest)) {
+                        medicalResources = getMedicalResources(cursor);
+                    }
+                    // If the app is called from background but without background read permission,
+                    // the most the app can do, is to read their own data. Same when the
+                    // grantedReadMedicalResourceTypes is empty. And we don't need to add access
+                    // logs when an app intends to access their own data.
+                    // If medicalResources is empty, it means that we haven't read any resources
+                    // out, so no need to add access logs either.
+                    if (!isCalledFromBgWithoutBgRead
+                            && !grantedReadMedicalResourceTypes.isEmpty()
+                            && !medicalResources.isEmpty()) {
+                        // We do this to get resourceTypes that are read due to the calling app
+                        // having a read permission for it. If the resources returned, were read
+                        // due to selfRead only, no access logs should be created.
+                        // However if the resources read were written by the app itself, but the
+                        // app also had read permissions for those resources, we don't record
+                        // this as selfRead and access log is added.
+                        Set<Integer> resourceTypes =
+                                getIntersectionOfResourceTypesReadAndGrantedReadPermissions(
+                                        getResourceTypesRead(medicalResources),
+                                        grantedReadMedicalResourceTypes);
+                        if (!resourceTypes.isEmpty()) {
+                            AccessLogsHelper.addAccessLog(
+                                    db,
+                                    callingPackageName,
+                                    resourceTypes,
+                                    OPERATION_TYPE_READ,
+                                    /* accessedMedicalDataSource= */ false);
+                        }
+                    }
+                    return medicalResources;
+                });
+    }
+
+    @NonNull
+    private static Set<Integer> getIntersectionOfResourceTypesReadAndGrantedReadPermissions(
+            Set<Integer> resourceTypesRead, Set<Integer> grantedReadPerms) {
+        Set<Integer> intersection = new HashSet<>(resourceTypesRead);
+        intersection.retainAll(grantedReadPerms);
+        return intersection;
+    }
+
+    @NonNull
+    private static Set<Integer> getResourceTypesRead(@NonNull List<MedicalResource> resources) {
+        return resources.stream().map(MedicalResource::getType).collect(Collectors.toSet());
     }
 
     @NonNull
@@ -265,6 +312,7 @@ public final class MedicalResourceHelper {
      * @param request a {@link ReadMedicalResourcesRequest}.
      * @return a {@link ReadMedicalResourcesInternalResponse}.
      */
+    // TODO(b/360833189): Support request.getDataSourceIds().
     // TODO(b/354872929): Add cts tests for read by request.
     @NonNull
     public ReadMedicalResourcesInternalResponse
@@ -285,6 +333,7 @@ public final class MedicalResourceHelper {
      *
      * @return a {@link ReadMedicalResourcesInternalResponse}.
      */
+    // TODO(b/360833189): Support request.getDataSourceIds().
     // TODO(b/354872929): Add cts tests for read by request.
     // TODO(b/360352345): Add cts tests for access logs being created per API call.
     @NonNull
@@ -378,6 +427,25 @@ public final class MedicalResourceHelper {
         // the whereClause when joining with the indices table.
         return getReadTableRequestByIdsFilterOnAppIdAndMedicalResourceTypes(
                 medicalResourceIds, /* medicalResourceTypes= */ Set.of(), callingPackageName);
+    }
+
+    /**
+     * Creates {@link ReadTableRequest} that reads the distinct {@link
+     * MedicalResourceIndicesHelper#getMedicalResourceTypeColumnName()} when joining with
+     * medical_resource_indices table and medical_data_source table, filtering on the given {@link
+     * MedicalResourceId}s and {@code callingPackageName}.
+     */
+    @NonNull
+    private static ReadTableRequest getReadTableRequestToGetDistinctResourceTypes(
+            @NonNull List<MedicalResourceId> medicalResourceIds,
+            @NonNull String callingPackageName) {
+        return getReadTableRequestByIds(medicalResourceIds)
+                .setJoinClause(
+                        getJoinWithIndicesAndDataSourceTablesFilterOnMedicalResourceTypesAndAppId(
+                                /* medicalResourceTypes= */ Set.of(), callingPackageName))
+                .setDistinctClause(true)
+                .setColumnNames(
+                        List.of(MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName()));
     }
 
     /**
@@ -805,22 +873,70 @@ public final class MedicalResourceHelper {
      * MedicalResourceId}s into the HealthConnect database.
      *
      * @param medicalResourceIds list of {@link MedicalResourceId} to delete
-     * @param appInfoIdRestriction if null, allow deletion from any package. Otherwise only allow
-     *     deletions of resources whose owning datasource belongs to the given appInfoId.
      */
-    public void deleteMedicalResourcesByIds(
-            @NonNull List<MedicalResourceId> medicalResourceIds,
-            @Nullable Long appInfoIdRestriction)
+    public void deleteMedicalResourcesByIdsWithoutPermissionChecks(
+            @NonNull List<MedicalResourceId> medicalResourceIds) {
+        mTransactionManager.delete(getDeleteRequest(medicalResourceIds));
+    }
+
+    /**
+     * Deletes a list of {@link MedicalResource}s created based on the given list of {@link
+     * MedicalResourceId}s into the HealthConnect database.
+     *
+     * @param medicalResourceIds list of {@link MedicalResourceId} to delete
+     * @param callingPackageName Only allows deletions of resources whose owning datasource belongs
+     *     to the given appInfoId.
+     * @throws IllegalArgumentException if no appId exists for the given {@code packageName} in the
+     *     {@link AppInfoHelper#TABLE_NAME}.
+     */
+    public void deleteMedicalResourcesByIdsWithPermissionChecks(
+            @NonNull List<MedicalResourceId> medicalResourceIds, @NonNull String callingPackageName)
             throws SQLiteException {
-        DeleteTableRequest deleteTableRequest;
-        if (appInfoIdRestriction == null) {
-            deleteTableRequest = getDeleteRequest(medicalResourceIds);
-        } else {
-            deleteTableRequest =
-                    getDeleteRequestWithAppInfoRestriction(
-                            medicalResourceIds, appInfoIdRestriction);
+
+        long appId = AppInfoHelper.getInstance().getAppInfoId(callingPackageName);
+        if (appId == Constants.DEFAULT_LONG) {
+            throw new IllegalArgumentException(
+                    "Deletion not permitted as app has inserted no data.");
         }
-        mTransactionManager.delete(deleteTableRequest);
+
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    // Getting the distinct resource types that will be deleted, to add
+                    // access logs.
+                    Set<Integer> resourcesTypes =
+                            readMedicalResourcesTypesForMedicalResourceIds(
+                                    db, medicalResourceIds, callingPackageName);
+
+                    mTransactionManager.delete(
+                            db, getDeleteRequestWithAppInfoRestriction(medicalResourceIds, appId));
+
+                    if (!resourcesTypes.isEmpty()) {
+                        AccessLogsHelper.addAccessLog(
+                                db,
+                                callingPackageName,
+                                resourcesTypes,
+                                OPERATION_TYPE_DELETE,
+                                /* accessedMedicalDataSource= */ false);
+                    }
+                });
+    }
+
+    @NonNull
+    private Set<Integer> readMedicalResourcesTypesForMedicalResourceIds(
+            @NonNull SQLiteDatabase db,
+            @NonNull List<MedicalResourceId> medicalResourceIds,
+            @NonNull String packageName) {
+        ReadTableRequest request =
+                getReadTableRequestToGetDistinctResourceTypes(medicalResourceIds, packageName);
+        Set<Integer> resourceTypes = new HashSet<>();
+        try (Cursor cursor = mTransactionManager.read(db, request)) {
+            if (cursor.moveToFirst()) {
+                do {
+                    resourceTypes.add(getCursorInt(cursor, getMedicalResourceTypeColumnName()));
+                } while (cursor.moveToNext());
+            }
+        }
+        return resourceTypes;
     }
 
     /**
@@ -842,12 +958,13 @@ public final class MedicalResourceHelper {
 
     @NonNull
     private DeleteTableRequest getDeleteRequestWithAppInfoRestriction(
-            @NonNull List<MedicalResourceId> medicalResourceIds, long appInfoRestriction) {
+            @NonNull List<MedicalResourceId> medicalResourceIds, long appId) {
         if (medicalResourceIds.isEmpty()) {
             throw new IllegalArgumentException("Cannot delete without filters");
         }
+
         ReadTableRequest innerRead =
-                MedicalDataSourceHelper.getReadTableRequest(List.of(), appInfoRestriction)
+                MedicalDataSourceHelper.getReadTableRequest(List.of(), appId)
                         .setColumnNames(List.of(PRIMARY_COLUMN_NAME));
         List<String> hexUuids = medicalResourceIdsToHexUuids(medicalResourceIds);
 

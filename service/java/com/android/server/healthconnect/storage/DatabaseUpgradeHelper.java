@@ -198,6 +198,8 @@ final class DatabaseUpgradeHelper {
     private static void applyPlannedExerciseDatabaseUpgrade(SQLiteDatabase db) {
         if (doesTableAlreadyExist(db, PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME)) {
             // Upgrade has already been applied. Return early.
+            // This is necessary as the ALTER TABLE ... ADD COLUMN statements below are not
+            // idempotent, as SQLite does not support ADD COLUMN IF NOT EXISTS.
             return;
         }
         PlannedExerciseSessionRecordHelper recordHelper =
