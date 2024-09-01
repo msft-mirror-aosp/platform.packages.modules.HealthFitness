@@ -67,10 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"ufuatiliaji wa hedhi"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Lishe"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"lishe"</string>
-    <!-- no translation found for wellness_category_uppercase (5900304317921557780) -->
-    <skip />
-    <!-- no translation found for wellness_category_lowercase (1327642415424743588) -->
-    <skip />
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"Siha"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"siha"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"Vinjari data"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Dhibiti data"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Hamisha data"</string>
@@ -353,6 +351,7 @@
     <string name="next_export_text" msgid="6726252793571403846">"Uhamishaji unaofuata utaanza hivi karibuni"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Kuhifadhi nakala na kurejesha data"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Uhamishaji wa mwisho: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"Mara ya mwisho kuhamishwa: hamna"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Uhamishaji wa data ulioratibiwa"</string>
     <string name="import_data" msgid="404502315533233094">"Pakia data"</string>
@@ -657,18 +656,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"usingizi wa kawaida"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"usingizi mzito"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"haijulikani"</string>
-    <!-- no translation found for mindfulness_type_breathing (3175952922332753437) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_meditation (4453014833652749254) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_movement (600930756800362680) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_music (7041364137895485917) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_other (793524328911038908) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_unguided (2367259868577157922) -->
-    <skip />
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"Kupumua"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"Kutafakari"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"Miondoko"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"Muziki"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"Mengineyo"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Bila mwongozo"</string>
     <string name="minute_duration" msgid="9035288227090160206">"Dak <xliff:g id="MINUTE">%1$s</xliff:g>"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"Saa <xliff:g id="HOUR">%1$s</xliff:g> dak <xliff:g id="MIN">%2$s</xliff:g>"</string>
     <string name="hour_duration" msgid="3472489613837138711">"Saa <xliff:g id="HOUR">%1$s</xliff:g>"</string>

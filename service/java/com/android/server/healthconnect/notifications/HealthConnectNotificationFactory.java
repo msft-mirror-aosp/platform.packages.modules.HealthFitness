@@ -39,8 +39,7 @@ public interface HealthConnectNotificationFactory {
     /** Returns a {@link Notification} depending on the specified type. */
     @Nullable
     Notification createNotification(
-            @HealthConnectNotificationSender.HealthConnectNotificationType int notificationType,
-            @NonNull String channelId);
+            @HealthConnectNotificationSender.HealthConnectNotificationType int notificationType);
 
     /** Returns a string defined by the string identifier. */
     @NonNull
