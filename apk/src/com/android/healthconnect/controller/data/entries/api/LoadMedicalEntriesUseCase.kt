@@ -30,19 +30,29 @@ class LoadMedicalEntriesUseCase
 @Inject
 constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
+    private val loadEntriesHelper: LoadEntriesHelper,
 ) :
     BaseUseCase<LoadMedicalEntriesInput, List<FormattedEntry>>(dispatcher),
     ILoadMedicalEntriesUseCase {
 
     override suspend fun execute(input: LoadMedicalEntriesInput): List<FormattedEntry> {
-        return listOf()
+        val medicalResources = loadEntriesHelper.readMedicalRecords(input)
+        return medicalResources.map {
+            // TODO(b/362941220): Show the relevant display name instead.
+            FormattedEntry.FormattedMedicalDataEntry(
+                title = it.dataSourceId,
+                titleA11y = it.dataSourceId,
+                header = it.id.toString(),
+                headerA11y = it.id.toString(),
+            )
+        }
     }
 }
 
 data class LoadMedicalEntriesInput(
     val permissionType: MedicalPermissionType,
     val packageName: String?,
-    val showDataOrigin: Boolean
+    val showDataOrigin: Boolean,
 )
 
 interface ILoadMedicalEntriesUseCase {

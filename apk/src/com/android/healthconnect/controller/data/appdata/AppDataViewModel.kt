@@ -36,7 +36,7 @@ class AppDataViewModel
 @Inject
 constructor(
     private val appInfoReader: AppInfoReader,
-    private val loadAppDataUseCase: AppDataUseCase
+    private val loadAppDataUseCase: AppDataUseCase,
 ) : ViewModel() {
 
     companion object {
@@ -88,7 +88,7 @@ constructor(
 
     private fun handleResult(
         result: UseCaseResults<List<PermissionTypesPerCategory>>,
-        liveData: MutableLiveData<AppDataState>
+        liveData: MutableLiveData<AppDataState>,
     ) {
         when (result) {
             is UseCaseResults.Success -> liveData.postValue(AppDataState.WithData(result.data))
@@ -98,25 +98,20 @@ constructor(
 
     private fun getCombinedAppData(
         appFitnessData: LiveData<AppDataState>,
-        appMedicalData: LiveData<AppDataState>
+        appMedicalData: LiveData<AppDataState>,
     ): AppDataState {
         val fitnessData = appFitnessData.value ?: AppDataState.Loading
         val medicalData = appMedicalData.value ?: AppDataState.Loading
 
-        if (fitnessData is AppDataState.WithData && medicalData is AppDataState.WithData) {
-            val combinedData = fitnessData.dataMap + medicalData.dataMap
-            return AppDataState.WithData(combinedData)
+        return when {
+            fitnessData is AppDataState.WithData && medicalData is AppDataState.WithData ->
+                AppDataState.WithData(fitnessData.dataMap + medicalData.dataMap)
+            fitnessData is AppDataState.WithData -> fitnessData
+            medicalData is AppDataState.WithData -> medicalData
+            fitnessData is AppDataState.Error && medicalData is AppDataState.Error ->
+                AppDataState.Error
+            else -> AppDataState.Loading
         }
-        if (fitnessData is AppDataState.WithData) {
-            return fitnessData
-        }
-        if (medicalData is AppDataState.WithData) {
-            return medicalData
-        }
-        if (fitnessData is AppDataState.Error && medicalData is AppDataState.Error) {
-            return AppDataState.Error
-        }
-        return AppDataState.Loading
     }
 
     fun loadAppInfo(packageName: String) {

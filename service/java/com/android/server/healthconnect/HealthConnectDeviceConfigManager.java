@@ -156,13 +156,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                     EXERCISE_ROUTES_READ_ALL_DEFAULT_FLAG_VALUE);
 
     @GuardedBy("mLock")
-    private boolean mSessionDatatypeEnabled =
-            DeviceConfig.getBoolean(
-                    HEALTH_FITNESS_NAMESPACE,
-                    SESSION_DATATYPE_FEATURE_FLAG,
-                    SESSION_DATATYPE_DEFAULT_FLAG_VALUE);
-
-    @GuardedBy("mLock")
     private int mMigrationStateInProgressCount =
             DeviceConfig.getInt(
                     HEALTH_FITNESS_NAMESPACE,
@@ -323,16 +316,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                     DeviceConfig.NAMESPACE_HEALTH_FITNESS,
                     ENABLE_RATE_LIMITER_FLAG,
                     ENABLE_RATE_LIMITER_DEFAULT_FLAG_VALUE);
-
-    /** Returns if operations with sessions datatypes are enabled. */
-    public boolean isSessionDatatypeFeatureEnabled() {
-        mLock.readLock().lock();
-        try {
-            return mSessionDatatypeEnabled;
-        } finally {
-            mLock.readLock().unlock();
-        }
-    }
 
     /**
      * Returns the required count for {@link
@@ -530,12 +513,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                                 properties.getBoolean(
                                         EXERCISE_ROUTES_READ_ALL_FEATURE_FLAG,
                                         EXERCISE_ROUTES_READ_ALL_DEFAULT_FLAG_VALUE);
-                        break;
-                    case SESSION_DATATYPE_FEATURE_FLAG:
-                        mSessionDatatypeEnabled =
-                                properties.getBoolean(
-                                        SESSION_DATATYPE_FEATURE_FLAG,
-                                        SESSION_DATATYPE_DEFAULT_FLAG_VALUE);
                         break;
                     case ENABLE_RATE_LIMITER_FLAG:
                         mRateLimiterEnabled =

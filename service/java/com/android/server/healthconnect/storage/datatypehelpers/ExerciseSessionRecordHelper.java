@@ -329,19 +329,8 @@ public final class ExerciseSessionRecordHelper
     }
 
     @Override
-    public boolean isRecordOperationsEnabled() {
-        return HealthConnectDeviceConfigManager.getInitialisedInstance()
-                .isSessionDatatypeFeatureEnabled();
-    }
-
-    @Override
     public void checkRecordOperationsAreEnabled(RecordInternal<?> recordInternal) {
         super.checkRecordOperationsAreEnabled(recordInternal);
-        if (!isRecordOperationsEnabled()) {
-            throw new HealthConnectException(
-                    ERROR_UNSUPPORTED_OPERATION, "Writing exercise sessions is not supported.");
-        }
-
         ExerciseSessionRecordInternal session = (ExerciseSessionRecordInternal) recordInternal;
         if (session.getRoute() != null && !isExerciseRouteFeatureEnabled()) {
             throw new HealthConnectException(
@@ -427,9 +416,8 @@ public final class ExerciseSessionRecordHelper
     }
 
     private boolean isExerciseRouteFeatureEnabled() {
-        return isRecordOperationsEnabled()
-                && HealthConnectDeviceConfigManager.getInitialisedInstance()
-                        .isExerciseRouteFeatureEnabled();
+        return HealthConnectDeviceConfigManager.getInitialisedInstance()
+                .isExerciseRouteFeatureEnabled();
     }
 
     private boolean isReadExerciseRouteAllFeatureEnabled() {
