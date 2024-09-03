@@ -408,7 +408,6 @@ public class MedicalDataSourceHelper {
         ReadTableRequest readTableRequest = getReadTableRequest(List.of(id), appInfoIdRestriction);
         boolean success =
                 mTransactionManager.runAsTransaction(
-                        (TransactionManager.TransactionRunnableWithReturn<Boolean, SQLiteException>)
                                 db -> {
                                     try (Cursor cursor =
                                             mTransactionManager.read(db, readTableRequest)) {
