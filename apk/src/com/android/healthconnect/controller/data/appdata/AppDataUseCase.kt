@@ -16,6 +16,7 @@
 package com.android.healthconnect.controller.data.appdata
 
 import android.health.connect.HealthConnectManager
+import android.health.connect.MedicalResourceTypeInfo
 import android.health.connect.RecordTypeInfoResponse
 import android.health.connect.datatypes.Record
 import android.util.Log
@@ -24,6 +25,7 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionTy
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.fromHealthPermissionCategory
+import com.android.healthconnect.controller.permissions.data.fromMedicalResourceType
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.FITNESS_DATA_CATEGORIES
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.MEDICAL
@@ -73,8 +75,16 @@ constructor(
     suspend fun loadAllMedicalData(): UseCaseResults<List<MedicalPermissionType>> =
         withContext(dispatcher) {
             try {
-                // TODO(b/343148212): Call API once it's ready.
-                val medicalPermissionTypes = emptyList<MedicalPermissionType>()
+                val MedicalResourceTypeInfos: List<MedicalResourceTypeInfo> =
+                    suspendCancellableCoroutine { continuation ->
+                        healthConnectManager.queryAllMedicalResourceTypeInfos(
+                            Runnable::run,
+                            continuation.asOutcomeReceiver(),
+                        )
+                    }
+                val medicalPermissionTypes =
+                    MedicalResourceTypeInfos.filter { it.contributingDataSources.isNotEmpty() }
+                        .map { fromMedicalResourceType(it.medicalResourceType) }
                 UseCaseResults.Success(medicalPermissionTypes)
             } catch (e: Exception) {
                 Log.e("TAG_ERROR", "Loading error ", e)
@@ -120,15 +130,37 @@ constructor(
     ): UseCaseResults<List<PermissionTypesPerCategory>> =
         withContext(dispatcher) {
             try {
-                // TODO(b/343148212): Call API once it's ready.
-                val medicalPermissionTypes = emptyList<MedicalPermissionType>()
-                UseCaseResults.Success(
-                    listOf(PermissionTypesPerCategory(MEDICAL, medicalPermissionTypes))
-                )
+                val medicalResourceTypeInfos = suspendCancellableCoroutine { continuation ->
+                    healthConnectManager.queryAllMedicalResourceTypeInfos(
+                        Runnable::run,
+                        continuation.asOutcomeReceiver(),
+                    )
+                }
+                val medicalPermissionTypes =
+                    filterMedicalPermissionTypes(medicalResourceTypeInfos, packageName)
+                if (medicalPermissionTypes.isEmpty()) {
+                    UseCaseResults.Success(listOf())
+                } else {
+                    UseCaseResults.Success(
+                        listOf(PermissionTypesPerCategory(MEDICAL, medicalPermissionTypes))
+                    )
+                }
             } catch (e: Exception) {
                 UseCaseResults.Failed(e)
             }
         }
+
+    private fun filterMedicalPermissionTypes(
+        medicalResourceTypeInfos: List<MedicalResourceTypeInfo>,
+        packageName: String,
+    ): List<MedicalPermissionType> =
+        medicalResourceTypeInfos
+            .filter { medicalResourceTypeInfo ->
+                val contributingPackageNames =
+                    medicalResourceTypeInfo.contributingDataSources.map { it.packageName }.toSet()
+                contributingPackageNames.contains(packageName)
+            }
+            .map { fromMedicalResourceType(it.medicalResourceType) }
 
     /**
      * Returns those [FitnessPermissionType]s that have some data written by the given [packageName]

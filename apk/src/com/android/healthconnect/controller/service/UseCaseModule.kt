@@ -97,7 +97,7 @@ class UseCaseModule {
     fun providesLoadRecentAccessUseCase(
         manager: HealthConnectManager,
         @IoDispatcher dispatcher: CoroutineDispatcher,
-        timeSource: TimeSource
+        timeSource: TimeSource,
     ): ILoadRecentAccessUseCase {
         return LoadRecentAccessUseCase(manager, dispatcher, timeSource)
     }
@@ -109,7 +109,7 @@ class UseCaseModule {
         getContributorAppInfoUseCase: GetContributorAppInfoUseCase,
         queryRecentAccessUseCase: QueryRecentAccessLogsUseCase,
         appInfoReader: AppInfoReader,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ILoadHealthPermissionApps {
         return LoadHealthPermissionApps(
             healthPermissionReader,
@@ -117,23 +117,24 @@ class UseCaseModule {
             getContributorAppInfoUseCase,
             queryRecentAccessUseCase,
             appInfoReader,
-            dispatcher)
+            dispatcher,
+        )
     }
 
     @Provides
     fun providesLoadDataEntriesUseCase(
         @IoDispatcher dispatcher: CoroutineDispatcher,
-        loadEntriesHelper: LoadEntriesHelper
+        loadEntriesHelper: LoadEntriesHelper,
     ): ILoadDataEntriesUseCase {
         return LoadDataEntriesUseCase(dispatcher, loadEntriesHelper)
     }
 
     @Provides
     fun providesLoadMedicalEntriesUseCase(
-            @IoDispatcher dispatcher: CoroutineDispatcher,
-            loadEntriesHelper: LoadEntriesHelper
+        @IoDispatcher dispatcher: CoroutineDispatcher,
+        loadEntriesHelper: LoadEntriesHelper,
     ): ILoadMedicalEntriesUseCase {
-        return LoadMedicalEntriesUseCase(dispatcher)
+        return LoadMedicalEntriesUseCase(dispatcher, loadEntriesHelper)
     }
 
     @Provides
@@ -141,13 +142,14 @@ class UseCaseModule {
         loadDeclaredHealthPermissionUseCase: LoadDeclaredHealthPermissionUseCase,
         getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase,
         getGrantedHealthPermissionsUseCase: IGetGrantedHealthPermissionsUseCase,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ILoadExerciseRoutePermissionUseCase {
         return LoadExerciseRoutePermissionUseCase(
             loadDeclaredHealthPermissionUseCase,
             getHealthPermissionsFlagsUseCase,
             getGrantedHealthPermissionsUseCase,
-            dispatcher)
+            dispatcher,
+        )
     }
 
     @Provides
@@ -159,7 +161,7 @@ class UseCaseModule {
         sleepSessionFormatter: SleepSessionFormatter,
         healthConnectManager: HealthConnectManager,
         appInfoReader: AppInfoReader,
-        loadEntriesHelper: LoadEntriesHelper
+        loadEntriesHelper: LoadEntriesHelper,
     ): ILoadDataAggregationsUseCase {
         return LoadDataAggregationsUseCase(
             loadEntriesHelper,
@@ -169,17 +171,21 @@ class UseCaseModule {
             sleepSessionFormatter,
             healthConnectManager,
             appInfoReader,
-            dispatcher)
+            dispatcher,
+        )
     }
 
     @Provides
     fun providesLoadMenstruationDataUseCase(
         @IoDispatcher dispatcher: CoroutineDispatcher,
         menstruationPeriodFormatter: MenstruationPeriodFormatter,
-        loadEntriesHelper: LoadEntriesHelper
+        loadEntriesHelper: LoadEntriesHelper,
     ): ILoadMenstruationDataUseCase {
         return LoadMenstruationDataUseCase(
-            loadEntriesHelper, menstruationPeriodFormatter, dispatcher)
+            loadEntriesHelper,
+            menstruationPeriodFormatter,
+            dispatcher,
+        )
     }
 
     @Provides
@@ -187,19 +193,20 @@ class UseCaseModule {
         loadDataAggregationsUseCase: LoadDataAggregationsUseCase,
         loadLastDateWithPriorityDataUseCase: LoadLastDateWithPriorityDataUseCase,
         sleepSessionHelper: SleepSessionHelper,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ILoadMostRecentAggregationsUseCase {
         return LoadMostRecentAggregationsUseCase(
             loadDataAggregationsUseCase,
             loadLastDateWithPriorityDataUseCase,
             sleepSessionHelper,
-            dispatcher)
+            dispatcher,
+        )
     }
 
     @Provides
     fun providesSleepSessionHelper(
         loadPriorityEntriesUseCase: LoadPriorityEntriesUseCase,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ISleepSessionHelper {
         return SleepSessionHelper(loadPriorityEntriesUseCase, dispatcher)
     }
@@ -208,7 +215,7 @@ class UseCaseModule {
     fun providesLoadPriorityEntriesUseCase(
         loadEntriesHelper: LoadEntriesHelper,
         loadPriorityListUseCase: LoadPriorityListUseCase,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ILoadPriorityEntriesUseCase {
         return LoadPriorityEntriesUseCase(loadEntriesHelper, loadPriorityListUseCase, dispatcher)
     }
@@ -220,7 +227,7 @@ class UseCaseModule {
         healthPermissionReader: HealthPermissionReader,
         loadGrantedHealthPermissionsUseCase: GetGrantedHealthPermissionsUseCase,
         loadPriorityListUseCase: LoadPriorityListUseCase,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ILoadPotentialPriorityListUseCase {
         return LoadPotentialPriorityListUseCase(
             appInfoReader,
@@ -228,7 +235,8 @@ class UseCaseModule {
             healthPermissionReader,
             loadGrantedHealthPermissionsUseCase,
             loadPriorityListUseCase,
-            dispatcher)
+            dispatcher,
+        )
     }
 
     @Provides
@@ -237,21 +245,22 @@ class UseCaseModule {
         loadEntriesHelper: LoadEntriesHelper,
         loadPriorityListUseCase: LoadPriorityListUseCase,
         timeSource: TimeSource,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ILoadLastDateWithPriorityDataUseCase {
         return LoadLastDateWithPriorityDataUseCase(
             healthConnectManager,
             loadEntriesHelper,
             loadPriorityListUseCase,
             timeSource,
-            dispatcher)
+            dispatcher,
+        )
     }
 
     @Provides
     fun providesPriorityListUseCase(
         appInfoReader: AppInfoReader,
         healthConnectManager: HealthConnectManager,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ILoadPriorityListUseCase {
         return LoadPriorityListUseCase(healthConnectManager, appInfoReader, dispatcher)
     }
@@ -259,7 +268,7 @@ class UseCaseModule {
     @Provides
     fun updatePriorityListUseCase(
         healthConnectManager: HealthConnectManager,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): IUpdatePriorityListUseCase {
         return UpdatePriorityListUseCase(healthConnectManager, dispatcher)
     }
@@ -271,7 +280,7 @@ class UseCaseModule {
         loadGrantedHealthPermissionsUseCase: IGetGrantedHealthPermissionsUseCase,
         healthPermissionReader: HealthPermissionReader,
         appInfoReader: AppInfoReader,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ILoadAccessUseCase {
         return LoadAccessUseCase(
             loadFitnessTypeContributorAppsUseCase,
@@ -279,29 +288,35 @@ class UseCaseModule {
             loadGrantedHealthPermissionsUseCase,
             healthPermissionReader,
             appInfoReader,
-            dispatcher)
+            dispatcher,
+        )
     }
 
     @Provides
     fun providesLoadFitnessTypeContributorAppsUseCase(
         appInfoReader: AppInfoReader,
         healthConnectManager: HealthConnectManager,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ILoadFitnessTypeContributorAppsUseCase {
         return LoadFitnessTypeContributorAppsUseCase(
-            appInfoReader, healthConnectManager, dispatcher)
+            appInfoReader,
+            healthConnectManager,
+            dispatcher,
+        )
     }
 
     @Provides
     fun providesLoadMedicalTypeContributorAppsUseCase(
-            appInfoReader: AppInfoReader,
-            healthConnectManager: HealthConnectManager,
-            @IoDispatcher dispatcher: CoroutineDispatcher
+        appInfoReader: AppInfoReader,
+        healthConnectManager: HealthConnectManager,
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): ILoadMedicalTypeContributorAppsUseCase {
         return LoadMedicalTypeContributorAppsUseCase(
-                appInfoReader, healthConnectManager, dispatcher)
+            appInfoReader,
+            healthConnectManager,
+            dispatcher,
+        )
     }
-
 
     @Provides
     fun providesGetGrantedHealthPermissionsUseCase(
@@ -313,7 +328,7 @@ class UseCaseModule {
     @Provides
     fun providesQueryRecentAccessLogsUseCase(
         healthConnectManager: HealthConnectManager,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): IQueryRecentAccessLogsUseCase {
         return QueryRecentAccessLogsUseCase(healthConnectManager, dispatcher)
     }
@@ -322,7 +337,7 @@ class UseCaseModule {
     fun providesGetContributorAppInfoUseCase(
         healthConnectManager: HealthConnectManager,
         @ApplicationContext context: Context,
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @IoDispatcher dispatcher: CoroutineDispatcher,
     ): IGetContributorAppInfoUseCase {
         return GetContributorAppInfoUseCase(healthConnectManager, context, dispatcher)
     }
