@@ -138,9 +138,9 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
         setupMenu()
         hideTitleFromCollapsingToolbarLayout()
         viewModel.connectedApps.observe(viewLifecycleOwner) { connectedApps ->
-            emptySearchResultsPreference?.isVisible = connectedApps.isEmpty()
-            emptySearchResultsPreference?.isSelectable = false
-            topIntroPreference?.isVisible = connectedApps.isNotEmpty()
+            emptySearchResultsPreference.isVisible = connectedApps.isEmpty()
+            emptySearchResultsPreference.isSelectable = false
+            topIntroPreference.isVisible = connectedApps.isNotEmpty()
 
             val connectedAppsGroup = connectedApps.groupBy { it.status }
             updateAllowedApps(connectedAppsGroup[ALLOWED].orEmpty())
@@ -171,38 +171,44 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
     }
 
     private fun updateInactiveApps(appsList: List<ConnectedAppMetadata>) {
-        inactiveAppsPreference?.removeAll()
+        inactiveAppsPreference.removeAll()
         if (appsList.isEmpty()) {
             preferenceScreen.removePreference(inactiveAppsPreference)
         } else {
             preferenceScreen.addPreference(inactiveAppsPreference)
-            appsList.forEach { app -> inactiveAppsPreference?.addPreference(getAppPreference(app)) }
+            appsList
+                .sortedBy { it.appMetadata.appName }
+                .forEach { app -> inactiveAppsPreference.addPreference(getAppPreference(app)) }
         }
     }
 
     private fun updateAllowedApps(appsList: List<ConnectedAppMetadata>) {
-        allowedAppsCategory?.removeAll()
+        allowedAppsCategory.removeAll()
         if (appsList.isEmpty()) {
             preferenceScreen.removePreference(allowedAppsCategory)
         } else {
             preferenceScreen.addPreference(allowedAppsCategory)
-            appsList.forEach { app ->
-                allowedAppsCategory?.addPreference(
-                    getAppPreference(app) { navigateToAppInfoScreen(app) })
-            }
+            appsList
+                .sortedBy { it.appMetadata.appName }
+                .forEach { app ->
+                    allowedAppsCategory.addPreference(
+                        getAppPreference(app) { navigateToAppInfoScreen(app) })
+                }
         }
     }
 
     private fun updateDeniedApps(appsList: List<ConnectedAppMetadata>) {
-        notAllowedAppsCategory?.removeAll()
+        notAllowedAppsCategory.removeAll()
         if (appsList.isEmpty()) {
             preferenceScreen.removePreference(notAllowedAppsCategory)
         } else {
             preferenceScreen.addPreference(notAllowedAppsCategory)
-            appsList.forEach { app ->
-                notAllowedAppsCategory?.addPreference(
-                    getAppPreference(app) { navigateToAppInfoScreen(app) })
-            }
+            appsList
+                .sortedBy { it.appMetadata.appName }
+                .forEach { app ->
+                    notAllowedAppsCategory.addPreference(
+                        getAppPreference(app) { navigateToAppInfoScreen(app) })
+                }
         }
     }
 
@@ -211,7 +217,8 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
             when (app.permissionsType) {
                 AppPermissionsType.FITNESS_PERMISSIONS_ONLY -> R.id.action_searchApps_to_fitnessApp
                 AppPermissionsType.MEDICAL_PERMISSIONS_ONLY -> R.id.action_searchApps_to_medicalApp
-                AppPermissionsType.COMBINED_PERMISSIONS -> R.id.action_searchApps_to_combinedPermissions
+                AppPermissionsType.COMBINED_PERMISSIONS ->
+                    R.id.action_searchApps_to_combinedPermissions
             }
         findNavController()
             .navigate(
@@ -246,12 +253,14 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
     }
 
     private fun hideTitleFromCollapsingToolbarLayout() {
-        activity?.findViewById<AppBarLayout>(
-            com.android.settingslib.collapsingtoolbar.R.id.app_bar)?.setExpanded(false)
+        activity
+            ?.findViewById<AppBarLayout>(com.android.settingslib.collapsingtoolbar.R.id.app_bar)
+            ?.setExpanded(false)
     }
 
     private fun showTitleFromCollapsingToolbarLayout() {
-        activity?.findViewById<AppBarLayout>(
-            com.android.settingslib.collapsingtoolbar.R.id.app_bar)?.setExpanded(true)
+        activity
+            ?.findViewById<AppBarLayout>(com.android.settingslib.collapsingtoolbar.R.id.app_bar)
+            ?.setExpanded(true)
     }
 }

@@ -43,7 +43,7 @@ import com.android.healthconnect.controller.data.appdata.AppDataUseCase
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionPermissionTypesPreference
 import com.android.healthconnect.controller.selectabledeletion.SelectAllCheckboxPreference
-import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromFitnessPermissionType
 import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
 import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -416,7 +416,7 @@ class AllDataFragmentTest {
         val recordTypeInfoMap =
             permissionTypesList.associate { fitnessPermissionType ->
                 val permissionCategory = fitnessPermissionType.category
-                val healthCategory = fromHealthPermissionType(fitnessPermissionType)
+                val healthCategory = fromFitnessPermissionType(fitnessPermissionType)
                 val dataType =
                     HealthPermissionToDatatypeMapper.getDataTypes(fitnessPermissionType)[0]
 

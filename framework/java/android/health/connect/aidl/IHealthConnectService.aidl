@@ -27,7 +27,7 @@ import android.health.connect.aidl.IInsertRecordsResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourcesResponseCallback;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
-import android.health.connect.aidl.IMedicalResourceTypesInfoResponseCallback;
+import android.health.connect.aidl.IMedicalResourceTypeInfosCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
@@ -41,6 +41,7 @@ import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.exportimport.IImportStatusCallback;
 import android.health.connect.exportimport.IQueryDocumentProvidersCallback;
+import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.exportimport.IScheduledExportStatusCallback;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.migration.MigrationEntity;
@@ -393,7 +394,7 @@ interface IHealthConnectService {
     *
     * @hide
     */
-    void runImport(in UserHandle userHandle, in Uri file);
+    void runImport(in UserHandle userHandle, in Uri file, in IEmptyResponseCallback callback);
 
     /**
      * Creates a {@code MedicalDataSource} in HealthConnect based on the {@code request} values.
@@ -512,5 +513,5 @@ interface IHealthConnectService {
      *
      * @param callback Callback to receive result of performing this operation.
      */
-    void queryAllMedicalResourceTypesInfo(in IMedicalResourceTypesInfoResponseCallback callback);
+    void queryAllMedicalResourceTypeInfos(in IMedicalResourceTypeInfosCallback callback);
 }

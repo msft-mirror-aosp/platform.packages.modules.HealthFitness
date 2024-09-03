@@ -35,8 +35,9 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 个应用拥有访问权限}other{# 个应用拥有访问权限}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"无"</string>
     <string name="entry_details_title" msgid="590184849040247850">"详细数据"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"浏览数据"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"查看数据，并了解可以访问这些数据的应用"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"自动删除、数据源、备份和恢复"</string>
     <string name="backup_title" msgid="211503191266235085">"备份"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"数据源和优先级"</string>
     <string name="set_units_title" msgid="2657822539603758029">"设置单位"</string>
@@ -66,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"经期记录"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"营养"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"营养"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"健康"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"健康"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"浏览数据"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"管理数据"</string>
     <string name="export_data_button" msgid="7783329820434117744">"导出数据"</string>
@@ -78,8 +81,7 @@
     <string name="can_read" msgid="4568261079308309564">"可以读取<xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"可以写入<xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"非活跃应用"</string>
-    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
-    <skip />
+    <string name="inactive_apps_message" msgid="8335803540719022910">"这些应用无法继续读取或写入<xliff:g id="DATA_TYPE">%s</xliff:g>数据，但仍有数据存储在健康数据共享中"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"应用无法再读取或写入<xliff:g id="DATA_TYPE_0">%1$s</xliff:g>数据，并且健康数据共享中没有存储任何<xliff:g id="DATA_TYPE_2">%2$s</xliff:g>数据"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"此数据包含运动时间、锻炼类型、趟数、重复次数、时段或游泳动作等信息"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"此数据包含睡眠阶段和睡眠时段等信息"</string>
@@ -328,8 +330,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"其他访问权限"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"已撤消此应用的其他权限"</string>
     <string name="permissions_header" msgid="6519976063360071569">"权限"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"管理健身数据相关权限"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"管理健康记录相关权限"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"健身和健康"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"锻炼、睡眠、营养等"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"健康记录"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"健康记录"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"实验室结果、药物、免疫等"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"已撤消应用权限"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"健康数据共享已撤消“<xliff:g id="APP_DATA">%s</xliff:g>”的权限"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"健康数据共享已撤消“<xliff:g id="APP_DATA_0">%1$s</xliff:g>”和“<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>”的权限"</string>
@@ -343,8 +348,10 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"无法导出数据"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g>的导出任务出现问题。请设置新的排定导出任务并重试。"</string>
     <string name="next_export_time" msgid="3138247220014510213">"下次导出日期：<xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"下一次导出即将开始"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"备份和恢复"</string>
     <string name="last_export_time" msgid="9205875050823594041">"上次导出日期：<xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"上次导出内容：无"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"已排定的导出任务"</string>
     <string name="import_data" msgid="404502315533233094">"导入数据"</string>
@@ -379,6 +386,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"导入"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"健康数据共享正在恢复数据"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"健康数据共享完成数据恢复"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"正在恢复"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"已完成数据恢复"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"健康数据共享无法恢复数据"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"需要更多存储空间"</string>
@@ -637,6 +645,7 @@
     <string name="rest" msgid="5937058337671252210">"休息"</string>
     <string name="pause" msgid="5161459047750335691">"暂停"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"澳式足球"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"类型不明"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"睡眠 <xliff:g id="DURATION"> %1$s</xliff:g>"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="NAME">%2$s</xliff:g> <xliff:g id="DURATION">%1$s</xliff:g>"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"清醒"</string>
@@ -647,6 +656,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"浅度睡眠"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"深度睡眠"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"未知"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"呼吸"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"冥想"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"运动"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"音乐"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"其他"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"无指导"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> 分钟"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> 小时 <xliff:g id="MIN">%2$s</xliff:g> 分钟"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> 小时"</string>
@@ -990,4 +1005,14 @@
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"已删除<xliff:g id="PERMISSION_TYPE">%s</xliff:g>数据"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"已删除 <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> 项"</string>
     <string name="select_all" msgid="837499881590001166">"全选"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"开始使用“健康数据共享”"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"同步您的首批应用，以便在它们之间共享健康与健身数据"</string>
+    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"以后再说"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"设置"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"关联更多应用"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"开始在手机上的<xliff:g id="APP_NAME">%s</xliff:g>与健康类应用之间共享数据"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"设置"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"查看兼容应用"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"通过“健康数据共享”查找更多要与<xliff:g id="APP_NAME">%s</xliff:g>同步的应用"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"在应用商店中查看"</string>
 </resources>

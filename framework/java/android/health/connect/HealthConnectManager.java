@@ -22,7 +22,6 @@ import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMIS
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 
-import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import android.Manifest;
@@ -69,7 +68,7 @@ import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourcesResponseCallback;
-import android.health.connect.aidl.IMedicalResourceTypesInfoResponseCallback;
+import android.health.connect.aidl.IMedicalResourceTypeInfosCallback;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
@@ -318,30 +317,6 @@ public class HealthConnectManager {
      * @hide
      */
     @SystemApi public static final int DATA_DOWNLOAD_COMPLETE = 4;
-
-    /**
-     * No error during the last data export.
-     *
-     * @hide
-     */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
-    public static final int DATA_EXPORT_ERROR_NONE = 0;
-
-    /**
-     * Unknown error during the last data export.
-     *
-     * @hide
-     */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
-    public static final int DATA_EXPORT_ERROR_UNKNOWN = 1;
-
-    /**
-     * Indicates that the last export failed because we lost access to the export file location.
-     *
-     * @hide
-     */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
-    public static final int DATA_EXPORT_LOST_FILE_ACCESS = 2;
 
     /**
      * Activity action: Launch activity exported by client application that handles onboarding to
@@ -1759,11 +1734,6 @@ public class HealthConnectManager {
         }
     }
 
-    /** @hide */
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({DATA_EXPORT_ERROR_UNKNOWN, DATA_EXPORT_ERROR_NONE, DATA_EXPORT_LOST_FILE_ACCESS})
-    public @interface DataExportError {}
-
     /**
      * Configures the settings for the scheduled export of Health Connect data.
      *
@@ -1788,7 +1758,6 @@ public class HealthConnectManager {
      * @throws RuntimeException for internal errors
      * @hide
      */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
     @WorkerThread
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
     public void getScheduledExportStatus(
@@ -1823,7 +1792,6 @@ public class HealthConnectManager {
      * @throws RuntimeException for internal errors
      * @hide
      */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
     @WorkerThread
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
     public void getImportStatus(
@@ -1858,13 +1826,31 @@ public class HealthConnectManager {
      * @throws RuntimeException for internal errors
      * @hide
      */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
     @WorkerThread
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
-    public void runImport(@NonNull Uri file) {
+    public void runImport(
+            @NonNull Uri file,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
         Objects.requireNonNull(file);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
         try {
-            mService.runImport(mContext.getUser(), file);
+            mService.runImport(
+                    mContext.getUser(),
+                    file,
+                    new IEmptyResponseCallback.Stub() {
+                        @Override
+                        public void onResult() {
+                            Binder.clearCallingIdentity();
+                            executor.execute(() -> callback.onResult(null));
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
         } catch (RemoteException e) {
             e.rethrowFromSystemServer();
         }
@@ -1898,7 +1884,6 @@ public class HealthConnectManager {
      * @throws RuntimeException for internal errors
      * @hide
      */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
     @WorkerThread
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
     public void queryDocumentProviders(
@@ -2375,7 +2360,7 @@ public class HealthConnectManager {
 
     /**
      * Retrieves information about all medical resource types and returns a list of {@link
-     * MedicalResourceTypeInfoResponse}.
+     * MedicalResourceTypeInfo}.
      *
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
@@ -2384,21 +2369,21 @@ public class HealthConnectManager {
     @SystemApi
     @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
-    public void queryAllMedicalResourceTypesInfo(
+    public void queryAllMedicalResourceTypeInfos(
             @NonNull @CallbackExecutor Executor executor,
             @NonNull
-                    OutcomeReceiver<List<MedicalResourceTypeInfoResponse>, HealthConnectException>
+                    OutcomeReceiver<List<MedicalResourceTypeInfo>, HealthConnectException>
                             callback) {
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
 
         try {
-            mService.queryAllMedicalResourceTypesInfo(
-                    new IMedicalResourceTypesInfoResponseCallback.Stub() {
+            mService.queryAllMedicalResourceTypeInfos(
+                    new IMedicalResourceTypeInfosCallback.Stub() {
                         @Override
-                        public void onResult(List<MedicalResourceTypeInfoResponse> responses) {
+                        public void onResult(List<MedicalResourceTypeInfo> response) {
                             Binder.clearCallingIdentity();
-                            executor.execute(() -> callback.onResult(responses));
+                            executor.execute(() -> callback.onResult(response));
                         }
 
                         @Override

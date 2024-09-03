@@ -19,6 +19,7 @@ package com.android.server.healthconnect.exportimport;
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,13 +30,17 @@ import android.content.Context;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.net.Uri;
 import android.os.PersistableBundle;
+import android.os.UserHandle;
+import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.FakePreferenceHelper;
+import com.android.server.healthconnect.notifications.HealthConnectNotificationSender;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
+import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import org.junit.Before;
@@ -55,13 +60,19 @@ public class ExportImportJobsTest {
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this).mockStatic(PreferenceHelper.class).build();
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(PreferenceHelper.class)
+                    .mockStatic(TransactionManager.class)
+                    .mockStatic(ExportImportNotificationSender.class)
+                    .build();
 
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Mock Context mContext;
     @Mock private JobScheduler mJobScheduler;
     @Mock private ExportManager mExportManager;
+    @Mock private TransactionManager mTransactionManager;
+    @Mock private HealthConnectNotificationSender mHealthConnectNotificationSender;
 
     @Captor ArgumentCaptor<JobInfo> mJobInfoCaptor;
     private final PreferenceHelper mFakePreferenceHelper = new FakePreferenceHelper();
@@ -78,7 +89,13 @@ public class ExportImportJobsTest {
 
     @Test
     public void schedulePeriodicExportJob_withPeriodZero_doesNotScheduleExportJob() {
-        ExportImportSettingsStorage.configure(ScheduledExportSettings.withPeriodInDays(0));
+        when(mContext.createContextAsUser(any(), anyInt())).thenReturn(mContext);
+        when(mContext.getUser()).thenReturn(UserHandle.CURRENT);
+        when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
+        when(ExportImportNotificationSender.createSender(any()))
+                .thenReturn(mHealthConnectNotificationSender);
+        ExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setPeriodInDays(0).build());
 
         ExportImportJobs.schedulePeriodicExportJob(mContext, 0);
 
@@ -87,7 +104,8 @@ public class ExportImportJobsTest {
 
     @Test
     public void schedulePeriodicExportJob_withPeriodGreaterThanZero_schedulesExportJob() {
-        ExportImportSettingsStorage.configure(ScheduledExportSettings.withPeriodInDays(1));
+        ExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setPeriodInDays(1).build());
 
         ExportImportJobs.schedulePeriodicExportJob(mContext, 0);
         verify(mJobScheduler, times(1)).schedule(any());
@@ -98,7 +116,8 @@ public class ExportImportJobsTest {
 
     @Test
     public void schedulePeriodicExportJob_noExportYet_schedulesHourlyJob() {
-        ExportImportSettingsStorage.configure(ScheduledExportSettings.withPeriodInDays(7));
+        ExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setPeriodInDays(7).build());
 
         ExportImportJobs.schedulePeriodicExportJob(mContext, 0);
         verify(mJobScheduler, times(1)).schedule(mJobInfoCaptor.capture());
@@ -108,7 +127,7 @@ public class ExportImportJobsTest {
                         mJobInfoCaptor
                                 .getValue()
                                 .getExtras()
-                                .getBoolean(ExportImportJobs.IS_FIRST_EXPORT))
+                                .getBoolean(ExportImportJobs.SHOULD_SCHEDULE_EARLY))
                 .isTrue();
     }
 
@@ -117,7 +136,68 @@ public class ExportImportJobsTest {
         Uri uri = Uri.parse("abc");
         ExportImportSettingsStorage.setLastSuccessfulExport(Instant.now(), uri);
         ExportImportSettingsStorage.configure(
-                ScheduledExportSettings.withUriAndPeriodInDays(uri, 7));
+                new ScheduledExportSettings.Builder().setPeriodInDays(7).setUri(uri).build());
+
+        ExportImportJobs.schedulePeriodicExportJob(mContext, 0, /* isRescheduled= */ false);
+        verify(mJobScheduler, times(1)).schedule(mJobInfoCaptor.capture());
+        assertThat(mJobInfoCaptor.getValue().getIntervalMillis())
+                .isEqualTo(Duration.ofDays(7).toMillis());
+        assertThat(
+                        mJobInfoCaptor
+                                .getValue()
+                                .getExtras()
+                                .getBoolean(ExportImportJobs.SHOULD_SCHEDULE_EARLY))
+                .isFalse();
+    }
+
+    @Test
+    public void schedulePeriodicExportJob_exportAlreadyDone_newUri_schedulesJobWithPeriod() {
+        ExportImportSettingsStorage.setLastSuccessfulExport(Instant.now(), Uri.parse("last_uri"));
+        ExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder()
+                        .setUri(Uri.parse("new_uri"))
+                        .setPeriodInDays(7)
+                        .build());
+
+        ExportImportJobs.schedulePeriodicExportJob(mContext, 0);
+        verify(mJobScheduler, times(1)).schedule(mJobInfoCaptor.capture());
+        assertThat(mJobInfoCaptor.getValue().getIntervalMillis())
+                .isEqualTo(Duration.ofHours(1).toMillis());
+        assertThat(
+                        mJobInfoCaptor
+                                .getValue()
+                                .getExtras()
+                                .getBoolean(ExportImportJobs.SHOULD_SCHEDULE_EARLY))
+                .isTrue();
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW})
+    public void schedulePeriodicExportJob_exportAlreadyDone_reschedulesJobWithShortPeriod() {
+        Uri uri = Uri.parse("abc");
+        ExportImportSettingsStorage.setLastSuccessfulExport(Instant.now(), uri);
+        ExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setPeriodInDays(7).setUri(uri).build());
+
+        ExportImportJobs.schedulePeriodicExportJob(mContext, 0);
+        verify(mJobScheduler, times(1)).schedule(mJobInfoCaptor.capture());
+        assertThat(mJobInfoCaptor.getValue().getIntervalMillis())
+                .isEqualTo(Duration.ofHours(1).toMillis());
+        assertThat(
+                        mJobInfoCaptor
+                                .getValue()
+                                .getExtras()
+                                .getBoolean(ExportImportJobs.SHOULD_SCHEDULE_EARLY))
+                .isTrue();
+    }
+
+    @Test
+    @DisableFlags({Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW})
+    public void schedulePeriodicExportJob_exportDoneButFlagDisabled_schedulesJobWithNormalPeriod() {
+        Uri uri = Uri.parse("abc");
+        ExportImportSettingsStorage.setLastSuccessfulExport(Instant.now(), uri);
+        ExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setPeriodInDays(7).setUri(uri).build());
 
         ExportImportJobs.schedulePeriodicExportJob(mContext, 0);
         verify(mJobScheduler, times(1)).schedule(mJobInfoCaptor.capture());
@@ -127,32 +207,15 @@ public class ExportImportJobsTest {
                         mJobInfoCaptor
                                 .getValue()
                                 .getExtras()
-                                .getBoolean(ExportImportJobs.IS_FIRST_EXPORT))
+                                .getBoolean(ExportImportJobs.SHOULD_SCHEDULE_EARLY))
                 .isFalse();
-    }
-
-    @Test
-    public void schedulePeriodicExportJob_exportAlreadyDone_newUri_schedulesJobWithPeriod() {
-        ExportImportSettingsStorage.setLastSuccessfulExport(Instant.now(), Uri.parse("last_uri"));
-        ExportImportSettingsStorage.configure(
-                ScheduledExportSettings.withUriAndPeriodInDays(Uri.parse("new_uri"), 7));
-
-        ExportImportJobs.schedulePeriodicExportJob(mContext, 0);
-        verify(mJobScheduler, times(1)).schedule(mJobInfoCaptor.capture());
-        assertThat(mJobInfoCaptor.getValue().getIntervalMillis())
-                .isEqualTo(Duration.ofHours(1).toMillis());
-        assertThat(
-                        mJobInfoCaptor
-                                .getValue()
-                                .getExtras()
-                                .getBoolean(ExportImportJobs.IS_FIRST_EXPORT))
-                .isTrue();
     }
 
     @Test
     @EnableFlags({Flags.FLAG_EXPORT_IMPORT})
     public void executePeriodicExportJob_withPeriodZero_doesNotRunExport() {
-        ExportImportSettingsStorage.configure(ScheduledExportSettings.withPeriodInDays(0));
+        ExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setPeriodInDays(0).build());
 
         ExportImportJobs.executePeriodicExportJob(
                 mContext, 0, new PersistableBundle(), mExportManager);
@@ -163,7 +226,8 @@ public class ExportImportJobsTest {
     @Test
     @EnableFlags({Flags.FLAG_EXPORT_IMPORT})
     public void executePeriodicExportJob_withPeriodZero_returnsTrue() {
-        ExportImportSettingsStorage.configure(ScheduledExportSettings.withPeriodInDays(0));
+        ExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setPeriodInDays(0).build());
 
         boolean isExportSuccessful =
                 ExportImportJobs.executePeriodicExportJob(
@@ -175,7 +239,8 @@ public class ExportImportJobsTest {
     @Test
     @EnableFlags({Flags.FLAG_EXPORT_IMPORT})
     public void executePeriodicExportJob_withPeriodGreaterThanZero_runsExport() {
-        ExportImportSettingsStorage.configure(ScheduledExportSettings.withPeriodInDays(1));
+        ExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setPeriodInDays(1).build());
 
         ExportImportJobs.executePeriodicExportJob(
                 mContext, 0, new PersistableBundle(), mExportManager);
@@ -186,7 +251,8 @@ public class ExportImportJobsTest {
     @Test
     @EnableFlags({Flags.FLAG_EXPORT_IMPORT})
     public void executePeriodicExportJob_successfulExport_returnsTrue() {
-        ExportImportSettingsStorage.configure(ScheduledExportSettings.withPeriodInDays(1));
+        ExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setPeriodInDays(1).build());
         when(mExportManager.runExport()).thenReturn(true);
 
         boolean isExportSuccessful =
@@ -200,7 +266,8 @@ public class ExportImportJobsTest {
     @Test
     @EnableFlags({Flags.FLAG_EXPORT_IMPORT})
     public void executePeriodicExportJob_failedExport_returnsFalse() {
-        ExportImportSettingsStorage.configure(ScheduledExportSettings.withPeriodInDays(1));
+        ExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setPeriodInDays(1).build());
         when(mExportManager.runExport()).thenReturn(false);
 
         boolean isExportSuccessful =
@@ -213,11 +280,12 @@ public class ExportImportJobsTest {
     @Test
     @EnableFlags({Flags.FLAG_EXPORT_IMPORT})
     public void executePeriodicExportJob_successfulFirstExport_reschedulesJob() {
-        ExportImportSettingsStorage.configure(ScheduledExportSettings.withPeriodInDays(1));
+        ExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setPeriodInDays(1).build());
         when(mExportManager.runExport()).thenReturn(true);
 
         PersistableBundle extras = new PersistableBundle();
-        extras.putBoolean(ExportImportJobs.IS_FIRST_EXPORT, true);
+        extras.putBoolean(ExportImportJobs.SHOULD_SCHEDULE_EARLY, true);
         boolean isExportSuccessful =
                 ExportImportJobs.executePeriodicExportJob(mContext, 0, extras, mExportManager);
 

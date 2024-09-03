@@ -23,8 +23,8 @@ import static android.health.connect.datatypes.Metadata.RECORDING_METHOD_MANUAL_
 import static android.health.connect.datatypes.Metadata.RECORDING_METHOD_UNKNOWN;
 import static android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_SESSION_TYPE_BREATHING;
 import static android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_SESSION_TYPE_MEDITATION;
+import static android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_SESSION_TYPE_OTHER;
 import static android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_SESSION_TYPE_UNKNOWN;
-import static android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_SESSION_TYPE_YOGA;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -249,7 +249,7 @@ public class MindfulSessionRecordInternalTest {
                                 metadata,
                                 Instant.ofEpochMilli(1357924680),
                                 Instant.ofEpochMilli(2468013579L),
-                                MINDFULNESS_SESSION_TYPE_YOGA)
+                                MINDFULNESS_SESSION_TYPE_OTHER)
                         .setTitle("title")
                         .setNotes("notes")
                         .setStartZoneOffset(ZoneOffset.ofHours(-2))
@@ -259,7 +259,7 @@ public class MindfulSessionRecordInternalTest {
         MindfulnessSessionRecordInternal internalRecord = externalRecord.toRecordInternal();
 
         assertThat(internalRecord.getMindfulnessSessionType())
-                .isEqualTo(MINDFULNESS_SESSION_TYPE_YOGA);
+                .isEqualTo(MINDFULNESS_SESSION_TYPE_OTHER);
         assertThat(internalRecord.getTitle()).isEqualTo("title");
         assertThat(internalRecord.getNotes()).isEqualTo("notes");
         assertThat(internalRecord.getStartTimeInMillis()).isEqualTo(1357924680);
@@ -290,13 +290,13 @@ public class MindfulSessionRecordInternalTest {
                                 metadata,
                                 Instant.ofEpochMilli(1357924680),
                                 Instant.ofEpochMilli(2468013579L),
-                                MINDFULNESS_SESSION_TYPE_YOGA)
+                                MINDFULNESS_SESSION_TYPE_OTHER)
                         .build();
 
         MindfulnessSessionRecordInternal internalRecord = externalRecord.toRecordInternal();
 
         assertThat(internalRecord.getMindfulnessSessionType())
-                .isEqualTo(MINDFULNESS_SESSION_TYPE_YOGA);
+                .isEqualTo(MINDFULNESS_SESSION_TYPE_OTHER);
         assertThat(internalRecord.getTitle()).isNull();
         assertThat(internalRecord.getNotes()).isNull();
         assertThat(internalRecord.getStartTimeInMillis()).isEqualTo(1357924680);

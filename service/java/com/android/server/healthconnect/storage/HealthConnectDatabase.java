@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.storage;
 
+import static com.android.healthfitness.flags.AconfigFlagHelper.getDbVersion;
+
 import android.annotation.NonNull;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -32,7 +34,7 @@ import java.io.File;
  *
  * @hide
  */
-public class HealthConnectDatabase extends SQLiteOpenHelper {
+public final class HealthConnectDatabase extends SQLiteOpenHelper {
     private static final String TAG = "HealthConnectDatabase";
 
     private static final String DEFAULT_DATABASE_NAME = "healthconnect.db";
@@ -43,14 +45,13 @@ public class HealthConnectDatabase extends SQLiteOpenHelper {
     }
 
     public HealthConnectDatabase(@NonNull Context context, String databaseName) {
-        super(context, databaseName, null, DatabaseUpgradeHelper.getDatabaseVersion());
+        super(context, databaseName, null, getDbVersion());
         mContext = context;
     }
 
     @Override
     public void onCreate(@NonNull SQLiteDatabase db) {
-        // We implement onCreate as a series of upgrades.
-        onUpgrade(db, 0, DatabaseUpgradeHelper.getDatabaseVersion());
+        DatabaseUpgradeHelper.onUpgrade(db, 0, getDbVersion());
     }
 
     @Override
@@ -60,7 +61,7 @@ public class HealthConnectDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onConfigure(SQLiteDatabase db) {
-        // Enforce FK constraints for DB writes as we want to enforce FK constraints on DB write.
+        // Enforce FK constraints for DB writes
         // This is also required for when we delete entries, for cascade to work
         db.setForeignKeyConstraintsEnabled(true);
     }
@@ -68,6 +69,11 @@ public class HealthConnectDatabase extends SQLiteOpenHelper {
     @Override
     public void onDowngrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.i(TAG, "onDowngrade oldVersion = " + oldVersion + " newVersion = " + newVersion);
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        DevelopmentDatabaseHelper.onOpen(db);
     }
 
     public File getDatabasePath() {

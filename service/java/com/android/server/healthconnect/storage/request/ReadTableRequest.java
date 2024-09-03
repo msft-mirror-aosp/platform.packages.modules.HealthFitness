@@ -17,11 +17,16 @@
 package com.android.server.healthconnect.storage.request;
 
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.DISTINCT;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.FROM;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.LIMIT_SIZE;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.SELECT;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.SELECT_ALL;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.annotation.StringDef;
 import android.health.connect.Constants;
 import android.util.Slog;
 
@@ -31,6 +36,8 @@ import com.android.server.healthconnect.storage.utils.OrderByClause;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -42,7 +49,16 @@ import java.util.Objects;
  */
 public class ReadTableRequest {
     private static final String TAG = "HealthConnectRead";
-    private static final String UNION_ALL = " UNION ALL ";
+    public static final String UNION_ALL = " UNION ALL ";
+    public static final String UNION = " UNION ";
+
+    /** @hide */
+    @StringDef(
+            value = {
+                UNION, UNION_ALL,
+            })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface UnionType {}
 
     private final String mTableName;
     private RecordHelper<?> mRecordHelper;
@@ -54,6 +70,7 @@ public class ReadTableRequest {
     private String mLimitClause = "";
     private List<ReadTableRequest> mExtraReadRequests;
     private List<ReadTableRequest> mUnionReadRequests;
+    private String mUnionType = UNION_ALL;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     public ReadTableRequest(@NonNull String tableName) {
@@ -102,26 +119,28 @@ public class ReadTableRequest {
         return this;
     }
 
+    /**
+     * Returns this {@link ReadTableRequest} with union type set. If not set, the default uses
+     * {@link ReadTableRequest#UNION_ALL}.
+     */
+    @NonNull
+    public ReadTableRequest setUnionType(@NonNull @UnionType String unionType) {
+        Objects.requireNonNull(unionType);
+        mUnionType = unionType;
+        return this;
+    }
+
     /** Returns SQL statement to perform read operation. */
     @NonNull
     public String getReadCommand() {
-        StringBuilder builder = new StringBuilder("SELECT ");
-        if (mDistinct) {
-            builder.append("DISTINCT ");
-            builder.append(getColumnsToFetch());
-        } else {
-            builder.append(getColumnsToFetch());
-        }
-        builder.append(" FROM ");
-        builder.append(mTableName);
+        String selectStatement = buildSelectStatement();
 
-        builder.append(mWhereClauses.get(/* withWhereKeyword */ true));
-        builder.append(mOrderByClause.getOrderBy());
-        builder.append(mLimitClause);
-
-        String readQuery = builder.toString();
+        String readQuery;
         if (mJoinClause != null) {
-            readQuery = mJoinClause.getJoinWithQueryCommand(readQuery);
+            String innerQuery = buildReadQuery(SELECT_ALL);
+            readQuery = mJoinClause.getJoinWithQueryCommand(selectStatement, innerQuery);
+        } else {
+            readQuery = buildReadQuery(selectStatement);
         }
 
         if (Constants.DEBUG) {
@@ -129,12 +148,12 @@ public class ReadTableRequest {
         }
 
         if (mUnionReadRequests != null && !mUnionReadRequests.isEmpty()) {
-            builder = new StringBuilder();
+            StringBuilder builder = new StringBuilder();
             for (ReadTableRequest unionReadRequest : mUnionReadRequests) {
                 builder.append("SELECT * FROM (");
                 builder.append(unionReadRequest.getReadCommand());
                 builder.append(")");
-                builder.append(UNION_ALL);
+                builder.append(mUnionType);
             }
 
             builder.append(readQuery);
@@ -143,6 +162,26 @@ public class ReadTableRequest {
         }
 
         return readQuery;
+    }
+
+    @NonNull
+    private String buildSelectStatement() {
+        StringBuilder selectStatement = new StringBuilder(SELECT);
+        if (mDistinct) {
+            selectStatement.append(DISTINCT);
+        }
+        selectStatement.append(getColumnsToFetch());
+        selectStatement.append(FROM);
+        return selectStatement.toString();
+    }
+
+    @NonNull
+    private String buildReadQuery(@NonNull String selectStatement) {
+        return selectStatement
+                + mTableName
+                + mWhereClauses.get(/* withWhereKeyword */ true)
+                + mOrderByClause.getOrderBy()
+                + mLimitClause;
     }
 
     /** Get requests for populating extra data */

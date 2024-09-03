@@ -35,8 +35,9 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{កម្មវិធី 1 មានសិទ្ធិចូលប្រើប្រាស់}other{កម្មវិធី # មានសិទ្ធិចូលប្រើប្រាស់}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"គ្មាន"</string>
     <string name="entry_details_title" msgid="590184849040247850">"ព័ត៌មានលម្អិតអំពីធាតុ"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"រុករកទិន្នន័យ"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"មើល​ទិន្នន័យ និង​ថាតើ​កម្មវិធី​ណាខ្លះ​អាចចូលប្រើ​វាបាន"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"ការលុបដោយស្វ័យប្រវត្តិ ប្រភពទិន្នន័យ ការបម្រុងទុក និងការស្ដារ"</string>
     <string name="backup_title" msgid="211503191266235085">"បម្រុង​ទុក"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"ប្រភពទិន្នន័យ និងអាទិភាព"</string>
     <string name="set_units_title" msgid="2657822539603758029">"កំណត់ឯកតា"</string>
@@ -66,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"ការតាមដាន​វដ្ដរដូវ"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"អាហារូបត្ថម្ភ"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"អាហារូបត្ថម្ភ"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"សុខុមាលភាព"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"សុខុមាលភាព"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"រុករកទិន្នន័យ"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"គ្រប់គ្រង​ទិន្នន័យ"</string>
     <string name="export_data_button" msgid="7783329820434117744">"នាំចេញ​ទិន្នន័យ"</string>
@@ -78,8 +81,7 @@
     <string name="can_read" msgid="4568261079308309564">"អាច​អាន \"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>\""</string>
     <string name="can_write" msgid="5082414937218423823">"អាច​សរសេរ \"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>\""</string>
     <string name="inactive_apps" msgid="8956546286760797760">"កម្មវិធីអសកម្ម"</string>
-    <!-- no translation found for inactive_apps_message (8335803540719022910) -->
-    <skip />
+    <string name="inactive_apps_message" msgid="8335803540719022910">"កម្មវិធីទាំងនេះលែងអាចអាន ឬសរសេរ<xliff:g id="DATA_TYPE">%s</xliff:g>បានទៀតហើយ ប៉ុន្តែនៅតែមានទិន្នន័យរក្សាទុកក្នុង Health Connect"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"កម្មវិធីមិនអាចអាន ឬសរសេរ<xliff:g id="DATA_TYPE_0">%1$s</xliff:g>បានទៀតទេ និងមិនមានទិន្នន័យ<xliff:g id="DATA_TYPE_2">%2$s</xliff:g>ផ្ទុកនៅក្នុង Health Connect ឡើយ"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"ទិន្នន័យនេះរួមបញ្ចូលព័ត៌មាន ដូចជាពេលវេលាសកម្ម ប្រភេទលំហាត់ប្រាណ ជុំ ការធ្វើឡើងវិញ វគ្គ ឬចំនួនបោះដៃហែលទឹក"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"ទិន្នន័យនេះរួមបញ្ចូលព័ត៌មាន ដូចជាដំណាក់កាលគេង និងពេលគេង"</string>
@@ -328,8 +330,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"សិទ្ធិ​ចូល​ប្រើបន្ថែម"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"បានដកការអនុញ្ញាតបន្ថែមចេញសម្រាប់កម្មវិធីនេះ"</string>
     <string name="permissions_header" msgid="6519976063360071569">"ការអនុញ្ញាត"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"គ្រប់គ្រងការអនុញ្ញាតឱ្យប្រើទិន្នន័យសម្បទា"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"គ្រប់គ្រងការអនុញ្ញាតឱ្យប្រើកំណត់ត្រាសុខភាព"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"សម្បទា និងសុខុមាលភាព"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"លំហាត់ប្រាណ ការគេង អាហារូបត្ថម្ភ និងផ្សេងទៀត"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"កំណត់ត្រាសុខភាព"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"កំណត់ត្រាសុខភាព"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"លទ្ធផលមន្ទីរពិសោធន៍ ថ្នាំ ការចាក់ថ្នាំបង្ការ និងផ្សេងទៀត"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"បានដកការអនុញ្ញាតកម្មវិធី"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect បានដកការអនុញ្ញាតសម្រាប់ <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect បានដកការអនុញ្ញាតសម្រាប់ <xliff:g id="APP_DATA_0">%1$s</xliff:g> និង <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -343,8 +348,10 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"មិនអាចនាំចេញទិន្នន័យបានទេ"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"មានបញ្ហាជាមួយនឹងការនាំចេញសម្រាប់ថ្ងៃទី <xliff:g id="DATE">%1$s</xliff:g>។ សូមរៀបចំការនាំចេញដែលបានកំណត់កាលវិភាគថ្មី រួចព្យាយាមម្ដងទៀត។"</string>
     <string name="next_export_time" msgid="3138247220014510213">"ការនាំចេញបន្ទាប់៖ <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"ការនាំចេញ​បន្ទាប់​នឹងចាប់ផ្តើម​ក្នុងពេល​ឆាប់ៗនេះ"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"បម្រុងទុក និង​ស្ដារ"</string>
     <string name="last_export_time" msgid="9205875050823594041">"ការនាំចេញចុងក្រោយ៖ <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"នាំចេញលើកចុងក្រោយ៖ គ្មាន"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"បានកំណត់ពេលនាំចេញ"</string>
     <string name="import_data" msgid="404502315533233094">"នាំចូលទិន្នន័យ"</string>
@@ -379,6 +386,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"នាំចូល"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"ការស្ដារ Health Connect កំពុងដំណើរការ"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"ការស្ដារ Health Connect បញ្ចប់"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"ការស្ដារ​កំពុង​ដំណើរការ"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"បានបញ្ចប់ការស្ដារទិន្នន័យ"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect មិនអាចស្ដារទិន្នន័យបានទេ"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"ចាំបាច់ត្រូវមានទំហំផ្ទុកបន្ថែម"</string>
@@ -637,6 +645,7 @@
     <string name="rest" msgid="5937058337671252210">"សម្រាក"</string>
     <string name="pause" msgid="5161459047750335691">"ផ្អាក"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"កីឡាបាល់ឱប​អូស្ត្រាលី"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"មិន​ស្គាល់​ប្រភេទ"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"ការគេង​រយៈ​ពេល <xliff:g id="DURATION"> %1$s</xliff:g>"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"ភ្ញាក់"</string>
@@ -647,6 +656,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"គេង​លក់​រលីវៗ"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"គេង​លក់​ស្កប់"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"មិន​ស្គាល់"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"ការដកដង្ហើម"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"សមាធិ"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"ចលនា"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"តន្ត្រី"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"ផ្សេងៗ"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"គ្មានការណែនាំ"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g>ន"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g>ម៉ <xliff:g id="MIN">%2$s</xliff:g>ន"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g>ម៉"</string>
@@ -990,4 +1005,14 @@
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"បានលុប​ទិន្នន័យ <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"បានលុបធាតុ <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>"</string>
     <string name="select_all" msgid="837499881590001166">"ជ្រើស​រើសទាំង​អស់"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"ចាប់ផ្ដើមប្រើ Health Connect"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"ធ្វើសមកាលកម្មកម្មវិធីដំបូងៗរបស់អ្នក ដើម្បីចែករំលែកទិន្នន័យសុខភាព និង​សម្បទារវាងកម្មវិធីទាំងនេះ"</string>
+    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"កុំទាន់"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"រៀបចំ"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"ភ្ជាប់​កម្មវិធី​ច្រើន​ទៀត​"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"ចាប់ផ្ដើមចែករំលែកទិន្នន័យរវាង <xliff:g id="APP_NAME">%s</xliff:g> និងកម្មវិធីសុខភាពនៅលើទូរសព្ទរបស់អ្នក"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"រៀបចំ"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"មើលកម្មវិធីដែលត្រូវគ្នា"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"ស្វែងរកកម្មវិធីច្រើនទៀត ដើម្បីធ្វើសមកាលកម្មជាមួយ <xliff:g id="APP_NAME">%s</xliff:g> តាមរយៈ Health Connect"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"មើលនៅលើហាង​កម្មវិធី"</string>
 </resources>

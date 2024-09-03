@@ -23,7 +23,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.datasources.AggregationCardInfo
-import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromFitnessPermissionType
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.SystemTimeSource
@@ -52,7 +52,8 @@ constructor(
         val cardDate = findViewById<TextView>(R.id.card_date)
         val titleAndDateContainer = findViewById<ConstraintLayout>(R.id.title_date_container)
 
-        cardIcon.background = fromHealthPermissionType(cardInfo.fitnessPermissionType).icon(context)
+        cardIcon.background =
+            fromFitnessPermissionType(cardInfo.fitnessPermissionType).icon(context)
         cardTitle.text = cardInfo.aggregation.aggregation
         cardTitle.contentDescription = cardInfo.aggregation.aggregationA11y
 

@@ -27,7 +27,6 @@ import com.android.healthconnect.controller.data.entries.api.ILoadMenstruationDa
 import com.android.healthconnect.controller.data.entries.api.LoadAggregationInput
 import com.android.healthconnect.controller.data.entries.api.LoadDataEntriesInput
 import com.android.healthconnect.controller.data.entries.api.LoadMedicalEntriesInput
-import com.android.healthconnect.controller.data.entries.api.LoadMedicalEntriesUseCase
 import com.android.healthconnect.controller.data.entries.api.LoadMenstruationDataInput
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
@@ -49,12 +48,12 @@ import kotlinx.coroutines.launch
 class EntriesViewModel
 @Inject
 constructor(
-        private val appInfoReader: AppInfoReader,
-        private val loadDataEntriesUseCase: ILoadDataEntriesUseCase,
-        private val loadMenstruationDataUseCase: ILoadMenstruationDataUseCase,
-        private val loadDataAggregationsUseCase: ILoadDataAggregationsUseCase,
-        private val loadMedicalEntriesUseCase: ILoadMedicalEntriesUseCase,
-    ) : ViewModel() {
+    private val appInfoReader: AppInfoReader,
+    private val loadDataEntriesUseCase: ILoadDataEntriesUseCase,
+    private val loadMenstruationDataUseCase: ILoadMenstruationDataUseCase,
+    private val loadDataAggregationsUseCase: ILoadDataAggregationsUseCase,
+    private val loadMedicalEntriesUseCase: ILoadMedicalEntriesUseCase,
+) : ViewModel() {
 
     companion object {
         private const val TAG = "EntriesViewModel"
@@ -78,18 +77,26 @@ constructor(
         period: DateNavigationPeriod
     ) {
         when (permissionType) {
-            is FitnessPermissionType -> loadData(permissionType, packageName = null, selectedDate, period, showDataOrigin = true)
-            is MedicalPermissionType -> loadData(permissionType, packageName  = null, showDataOrigin = true)
+            is FitnessPermissionType ->
+                loadData(
+                    permissionType, packageName = null, selectedDate, period, showDataOrigin = true)
+            is MedicalPermissionType ->
+                loadData(permissionType, packageName = null, showDataOrigin = true)
         }
     }
 
     fun loadEntries(
-        permissionType: FitnessPermissionType,
+        permissionType: HealthPermissionType,
         packageName: String,
         selectedDate: Instant,
         period: DateNavigationPeriod
     ) {
-        loadData(permissionType, packageName, selectedDate, period, showDataOrigin = false)
+        when (permissionType) {
+            is FitnessPermissionType ->
+                loadData(permissionType, packageName, selectedDate, period, showDataOrigin = false)
+            is MedicalPermissionType ->
+                loadData(permissionType, packageName, showDataOrigin = false)
+        }
     }
 
     private fun loadData(
@@ -136,9 +143,9 @@ constructor(
     }
 
     private fun loadData(
-            permissionType: MedicalPermissionType,
-            packageName: String?,
-            showDataOrigin: Boolean
+        permissionType: MedicalPermissionType,
+        packageName: String?,
+        showDataOrigin: Boolean
     ) {
         _entries.postValue(EntriesFragmentState.Loading)
 
@@ -174,12 +181,11 @@ constructor(
     }
 
     private suspend fun loadAppEntries(
-            permissionType: MedicalPermissionType,
-            packageName: String?,
-            showDataOrigin: Boolean
+        permissionType: MedicalPermissionType,
+        packageName: String?,
+        showDataOrigin: Boolean
     ): UseCaseResults<List<FormattedEntry>> {
-        val input =
-                LoadMedicalEntriesInput(permissionType, packageName, showDataOrigin)
+        val input = LoadMedicalEntriesInput(permissionType, packageName, showDataOrigin)
         return loadMedicalEntriesUseCase.invoke(input)
     }
 
