@@ -26,9 +26,14 @@ import android.health.connect.datatypes.ExerciseCompletionGoal
 import android.health.connect.datatypes.ExercisePerformanceGoal
 import android.health.connect.datatypes.ExerciseSegmentType
 import android.health.connect.datatypes.ExerciseSessionType
+import android.health.connect.datatypes.FhirResource
+import android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION
+import android.health.connect.datatypes.FhirVersion
 import android.health.connect.datatypes.HeartRateRecord
 import android.health.connect.datatypes.HydrationRecord
 import android.health.connect.datatypes.IntermenstrualBleedingRecord
+import android.health.connect.datatypes.MedicalDataSource
+import android.health.connect.datatypes.MedicalResource
 import android.health.connect.datatypes.Metadata
 import android.health.connect.datatypes.OxygenSaturationRecord
 import android.health.connect.datatypes.PlannedExerciseBlock
@@ -50,8 +55,8 @@ import android.health.connect.datatypes.units.Volume
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.android.healthconnect.controller.dataentries.units.PowerConverter
-import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.randomInstant
@@ -60,9 +65,9 @@ import com.android.healthconnect.controller.utils.toLocalDateTime
 import com.google.common.truth.Truth.assertThat
 import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneOffset
 import kotlin.random.Random
 import org.mockito.Mockito
-import java.time.ZoneOffset
 
 val NOW: Instant = Instant.parse("2022-10-20T07:06:05.432Z")
 val MIDNIGHT: Instant = Instant.parse("2022-10-20T00:00:00.000Z")
@@ -72,7 +77,8 @@ fun getHeartRateRecord(heartRateValues: List<Long>, startTime: Instant = NOW): H
             getMetaData(),
             startTime,
             startTime.plusSeconds(2),
-            heartRateValues.map { HeartRateRecord.HeartRateSample(it, NOW) })
+            heartRateValues.map { HeartRateRecord.HeartRateSample(it, NOW) },
+        )
         .build()
 }
 
@@ -114,7 +120,7 @@ fun getIntermenstrualBleedingRecord(time: Instant): IntermenstrualBleedingRecord
 fun getBodyTemperatureRecord(
     time: Instant,
     location: Int,
-    temperature: Temperature
+    temperature: Temperature,
 ): BodyTemperatureRecord {
     return BodyTemperatureRecord.Builder(getMetaData(), time, location, temperature).build()
 }
@@ -133,17 +139,23 @@ fun getBodyWaterMassRecord(time: Instant, bodyWaterMass: Mass): BodyWaterMassRec
 
 fun getRandomRecord(fitnessPermissionType: FitnessPermissionType, date: LocalDate): Record {
     return when (fitnessPermissionType) {
-        FitnessPermissionType.STEPS -> getStepsRecord(Random.nextLong(0, 5000), date.randomInstant())
+        FitnessPermissionType.STEPS ->
+            getStepsRecord(Random.nextLong(0, 5000), date.randomInstant())
         FitnessPermissionType.DISTANCE ->
             getDistanceRecord(
-                Length.fromMeters(Random.nextDouble(0.0, 5000.0)), date.randomInstant())
+                Length.fromMeters(Random.nextDouble(0.0, 5000.0)),
+                date.randomInstant(),
+            )
         FitnessPermissionType.TOTAL_CALORIES_BURNED ->
             getTotalCaloriesBurnedRecord(
-                Energy.fromCalories(Random.nextDouble(1500.0, 5000.0)), date.randomInstant())
+                Energy.fromCalories(Random.nextDouble(1500.0, 5000.0)),
+                date.randomInstant(),
+            )
         FitnessPermissionType.SLEEP -> getSleepSessionRecord(date.randomInstant())
         else ->
             throw IllegalArgumentException(
-                "HealthPermissionType $fitnessPermissionType not supported")
+                "HealthPermissionType $fitnessPermissionType not supported"
+            )
     }
 }
 
@@ -163,7 +175,12 @@ fun getSamplePlannedExerciseSessionRecord(): PlannedExerciseSessionRecord {
                                 ExercisePerformanceGoal.HeartRateGoal(100, 150),
                                 ExercisePerformanceGoal.SpeedGoal(
                                     Velocity.fromMetersPerSecond(25.0),
-                                    Velocity.fromMetersPerSecond(15.0))))))
+                                    Velocity.fromMetersPerSecond(15.0),
+                                ),
+                            ),
+                    )
+                ),
+        )
     val exerciseBlock2 =
         getPlannedExerciseBlock(
             repetitions = 1,
@@ -179,19 +196,25 @@ fun getSamplePlannedExerciseSessionRecord(): PlannedExerciseSessionRecord {
                                 ExercisePerformanceGoal.HeartRateGoal(150, 180),
                                 ExercisePerformanceGoal.SpeedGoal(
                                     Velocity.fromMetersPerSecond(50.0),
-                                    Velocity.fromMetersPerSecond(25.0))))))
+                                    Velocity.fromMetersPerSecond(25.0),
+                                ),
+                            ),
+                    )
+                ),
+        )
     val exerciseBlocks = listOf(exerciseBlock1, exerciseBlock2)
 
     return getPlannedExerciseSessionRecord(
         title = "Morning Run",
         note = "Morning quick run by the park",
-        exerciseBlocks = exerciseBlocks)
+        exerciseBlocks = exerciseBlocks,
+    )
 }
 
 fun getPlannedExerciseSessionRecord(
     title: String,
     note: String,
-    exerciseBlocks: List<PlannedExerciseBlock>
+    exerciseBlocks: List<PlannedExerciseBlock>,
 ): PlannedExerciseSessionRecord {
     return basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING)
         .setTitle(title)
@@ -203,7 +226,11 @@ fun getPlannedExerciseSessionRecord(
 private fun basePlannedExerciseSession(exerciseType: Int): PlannedExerciseSessionRecord.Builder {
     val builder: PlannedExerciseSessionRecord.Builder =
         PlannedExerciseSessionRecord.Builder(
-            getMetaData(), exerciseType, NOW, NOW.plusSeconds(3600))
+            getMetaData(),
+            exerciseType,
+            NOW,
+            NOW.plusSeconds(3600),
+        )
     builder.setNotes("Sample training plan notes")
     builder.setTitle("Training plan title")
     builder.setStartZoneOffset(ZoneOffset.UTC)
@@ -214,7 +241,7 @@ private fun basePlannedExerciseSession(exerciseType: Int): PlannedExerciseSessio
 fun getPlannedExerciseBlock(
     repetitions: Int,
     description: String,
-    exerciseSteps: List<PlannedExerciseStep>
+    exerciseSteps: List<PlannedExerciseStep>,
 ): PlannedExerciseBlock {
     return PlannedExerciseBlock.Builder(repetitions)
         .setDescription(description)
@@ -225,10 +252,13 @@ fun getPlannedExerciseBlock(
 fun getPlannedExerciseStep(
     exerciseSegmentType: Int,
     completionGoal: ExerciseCompletionGoal,
-    performanceGoals: List<ExercisePerformanceGoal>
+    performanceGoals: List<ExercisePerformanceGoal>,
 ): PlannedExerciseStep {
     return PlannedExerciseStep.Builder(
-            exerciseSegmentType, PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE, completionGoal)
+            exerciseSegmentType,
+            PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE,
+            completionGoal,
+        )
         .setPerformanceGoals(performanceGoals)
         .build()
 }
@@ -330,22 +360,34 @@ val INSTANT_MONTH6: Instant = Instant.parse("2023-07-07T07:05:00Z")
 
 val SLEEP_DAY_0H20 =
     getSleepSessionRecord(
-        Instant.parse("2023-06-12T21:00:00Z"), Instant.parse("2023-06-12T21:20:00Z"))
+        Instant.parse("2023-06-12T21:00:00Z"),
+        Instant.parse("2023-06-12T21:20:00Z"),
+    )
 val SLEEP_DAY_1H45 =
     getSleepSessionRecord(
-        Instant.parse("2023-06-12T16:00:00Z"), Instant.parse("2023-06-12T17:45:00Z"))
+        Instant.parse("2023-06-12T16:00:00Z"),
+        Instant.parse("2023-06-12T17:45:00Z"),
+    )
 val SLEEP_DAY_9H15 =
     getSleepSessionRecord(
-        Instant.parse("2023-06-12T22:30:00Z"), Instant.parse("2023-06-13T07:45:00Z"))
+        Instant.parse("2023-06-12T22:30:00Z"),
+        Instant.parse("2023-06-13T07:45:00Z"),
+    )
 val SLEEP_WEEK_9H15 =
     getSleepSessionRecord(
-        Instant.parse("2023-06-14T22:30:00Z"), Instant.parse("2023-06-15T07:45:00Z"))
+        Instant.parse("2023-06-14T22:30:00Z"),
+        Instant.parse("2023-06-15T07:45:00Z"),
+    )
 val SLEEP_WEEK_33H15 =
     getSleepSessionRecord(
-        Instant.parse("2023-06-11T22:30:00Z"), Instant.parse("2023-06-13T07:45:00Z"))
+        Instant.parse("2023-06-11T22:30:00Z"),
+        Instant.parse("2023-06-13T07:45:00Z"),
+    )
 val SLEEP_MONTH_81H15 =
     getSleepSessionRecord(
-        Instant.parse("2023-07-09T22:30:00Z"), Instant.parse("2023-07-13T07:45:00Z"))
+        Instant.parse("2023-07-09T22:30:00Z"),
+        Instant.parse("2023-07-13T07:45:00Z"),
+    )
 
 val HYDRATION_MONTH: HydrationRecord =
     getHydrationRecord(INSTANT_MONTH1, INSTANT_MONTH2, Volume.fromLiters(2.0))
@@ -374,7 +416,8 @@ val BODYTEMPERATURE_MONTH: BodyTemperatureRecord =
     getBodyTemperatureRecord(
         INSTANT_MONTH3,
         BodyTemperatureMeasurementLocation.MEASUREMENT_LOCATION_MOUTH,
-        Temperature.fromCelsius(100.0))
+        Temperature.fromCelsius(100.0),
+    )
 
 val BODYWATERMASS_WEEK: BodyWaterMassRecord =
     getBodyWaterMassRecord(INSTANT_WEEK, Mass.fromGrams(1000.0))
@@ -387,7 +430,8 @@ fun getMixedRecordsAcrossTwoDays(timeSource: TimeSource): List<Record> {
         getHydrationRecord(instantToday, instantToday.plusSeconds(900), Volume.fromLiters(2.0)),
         getSleepSessionRecord(instantToday, instantToday.plusSeconds(1800)),
         getDistanceRecord(Length.fromMeters(2500.0), instantYesterday),
-        getOxygenSaturationRecord(instantYesterday, Percentage.fromValue(99.0)))
+        getOxygenSaturationRecord(instantYesterday, Percentage.fromValue(99.0)),
+    )
 }
 
 fun getMixedRecordsAcrossThreeDays(timeSource: TimeSource): List<Record> {
@@ -396,7 +440,9 @@ fun getMixedRecordsAcrossThreeDays(timeSource: TimeSource): List<Record> {
         .plus(
             listOf(
                 getWeightRecord(instantTwoDaysAgo, Mass.fromGrams(95000.0)),
-                getDistanceRecord(Length.fromMeters(2000.0), instantTwoDaysAgo)))
+                getDistanceRecord(Length.fromMeters(2000.0), instantTwoDaysAgo),
+            )
+        )
 }
 
 // test data constants - end
@@ -405,10 +451,12 @@ fun getMixedRecordsAcrossThreeDays(timeSource: TimeSource): List<Record> {
 fun toggleAnimation(isEnabled: Boolean) {
     with(UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())) {
         executeShellCommand(
-            "settings put global transition_animation_scale ${if (isEnabled) 1 else 0}")
+            "settings put global transition_animation_scale ${if (isEnabled) 1 else 0}"
+        )
         executeShellCommand("settings put global window_animation_scale ${if (isEnabled) 1 else 0}")
         executeShellCommand(
-            "settings put global animator_duration_scale ${if (isEnabled) 1 else 0}")
+            "settings put global animator_duration_scale ${if (isEnabled) 1 else 0}"
+        )
     }
 }
 
@@ -442,5 +490,52 @@ val TEST_APP_3 =
     AppMetadata(packageName = TEST_APP_PACKAGE_NAME_3, appName = TEST_APP_NAME_3, icon = null)
 val OLD_TEST_APP =
     AppMetadata(
-        packageName = OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME, appName = OLD_APP_NAME, icon = null)
+        packageName = OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME,
+        appName = OLD_APP_NAME,
+        icon = null,
+    )
+// endregion
+
+// PHR
+const val TEST_DATASOURCE_ID = "123"
+val TEST_FHIR_VERSION: FhirVersion = FhirVersion.parseFhirVersion("4.0.1")
+val TEST_FHIR_RESOURCE_IMMUNIZATION: FhirResource =
+    FhirResource.Builder(
+            FHIR_RESOURCE_TYPE_IMMUNIZATION,
+            "Immunization1",
+            "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization1\"}",
+        )
+        .build()
+val TEST_MEDICAL_RESOURCE_IMMUNIZATION: MedicalResource =
+    MedicalResource.Builder(
+            MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+            TEST_DATASOURCE_ID,
+            TEST_FHIR_VERSION,
+            TEST_FHIR_RESOURCE_IMMUNIZATION,
+        )
+        .build()
+val TEST_MEDICAL_DATA_SOURCE: MedicalDataSource =
+    MedicalDataSource.Builder(
+            /* id= */ "123",
+            TEST_APP_PACKAGE_NAME,
+            /* fhirBaseUri= */ "fhir.base.uri",
+            /* displayName= */ "App A Data Source",
+        )
+        .build()
+val TEST_MEDICAL_DATA_SOURCE_2: MedicalDataSource =
+    MedicalDataSource.Builder(
+            /* id= */ "234",
+            TEST_APP_PACKAGE_NAME,
+            /* fhirBaseUri= */ "fhir.base.uri",
+            /* displayName= */ "App A Data Source 2",
+        )
+        .build()
+val TEST_MEDICAL_DATA_SOURCE_DIFFERENT_APP: MedicalDataSource =
+    MedicalDataSource.Builder(
+            /* id= */ "456",
+            TEST_APP_PACKAGE_NAME_2,
+            /* fhirBaseUri= */ "fhir.base.uri",
+            /* displayName= */ "App B Data Source",
+        )
+        .build()
 // endregion
