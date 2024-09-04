@@ -224,7 +224,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     public final CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(getMainTableName(), getColumnInfo())
                 .addForeignKey(
-                        DeviceInfoHelper.getInstance().getTableName(),
+                        DeviceInfoHelper.getInstance().getMainTableName(),
                         Collections.singletonList(DEVICE_INFO_ID_COLUMN_NAME),
                         Collections.singletonList(PRIMARY_COLUMN_NAME))
                 .addForeignKey(

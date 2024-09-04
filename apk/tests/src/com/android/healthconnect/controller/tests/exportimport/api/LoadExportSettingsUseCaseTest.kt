@@ -53,8 +53,9 @@ class LoadExportSettingsUseCaseTest {
     @Test
     fun invoke_callsHealthDataExportManager() = runTest {
         healthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays))
+            ScheduledExportSettings.Builder()
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
+                .build())
         val result = useCase.invoke()
 
         assertThat(result is ExportImportUseCaseResult.Success).isTrue()

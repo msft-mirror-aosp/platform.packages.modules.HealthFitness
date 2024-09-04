@@ -62,7 +62,9 @@ class AppDataFragmentTest {
                 AppMetadata(
                     TEST_APP_PACKAGE_NAME,
                     TEST_APP_NAME,
-                    context.getDrawable(R.drawable.health_connect_logo)))
+                    context.getDrawable(R.drawable.health_connect_logo),
+                )
+            )
         }
     }
 
@@ -74,7 +76,9 @@ class AppDataFragmentTest {
         launchFragment<AppDataFragment>(
             bundleOf(
                 Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
-                Constants.EXTRA_APP_NAME to TEST_APP_NAME))
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
 
         onView(withText("No data")).check(matches(isDisplayed()))
         onView(withText("Data from apps with access to Health Connect will show here"))
@@ -93,17 +97,31 @@ class AppDataFragmentTest {
                                 FitnessPermissionType.DISTANCE,
                                 FitnessPermissionType.EXERCISE,
                                 FitnessPermissionType.EXERCISE_ROUTE,
-                                FitnessPermissionType.STEPS)),
+                                FitnessPermissionType.STEPS,
+                            ),
+                        ),
+                        PermissionTypesPerCategory(HealthDataCategory.BODY_MEASUREMENTS, listOf()),
                         PermissionTypesPerCategory(
                             HealthDataCategory.CYCLE_TRACKING,
                             listOf(
                                 FitnessPermissionType.MENSTRUATION,
-                                FitnessPermissionType.SEXUAL_ACTIVITY)))))
+                                FitnessPermissionType.SEXUAL_ACTIVITY,
+                            ),
+                        ),
+                        PermissionTypesPerCategory(HealthDataCategory.NUTRITION, listOf()),
+                        PermissionTypesPerCategory(HealthDataCategory.SLEEP, listOf()),
+                        PermissionTypesPerCategory(HealthDataCategory.VITALS, listOf()),
+                        PermissionTypesPerCategory(MEDICAL, listOf()),
+                    )
+                )
+            )
         }
         launchFragment<AppDataFragment>(
             bundleOf(
                 Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
-                Constants.EXTRA_APP_NAME to TEST_APP_NAME))
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
 
         onView(withText("Activity")).check(matches(isDisplayed()))
         onView(withText("Distance")).check(matches(isDisplayed()))
@@ -115,6 +133,8 @@ class AppDataFragmentTest {
         onView(withText("Sexual activity")).perform(scrollTo()).check(matches(isDisplayed()))
 
         onView(withText("Body measurements")).check(doesNotExist())
+        onView(withText("Health records")).check(doesNotExist())
+        onView(withText("Immunizations")).check(doesNotExist())
     }
 
     @Test
@@ -125,14 +145,22 @@ class AppDataFragmentTest {
                     listOf(
                         PermissionTypesPerCategory(
                             HealthDataCategory.ACTIVITY,
-                            listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.EXERCISE)),
+                            listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.EXERCISE),
+                        ),
                         PermissionTypesPerCategory(
-                            MEDICAL, listOf(MedicalPermissionType.IMMUNIZATION)))))
+                            MEDICAL,
+                            listOf(MedicalPermissionType.IMMUNIZATION),
+                        ),
+                    )
+                )
+            )
         }
         launchFragment<AppDataFragment>(
             bundleOf(
                 Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
-                Constants.EXTRA_APP_NAME to TEST_APP_NAME))
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
 
         onView(withText("Activity")).check(matches(isDisplayed()))
         onView(withText("Distance")).check(matches(isDisplayed()))
@@ -153,12 +181,19 @@ class AppDataFragmentTest {
                 AppDataViewModel.AppDataState.WithData(
                     listOf(
                         PermissionTypesPerCategory(
-                            MEDICAL, listOf(MedicalPermissionType.IMMUNIZATION)))))
+                            MEDICAL,
+                            listOf(MedicalPermissionType.IMMUNIZATION),
+                        )
+                    )
+                )
+            )
         }
         launchFragment<AppDataFragment>(
             bundleOf(
                 Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
-                Constants.EXTRA_APP_NAME to TEST_APP_NAME))
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
 
         onView(withText("Activity")).check(doesNotExist())
         onView(withText("Distance")).check(doesNotExist())

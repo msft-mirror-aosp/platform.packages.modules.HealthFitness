@@ -42,10 +42,9 @@ import com.android.healthconnect.controller.permissions.data.MedicalPermissionTy
 import com.android.healthconnect.controller.permissions.data.fromPermissionTypeName
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
-import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.setTitle
-import com.android.healthconnect.controller.utils.setupSharedMenu
+import com.android.healthconnect.controller.utils.setupMenu
 import com.android.settingslib.widget.AppHeaderPreference
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
@@ -56,6 +55,7 @@ import javax.inject.Inject
 class AllEntriesFragment : Hilt_AllEntriesFragment() {
 
     @Inject lateinit var logger: HealthConnectLogger
+    // TODO(b/291249677): Add logging.
 
     private lateinit var permissionType: HealthPermissionType
     private val entriesViewModel: EntriesViewModel by viewModels()
@@ -98,7 +98,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        logger.setPageId(PageName.TAB_ENTRIES_PAGE)
+
         val view = inflater.inflate(R.layout.fragment_entries, container, false)
         if (requireArguments().containsKey(PERMISSION_TYPE_NAME_KEY)) {
             val permissionTypeName =
@@ -107,7 +107,18 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             permissionType = fromPermissionTypeName(permissionTypeName)
         }
         setTitle(permissionType.upperCaseLabel())
-        setupSharedMenu(viewLifecycleOwner, logger)
+        setupMenu(R.menu.set_data_units_with_send_feedback_and_help, viewLifecycleOwner, logger) {
+            menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_open_units -> {
+                    logger.logImpression(ToolbarElement.TOOLBAR_UNITS_BUTTON)
+                    findNavController()
+                        .navigate(R.id.action_entriesAndAccessFragment_to_unitFragment)
+                    true
+                }
+                else -> false
+            }
+        }
         logger.logImpression(ToolbarElement.TOOLBAR_SETTINGS_BUTTON)
 
         dateNavigationView = view.findViewById(R.id.date_navigation_view)
@@ -170,9 +181,9 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             entriesViewModel.loadEntries(
                 permissionType, dateNavigationView.getDate(), dateNavigationView.getPeriod())
         }
-
-        logger.setPageId(PageName.TAB_ENTRIES_PAGE)
-        logger.logPageImpression()
+        //
+        //        logger.setPageId(pageName)
+        //        logger.logPageImpression()
     }
 
     private fun observeEntriesUpdates() {

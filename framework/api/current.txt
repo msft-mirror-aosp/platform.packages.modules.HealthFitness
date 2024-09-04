@@ -39,18 +39,18 @@ package android.health.connect {
   @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class CreateMedicalDataSourceRequest implements android.os.Parcelable {
     method public int describeContents();
     method @NonNull public String getDisplayName();
-    method @NonNull public String getFhirBaseUri();
+    method @NonNull public android.net.Uri getFhirBaseUri();
     method public void writeToParcel(@NonNull android.os.Parcel, int);
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.CreateMedicalDataSourceRequest> CREATOR;
   }
 
   public static final class CreateMedicalDataSourceRequest.Builder {
-    ctor public CreateMedicalDataSourceRequest.Builder(@NonNull String, @NonNull String);
+    ctor public CreateMedicalDataSourceRequest.Builder(@NonNull android.net.Uri, @NonNull String);
     ctor public CreateMedicalDataSourceRequest.Builder(@NonNull android.health.connect.CreateMedicalDataSourceRequest.Builder);
     ctor public CreateMedicalDataSourceRequest.Builder(@NonNull android.health.connect.CreateMedicalDataSourceRequest);
     method @NonNull public android.health.connect.CreateMedicalDataSourceRequest build();
     method @NonNull public android.health.connect.CreateMedicalDataSourceRequest.Builder setDisplayName(@NonNull String);
-    method @NonNull public android.health.connect.CreateMedicalDataSourceRequest.Builder setFhirBaseUri(@NonNull String);
+    method @NonNull public android.health.connect.CreateMedicalDataSourceRequest.Builder setFhirBaseUri(@NonNull android.net.Uri);
   }
 
   @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class DeleteMedicalResourcesRequest implements android.os.Parcelable {
@@ -225,6 +225,7 @@ package android.health.connect {
   @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalResourceId implements android.os.Parcelable {
     ctor public MedicalResourceId(@NonNull String, int, @NonNull String);
     method public int describeContents();
+    method @NonNull public static android.health.connect.MedicalResourceId fromFhirReference(@NonNull String, @NonNull String);
     method @NonNull public String getDataSourceId();
     method @NonNull public String getFhirResourceId();
     method public int getFhirResourceType();
@@ -234,6 +235,7 @@ package android.health.connect {
 
   @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class ReadMedicalResourcesRequest implements android.os.Parcelable {
     method public int describeContents();
+    method @NonNull public java.util.Set<java.lang.String> getDataSourceIds();
     method public int getMedicalResourceType();
     method @IntRange(from=android.health.connect.Constants.MINIMUM_PAGE_SIZE, to=android.health.connect.Constants.MAXIMUM_PAGE_SIZE) public int getPageSize();
     method @Nullable public String getPageToken();
@@ -245,7 +247,9 @@ package android.health.connect {
     ctor public ReadMedicalResourcesRequest.Builder(int);
     ctor public ReadMedicalResourcesRequest.Builder(@NonNull android.health.connect.ReadMedicalResourcesRequest.Builder);
     ctor public ReadMedicalResourcesRequest.Builder(@NonNull android.health.connect.ReadMedicalResourcesRequest);
+    method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder addDataSourceId(@NonNull String);
     method @NonNull public android.health.connect.ReadMedicalResourcesRequest build();
+    method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder clearDataSourceIds();
     method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder setMedicalResourceType(int);
     method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder setPageSize(@IntRange(from=android.health.connect.Constants.MINIMUM_PAGE_SIZE, to=android.health.connect.Constants.MAXIMUM_PAGE_SIZE) int);
     method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder setPageToken(@Nullable String);
@@ -1146,7 +1150,7 @@ package android.health.connect.datatypes {
   @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalDataSource implements android.os.Parcelable {
     method public int describeContents();
     method @NonNull public String getDisplayName();
-    method @NonNull public String getFhirBaseUri();
+    method @NonNull public android.net.Uri getFhirBaseUri();
     method @NonNull public String getId();
     method @NonNull public String getPackageName();
     method public void writeToParcel(@NonNull android.os.Parcel, int);
@@ -1154,12 +1158,12 @@ package android.health.connect.datatypes {
   }
 
   public static final class MedicalDataSource.Builder {
-    ctor public MedicalDataSource.Builder(@NonNull String, @NonNull String, @NonNull String, @NonNull String);
+    ctor public MedicalDataSource.Builder(@NonNull String, @NonNull String, @NonNull android.net.Uri, @NonNull String);
     ctor public MedicalDataSource.Builder(@NonNull android.health.connect.datatypes.MedicalDataSource.Builder);
     ctor public MedicalDataSource.Builder(@NonNull android.health.connect.datatypes.MedicalDataSource);
     method @NonNull public android.health.connect.datatypes.MedicalDataSource build();
     method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setDisplayName(@NonNull String);
-    method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setFhirBaseUri(@NonNull String);
+    method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setFhirBaseUri(@NonNull android.net.Uri);
     method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setId(@NonNull String);
     method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setPackageName(@NonNull String);
   }
@@ -1169,6 +1173,7 @@ package android.health.connect.datatypes {
     method @NonNull public String getDataSourceId();
     method @NonNull public android.health.connect.datatypes.FhirResource getFhirResource();
     method @NonNull public android.health.connect.datatypes.FhirVersion getFhirVersion();
+    method @NonNull public android.health.connect.MedicalResourceId getId();
     method public int getType();
     method public void writeToParcel(@NonNull android.os.Parcel, int);
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.datatypes.MedicalResource> CREATOR;
@@ -1252,9 +1257,9 @@ package android.health.connect.datatypes {
     field public static final int MINDFULNESS_SESSION_TYPE_MEDITATION = 1; // 0x1
     field public static final int MINDFULNESS_SESSION_TYPE_MOVEMENT = 5; // 0x5
     field public static final int MINDFULNESS_SESSION_TYPE_MUSIC = 4; // 0x4
+    field public static final int MINDFULNESS_SESSION_TYPE_OTHER = 2; // 0x2
     field public static final int MINDFULNESS_SESSION_TYPE_UNGUIDED = 6; // 0x6
     field public static final int MINDFULNESS_SESSION_TYPE_UNKNOWN = 0; // 0x0
-    field public static final int MINDFULNESS_SESSION_TYPE_YOGA = 2; // 0x2
   }
 
   public static final class MindfulnessSessionRecord.Builder {

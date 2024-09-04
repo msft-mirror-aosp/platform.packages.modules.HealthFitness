@@ -38,7 +38,9 @@ import com.android.healthconnect.controller.shared.preference.HealthPreferenceFr
 import com.android.healthconnect.controller.utils.logging.DataAccessElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.setTitle
+import com.android.healthconnect.controller.utils.setupMenu
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -53,7 +55,7 @@ class AccessFragment : Hilt_AccessFragment() {
     }
 
     init {
-        this.setPageName(PageName.TAB_ACCESS_PAGE)
+        this.setPageName(PageName.DATA_ACCESS_PAGE)
     }
 
     @Inject lateinit var logger: HealthConnectLogger
@@ -115,6 +117,21 @@ class AccessFragment : Hilt_AccessFragment() {
                     setLoading(isLoading = false, animate = false)
                     updateDataAccess(state.appMetadata)
                 }
+            }
+        }
+
+        setupMenu(R.menu.set_data_units_with_send_feedback_and_help, viewLifecycleOwner, logger) {
+            menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_open_units -> {
+                    logger.logImpression(ToolbarElement.TOOLBAR_UNITS_BUTTON)
+                    // TODO(b/291249677): Enable in an upcoming CL.
+                    //                    findNavController()
+                    //
+                    // .navigate(R.id.action_entriesAndAccessFragment_to_unitFragment)
+                    true
+                }
+                else -> false
             }
         }
     }

@@ -17,8 +17,8 @@
 package android.healthconnect.cts.lib;
 
 import static android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_SESSION_TYPE_MEDITATION;
+import static android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_SESSION_TYPE_OTHER;
 import static android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_SESSION_TYPE_UNKNOWN;
-import static android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_SESSION_TYPE_YOGA;
 import static android.healthconnect.cts.lib.BundleHelper.PREFIX;
 
 import android.health.connect.datatypes.Metadata;
@@ -38,7 +38,7 @@ public final class MindfulnessSessionRecordFactory extends RecordFactory<Mindful
     public MindfulnessSessionRecord newFullRecord(
             Metadata metadata, Instant startTime, Instant endTime) {
         return new MindfulnessSessionRecord.Builder(
-                        metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_YOGA)
+                        metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
                 .setTitle("title-foo")
                 .setNotes("notes-foo")
                 .setStartZoneOffset(ZoneOffset.ofHours(3))
