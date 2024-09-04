@@ -31,12 +31,14 @@ class FakeDeviceInfoUtils : DeviceInfoUtils {
     private var isHealthConnectAvailable = true
 
     var helpCenterInvoked = false
+    var backupAndRestoreHelpCenterInvoked = false
 
     fun reset() {
         sendFeedbackAvailable = false
         playStoreAvailable = false
         isHealthConnectAvailable = true
         helpCenterInvoked = false
+        backupAndRestoreHelpCenterInvoked = false
     }
 
     fun setSendFeedbackAvailability(available: Boolean) {
@@ -65,6 +67,10 @@ class FakeDeviceInfoUtils : DeviceInfoUtils {
 
     override fun openHCGetStartedLink(activity: FragmentActivity) {
         helpCenterInvoked = true
+    }
+
+    override fun openHCBackupAndRestoreLink(activity: FragmentActivity) {
+        backupAndRestoreHelpCenterInvoked = true
     }
 
     override fun openSendFeedbackActivity(activity: FragmentActivity) {}

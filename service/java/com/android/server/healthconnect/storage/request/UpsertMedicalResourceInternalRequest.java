@@ -16,8 +16,6 @@
 
 package com.android.server.healthconnect.storage.request;
 
-import static com.android.healthfitness.flags.Flags.personalHealthRecord;
-
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
@@ -27,10 +25,6 @@ import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.FhirResource.FhirResourceType;
 import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
-
-import com.android.server.healthconnect.phr.FhirJsonExtractor;
-
-import org.json.JSONException;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -146,26 +140,6 @@ public final class UpsertMedicalResourceInternalRequest {
         requireNonNull(fhirVersion);
         mFhirVersion = fhirVersion.toString();
         return this;
-    }
-
-    /** Converts to this object from an upsert request. */
-    // TODO(b/350010200): Refactor this once we check in the request validator code.
-    @NonNull
-    public static UpsertMedicalResourceInternalRequest fromUpsertRequest(
-            @NonNull UpsertMedicalResourceRequest request) throws JSONException {
-        if (!personalHealthRecord()) {
-            throw new UnsupportedOperationException(
-                    "Convert from UpsertMedicalResourceRequest is not supported");
-        }
-        requireNonNull(request);
-        FhirJsonExtractor extractor = new FhirJsonExtractor(request.getData());
-        return new UpsertMedicalResourceInternalRequest()
-                .setMedicalResourceType(extractor.getMedicalResourceType())
-                .setFhirResourceId(extractor.getFhirResourceId())
-                .setFhirResourceType(extractor.getFhirResourceType())
-                .setDataSourceId(request.getDataSourceId())
-                .setFhirVersion(request.getFhirVersion())
-                .setData(request.getData());
     }
 
     @Override

@@ -17,8 +17,7 @@
 package com.android.server.healthconnect.permission;
 
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
-import static android.health.connect.HealthPermissions.getMedicalReadPermission;
-import static android.health.connect.internal.datatypes.utils.MedicalResourceTypePermissionCategoryMapper.getMedicalPermissionCategory;
+import static android.health.connect.internal.datatypes.utils.MedicalResourceTypePermissionMapper.getMedicalReadPermission;
 import static android.permission.PermissionManager.PERMISSION_GRANTED;
 
 import android.annotation.NonNull;
@@ -65,8 +64,7 @@ public class MedicalDataPermissionEnforcer {
     public boolean enforceMedicalReadAccessAndGetEnforceSelfRead(
             @MedicalResource.MedicalResourceType int medicalResourceType,
             AttributionSource attributionSource) {
-        String readPermissionName =
-                getMedicalReadPermission(getMedicalPermissionCategory(medicalResourceType));
+        String readPermissionName = getMedicalReadPermission(medicalResourceType);
 
         if (isPermissionGranted(readPermissionName, attributionSource)) {
             return false;

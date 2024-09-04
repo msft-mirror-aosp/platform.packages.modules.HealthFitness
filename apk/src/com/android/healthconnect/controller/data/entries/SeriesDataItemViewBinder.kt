@@ -24,7 +24,7 @@ import androidx.core.view.isVisible
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SeriesDataEntry
 import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
-import com.android.healthconnect.controller.utils.logging.AllEntriesElement
+import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
@@ -53,7 +53,8 @@ class SeriesDataItemViewBinder(
         val title = view.findViewById<TextView>(R.id.item_data_entry_title)
         val deleteButton = view.findViewById<ImageButton>(R.id.item_data_entry_delete)
 
-        logger.logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
+        logger.logImpression(DataEntriesElement.DATA_ENTRY_VIEW)
+        logger.logImpression(DataEntriesElement.DATA_ENTRY_DELETE_BUTTON)
         title.text = data.title
         title.contentDescription = data.titleA11y
         header.text = data.header
@@ -61,7 +62,7 @@ class SeriesDataItemViewBinder(
         deleteButton.isVisible = false
         divider.isVisible = false
         container.setOnClickListener {
-            logger.logInteraction(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
+            logger.logInteraction(DataEntriesElement.DATA_ENTRY_VIEW)
             onItemClickedListener?.onItemClicked(data.uuid, index)
         }
     }

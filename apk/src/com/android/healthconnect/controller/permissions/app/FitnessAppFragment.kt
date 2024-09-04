@@ -127,12 +127,16 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (requireArguments().containsKey(EXTRA_PACKAGE_NAME) &&
-            requireArguments().getString(EXTRA_PACKAGE_NAME) != null) {
+        if (
+            requireArguments().containsKey(EXTRA_PACKAGE_NAME) &&
+                requireArguments().getString(EXTRA_PACKAGE_NAME) != null
+        ) {
             packageName = requireArguments().getString(EXTRA_PACKAGE_NAME)!!
         }
-        if (requireArguments().containsKey(EXTRA_APP_NAME) &&
-            requireArguments().getString(EXTRA_APP_NAME) != null) {
+        if (
+            requireArguments().containsKey(EXTRA_APP_NAME) &&
+                requireArguments().getString(EXTRA_APP_NAME) != null
+        ) {
             appName = requireArguments().getString(EXTRA_APP_NAME)!!
         }
         if (requireArguments().containsKey(SHOW_MANAGE_APP_SECTION)) {
@@ -155,7 +159,8 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
                 Toast.makeText(
                         requireContext(),
                         R.string.removed_additional_permissions_toast,
-                        Toast.LENGTH_LONG)
+                        Toast.LENGTH_LONG,
+                    )
                     .show()
                 appPermissionViewModel.markLastReadShown()
             }
@@ -178,7 +183,7 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
         }
 
         appPermissionViewModel.showDisableExerciseRouteEvent.observe(viewLifecycleOwner) { event ->
-            if (event.shouldShowDialog) {
+            if (savedInstanceState == null && event.shouldShowDialog) {
                 DisableExerciseRoutePermissionDialog.createDialog(packageName, event.appName)
                     .show(childFragmentManager, DISABLE_EXERCISE_ROUTE_DIALOG_TAG)
             }
@@ -189,7 +194,7 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
         }
 
         childFragmentManager.setFragmentResultListener(DISCONNECT_ALL_EVENT, this) { _, bundle ->
-            val permissionsUpdated = appPermissionViewModel.revokeAllHealthPermissions(packageName)
+            val permissionsUpdated = revokeAllPermissions()
             if (!permissionsUpdated) {
                 Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
             }
@@ -202,6 +207,16 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
         setupManageDataPreferenceCategory()
         setupHeader()
         setupFooter()
+    }
+
+    private fun revokeAllPermissions(): Boolean {
+        // The manage app section includes the additional permissions button too. If this section is
+        // visible then all health permissions should be revoked (fitness and additional). If the
+        // manage app section is not visible then fitness permissions should be revoked only,
+        // because medical and additional permissions are displayed on other screens.
+        return if (showManageAppSection)
+            appPermissionViewModel.revokeAllHealthPermissions(packageName)
+        else appPermissionViewModel.revokeAllFitnessPermissions(packageName)
     }
 
     private fun setupHeader() {
@@ -229,10 +244,14 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
                             .navigate(
                                 R.id.action_fitnessApp_to_appData,
                                 bundleOf(
-                                    EXTRA_PACKAGE_NAME to packageName, EXTRA_APP_NAME to appName))
+                                    EXTRA_PACKAGE_NAME to packageName,
+                                    EXTRA_APP_NAME to appName,
+                                ),
+                            )
                         true
                     }
-                })
+                }
+            )
         } else {
             manageDataCategory.addPreference(
                 HealthPreference(requireContext()).also {
@@ -241,10 +260,13 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
                     it.setOnPreferenceClickListener {
                         val deletionType = DeletionType.DeletionTypeAppData(packageName, appName)
                         childFragmentManager.setFragmentResult(
-                            START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionType))
+                            START_DELETION_EVENT,
+                            bundleOf(DELETION_TYPE to deletionType),
+                        )
                         true
                     }
-                })
+                }
+            )
         }
         additionalAccessViewModel.loadAdditionalAccessPreferences(packageName)
         additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
@@ -259,7 +281,8 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
                             findNavController()
                                 .navigate(
                                     R.id.action_fitnessAppFragment_to_additionalAccessFragment,
-                                    extras)
+                                    extras,
+                                )
                             true
                         }
                     }
@@ -324,7 +347,8 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
                             fromFitnessPermissionType(permission.fitnessPermissionType)
                         it.icon = healthCategory.icon(requireContext())
                         it.setTitle(
-                            fromPermissionType(permission.fitnessPermissionType).uppercaseLabel)
+                            fromPermissionType(permission.fitnessPermissionType).uppercaseLabel
+                        )
                         it.logNameActive = AppAccessElement.PERMISSION_SWITCH_ACTIVE
                         it.logNameInactive = AppAccessElement.PERMISSION_SWITCH_INACTIVE
                         it.setOnPreferenceChangeListener { _, newValue ->
@@ -332,12 +356,16 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
                             val checked = newValue as Boolean
                             val permissionUpdated =
                                 appPermissionViewModel.updatePermission(
-                                    packageName, permission, checked)
+                                    packageName,
+                                    permission,
+                                    checked,
+                                )
                             if (!permissionUpdated) {
                                 Toast.makeText(
                                         requireContext(),
                                         R.string.default_error,
-                                        Toast.LENGTH_SHORT)
+                                        Toast.LENGTH_SHORT,
+                                    )
                                     .show()
                             }
                             allowAllPreference.addOnSwitchChangeListener(onSwitchChangeListener)

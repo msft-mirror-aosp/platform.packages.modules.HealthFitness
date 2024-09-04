@@ -16,17 +16,27 @@
 
 package com.android.server.healthconnect.exportimport;
 
+import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_ERROR_NONE;
+import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN;
+import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS;
+import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_STARTED;
+
+import static com.android.healthfitness.flags.Flags.exportImportFastFollow;
+import static com.android.server.healthconnect.exportimport.ExportImportNotificationSender.NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR;
+import static com.android.server.healthconnect.logging.ExportImportLogger.NO_VALUE_RECORDED;
+
 import static java.util.Objects.requireNonNull;
 
 import android.annotation.NonNull;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.health.connect.exportimport.ScheduledExportStatus;
 import android.net.Uri;
 import android.os.UserHandle;
 import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.logging.ExportImportLogger;
+import com.android.server.healthconnect.notifications.HealthConnectNotificationSender;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -60,6 +70,9 @@ public class ExportManager {
 
     private final Clock mClock;
     private final TransactionManager mTransactionManager;
+    private final UserHandle mUserHandle;
+    private final File mLocalExportDbFile;
+    private final File mLocalExportZipFile;
 
     // Tables to drop instead of tables to keep to avoid risk of bugs if new data types are added.
 
@@ -73,17 +86,31 @@ public class ExportManager {
             List.of(AccessLogsHelper.TABLE_NAME, ChangeLogsHelper.TABLE_NAME);
 
     private final DatabaseContext mDatabaseContext;
+    private final HealthConnectNotificationSender mNotificationSender;
 
     public ExportManager(@NonNull Context context, Clock clock) {
+        this(context, clock, ExportImportNotificationSender.createSender(context));
+    }
+
+    public ExportManager(
+            @NonNull Context context,
+            Clock clock,
+            HealthConnectNotificationSender notificationSender) {
         requireNonNull(context);
         requireNonNull(clock);
+        requireNonNull(notificationSender);
 
-        UserHandle user = context.getUser();
-        Context userContext = context.createContextAsUser(user, 0);
+        mUserHandle = context.getUser();
+        Context userContext = context.createContextAsUser(mUserHandle, 0);
 
         mClock = clock;
-        mDatabaseContext = DatabaseContext.create(userContext, LOCAL_EXPORT_DIR_NAME, user);
+        mDatabaseContext = DatabaseContext.create(userContext, LOCAL_EXPORT_DIR_NAME, mUserHandle);
         mTransactionManager = TransactionManager.getInitialisedInstance();
+        mNotificationSender = notificationSender;
+        mLocalExportDbFile =
+                new File(mDatabaseContext.getDatabaseDir(), LOCAL_EXPORT_DATABASE_FILE_NAME);
+        mLocalExportZipFile =
+                new File(mDatabaseContext.getDatabaseDir(), LOCAL_EXPORT_ZIP_FILE_NAME);
     }
 
     /**
@@ -91,19 +118,24 @@ public class ExportManager {
      * data to a cloud provider.
      */
     public synchronized boolean runExport() {
+        long startTimeMillis = mClock.millis();
+        ExportImportLogger.logExportStatus(
+                DATA_EXPORT_STARTED, NO_VALUE_RECORDED, NO_VALUE_RECORDED, NO_VALUE_RECORDED);
         Slog.i(TAG, "Export started.");
-        File localExportDbFile =
-                new File(mDatabaseContext.getDatabaseDir(), LOCAL_EXPORT_DATABASE_FILE_NAME);
-        File localExportZipFile =
-                new File(mDatabaseContext.getDatabaseDir(), LOCAL_EXPORT_ZIP_FILE_NAME);
 
         try {
             try {
-                exportLocally(localExportDbFile);
+                exportLocally(mLocalExportDbFile);
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to create local file for export", e);
-                ExportImportSettingsStorage.setLastExportError(
-                        ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN, mClock.instant());
+                Slog.d(TAG, "original file size: " + intSizeInKb(mLocalExportDbFile));
+                recordError(
+                        DATA_EXPORT_ERROR_UNKNOWN,
+                        startTimeMillis,
+                        intSizeInKb(mLocalExportDbFile),
+                        /* Compressed size will be 0, not yet compressed */
+                        intSizeInKb(mLocalExportZipFile));
+                sendNotificationIfEnabled(NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR);
                 return false;
             }
 
@@ -111,48 +143,110 @@ public class ExportManager {
                 deleteLogTablesContent();
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to prepare local file for export", e);
-                ExportImportSettingsStorage.setLastExportError(
-                        ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN, mClock.instant());
+                Slog.d(TAG, "original file size: " + intSizeInKb(mLocalExportDbFile));
+                recordError(
+                        DATA_EXPORT_ERROR_UNKNOWN,
+                        startTimeMillis,
+                        intSizeInKb(mLocalExportDbFile),
+                        /* Compressed size will be 0, not yet compressed */
+                        intSizeInKb(mLocalExportZipFile));
+                sendNotificationIfEnabled(NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR);
                 return false;
             }
 
             try {
                 Compressor.compress(
-                        localExportDbFile, LOCAL_EXPORT_DATABASE_FILE_NAME, localExportZipFile);
+                        mLocalExportDbFile, LOCAL_EXPORT_DATABASE_FILE_NAME, mLocalExportZipFile);
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to compress local file for export", e);
-                ExportImportSettingsStorage.setLastExportError(
-                        ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN, mClock.instant());
+                Slog.d(TAG, "original file size: " + intSizeInKb(mLocalExportDbFile));
+                recordError(
+                        DATA_EXPORT_ERROR_UNKNOWN,
+                        startTimeMillis,
+                        intSizeInKb(mLocalExportDbFile),
+                        /* Compressed size will be 0, not yet compressed */
+                        intSizeInKb(mLocalExportZipFile));
+                sendNotificationIfEnabled(NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR);
                 return false;
             }
 
             Uri destinationUri = ExportImportSettingsStorage.getUri();
             try {
-                exportToUri(localExportZipFile, destinationUri);
+                exportToUri(mLocalExportZipFile, destinationUri);
             } catch (FileNotFoundException e) {
                 Slog.e(TAG, "Lost access to export location", e);
-                ExportImportSettingsStorage.setLastExportError(
-                        ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS, mClock.instant());
+                Slog.d(TAG, "original file size: " + intSizeInKb(mLocalExportDbFile));
+                recordError(
+                        DATA_EXPORT_LOST_FILE_ACCESS,
+                        startTimeMillis,
+                        intSizeInKb(mLocalExportDbFile),
+                        intSizeInKb(mLocalExportZipFile));
+                sendNotificationIfEnabled(NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR);
                 return false;
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to export to URI", e);
-                ExportImportSettingsStorage.setLastExportError(
-                        ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN, mClock.instant());
+                Slog.d(TAG, "original file size: " + intSizeInKb(mLocalExportDbFile));
+                recordError(
+                        DATA_EXPORT_ERROR_UNKNOWN,
+                        startTimeMillis,
+                        intSizeInKb(mLocalExportDbFile),
+                        intSizeInKb(mLocalExportZipFile));
+                sendNotificationIfEnabled(NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR);
                 return false;
             }
             Slog.i(TAG, "Export completed.");
-            ExportImportSettingsStorage.setLastSuccessfulExport(mClock.instant(), destinationUri);
+            Slog.d(TAG, "original file size: " + intSizeInKb(mLocalExportDbFile));
+            recordSuccess(
+                    startTimeMillis,
+                    intSizeInKb(mLocalExportDbFile),
+                    intSizeInKb(mLocalExportZipFile),
+                    destinationUri);
             return true;
         } finally {
-            Slog.i(TAG, "Delete local export files started.");
-            if (localExportDbFile.exists()) {
-                SQLiteDatabase.deleteDatabase(localExportDbFile);
-            }
-            if (localExportZipFile.exists()) {
-                localExportZipFile.delete();
-            }
-            Slog.i(TAG, "Delete local export files completed.");
+            deleteLocalExportFiles();
         }
+    }
+
+    protected void recordSuccess(
+            long startTimeMillis,
+            int originalDataSizeKb,
+            int compressedDataSizeKb,
+            Uri destinationUri) {
+        ExportImportSettingsStorage.setLastSuccessfulExport(mClock.instant(), destinationUri);
+
+        // The logging proto holds an int32 not an in64 to save on logs storage. The cast makes this
+        // explicit. The int can hold 24.855 days worth of milli seconds, which
+        // is sufficient because the system would kill the process earlier.
+        int timeToSuccessMillis = (int) (mClock.millis() - startTimeMillis);
+        ExportImportLogger.logExportStatus(
+                DATA_EXPORT_ERROR_NONE,
+                timeToSuccessMillis,
+                originalDataSizeKb,
+                compressedDataSizeKb);
+    }
+
+    protected void recordError(
+            int exportStatus,
+            long startTimeMillis,
+            int originalDataSizeKb,
+            int compressedDataSizeKb) {
+        ExportImportSettingsStorage.setLastExportError(exportStatus, mClock.instant());
+
+        // Convert to int to save on logs storage, int can hold about 68 years
+        int timeToErrorMillis = (int) (mClock.millis() - startTimeMillis);
+        ExportImportLogger.logExportStatus(
+                exportStatus, timeToErrorMillis, originalDataSizeKb, compressedDataSizeKb);
+    }
+
+    void deleteLocalExportFiles() {
+        Slog.i(TAG, "Delete local export files started.");
+        if (mLocalExportDbFile.exists()) {
+            SQLiteDatabase.deleteDatabase(mLocalExportDbFile);
+        }
+        if (mLocalExportZipFile.exists()) {
+            mLocalExportZipFile.delete();
+        }
+        Slog.i(TAG, "Delete local export files completed.");
     }
 
     private void exportLocally(File destination) throws IOException {
@@ -194,5 +288,22 @@ public class ExportManager {
             }
         }
         Slog.i(TAG, "Drop log tables completed.");
+    }
+
+    /***
+     * Returns the size of a file in Kb for logging
+     *
+     * To keep the log size small, the data type is an int32 rather than a long (int64).
+     * Using an int allows logging sizes up to 2TB, which is sufficient for our use cases,
+     */
+    private int intSizeInKb(File file) {
+        return (int) (file.length() / 1024.0);
+    }
+
+    /** Sends export status notification if export_import_fast_follow flag enabled. */
+    private void sendNotificationIfEnabled(int notificationType) {
+        if (exportImportFastFollow()) {
+            mNotificationSender.sendNotificationAsUser(notificationType, mUserHandle);
+        }
     }
 }
