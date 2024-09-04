@@ -39,6 +39,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGE
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY_AUTOINCREMENT;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.convertUuidStringsToHexStrings;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.generateMedicalResourceUUID;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
@@ -502,6 +503,19 @@ public final class MedicalResourceHelper {
                 .setLimit(request.getPageSize() + 1);
     }
 
+    @NonNull
+    @VisibleForTesting
+    static ReadTableRequest getReadRequestForDistinctResourceTypesFilterOnDataSourceIdsAndAppId(
+            @NonNull List<String> dataSourceIds, long appId) {
+        return new ReadTableRequest(getMainTableName())
+                .setDistinctClause(true)
+                .setColumnNames(
+                        List.of(MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName()))
+                .setJoinClause(
+                        getJoinWithMedicalDataSourceFilterOnDataSourceIdsAndAppId(
+                                dataSourceIds, appId, joinWithMedicalResourceIndicesTable()));
+    }
+
     /**
      * Creates {@link SqlJoin} that is an inner join from medical_resource_table to
      * medical_resource_indices_table followed by another inner join from medical_resource_table to
@@ -551,6 +565,15 @@ public final class MedicalResourceHelper {
     }
 
     @NonNull
+    private static SqlJoin getJoinWithMedicalDataSourceFilterOnDataSourceIdsAndAppId(
+            @NonNull List<String> dataSourceIds, long appId, @NonNull SqlJoin extraJoin) {
+        return joinWithMedicalDataSourceTable()
+                .setSecondTableWhereClause(
+                        getDataSourceIdsAndAppIdWhereClause(dataSourceIds, appId))
+                .attachJoin(extraJoin);
+    }
+
+    @NonNull
     private static SqlJoin joinWithMedicalResourceIndicesTable() {
         return new SqlJoin(
                         MEDICAL_RESOURCE_TABLE_NAME,
@@ -584,6 +607,15 @@ public final class MedicalResourceHelper {
         return new WhereClauses(AND)
                 .addWhereEqualsClause(
                         MedicalDataSourceHelper.getAppInfoIdColumnName(), String.valueOf(appId));
+    }
+
+    @NonNull
+    private static WhereClauses getDataSourceIdsAndAppIdWhereClause(
+            @NonNull List<String> dataSourceIds, long appId) {
+        WhereClauses whereClauses = getAppIdWhereClause(appId);
+        whereClauses.addWhereInClauseWithoutQuotes(
+                getDataSourceUuidColumnName(), convertUuidStringsToHexStrings(dataSourceIds));
+        return whereClauses;
     }
 
     @NonNull
@@ -901,12 +933,12 @@ public final class MedicalResourceHelper {
 
         mTransactionManager.runAsTransaction(
                 db -> {
+                    ReadTableRequest request =
+                            getReadTableRequestToGetDistinctResourceTypes(
+                                    medicalResourceIds, callingPackageName);
                     // Getting the distinct resource types that will be deleted, to add
                     // access logs.
-                    Set<Integer> resourcesTypes =
-                            readMedicalResourcesTypesForMedicalResourceIds(
-                                    db, medicalResourceIds, callingPackageName);
-
+                    Set<Integer> resourcesTypes = readMedicalResourcesTypes(db, request);
                     mTransactionManager.delete(
                             db, getDeleteRequestWithAppInfoRestriction(medicalResourceIds, appId));
 
@@ -922,12 +954,8 @@ public final class MedicalResourceHelper {
     }
 
     @NonNull
-    private Set<Integer> readMedicalResourcesTypesForMedicalResourceIds(
-            @NonNull SQLiteDatabase db,
-            @NonNull List<MedicalResourceId> medicalResourceIds,
-            @NonNull String packageName) {
-        ReadTableRequest request =
-                getReadTableRequestToGetDistinctResourceTypes(medicalResourceIds, packageName);
+    private Set<Integer> readMedicalResourcesTypes(
+            @NonNull SQLiteDatabase db, @NonNull ReadTableRequest request) {
         Set<Integer> resourceTypes = new HashSet<>();
         try (Cursor cursor = mTransactionManager.read(db, request)) {
             if (cursor.moveToFirst()) {
@@ -980,17 +1008,71 @@ public final class MedicalResourceHelper {
      * filters.
      *
      * @param medicalDataSourceIds list of ids from {@link MedicalDataSource#getId()}.
-     * @param appInfoRestriction if null, allow deletion from any app. Otherwise only allow
-     *     deletions of data sources belonging to the given app
      */
-    public void deleteMedicalResourcesByDataSources(
-            @NonNull List<String> medicalDataSourceIds, @Nullable Long appInfoRestriction)
+    public void deleteMedicalResourcesByDataSourcesWithoutPermissionChecks(
+            @NonNull List<String> medicalDataSourceIds) throws SQLiteException {
+        if (medicalDataSourceIds.isEmpty()) {
+            return;
+        }
+        mTransactionManager.delete(
+                getDeleteRequestFilteringByDataSourcesAndAppId(
+                        medicalDataSourceIds, /* appId= */ null));
+    }
+
+    /**
+     * Deletes all {@link MedicalResource}s that are part of the given datasource.
+     *
+     * <p>No error occurs if any of the ids are not present because the ids are just a part of the
+     * filters.
+     *
+     * @param medicalDataSourceIds list of ids from {@link MedicalDataSource#getId()}.
+     * @param callingPackageName only allows deletions of data sources belonging to the given app
+     * @throws IllegalArgumentException if the {@code callingPackageName} does not exist in the
+     *     {@link AppInfoHelper#TABLE_NAME}. This can happen if the app has never written any data
+     *     sources.
+     */
+    public void deleteMedicalResourcesByDataSourcesWithPermissionChecks(
+            @NonNull List<String> medicalDataSourceIds, @NonNull String callingPackageName)
             throws SQLiteException {
 
         if (medicalDataSourceIds.isEmpty()) {
             return;
         }
 
+        long appId = AppInfoHelper.getInstance().getAppInfoId(callingPackageName);
+        if (appId == Constants.DEFAULT_LONG) {
+            throw new IllegalArgumentException(
+                    "Deletion not permitted as app has inserted no data.");
+        }
+
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    // Getting the distinct resource types that will be deleted, to add
+                    // access logs.
+                    ReadTableRequest readRequest =
+                            getReadRequestForDistinctResourceTypesFilterOnDataSourceIdsAndAppId(
+                                    medicalDataSourceIds, appId);
+                    Set<Integer> resourceTypes = readMedicalResourcesTypes(db, readRequest);
+
+                    mTransactionManager.delete(
+                            db,
+                            getDeleteRequestFilteringByDataSourcesAndAppId(
+                                    medicalDataSourceIds, appId));
+
+                    if (!resourceTypes.isEmpty()) {
+                        AccessLogsHelper.addAccessLog(
+                                db,
+                                callingPackageName,
+                                resourceTypes,
+                                OPERATION_TYPE_DELETE,
+                                /* accessedMedicalDataSource= */ false);
+                    }
+                });
+    }
+
+    @NonNull
+    private DeleteTableRequest getDeleteRequestFilteringByDataSourcesAndAppId(
+            @NonNull List<String> medicalDataSourceIds, @Nullable Long appId) {
         /*
            This is doing the following SQL code:
 
@@ -1007,13 +1089,10 @@ public final class MedicalResourceHelper {
         */
 
         ReadTableRequest innerRead =
-                MedicalDataSourceHelper.getReadTableRequest(
-                                medicalDataSourceIds, appInfoRestriction)
+                MedicalDataSourceHelper.getReadTableRequest(medicalDataSourceIds, appId)
                         .setColumnNames(List.of(PRIMARY_COLUMN_NAME));
-        DeleteTableRequest deleteRequest =
-                new DeleteTableRequest(getMainTableName())
-                        .setInnerSqlRequestFilter(DATA_SOURCE_ID_COLUMN_NAME, innerRead);
-        mTransactionManager.delete(deleteRequest);
+        return new DeleteTableRequest(getMainTableName())
+                .setInnerSqlRequestFilter(DATA_SOURCE_ID_COLUMN_NAME, innerRead);
     }
 
     @NonNull

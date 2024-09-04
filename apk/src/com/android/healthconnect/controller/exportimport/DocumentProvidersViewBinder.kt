@@ -32,6 +32,7 @@ import com.android.healthconnect.controller.exportimport.api.DocumentProviderInf
 import com.android.healthconnect.controller.exportimport.api.DocumentProviderRoot
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.utils.logging.ErrorPageElement
+import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
 
 /** Adds the views for the documents provider list when setting up export and import. */
 class DocumentProvidersViewBinder {
@@ -146,14 +147,14 @@ class DocumentProvidersViewBinder {
         }
 
         // TODO: b/339189778 - Add proper logging for the account picker dialog.
-        AlertDialogBuilder(inflater.context, ErrorPageElement.UNKNOWN_ELEMENT)
+        AlertDialogBuilder(inflater.context, UnknownGenericElement.UNKNOWN_DIALOG)
             .setView(view)
             .setNeutralButton(
                 R.string.export_import_choose_account_cancel_button,
-                ErrorPageElement.UNKNOWN_ELEMENT)
+                UnknownGenericElement.UNKNOWN_DIALOG_NEUTRAL_BUTTON)
             .setPositiveButton(
                 R.string.export_import_choose_account_done_button,
-                ErrorPageElement.UNKNOWN_ELEMENT) { _, _ ->
+                UnknownGenericElement.UNKNOWN_DIALOG_POSITIVE_BUTTON) { _, _ ->
                     onSelectionChanged(roots[radioGroup.checkedRadioButtonId])
                 }
             .create()

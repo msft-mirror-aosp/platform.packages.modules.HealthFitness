@@ -30,6 +30,7 @@ import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
+import android.net.Uri;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,12 +42,13 @@ import java.util.Set;
 public class PhrDataFactory {
     public static final String DATA_SOURCE_ID = "123";
     public static final String DATA_SOURCE_PACKAGE_NAME = "com.example.app";
-    public static final String DATA_SOURCE_FHIR_BASE_URI = "https://fhir.com/oauth/api/FHIR/R4/";
+    public static final Uri DATA_SOURCE_FHIR_BASE_URI =
+            Uri.parse("https://fhir.com/oauth/api/FHIR/R4/");
     public static final String DATA_SOURCE_DISPLAY_NAME = "Hospital X";
     public static final String DIFFERENT_DATA_SOURCE_ID = "456";
     public static final String DIFFERENT_DATA_SOURCE_PACKAGE_NAME = "com.other.app";
-    public static final String DIFFERENT_DATA_SOURCE_BASE_URI =
-            "https://fhir.com/oauth/api/FHIR/R5/";
+    public static final Uri DIFFERENT_DATA_SOURCE_BASE_URI =
+            Uri.parse("https://fhir.com/oauth/api/FHIR/R5/");
     public static final String DIFFERENT_DATA_SOURCE_DISPLAY_NAME = "Doctor Y";
 
     public static final String FHIR_DATA_IMMUNIZATION =
@@ -140,8 +142,9 @@ public class PhrDataFactory {
      */
     public static CreateMedicalDataSourceRequest.Builder getCreateMedicalDataSourceRequestBuilder(
             String suffix) {
+        Uri fhirBaseUri = Uri.withAppendedPath(DATA_SOURCE_FHIR_BASE_URI, "/" + suffix);
         return new CreateMedicalDataSourceRequest.Builder(
-                DATA_SOURCE_FHIR_BASE_URI + "/" + suffix, DATA_SOURCE_DISPLAY_NAME + " " + suffix);
+                fhirBaseUri, DATA_SOURCE_DISPLAY_NAME + " " + suffix);
     }
 
     /** Creates and returns a {@link CreateMedicalDataSourceRequest} with default arguments. */

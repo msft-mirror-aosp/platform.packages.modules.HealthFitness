@@ -60,6 +60,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * An util class for HC storage
@@ -451,6 +452,23 @@ public final class StorageUtils {
     /** Convert a long value to bytes. */
     public static long convertBytesToLong(byte[] bytes) {
         return ByteBuffer.wrap(bytes).getLong();
+    }
+
+    /** Converts a list of {@link UUID} strings to a list of hex strings. */
+    @NonNull
+    public static List<String> convertUuidStringsToHexStrings(@NonNull List<String> ids) {
+        List<UUID> uuids =
+                ids.stream()
+                        .flatMap(
+                                id -> {
+                                    try {
+                                        return Stream.of(UUID.fromString(id));
+                                    } catch (IllegalArgumentException ex) {
+                                        return Stream.of();
+                                    }
+                                })
+                        .toList();
+        return StorageUtils.getListOfHexStrings(uuids);
     }
 
     public static String getHexString(byte[] value) {

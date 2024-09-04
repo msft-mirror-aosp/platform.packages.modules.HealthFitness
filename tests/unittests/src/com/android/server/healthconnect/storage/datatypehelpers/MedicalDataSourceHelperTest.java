@@ -55,6 +55,7 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.utils.PhrDataFactory;
+import android.net.Uri;
 import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -166,7 +167,7 @@ public class MedicalDataSourceHelperTest {
         assertThat(upsertRequest.getUniqueColumnsCount()).isEqualTo(1);
         assertThat(contentValues.size()).isEqualTo(4);
         assertThat(contentValues.get(FHIR_BASE_URI_COLUMN_NAME))
-                .isEqualTo(DATA_SOURCE_FHIR_BASE_URI);
+                .isEqualTo(DATA_SOURCE_FHIR_BASE_URI.toString());
         assertThat(contentValues.get(DISPLAY_NAME_COLUMN_NAME)).isEqualTo(DATA_SOURCE_DISPLAY_NAME);
         assertThat(contentValues.get(DATA_SOURCE_UUID_COLUMN_NAME))
                 .isEqualTo(StorageUtils.convertUUIDToBytes(uuid));
@@ -708,7 +709,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     private @NonNull MedicalDataSource createDataSource(
-            String baseUri, String displayName, String packageName) {
+            Uri baseUri, String displayName, String packageName) {
         CreateMedicalDataSourceRequest request =
                 new CreateMedicalDataSourceRequest.Builder(baseUri, displayName).build();
         return mMedicalDataSourceHelper.createMedicalDataSource(mContext, request, packageName);

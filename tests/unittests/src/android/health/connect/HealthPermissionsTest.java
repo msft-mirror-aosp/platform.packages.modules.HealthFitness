@@ -56,9 +56,8 @@ public class HealthPermissionsTest {
                     + "sets.";
 
     private static final String PHR_FAIL_MESSAGE =
-            "Add new medical permissions to"
-                + " HealthPermissions.populateReadMedicalPermissionsToMedicalPermissionCategoryMap"
-                + " mapping.";
+            "Add new medical permissions to ALL_EXPECTED_HEALTH_PERMISSIONS and "
+                    + "apk/HealthPermissionsManifest.xml.";
 
     private static final String MEDICAL_PERMISSION_IDENTIFIER = "MEDICAL_DATA";
 

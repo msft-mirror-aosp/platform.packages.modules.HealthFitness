@@ -76,7 +76,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.sqlite.SQLiteException;
-import android.health.connect.Constants;
 import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectException;
@@ -1891,26 +1890,6 @@ public class HealthConnectServiceImplTest {
                 mAttributionSource, request, callback);
 
         verify(callback, timeout(5000).times(1)).onResult();
-        verifyNoMoreInteractions(callback);
-    }
-
-    @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testDeleteMedicalResourcesByRequest_unknownCallingApplication_error()
-            throws RemoteException {
-        when(mAppInfoHelper.getAppInfoId(any())).thenReturn(Constants.DEFAULT_LONG);
-        setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermission(WRITE_MEDICAL_DATA, PermissionManager.PERMISSION_GRANTED);
-        IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
-        DeleteMedicalResourcesRequest request =
-                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
-
-        mHealthConnectService.deleteMedicalResourcesByRequest(
-                mAttributionSource, request, callback);
-
-        verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
-        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
         verifyNoMoreInteractions(callback);
     }
 

@@ -24,6 +24,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_U
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.convertUuidStringsToHexStrings;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
@@ -39,6 +40,7 @@ import android.database.sqlite.SQLiteException;
 import android.health.connect.Constants;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.datatypes.MedicalDataSource;
+import android.net.Uri;
 import android.util.Pair;
 
 import com.android.internal.annotations.VisibleForTesting;
@@ -57,7 +59,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 /**
  * Helper class for MedicalDataSource.
@@ -184,20 +185,9 @@ public class MedicalDataSourceHelper {
      */
     @NonNull
     private static WhereClauses getReadTableWhereClause(@NonNull List<String> ids) {
-        List<UUID> uuids =
-                ids.stream()
-                        .flatMap(
-                                id -> {
-                                    try {
-                                        return Stream.of(UUID.fromString(id));
-                                    } catch (IllegalArgumentException ex) {
-                                        return Stream.of();
-                                    }
-                                })
-                        .toList();
+        List<String> hexUuids = convertUuidStringsToHexStrings(ids);
         return new WhereClauses(AND)
-                .addWhereInClauseWithoutQuotes(
-                        DATA_SOURCE_UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(uuids));
+                .addWhereInClauseWithoutQuotes(DATA_SOURCE_UUID_COLUMN_NAME, hexUuids);
     }
 
     /**
@@ -227,7 +217,8 @@ public class MedicalDataSourceHelper {
                         /* id= */ getCursorUUID(cursor, DATA_SOURCE_UUID_COLUMN_NAME).toString(),
                         /* packageName= */ getCursorString(
                                 cursor, AppInfoHelper.PACKAGE_COLUMN_NAME),
-                        /* fhirBaseUri= */ getCursorString(cursor, FHIR_BASE_URI_COLUMN_NAME),
+                        /* fhirBaseUri= */ Uri.parse(
+                                getCursorString(cursor, FHIR_BASE_URI_COLUMN_NAME)),
                         /* displayName= */ getCursorString(cursor, DISPLAY_NAME_COLUMN_NAME))
                 .build();
     }
@@ -478,7 +469,8 @@ public class MedicalDataSourceHelper {
         contentValues.put(
                 DISPLAY_NAME_COLUMN_NAME, createMedicalDataSourceRequest.getDisplayName());
         contentValues.put(
-                FHIR_BASE_URI_COLUMN_NAME, createMedicalDataSourceRequest.getFhirBaseUri());
+                FHIR_BASE_URI_COLUMN_NAME,
+                createMedicalDataSourceRequest.getFhirBaseUri().toString());
         contentValues.put(APP_INFO_ID_COLUMN_NAME, appInfoId);
         return contentValues;
     }
