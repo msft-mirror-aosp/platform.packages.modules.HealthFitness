@@ -37,34 +37,12 @@ import java.util.Locale
 class RecentAccessPreference
 constructor(
     context: Context,
-    private val recentAccessApp: RecentAccessEntry,
+    private val recentAccessEntry: RecentAccessEntry,
     private val timeSource: TimeSource,
     private val showCategories: Boolean
 ) : HealthPreference(context), ComparablePreference {
 
-    private lateinit var appIcon: ImageView
-    private lateinit var appTitle: TextView
-    private lateinit var dataTypesWritten: TextView
-    private lateinit var dataTypesRead: TextView
-    private lateinit var accessTime: TextView
-    private val separator: String = context.getString(R.string.data_type_separator)
-
-    private val appName = recentAccessApp.metadata.appName
-    private val writtenText: String =
-        context.getString(
-            R.string.write_data_access_label,
-            recentAccessApp.dataTypesWritten.sorted().joinToString(separator) {
-                context.getString(it)
-            })
-    private val readText: String =
-        context.getString(
-            R.string.read_data_access_label,
-            recentAccessApp.dataTypesRead.sorted().joinToString(separator) {
-                context.getString(it)
-            })
-    private val formattedTime = formatTime(recentAccessApp.instantTime)
-    // Used to compare this preference to other RecentAccessPreferences
-    val comparableTitle = "${formattedTime}_${appName}_${writtenText}_${readText}"
+    private val separator: String by lazy { context.getString(R.string.data_type_separator) }
 
     init {
         layoutResource = R.layout.widget_recent_access_timeline
@@ -75,28 +53,30 @@ constructor(
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
 
-        appIcon = holder.findViewById(R.id.recent_access_app_icon) as ImageView
-        appIcon.setImageDrawable(recentAccessApp.metadata.icon)
+        val appIcon = holder.findViewById(R.id.recent_access_app_icon) as ImageView
+        appIcon.setImageDrawable(recentAccessEntry.metadata.icon)
 
-        appTitle = holder.findViewById(R.id.title) as TextView
-        appTitle.text = appName
+        val appTitle = holder.findViewById(R.id.title) as TextView
+        appTitle.text = recentAccessEntry.metadata.appName
 
-        dataTypesWritten = holder.findViewById(R.id.data_types_written) as TextView
-        dataTypesRead = holder.findViewById(R.id.data_types_read) as TextView
-
-        if (showCategories) {
-            if (recentAccessApp.dataTypesWritten.isNotEmpty()) {
-                dataTypesWritten.text = writtenText
-                dataTypesWritten.isVisible = true
-            }
-
-            if (recentAccessApp.dataTypesRead.isNotEmpty()) {
-                dataTypesRead.text = readText
-                dataTypesRead.isVisible = true
-            }
+        val dataTypesWritten = holder.findViewById(R.id.data_types_written) as TextView
+        if (showCategories && recentAccessEntry.dataTypesWritten.isNotEmpty()) {
+            dataTypesWritten.text = getWrittenText()
+            dataTypesWritten.isVisible = true
+        } else {
+            dataTypesWritten.isVisible = false
         }
 
-        accessTime = holder.findViewById(R.id.time) as TextView
+        val dataTypesRead = holder.findViewById(R.id.data_types_read) as TextView
+        if (showCategories && recentAccessEntry.dataTypesRead.isNotEmpty()) {
+            dataTypesRead.text = getReadText()
+            dataTypesRead.isVisible = true
+        } else {
+            dataTypesRead.isVisible = false
+        }
+
+        val accessTime = holder.findViewById(R.id.time) as TextView
+        val formattedTime = formatTime(recentAccessEntry.instantTime)
         accessTime.text = formattedTime
         accessTime.contentDescription =
             context.getString(R.string.recent_access_time_content_descritption, formattedTime)
@@ -108,7 +88,25 @@ constructor(
 
     override fun hasSameContents(preference: Preference): Boolean {
         return preference is RecentAccessPreference &&
-            this.recentAccessApp == preference.recentAccessApp
+            this.recentAccessEntry == preference.recentAccessEntry
+    }
+
+    private fun getWrittenText(): String {
+        return context.getString(
+            R.string.write_data_access_label,
+            recentAccessEntry.dataTypesWritten
+                .map { context.getString(it) }
+                .sorted()
+                .joinToString(separator))
+    }
+
+    private fun getReadText(): String {
+        return context.getString(
+            R.string.read_data_access_label,
+            recentAccessEntry.dataTypesRead
+                .map { context.getString(it) }
+                .sorted()
+                .joinToString(separator))
     }
 
     private fun formatTime(instant: Instant): String {

@@ -187,9 +187,10 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     /**
      * Used to get the Aggregate result for aggregate types
      *
-     * @return {@link AggregateResult} for {@link AggregationType}
+     * @return {@link AggregateResult} for {@link AggregationType} or null if that aggregation type
+     *     is not handled.
      */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    @Nullable
     public AggregateResult<?> getAggregateResult(
             Cursor cursor, AggregationType<?> aggregationType) {
         return null;
@@ -223,7 +224,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     public final CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(getMainTableName(), getColumnInfo())
                 .addForeignKey(
-                        DeviceInfoHelper.getInstance().getTableName(),
+                        DeviceInfoHelper.getInstance().getMainTableName(),
                         Collections.singletonList(DEVICE_INFO_ID_COLUMN_NAME),
                         Collections.singletonList(PRIMARY_COLUMN_NAME))
                 .addForeignKey(

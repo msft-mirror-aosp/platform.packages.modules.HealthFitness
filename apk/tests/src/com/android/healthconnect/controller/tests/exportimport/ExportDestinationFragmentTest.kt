@@ -27,6 +27,7 @@ import android.provider.DocumentsContract
 import android.view.View
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
+import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -51,6 +52,7 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.ExportDestinationFragment
 import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
 import com.android.healthconnect.controller.service.HealthDataExportManagerModule
+import com.android.healthconnect.controller.tests.utils.TestTimeSource
 import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
 import com.android.healthconnect.controller.tests.utils.di.FakeHealthDataExportManager
 import com.android.healthconnect.controller.tests.utils.launchFragment
@@ -72,7 +74,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
-import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 
 @HiltAndroidTest
@@ -85,17 +86,21 @@ class ExportDestinationFragmentTest {
         private val TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY = "Account 1"
         private val TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI =
             Uri.parse(
-                "content://android.healthconnect.tests.documentprovider1.documents/root/account1")
+                "content://android.healthconnect.tests.documentprovider1.documents/root/account1"
+            )
         private val TEST_DOCUMENT_PROVIDER_1_ROOT_1_DOCUMENT_URI =
             Uri.parse(
-                "content://android.healthconnect.tests.documentprovider1.documents/root/account1/document")
+                "content://android.healthconnect.tests.documentprovider1.documents/root/account1/document"
+            )
         private val TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY = "Account 2"
         private val TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI =
             Uri.parse(
-                "content://android.healthconnect.tests.documentprovider1.documents/root/account2")
+                "content://android.healthconnect.tests.documentprovider1.documents/root/account2"
+            )
         private val TEST_DOCUMENT_PROVIDER_1_ROOT_2_DOCUMENT_URI =
             Uri.parse(
-                "content://android.healthconnect.tests.documentprovider1.documents/root/account2/document")
+                "content://android.healthconnect.tests.documentprovider1.documents/root/account2/document"
+            )
 
         private val TEST_DOCUMENT_PROVIDER_2_TITLE = "Document provider 2"
         private val TEST_DOCUMENT_PROVIDER_2_AUTHORITY = "documentprovider2.com"
@@ -103,14 +108,15 @@ class ExportDestinationFragmentTest {
         private val TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY = "Account"
         private val TEST_DOCUMENT_PROVIDER_2_ROOT_URI =
             Uri.parse(
-                "content://android.healthconnect.tests.documentprovider2.documents/root/account")
+                "content://android.healthconnect.tests.documentprovider2.documents/root/account"
+            )
 
         private val EXTERNAL_STORAGE_DOCUMENT_URI =
             Uri.parse("content://com.android.externalstorage.documents/document")
         private val DOWNLOADS_DOCUMENT_URI =
             Uri.parse("content://com.android.providers.downloads.documents/document")
 
-        private const val DEFAULT_FILE_NAME = "Health Connect.zip"
+        private const val DEFAULT_FILE_NAME = "Health Connect_2022-10-20.zip"
     }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -119,6 +125,7 @@ class ExportDestinationFragmentTest {
     private val fakeHealthDataExportManager = healthDataExportManager as FakeHealthDataExportManager
     @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
+    @BindValue val timeSource = TestTimeSource
 
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
@@ -192,13 +199,16 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
+                ),
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -208,14 +218,20 @@ class ExportDestinationFragmentTest {
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY), isDisplayed()))))
+                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY), isDisplayed())
+                    )
+                )
+            )
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_2_TITLE))
             .check(matches(isDisplayed()))
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_2_TITLE))
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withText(TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY), isDisplayed()))))
+                        allOf(withText(TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY), isDisplayed())
+                    )
+                )
+            )
     }
 
     @Test
@@ -227,13 +243,16 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
+                ),
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -241,12 +260,18 @@ class ExportDestinationFragmentTest {
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withId(R.id.item_document_provider_radio_button), isNotChecked()))))
+                        allOf(withId(R.id.item_document_provider_radio_button), isNotChecked())
+                    )
+                )
+            )
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_2_TITLE))
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withId(R.id.item_document_provider_radio_button), isNotChecked()))))
+                        allOf(withId(R.id.item_document_provider_radio_button), isNotChecked())
+                    )
+                )
+            )
     }
 
     @Test
@@ -258,13 +283,16 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
+                ),
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -274,7 +302,10 @@ class ExportDestinationFragmentTest {
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withId(R.id.item_document_provider_radio_button), isChecked()))))
+                        allOf(withId(R.id.item_document_provider_radio_button), isChecked())
+                    )
+                )
+            )
     }
 
     @Test
@@ -286,13 +317,16 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
+                ),
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -303,12 +337,18 @@ class ExportDestinationFragmentTest {
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withId(R.id.item_document_provider_radio_button), isNotChecked()))))
+                        allOf(withId(R.id.item_document_provider_radio_button), isNotChecked())
+                    )
+                )
+            )
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_2_TITLE))
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withId(R.id.item_document_provider_radio_button), isChecked()))))
+                        allOf(withId(R.id.item_document_provider_radio_button), isChecked())
+                    )
+                )
+            )
     }
 
     @Test
@@ -320,13 +360,16 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
+                ),
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -344,13 +387,16 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
+                ),
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -374,19 +420,25 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
+                ),
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
         intending(hasAction(Intent.ACTION_CREATE_DOCUMENT))
             .respondWith(
                 ActivityResult(
-                    RESULT_OK, Intent().setData(TEST_DOCUMENT_PROVIDER_1_ROOT_1_DOCUMENT_URI)))
+                    RESULT_OK,
+                    Intent().setData(TEST_DOCUMENT_PROVIDER_1_ROOT_1_DOCUMENT_URI),
+                )
+            )
 
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
         onView(withId(R.id.export_import_next_button)).perform(click())
@@ -404,7 +456,9 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                )
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
         intending(hasAction(Intent.ACTION_CREATE_DOCUMENT))
@@ -425,7 +479,9 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                )
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
         intending(hasAction(Intent.ACTION_CREATE_DOCUMENT))
@@ -446,19 +502,23 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_1_TITLE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
+                ),
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -466,7 +526,10 @@ class ExportDestinationFragmentTest {
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withId(R.id.item_document_provider_summary), not(isDisplayed())))))
+                        allOf(withId(R.id.item_document_provider_summary), not(isDisplayed()))
+                    )
+                )
+            )
     }
 
     @Test
@@ -478,19 +541,23 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_1_TITLE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
+                ),
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -516,19 +583,23 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_1_TITLE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
+                ),
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -542,7 +613,10 @@ class ExportDestinationFragmentTest {
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY), isDisplayed()))))
+                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY), isDisplayed())
+                    )
+                )
+            )
     }
 
     @Test
@@ -554,19 +628,23 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_1_TITLE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
+                ),
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -592,13 +670,13 @@ class ExportDestinationFragmentTest {
     }
 
     @Test
-    fun exportDestinationFragment_noProvidersAndPlayStoreNotAvailable_showsInstallAppsText() {
+    fun exportDestinationFragment_noProvidersAndPlayStoreNotAvailable_showsNoAppsText() {
         (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(false)
 
         fakeHealthDataExportManager.setExportImportDocumentProviders(listOf())
         launchFragment<ExportDestinationFragment>(Bundle())
 
-        onView(withText(R.string.export_import_install_apps_text)).check(matches(isDisplayed()))
+        onView(withText(R.string.export_import_no_apps_text)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -613,13 +691,13 @@ class ExportDestinationFragmentTest {
     }
 
     @Test
-    fun exportDestinationFragment_noProvidersAndPlayStoreAvailable_showsInstallAppsText() {
+    fun exportDestinationFragment_noProvidersAndPlayStoreAvailable_showsNoAppsText() {
         (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(true)
 
         fakeHealthDataExportManager.setExportImportDocumentProviders(listOf())
         launchFragment<ExportDestinationFragment>(Bundle())
 
-        onView(withText(R.string.export_import_install_apps_text)).check(matches(isDisplayed()))
+        onView(withText(R.string.export_import_no_apps_text)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -649,7 +727,7 @@ class ExportDestinationFragmentTest {
     }
 
     @Test
-    fun exportDestinationFragment_singleProvider_noRadioButton() {
+    fun exportDestinationFragment_singleProvider_hasRadioButtonChecked() {
         val documentProviders =
             listOf(
                 ExportImportDocumentProvider(
@@ -657,12 +735,15 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                )
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
 
         launchFragment<ExportDestinationFragment>(Bundle())
 
-        onView(withId(R.id.item_document_provider_radio_button)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.item_document_provider_radio_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.item_document_provider_radio_button)).check(matches(isChecked()))
     }
 
     @Test
@@ -674,7 +755,9 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                )
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -690,7 +773,9 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                )
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -711,13 +796,16 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_1_TITLE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -733,13 +821,16 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_1_TITLE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -765,13 +856,16 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_1_TITLE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -785,7 +879,10 @@ class ExportDestinationFragmentTest {
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY), isDisplayed()))))
+                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY), isDisplayed())
+                    )
+                )
+            )
     }
 
     @Test
@@ -797,13 +894,16 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_1_TITLE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -831,7 +931,9 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                )
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -849,7 +951,9 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                )
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -868,7 +972,9 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                )
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -886,7 +992,9 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                )
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle())
 
@@ -904,7 +1012,9 @@ class ExportDestinationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                )
+            )
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ExportDestinationFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.export_nav_graph)
@@ -915,6 +1025,107 @@ class ExportDestinationFragmentTest {
         onView(withId(R.id.export_import_go_to_play_store)).perform(click())
 
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.play_store_activity)
+    }
+
+    @Test
+    fun exportDestinationFragment_orientationChanged_keepsSelection() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_2_TITLE,
+                    TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
+                ),
+            )
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        val scenario = launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
+        onView(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY))
+            .inRoot(isDialog())
+            .perform(click())
+        onView(withText("Done")).inRoot(isDialog()).perform(click())
+
+        scenario.recreate()
+        onIdle()
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE))
+            .check(
+                matches(
+                    hasDescendant(
+                        allOf(withId(R.id.item_document_provider_radio_button), isChecked())
+                    )
+                )
+            )
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE))
+            .check(
+                matches(
+                    hasDescendant(
+                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY), isDisplayed())
+                    )
+                )
+            )
+    }
+
+    @Test
+    fun exportDestinationFragment_orientationChanged_nextButtonClicked_startsDocumentsUi() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                ),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_2_TITLE,
+                    TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
+                ),
+            )
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        val scenario = launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
+        onView(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY))
+            .inRoot(isDialog())
+            .perform(click())
+        onView(withText("Done")).inRoot(isDialog()).perform(click())
+
+        scenario.recreate()
+        onIdle()
+        onView(withText("Next")).perform(click())
+
+        intended(hasAction(Intent.ACTION_CREATE_DOCUMENT))
+        intended(hasType("application/zip"))
+        intended(hasExtra(DocumentsContract.EXTRA_INITIAL_URI, TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI))
+        intended(hasExtra(Intent.EXTRA_TITLE, DEFAULT_FILE_NAME))
     }
 
     private fun documentProviderWithTitle(title: String): Matcher<View>? =

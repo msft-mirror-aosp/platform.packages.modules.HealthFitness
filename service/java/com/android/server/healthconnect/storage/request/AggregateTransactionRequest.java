@@ -64,31 +64,26 @@ public final class AggregateTransactionRequest {
 
         for (int id : request.getAggregateIds()) {
             AggregationType<?> aggregationType = mAggregationTypeIdMapper.getAggregationTypeFor(id);
-            List<Integer> recordTypeIds = aggregationType.getApplicableRecordTypeIds();
-            if (recordTypeIds.size() == 1) {
-                RecordHelper<?> recordHelper =
-                        RecordHelperProvider.getRecordHelper(recordTypeIds.get(0));
-                AggregateTableRequest aggregateTableRequest =
-                        recordHelper.getAggregateTableRequest(
-                                aggregationType,
-                                packageName,
-                                request.getPackageFilters(),
-                                request.getStartTime(),
-                                request.getEndTime(),
-                                startDateAccess,
-                                request.useLocalTimeFilter());
+            int recordTypeId = aggregationType.getApplicableRecordTypeId();
+            RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordTypeId);
+            AggregateTableRequest aggregateTableRequest =
+                    recordHelper.getAggregateTableRequest(
+                            aggregationType,
+                            packageName,
+                            request.getPackageFilters(),
+                            request.getStartTime(),
+                            request.getEndTime(),
+                            startDateAccess,
+                            request.useLocalTimeFilter());
 
-                if (mDuration != null || mPeriod != null) {
-                    aggregateTableRequest.setGroupBy(
-                            recordHelper.getDurationGroupByColumnName(),
-                            mPeriod,
-                            mDuration,
-                            mTimeRangeFilter);
-                }
-                mAggregateTableRequests.add(aggregateTableRequest);
-            } else {
-                throw new UnsupportedOperationException();
+            if (mDuration != null || mPeriod != null) {
+                aggregateTableRequest.setGroupBy(
+                        recordHelper.getDurationGroupByColumnName(),
+                        mPeriod,
+                        mDuration,
+                        mTimeRangeFilter);
             }
+            mAggregateTableRequests.add(aggregateTableRequest);
         }
     }
 

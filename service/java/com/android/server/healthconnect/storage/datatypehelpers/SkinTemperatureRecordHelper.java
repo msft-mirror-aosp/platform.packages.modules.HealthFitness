@@ -42,6 +42,7 @@ import android.health.connect.internal.datatypes.SkinTemperatureRecordInternal;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
@@ -207,8 +208,8 @@ public final class SkinTemperatureRecordHelper
         }
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
+    @Nullable
     public AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
         switch (aggregationType.getAggregationTypeIdentifier()) {
