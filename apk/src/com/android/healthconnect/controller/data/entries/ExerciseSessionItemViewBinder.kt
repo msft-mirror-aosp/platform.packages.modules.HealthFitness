@@ -25,15 +25,14 @@ import com.android.healthconnect.controller.data.entries.FormattedEntry.Exercise
 import com.android.healthconnect.controller.shared.RoundView
 import com.android.healthconnect.controller.shared.map.MapView
 import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
-import com.android.healthconnect.controller.utils.logging.AllEntriesElement
+import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 
 /** ViewBinder for ExerciseSessionEntry. */
-class ExerciseSessionItemViewBinder(
-    private val onItemClickedListener: OnClickEntryListener?,
-) : ViewBinder<ExerciseSessionEntry, View> {
+class ExerciseSessionItemViewBinder(private val onItemClickedListener: OnClickEntryListener?) :
+    ViewBinder<ExerciseSessionEntry, View> {
 
     private lateinit var logger: HealthConnectLogger
 
@@ -41,7 +40,9 @@ class ExerciseSessionItemViewBinder(
         val context = parent.context.applicationContext
         val hiltEntryPoint =
             EntryPointAccessors.fromApplication(
-                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
+                context.applicationContext,
+                HealthConnectLoggerEntryPoint::class.java,
+            )
         logger = hiltEntryPoint.logger()
         return LayoutInflater.from(parent.context)
             .inflate(R.layout.item_exercise_session_entry, parent, false)
@@ -56,7 +57,7 @@ class ExerciseSessionItemViewBinder(
         val deleteButton = view.findViewById<ImageButton>(R.id.item_data_entry_delete)
         val mapView = view.findViewById<MapView>(R.id.map_view)
         val mapContainer = view.findViewById<RoundView>(R.id.map_round_view)
-        logger.logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
+        logger.logImpression(DataEntriesElement.EXERCISE_SESSION_ENTRY_BUTTON)
         title.text = data.title
         title.contentDescription = data.titleA11y
         header.text = data.header
@@ -69,9 +70,13 @@ class ExerciseSessionItemViewBinder(
         if (data.route != null) {
             mapView.setRoute(data.route)
         }
-        container.setOnClickListener {
-            logger.logInteraction(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
-            onItemClickedListener?.onItemClicked(data.uuid, index)
+        if (data.isClickable) {
+            container.setOnClickListener {
+                logger.logInteraction(DataEntriesElement.EXERCISE_SESSION_ENTRY_BUTTON)
+                onItemClickedListener?.onItemClicked(data.uuid, index)
+            }
+        } else {
+            container.isClickable = false
         }
     }
 }
