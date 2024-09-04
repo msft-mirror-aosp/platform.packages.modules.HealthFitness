@@ -40,6 +40,8 @@ android_test {
     test_suites: [
         "cts",
         "general-tests",
+        "mts-healthfitness",
+        "mcts-healthfitness",
     ],
     sdk_version: "test_current",
     min_sdk_version: "34",
