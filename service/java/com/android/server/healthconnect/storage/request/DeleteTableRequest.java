@@ -56,7 +56,6 @@ public class DeleteTableRequest {
     private boolean mRequiresUuId;
     @Nullable private List<String> mIds;
     private boolean mEnforcePackageCheck;
-    private int mNumberOfUuidsToDelete;
     @Nullable private String mInnerReadColumnName;
     @Nullable private ReadTableRequest mInnerReadRequest;
 
@@ -220,32 +219,5 @@ public class DeleteTableRequest {
         mTimeColumnName = timeColumnName;
 
         return this;
-    }
-
-    /**
-     * Sets total number of UUIDs being deleted by this request.
-     *
-     * @param numberOfUuidsToDelete Number of UUIDs being deleted
-     */
-    public void setNumberOfUuidsToDelete(int numberOfUuidsToDelete) {
-        this.mNumberOfUuidsToDelete = numberOfUuidsToDelete;
-    }
-
-    /**
-     * Total number of records deleted.
-     *
-     * <p>This method should only be called in a state after a delete, when either a pre-read has
-     * been done, or a list of ids set.
-     *
-     * @return Number of records deleted by this request
-     */
-    public int getTotalNumberOfRecordsDeleted() {
-        if (requiresRead()) {
-            return mNumberOfUuidsToDelete;
-        }
-        if (mIds == null) {
-            throw new IllegalStateException("Called with no required reads and no list of ids set");
-        }
-        return mIds.size();
     }
 }

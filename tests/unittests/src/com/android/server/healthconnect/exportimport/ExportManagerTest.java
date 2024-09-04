@@ -67,17 +67,18 @@ import org.junit.runner.RunWith;
 import org.mockito.quality.Strictness;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 
-// TODO: b/357864927 - Add tests for export file size logging.
 @RunWith(AndroidJUnit4.class)
 public class ExportManagerTest {
     private static final String TEST_PACKAGE_NAME = "package.name";
     private static final String REMOTE_EXPORT_DATABASE_DIR_NAME = "remote";
     private static final String REMOTE_EXPORT_ZIP_FILE_NAME = "remote_file.zip";
     private static final String REMOTE_EXPORT_DATABASE_FILE_NAME = "remote_file.db";
+    private static final String ORIGINAL_DATABASE_NAME = "healthconnect.db";
 
     @Rule(order = 1)
     public final ExtendedMockitoRule mExtendedMockitoRule =
@@ -135,16 +136,12 @@ public class ExportManagerTest {
         mTransactionTestUtils.insertAccessLog();
         mTransactionTestUtils.insertAccessLog();
         HealthConnectDatabase originalDatabase =
-                new HealthConnectDatabase(mContext, "healthconnect.db");
+                new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
         assertTableSize(originalDatabase, "access_logs_table", 2);
 
         assertThat(mExportManager.runExport()).isTrue();
 
-        Compressor.decompress(
-                Uri.fromFile(mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME)),
-                LOCAL_EXPORT_DATABASE_FILE_NAME,
-                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME),
-                mContext);
+        decompressExportedZip();
         try (HealthConnectDatabase remoteExportHealthConnectDatabase =
                 new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
             assertTableSize(remoteExportHealthConnectDatabase, "access_logs_table", 0);
@@ -157,7 +154,7 @@ public class ExportManagerTest {
         long exportStartTime = mTimeStamp.toEpochMilli() - 2000;
         mExportManager.recordSuccess(exportStartTime, 100, 50, Uri.parse("uri"));
 
-        assertSuccessRecorded(Instant.parse("2024-06-04T16:39:12Z"), 2000);
+        assertSuccessRecorded(Instant.parse("2024-06-04T16:39:12Z"), 2000, 100, 50);
     }
 
     @Test
@@ -166,7 +163,15 @@ public class ExportManagerTest {
         long exportStartTime = mTimeStamp.toEpochMilli() - 2000;
         mExportManager.recordError(DATA_EXPORT_ERROR_UNKNOWN, exportStartTime, 100, 50);
 
-        assertErrorRecorded(DATA_EXPORT_ERROR_UNKNOWN, Instant.parse("2024-06-04T16:39:12Z"), 2000);
+        assertErrorStatusStored(DATA_EXPORT_ERROR_UNKNOWN, Instant.parse("2024-06-04T16:39:12Z"));
+        ExtendedMockito.verify(
+                () ->
+                        ExportImportLogger.logExportStatus(
+                                eq(DATA_EXPORT_ERROR_UNKNOWN),
+                                eq(/* timeToError= */ 2000),
+                                eq(/* originalFileSizeKb= */ 100),
+                                eq(/* compressedFileSizeKb= */ 50)),
+                times(1));
     }
 
     @Test
@@ -174,16 +179,12 @@ public class ExportManagerTest {
         mTransactionTestUtils.insertChangeLog();
         mTransactionTestUtils.insertChangeLog();
         HealthConnectDatabase originalDatabase =
-                new HealthConnectDatabase(mContext, "healthconnect.db");
+                new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
         assertTableSize(originalDatabase, "change_logs_table", 2);
 
         assertThat(mExportManager.runExport()).isTrue();
 
-        Compressor.decompress(
-                Uri.fromFile(mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME)),
-                LOCAL_EXPORT_DATABASE_FILE_NAME,
-                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME),
-                mContext);
+        decompressExportedZip();
         try (HealthConnectDatabase remoteExportHealthConnectDatabase =
                 new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
             assertTableSize(remoteExportHealthConnectDatabase, "change_logs_table", 0);
@@ -191,10 +192,10 @@ public class ExportManagerTest {
     }
 
     @Test
-    public void deletesLocalCopies() {
+    public void runExport_whenCompleted_deletesLocalCopies() {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         HealthConnectDatabase originalDatabase =
-                new HealthConnectDatabase(mContext, "healthconnect.db");
+                new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
         assertTableSize(originalDatabase, "steps_record_table", 1);
 
         assertThat(mExportManager.runExport()).isTrue();
@@ -207,19 +208,29 @@ public class ExportManagerTest {
     }
 
     @Test
+    public void deleteLocalExportFiles_deletesLocalCopies() {
+        DatabaseContext databaseContext =
+                DatabaseContext.create(mContext, LOCAL_EXPORT_DIR_NAME, mContext.getUser());
+        new File(databaseContext.getDatabaseDir(), LOCAL_EXPORT_DATABASE_FILE_NAME).mkdirs();
+        new File(databaseContext.getDatabaseDir(), LOCAL_EXPORT_ZIP_FILE_NAME).mkdirs();
+
+        mExportManager.deleteLocalExportFiles();
+
+        assertThat(databaseContext.getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME).exists())
+                .isFalse();
+        assertThat(databaseContext.getDatabasePath(LOCAL_EXPORT_ZIP_FILE_NAME).exists()).isFalse();
+    }
+
+    @Test
     public void makesRemoteCopyOfDatabase() throws Exception {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         HealthConnectDatabase originalDatabase =
-                new HealthConnectDatabase(mContext, "healthconnect.db");
+                new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
         assertTableSize(originalDatabase, "steps_record_table", 1);
 
         assertThat(mExportManager.runExport()).isTrue();
 
-        Compressor.decompress(
-                Uri.fromFile(mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME)),
-                LOCAL_EXPORT_DATABASE_FILE_NAME,
-                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME),
-                mContext);
+        decompressExportedZip();
         try (HealthConnectDatabase remoteExportHealthConnectDatabase =
                 new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
             assertTableSize(remoteExportHealthConnectDatabase, "steps_record_table", 1);
@@ -233,7 +244,7 @@ public class ExportManagerTest {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(124, 457, 7));
 
         HealthConnectDatabase originalDatabase =
-                new HealthConnectDatabase(mContext, "healthconnect.db");
+                new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
         assertTableSize(originalDatabase, "steps_record_table", 2);
 
         ExportImportSettingsStorage.setLastExportError(
@@ -246,22 +257,45 @@ public class ExportManagerTest {
 
         assertThat(mExportManager.runExport()).isFalse();
         assertExportStartRecorded();
+
         // time not recorded due to fake clock
-        assertErrorRecorded(ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS, mTimeStamp, 0);
+        assertErrorStatusStored(ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS, mTimeStamp);
+        ExtendedMockito.verify(
+                () ->
+                        ExportImportLogger.logExportStatus(
+                                eq(ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS),
+                                eq(/* timeToError= */ 0),
+                                /* originalFileSizeKb= */ anyInt(),
+                                /* compressedFileSizeKb= */ anyInt()),
+                times(1));
     }
 
     @Test
-    public void updatesLastSuccessfulExport_onSuccessOnly() {
+    public void updatesLastSuccessfulExport_onSuccessOnly() throws Exception {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         HealthConnectDatabase originalDatabase =
-                new HealthConnectDatabase(mContext, "healthconnect.db");
+                new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
         assertTableSize(originalDatabase, "steps_record_table", 1);
 
         // running a successful export records a "last successful export"
         assertThat(mExportManager.runExport()).isTrue();
         assertExportStartRecorded();
+
+        // Get the actual size of the files rather than using a fixed size as the size isn't fixed
+        // across test runs.
+        decompressExportedZip();
+        int originalFileSizeInKb =
+                getFileSizeInKb(
+                        mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME));
+        int compressedFileSizeInKb =
+                getFileSizeInKb(mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME));
+
         // time not recorded due to fake clock
-        assertSuccessRecorded(Instant.parse("2024-06-04T16:39:12Z"), 0);
+        assertSuccessRecorded(
+                Instant.parse("2024-06-04T16:39:12Z"),
+                0,
+                originalFileSizeInKb,
+                compressedFileSizeInKb);
 
         // Export running at a later time with an error
         mTimeStamp = Instant.parse("2024-12-12T16:39:12Z");
@@ -289,7 +323,7 @@ public class ExportManagerTest {
         when(cursor.getString(anyInt())).thenReturn(REMOTE_EXPORT_ZIP_FILE_NAME);
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         HealthConnectDatabase originalDatabase =
-                new HealthConnectDatabase(mContext, "healthconnect.db");
+                new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
         assertTableSize(originalDatabase, "steps_record_table", 1);
 
         // Running a successful export records a "last successful export".
@@ -342,11 +376,18 @@ public class ExportManagerTest {
                 times(1));
     }
 
-    private void assertSuccessRecorded(Instant timeOfSuccess, int timeToSuccess) {
+    private void assertSuccessRecorded(
+            Instant timeOfSuccess,
+            int timeToSuccess,
+            int originalFileSizeKb,
+            int compressedFileSizeKb) {
         ExtendedMockito.verify(
                 () ->
                         ExportImportLogger.logExportStatus(
-                                eq(DATA_EXPORT_ERROR_NONE), eq(timeToSuccess), anyInt(), anyInt()),
+                                eq(DATA_EXPORT_ERROR_NONE),
+                                eq(timeToSuccess),
+                                eq(originalFileSizeKb),
+                                eq(compressedFileSizeKb)),
                 times(1));
         Instant lastSuccessfulExport =
                 ExportImportSettingsStorage.getScheduledExportStatus(mContext)
@@ -354,7 +395,7 @@ public class ExportManagerTest {
         assertThat(lastSuccessfulExport).isEqualTo(timeOfSuccess);
     }
 
-    private void assertErrorRecorded(int exportStatus, Instant timeOfError, int timeToError) {
+    private void assertErrorStatusStored(int exportStatus, Instant timeOfError) {
         assertThat(
                         ExportImportSettingsStorage.getScheduledExportStatus(mContext)
                                 .getDataExportError())
@@ -363,11 +404,17 @@ public class ExportManagerTest {
                         ExportImportSettingsStorage.getScheduledExportStatus(mContext)
                                 .getLastFailedExportTime())
                 .isEqualTo(timeOfError);
+    }
 
-        ExtendedMockito.verify(
-                () ->
-                        ExportImportLogger.logExportStatus(
-                                eq(exportStatus), eq(timeToError), anyInt(), anyInt()),
-                times(1));
+    private int getFileSizeInKb(File file) {
+        return (int) (file.length() / 1024.0);
+    }
+
+    private void decompressExportedZip() throws IOException {
+        Compressor.decompress(
+                Uri.fromFile(mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME)),
+                LOCAL_EXPORT_DATABASE_FILE_NAME,
+                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME),
+                mContext);
     }
 }

@@ -24,6 +24,7 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.ExerciseSessionEntry
 import com.android.healthconnect.controller.shared.RoundView
 import com.android.healthconnect.controller.shared.map.MapView
+import com.android.healthconnect.controller.shared.recyclerview.SimpleViewBinder
 import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -36,7 +37,7 @@ class ExerciseSessionItemViewBinder(
     private val showSecondAction: Boolean = true,
     private val onItemClickedListener: OnClickEntryListener?,
     private val onDeleteEntryClicked: OnDeleteEntryListener?,
-) : ViewBinder<ExerciseSessionEntry, View> {
+) : SimpleViewBinder<ExerciseSessionEntry, View> {
 
     private lateinit var logger: HealthConnectLogger
 

@@ -31,20 +31,30 @@ import android.annotation.FlaggedApi;
 import android.annotation.IntRange;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.ArraySet;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /** A class to represent a read request for {@link HealthConnectManager#readMedicalResources}. */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class ReadMedicalResourcesRequest implements Parcelable {
     @MedicalResourceType private final int mMedicalResourceType;
+    @NonNull private final Set<String> mDataSourceIds;
     private final int mPageSize;
     @Nullable private final String mPageToken;
 
     /**
+     * @param medicalResourceType The medical resource type to request to read.
+     * @param dataSourceIds The {@link MedicalDataSource} filter based on which the read operation
+     *     is to be performed. An empty set means no filter.
      * @param pageSize The maximum number of {@code MedicalResource}s to be returned by the read
      *     operation.
      * @param pageToken The page token to read the requested page of the result. If not set, default
@@ -52,12 +62,15 @@ public final class ReadMedicalResourcesRequest implements Parcelable {
      */
     private ReadMedicalResourcesRequest(
             @MedicalResourceType int medicalResourceType,
+            @NonNull Set<String> dataSourceIds,
             @IntRange(from = MINIMUM_PAGE_SIZE, to = MAXIMUM_PAGE_SIZE) int pageSize,
             @Nullable String pageToken) {
         validateMedicalResourceType(medicalResourceType);
+        requireNonNull(dataSourceIds);
         requireInRange(pageSize, MINIMUM_PAGE_SIZE, MAXIMUM_PAGE_SIZE, "pageSize");
 
         mMedicalResourceType = medicalResourceType;
+        mDataSourceIds = dataSourceIds;
         mPageSize = pageSize;
         mPageToken = pageToken;
     }
@@ -69,6 +82,7 @@ public final class ReadMedicalResourcesRequest implements Parcelable {
     private ReadMedicalResourcesRequest(@NonNull Parcel in) {
         requireNonNull(in);
         mMedicalResourceType = in.readInt();
+        mDataSourceIds = new HashSet<>(requireNonNull(in.createStringArrayList()));
         mPageSize = in.readInt();
         mPageToken = in.readString();
     }
@@ -91,6 +105,15 @@ public final class ReadMedicalResourcesRequest implements Parcelable {
     @MedicalResourceType
     public int getMedicalResourceType() {
         return mMedicalResourceType;
+    }
+
+    /**
+     * Returns the set of IDs of the {@link MedicalDataSource} filter to read from, or an empty list
+     * for no filter.
+     */
+    @NonNull
+    public Set<String> getDataSourceIds() {
+        return new ArraySet<>(mDataSourceIds);
     }
 
     /**
@@ -120,6 +143,7 @@ public final class ReadMedicalResourcesRequest implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeInt(mMedicalResourceType);
+        dest.writeStringList(new ArrayList<>(mDataSourceIds));
         dest.writeInt(mPageSize);
         dest.writeString(mPageToken);
     }
@@ -130,6 +154,7 @@ public final class ReadMedicalResourcesRequest implements Parcelable {
         if (this == o) return true;
         if (!(o instanceof ReadMedicalResourcesRequest that)) return false;
         return getMedicalResourceType() == that.getMedicalResourceType()
+                && getDataSourceIds().equals(that.getDataSourceIds())
                 && getPageSize() == that.getPageSize()
                 && Objects.equals(getPageToken(), that.getPageToken());
     }
@@ -137,7 +162,7 @@ public final class ReadMedicalResourcesRequest implements Parcelable {
     /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
-        return hash(getMedicalResourceType(), getPageSize(), getPageToken());
+        return hash(getMedicalResourceType(), getDataSourceIds(), getPageSize(), getPageToken());
     }
 
     /** Returns a string representation of this {@link ReadMedicalResourcesRequest}. */
@@ -146,6 +171,7 @@ public final class ReadMedicalResourcesRequest implements Parcelable {
         StringBuilder sb = new StringBuilder();
         sb.append(this.getClass().getSimpleName()).append("{");
         sb.append("medicalResourceType=").append(getMedicalResourceType());
+        sb.append(",dataSourceIds=").append(getDataSourceIds());
         sb.append(",pageSize=").append(getPageSize());
         sb.append(",pageToken=").append(getPageToken());
         sb.append("}");
@@ -155,6 +181,7 @@ public final class ReadMedicalResourcesRequest implements Parcelable {
     /** Builder class for {@link ReadMedicalResourcesRequest} */
     public static final class Builder {
         @MedicalResourceType private int mMedicalResourceType;
+        @NonNull private Set<String> mDataSourceIds = new HashSet<>();
         private int mPageSize = DEFAULT_PAGE_SIZE;
         @Nullable private String mPageToken;
 
@@ -173,6 +200,7 @@ public final class ReadMedicalResourcesRequest implements Parcelable {
         public Builder(@NonNull Builder original) {
             requireNonNull(original);
             mMedicalResourceType = original.mMedicalResourceType;
+            mDataSourceIds.addAll(original.mDataSourceIds);
             mPageSize = original.mPageSize;
             mPageToken = original.mPageToken;
         }
@@ -184,6 +212,7 @@ public final class ReadMedicalResourcesRequest implements Parcelable {
         public Builder(@NonNull ReadMedicalResourcesRequest original) {
             requireNonNull(original);
             mMedicalResourceType = original.getMedicalResourceType();
+            mDataSourceIds.addAll(original.getDataSourceIds());
             mPageSize = original.getPageSize();
             mPageToken = original.getPageToken();
         }
@@ -194,6 +223,29 @@ public final class ReadMedicalResourcesRequest implements Parcelable {
                 @MedicalResourceType int medicalResourceType) {
             validateMedicalResourceType(medicalResourceType);
             mMedicalResourceType = medicalResourceType;
+            return this;
+        }
+
+        /**
+         * Adds the {@link MedicalDataSource} filter based on which the read operation is to be
+         * performed.
+         *
+         * @param dataSourceId The ID of an existing {@link MedicalDataSource} from which to read
+         *     {@link MedicalResource}s.
+         *     <p>If no {@link MedicalDataSource} ID is added, then {@link MedicalResource}s from
+         *     all {@link MedicalDataSource}s will be read.
+         */
+        @NonNull
+        public Builder addDataSourceId(@NonNull String dataSourceId) {
+            requireNonNull(dataSourceId);
+            mDataSourceIds.add(dataSourceId);
+            return this;
+        }
+
+        /** Clears all the {@link MedicalDataSource} filters for this builder. */
+        @NonNull
+        public Builder clearDataSourceIds() {
+            mDataSourceIds.clear();
             return this;
         }
 
@@ -228,7 +280,8 @@ public final class ReadMedicalResourcesRequest implements Parcelable {
          */
         @NonNull
         public ReadMedicalResourcesRequest build() {
-            return new ReadMedicalResourcesRequest(mMedicalResourceType, mPageSize, mPageToken);
+            return new ReadMedicalResourcesRequest(
+                    mMedicalResourceType, mDataSourceIds, mPageSize, mPageToken);
         }
     }
 }

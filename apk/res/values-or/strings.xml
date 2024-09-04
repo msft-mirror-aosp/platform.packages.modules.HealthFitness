@@ -67,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"ସାଇକେଲ ଟ୍ରାକିଂ"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"ନ୍ୟୁଟ୍ରିସନ"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"ନ୍ୟୁଟ୍ରିସନ"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"ସୁସ୍ଥତା"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"ସୁସ୍ଥତା"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"ଡାଟା ବ୍ରାଉଜ କରନ୍ତୁ"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"ଡାଟାକୁ ପରିଚାଳନା କରନ୍ତୁ"</string>
     <string name="export_data_button" msgid="7783329820434117744">"ଡାଟା ଏକ୍ସପୋର୍ଟ କରନ୍ତୁ"</string>
@@ -349,6 +351,13 @@
     <string name="next_export_text" msgid="6726252793571403846">"ପରବର୍ତ୍ତୀ ଏକ୍ସପୋର୍ଟ ଶୀଘ୍ର ଆରମ୍ଭ ହେବାକୁ ଯାଉଛି"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ବେକଅପ ନେଇ ରିଷ୍ଟୋର କରନ୍ତୁ"</string>
     <string name="last_export_time" msgid="9205875050823594041">"ଗତ ଏକ୍ସପୋର୍ଟ: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <!-- no translation found for last_export_time_now (31498024135933750) -->
+    <skip />
+    <!-- no translation found for last_export_time_minutes_ago (5279296486877765961) -->
+    <skip />
+    <!-- no translation found for last_export_time_hours_ago (3174986640795245343) -->
+    <skip />
+    <string name="no_last_export_message" msgid="8138900854579872667">"ଗତ ଏକ୍ସପୋର୍ଟ: କିଛି ନାହିଁ"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"ସିଡୁଲ କରାଯାଇଥିବା ଏକ୍ସପୋର୍ଟ"</string>
     <string name="import_data" msgid="404502315533233094">"ଡାଟା ଇମ୍ପୋର୍ଟ କରନ୍ତୁ"</string>
@@ -383,8 +392,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"ଇମ୍ପୋର୍ଟ କରନ୍ତୁ"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect ରିଷ୍ଟୋର ଚାଲିଛି"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect ରିଷ୍ଟୋର ସମ୍ପୂର୍ଣ୍ଣ ହୋଇଛି"</string>
-    <!-- no translation found for import_in_progress_toast_text (3363548588078895706) -->
-    <skip />
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"ରିଷ୍ଟୋର ଚାଲିଛି"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"ଡାଟା ରିଷ୍ଟୋର କରିବା ସମ୍ପୂର୍ଣ୍ଣ ହୋଇଛି"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect ଡାଟାକୁ ରିଷ୍ଟୋର କରିପାରିଲା ନାହିଁ"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"ଅଧିକ ସ୍ପେସ ଆବଶ୍ୟକ"</string>
@@ -397,6 +405,18 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"ଖୋଲନ୍ତୁ"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"ଫାଇଲ ବାଛନ୍ତୁ"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"ସ୍ପେସ ଖାଲି କରନ୍ତୁ"</string>
+    <!-- no translation found for export_notification_error_generic_error_title (7940091379629095465) -->
+    <skip />
+    <!-- no translation found for export_notification_error_more_space_needed_title (5089783781556500431) -->
+    <skip />
+    <!-- no translation found for export_notification_error_generic_error_body_text (4161925150551602640) -->
+    <skip />
+    <!-- no translation found for export_notification_error_more_space_needed_body_text (5519192430780383427) -->
+    <skip />
+    <!-- no translation found for export_notification_set_up_intent_button (1484836974815713693) -->
+    <skip />
+    <!-- no translation found for export_notification_free_up_space_intent_button (2902823222861202203) -->
+    <skip />
     <string name="export_back_button" msgid="3550795479165524982">"ପଛକୁ ଫେରନ୍ତୁ"</string>
     <string name="export_next_button" msgid="657930567137105172">"ପରବର୍ତ୍ତୀ"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"ବାତିଲ କରନ୍ତୁ"</string>
@@ -654,6 +674,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"ହାଲୁକା ନିଦ"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"ଗଭୀର ନିଦ"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"ଅଜଣା"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"ଶ୍ୱାସକ୍ରିୟା"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"ଧ୍ୟାନ"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"ମୁଭମେଣ୍ଟ"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"ମ୍ୟୁଜିକ"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"ଅନ୍ୟ"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"ଗାଇଡ କରାଯାଇନଥିବା"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g>ମି"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g>ଘ <xliff:g id="MIN">%2$s</xliff:g>ମି"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g>ଘ"</string>
