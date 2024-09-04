@@ -52,6 +52,7 @@ import android.health.connect.datatypes.units.Power
 import android.health.connect.datatypes.units.Temperature
 import android.health.connect.datatypes.units.Velocity
 import android.health.connect.datatypes.units.Volume
+import android.net.Uri;
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.android.healthconnect.controller.dataentries.units.PowerConverter
@@ -518,7 +519,7 @@ val TEST_MEDICAL_DATA_SOURCE: MedicalDataSource =
     MedicalDataSource.Builder(
             /* id= */ "123",
             TEST_APP_PACKAGE_NAME,
-            /* fhirBaseUri= */ "fhir.base.uri",
+            /* fhirBaseUri= */ Uri.parse("fhir.base.uri"),
             /* displayName= */ "App A Data Source",
         )
         .build()
@@ -526,7 +527,7 @@ val TEST_MEDICAL_DATA_SOURCE_2: MedicalDataSource =
     MedicalDataSource.Builder(
             /* id= */ "234",
             TEST_APP_PACKAGE_NAME,
-            /* fhirBaseUri= */ "fhir.base.uri",
+            /* fhirBaseUri= */ Uri.parse("fhir.base.uri"),
             /* displayName= */ "App A Data Source 2",
         )
         .build()
@@ -534,7 +535,7 @@ val TEST_MEDICAL_DATA_SOURCE_DIFFERENT_APP: MedicalDataSource =
     MedicalDataSource.Builder(
             /* id= */ "456",
             TEST_APP_PACKAGE_NAME_2,
-            /* fhirBaseUri= */ "fhir.base.uri",
+            /* fhirBaseUri= */ Uri.parse("fhir.base.uri"),
             /* displayName= */ "App B Data Source",
         )
         .build()

@@ -49,7 +49,6 @@ import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 
 import java.nio.ByteBuffer;
@@ -60,6 +59,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * An util class for HC storage
@@ -390,13 +390,6 @@ public final class StorageUtils {
         return recordCategory == ACTIVITY || recordCategory == SLEEP || recordCategory == WELLNESS;
     }
 
-    /** Returns list of app Ids of contributing apps for the record type in the priority order */
-    public static List<Long> getAppIdPriorityList(int recordType) {
-        return HealthDataCategoryPriorityHelper.getInstance()
-                .getAppIdPriorityOrder(
-                        RecordTypeRecordCategoryMapper.getRecordCategoryForRecordType(recordType));
-    }
-
     /** Returns if derivation needs to be done to calculate aggregate */
     public static boolean isDerivedType(int recordType) {
         return recordType == RECORD_TYPE_BASAL_METABOLIC_RATE
@@ -451,6 +444,23 @@ public final class StorageUtils {
     /** Convert a long value to bytes. */
     public static long convertBytesToLong(byte[] bytes) {
         return ByteBuffer.wrap(bytes).getLong();
+    }
+
+    /** Converts a list of {@link UUID} strings to a list of hex strings. */
+    @NonNull
+    public static List<String> convertUuidStringsToHexStrings(@NonNull List<String> ids) {
+        List<UUID> uuids =
+                ids.stream()
+                        .flatMap(
+                                id -> {
+                                    try {
+                                        return Stream.of(UUID.fromString(id));
+                                    } catch (IllegalArgumentException ex) {
+                                        return Stream.of();
+                                    }
+                                })
+                        .toList();
+        return StorageUtils.getListOfHexStrings(uuids);
     }
 
     public static String getHexString(byte[] value) {

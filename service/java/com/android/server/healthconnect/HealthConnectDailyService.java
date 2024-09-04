@@ -32,9 +32,12 @@ import android.app.job.JobService;
 import android.health.connect.Constants;
 import android.util.Slog;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.migration.MigrationStateChangeJob;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
 import java.time.Clock;
 import java.util.Objects;
@@ -70,13 +73,26 @@ public class HealthConnectDailyService extends JobService {
             return false;
         }
 
+        HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper;
+
+        if (Flags.dependencyInjection()) {
+            HealthConnectInjector healthConnectInjector = HealthConnectInjector.getInstance();
+            healthDataCategoryPriorityHelper =
+                    healthConnectInjector.getHealthDataCategoryPriorityHelper();
+        } else {
+            healthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
+        }
+
         // This service executes each incoming job on a Handler running on the application's
         // main thread. This means that we must offload the execution logic to background executor.
         switch (jobName) {
             case HC_DAILY_JOB:
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () -> {
-                            HealthConnectDailyJobs.execute(getApplicationContext(), params);
+                            HealthConnectDailyJobs.execute(
+                                    getApplicationContext(),
+                                    params,
+                                    healthDataCategoryPriorityHelper);
                             jobFinished(params, false);
                         });
                 return true;

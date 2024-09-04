@@ -133,6 +133,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             AggregationType<?> aggregationType,
             String callingPackage,
             List<String> packageFilters,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             long startTime,
             long endTime,
             long startDateAccess,
@@ -180,7 +181,13 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             whereClauses.addWhereGreaterThanOrEqualClause(startTimeColumnName, startTime);
         }
 
-        return new AggregateTableRequest(params, aggregationType, this, whereClauses, useLocalTime)
+        return new AggregateTableRequest(
+                        params,
+                        aggregationType,
+                        this,
+                        whereClauses,
+                        healthDataCategoryPriorityHelper,
+                        useLocalTime)
                 .setTimeFilter(startTime, endTime);
     }
 

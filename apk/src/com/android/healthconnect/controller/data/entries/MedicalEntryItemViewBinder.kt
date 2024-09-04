@@ -19,14 +19,14 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
+import com.android.healthconnect.controller.shared.recyclerview.SimpleViewBinder
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 
 /** ViewBinder for FormattedMedicalDataEntry. */
-class MedicalEntryItemViewBinder : ViewBinder<FormattedEntry.FormattedMedicalDataEntry, View> {
+class MedicalEntryItemViewBinder : SimpleViewBinder<FormattedEntry.FormattedMedicalDataEntry, View> {
 
     private lateinit var logger: HealthConnectLogger
 

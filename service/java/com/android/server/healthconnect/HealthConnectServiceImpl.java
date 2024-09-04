@@ -567,6 +567,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             new AggregateTransactionRequest(
                                             attributionSource.getPackageName(),
                                             request,
+                                            mHealthDataCategoryPriorityHelper,
                                             startDateAccess)
                                     .getAggregateDataResponseParcel());
                     logger.setDataTypesFromRecordTypes(recordTypesToTest)
@@ -2795,23 +2796,21 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     enforceIsForegroundUser(userHandle);
                     verifyPackageNameFromUid(uid, attributionSource);
                     throwExceptionIfDataSyncInProgress();
-                    Long appInfoRestriction;
                     if (holdsDataManagementPermission) {
-                        appInfoRestriction = null;
+                        mMedicalResourceHelper
+                                .deleteMedicalResourcesByDataSourcesWithoutPermissionChecks(
+                                        new ArrayList<>(request.getDataSourceIds()));
                     } else {
                         boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
                         tryAcquireApiCallQuota(
                                 uid, QuotaCategory.QUOTA_CATEGORY_WRITE, isInForeground, logger);
                         mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
                                 attributionSource);
-                        appInfoRestriction = mAppInfoHelper.getAppInfoId(callingPackageName);
-                        if (appInfoRestriction == Constants.DEFAULT_LONG) {
-                            throw new IllegalArgumentException(
-                                    "Deletion not permitted as app has inserted no data.");
-                        }
+                        mMedicalResourceHelper
+                                .deleteMedicalResourcesByDataSourcesWithPermissionChecks(
+                                        new ArrayList<>(request.getDataSourceIds()),
+                                        callingPackageName);
                     }
-                    mMedicalResourceHelper.deleteMedicalResourcesByDataSources(
-                            new ArrayList<>(request.getDataSourceIds()), appInfoRestriction);
                     tryAndReturnResult(callback, logger);
                 },
                 logger,
