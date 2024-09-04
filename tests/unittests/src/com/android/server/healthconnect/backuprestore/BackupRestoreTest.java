@@ -80,6 +80,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.FakePreferenceHelper;
+import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.GrantTimeXmlHelper;
@@ -155,6 +156,7 @@ public class BackupRestoreTest {
         when(mServiceContext.getSystemService(JobScheduler.class)).thenReturn(mJobScheduler);
         when(mServiceContext.getPackageName()).thenReturn("packageName");
 
+        HealthConnectDeviceConfigManager.initializeInstance(mContext);
         mBackupRestore =
                 new BackupRestore(mFirstGrantTimeManager, mMigrationStateManager, mServiceContext);
     }
@@ -297,7 +299,6 @@ public class BackupRestoreTest {
         JobInfo jobInfo = mJobInfoArgumentCaptor.getValue();
         assertThat(jobInfo.getExtras().getString(EXTRA_JOB_NAME_KEY))
                 .isEqualTo(DATA_STAGING_TIMEOUT_KEY);
-
     }
 
     @Test
@@ -659,8 +660,7 @@ public class BackupRestoreTest {
     public void testCancelAllJobs_cancelsAllJobs() {
         mBackupRestore.cancelAllJobs();
         ExtendedMockito.verify(
-                () ->
-                        BackupRestore.BackupRestoreJobService.cancelAllJobs(eq(mServiceContext)));
+                () -> BackupRestore.BackupRestoreJobService.cancelAllJobs(eq(mServiceContext)));
     }
 
     @Test
@@ -678,8 +678,7 @@ public class BackupRestoreTest {
                 .isEqualTo(String.valueOf(DATA_DOWNLOAD_FAILED));
         assertThat(mFakePreferenceHelper.getPreference(DATA_RESTORE_ERROR_KEY))
                 .isEqualTo(String.valueOf(RESTORE_ERROR_FETCHING_DATA));
-        assertThat(mFakePreferenceHelper.getPreference(DATA_DOWNLOAD_TIMEOUT_KEY))
-                .isEqualTo("");
+        assertThat(mFakePreferenceHelper.getPreference(DATA_DOWNLOAD_TIMEOUT_KEY)).isEqualTo("");
         assertThat(mFakePreferenceHelper.getPreference(DATA_DOWNLOAD_TIMEOUT_CANCELLED_KEY))
                 .isEqualTo("");
     }
@@ -699,8 +698,7 @@ public class BackupRestoreTest {
                 .isEqualTo(String.valueOf(DATA_DOWNLOAD_FAILED));
         assertThat(mFakePreferenceHelper.getPreference(DATA_RESTORE_ERROR_KEY))
                 .isEqualTo(String.valueOf(RESTORE_ERROR_FETCHING_DATA));
-        assertThat(mFakePreferenceHelper.getPreference(DATA_DOWNLOAD_TIMEOUT_KEY))
-                .isEqualTo("");
+        assertThat(mFakePreferenceHelper.getPreference(DATA_DOWNLOAD_TIMEOUT_KEY)).isEqualTo("");
         assertThat(mFakePreferenceHelper.getPreference(DATA_DOWNLOAD_TIMEOUT_CANCELLED_KEY))
                 .isEqualTo("");
     }
@@ -720,8 +718,7 @@ public class BackupRestoreTest {
                 .isEqualTo(String.valueOf(INTERNAL_RESTORE_STATE_MERGING_DONE));
         assertThat(mFakePreferenceHelper.getPreference(DATA_RESTORE_ERROR_KEY))
                 .isEqualTo(String.valueOf(RESTORE_ERROR_UNKNOWN));
-        assertThat(mFakePreferenceHelper.getPreference(DATA_STAGING_TIMEOUT_KEY))
-                .isEqualTo("");
+        assertThat(mFakePreferenceHelper.getPreference(DATA_STAGING_TIMEOUT_KEY)).isEqualTo("");
         assertThat(mFakePreferenceHelper.getPreference(DATA_STAGING_TIMEOUT_CANCELLED_KEY))
                 .isEqualTo("");
     }
@@ -741,8 +738,7 @@ public class BackupRestoreTest {
                 .isEqualTo(String.valueOf(INTERNAL_RESTORE_STATE_MERGING_DONE));
         assertThat(mFakePreferenceHelper.getPreference(DATA_RESTORE_ERROR_KEY))
                 .isEqualTo(String.valueOf(RESTORE_ERROR_UNKNOWN));
-        assertThat(mFakePreferenceHelper.getPreference(DATA_STAGING_TIMEOUT_KEY))
-                .isEqualTo("");
+        assertThat(mFakePreferenceHelper.getPreference(DATA_STAGING_TIMEOUT_KEY)).isEqualTo("");
         assertThat(mFakePreferenceHelper.getPreference(DATA_STAGING_TIMEOUT_CANCELLED_KEY))
                 .isEqualTo("");
     }
@@ -762,8 +758,7 @@ public class BackupRestoreTest {
                 .isEqualTo(String.valueOf(INTERNAL_RESTORE_STATE_MERGING_DONE));
         assertThat(mFakePreferenceHelper.getPreference(DATA_RESTORE_ERROR_KEY))
                 .isEqualTo(String.valueOf(RESTORE_ERROR_UNKNOWN));
-        assertThat(mFakePreferenceHelper.getPreference(DATA_MERGING_TIMEOUT_KEY))
-                .isEqualTo("");
+        assertThat(mFakePreferenceHelper.getPreference(DATA_MERGING_TIMEOUT_KEY)).isEqualTo("");
         assertThat(mFakePreferenceHelper.getPreference(DATA_MERGING_TIMEOUT_CANCELLED_KEY))
                 .isEqualTo("");
     }
@@ -892,8 +887,7 @@ public class BackupRestoreTest {
     @Test
     public void testShouldAttemptMerging_whenInMergingDone_returnsFalse() {
         mFakePreferenceHelper.insertOrReplacePreference(
-                DATA_RESTORE_STATE_KEY,
-                String.valueOf(INTERNAL_RESTORE_STATE_MERGING_DONE));
+                DATA_RESTORE_STATE_KEY, String.valueOf(INTERNAL_RESTORE_STATE_MERGING_DONE));
 
         boolean result = mBackupRestore.shouldAttemptMerging();
         assertThat(result).isFalse();

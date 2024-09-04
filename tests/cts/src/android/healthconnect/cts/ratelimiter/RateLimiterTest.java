@@ -20,7 +20,6 @@ import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.healthconnect.cts.utils.DataFactory.buildDevice;
 import static android.healthconnect.cts.utils.DataFactory.getCompleteStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getUpdatedStepsRecord;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.utils.PhrDataFactory.getUpsertMedicalResourceRequest;
@@ -324,25 +323,23 @@ public class RateLimiterTest {
         float quotaAcquired = acquireCallQuotaForWrite();
         HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
         HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        CreateMedicalDataSourceRequest.Builder request =
-                PhrDataFactory.getCreateMedicalDataSourceRequestBuilder();
         int count = 0;
 
         while (quotaAcquired > 1) {
             count++;
             // Append request count to the fhir base uri to avoid duplicates.
-            request.setFhirBaseUri(DATA_SOURCE_FHIR_BASE_URI + count);
-            manager.createMedicalDataSource(
-                    request.build(), Executors.newSingleThreadExecutor(), receiver);
+            CreateMedicalDataSourceRequest request =
+                    PhrDataFactory.getCreateMedicalDataSourceRequest(String.valueOf(count));
+            manager.createMedicalDataSource(request, Executors.newSingleThreadExecutor(), receiver);
             receiver.verifyNoExceptionOrThrow();
             quotaAcquired--;
         }
         int tryWriteWithBuffer = 20;
         while (tryWriteWithBuffer > 0) {
             count++;
-            request.setFhirBaseUri(DATA_SOURCE_FHIR_BASE_URI + count);
-            manager.createMedicalDataSource(
-                    request.build(), Executors.newSingleThreadExecutor(), receiver);
+            CreateMedicalDataSourceRequest request =
+                    PhrDataFactory.getCreateMedicalDataSourceRequest(String.valueOf(count));
+            manager.createMedicalDataSource(request, Executors.newSingleThreadExecutor(), receiver);
             receiver.verifyNoExceptionOrThrow();
             tryWriteWithBuffer--;
         }

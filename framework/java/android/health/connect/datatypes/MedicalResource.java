@@ -26,6 +26,7 @@ import static java.util.Objects.requireNonNull;
 import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.annotation.NonNull;
+import android.health.connect.MedicalResourceId;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -51,6 +52,7 @@ public final class MedicalResource implements Parcelable {
     public @interface MedicalResourceType {}
 
     @MedicalResourceType private final int mType;
+    @NonNull private final MedicalResourceId mId;
     @NonNull private final String mDataSourceId;
     @NonNull private final FhirVersion mFhirVersion;
     @NonNull private final FhirResource mFhirResource;
@@ -76,6 +78,7 @@ public final class MedicalResource implements Parcelable {
         mDataSourceId = dataSourceId;
         mFhirVersion = fhirVersion;
         mFhirResource = fhirResource;
+        mId = new MedicalResourceId(dataSourceId, fhirResource.getType(), fhirResource.getId());
     }
 
     /**
@@ -92,6 +95,7 @@ public final class MedicalResource implements Parcelable {
         mFhirResource =
                 requireNonNull(
                         in.readParcelable(FhirResource.class.getClassLoader(), FhirResource.class));
+        mId = new MedicalResourceId(mDataSourceId, mFhirResource.getType(), mFhirResource.getId());
     }
 
     @NonNull
@@ -116,6 +120,12 @@ public final class MedicalResource implements Parcelable {
     @MedicalResourceType
     public int getType() {
         return mType;
+    }
+
+    /** Returns the ID of this {@link MedicalResource} as {@link MedicalResourceId}. */
+    @NonNull
+    public MedicalResourceId getId() {
+        return mId;
     }
 
     /** Returns The data source ID where the data comes from. */

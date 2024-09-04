@@ -42,6 +42,7 @@
     <attr name="nutritionCategoryIcon" format="reference"/>
     <attr name="sleepCategoryIcon" format="reference"/>
     <attr name="vitalsCategoryIcon" format="reference"/>
+    <attr name="wellnessCategoryIcon" format="reference"/>
 
     <!-- Permission types page -->
     <attr name="appPriorityIcon" format="reference"/>
