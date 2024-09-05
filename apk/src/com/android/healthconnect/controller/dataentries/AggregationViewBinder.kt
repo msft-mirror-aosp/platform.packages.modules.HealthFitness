@@ -19,14 +19,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedAggregation
-import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
+import com.android.healthconnect.controller.shared.recyclerview.SimpleViewBinder
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 
 @Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
-class AggregationViewBinder : ViewBinder<FormattedAggregation, View> {
+class AggregationViewBinder : SimpleViewBinder<FormattedAggregation, View> {
 
     private lateinit var logger: HealthConnectLogger
 

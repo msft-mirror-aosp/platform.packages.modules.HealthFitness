@@ -351,8 +351,13 @@
     <string name="next_export_text" msgid="6726252793571403846">"Ekspor selanjutnya segera dimulai"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Pencadangan dan pemulihan"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Ekspor terakhir: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for no_last_export_message (8138900854579872667) -->
+    <!-- no translation found for last_export_time_now (31498024135933750) -->
     <skip />
+    <!-- no translation found for last_export_time_minutes_ago (5279296486877765961) -->
+    <skip />
+    <!-- no translation found for last_export_time_hours_ago (3174986640795245343) -->
+    <skip />
+    <string name="no_last_export_message" msgid="8138900854579872667">"Ekspor terakhir: tidak ada"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Ekspor terjadwal"</string>
     <string name="import_data" msgid="404502315533233094">"Impor data"</string>
@@ -400,6 +405,18 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Buka"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Pilih file"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Kosongkan ruang penyimpanan"</string>
+    <!-- no translation found for export_notification_error_generic_error_title (7940091379629095465) -->
+    <skip />
+    <!-- no translation found for export_notification_error_more_space_needed_title (5089783781556500431) -->
+    <skip />
+    <!-- no translation found for export_notification_error_generic_error_body_text (4161925150551602640) -->
+    <skip />
+    <!-- no translation found for export_notification_error_more_space_needed_body_text (5519192430780383427) -->
+    <skip />
+    <!-- no translation found for export_notification_set_up_intent_button (1484836974815713693) -->
+    <skip />
+    <!-- no translation found for export_notification_free_up_space_intent_button (2902823222861202203) -->
+    <skip />
     <string name="export_back_button" msgid="3550795479165524982">"Kembali"</string>
     <string name="export_next_button" msgid="657930567137105172">"Berikutnya"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"Batal"</string>

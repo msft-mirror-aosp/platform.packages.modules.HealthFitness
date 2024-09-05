@@ -31,7 +31,8 @@ sealed class HealthPermission {
         private val medicalPermissions =
             setOf(
                 HealthPermissions.WRITE_MEDICAL_DATA,
-                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION)
+                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION,
+                HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE)
 
         fun fromPermissionString(permission: String): HealthPermission {
             return if (permission in additionalPermissions) {

@@ -131,6 +131,7 @@
         <item name="permissionGrantButtonList">@style/PermissionGrantButtonListMaterial3</item>
         <item name="permissionGrantButtonTop">@style/PermissionGrantButtonTop</item>
         <item name="permissionGrantButtonBottom">@style/PermissionGrantButtonBottom</item>
+        <item name="disabledSpinner">@style/Widget.HealthConnect.Button.DisabledButton</item>
 
         <!-- Dialogs -->
         <item name="alertDialogTheme">@style/Theme.HealthConnect.Dialog.Alert</item>
