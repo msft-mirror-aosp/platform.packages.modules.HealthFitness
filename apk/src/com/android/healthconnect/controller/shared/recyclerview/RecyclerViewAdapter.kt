@@ -15,7 +15,10 @@ package com.android.healthconnect.controller.shared.recyclerview
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
+import com.android.healthconnect.controller.data.entries.EntriesViewModel
+import com.android.healthconnect.controller.data.entries.FormattedEntry
 
 /**
  * {@link RecyclerView.Adapter} that handles binding objects of different classes to a corresponding
@@ -24,7 +27,8 @@ import androidx.recyclerview.widget.RecyclerView
 class RecyclerViewAdapter
 private constructor(
     private val itemClassToItemViewTypeMap: Map<Class<*>, Int>,
-    private val itemViewTypeToViewBinderMap: Map<Int, ViewBinder<*, out View>>
+    private val itemViewTypeToViewBinderMap: Map<Int, ViewBinder<*, out View>>,
+        private val entriesViewModel: EntriesViewModel
 ) : RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
 
     class Builder {
@@ -37,6 +41,7 @@ private constructor(
         private val itemClassToItemViewTypeMap: MutableMap<Class<*>, Int> = mutableMapOf()
         private val itemViewTypeToViewBinderMap: MutableMap<Int, ViewBinder<*, out View>> =
             mutableMapOf()
+        private lateinit var entriesViewModel : EntriesViewModel
 
         fun <T> setViewBinder(clazz: Class<T>, viewBinder: ViewBinder<T, out View>): Builder {
             itemClassToItemViewTypeMap[clazz] = nextItemType
@@ -45,15 +50,28 @@ private constructor(
             return this
         }
 
-        fun build() = RecyclerViewAdapter(itemClassToItemViewTypeMap, itemViewTypeToViewBinderMap)
+        fun setViewModel(viewModel: ViewModel): Builder{
+            entriesViewModel = viewModel as EntriesViewModel
+            return this
+        }
+
+        fun build() = RecyclerViewAdapter(itemClassToItemViewTypeMap, itemViewTypeToViewBinderMap, entriesViewModel)
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     private var data: List<Any> = emptyList()
+    private var isDeletionState = false
+    private var isChecked = false
+    private var deleteSet: Set<String> = emptySet()
 
     fun updateData(entries: List<Any>) {
         this.data = entries
+        notifyDataSetChanged()
+    }
+
+    fun showCheckBox(isDeletionState:Boolean){
+        this.isDeletionState = isDeletionState
         notifyDataSetChanged()
     }
 
@@ -67,7 +85,13 @@ private constructor(
             checkNotNull(itemViewTypeToViewBinderMap[getItemViewType(position)])
                 as ViewBinder<Any, View>
         val item = data[position]
-        viewBinder.bind(holder.itemView, item, position)
+        if (viewBinder is SimpleViewBinder) {
+            viewBinder.bind(holder.itemView, item, position)
+        } else if (viewBinder is DeletionViewBinder) {
+            this.deleteSet = entriesViewModel.setOfEntriesToBeDeleted.value.orEmpty()
+            isChecked = (item as FormattedEntry).uuid in deleteSet
+            viewBinder.bind(holder.itemView, item, position, isDeletionState, isChecked)
+        }
     }
 
     override fun getItemViewType(position: Int): Int {

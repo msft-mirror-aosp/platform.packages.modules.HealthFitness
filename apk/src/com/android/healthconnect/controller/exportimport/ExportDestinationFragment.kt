@@ -120,6 +120,7 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
                         providers.providers,
                         viewModel.selectedDocumentProvider.value,
                         viewModel.selectedDocumentProviderRoot.value,
+                        viewModel.selectedRootsForDocumentProviders,
                         documentProvidersList,
                         inflater,
                     ) { provider, root ->
