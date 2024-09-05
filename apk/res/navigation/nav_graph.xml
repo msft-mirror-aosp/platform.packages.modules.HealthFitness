@@ -96,7 +96,8 @@
 
     <activity
         android:id="@+id/exportSetupActivity"
-        android:name="com.android.healthconnect.controller.exportimport.ExportSetupActivity"/>
+        android:name="com.android.healthconnect.controller.exportimport.ExportSetupActivity"
+        app:action="android.health.connect.action.START_EXPORT_SETUP" />
 
     <activity
         android:id="@+id/importFlowActivity"

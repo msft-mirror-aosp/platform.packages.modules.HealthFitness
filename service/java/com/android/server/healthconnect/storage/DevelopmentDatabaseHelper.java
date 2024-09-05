@@ -21,6 +21,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.util.Pair;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
@@ -28,6 +29,9 @@ import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper;
+import com.android.server.healthconnect.storage.request.AlterTableRequest;
+
+import java.util.List;
 
 /**
  * Code to manage development features of the Health Connect database before they are ready for
@@ -39,7 +43,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceI
  *
  * @hide
  */
-public class DevelopmentDatabaseHelper {
+public final class DevelopmentDatabaseHelper {
     private static final String TAG = "HealthConnectDevDb";
 
     /**
@@ -75,7 +79,7 @@ public class DevelopmentDatabaseHelper {
         if (!Flags.developmentDatabase()) {
             // Use straight SQL to isolate development infrastructure from prod code.
             try {
-                dropTableIfExists(db, SETTINGS_TABLE_NAME);
+                dropDevelopmentSettingsTable(db);
             } catch (SQLException ex) {
                 // In the event of failure for a non development user, carry on silently.
                 // There is nothing that can be done.
@@ -99,7 +103,7 @@ public class DevelopmentDatabaseHelper {
     static void dropAndCreateDevelopmentSettingsTable(@NonNull SQLiteDatabase db, int version) {
         // We are now on a development device moving either from a prod version to a development
         // version, or between two development versions. Drop and recreate the relevant tables.
-        dropTableIfExists(db, SETTINGS_TABLE_NAME);
+        dropDevelopmentSettingsTable(db);
         db.execSQL(
                 "CREATE TABLE IF NOT EXISTS "
                         + SETTINGS_TABLE_NAME
@@ -107,6 +111,11 @@ public class DevelopmentDatabaseHelper {
         db.execSQL(
                 "INSERT INTO " + SETTINGS_TABLE_NAME + " (name,value) VALUES (?,?)",
                 new Object[] {VERSION_KEY, Integer.toString(version)});
+    }
+
+    @VisibleForTesting
+    static void dropDevelopmentSettingsTable(@NonNull SQLiteDatabase db) {
+        dropTableIfExists(db, SETTINGS_TABLE_NAME);
     }
 
     private static void phrForceUpdate(@NonNull SQLiteDatabase db) {
@@ -120,10 +129,25 @@ public class DevelopmentDatabaseHelper {
 
     private static void addPhrColumnsToAccessLogsTable(@NonNull SQLiteDatabase db) {
         // Alter the table to add new columns.
-        DatabaseUpgradeHelper.executeSqlStatements(
-                db,
-                AccessLogsHelper.getAlterTableRequestForPhrAccessLogs()
-                        .getAlterTableAddColumnsCommands());
+        // Adding columns is not idempotent. When this is moved to production, this code
+        // should be guarded by checking the existence of a PHR table.
+        // For now in development, just catch any SQLite exception, and ignore anything with
+        // duplicate column name
+        List<Pair<String, String>> columns = AccessLogsHelper.getPhrAccessLogsColumnInfo();
+        for (Pair<String, String> columnInfo : columns) {
+            try {
+                DatabaseUpgradeHelper.executeSqlStatements(
+                        db,
+                        new AlterTableRequest(AccessLogsHelper.TABLE_NAME, List.of(columnInfo))
+                                .getAlterTableAddColumnsCommands());
+            } catch (SQLException ex) {
+                String message = ex.getMessage();
+                // swallow any duplicate column exceptions.
+                if (message == null || !message.contains("duplicate column name")) {
+                    throw ex;
+                }
+            }
+        }
     }
 
     @VisibleForTesting

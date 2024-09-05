@@ -26,22 +26,19 @@ import android.widget.TextView
 import android.widget.TimePicker
 import com.android.healthconnect.testapps.toolbox.R
 import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.ZoneId
-import java.util.Calendar
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 @SuppressLint("ViewConstructor")
-class DateTimePicker(context: Context, fieldName: String, setPreviousDay: Boolean = false) :
+class DateTimePicker(context: Context, fieldName: String, setPreviousHour: Boolean = false) :
     InputFieldView(context) {
 
-    private val mCalendar: Calendar = Calendar.getInstance()
-    private var mSelectedYear: Int = mCalendar.get(Calendar.YEAR)
-    private var mSelectedMonth: Int = mCalendar.get(Calendar.MONTH) + 1
-    private var mSelectedDay: Int = mCalendar.get(Calendar.DATE) + (if (setPreviousDay) -1 else 0)
-    private var mSelectedHour = 0
-    private var mSelectedMinute = 0
+    private var localDateTime =
+        LocalDateTime.now(ZoneId.systemDefault())
+            .truncatedTo(ChronoUnit.HOURS)
+            .minusHours(if (setPreviousHour) 1 else 0)
 
     init {
         inflate(context, R.layout.date_time_picker, this)
@@ -67,13 +64,11 @@ class DateTimePicker(context: Context, fieldName: String, setPreviousDay: Boolea
     }
 
     private fun getDateString(): String {
-        return "$mSelectedDay/$mSelectedMonth/$mSelectedYear"
+        return localDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
     }
 
     private fun getTimeString(): String {
-        return (((if (mSelectedHour < 10) "0" else "") + mSelectedHour) +
-            (if (mSelectedMinute < 10) ":0" else ":") +
-            mSelectedMinute)
+        return localDateTime.toLocalTime().toString()
     }
 
     private fun showDatePicker(text: EditText) {
@@ -81,14 +76,14 @@ class DateTimePicker(context: Context, fieldName: String, setPreviousDay: Boolea
             DatePickerDialog(
                 context,
                 { _: DatePicker?, year: Int, month: Int, dayOfMonth: Int ->
-                    mSelectedYear = year
-                    mSelectedMonth = month + 1
-                    mSelectedDay = dayOfMonth
+                    localDateTime =
+                        localDateTime.withYear(year).withMonth(month + 1).withDayOfMonth(dayOfMonth)
                     text.setText(getDateString())
                 },
-                mSelectedYear,
-                mSelectedMonth - 1,
-                mSelectedDay)
+                localDateTime.year,
+                localDateTime.monthValue - 1,
+                localDateTime.dayOfMonth,
+            )
         picker.show()
     }
 
@@ -97,21 +92,18 @@ class DateTimePicker(context: Context, fieldName: String, setPreviousDay: Boolea
             TimePickerDialog(
                 context,
                 { _: TimePicker?, hourOfDay: Int, minute: Int ->
-                    mSelectedHour = hourOfDay
-                    mSelectedMinute = minute
+                    localDateTime = localDateTime.withHour(hourOfDay).withMinute(minute)
                     text.setText(getTimeString())
                 },
-                mSelectedHour,
-                mSelectedMinute,
-                true)
+                localDateTime.hour,
+                localDateTime.minute,
+                true,
+            )
         picker.show()
     }
 
     override fun getFieldValue(): Instant {
-        val systemZoneId: String = ZoneId.systemDefault().id
-        val localDate: LocalDate = LocalDate.of(mSelectedYear, mSelectedMonth, mSelectedDay)
-        val localTime: LocalTime = LocalTime.of(mSelectedHour, mSelectedMinute)
-        return LocalDateTime.of(localDate, localTime).atZone(ZoneId.of(systemZoneId)).toInstant()
+        return localDateTime.atZone(ZoneId.systemDefault()).toInstant()
     }
 
     override fun isEmpty(): Boolean {

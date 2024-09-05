@@ -67,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"ရာသီလာခြင်းမှတ်တမ်း"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"အာဟာရ"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"အာဟာရ"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"ကျန်းမာကြံ့ခိုင်ရေး"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"ကျန်းမာကြံ့ခိုင်ရေး"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"ဒေတာကြည့်ရှုခြင်း"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"ဒေတာစီမံခြင်း"</string>
     <string name="export_data_button" msgid="7783329820434117744">"ဒေတာထုတ်ယူရန်"</string>
@@ -349,6 +351,13 @@
     <string name="next_export_text" msgid="6726252793571403846">"နောက်ထပ်ထုတ်ယူမှု စတင်ပါတော့မည်"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"အရန်သိမ်းခြင်း၊ ပြန်ယူခြင်း"</string>
     <string name="last_export_time" msgid="9205875050823594041">"နောက်ဆုံးထုတ်ယူချိန်- <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <!-- no translation found for last_export_time_now (31498024135933750) -->
+    <skip />
+    <!-- no translation found for last_export_time_minutes_ago (5279296486877765961) -->
+    <skip />
+    <!-- no translation found for last_export_time_hours_ago (3174986640795245343) -->
+    <skip />
+    <string name="no_last_export_message" msgid="8138900854579872667">"နောက်ဆုံး ထုတ်ယူမှု- မရှိပါ"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"စီစဉ်ထားသည့် ထုတ်ယူခြင်း"</string>
     <string name="import_data" msgid="404502315533233094">"ဒေတာထည့်သွင်းရန်"</string>
@@ -383,8 +392,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"ထည့်သွင်းရန်"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect ပြန်ယူနေသည်"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect ပြန်ယူပြီးပြီ"</string>
-    <!-- no translation found for import_in_progress_toast_text (3363548588078895706) -->
-    <skip />
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"ပြန်ယူနေဆဲဖြစ်သည်"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"ဒေတာ ပြန်ယူပြီးပါပြီ"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect သည် ဒေတာကို ပြန်ယူ၍မရပါ"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"နောက်ထပ်နေရာလွတ် လိုသည်"</string>
@@ -397,6 +405,18 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"ဖွင့်ရန်"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"ဖိုင်ရွေးချယ်ရန်"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"နေရာလွတ်ပြုလုပ်ပါ"</string>
+    <!-- no translation found for export_notification_error_generic_error_title (7940091379629095465) -->
+    <skip />
+    <!-- no translation found for export_notification_error_more_space_needed_title (5089783781556500431) -->
+    <skip />
+    <!-- no translation found for export_notification_error_generic_error_body_text (4161925150551602640) -->
+    <skip />
+    <!-- no translation found for export_notification_error_more_space_needed_body_text (5519192430780383427) -->
+    <skip />
+    <!-- no translation found for export_notification_set_up_intent_button (1484836974815713693) -->
+    <skip />
+    <!-- no translation found for export_notification_free_up_space_intent_button (2902823222861202203) -->
+    <skip />
     <string name="export_back_button" msgid="3550795479165524982">"နောက်သို့"</string>
     <string name="export_next_button" msgid="657930567137105172">"ရှေ့သို့"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"မလုပ်တော့"</string>
@@ -654,6 +674,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"မှေးနေချိန်"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"နှစ်နှစ်ခြိုက်ခြိုက်အိပ်ချိန်"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"မသိပါ"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"အသက်ရှူခြင်း"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"တရားထိုင်ခြင်း"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"လှုပ်ရှားမှု"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"တေးဂီတ"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"အခြား"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"လမ်းမညွှန်"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g>m"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g>h <xliff:g id="MIN">%2$s</xliff:g>m"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g>h"</string>
