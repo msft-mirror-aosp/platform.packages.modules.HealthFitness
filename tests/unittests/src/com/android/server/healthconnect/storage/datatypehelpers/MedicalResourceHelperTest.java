@@ -54,7 +54,6 @@ import static com.android.server.healthconnect.storage.datatypehelpers.MedicalRe
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.MEDICAL_RESOURCE_TABLE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getCreateTableRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getPrimaryColumn;
-import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getReadRequestForDistinctResourceTypesFilterOnDataSourceIdsAndAppId;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getParentColumnReference;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getTableName;
@@ -77,6 +76,7 @@ import static org.junit.Assert.assertThrows;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesRequest;
@@ -117,6 +117,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -274,13 +275,13 @@ public class MedicalResourceHelperTest {
 
     @Test
     public void getReadTableRequest_distinctResourceTypesUsingAppIdAndDataSourceIds_correctQuery() {
-        List<String> dataSourceIds = List.of("a6194e35-698c-4706-918f-00bf959f123b");
+        List<UUID> dataSourceIds = List.of(UUID.fromString("a6194e35-698c-4706-918f-00bf959f123b"));
         long appId = 123L;
-        List<String> hexValues = StorageUtils.convertUuidStringsToHexStrings(dataSourceIds);
+        List<String> hexValues = StorageUtils.getListOfHexStrings(dataSourceIds);
 
         ReadTableRequest request =
-                getReadRequestForDistinctResourceTypesFilterOnDataSourceIdsAndAppId(
-                        dataSourceIds, appId);
+                MedicalResourceHelper.getFilteredReadRequestForDistinctResourceTypes(
+                        dataSourceIds, new HashSet<>(), appId);
 
         assertThat(request.getReadCommand())
                 .isEqualTo(
@@ -2255,15 +2256,8 @@ public class MedicalResourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
-    public void deleteMedicalResourcesByDataSources_noIds_succeeds() {
-        mMedicalResourceHelper.deleteMedicalResourcesByDataSourcesWithoutPermissionChecks(
-                List.of());
-    }
-
-    @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteMedicalResourcesByDataSources_singleDataSource_succeeds() {
-        // Create two datasources, with one resource each.
+        // Create two data sources, with one resource each.
         MedicalDataSource dataSource1 = insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 = insertMedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
         MedicalResource dataSource1Resource1 =
@@ -2276,8 +2270,10 @@ public class MedicalResourceHelperTest {
                 upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1.getId());
 
         // Delete all of the data for just the first datasource
-        mMedicalResourceHelper.deleteMedicalResourcesByDataSourcesWithoutPermissionChecks(
-                List.of(dataSource1.getId()));
+        mMedicalResourceHelper.deleteMedicalResourcesByRequestWithoutPermissionChecks(
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addDataSourceId(dataSource1.getId())
+                        .build());
 
         // Test that the data for data source 1 is gone, but 2 is still present
         assertThat(
@@ -2303,8 +2299,11 @@ public class MedicalResourceHelperTest {
         // Both created dataSources are from the same calling app.
         // So when the calling app deletes medicalResources from both those dataSources,
         // resourceTypes for both should be included in the accessLogs.
-        mMedicalResourceHelper.deleteMedicalResourcesByDataSourcesWithPermissionChecks(
-                List.of(dataSource1.getId(), dataSource2.getId()),
+        mMedicalResourceHelper.deleteMedicalResourcesByRequestWithPermissionChecks(
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addDataSourceId(dataSource1.getId())
+                        .addDataSourceId(dataSource2.getId())
+                        .build(),
                 /* callingPackageName= */ DATA_SOURCE_PACKAGE_NAME);
         List<AccessLog> accessLogs = sortByAccessTime(AccessLogsHelper.queryAccessLogs());
         AccessLog accessLog1 = accessLogs.get(0);
@@ -2343,7 +2342,41 @@ public class MedicalResourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
-    public void deleteByDataSources_expectAccessLogsWhenDataSourcesFromDifferentPackages() {
+    public void deleteMedicalResourcesByRequest_singleResourceType_succeeds() {
+        // Create two datasources, with one resource each.
+        MedicalDataSource dataSource1 = insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2 = insertMedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalResource immunizationResourceDataSource1 =
+                upsertResource(
+                        PhrDataFactory::createImmunizationMedicalResource, dataSource1.getId());
+        MedicalResource immunizationResourceDataSource2 =
+                upsertResource(
+                        PhrDataFactory::createImmunizationMedicalResource, dataSource2.getId());
+        MedicalResource allergyResource =
+                upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1.getId());
+
+        // Delete all of the data for just the first datasource
+        mMedicalResourceHelper.deleteMedicalResourcesByRequestWithoutPermissionChecks(
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .build());
+
+        // Test that the data for the immunizations are gone, but the allergy is still present
+        assertThat(
+                        mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
+                                List.of(
+                                        immunizationResourceDataSource1.getId(),
+                                        immunizationResourceDataSource2.getId())))
+                .hasSize(0);
+        assertThat(
+                        mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
+                                List.of(allergyResource.getId())))
+                .hasSize(1);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteByRequest_expectAccessLogsWhenDataSourcesFromDifferentPackages() {
         MedicalDataSource dataSource1 = insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 insertMedicalDataSource("ds2", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
@@ -2355,8 +2388,11 @@ public class MedicalResourceHelperTest {
         // only the resources belonging to the dataSource of the calling app will
         // be deleted. So accessLogs are added only for the deleted resourceTypes which would
         // be resourceTypes belonging to dataSource1.
-        mMedicalResourceHelper.deleteMedicalResourcesByDataSourcesWithPermissionChecks(
-                List.of(dataSource1.getId(), dataSource2.getId()),
+        mMedicalResourceHelper.deleteMedicalResourcesByRequestWithPermissionChecks(
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addDataSourceId(dataSource1.getId())
+                        .addDataSourceId(dataSource2.getId())
+                        .build(),
                 /* callingPackageName= */ DATA_SOURCE_PACKAGE_NAME);
         List<AccessLog> accessLogs = sortByAccessTime(AccessLogsHelper.queryAccessLogs());
         AccessLog accessLog1 = accessLogs.get(0);
@@ -2397,8 +2433,11 @@ public class MedicalResourceHelperTest {
                 insertMedicalDataSource("ds1", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
 
-        mMedicalResourceHelper.deleteMedicalResourcesByDataSourcesWithPermissionChecks(
-                List.of(dataSource1.getId()), /* callingPackageName= */ DATA_SOURCE_PACKAGE_NAME);
+        mMedicalResourceHelper.deleteMedicalResourcesByRequestWithPermissionChecks(
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addDataSourceId(dataSource1.getId())
+                        .build(),
+                /* callingPackageName= */ DATA_SOURCE_PACKAGE_NAME);
         List<AccessLog> accessLogs = sortByAccessTime(AccessLogsHelper.queryAccessLogs());
         AccessLog accessLog1 = accessLogs.get(0);
 
@@ -2419,8 +2458,10 @@ public class MedicalResourceHelperTest {
         MedicalDataSource dataSource1 = insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
 
-        mMedicalResourceHelper.deleteMedicalResourcesByDataSourcesWithoutPermissionChecks(
-                List.of(dataSource1.getId()));
+        mMedicalResourceHelper.deleteMedicalResourcesByRequestWithoutPermissionChecks(
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addDataSourceId(dataSource1.getId())
+                        .build());
         List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs();
         AccessLog accessLog1 = accessLogs.get(0);
 
@@ -2433,6 +2474,41 @@ public class MedicalResourceHelperTest {
         assertThat(accessLog1.getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
         assertThat(accessLog1.isMedicalDataSourceAccessed()).isFalse();
         assertThat(accessLog1.getAccessTime()).isNotNull();
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteMedicalResourcesByRequest_singleResourceTypeSingleDataSource_succeeds() {
+        // Create two datasources, with one resource each.
+        MedicalDataSource dataSource1 = insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2 = insertMedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalResource immunizationResourceDataSource1 =
+                upsertResource(
+                        PhrDataFactory::createImmunizationMedicalResource, dataSource1.getId());
+        MedicalResource immunizationResourceDataSource2 =
+                upsertResource(
+                        PhrDataFactory::createImmunizationMedicalResource, dataSource2.getId());
+        MedicalResource allergyResource =
+                upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1.getId());
+
+        // Delete all of the data for just the first datasource
+        mMedicalResourceHelper.deleteMedicalResourcesByRequestWithoutPermissionChecks(
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addDataSourceId(dataSource1.getId())
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .build());
+
+        // Test that the data for the immunizations are gone, but the allergy is still present
+        assertThat(
+                        mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
+                                List.of(immunizationResourceDataSource1.getId())))
+                .hasSize(0);
+        assertThat(
+                        mMedicalResourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
+                                List.of(
+                                        allergyResource.getId(),
+                                        immunizationResourceDataSource2.getId())))
+                .hasSize(2);
     }
 
     /**

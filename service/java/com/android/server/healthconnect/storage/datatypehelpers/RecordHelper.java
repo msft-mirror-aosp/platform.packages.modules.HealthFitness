@@ -584,11 +584,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         }
     }
 
-    /** Returns is the read of this record type is enabled */
-    public boolean isRecordOperationsEnabled() {
-        return true;
-    }
-
     /** Populate internalRecords fields using extraDataCursor */
     @SuppressWarnings("unchecked")
     public void updateInternalRecordsWithExtraFields(
@@ -871,9 +866,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
         return columnInfo;
     }
-
-    /** Checks that operation with current record type are supported. */
-    public void checkRecordOperationsAreEnabled(RecordInternal<?> recordInternal) {}
 
     /** Returns permissions required to read extra record data. */
     public List<String> getExtraReadPermissions() {

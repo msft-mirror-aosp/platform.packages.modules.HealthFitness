@@ -55,6 +55,7 @@ import java.nio.ByteBuffer;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -446,21 +447,31 @@ public final class StorageUtils {
         return ByteBuffer.wrap(bytes).getLong();
     }
 
+    /**
+     * Creates a list of UUIDs from a collection of the string representation of the UUIDs. Any ids
+     * which cannot be parsed as UUIDs are ignores. It is the responsibility of the caller to handle
+     * the case where a non-empty list becomes empty.
+     *
+     * @param ids the ids to parse
+     * @return a possibly empty list of UUIDs
+     */
+    public static List<UUID> toUuids(Collection<String> ids) {
+        return ids.stream()
+                .flatMap(
+                        id -> {
+                            try {
+                                return Stream.of(UUID.fromString(id));
+                            } catch (IllegalArgumentException ex) {
+                                return Stream.of();
+                            }
+                        })
+                .toList();
+    }
+
     /** Converts a list of {@link UUID} strings to a list of hex strings. */
     @NonNull
     public static List<String> convertUuidStringsToHexStrings(@NonNull List<String> ids) {
-        List<UUID> uuids =
-                ids.stream()
-                        .flatMap(
-                                id -> {
-                                    try {
-                                        return Stream.of(UUID.fromString(id));
-                                    } catch (IllegalArgumentException ex) {
-                                        return Stream.of();
-                                    }
-                                })
-                        .toList();
-        return StorageUtils.getListOfHexStrings(uuids);
+        return StorageUtils.getListOfHexStrings(toUuids(ids));
     }
 
     public static String getHexString(byte[] value) {

@@ -38,14 +38,17 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class PhrDataFactory {
-    public static final String DATA_SOURCE_ID = "123";
+    public static final UUID DATA_SOURCE_UUID = UUID.randomUUID();
+    public static final String DATA_SOURCE_ID = DATA_SOURCE_UUID.toString();
     public static final String DATA_SOURCE_PACKAGE_NAME = "com.example.app";
     public static final Uri DATA_SOURCE_FHIR_BASE_URI =
             Uri.parse("https://fhir.com/oauth/api/FHIR/R4/");
     public static final String DATA_SOURCE_DISPLAY_NAME = "Hospital X";
-    public static final String DIFFERENT_DATA_SOURCE_ID = "456";
+    public static final UUID DIFFERENT_DATA_SOURCE_UUID = UUID.randomUUID();
+    public static final String DIFFERENT_DATA_SOURCE_ID = DIFFERENT_DATA_SOURCE_UUID.toString();
     public static final String DIFFERENT_DATA_SOURCE_PACKAGE_NAME = "com.other.app";
     public static final Uri DIFFERENT_DATA_SOURCE_BASE_URI =
             Uri.parse("https://fhir.com/oauth/api/FHIR/R5/");

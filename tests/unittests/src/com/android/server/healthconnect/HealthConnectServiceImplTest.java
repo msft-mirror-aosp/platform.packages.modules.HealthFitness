@@ -34,6 +34,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_UUID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_PACKAGE_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
@@ -646,15 +647,14 @@ public class HealthConnectServiceImplTest {
             throws RemoteException {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_GRANTED);
-        List<String> ids = List.of(DATA_SOURCE_ID);
 
         mHealthConnectService.getMedicalDataSourcesByIds(
-                mAttributionSource, ids, mMedicalDataSourcesResponseCallback);
+                mAttributionSource, List.of(DATA_SOURCE_ID), mMedicalDataSourcesResponseCallback);
 
         verify(mMedicalDataSourcesResponseCallback, timeout(5000)).onResult(any());
         verify(mMedicalDataSourcesResponseCallback, never()).onError(any());
         verify(mMedicalDataSourceHelper, times(1))
-                .getMedicalDataSourcesByIdsWithoutPermissionChecks(eq(ids));
+                .getMedicalDataSourcesByIdsWithoutPermissionChecks(eq(List.of(DATA_SOURCE_UUID)));
     }
 
     @Test
@@ -678,16 +678,15 @@ public class HealthConnectServiceImplTest {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_DENIED);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
-        List<String> ids = List.of(DATA_SOURCE_ID);
 
         mHealthConnectService.getMedicalDataSourcesByIds(
-                mAttributionSource, ids, mMedicalDataSourcesResponseCallback);
+                mAttributionSource, List.of(DATA_SOURCE_ID), mMedicalDataSourcesResponseCallback);
 
         verify(mMedicalDataSourcesResponseCallback, timeout(5000)).onResult(any());
         verify(mMedicalDataSourcesResponseCallback, never()).onError(any());
         verify(mMedicalDataSourceHelper, times(1))
                 .getMedicalDataSourcesByIdsWithPermissionChecks(
-                        eq(ids),
+                        eq(List.of(DATA_SOURCE_UUID)),
                         /* GrantedReadMedicalResourceTypes= */ eq(Set.of()),
                         eq(mTestPackageName),
                         /* hasWritePermission= */ eq(true),
@@ -702,16 +701,15 @@ public class HealthConnectServiceImplTest {
         setDataManagementPermission(PERMISSION_DENIED);
         setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
-        List<String> ids = List.of(DATA_SOURCE_ID);
 
         mHealthConnectService.getMedicalDataSourcesByIds(
-                mAttributionSource, ids, mMedicalDataSourcesResponseCallback);
+                mAttributionSource, List.of(DATA_SOURCE_ID), mMedicalDataSourcesResponseCallback);
 
         verify(mMedicalDataSourcesResponseCallback, timeout(5000)).onResult(any());
         verify(mMedicalDataSourcesResponseCallback, never()).onError(any());
         verify(mMedicalDataSourceHelper, times(1))
                 .getMedicalDataSourcesByIdsWithPermissionChecks(
-                        eq(ids),
+                        eq(List.of(DATA_SOURCE_UUID)),
                         /* GrantedReadMedicalResourceTypes= */ eq(
                                 Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)),
                         eq(mTestPackageName),
@@ -725,16 +723,15 @@ public class HealthConnectServiceImplTest {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_DENIED);
         setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
-        List<String> ids = List.of(DATA_SOURCE_ID);
 
         mHealthConnectService.getMedicalDataSourcesByIds(
-                mAttributionSource, ids, mMedicalDataSourcesResponseCallback);
+                mAttributionSource, List.of(DATA_SOURCE_ID), mMedicalDataSourcesResponseCallback);
 
         verify(mMedicalDataSourcesResponseCallback, timeout(5000)).onResult(any());
         verify(mMedicalDataSourcesResponseCallback, never()).onError(any());
         verify(mMedicalDataSourceHelper, times(1))
                 .getMedicalDataSourcesByIdsWithPermissionChecks(
-                        eq(ids),
+                        eq(List.of(DATA_SOURCE_UUID)),
                         /* GrantedReadMedicalResourceTypes= */ eq(
                                 Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)),
                         eq(mTestPackageName),
@@ -750,16 +747,15 @@ public class HealthConnectServiceImplTest {
         setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(true);
-        List<String> ids = List.of(DATA_SOURCE_ID);
 
         mHealthConnectService.getMedicalDataSourcesByIds(
-                mAttributionSource, ids, mMedicalDataSourcesResponseCallback);
+                mAttributionSource, List.of(DATA_SOURCE_ID), mMedicalDataSourcesResponseCallback);
 
         verify(mMedicalDataSourcesResponseCallback, timeout(5000)).onResult(any());
         verify(mMedicalDataSourcesResponseCallback, never()).onError(any());
         verify(mMedicalDataSourceHelper, times(1))
                 .getMedicalDataSourcesByIdsWithPermissionChecks(
-                        eq(ids),
+                        eq(List.of(DATA_SOURCE_UUID)),
                         any(),
                         eq(mTestPackageName),
                         anyBoolean(),
@@ -775,16 +771,15 @@ public class HealthConnectServiceImplTest {
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
         when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(false);
-        List<String> ids = List.of(DATA_SOURCE_ID);
 
         mHealthConnectService.getMedicalDataSourcesByIds(
-                mAttributionSource, ids, mMedicalDataSourcesResponseCallback);
+                mAttributionSource, List.of(DATA_SOURCE_ID), mMedicalDataSourcesResponseCallback);
 
         verify(mMedicalDataSourcesResponseCallback, timeout(5000)).onResult(any());
         verify(mMedicalDataSourcesResponseCallback, never()).onError(any());
         verify(mMedicalDataSourceHelper, times(1))
                 .getMedicalDataSourcesByIdsWithPermissionChecks(
-                        eq(ids),
+                        eq(List.of(DATA_SOURCE_UUID)),
                         any(),
                         eq(mTestPackageName),
                         anyBoolean(),
@@ -801,16 +796,15 @@ public class HealthConnectServiceImplTest {
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
         when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(true);
         setBackendReadPermission(PERMISSION_DENIED);
-        List<String> ids = List.of(DATA_SOURCE_ID);
 
         mHealthConnectService.getMedicalDataSourcesByIds(
-                mAttributionSource, ids, mMedicalDataSourcesResponseCallback);
+                mAttributionSource, List.of(DATA_SOURCE_ID), mMedicalDataSourcesResponseCallback);
 
         verify(mMedicalDataSourcesResponseCallback, timeout(5000)).onResult(any());
         verify(mMedicalDataSourcesResponseCallback, never()).onError(any());
         verify(mMedicalDataSourceHelper, times(1))
                 .getMedicalDataSourcesByIdsWithPermissionChecks(
-                        eq(ids),
+                        eq(List.of(DATA_SOURCE_UUID)),
                         any(),
                         eq(mTestPackageName),
                         anyBoolean(),
@@ -828,16 +822,15 @@ public class HealthConnectServiceImplTest {
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
         when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(true);
         setBackendReadPermission(PERMISSION_GRANTED);
-        List<String> ids = List.of(DATA_SOURCE_ID);
 
         mHealthConnectService.getMedicalDataSourcesByIds(
-                mAttributionSource, ids, mMedicalDataSourcesResponseCallback);
+                mAttributionSource, List.of(DATA_SOURCE_ID), mMedicalDataSourcesResponseCallback);
 
         verify(mMedicalDataSourcesResponseCallback, timeout(5000)).onResult(any());
         verify(mMedicalDataSourcesResponseCallback, never()).onError(any());
         verify(mMedicalDataSourceHelper, times(1))
                 .getMedicalDataSourcesByIdsWithPermissionChecks(
-                        eq(ids),
+                        eq(List.of(DATA_SOURCE_UUID)),
                         any(),
                         eq(mTestPackageName),
                         anyBoolean(),
@@ -1626,10 +1619,10 @@ public class HealthConnectServiceImplTest {
     public void testDeleteMedicalDataSourceWithData_noPermission_fails() throws RemoteException {
         setDataManagementPermission(PERMISSION_DENIED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
-        String id = UUID.randomUUID().toString();
+        UUID id = UUID.randomUUID();
         MedicalDataSource datasource =
                 new MedicalDataSource.Builder(
-                                id,
+                                id.toString(),
                                 DATA_SOURCE_PACKAGE_NAME,
                                 DATA_SOURCE_FHIR_BASE_URI,
                                 DATA_SOURCE_DISPLAY_NAME)
@@ -1638,7 +1631,8 @@ public class HealthConnectServiceImplTest {
                         List.of(id)))
                 .thenReturn(List.of(datasource));
 
-        mHealthConnectService.deleteMedicalDataSourceWithData(mAttributionSource, id, callback);
+        mHealthConnectService.deleteMedicalDataSourceWithData(
+                mAttributionSource, id.toString(), callback);
 
         verify(callback, timeout(5000)).onError(mErrorCaptor.capture());
         HealthConnectException exception = mErrorCaptor.getValue().getHealthConnectException();
@@ -1652,10 +1646,10 @@ public class HealthConnectServiceImplTest {
         setDataManagementPermission(PERMISSION_DENIED);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
-        String id = UUID.randomUUID().toString();
+        UUID id = UUID.randomUUID();
         MedicalDataSource datasource =
                 new MedicalDataSource.Builder(
-                                id,
+                                id.toString(),
                                 DIFFERENT_DATA_SOURCE_PACKAGE_NAME,
                                 DATA_SOURCE_FHIR_BASE_URI,
                                 DATA_SOURCE_DISPLAY_NAME)
@@ -1667,7 +1661,8 @@ public class HealthConnectServiceImplTest {
                 .when(mMedicalDataSourceHelper)
                 .deleteMedicalDataSource(any(), any());
 
-        mHealthConnectService.deleteMedicalDataSourceWithData(mAttributionSource, id, callback);
+        mHealthConnectService.deleteMedicalDataSourceWithData(
+                mAttributionSource, id.toString(), callback);
 
         verify(callback, timeout(5000)).onError(mErrorCaptor.capture());
         verifyNoMoreInteractions(callback);
@@ -1681,10 +1676,10 @@ public class HealthConnectServiceImplTest {
     public void testDeleteMedicalDataSourceWithData_existingId_succeeds() throws RemoteException {
         setDataManagementPermission(PERMISSION_GRANTED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
-        String id = UUID.randomUUID().toString();
+        UUID id = UUID.randomUUID();
         MedicalDataSource datasource =
                 new MedicalDataSource.Builder(
-                                id,
+                                id.toString(),
                                 DATA_SOURCE_PACKAGE_NAME,
                                 DATA_SOURCE_FHIR_BASE_URI,
                                 DATA_SOURCE_DISPLAY_NAME)
@@ -1693,7 +1688,8 @@ public class HealthConnectServiceImplTest {
                         List.of(id)))
                 .thenReturn(List.of(datasource));
 
-        mHealthConnectService.deleteMedicalDataSourceWithData(mAttributionSource, id, callback);
+        mHealthConnectService.deleteMedicalDataSourceWithData(
+                mAttributionSource, id.toString(), callback);
 
         verify(callback, timeout(5000)).onResult();
         verifyNoMoreInteractions(callback);
@@ -1792,7 +1788,9 @@ public class HealthConnectServiceImplTest {
     public void testDeleteMedicalResourcesByRequest_flagOff_throws() throws Exception {
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
         DeleteMedicalResourcesRequest request =
-                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addDataSourceId(UUID.randomUUID().toString())
+                        .build();
 
         mHealthConnectService.deleteMedicalResourcesByRequest(
                 mAttributionSource, request, callback);
@@ -1808,8 +1806,11 @@ public class HealthConnectServiceImplTest {
             throws RemoteException {
         setDataManagementPermission(PERMISSION_DENIED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
+
         DeleteMedicalResourcesRequest request =
-                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addDataSourceId(UUID.randomUUID().toString())
+                        .build();
 
         mHealthConnectService.deleteMedicalResourcesByRequest(
                 mAttributionSource, request, callback);
@@ -1831,7 +1832,9 @@ public class HealthConnectServiceImplTest {
                 .thenReturn(PermissionManager.PERMISSION_GRANTED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
         DeleteMedicalResourcesRequest request =
-                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addDataSourceId(UUID.randomUUID().toString())
+                        .build();
 
         mHealthConnectService.deleteMedicalResourcesByRequest(
                 mAttributionSource, request, callback);
@@ -1847,7 +1850,27 @@ public class HealthConnectServiceImplTest {
         setDataManagementPermission(PERMISSION_GRANTED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
         DeleteMedicalResourcesRequest request =
-                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addDataSourceId(UUID.randomUUID().toString())
+                        .build();
+
+        mHealthConnectService.deleteMedicalResourcesByRequest(
+                mAttributionSource, request, callback);
+
+        verify(callback, timeout(5000).times(1)).onResult();
+        verifyNoMoreInteractions(callback);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testDeleteMedicalResourcesByRequest_requestWithFhirType_success()
+            throws RemoteException {
+        setDataManagementPermission(PERMISSION_GRANTED);
+        IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
+        DeleteMedicalResourcesRequest request =
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .build();
 
         mHealthConnectService.deleteMedicalResourcesByRequest(
                 mAttributionSource, request, callback);

@@ -142,7 +142,7 @@ class BackupAndRestoreSettingsFragmentTest {
     @BindValue val timeSource = TestTimeSource
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
     @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
-    val fakeDeviceInfoUtils = deviceInfoUtils as FakeDeviceInfoUtils
+    private val fakeDeviceInfoUtils = deviceInfoUtils as FakeDeviceInfoUtils
 
     private var previousDefaultTimeZone: TimeZone? = null
     private var previousLocale: Locale? = null

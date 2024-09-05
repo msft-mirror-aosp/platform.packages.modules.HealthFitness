@@ -182,9 +182,6 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
     }
 
     private fun getDefaultFileName(): String {
-        return getString(R.string.export_default_file_name) +
-            "_" +
-            timeSource.currentLocalDateTime().toLocalDate() +
-            ".zip"
+        return getString(R.string.export_default_file_name) + ".zip"
     }
 }

@@ -112,7 +112,7 @@ class ExportDestinationFragmentTest {
         private val DOWNLOADS_DOCUMENT_URI =
             Uri.parse("content://com.android.providers.downloads.documents/document")
 
-        private const val DEFAULT_FILE_NAME = "Health Connect_2022-10-20.zip"
+        private const val DEFAULT_FILE_NAME = "Health Connect.zip"
     }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
