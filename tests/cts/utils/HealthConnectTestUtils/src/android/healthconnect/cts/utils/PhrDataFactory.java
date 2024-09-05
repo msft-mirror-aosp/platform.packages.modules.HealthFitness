@@ -16,11 +16,11 @@
 
 package android.healthconnect.cts.utils;
 
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
-import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
@@ -30,6 +30,7 @@ import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
+import android.net.Uri;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,16 +38,20 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class PhrDataFactory {
-    public static final String DATA_SOURCE_ID = "123";
+    public static final UUID DATA_SOURCE_UUID = UUID.randomUUID();
+    public static final String DATA_SOURCE_ID = DATA_SOURCE_UUID.toString();
     public static final String DATA_SOURCE_PACKAGE_NAME = "com.example.app";
-    public static final String DATA_SOURCE_FHIR_BASE_URI = "https://fhir.com/oauth/api/FHIR/R4/";
+    public static final Uri DATA_SOURCE_FHIR_BASE_URI =
+            Uri.parse("https://fhir.com/oauth/api/FHIR/R4/");
     public static final String DATA_SOURCE_DISPLAY_NAME = "Hospital X";
-    public static final String DIFFERENT_DATA_SOURCE_ID = "456";
+    public static final UUID DIFFERENT_DATA_SOURCE_UUID = UUID.randomUUID();
+    public static final String DIFFERENT_DATA_SOURCE_ID = DIFFERENT_DATA_SOURCE_UUID.toString();
     public static final String DIFFERENT_DATA_SOURCE_PACKAGE_NAME = "com.other.app";
-    public static final String DIFFERENT_DATA_SOURCE_BASE_URI =
-            "https://fhir.com/oauth/api/FHIR/R5/";
+    public static final Uri DIFFERENT_DATA_SOURCE_BASE_URI =
+            Uri.parse("https://fhir.com/oauth/api/FHIR/R5/");
     public static final String DIFFERENT_DATA_SOURCE_DISPLAY_NAME = "Doctor Y";
 
     public static final String FHIR_DATA_IMMUNIZATION =
@@ -140,8 +145,9 @@ public class PhrDataFactory {
      */
     public static CreateMedicalDataSourceRequest.Builder getCreateMedicalDataSourceRequestBuilder(
             String suffix) {
+        Uri fhirBaseUri = Uri.withAppendedPath(DATA_SOURCE_FHIR_BASE_URI, "/" + suffix);
         return new CreateMedicalDataSourceRequest.Builder(
-                DATA_SOURCE_FHIR_BASE_URI + "/" + suffix, DATA_SOURCE_DISPLAY_NAME + " " + suffix);
+                fhirBaseUri, DATA_SOURCE_DISPLAY_NAME + " " + suffix);
     }
 
     /** Creates and returns a {@link CreateMedicalDataSourceRequest} with default arguments. */
@@ -197,7 +203,7 @@ public class PhrDataFactory {
      */
     public static FhirResource getUpdatedAllergyFhirResource() throws JSONException {
         return new FhirResource.Builder(
-                        FHIR_RESOURCE_TYPE_UNKNOWN,
+                        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
                         FHIR_RESOURCE_ID_ALLERGY,
                         addCompletedStatus(FHIR_DATA_ALLERGY))
                 .build();
@@ -215,15 +221,12 @@ public class PhrDataFactory {
                 .build();
     }
 
-    /**
-     * Creates and returns a {@link FhirResource} with Allergy data.
-     *
-     * <p>{@code FHIR_RESOURCE_TYPE_UNKNOWN} is used here before we create a FHIR resource type for
-     * Allergy.
-     */
+    /** Creates and returns a {@link FhirResource} with Allergy data. */
     public static FhirResource getFhirResourceAllergy() {
         return new FhirResource.Builder(
-                        FHIR_RESOURCE_TYPE_UNKNOWN, FHIR_RESOURCE_ID_ALLERGY, FHIR_DATA_ALLERGY)
+                        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                        FHIR_RESOURCE_ID_ALLERGY,
+                        FHIR_DATA_ALLERGY)
                 .build();
     }
 
@@ -279,11 +282,11 @@ public class PhrDataFactory {
 
     /**
      * Creates and returns a {@link MedicalResource} of type {@link
-     * MedicalResource#MEDICAL_RESOURCE_TYPE_UNKNOWN} with the given {@code dataSource}.
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE} with the given {@code dataSource}.
      */
     public static MedicalResource createAllergyMedicalResource(String dataSource) {
         return new MedicalResource.Builder(
-                        MEDICAL_RESOURCE_TYPE_UNKNOWN,
+                        MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
                         dataSource,
                         FHIR_VERSION_R4,
                         getFhirResourceAllergy())
@@ -364,11 +367,13 @@ public class PhrDataFactory {
         for (int i = 0; i < numOfResources; i++) {
             FhirResource fhirResource =
                     new FhirResource.Builder(
-                                    FHIR_RESOURCE_TYPE_UNKNOWN, "id/" + i, FHIR_DATA_ALLERGY)
+                                    FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                                    "id/" + i,
+                                    FHIR_DATA_ALLERGY)
                             .build();
             MedicalResource medicalResource =
                     new MedicalResource.Builder(
-                                    MEDICAL_RESOURCE_TYPE_UNKNOWN,
+                                    MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
                                     dataSourceId,
                                     fhirVersion,
                                     fhirResource)
