@@ -76,10 +76,23 @@ public final class ScheduledExportStatus implements Parcelable {
      */
     public static final int DATA_EXPORT_STARTED = 3;
 
+    /**
+     * Indicates that the last export failed while trying to clear the log tables. Probably because
+     * the file was corrupted during the copy, and it was not a valid HealthConnectDatabase anymore.
+     *
+     * @hide
+     */
+    public static final int DATA_EXPORT_ERROR_CLEARING_LOG_TABLES = 4;
+
     /** @hide */
     // TODO(b/356393172) rename to Status & include DATA_EXPORT_STARTED during Statuses cleanup.
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({DATA_EXPORT_ERROR_UNKNOWN, DATA_EXPORT_ERROR_NONE, DATA_EXPORT_LOST_FILE_ACCESS})
+    @IntDef({
+        DATA_EXPORT_ERROR_UNKNOWN,
+        DATA_EXPORT_ERROR_NONE,
+        DATA_EXPORT_LOST_FILE_ACCESS,
+        DATA_EXPORT_ERROR_CLEARING_LOG_TABLES
+    })
     public @interface DataExportError {}
 
     @Nullable private final Instant mLastSuccessfulExportTime;

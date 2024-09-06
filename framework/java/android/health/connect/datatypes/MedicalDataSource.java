@@ -16,6 +16,7 @@
 
 package android.health.connect.datatypes;
 
+
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import static java.util.Objects.hash;
@@ -27,6 +28,10 @@ import android.annotation.Nullable;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Captures the data source information of medical data. All {@link MedicalResource}s are associated
@@ -122,6 +127,27 @@ public final class MedicalDataSource implements Parcelable {
         dest.writeString(mPackageName);
         dest.writeParcelable(mFhirBaseUri, 0);
         dest.writeString(mDisplayName);
+    }
+
+    /**
+     * Validates all of the provided {@code ids} are valid.
+     *
+     * <p>Throws {@link IllegalArgumentException} with all invalid IDs if not.
+     *
+     * @hide
+     */
+    public static void validateMedicalDataSourceIds(@NonNull Set<String> ids) {
+        Set<String> invalidIds = new HashSet<>();
+        for (String id : ids) {
+            try {
+                UUID.fromString(id);
+            } catch (IllegalArgumentException e) {
+                invalidIds.add(id);
+            }
+        }
+        if (!invalidIds.isEmpty()) {
+            throw new IllegalArgumentException("Invalid data source ID(s): " + invalidIds);
+        }
     }
 
     /** Indicates whether some other object is "equal to" this one. */
