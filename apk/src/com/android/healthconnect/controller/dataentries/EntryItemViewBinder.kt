@@ -20,6 +20,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedDataEntry
+import com.android.healthconnect.controller.shared.recyclerview.SimpleViewBinder
 import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -29,7 +30,7 @@ import dagger.hilt.android.EntryPointAccessors
 @Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 /** ViewBinder for FormattedDataEntry. */
 class EntryItemViewBinder(private val onDeleteEntryListener: OnDeleteEntryListener) :
-    ViewBinder<FormattedDataEntry, View> {
+    SimpleViewBinder<FormattedDataEntry, View> {
 
     private lateinit var logger: HealthConnectLogger
 

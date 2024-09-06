@@ -34,7 +34,7 @@ import java.util.Objects;
  *
  * @hide
  */
-public class HealthConnectInjectorImpl implements HealthConnectInjector {
+public class HealthConnectInjectorImpl extends HealthConnectInjector {
 
     private final PackageInfoUtils mPackageInfoUtils;
     private final TransactionManager mTransactionManager;

@@ -16,6 +16,7 @@
 
 package android.healthconnect.internal.datatypes.utils;
 
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 
@@ -47,6 +48,17 @@ public class MedicalResourceTypePermissionMapperTest {
                         MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
 
         assertThat(readPermission).isEqualTo(HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalReadPermissionForResourceType_allergyType_returns() {
+        String readPermission =
+                MedicalResourceTypePermissionMapper.getMedicalReadPermission(
+                        MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
+
+        assertThat(readPermission)
+                .isEqualTo(HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE);
     }
 
     @Test
@@ -85,7 +97,7 @@ public class MedicalResourceTypePermissionMapperTest {
                         .collect(Collectors.toSet());
 
         assertThat(medicalResourceTypes.size()).isEqualTo(medicalReadPermissions.size());
-        assertThat(medicalResourceTypes.size()).isEqualTo(1);
+        assertThat(medicalResourceTypes.size()).isEqualTo(2);
     }
 
     @Test

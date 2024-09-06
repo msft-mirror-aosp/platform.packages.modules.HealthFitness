@@ -120,8 +120,10 @@ public final class SqlJoin {
         return this;
     }
 
-    public void setSecondTableWhereClause(WhereClauses whereClause) {
+    /** Sets the {@link WhereClauses} for the second table and returns this {@link SqlJoin}. */
+    public SqlJoin setSecondTableWhereClause(WhereClauses whereClause) {
         mTableToJoinWhereClause = whereClause;
+        return this;
     }
 
     private String getJoinCommand(boolean withInnerQuery) {
