@@ -16,8 +16,8 @@
 
 package android.healthconnect.cts.datatypes;
 
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
@@ -79,13 +79,13 @@ public class MedicalResourceTest {
         FhirResource differentFhirResource = getFhirResourceAllergy();
         MedicalResource resource =
                 getMedicalResourceBuilder()
-                        .setType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
+                        .setType(MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE)
                         .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .setFhirVersion(differentFhirVersion)
                         .setFhirResource(differentFhirResource)
                         .build();
 
-        assertThat(resource.getType()).isEqualTo(MEDICAL_RESOURCE_TYPE_UNKNOWN);
+        assertThat(resource.getType()).isEqualTo(MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
         assertThat(resource.getDataSourceId()).isEqualTo(DIFFERENT_DATA_SOURCE_ID);
         assertThat(resource.getFhirVersion()).isEqualTo(differentFhirVersion);
         assertThat(resource.getFhirResource()).isEqualTo(differentFhirResource);
@@ -149,7 +149,7 @@ public class MedicalResourceTest {
         MedicalResource resource = getMedicalResource();
         MedicalResource resourceDifferentType =
                 new MedicalResource.Builder(resource)
-                        .setType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
+                        .setType(MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE)
                         .build();
         MedicalResource resourceDifferentDataSourceId =
                 new MedicalResource.Builder(resource)

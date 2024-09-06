@@ -16,7 +16,10 @@
 
 package com.android.server.healthconnect.injector;
 
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -27,20 +30,48 @@ import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCatego
  *
  * @hide
  */
-public interface HealthConnectInjector {
+public abstract class HealthConnectInjector {
+
+    @Nullable private static HealthConnectInjector sHealthConnectInjector;
 
     /** Getter for PackageInfoUtils instance initialised by the Health Connect Injector. */
     @NonNull
-    PackageInfoUtils getPackageInfoUtils();
+    public abstract PackageInfoUtils getPackageInfoUtils();
 
     /** Getter for TransactionManager instance initialised by the Health Connect Injector. */
     @NonNull
-    TransactionManager getTransactionManager();
+    public abstract TransactionManager getTransactionManager();
 
     /**
      * Getter for HealthDataCategoryPriorityHelper instance initialised by the Health Connect
      * Injector.
      */
     @NonNull
-    HealthDataCategoryPriorityHelper getHealthDataCategoryPriorityHelper();
+    public abstract HealthDataCategoryPriorityHelper getHealthDataCategoryPriorityHelper();
+
+    /** Used to initialize the Injector. */
+    public static void setInstance(HealthConnectInjector healthConnectInjector) {
+        if (sHealthConnectInjector != null) {
+            throw new IllegalStateException(
+                    "An instance of injector has already been initialized.");
+        }
+        sHealthConnectInjector = healthConnectInjector;
+    }
+
+    /**
+     * Used to getInstance of the Injector so that it can be used statically by other base services.
+     */
+    public static HealthConnectInjector getInstance() {
+        if (sHealthConnectInjector == null) {
+            throw new IllegalStateException(
+                    "Please initialize an instance of injector and call setInstance.");
+        }
+        return sHealthConnectInjector;
+    }
+
+    /** Used to reset instance of the Injector for testing. */
+    @VisibleForTesting
+    public static void resetInstanceForTest() {
+        sHealthConnectInjector = null;
+    }
 }

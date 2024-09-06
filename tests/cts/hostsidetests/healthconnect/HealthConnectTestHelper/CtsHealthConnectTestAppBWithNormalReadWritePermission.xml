@@ -20,6 +20,9 @@
           android:versionCode="1"
           android:versionName="1.0">
 
+    <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_HISTORY" />
+    <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"/>
+
     <uses-permission android:name="android.permission-group.HEALTH"/>
     <uses-permission android:name="android.permission.health.WRITE_STEPS"/>
     <uses-permission android:name="android.permission.health.WRITE_HEART_RATE"/>
@@ -58,6 +61,7 @@
     <uses-permission android:name="android.permission.health.WRITE_SKIN_TEMPERATURE"/>
     <uses-permission android:name="android.permission.health.WRITE_NUTRITION"/>
     <uses-permission android:name="android.permission.health.WRITE_TOTAL_CALORIES_BURNED"/>
+    <uses-permission android:name="android.permission.health.WRITE_MINDFULNESS"/>
 
     <uses-permission android:name="android.permission.health.READ_STEPS"/>
     <uses-permission android:name="android.permission.health.READ_HEART_RATE"/>
@@ -96,6 +100,7 @@
     <uses-permission android:name="android.permission.health.READ_SKIN_TEMPERATURE"/>
     <uses-permission android:name="android.permission.health.READ_NUTRITION"/>
     <uses-permission android:name="android.permission.health.READ_TOTAL_CALORIES_BURNED"/>
+    <uses-permission android:name="android.permission.health.READ_MINDFULNESS"/>
 
 
     <application android:label="CtsHealthConnectTestAppBWithNormalReadWritePermission">
