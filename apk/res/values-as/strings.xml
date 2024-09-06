@@ -273,6 +273,12 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"প্ৰতিষেধক"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"প্ৰতিষেধক"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"প্ৰতিষেধক প্ৰদান সম্পৰ্কীয় তথ্য পঢ়ক"</string>
+    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
+    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"চিন্তাশীল"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"চিন্তাশীল"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"চিন্তাশীল ছেশ্বনৰ ডেটা পঢ়ক"</string>
@@ -351,12 +357,9 @@
     <string name="next_export_text" msgid="6726252793571403846">"পৰৱৰ্তী ৰপ্তানি সোনকালেই আৰম্ভ হ’ব"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"বেকআপ লওক আৰু পুনঃস্থাপন কৰক"</string>
     <string name="last_export_time" msgid="9205875050823594041">"অন্তিম ৰপ্তানি: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for last_export_time_now (31498024135933750) -->
-    <skip />
-    <!-- no translation found for last_export_time_minutes_ago (5279296486877765961) -->
-    <skip />
-    <!-- no translation found for last_export_time_hours_ago (3174986640795245343) -->
-    <skip />
+    <string name="last_export_time_now" msgid="31498024135933750">"অন্তিম ৰপ্তানি: এতিয়া"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{শেষবাৰ ৰপ্তানি কৰা সময়: ১ মিনিট পূৰ্বে}one{শেষবাৰ ৰপ্তানি কৰা সময়: # মিনিট পূৰ্বে}other{শেষবাৰ ৰপ্তানি কৰা সময়: # মিনিট পূৰ্বে}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{শেষবাৰ ৰপ্তানি কৰা সময়: ১ ঘণ্টা পূৰ্বে}one{শেষবাৰ ৰপ্তানি কৰা সময়: # ঘণ্টা পূৰ্বে}other{শেষবাৰ ৰপ্তানি কৰা সময়: # ঘণ্টা পূৰ্বে}}"</string>
     <string name="no_last_export_message" msgid="8138900854579872667">"অন্তিম ৰপ্তানি: নাই"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"সময়সূচী নিৰ্ধাৰিত ৰপ্তানি"</string>
@@ -405,18 +408,12 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"খোলক"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"ফাইল বাছনি কৰক"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"ঠাই খালী কৰক"</string>
-    <!-- no translation found for export_notification_error_generic_error_title (7940091379629095465) -->
-    <skip />
-    <!-- no translation found for export_notification_error_more_space_needed_title (5089783781556500431) -->
-    <skip />
-    <!-- no translation found for export_notification_error_generic_error_body_text (4161925150551602640) -->
-    <skip />
-    <!-- no translation found for export_notification_error_more_space_needed_body_text (5519192430780383427) -->
-    <skip />
-    <!-- no translation found for export_notification_set_up_intent_button (1484836974815713693) -->
-    <skip />
-    <!-- no translation found for export_notification_free_up_space_intent_button (2902823222861202203) -->
-    <skip />
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connectএ ডেটা পুনঃস্থাপন কৰিব নোৱাৰিলে"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"অধিক ঠাইৰ আৱশ্যক"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"<xliff:g id="DATE">%1$s</xliff:g>ৰ বাবে ৰপ্তানিৰ ক্ষেত্ৰত সমস্যা হৈছে। অনুগ্ৰহ কৰি এটা নতুন সময়সূচী নিৰ্ধাৰিত ৰপ্তানি ছেট আপ কৰক আৰু পুনৰ চেষ্টা কৰক।"</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Health Connectক সময়সূচী নিৰ্ধাৰণ কৰি থোৱা ৰপ্তানিটো অব্যাহত ৰাখিবলৈ আপোনাৰ ফ’নত <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> ষ্ট’ৰেজৰ খালী ঠাই লাগে।"</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"ছেট আপ কৰক"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"ঠাই খালী কৰক"</string>
     <string name="export_back_button" msgid="3550795479165524982">"উভতি যাওক"</string>
     <string name="export_next_button" msgid="657930567137105172">"পৰৱৰ্তী"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"বাতিল কৰক"</string>
@@ -1025,7 +1022,6 @@
     <string name="select_all" msgid="837499881590001166">"আটাইবোৰ বাছনি কৰক"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connect ব্যৱহাৰ কৰা আৰম্ভ কৰক"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"আপোনাৰ প্ৰথম এপ্‌সমূহৰ মাজত স্বাস্থ্য আৰু শৰীৰচৰ্চাৰ ডেটা শ্বেয়াৰ কৰিবলৈ সেইবোৰ ছিংক কৰক"</string>
-    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"এতিয়া নহয়"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"ছেট আপ কৰক"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"অধিক এপ্‌ সংযোগ কৰক"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"<xliff:g id="APP_NAME">%s</xliff:g> আৰু আপোনাৰ ফ’নত থকা স্বাস্থ্য সম্পৰ্কীয় এপৰ মাজত ডেটা শ্বেয়াৰ কৰা আৰম্ভ কৰক"</string>

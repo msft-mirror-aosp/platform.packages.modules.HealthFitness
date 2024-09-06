@@ -134,6 +134,19 @@ public class MedicalDataSourceHelper {
     public static ReadTableRequest getReadTableRequest(
             @NonNull List<UUID> ids, @Nullable Long appInfoRestriction) {
         ReadTableRequest readTableRequest = new ReadTableRequest(getMainTableName());
+        WhereClauses whereClauses = getWhereClauses(ids, appInfoRestriction);
+        return readTableRequest.setWhereClause(whereClauses);
+    }
+
+    /**
+     * Gets a where clauses that filters the data source table by the given restrictions.
+     *
+     * @param ids the ids to include, or if empty do not filter by ids
+     * @param appInfoRestriction the app info id to restrict to, or if null do not filter by app
+     *     info
+     */
+    public static @NonNull WhereClauses getWhereClauses(
+            @NonNull List<UUID> ids, @Nullable Long appInfoRestriction) {
         WhereClauses whereClauses;
         if (ids.isEmpty()) {
             whereClauses = new WhereClauses(AND);
@@ -144,7 +157,7 @@ public class MedicalDataSourceHelper {
             whereClauses.addWhereInLongsClause(
                     APP_INFO_ID_COLUMN_NAME, List.of(appInfoRestriction));
         }
-        return readTableRequest.setWhereClause(whereClauses);
+        return whereClauses;
     }
 
     /**
@@ -179,7 +192,7 @@ public class MedicalDataSourceHelper {
      * @param ids the ids to limit to.
      */
     @NonNull
-    private static WhereClauses getReadTableWhereClause(@NonNull List<UUID> ids) {
+    public static WhereClauses getReadTableWhereClause(@NonNull List<UUID> ids) {
         return new WhereClauses(AND)
                 .addWhereInClauseWithoutQuotes(
                         DATA_SOURCE_UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(ids));
