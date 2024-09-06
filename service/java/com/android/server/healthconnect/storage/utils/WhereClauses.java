@@ -158,7 +158,13 @@ public final class WhereClauses {
         return this;
     }
 
-    public WhereClauses addWhereInIntsClause(String columnName, List<Integer> values) {
+    /**
+     * Adds where in condition for the column.
+     *
+     * @param columnName Column name on which where condition to be applied
+     * @param values to check in the where condition
+     */
+    public WhereClauses addWhereInIntsClause(String columnName, Collection<Integer> values) {
         if (values == null || values.isEmpty()) return this;
 
         mClauses.add(
@@ -210,7 +216,12 @@ public final class WhereClauses {
                 // final SQL statement
                 continue;
             }
-            mClauses.add("(" + whereClauses.get(/* withWhereKeyword= */ false) + ")");
+            if (mLogicalOperator.equals(whereClauses.mLogicalOperator)) {
+                // If the logical operator matches we don't need extra parentheses
+                mClauses.addAll(whereClauses.mClauses);
+            } else {
+                mClauses.add("(" + whereClauses.get(/* withWhereKeyword= */ false) + ")");
+            }
         }
 
         return this;

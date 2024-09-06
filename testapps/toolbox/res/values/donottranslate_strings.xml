@@ -55,6 +55,7 @@
   <string name="vitals_category" description="Title for vitals category, displaying user data related to vitals (such as heart rate, blood pressure, etc.) [CHAR LIMIT=30]">Vitals</string>
   <string name="cycle_tracking_category" description="Title for cycle tracking category, displaying user data related to cycle tracking (such as cervical mucus, menstrual flow, etc.) [CHAR LIMIT=30]">Cycle tracking</string>
   <string name="nutrition_category" description="Title for nutrition category, displaying user data related to nutrition (such as calories consumed, hydration, etc.) [CHAR LIMIT=30]">Nutrition</string>
+  <string name="wellness_category" description="Title for wellness category, displaying user data related to wellness (such as mindfulness, etc.) [CHAR LIMIT=30]">Wellness</string>
 
   <!-- region Data Types -->
   <!-- region Activity data types -->
@@ -115,6 +116,7 @@
   <string name="respiratory_rate_label" description="Label used to show the user's respiratory rate data [CHAR_LIMIT=50]">Respiratory rate</string>
   <string name="resting_heart_rate_label" description="Label used to show the user's resting heart rate data [CHAR_LIMIT=50]">Resting heart rate</string>
   <string name="skin_temperature_label" description="Label used to show the user's skin temperature data [CHAR_LIMIT=50]">Skin temperature</string>
+  <string name="mindfulness_label" description="Label used to show the user's mindfulness data [CHAR_LIMIT=50]">Mindfulness</string>
   <!--endregion-->
   <!--endregion-->
 

@@ -67,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"seguiment del cicle"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Nutrició"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"nutrició"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"Benestar"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"benestar"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"Navega per les dades"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Gestiona les dades"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Exporta dades"</string>
@@ -271,6 +273,12 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Immunització"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"immunització"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Llegir la immunització"</string>
+    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
+    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Consciència plena"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"consciència plena"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Llegir consciència plena"</string>
@@ -349,6 +357,10 @@
     <string name="next_export_text" msgid="6726252793571403846">"La pròxima exportació començarà aviat"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Còpia de seguretat i restauració"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Darrera exportació: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="last_export_time_now" msgid="31498024135933750">"Darrera exportació: ara"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Darrera exportació: fa 1 minut}other{Darrera exportació: fa # minuts}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Darrera exportació: fa 1 hora}other{Darrera exportació: fa # hores}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"Darrera exportació: cap"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Exportació programada"</string>
     <string name="import_data" msgid="404502315533233094">"Importa les dades"</string>
@@ -383,8 +395,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Importa"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Restauració de Salut connectada en curs"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Restauració de Salut connectada completa"</string>
-    <!-- no translation found for import_in_progress_toast_text (3363548588078895706) -->
-    <skip />
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"Restauració en curs"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"La restauració de dades ha finalitzat"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Salut connectada no ha pogut restaurar les dades"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Es necessita més espai"</string>
@@ -397,6 +408,12 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Obre"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Tria un fitxer"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Allibera espai"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Salut connectada no ha pogut export. dades"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Es necessita més espai"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Hi ha hagut un problema amb l\'exportació del dia <xliff:g id="DATE">%1$s</xliff:g>. Configura una exportació programada nova i torna-ho a provar."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Salut connectada necessita <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> d\'espai d\'emmagatzematge al telèfon per continuar amb l\'exportació programada."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"Configura"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Allibera espai"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Enrere"</string>
     <string name="export_next_button" msgid="657930567137105172">"Següent"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"Cancel·la"</string>
@@ -654,6 +671,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"de son lleuger"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"de son profund"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"desconegut"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"Respiració"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"Meditació"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"Moviment"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"Música"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"Altres"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Sense guia"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> min"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> h <xliff:g id="MIN">%2$s</xliff:g> min"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> h"</string>
@@ -999,7 +1022,6 @@
     <string name="select_all" msgid="837499881590001166">"Selecciona-ho tot"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Començar a utilitzar Salut connectada"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sincronitza les teves primeres aplicacions perquè comparteixin dades de salut i fitnes entre elles"</string>
-    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"Ara no"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Configura"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Connecta més aplicacions"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Comença a compartir dades entre <xliff:g id="APP_NAME">%s</xliff:g> i les aplicacions de salut del teu telèfon"</string>

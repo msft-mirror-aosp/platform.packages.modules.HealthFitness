@@ -17,6 +17,7 @@
 package com.android.server.healthconnect.storage;
 
 import static com.android.healthfitness.flags.Flags.FLAG_DEVELOPMENT_DATABASE;
+import static com.android.server.healthconnect.storage.DatabaseTestUtils.createEmptyDatabase;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -32,7 +33,6 @@ import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
-import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
@@ -71,22 +71,34 @@ public class DevelopmentDatabaseHelperTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         mDatabasePath = getMockDatabasePath();
-        if (mDatabasePath.exists()) {
-            Preconditions.checkState(mDatabasePath.delete());
-        }
-        when(mContext.getDatabasePath(anyString())).thenReturn(getMockDatabasePath());
+        DatabaseTestUtils.clearDatabase(mDatabasePath);
+        when(mContext.getDatabasePath(anyString())).thenReturn(mDatabasePath);
     }
 
     @After
     public void clearDatabase() {
-        File databasePath = getMockDatabasePath();
-        if (databasePath.exists()) {
-            Preconditions.checkState(databasePath.delete());
-        }
+        DatabaseTestUtils.clearDatabase(getMockDatabasePath());
     }
 
     private static File getMockDatabasePath() {
         return InstrumentationRegistry.getInstrumentation().getContext().getDatabasePath("mock");
+    }
+
+    @Test
+    @EnableFlags(FLAG_DEVELOPMENT_DATABASE)
+    public void testChangesIdempotent() {
+        // Database changes should be idempotent so you don't leave a teammate on a development
+        // database that can't be fixed after switching the flag on or off.
+        // Test this is true by running onOpen twice, dropping the version in between.
+
+        try (HealthConnectDatabase helper = new HealthConnectDatabase(mContext)) {
+            // make sure a database file exists
+            SQLiteDatabase db = helper.getWritableDatabase();
+            // Drop the settings table to make sure the update code is run completely a second time.
+            DevelopmentDatabaseHelper.dropDevelopmentSettingsTable(db);
+            // Force a second run of onOpen(), and make sure there are no errors
+            DevelopmentDatabaseHelper.onOpen(db);
+        }
     }
 
     @Test
@@ -216,10 +228,6 @@ public class DevelopmentDatabaseHelperTest {
         }
     }
 
-    private @NonNull SQLiteDatabase createEmptyDatabase() {
-        return SQLiteDatabase.openOrCreateDatabase(mDatabasePath, /* cursorFactory= */ null);
-    }
-
     /**
      * Check that the PHR tables were created on a database by attempting to read a random UUID
      * datasource. If the table doesn't exist we expect an SQLException, if the table does exist
@@ -227,8 +235,7 @@ public class DevelopmentDatabaseHelperTest {
      */
     private static void usePhrDataSourceTable(SQLiteDatabase db) {
         UUID uuid = UUID.randomUUID();
-        ReadTableRequest request =
-                MedicalDataSourceHelper.getReadTableRequest(List.of(uuid.toString()));
+        ReadTableRequest request = MedicalDataSourceHelper.getReadTableRequest(List.of(uuid));
         try (Cursor cursor = db.rawQuery(request.getReadCommand(), new String[] {})) {
             assertThat(cursor.getCount()).isEqualTo(0);
         }
@@ -242,7 +249,8 @@ public class DevelopmentDatabaseHelperTest {
     private static void usePhrAccessLogsColumns(SQLiteDatabase db) {
         try (Cursor cursor =
                 db.rawQuery(
-                        "SELECT medical_resource_type, medical_data_source FROM access_logs_table",
+                        "SELECT medical_resource_type, medical_data_source_accessed FROM"
+                                + " access_logs_table",
                         new String[] {})) {
             assertThat(cursor.getCount()).isEqualTo(0);
         }

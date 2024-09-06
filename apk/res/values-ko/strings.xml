@@ -67,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"월경 주기 추적"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"영양"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"영양"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"웰니스"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"웰니스"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"데이터 둘러보기"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"데이터 관리"</string>
     <string name="export_data_button" msgid="7783329820434117744">"데이터 내보내기"</string>
@@ -271,6 +273,12 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"예방 접종"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"예방 접종"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"예방 접종 데이터를 읽습니다."</string>
+    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
+    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"마음챙김"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"마음챙김"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"마음챙김 읽기"</string>
@@ -349,6 +357,10 @@
     <string name="next_export_text" msgid="6726252793571403846">"다음 내보내기가 곧 시작됩니다."</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"백업 및 복원"</string>
     <string name="last_export_time" msgid="9205875050823594041">"마지막으로 내보낸 날짜: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="last_export_time_now" msgid="31498024135933750">"마지막 내보내기: 지금"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{마지막 내보내기: 1분 전}other{마지막 내보내기: #분 전}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{마지막 내보내기: 1시간 전}other{마지막 내보내기: #시간 전}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"마지막 내보내기: 없음"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"예약된 내보내기"</string>
     <string name="import_data" msgid="404502315533233094">"데이터 가져오기"</string>
@@ -383,8 +395,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"가져오기"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"헬스 커넥트 복원 진행 중"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"헬스 커넥트 복원 완료"</string>
-    <!-- no translation found for import_in_progress_toast_text (3363548588078895706) -->
-    <skip />
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"복원 진행 중"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"데이터 복원 완료됨"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"헬스 커넥트에서 데이터를 복원할 수 없음"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"추가 저장용량 필요"</string>
@@ -397,6 +408,12 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"열기"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"파일 선택"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"여유 공간 확보"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"헬스 커넥트에서 데이터를 내보낼 수 없음"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"추가 저장용량 필요"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"<xliff:g id="DATE">%1$s</xliff:g>에 예약된 내보내기에 문제가 발생했습니다. 내보내기 일정을 새로 설정하고 다시 시도해 보세요."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"예약된 내보내기를 계속하기 위해 헬스 커넥트에 휴대전화 저장공간 <xliff:g id="SPACE_NEEDED">%1$s</xliff:g>이 필요합니다."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"설정"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"여유 공간 확보"</string>
     <string name="export_back_button" msgid="3550795479165524982">"뒤로"</string>
     <string name="export_next_button" msgid="657930567137105172">"다음"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"취소"</string>
@@ -654,6 +671,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"얕은 수면"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"깊은 수면"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"알 수 없음"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"호흡"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"명상"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"움직임"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"음악"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"기타"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"자유"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g>분"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g>시간 <xliff:g id="MIN">%2$s</xliff:g>분"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g>시간"</string>
@@ -999,7 +1022,6 @@
     <string name="select_all" msgid="837499881590001166">"모두 선택"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"헬스 커넥트 사용 시작하기"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"첫 번째 앱을 동기화하여 앱 간에 건강 및 피트니스 데이터를 공유하세요"</string>
-    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"나중에"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"설정"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"더 많은 앱 연결"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"휴대전화에서 <xliff:g id="APP_NAME">%s</xliff:g> 앱과 건강 앱 간에 데이터 공유를 시작하세요"</string>

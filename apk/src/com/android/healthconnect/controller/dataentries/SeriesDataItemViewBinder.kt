@@ -23,6 +23,7 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SeriesDataEntry
+import com.android.healthconnect.controller.shared.recyclerview.SimpleViewBinder
 import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -35,7 +36,7 @@ class SeriesDataItemViewBinder(
     private val showSecondAction: Boolean = true,
     private val onItemClickedListener: OnClickEntryListener?,
     private val onDeleteEntryClicked: OnDeleteEntryListener?,
-) : ViewBinder<SeriesDataEntry, View> {
+) : SimpleViewBinder<SeriesDataEntry, View> {
 
     private lateinit var logger: HealthConnectLogger
 

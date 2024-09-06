@@ -22,6 +22,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import kotlin.random.Random
 
 /**
@@ -51,6 +52,18 @@ fun Instant.toLocalTime(): LocalTime {
 
 fun Instant.toLocalDateTime(): LocalDateTime {
     return atZone(ZoneId.systemDefault()).toLocalDateTime()
+}
+
+fun Instant.withinOneMinuteAfter(other: Instant): Boolean {
+    return this.minus(1, ChronoUnit.MINUTES).isBefore(other)
+}
+
+fun Instant.withinOneHourAfter(other: Instant): Boolean {
+    return this.minus(1, ChronoUnit.HOURS).isBefore(other)
+}
+
+fun Instant.withinOneDayAfter(other: Instant): Boolean {
+    return this.minus(1, ChronoUnit.DAYS).isBefore(other)
 }
 
 fun Instant.isOnSameDay(other: Instant): Boolean {
@@ -83,6 +96,10 @@ fun Instant.isAtLeastOneDayAfter(other: Instant): Boolean {
 
 fun LocalDate.toInstantAtStartOfDay(): Instant {
     return this.atStartOfDay(ZoneId.systemDefault()).toInstant()
+}
+
+fun LocalDate.withinOneYearAfter(other: LocalDate): Boolean {
+    return this.minusYears(1).isBefore(other)
 }
 
 fun LocalDate.randomInstant(): Instant {

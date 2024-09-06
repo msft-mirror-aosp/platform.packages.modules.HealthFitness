@@ -67,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"સાયકલ ટ્રૅક કરવાની સુવિધા"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"પોષણ"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"પોષણ"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"સુખાકારી"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"સુખાકારી"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"ડેટા બ્રાઉઝ કરો"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"ડેટા મેનેજ કરો"</string>
     <string name="export_data_button" msgid="7783329820434117744">"ડેટાની નિકાસ કરો"</string>
@@ -271,6 +273,12 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"ચેપી રોગથી મુક્તિ"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"ચેપી રોગથી મુક્તિ"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"ચેપી રોગથી મુક્તિનો ડેટા વાંચો"</string>
+    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
+    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"સજગતા"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"સજગતા"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"સજગતા વાંચો"</string>
@@ -349,6 +357,10 @@
     <string name="next_export_text" msgid="6726252793571403846">"આગલી નિકાસ ટૂંક સમયમાં શરૂ થશે"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"બૅકઅપ લો અને રિસ્ટોર કરો"</string>
     <string name="last_export_time" msgid="9205875050823594041">"છેલ્લે નિકાસ કર્યાની તારીખ: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="last_export_time_now" msgid="31498024135933750">"છેલ્લી નિકાસ: હમણાં"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{છેલ્લી નિકાસ: 1 મિનિટ પહેલાં}one{છેલ્લી નિકાસ: # મિનિટ પહેલાં}other{છેલ્લી નિકાસ: # મિનિટ પહેલાં}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{છેલ્લી નિકાસ: 1 કલાક પહેલાં}one{છેલ્લી નિકાસ: # કલાક પહેલાં}other{છેલ્લી નિકાસ: # કલાક પહેલાં}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"છેલ્લે આની નિકાસ કરી: કંઈ પણ નહીં"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"શેડ્યૂલ કરેલી નિકાસ"</string>
     <string name="import_data" msgid="404502315533233094">"ડેટા આયાત કરો"</string>
@@ -383,8 +395,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"આયાત કરો"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect દ્વારા રિસ્ટોર કરવાની પ્રક્રિયા ચાલુ છે"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect દ્વારા રિસ્ટોર કરવાની પ્રક્રિયા પૂર્ણ થઈ"</string>
-    <!-- no translation found for import_in_progress_toast_text (3363548588078895706) -->
-    <skip />
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"રિસ્ટોર કરવાની પ્રક્રિયા ચાલુ છે"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"ડેટા રિસ્ટોર કરવાનું સમાપ્ત થયું"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect દ્વારા તમારો ડેટા રિસ્ટોર કરી શકાયો નથી"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"વધુ સ્પેસની જરૂર છે"</string>
@@ -397,6 +408,12 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"ખોલો"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"ફાઇલ પસંદ કરો"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"સ્પેસ ખાલી કરો"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect, ડેટાની નિકાસ કરી શકી નથી"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"વધુ સ્પેસની જરૂર છે"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"<xliff:g id="DATE">%1$s</xliff:g>ના રોજ નિકાસ કરવામાં કોઈ સમસ્યા આવી હતી. કૃપા કરીને શેડ્યૂલ કરેલી કોઈ નવી નિકાસનું સેટઅપ કરો અને ફરી પ્રયાસ કરો."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"શેડ્યૂલ કરેલી નિકાસની પ્રક્રિયા ચાલુ રાખવા માટે Health Connectને તમારા ફોન પર <xliff:g id="SPACE_NEEDED">%1$s</xliff:g>ની સ્ટોરેજ સ્પેસ જરૂરી છે."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"સેટઅપ કરો"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"સ્પેસ ખાલી કરો"</string>
     <string name="export_back_button" msgid="3550795479165524982">"પાછળ"</string>
     <string name="export_next_button" msgid="657930567137105172">"આગળ"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"રદ કરો"</string>
@@ -654,6 +671,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"હળવી ઊંઘનો તબક્કો"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"ગાઢ ઊંઘનો તબક્કો"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"અજાણ"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"પ્રાણાયામ"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"ધ્યાન"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"હિલચાલ"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"મ્યુઝિક"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"અન્ય"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"માર્ગદર્શન વિનાના"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> મિનિટ"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> કલાક <xliff:g id="MIN">%2$s</xliff:g> મિનિટ"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> કલાક"</string>
@@ -999,7 +1022,6 @@
     <string name="select_all" msgid="837499881590001166">"તમામ પસંદ કરો"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connectનો ઉપયોગ કરવાનું શરૂ કરો"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"આરોગ્ય અને ફિટનેસ વિશેના ડેટાને ઍપ વચ્ચે શેર કરવા માટે પહેલા તેને સિંક કરો"</string>
-    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"હમણાં નહીં"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"સેટઅપ કરો"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"વધુ ઍપ કનેક્ટ કરો"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"તમારા ફોન પર <xliff:g id="APP_NAME">%s</xliff:g> અને આરોગ્ય વિશેની ઍપ વચ્ચે ડેટા શેર કરવાનું શરૂ કરો"</string>

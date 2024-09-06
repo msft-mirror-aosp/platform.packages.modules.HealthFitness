@@ -34,6 +34,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMAR
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getHexString;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.toUuids;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -53,6 +54,9 @@ import android.graphics.drawable.Drawable;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
+import android.healthconnect.cts.utils.PhrDataFactory;
+import android.net.Uri;
 import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -65,6 +69,7 @@ import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
+import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
@@ -77,6 +82,7 @@ import org.mockito.quality.Strictness;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class MedicalDataSourceHelperTest {
@@ -162,7 +168,7 @@ public class MedicalDataSourceHelperTest {
         assertThat(upsertRequest.getUniqueColumnsCount()).isEqualTo(1);
         assertThat(contentValues.size()).isEqualTo(4);
         assertThat(contentValues.get(FHIR_BASE_URI_COLUMN_NAME))
-                .isEqualTo(DATA_SOURCE_FHIR_BASE_URI);
+                .isEqualTo(DATA_SOURCE_FHIR_BASE_URI.toString());
         assertThat(contentValues.get(DISPLAY_NAME_COLUMN_NAME)).isEqualTo(DATA_SOURCE_DISPLAY_NAME);
         assertThat(contentValues.get(DATA_SOURCE_UUID_COLUMN_NAME))
                 .isEqualTo(StorageUtils.convertUUIDToBytes(uuid));
@@ -177,8 +183,7 @@ public class MedicalDataSourceHelperTest {
         List<String> hexValues = List.of(getHexString(uuid1), getHexString(uuid2));
 
         ReadTableRequest readRequest =
-                MedicalDataSourceHelper.getReadTableRequest(
-                        List.of(uuid1.toString(), uuid2.toString()));
+                MedicalDataSourceHelper.getReadTableRequest(List.of(uuid1, uuid2));
 
         assertThat(readRequest.getTableName()).isEqualTo(MEDICAL_DATA_SOURCE_TABLE_NAME);
         assertThat(readRequest.getReadCommand())
@@ -195,8 +200,7 @@ public class MedicalDataSourceHelperTest {
         List<String> hexValues = List.of(getHexString(uuid1), getHexString(uuid2));
 
         ReadTableRequest readRequest =
-                MedicalDataSourceHelper.getReadTableRequestJoinWithAppInfo(
-                        List.of(uuid1.toString(), uuid2.toString()));
+                MedicalDataSourceHelper.getReadTableRequestJoinWithAppInfo(List.of(uuid1, uuid2));
 
         assertThat(readRequest.getTableName()).isEqualTo(MEDICAL_DATA_SOURCE_TABLE_NAME);
         assertThat(readRequest.getReadCommand())
@@ -221,7 +225,7 @@ public class MedicalDataSourceHelperTest {
 
         ReadTableRequest request =
                 MedicalDataSourceHelper.getReadTableRequest(
-                        List.of(expected.getId()), /* appInfoRestriction= */ null);
+                        List.of(UUID.fromString(expected.getId())), /* appInfoRestriction= */ null);
 
         try (Cursor cursor = mTransactionManager.read(request)) {
             assertThat(getIds(cursor)).containsExactly(expected.getId());
@@ -242,7 +246,7 @@ public class MedicalDataSourceHelperTest {
         long appInfoRestriction = mAppInfoHelper.getAppInfoId(DATA_SOURCE_PACKAGE_NAME);
         ReadTableRequest request =
                 MedicalDataSourceHelper.getReadTableRequest(
-                        List.of(correctDataSource.getId()), appInfoRestriction);
+                        List.of(UUID.fromString(correctDataSource.getId())), appInfoRestriction);
 
         try (Cursor cursor = mTransactionManager.read(request)) {
             assertThat(getIds(cursor)).containsExactly(correctDataSource.getId());
@@ -268,7 +272,7 @@ public class MedicalDataSourceHelperTest {
 
         ReadTableRequest request =
                 MedicalDataSourceHelper.getReadTableRequest(
-                        List.of(correctDataSource.getId()), appInfoRestriction);
+                        List.of(UUID.fromString(correctDataSource.getId())), appInfoRestriction);
 
         try (Cursor cursor = mTransactionManager.read(request)) {
             assertThat(getIds(cursor)).isEmpty();
@@ -336,7 +340,8 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> result =
-                mMedicalDataSourceHelper.getMedicalDataSources(List.of(expected.getId()));
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        List.of(UUID.fromString(expected.getId())));
 
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0)).isEqualTo(expected);
@@ -353,7 +358,8 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> result =
-                mMedicalDataSourceHelper.getMedicalDataSources(List.of(dataSource1.getId()));
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        List.of(UUID.fromString(dataSource1.getId())));
 
         assertThat(result).containsExactly(dataSource1);
     }
@@ -375,8 +381,8 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> result =
-                mMedicalDataSourceHelper.getMedicalDataSources(
-                        List.of(dataSource1.getId(), dataSource2.getId()));
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        toUuids(List.of(dataSource1.getId(), dataSource2.getId())));
 
         assertThat(result).containsExactly(dataSource1, dataSource2);
     }
@@ -399,8 +405,8 @@ public class MedicalDataSourceHelperTest {
         List<MedicalDataSource> expected = List.of(dataSource1, dataSource2);
 
         List<MedicalDataSource> result =
-                mMedicalDataSourceHelper.getMedicalDataSources(
-                        List.of(dataSource1.getId(), dataSource2.getId()));
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        toUuids(List.of(dataSource1.getId(), dataSource2.getId())));
 
         assertThat(result.size()).isEqualTo(2);
         assertThat(result).containsExactlyElementsIn(expected);
@@ -425,8 +431,8 @@ public class MedicalDataSourceHelperTest {
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> result =
-                mMedicalDataSourceHelper.getMedicalDataSources(
-                        List.of(dataSource1.getId(), dataSource2.getId()));
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        toUuids(List.of(dataSource1.getId(), dataSource2.getId())));
 
         assertThat(result).containsExactly(dataSource1, dataSource2);
     }
@@ -448,7 +454,8 @@ public class MedicalDataSourceHelperTest {
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> dataSources =
-                mMedicalDataSourceHelper.getMedicalDataSourcesByPackage(List.of());
+                mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithoutPermissionChecks(
+                        Set.of());
 
         assertThat(dataSources).containsExactly(dataSource1, dataSource2);
     }
@@ -470,11 +477,11 @@ public class MedicalDataSourceHelperTest {
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> dataSources1 =
-                mMedicalDataSourceHelper.getMedicalDataSourcesByPackage(
-                        List.of(DATA_SOURCE_PACKAGE_NAME));
+                mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithoutPermissionChecks(
+                        Set.of(DATA_SOURCE_PACKAGE_NAME));
         List<MedicalDataSource> dataSources2 =
-                mMedicalDataSourceHelper.getMedicalDataSourcesByPackage(
-                        List.of(DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+                mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithoutPermissionChecks(
+                        Set.of(DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
 
         assertThat(dataSources1).containsExactly(dataSource1);
         assertThat(dataSources2).containsExactly(dataSource2);
@@ -486,7 +493,8 @@ public class MedicalDataSourceHelperTest {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> {
-                    MedicalDataSourceHelper.deleteMedicalDataSource("foo");
+                    mMedicalDataSourceHelper.deleteMedicalDataSource(
+                            UUID.randomUUID(), /* appInfoIdRestriction= */ null);
                 });
     }
 
@@ -503,34 +511,70 @@ public class MedicalDataSourceHelperTest {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> {
-                    MedicalDataSourceHelper.deleteMedicalDataSource("foo");
+                    mMedicalDataSourceHelper.deleteMedicalDataSource(
+                            UUID.randomUUID(), /* appInfoIdRestriction= */ null);
                 });
 
         List<MedicalDataSource> result =
-                mMedicalDataSourceHelper.getMedicalDataSources(List.of(existing.getId()));
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        List.of(UUID.fromString(existing.getId())));
         assertThat(result).containsExactly(existing);
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    public void delete_oneIdWrongPackage_existingDataUnchanged() throws NameNotFoundException {
+        setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
+        setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource existing =
+                createDataSource(
+                        DATA_SOURCE_FHIR_BASE_URI,
+                        DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource different =
+                createDataSource(
+                        DATA_SOURCE_FHIR_BASE_URI,
+                        DATA_SOURCE_DISPLAY_NAME,
+                        DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+
+        long differentAppInfoId = mAppInfoHelper.getAppInfoId(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mMedicalDataSourceHelper.deleteMedicalDataSource(
+                                UUID.fromString(existing.getId()), differentAppInfoId));
+
+        List<MedicalDataSource> result =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        toUuids(List.of(existing.getId(), different.getId())));
+        assertThat(result).containsExactly(existing, different);
     }
 
     @Test
     @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
     public void delete_oneId_existingDataDeleted() throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
+        setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource existing =
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
-                        DATA_SOURCE_PACKAGE_NAME);
+                        DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        UUID existingUuid = UUID.fromString(existing.getId());
 
-        MedicalDataSourceHelper.deleteMedicalDataSource(existing.getId());
+        mMedicalDataSourceHelper.deleteMedicalDataSource(
+                existingUuid, /* appInfoIdRestriction= */ null);
 
         List<MedicalDataSource> result =
-                mMedicalDataSourceHelper.getMedicalDataSources(List.of(existing.getId()));
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        List.of(existingUuid));
         assertThat(result).isEmpty();
     }
 
     @Test
     @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
-    public void delete_multiplePresentOneIdRequested_onlyRequestedDeleted()
+    public void delete_multiplePresentOneIdRequestedNoAppRestriction_onlyRequestedDeleted()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
         setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
@@ -545,12 +589,109 @@ public class MedicalDataSourceHelperTest {
                         DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
-        MedicalDataSourceHelper.deleteMedicalDataSource(dataSource1.getId());
+        mMedicalDataSourceHelper.deleteMedicalDataSource(
+                UUID.fromString(dataSource1.getId()), /* appInfoIdRestriction= */ null);
 
         List<MedicalDataSource> result =
-                mMedicalDataSourceHelper.getMedicalDataSources(
-                        List.of(dataSource1.getId(), dataSource2.getId()));
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        toUuids(List.of(dataSource1.getId(), dataSource2.getId())));
         assertThat(result).containsExactly(dataSource2);
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    public void delete_multiplePresentOneIdRequestedMatchingAppId_onlyRequestedDeleted()
+            throws NameNotFoundException {
+        setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
+        setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1 =
+                createDataSource(
+                        DATA_SOURCE_FHIR_BASE_URI,
+                        DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2 =
+                createDataSource(
+                        DIFFERENT_DATA_SOURCE_BASE_URI,
+                        DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                        DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+
+        mMedicalDataSourceHelper.deleteMedicalDataSource(
+                UUID.fromString(dataSource1.getId()),
+                mAppInfoHelper.getAppInfoId(DATA_SOURCE_PACKAGE_NAME));
+
+        List<MedicalDataSource> result =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        toUuids(List.of(dataSource1.getId(), dataSource2.getId())));
+        assertThat(result).containsExactly(dataSource2);
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    public void delete_multiplePresentOneIdRequestedDifferentAppId_onlyRequestedDeleted()
+            throws NameNotFoundException {
+        setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
+        setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1 =
+                createDataSource(
+                        DATA_SOURCE_FHIR_BASE_URI,
+                        DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2 =
+                createDataSource(
+                        DIFFERENT_DATA_SOURCE_BASE_URI,
+                        DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                        DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mMedicalDataSourceHelper.deleteMedicalDataSource(
+                                UUID.fromString(dataSource1.getId()),
+                                mAppInfoHelper.getAppInfoId(DIFFERENT_DATA_SOURCE_PACKAGE_NAME)));
+
+        List<MedicalDataSource> result =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        toUuids(List.of(dataSource1.getId(), dataSource2.getId())));
+        assertThat(result).containsExactly(dataSource1, dataSource2);
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    public void delete_removesAssociatedResource() throws NameNotFoundException {
+        setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource =
+                createDataSource(
+                        DATA_SOURCE_FHIR_BASE_URI,
+                        DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_PACKAGE_NAME);
+        MedicalResourceHelper resourceHelper =
+                new MedicalResourceHelper(mTransactionManager, mMedicalDataSourceHelper);
+        MedicalResource medicalResource =
+                PhrDataFactory.createImmunizationMedicalResource(dataSource.getId());
+        UpsertMedicalResourceInternalRequest upsertRequest =
+                new UpsertMedicalResourceInternalRequest()
+                        .setMedicalResourceType(medicalResource.getType())
+                        .setFhirResourceId(medicalResource.getFhirResource().getId())
+                        .setFhirResourceType(medicalResource.getFhirResource().getType())
+                        .setFhirVersion(medicalResource.getFhirVersion())
+                        .setData(medicalResource.getFhirResource().getData())
+                        .setDataSourceId(dataSource.getId());
+        MedicalResource resource =
+                resourceHelper
+                        .upsertMedicalResources(DATA_SOURCE_PACKAGE_NAME, List.of(upsertRequest))
+                        .get(0);
+
+        mMedicalDataSourceHelper.deleteMedicalDataSource(
+                UUID.fromString(dataSource.getId()), /* appInfoIdRestriction= */ null);
+
+        List<MedicalDataSource> result =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        toUuids(List.of(dataSource.getId())));
+        assertThat(result).isEmpty();
+        List<MedicalResource> resourceResult =
+                resourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
+                        List.of(resource.getId()));
+        assertThat(resourceResult).isEmpty();
     }
 
     private void setUpMocksForAppInfo(String packageName) throws NameNotFoundException {
@@ -569,7 +710,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     private @NonNull MedicalDataSource createDataSource(
-            String baseUri, String displayName, String packageName) {
+            Uri baseUri, String displayName, String packageName) {
         CreateMedicalDataSourceRequest request =
                 new CreateMedicalDataSourceRequest.Builder(baseUri, displayName).build();
         return mMedicalDataSourceHelper.createMedicalDataSource(mContext, request, packageName);
@@ -585,6 +726,4 @@ public class MedicalDataSourceHelperTest {
         }
         return result;
     }
-
-    // TODO: b/351166557 - add unit tests that deleting datasource deletes associated records
 }

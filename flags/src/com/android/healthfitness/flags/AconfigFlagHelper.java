@@ -16,7 +16,7 @@
 
 package com.android.healthfitness.flags;
 
-import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_MINDFULNESS_SESSION;
+import static com.android.healthfitness.flags.DatabaseVersions.LAST_ROLLED_OUT_DB_VERSION;
 import static com.android.internal.annotations.VisibleForTesting.Visibility.PRIVATE;
 
 import com.android.internal.annotations.VisibleForTesting;
@@ -61,32 +61,33 @@ public final class AconfigFlagHelper {
     }
 
     /**
-     * Returns whether the DB flag of a feature is enabled based on its {@code dbVersion}.
+     * Returns whether the DB flag of a feature is enabled.
+     * <p>
+     * A DB flag is deemed to be enabled if and only if the DB flag as well as all other features
+     * with smaller version numbers have their DB flags enabled.
+     * <p>
+     * For example, if DB_VERSION_TO_DB_FLAG_MAP contains these:
+     * <pre>{@code
+     *   DB_F1 = true
+     *   DB_F2 = true
+     *   DB_F3 = true
+     *   DB_F4 = false
+     * }</pre>
+     * Then isDbFlagEnabled(3) will return true and isDbFlagEnabled(4) will return false.
+     * <p>
+     * In case the map contains a disconnected line of "true"s before the last "false" like this:
+     * <pre>{@code
+     *   DB_F1 = true
+     *   DB_F2 = false
+     *   DB_F3 = true
+     *   DB_F4 = false
+     * }</pre>
+     * Then isDbFlagEnabled(3) will return false even though DB_F3 is mapped to true.
      *
-     * <p>This method is meant to be combined with feature flag of a feature to result in a boolean
-     * indicating whether a feature is enabled or not. For example, see {@link
-     * #isPersonalHealthRecordEnabled()}.
+     * @see #getDbVersion()
+     * @see ag/28760234 for example of how to use this method
      */
     private static synchronized boolean isDbFlagEnabled(int dbVersion) {
-        // Since DB version is the highest version of all versions in DatabaseVersions.java has
-        // its corresponding DB flag and all DB flags of smaller DB versions set to true, so as long
-        // as all DB flags of all DB version up to dbVersion are set to true, getDBVersion() will
-        // return a value >= dbVersion.
-        //
-        // For example, if DB_VERSION_TO_DB_FLAG_MAP contains these:
-        // DB_F1 = true
-        // DB_F2 = true
-        // DB_F3 = true
-        // DB_F4 = false
-        // Then isDbFlagEnabled(3) will return true and isDbFlagEnabled(4) will return false.
-        // In case the map contains a disconnected line of "true"s before the last "false" like
-        // this:
-        // DB_F1 = true
-        // DB_F2 = false
-        // DB_F3 = true
-        // DB_F4 = false
-        // getDbVersion() will return 1, hence isDbFlagEnabled(3) will return false even though
-        // DB_F3 is mapped to true.
         return getDbVersion() >= dbVersion;
     }
 
@@ -98,14 +99,6 @@ public final class AconfigFlagHelper {
     // won't be changed again, they will be assigned a DB version and a DB flag, if further changes
     // are required to the DB schema, then new DB version and DB flag are required.
     // =============================================================================================
-    /**
-     * DB version of the last feature that has been rolled out.
-     *
-     * <p>This should be updated whenever a flag is being removed for a db change after rolling out
-     * to "mainline" in Gantry. See TODO(b/357076280) link to the g3doc here.
-     */
-    @VisibleForTesting(visibility = PRIVATE)
-    static final int LAST_ROLLED_OUT_DB_VERSION = DB_VERSION_MINDFULNESS_SESSION;
 
     /**
      * Returns a map of DB version => DB flag with the DB versions being keys and ordered.

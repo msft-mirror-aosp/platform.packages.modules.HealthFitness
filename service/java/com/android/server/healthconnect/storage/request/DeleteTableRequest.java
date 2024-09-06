@@ -56,9 +56,7 @@ public class DeleteTableRequest {
     private boolean mRequiresUuId;
     @Nullable private List<String> mIds;
     private boolean mEnforcePackageCheck;
-    private int mNumberOfUuidsToDelete;
-    @Nullable private String mInnerReadColumnName;
-    @Nullable private ReadTableRequest mInnerReadRequest;
+    private final WhereClauses mExtraWhereClauses = new WhereClauses(AND);
 
     public DeleteTableRequest(
             @NonNull String tableName, @RecordTypeIdentifier.RecordType int recordType) {
@@ -152,19 +150,9 @@ public class DeleteTableRequest {
         return this;
     }
 
-    /**
-     * Add a restriction on the delete that {@code innerReadColumnName} has a value in the values
-     * read by the {@code innerRead} {@link ReadTableRequest}.
-     *
-     * @param columnName the column to restrict the delete on.
-     * @param innerReadRequest a request that will SELECT the values to restrict on.
-     * @return this Request with the values set.
-     */
-    @NonNull
-    public DeleteTableRequest setInnerSqlRequestFilter(
-            String columnName, ReadTableRequest innerReadRequest) {
-        mInnerReadColumnName = columnName;
-        mInnerReadRequest = innerReadRequest;
+    /** Adds an extra {@link WhereClauses} that filters the rows to be deleted. */
+    public DeleteTableRequest addExtraWhereClauses(WhereClauses whereClauses) {
+        mExtraWhereClauses.addNestedWhereClauses(whereClauses);
         return this;
     }
 
@@ -185,13 +173,10 @@ public class DeleteTableRequest {
 
     public String getWhereCommand() {
         WhereClauses whereClauses = new WhereClauses(AND);
+        whereClauses.addNestedWhereClauses(mExtraWhereClauses);
         whereClauses.addWhereInLongsClause(mPackageColumnName, mPackageFilters);
         whereClauses.addWhereBetweenTimeClause(mTimeColumnName, mStartTime, mEndTime);
         whereClauses.addWhereInClauseWithoutQuotes(mIdColumnName, mIds);
-
-        if (mInnerReadColumnName != null && mInnerReadRequest != null) {
-            whereClauses.addWhereInSQLRequestClause(mInnerReadColumnName, mInnerReadRequest);
-        }
 
         if (Constants.DEBUG) {
             Slog.d(
@@ -220,32 +205,5 @@ public class DeleteTableRequest {
         mTimeColumnName = timeColumnName;
 
         return this;
-    }
-
-    /**
-     * Sets total number of UUIDs being deleted by this request.
-     *
-     * @param numberOfUuidsToDelete Number of UUIDs being deleted
-     */
-    public void setNumberOfUuidsToDelete(int numberOfUuidsToDelete) {
-        this.mNumberOfUuidsToDelete = numberOfUuidsToDelete;
-    }
-
-    /**
-     * Total number of records deleted.
-     *
-     * <p>This method should only be called in a state after a delete, when either a pre-read has
-     * been done, or a list of ids set.
-     *
-     * @return Number of records deleted by this request
-     */
-    public int getTotalNumberOfRecordsDeleted() {
-        if (requiresRead()) {
-            return mNumberOfUuidsToDelete;
-        }
-        if (mIds == null) {
-            throw new IllegalStateException("Called with no required reads and no list of ids set");
-        }
-        return mIds.size();
     }
 }

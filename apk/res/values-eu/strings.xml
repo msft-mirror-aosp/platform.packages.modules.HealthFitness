@@ -67,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"zikloaren jarraipena"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Elikadura"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"elikadura"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"Ongizatea"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"ongizatea"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"Arakatu datuak"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Kudeatu datuak"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Esportatu datuak"</string>
@@ -271,6 +273,12 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Immunizazio-datuak"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"immunizazio-datuak"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Irakurri immunizazio-datuak"</string>
+    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
+    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Mindfulness-a"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"mindfulness-a"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Mindfulness-ari buruzko datuak irakurri"</string>
@@ -349,6 +357,10 @@
     <string name="next_export_text" msgid="6726252793571403846">"Laster hasiko da hurrengo esportazioa"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Egin babeskopiak eta leheneratu"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Azken esportatze-data: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="last_export_time_now" msgid="31498024135933750">"Azken esportazioa: orain"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Azken esportazioa: duela minutu bat}other{Azken esportazioa: duela # minutu}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Azken esportazioa: duela ordubete}other{Azken esportazioa: duela # ordu}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"Azken esportazioa: bat ere ez"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Esportazio programatua"</string>
     <string name="import_data" msgid="404502315533233094">"Inportatu datuak"</string>
@@ -383,8 +395,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Inportatu"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect leheneratzen"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Leheneratu da Health Connect"</string>
-    <!-- no translation found for import_in_progress_toast_text (3363548588078895706) -->
-    <skip />
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"Leheneratzen"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"Leheneratu dira datuak"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect-ek ezin izan ditu leheneratu datuak"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Toki gehiago behar da"</string>
@@ -397,6 +408,12 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Ireki"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Aukeratu fitxategia"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Egin tokia"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect-ek ezin izan ditu esportatu datuak"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Toki gehiago behar da"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Arazo bat izan da <xliff:g id="DATE">%1$s</xliff:g> datarako programatutako esportazioarekin. Konfiguratu beste esportazio programatu bat eta saiatu berriro."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Programatutako esportazioarekin aurrera egiteko, Health Connect-ek <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> behar ditu telefonoaren biltegian."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"Konfiguratu"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Egin tokia"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Atzera"</string>
     <string name="export_next_button" msgid="657930567137105172">"Hurrengoa"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"Utzi"</string>
@@ -654,6 +671,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"lo arina"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"lo sakona"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"ezezaguna"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"Arnasketa"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"Meditazioa"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"Mugitzea"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"Musika"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"Beste bat"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Gidatu gabea"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> min"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> h <xliff:g id="MIN">%2$s</xliff:g> min"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> h"</string>
@@ -669,7 +692,7 @@
     <string name="vo2_metabolic_cart" msgid="4724757223373717896">"Metabolismoa neurtzeko tresna"</string>
     <string name="vo2_heart_rate_ratio" msgid="8707274294125886148">"Bihotz-maiztasuna"</string>
     <string name="vo2_cooper_test" msgid="4713211595719031518">"Cooper proba"</string>
-    <string name="vo2_multistage_fitness_test" msgid="908967547838751749">"Hainbat faseko ongizate-proba"</string>
+    <string name="vo2_multistage_fitness_test" msgid="908967547838751749">"Fase bat baino gehiagoko ongizate-proba"</string>
     <string name="vo2_rockport_fitness_test" msgid="2951465532122577281">"Rockport ongizate-proba"</string>
     <string name="vo2_other" msgid="5359013487285233550">"Bestelakoak"</string>
     <string name="mucus_dry" msgid="1065582777971603874">"Lehorra"</string>
@@ -999,7 +1022,6 @@
     <string name="select_all" msgid="837499881590001166">"Hautatu guztiak"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Hasi Health Connect erabiltzen"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sinkronizatu lehen aplikazioak, haien artean osasunari eta fitnessari buruzko datuak partekatzeko"</string>
-    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"Orain ez"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Konfiguratu"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Konektatu aplikazio gehiago"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Hasi <xliff:g id="APP_NAME">%s</xliff:g> aplikazioaren eta telefonoko osasun-aplikazioen artean datuak partekatzen"</string>
