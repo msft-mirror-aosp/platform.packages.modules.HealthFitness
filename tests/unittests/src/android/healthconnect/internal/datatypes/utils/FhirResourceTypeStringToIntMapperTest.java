@@ -43,18 +43,24 @@ public class FhirResourceTypeStringToIntMapperTest {
 
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testFhirResourceTypeInt_immunizationType_lowerCase() {
-        int fhirResourceTypeInt = getFhirResourceTypeInt("immunization");
-
-        assertThat(fhirResourceTypeInt).isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION);
+    public void testFhirResourceTypeInt_immunizationType() {
+        assertThat(getFhirResourceTypeInt("immunization"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        assertThat(getFhirResourceTypeInt("Immunization"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        assertThat(getFhirResourceTypeInt("IMMUNIZATION"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION);
     }
 
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testFhirResourceTypeInt_immunizationType_capitalCase() {
-        int fhirResourceTypeInt = getFhirResourceTypeInt("Immunization");
-
-        assertThat(fhirResourceTypeInt).isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION);
+    public void testFhirResourceTypeInt_allergyIntoleranceType() {
+        assertThat(getFhirResourceTypeInt("allergyintolerance"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
+        assertThat(getFhirResourceTypeInt("AllergyIntolerance"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
+        assertThat(getFhirResourceTypeInt("ALLERGYINTOLERANCE"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
     }
 
     @Test

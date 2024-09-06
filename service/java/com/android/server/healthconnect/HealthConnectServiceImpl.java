@@ -2793,27 +2793,29 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         return;
                     }
 
-                    if (request.getDataSourceIds().isEmpty()) {
+                    if (request.getDataSourceIds().isEmpty()
+                            && request.getMedicalResourceTypes().isEmpty()) {
                         tryAndReturnResult(callback, logger);
                         return;
+                    }
+                    List<UUID> dataSourceUuids = StorageUtils.toUuids(request.getDataSourceIds());
+                    if (dataSourceUuids.isEmpty() && !request.getDataSourceIds().isEmpty()) {
+                        throw new IllegalArgumentException("Invalid data source id used");
                     }
                     enforceIsForegroundUser(userHandle);
                     verifyPackageNameFromUid(uid, attributionSource);
                     throwExceptionIfDataSyncInProgress();
                     if (holdsDataManagementPermission) {
                         mMedicalResourceHelper
-                                .deleteMedicalResourcesByDataSourcesWithoutPermissionChecks(
-                                        new ArrayList<>(request.getDataSourceIds()));
+                                .deleteMedicalResourcesByRequestWithoutPermissionChecks(request);
                     } else {
                         boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
                         tryAcquireApiCallQuota(
                                 uid, QuotaCategory.QUOTA_CATEGORY_WRITE, isInForeground, logger);
                         mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
                                 attributionSource);
-                        mMedicalResourceHelper
-                                .deleteMedicalResourcesByDataSourcesWithPermissionChecks(
-                                        new ArrayList<>(request.getDataSourceIds()),
-                                        callingPackageName);
+                        mMedicalResourceHelper.deleteMedicalResourcesByRequestWithPermissionChecks(
+                                request, callingPackageName);
                     }
                     tryAndReturnResult(callback, logger);
                 },
