@@ -176,6 +176,7 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
                 Toast.makeText(activity, R.string.export_invalid_storage, Toast.LENGTH_LONG).show()
             } else {
                 viewModel.updateExportUriWithSelectedFrequency(fileUri)
+                requireActivity().setResult(Activity.RESULT_OK, Intent())
                 requireActivity().finish()
             }
         }
