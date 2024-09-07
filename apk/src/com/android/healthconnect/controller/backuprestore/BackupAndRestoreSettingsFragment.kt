@@ -18,6 +18,7 @@ package com.android.healthconnect.controller.backuprestore
 
 import android.app.Activity
 import android.content.Intent
+import android.icu.text.MessageFormat
 import android.net.Uri
 import android.os.Bundle
 import android.util.Slog
@@ -31,6 +32,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.exportimport.ExportSetupActivity
 import com.android.healthconnect.controller.exportimport.ExportStatusPreference
 import com.android.healthconnect.controller.exportimport.ImportFlowActivity
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency
@@ -98,6 +100,8 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
     private val contract = ActivityResultContracts.StartActivityForResult()
     private val triggerImportLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(contract, ::onRequestImport)
+    private val setUpExportLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(contract, ::onSetUpExport)
 
     private val scheduledExportPreference: HealthPreference? by lazy {
         preferenceScreen.findPreference(SCHEDULED_EXPORT_PREFERENCE_KEY)
@@ -127,11 +131,6 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
         }
 
         scheduledExportPreference?.logName = BackupAndRestoreElement.SCHEDULED_EXPORT_BUTTON
-        scheduledExportPreference?.setOnPreferenceClickListener {
-            findNavController()
-                .navigate(R.id.action_backupAndRestoreSettingsFragment_to_exportSetupActivity)
-            true
-        }
 
         importDataPreference?.logName = BackupAndRestoreElement.RESTORE_DATA_BUTTON
         importDataPreference?.setOnPreferenceClickListener {
@@ -180,11 +179,10 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
                     val frequency = exportSettings.frequency
                     if (frequency == ExportFrequency.EXPORT_FREQUENCY_NEVER) {
                         scheduledExportPreference?.setOnPreferenceClickListener {
-                            findNavController()
-                                .navigate(
-                                    R.id
-                                        .action_backupAndRestoreSettingsFragment_to_exportSetupActivity
-                                )
+                            val exportSetupIntent =
+                                Intent(requireActivity(), ExportSetupActivity::class.java)
+                            setUpExportLauncher.launch(exportSetupIntent)
+
                             true
                         }
                     } else {
@@ -377,10 +375,16 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
             return getString(R.string.last_export_time_now)
         } else if (now.withinOneHourAfter(lastSuccessfulExportTime)) {
             val timeDiffInMinutes = Duration.between(lastSuccessfulExportTime, now).toMinutes()
-            return getString(R.string.last_export_time_minutes_ago, timeDiffInMinutes.toString())
+            return MessageFormat.format(
+                requireContext().getString(R.string.last_export_time_minutes_ago),
+                mapOf("count" to timeDiffInMinutes),
+            )
         } else if (now.withinOneDayAfter(lastSuccessfulExportTime)) {
             val timeDiffInHours = Duration.between(lastSuccessfulExportTime, now).toHours()
-            return getString(R.string.last_export_time_hours_ago, timeDiffInHours.toString())
+            return MessageFormat.format(
+                requireContext().getString(R.string.last_export_time_hours_ago),
+                mapOf("count" to timeDiffInHours),
+            )
         } else if (
             LocalDate.ofInstant(now, timeSource.deviceZoneOffset())
                 .withinOneYearAfter(
@@ -413,6 +417,12 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
                 toastManager.showToast(requireActivity(), R.string.import_in_progress_toast_text)
                 importFlowViewModel.triggerImportOfSelectedFile(Uri.parse(uriString))
             }
+        }
+    }
+
+    private fun onSetUpExport(result: ActivityResult) {
+        if (result.resultCode == Activity.RESULT_OK && exportImportFastFollow()) {
+            toastManager.showToast(requireActivity(), R.string.scheduled_export_on_toast_text)
         }
     }
 }

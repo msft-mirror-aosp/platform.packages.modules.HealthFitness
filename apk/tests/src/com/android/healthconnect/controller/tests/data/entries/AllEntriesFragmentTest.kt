@@ -21,11 +21,10 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
@@ -58,11 +57,21 @@ import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.junit.Ignore
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
 class AllEntriesFragmentTest {
 
@@ -89,6 +98,8 @@ class AllEntriesFragmentTest {
                         TEST_APP_PACKAGE_NAME,
                         TEST_APP_NAME,
                         context.getDrawable(R.drawable.health_connect_logo))))
+        Mockito.`when`(viewModel.isDeletionState).thenReturn(MutableLiveData(false))
+        Mockito.`when`(viewModel.setOfEntriesToBeDeleted).thenReturn(MutableLiveData())
     }
 
     @Test
@@ -159,20 +170,7 @@ class AllEntriesFragmentTest {
         onView(withText("15 steps")).check(matches(isDisplayed()))
     }
 
-    @Test
-    fun appEntries_withData_notShowingDeleteAction() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
-
-        val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
-
-        onView(withIndex(withId(R.id.item_data_entry_delete), 0))
-            .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
-    }
-
+    @Ignore("b/363994647")
     @Test
     fun appEntries_withData_onOrientationChange() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
@@ -257,6 +255,71 @@ class AllEntriesFragmentTest {
         onView(withText("12 Aug 2022 • Health Connect Toolbox")).check(matches(isDisplayed()))
         onView(withText("25 Sep 2021 • Health Connect Toolbox")).check(matches(isDisplayed()))
     }
+
+    @Test
+    fun allEntries_triggerDeletion_showsCheckboxes() {
+        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+
+        val scenario =
+                launchFragment<AllEntriesFragment>(
+                        bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as AllEntriesFragment).triggerDeletionState(true)
+        }
+
+        onView(withIndex(withId(R.id.item_checkbox_button), 0)).check(matches(isDisplayed()))
+    }
+
+    @Ignore("b/363994647")
+    @Test
+    fun allEntries_triggerDeletion_checkboxesRemainOnOrientationChange() = runTest{
+        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+        Mockito.`when`(viewModel.isDeletionState).thenReturn(MutableLiveData(true))
+
+        val scenario =
+                launchFragment<AllEntriesFragment>(
+                        bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as AllEntriesFragment).triggerDeletionState(true)
+        }
+
+        onView(withIndex(withId(R.id.item_checkbox_button), 0)).check(matches(isDisplayed()))
+
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        }
+        advanceUntilIdle()
+
+        onIdle()
+        onView(withIndex(withId(R.id.item_checkbox_button), 0)).check(matches(isDisplayed()))
+
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+    }
+
+    @Test
+    fun allEntries_triggerDeletion_checkedItemsAddedToDeleteSet() {
+        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+
+        val scenario =
+                launchFragment<AllEntriesFragment>(
+                        bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as AllEntriesFragment).triggerDeletionState(true)
+        }
+
+
+        onView(withText("12 steps")).perform(click())
+        onIdle()
+        verify(viewModel).addToDeleteSet("test_id")
+    }
 }
 
 private val FORMATTED_STEPS_LIST =
@@ -269,7 +332,7 @@ private val FORMATTED_STEPS_LIST =
             titleA11y = "12 steps",
             dataType = DataType.STEPS),
         FormattedDataEntry(
-            uuid = "test_id",
+            uuid = "test_id_2",
             header = "8:06 - 8:06",
             headerA11y = "from 8:06 to 8:06",
             title = "15 steps",

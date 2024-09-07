@@ -23,7 +23,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
 
-import android.health.connect.MedicalResourceTypeInfoResponse;
+import android.health.connect.MedicalResourceTypeInfo;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.os.Parcel;
 import android.platform.test.annotations.RequiresFlagsEnabled;
@@ -42,81 +42,73 @@ import java.util.Set;
 
 @RunWith(AndroidJUnit4.class)
 @RequiresFlagsEnabled(Flags.FLAG_PERSONAL_HEALTH_RECORD)
-public class MedicalResourceTypeInfoResponseTest {
+public class MedicalResourceTypeInfoTest {
     @Rule
     public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
 
     @Test
     public void testConstructor_EmptyContributingDataSources() {
-        MedicalResourceTypeInfoResponse response =
-                new MedicalResourceTypeInfoResponse(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, Set.of());
+        MedicalResourceTypeInfo info =
+                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, Set.of());
 
-        assertThat(response.getMedicalResourceType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
-        assertThat(response.getContributingDataSources()).isEmpty();
+        assertThat(info.getMedicalResourceType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+        assertThat(info.getContributingDataSources()).isEmpty();
     }
 
     @Test
     public void testConstructor_withContributingDataSources() {
         Set<MedicalDataSource> dataSources = Set.of(getMedicalDataSource());
-        MedicalResourceTypeInfoResponse response =
-                new MedicalResourceTypeInfoResponse(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
+        MedicalResourceTypeInfo info =
+                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
 
-        assertThat(response.getMedicalResourceType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
-        assertThat(response.getContributingDataSources()).isEqualTo(dataSources);
+        assertThat(info.getMedicalResourceType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+        assertThat(info.getContributingDataSources()).isEqualTo(dataSources);
     }
 
     @Test
     public void testConstructor_invalidMedicalResourceType_throws() {
         assertThrows(
-                IllegalArgumentException.class,
-                () -> new MedicalResourceTypeInfoResponse(1000, Set.of()));
+                IllegalArgumentException.class, () -> new MedicalResourceTypeInfo(1000, Set.of()));
     }
 
     @Test
     public void testEquals() {
         Set<MedicalDataSource> dataSources = Set.of(getMedicalDataSource());
-        MedicalResourceTypeInfoResponse response1 =
-                new MedicalResourceTypeInfoResponse(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
-        MedicalResourceTypeInfoResponse response2 =
-                new MedicalResourceTypeInfoResponse(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
+        MedicalResourceTypeInfo info1 =
+                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
+        MedicalResourceTypeInfo info2 =
+                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
 
-        assertThat(response1.equals(response2)).isTrue();
-        assertThat(response1.hashCode()).isEqualTo(response2.hashCode());
+        assertThat(info1.equals(info2)).isTrue();
+        assertThat(info1.hashCode()).isEqualTo(info2.hashCode());
     }
 
     @Test
     public void testEquals_comparesAllValues() {
         Set<MedicalDataSource> dataSources = Set.of(getMedicalDataSource());
-        MedicalResourceTypeInfoResponse response =
-                new MedicalResourceTypeInfoResponse(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
-        MedicalResourceTypeInfoResponse responseDifferentMedicalResourceType =
-                new MedicalResourceTypeInfoResponse(MEDICAL_RESOURCE_TYPE_UNKNOWN, dataSources);
-        MedicalResourceTypeInfoResponse responseDifferentDataSources =
-                new MedicalResourceTypeInfoResponse(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, Set.of());
+        MedicalResourceTypeInfo info =
+                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
+        MedicalResourceTypeInfo infoDifferentMedicalResourceType =
+                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_UNKNOWN, dataSources);
+        MedicalResourceTypeInfo infoDifferentDataSources =
+                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, Set.of());
 
-        assertThat(responseDifferentMedicalResourceType.equals(response)).isFalse();
-        assertThat(responseDifferentDataSources.equals(response)).isFalse();
-        assertThat(responseDifferentMedicalResourceType.hashCode())
-                .isNotEqualTo(response.hashCode());
-        assertThat(responseDifferentDataSources.hashCode()).isNotEqualTo(response.hashCode());
+        assertThat(infoDifferentMedicalResourceType.equals(info)).isFalse();
+        assertThat(infoDifferentDataSources.equals(info)).isFalse();
+        assertThat(infoDifferentMedicalResourceType.hashCode()).isNotEqualTo(info.hashCode());
+        assertThat(infoDifferentDataSources.hashCode()).isNotEqualTo(info.hashCode());
     }
 
     @Test
     public void testWriteToParcelThenRestore_objectsAreIdentical() {
         Set<MedicalDataSource> dataSources = Set.of(getMedicalDataSource());
-        MedicalResourceTypeInfoResponse original =
-                new MedicalResourceTypeInfoResponse(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
+        MedicalResourceTypeInfo original =
+                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, dataSources);
 
         Parcel parcel = Parcel.obtain();
         original.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
-        MedicalResourceTypeInfoResponse restored =
-                MedicalResourceTypeInfoResponse.CREATOR.createFromParcel(parcel);
+        MedicalResourceTypeInfo restored = MedicalResourceTypeInfo.CREATOR.createFromParcel(parcel);
 
         assertThat(restored).isEqualTo(original);
         parcel.recycle();

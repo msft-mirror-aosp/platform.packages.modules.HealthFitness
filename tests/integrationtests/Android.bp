@@ -110,6 +110,7 @@ android_test {
         "androidx.test.ext.truth",
         "cts-healthconnect-utils",
         "healthconnect-documentprovider-utils",
+        "healthfitness-exported-aconfig-flags-lib",
     ],
     srcs: [
         "src/android/healthconnect/tests/exportimport/*.java",

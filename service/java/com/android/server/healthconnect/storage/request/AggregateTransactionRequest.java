@@ -27,6 +27,7 @@ import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
 import android.util.ArrayMap;
 
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
@@ -52,8 +53,9 @@ public final class AggregateTransactionRequest {
     private final AggregationTypeIdMapper mAggregationTypeIdMapper;
 
     public AggregateTransactionRequest(
-            @NonNull String packageName,
-            @NonNull AggregateDataRequestParcel request,
+            String packageName,
+            AggregateDataRequestParcel request,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             long startDateAccess) {
         mPackageName = packageName;
         mAggregateTableRequests = new ArrayList<>(request.getAggregateIds().length);
@@ -64,31 +66,27 @@ public final class AggregateTransactionRequest {
 
         for (int id : request.getAggregateIds()) {
             AggregationType<?> aggregationType = mAggregationTypeIdMapper.getAggregationTypeFor(id);
-            List<Integer> recordTypeIds = aggregationType.getApplicableRecordTypeIds();
-            if (recordTypeIds.size() == 1) {
-                RecordHelper<?> recordHelper =
-                        RecordHelperProvider.getRecordHelper(recordTypeIds.get(0));
-                AggregateTableRequest aggregateTableRequest =
-                        recordHelper.getAggregateTableRequest(
-                                aggregationType,
-                                packageName,
-                                request.getPackageFilters(),
-                                request.getStartTime(),
-                                request.getEndTime(),
-                                startDateAccess,
-                                request.useLocalTimeFilter());
+            int recordTypeId = aggregationType.getApplicableRecordTypeId();
+            RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordTypeId);
+            AggregateTableRequest aggregateTableRequest =
+                    recordHelper.getAggregateTableRequest(
+                            aggregationType,
+                            packageName,
+                            request.getPackageFilters(),
+                            healthDataCategoryPriorityHelper,
+                            request.getStartTime(),
+                            request.getEndTime(),
+                            startDateAccess,
+                            request.useLocalTimeFilter());
 
-                if (mDuration != null || mPeriod != null) {
-                    aggregateTableRequest.setGroupBy(
-                            recordHelper.getDurationGroupByColumnName(),
-                            mPeriod,
-                            mDuration,
-                            mTimeRangeFilter);
-                }
-                mAggregateTableRequests.add(aggregateTableRequest);
-            } else {
-                throw new UnsupportedOperationException();
+            if (mDuration != null || mPeriod != null) {
+                aggregateTableRequest.setGroupBy(
+                        recordHelper.getDurationGroupByColumnName(),
+                        mPeriod,
+                        mDuration,
+                        mTimeRangeFilter);
             }
+            mAggregateTableRequests.add(aggregateTableRequest);
         }
     }
 

@@ -67,10 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"dövrün izlənməsi"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Qidalanma"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"qidalanma"</string>
-    <!-- no translation found for wellness_category_uppercase (5900304317921557780) -->
-    <skip />
-    <!-- no translation found for wellness_category_lowercase (1327642415424743588) -->
-    <skip />
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"Rifah"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"rifah"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"Datanı axtarın"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Datanı idarə edin"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Datanı eksport edin"</string>
@@ -275,6 +273,12 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Peyvənd"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"peyvənd"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Peyvəndin oxunması"</string>
+    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
+    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Zehinlilik"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"zehinlilik"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Zehinliliyin oxunması"</string>
@@ -353,6 +357,10 @@
     <string name="next_export_text" msgid="6726252793571403846">"Növbəti eksport tezliklə başlayacaq"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Yedəkləmə və bərpa"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Sonuncu eksport: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="last_export_time_now" msgid="31498024135933750">"Son eksport: indi"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Son eksport: 1 dəqiqə əvvəl}other{Son eksport: # dəqiqə əvvəl}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Son eksport: 1 saat əvvəl}other{Son eksport: # saat əvvəl}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"Son eksport: yoxdur"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Planlaşdırılmış eksport"</string>
     <string name="import_data" msgid="404502315533233094">"Datanı import edin"</string>
@@ -400,6 +408,12 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Açın"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Fayl seçin"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Yer boşaldın"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect datanı eksport edə bilmədi"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Daha çox yer lazımdır"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"<xliff:g id="DATE">%1$s</xliff:g> üzrə eksport ilə bağlı problem oldu. Planlaşdırılmış yeni eksport ayarlayın və yenidən cəhd edin."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Health Connect planlaşdırılmış eksporta davam etmək üçün telefonda <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> yaddaş yeri tələb edir."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"Ayarlayın"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Yer boşaldın"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Geri"</string>
     <string name="export_next_button" msgid="657930567137105172">"Növbəti"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"Ləğv edin"</string>
@@ -657,18 +671,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"yüngül yuxu"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"dərin yuxu"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"naməlum"</string>
-    <!-- no translation found for mindfulness_type_breathing (3175952922332753437) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_meditation (4453014833652749254) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_movement (600930756800362680) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_music (7041364137895485917) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_other (793524328911038908) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_unguided (2367259868577157922) -->
-    <skip />
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"Nəfəsalma"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"Meditasiya"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"Hərəkət"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"Musiqi"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"Digər"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Təlimatsız"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> d"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> s <xliff:g id="MIN">%2$s</xliff:g> dəq"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> s"</string>
@@ -1014,7 +1022,6 @@
     <string name="select_all" msgid="837499881590001166">"Hamısını seçin"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connect istifadəsinə başlayın"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sağlamlıq və fitnes datanızı paylaşmaq üçün ilk tətbiqləri sinxronlaşdırın"</string>
-    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"İndi yox"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Ayarlayın"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Daha çox tətbiq qoşun"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"<xliff:g id="APP_NAME">%s</xliff:g> və telefondakı sağlamlıq tətbiqləri arasında data paylaşımına başlayın"</string>

@@ -65,7 +65,7 @@ constructor(
     private val loadExerciseRoutePermissionUseCase: ILoadExerciseRoutePermissionUseCase,
     private val healthPermissionReader: HealthPermissionReader,
     private val featureUtils: FeatureUtils,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
     companion object {
@@ -84,11 +84,13 @@ constructor(
         MediatorLiveData(false).apply {
             addSource(_fitnessPermissions) {
                 postValue(
-                    isAllFitnessPermissionsGranted(fitnessPermissions, grantedFitnessPermissions))
+                    isAllFitnessPermissionsGranted(fitnessPermissions, grantedFitnessPermissions)
+                )
             }
             addSource(_grantedFitnessPermissions) {
                 postValue(
-                    isAllFitnessPermissionsGranted(fitnessPermissions, grantedFitnessPermissions))
+                    isAllFitnessPermissionsGranted(fitnessPermissions, grantedFitnessPermissions)
+                )
             }
         }
 
@@ -111,11 +113,13 @@ constructor(
         MediatorLiveData(false).apply {
             addSource(_medicalPermissions) {
                 postValue(
-                    isAllMedicalPermissionsGranted(medicalPermissions, grantedMedicalPermissions))
+                    isAllMedicalPermissionsGranted(medicalPermissions, grantedMedicalPermissions)
+                )
             }
             addSource(_grantedMedicalPermissions) {
                 postValue(
-                    isAllMedicalPermissionsGranted(medicalPermissions, grantedMedicalPermissions))
+                    isAllMedicalPermissionsGranted(medicalPermissions, grantedMedicalPermissions)
+                )
             }
         }
 
@@ -150,13 +154,17 @@ constructor(
                 postValue(
                     DisableExerciseRouteDialogEvent(
                         shouldShowDialog = _showDisableExerciseRouteEvent.value ?: false,
-                        appName = _appInfo.value?.appName ?: ""))
+                        appName = _appInfo.value?.appName ?: "",
+                    )
+                )
             }
             addSource(_appInfo) {
                 postValue(
                     DisableExerciseRouteDialogEvent(
                         shouldShowDialog = _showDisableExerciseRouteEvent.value ?: false,
-                        appName = _appInfo.value?.appName ?: ""))
+                        appName = _appInfo.value?.appName ?: "",
+                    )
+                )
             }
         }
 
@@ -189,23 +197,27 @@ constructor(
             _fitnessPermissions.postValue(
                 healthPermissionsList
                     .map { it.healthPermission }
-                    .filterIsInstance<FitnessPermission>())
+                    .filterIsInstance<FitnessPermission>()
+            )
             _grantedFitnessPermissions.postValue(
                 healthPermissionsList
                     .filter { it.isGranted }
                     .map { it.healthPermission }
                     .filterIsInstance<FitnessPermission>()
-                    .toSet())
+                    .toSet()
+            )
             _medicalPermissions.postValue(
                 healthPermissionsList
                     .map { it.healthPermission }
-                    .filterIsInstance<MedicalPermission>())
+                    .filterIsInstance<MedicalPermission>()
+            )
             _grantedMedicalPermissions.postValue(
                 healthPermissionsList
                     .filter { it.isGranted }
                     .map { it.healthPermission }
                     .filterIsInstance<MedicalPermission>()
-                    .toSet())
+                    .toSet()
+            )
             grantedAdditionalPermissions =
                 healthPermissionsList
                     .filter { it.isGranted }
@@ -227,21 +239,25 @@ constructor(
                 _fitnessPermissions.postValue(
                     grantedPermissions
                         .map { it.healthPermission }
-                        .filterIsInstance<FitnessPermission>())
+                        .filterIsInstance<FitnessPermission>()
+                )
                 _grantedFitnessPermissions.postValue(
                     grantedPermissions
                         .map { it.healthPermission }
                         .filterIsInstance<FitnessPermission>()
-                        .toSet())
+                        .toSet()
+                )
                 _medicalPermissions.postValue(
                     grantedPermissions
                         .map { it.healthPermission }
-                        .filterIsInstance<MedicalPermission>())
+                        .filterIsInstance<MedicalPermission>()
+                )
                 _grantedMedicalPermissions.postValue(
                     grantedPermissions
                         .map { it.healthPermission }
                         .filterIsInstance<MedicalPermission>()
-                        .toSet())
+                        .toSet()
+                )
             }
             shouldLoadGrantedPermissions = false
         }
@@ -254,7 +270,7 @@ constructor(
     fun updatePermission(
         packageName: String,
         fitnessPermission: FitnessPermission,
-        grant: Boolean
+        grant: Boolean,
     ): Boolean {
         try {
             if (grant) {
@@ -277,7 +293,7 @@ constructor(
     fun updatePermission(
         packageName: String,
         medicalPermission: MedicalPermission,
-        grant: Boolean
+        grant: Boolean,
     ): Boolean {
         try {
             if (grant) {
@@ -348,10 +364,12 @@ constructor(
 
     private fun shouldDisplayExerciseRouteDialog(
         packageName: String,
-        fitnessPermission: FitnessPermission
+        fitnessPermission: FitnessPermission,
     ): Boolean {
-        if (!featureUtils.isExerciseRouteReadAllEnabled() ||
-            fitnessPermission.toString() != READ_EXERCISE) {
+        if (
+            !featureUtils.isExerciseRouteReadAllEnabled() ||
+                fitnessPermission.toString() != READ_EXERCISE
+        ) {
             return false
         }
 
@@ -431,6 +449,35 @@ constructor(
         return false
     }
 
+    fun revokeAllFitnessPermissions(packageName: String): Boolean {
+        try {
+            _revokeAllHealthPermissionsState.postValue(RevokeAllState.Loading)
+            _fitnessPermissions.value?.forEach {
+                revokePermissionsStatusUseCase.invoke(packageName, it.toString())
+            }
+            _revokeAllHealthPermissionsState.postValue(RevokeAllState.Updated)
+            _grantedFitnessPermissions.postValue(emptySet())
+            return true
+        } catch (ex: Exception) {
+            Log.e(TAG, "Failed to revoke fitness permissions!", ex)
+        }
+        return false
+    }
+
+    fun revokeAllMedicalPermissions(packageName: String): Boolean {
+        try {
+            _medicalPermissions.value?.forEach {
+                revokePermissionsStatusUseCase.invoke(packageName, it.toString())
+            }
+            _revokeAllHealthPermissionsState.postValue(RevokeAllState.Updated)
+            _grantedMedicalPermissions.postValue(emptySet())
+            return true
+        } catch (ex: Exception) {
+            Log.e(TAG, "Failed to revoke medical permissions!", ex)
+        }
+        return false
+    }
+
     fun deleteAppData(packageName: String, appName: String) {
         viewModelScope.launch {
             val appData = DeletionType.DeletionTypeAppData(packageName, appName)
@@ -455,7 +502,7 @@ constructor(
 
     private fun isAllFitnessPermissionsGranted(
         permissionsListLiveData: LiveData<List<FitnessPermission>>,
-        grantedPermissionsLiveData: LiveData<Set<FitnessPermission>>
+        grantedPermissionsLiveData: LiveData<Set<FitnessPermission>>,
     ): Boolean {
         val permissionsList = permissionsListLiveData.value.orEmpty()
         val grantedPermissions = grantedPermissionsLiveData.value.orEmpty()
@@ -468,7 +515,7 @@ constructor(
 
     private fun isAllMedicalPermissionsGranted(
         permissionsListLiveData: LiveData<List<MedicalPermission>>,
-        grantedPermissionsLiveData: LiveData<Set<MedicalPermission>>
+        grantedPermissionsLiveData: LiveData<Set<MedicalPermission>>,
     ): Boolean {
         val permissionsList = permissionsListLiveData.value.orEmpty()
         val grantedPermissions = grantedPermissionsLiveData.value.orEmpty()
@@ -498,6 +545,6 @@ constructor(
 
     data class DisableExerciseRouteDialogEvent(
         val shouldShowDialog: Boolean = false,
-        val appName: String = ""
+        val appName: String = "",
     )
 }

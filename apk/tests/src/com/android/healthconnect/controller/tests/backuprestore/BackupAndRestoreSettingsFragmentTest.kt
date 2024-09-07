@@ -46,6 +46,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.backuprestore.BackupAndRestoreSettingsFragment
+import com.android.healthconnect.controller.exportimport.ExportSetupActivity
 import com.android.healthconnect.controller.exportimport.ImportFlowActivity
 import com.android.healthconnect.controller.exportimport.api.DocumentProviders
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency
@@ -142,7 +143,7 @@ class BackupAndRestoreSettingsFragmentTest {
     @BindValue val timeSource = TestTimeSource
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
     @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
-    val fakeDeviceInfoUtils = deviceInfoUtils as FakeDeviceInfoUtils
+    private val fakeDeviceInfoUtils = deviceInfoUtils as FakeDeviceInfoUtils
 
     private var previousDefaultTimeZone: TimeZone? = null
     private var previousLocale: Locale? = null
@@ -347,7 +348,31 @@ class BackupAndRestoreSettingsFragmentTest {
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
-        onView(withText("Last export: 30 minute(s) ago")).check(matches(isDisplayed()))
+        onView(withText("Last export: 30 minutes ago")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW)
+    fun backupAndRestoreSettingsFragment_lastExportAt1MinAgo_showsLastExportAs1MinuteAgo() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        // The fake 'now' is 2022-10-20T07:06:05.432Z.
+                        lastSuccessfulExportTime = Instant.parse("2022-10-20T07:05:05.432Z"),
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        periodInDays = TEST_EXPORT_PERIOD_IN_DAYS,
+                    )
+                )
+            )
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Last export: 1 minute ago")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -371,7 +396,31 @@ class BackupAndRestoreSettingsFragmentTest {
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
-        onView(withText("Last export: 23 hour(s) ago")).check(matches(isDisplayed()))
+        onView(withText("Last export: 23 hours ago")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW)
+    fun backupAndRestoreSettingsFragment_lastExportAt1HourAgo_showsLastExportAs1HourAgo() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        // The fake 'now' is 2022-10-20T07:06:05.432Z.
+                        lastSuccessfulExportTime = Instant.parse("2022-10-20T06:06:05.432Z"),
+                        dataExportError =
+                            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        periodInDays = TEST_EXPORT_PERIOD_IN_DAYS,
+                    )
+                )
+            )
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Last export: 1 hour ago")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -564,15 +613,13 @@ class BackupAndRestoreSettingsFragmentTest {
         whenever(exportSettingsViewModel.storedExportSettings).then {
             MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
         }
-        launchFragment<BackupAndRestoreSettingsFragment>(Bundle()) {
-            navHostController.setGraph(R.navigation.nav_graph)
-            navHostController.setCurrentDestination(R.id.backupAndRestoreSettingsFragment)
-            Navigation.setViewNavController(this.requireView(), navHostController)
-        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+        val expectedResult = ActivityResult(Activity.RESULT_OK, Intent())
+        intending(hasComponent(ExportSetupActivity::class.java.name)).respondWith(expectedResult)
 
         onView(withText("Scheduled export")).perform(click())
 
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.exportSetupActivity)
+        intended(hasComponent(ExportSetupActivity::class.java.name))
         verify(healthConnectLogger).logInteraction(BackupAndRestoreElement.SCHEDULED_EXPORT_BUTTON)
     }
 
@@ -590,6 +637,36 @@ class BackupAndRestoreSettingsFragmentTest {
         onView(withText("Scheduled export")).perform(click())
 
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.scheduledExportFragment)
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW)
+    fun backupAndRestoreSettingsFragment_whenExportSetupCompletes_toastShown() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
+        }
+        whenever(exportSettingsViewModel.documentProviders).then {
+            MutableLiveData(DocumentProviders.WithData(listOf()))
+        }
+        whenever(importFlowViewModel.setLastCompletionInstant(Instant.now())).then {
+            MutableLiveData(Instant.now())
+        }
+
+        val expectedMessage: Int = R.string.scheduled_export_on_toast_text
+
+        val expectedResult = ActivityResult(Activity.RESULT_OK, Intent())
+        intending(hasComponent(ExportSetupActivity::class.java.name)).respondWith(expectedResult)
+
+        val scenario: ActivityScenario<TestActivity> =
+            launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Scheduled export")).perform(click())
+        intended(hasComponent(ExportSetupActivity::class.java.name))
+
+        scenario.onActivity { activity: TestActivity ->
+            verify(toastManager)
+                .showToast(eq(activity), eq(expectedMessage), ArgumentMatchers.anyInt())
+        }
     }
 
     @Test

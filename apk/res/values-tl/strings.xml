@@ -67,10 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"pagsubaybay sa cycle"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Nutrisyon"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"nutrisyon"</string>
-    <!-- no translation found for wellness_category_uppercase (5900304317921557780) -->
-    <skip />
-    <!-- no translation found for wellness_category_lowercase (1327642415424743588) -->
-    <skip />
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"Wellness"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"wellness"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"I-browse ang data"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Pamahalaan ang data"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Mag-export ng data"</string>
@@ -275,6 +273,12 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Immunization"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"immunization"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"I-read ang immunization"</string>
+    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
+    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Pagiging Maintindihin"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"pagiging maintindihin"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"I-read ang pagiging maintindihin"</string>
@@ -353,6 +357,10 @@
     <string name="next_export_text" msgid="6726252793571403846">"Malapit nang magsimula ang susunod na pag-export"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Pag-back up at pag-restore"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Huling pag-export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="last_export_time_now" msgid="31498024135933750">"Huling pag-export: ngayon"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Huling pag-export: 1 minuto ang nakalipas}one{Huling pag-export: # minuto ang nakalipas}other{Huling pag-export: # na minuto ang nakalipas}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Huling pag-export: 1 oras ang nakalipas}one{Huling pag-export: # oras ang nakalipas}other{Huling pag-export: # na oras ang nakalipas}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"Huling pag-export: wala"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Nakaiskedyul na pag-export"</string>
     <string name="import_data" msgid="404502315533233094">"I-import ang data"</string>
@@ -400,6 +408,12 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Buksan"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Pumili ng file"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Magbakante ng space"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"\'Di na-export ng Health Connect ang data"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Kailangan ng higit pang space"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Nagkaproblema sa pag-export para sa <xliff:g id="DATE">%1$s</xliff:g>. Mag-set up ng bagong nakaiskedyul na pag-export at subukan ulit."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Kailangan ng Health Connect ng <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> na storage space sa iyong telepono para maipagpatuloy ang nakaiskedyul na pag-export."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"I-set up"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Magbakante ng space"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Bumalik"</string>
     <string name="export_next_button" msgid="657930567137105172">"Susunod"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"Kanselahin"</string>
@@ -657,18 +671,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"mababaw na tulog"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"mahimbing na tulog"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"hindi alam"</string>
-    <!-- no translation found for mindfulness_type_breathing (3175952922332753437) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_meditation (4453014833652749254) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_movement (600930756800362680) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_music (7041364137895485917) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_other (793524328911038908) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_unguided (2367259868577157922) -->
-    <skip />
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"Paghinga"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"Meditasyon"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"Paggalaw"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"Musika"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"Iba pa"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Walang gabay"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g>m"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g>h <xliff:g id="MIN">%2$s</xliff:g>m"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g>h"</string>
@@ -1014,7 +1022,6 @@
     <string name="select_all" msgid="837499881590001166">"Piliin lahat"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Simulan ang paggamit ng Health Connect"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"I-sync ang iyong mga unang app para magbahagi ng data ng kalusugan at fitness sa pagitan ng mga ito"</string>
-    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"Hindi ngayon"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"I-set up"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Magkonekta ng higit pang app"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Simulan ang pagbabahagi ng data sa pagitan ng <xliff:g id="APP_NAME">%s</xliff:g> at ng mga pangkalusugang app sa iyong telepono"</string>

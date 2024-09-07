@@ -19,6 +19,7 @@ package com.android.server.healthconnect.exportimport;
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,13 +30,16 @@ import android.content.Context;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.net.Uri;
 import android.os.PersistableBundle;
+import android.os.UserHandle;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.FakePreferenceHelper;
+import com.android.server.healthconnect.notifications.HealthConnectNotificationSender;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
+import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import org.junit.Before;
@@ -55,13 +59,19 @@ public class ExportImportJobsTest {
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this).mockStatic(PreferenceHelper.class).build();
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(PreferenceHelper.class)
+                    .mockStatic(TransactionManager.class)
+                    .mockStatic(ExportImportNotificationSender.class)
+                    .build();
 
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Mock Context mContext;
     @Mock private JobScheduler mJobScheduler;
     @Mock private ExportManager mExportManager;
+    @Mock private TransactionManager mTransactionManager;
+    @Mock private HealthConnectNotificationSender mHealthConnectNotificationSender;
 
     @Captor ArgumentCaptor<JobInfo> mJobInfoCaptor;
     private final PreferenceHelper mFakePreferenceHelper = new FakePreferenceHelper();
@@ -78,6 +88,11 @@ public class ExportImportJobsTest {
 
     @Test
     public void schedulePeriodicExportJob_withPeriodZero_doesNotScheduleExportJob() {
+        when(mContext.createContextAsUser(any(), anyInt())).thenReturn(mContext);
+        when(mContext.getUser()).thenReturn(UserHandle.CURRENT);
+        when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
+        when(ExportImportNotificationSender.createSender(any()))
+                .thenReturn(mHealthConnectNotificationSender);
         ExportImportSettingsStorage.configure(
                 new ScheduledExportSettings.Builder().setPeriodInDays(0).build());
 

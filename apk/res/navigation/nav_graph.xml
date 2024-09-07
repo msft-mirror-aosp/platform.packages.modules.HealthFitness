@@ -96,7 +96,8 @@
 
     <activity
         android:id="@+id/exportSetupActivity"
-        android:name="com.android.healthconnect.controller.exportimport.ExportSetupActivity"/>
+        android:name="com.android.healthconnect.controller.exportimport.ExportSetupActivity"
+        app:action="android.health.connect.action.START_EXPORT_SETUP" />
 
     <activity
         android:id="@+id/importFlowActivity"
@@ -115,9 +116,6 @@
         <action
             android:id="@+id/action_backupAndRestoreSettingsFragment_to_systemUpdateActivity"
             app:destination="@id/systemUpdateActivity" />
-        <action
-            android:id="@+id/action_backupAndRestoreSettingsFragment_to_exportSetupActivity"
-            app:destination="@id/exportSetupActivity" />
         <action
             android:id="@+id/action_backupAndRestoreSettingsFragment_to_scheduledExportFragment"
             app:destination="@id/scheduledExportFragment" />
