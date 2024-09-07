@@ -329,6 +329,7 @@ public class MedicalResourceHelperTest {
     }
 
     @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
     public void getReadTableRequest_usingRequestWithDataSourceIds_correctQuery() {
         MedicalDataSource dataSource1 = insertMedicalDataSource("id1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
