@@ -46,15 +46,8 @@ public final class FhirResource implements Parcelable {
     /** FHIR resource type for Immunization. */
     public static final int FHIR_RESOURCE_TYPE_IMMUNIZATION = 1;
 
-    /** FHIR resource type for AllergyIntolerance. */
-    public static final int FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE = 2;
-
     /** @hide */
-    @IntDef({
-        FHIR_RESOURCE_TYPE_UNKNOWN,
-        FHIR_RESOURCE_TYPE_IMMUNIZATION,
-        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE
-    })
+    @IntDef({FHIR_RESOURCE_TYPE_UNKNOWN, FHIR_RESOURCE_TYPE_IMMUNIZATION})
     @Retention(RetentionPolicy.SOURCE)
     public @interface FhirResourceType {}
 
@@ -140,10 +133,7 @@ public final class FhirResource implements Parcelable {
      * type.
      */
     private static final Set<Integer> VALID_TYPES =
-            Set.of(
-                    FHIR_RESOURCE_TYPE_UNKNOWN,
-                    FHIR_RESOURCE_TYPE_IMMUNIZATION,
-                    FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
+            Set.of(FHIR_RESOURCE_TYPE_UNKNOWN, FHIR_RESOURCE_TYPE_IMMUNIZATION);
 
     /**
      * Validates the provided {@code fhirResourceType} is in the {@link FhirResource#VALID_TYPES}
@@ -196,8 +186,6 @@ public final class FhirResource implements Parcelable {
          *     data}.
          * @param id The FHIR resource ID extracted from the "id" field in {@code data}.
          * @param data The FHIR resource data in JSON representation.
-         * @throws IllegalArgumentException if the provided FHIR resource {@code type} is not a
-         *     valid supported type.
          */
         public Builder(@FhirResourceType int type, @NonNull String id, @NonNull String data) {
             validateFhirResourceType(type);
@@ -234,9 +222,6 @@ public final class FhirResource implements Parcelable {
         /**
          * Sets the FHIR resource type. This is extracted from the "resourceType" field in {@code
          * data}.
-         *
-         * @throws IllegalArgumentException if the provided FHIR resource {@code type} is not a
-         *     valid supported type.
          */
         @NonNull
         public Builder setType(@FhirResourceType int type) {

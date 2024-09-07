@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.storage;
 
+import android.annotation.NonNull;
 import android.content.Context;
 import android.util.Slog;
 
@@ -59,8 +60,7 @@ public class AutoDeleteService {
     }
 
     /** Starts the Auto Deletion process. */
-    public static void startAutoDelete(
-            Context context, HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
+    public static void startAutoDelete(@NonNull Context context) {
         try {
             // Only do transactional operations here - as this job might get cancelled for several
             // reasons, such as: User switch, low battery etc.
@@ -72,7 +72,7 @@ public class AutoDeleteService {
             // Re-sync activity dates table
             ActivityDateHelper.reSyncForAllRecords();
             // Sync health data priority list table
-            healthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(context);
+            HealthDataCategoryPriorityHelper.getInstance().reSyncHealthDataPriorityTable(context);
         } catch (Exception e) {
             Slog.e(TAG, "Auto delete run failed", e);
             // Don't rethrow as that will crash system_server

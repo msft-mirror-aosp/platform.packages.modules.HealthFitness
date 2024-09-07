@@ -49,10 +49,4 @@ private val PERMISSION_TYPE_STRINGS: ImmutableMap<MedicalPermissionType, Medical
                 R.string.immunization_uppercase_label,
                 R.string.immunization_lowercase_label,
                 R.string.immunization_content_description))
-        .put(
-            MedicalPermissionType.ALLERGY_INTOLERANCE,
-            MedicalPermissionStrings(
-                R.string.allergy_intolerance_uppercase_label,
-                R.string.allergy_intolerance_lowercase_label,
-                R.string.allergy_intolerance_content_description))
         .buildOrThrow()

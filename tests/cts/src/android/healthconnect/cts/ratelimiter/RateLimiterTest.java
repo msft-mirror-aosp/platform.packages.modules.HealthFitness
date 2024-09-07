@@ -87,7 +87,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.Executors;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
@@ -376,9 +375,7 @@ public class RateLimiterTest {
         // We will try to delete a data source that doesn't exist. This doesn't matter for quota
         // check.
         DeleteMedicalResourcesRequest request =
-                new DeleteMedicalResourcesRequest.Builder()
-                        .addDataSourceId(UUID.randomUUID().toString())
-                        .build();
+                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
 
         while (quotaAcquired > 1) {
             // Using a non-existent id is fine for quota check.

@@ -273,12 +273,6 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Immunizáció"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"immunizáció"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Immunizáció olvasása"</string>
-    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
-    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Tudatos jelenlét"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"tudatos jelenlét"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"A Tudatos jelenlét-adatok olvasása"</string>
@@ -357,10 +351,8 @@
     <string name="next_export_text" msgid="6726252793571403846">"A következő exportálás hamarosan elkezdődik"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Biztonsági mentés és visszaállítás"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Legutóbbi exportálás: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="last_export_time_now" msgid="31498024135933750">"Legutóbbi exportálás: most"</string>
-    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Legutóbbi exportálás: 1 perccel ezelőtt}other{Legutóbbi exportálás: # perccel ezelőtt}}"</string>
-    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Legutóbbi exportálás: 1 órája}other{Legutóbbi exportálás: # órája}}"</string>
-    <string name="no_last_export_message" msgid="8138900854579872667">"Legutóbbi exportálás: nincs"</string>
+    <!-- no translation found for no_last_export_message (8138900854579872667) -->
+    <skip />
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Ütemezett exportálás"</string>
     <string name="import_data" msgid="404502315533233094">"Adatok importálása"</string>
@@ -408,12 +400,6 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Megnyitás"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Fájl kiválasztása"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Tárhely felszabadítása"</string>
-    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"A Health Connect nem exportált adatokat"</string>
-    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Több tárhely szükséges"</string>
-    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Hiba történt a következő dátumra ütemezett exportálással: <xliff:g id="DATE">%1$s</xliff:g>. Állítson be új ütemezett exportálást, majd próbálja újra."</string>
-    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"A Health Connectnek <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> tárhelyre van szüksége a telefonon az ütemezett exportálás folytatásához."</string>
-    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"Beállítás"</string>
-    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Tárhely felszabadítása"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Vissza"</string>
     <string name="export_next_button" msgid="657930567137105172">"Következő"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"Mégse"</string>
@@ -1022,6 +1008,7 @@
     <string name="select_all" msgid="837499881590001166">"Összes kijelölése"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"A Health Connect használatának megkezdése"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Szinkronizálja első appjait, hogy megoszthassa köztük egészségügyi és fitneszadatait"</string>
+    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"Most nem"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Beállítás"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"További alkalmazások társítása"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Osszon meg adatokat a(z) <xliff:g id="APP_NAME">%s</xliff:g> és a telefonján lévő egészségügyi alkalmazások között"</string>

@@ -15,7 +15,6 @@
  */
 package com.android.healthconnect.controller.tests.permissions.request
 
-import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION
 import android.health.connect.HealthPermissions.READ_STEPS
 import android.health.connect.HealthPermissions.WRITE_DISTANCE
@@ -116,7 +115,6 @@ class MedicalPermissionsFragmentTest {
         `when`(viewModel.healthPermissionsList).then {
             val permissions =
                 listOf(
-                    fromPermissionString(READ_MEDICAL_DATA_ALLERGY_INTOLERANCE),
                     fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION),
                     fromPermissionString(WRITE_MEDICAL_DATA),
                 )
@@ -159,7 +157,6 @@ class MedicalPermissionsFragmentTest {
         `when`(viewModel.healthPermissionsList).then {
             val permissions =
                 listOf(
-                    fromPermissionString(READ_MEDICAL_DATA_ALLERGY_INTOLERANCE),
                     fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION),
                     fromPermissionString(WRITE_MEDICAL_DATA),
                 )

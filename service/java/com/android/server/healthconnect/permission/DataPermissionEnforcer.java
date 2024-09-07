@@ -141,6 +141,7 @@ public class DataPermissionEnforcer {
                 recordTypeIdToExtraPerms.put(recordTypeId, new ArraySet<>());
             }
 
+            recordHelper.checkRecordOperationsAreEnabled(recordInternal);
             recordTypeIdToExtraPerms
                     .get(recordTypeId)
                     .addAll(recordHelper.getRequiredExtraWritePermissions(recordInternal));

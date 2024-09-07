@@ -15,13 +15,10 @@
  */
 package com.android.healthconnect.controller.tests.selectabledeletion
 
-import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
-import com.android.healthconnect.controller.selectabledeletion.api.DeleteEntriesUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesUseCase
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.google.common.truth.Truth.assertThat
@@ -52,8 +49,6 @@ class DeletionViewModelTest {
 
     private val deletePermissionTypesUseCase: DeletePermissionTypesUseCase =
         mock(DeletePermissionTypesUseCase::class.java)
-    private val deleteEntriesUseCase: DeleteEntriesUseCase =
-            mock(DeleteEntriesUseCase::class.java)
 
     private lateinit var viewModel: DeletionViewModel
 
@@ -61,7 +56,7 @@ class DeletionViewModelTest {
     fun setup() {
         hiltRule.inject()
         Dispatchers.setMain(testDispatcher)
-        viewModel = DeletionViewModel(deletePermissionTypesUseCase, deleteEntriesUseCase)
+        viewModel = DeletionViewModel(deletePermissionTypesUseCase)
     }
 
     @After
@@ -71,7 +66,7 @@ class DeletionViewModelTest {
     }
 
     @Test
-    fun permissionTypes_resetPermissionTypesReloadNeeded_valueSetCorrectly() = runTest {
+    fun resetPermissionTypesReloadNeeded_valueSetCorrectly() = runTest {
         val testObserver = TestObserver<Boolean>()
         viewModel.permissionTypesReloadNeeded.observeForever(testObserver)
         viewModel.resetPermissionTypesReloadNeeded()
@@ -81,15 +76,15 @@ class DeletionViewModelTest {
     }
 
     @Test
-    fun permissionTypes_deleteSet_setCorrectly() {
+    fun deleteSet_setCorrectly() {
         val deleteSet =
             setOf(
                 FitnessPermissionType.DISTANCE,
                 FitnessPermissionType.HEART_RATE,
                 FitnessPermissionType.STEPS)
-        viewModel.setPermissionTypesDeleteSet(deleteSet)
+        viewModel.setDeleteSet(deleteSet)
 
-        assertThat(viewModel.getPermissionTypesDeleteSet())
+        assertThat(viewModel.getDeleteSet())
             .isEqualTo(
                 setOf(
                     FitnessPermissionType.DISTANCE,
@@ -98,8 +93,8 @@ class DeletionViewModelTest {
     }
 
     @Test
-    fun permissionTypes_delete_deletionInvokesCorrectly() = runTest {
-        viewModel.setPermissionTypesDeleteSet(setOf(FitnessPermissionType.DISTANCE))
+    fun delete_deletionInvokesCorrectly() = runTest {
+        viewModel.setDeleteSet(setOf(FitnessPermissionType.DISTANCE))
         viewModel.delete()
         advanceUntilIdle()
 
@@ -107,64 +102,4 @@ class DeletionViewModelTest {
             DeletionType.DeletionTypeHealthPermissionTypes(listOf(FitnessPermissionType.DISTANCE))
         verify(deletePermissionTypesUseCase).invoke(expectedDeletionType)
     }
-
-    @Test
-    fun entries_resetEntriesReloadNeeded_valueSetCorrectly() = runTest {
-        val testObserver = TestObserver<Boolean>()
-        viewModel.entriesReloadNeeded.observeForever(testObserver)
-        viewModel.resetEntriesReloadNeeded()
-        advanceUntilIdle()
-
-        assertThat(testObserver.getLastValue()).isEqualTo(false)
-    }
-
-    @Test
-    fun entries_deleteSet_setCorrectly(){
-        val deleteSet =
-                setOf(
-                        FORMATTED_STEPS.uuid,
-                        FORMATTED_STEPS_2.uuid
-                )
-        viewModel.setEntriesDeleteSet(deleteSet, DataType.STEPS)
-
-        assertThat(viewModel.getEntriesDeleteSet()).isEqualTo(
-                setOf(
-                        "test_id",
-                        "test_id_2"
-                )
-        )
-    }
-
-    @Test
-    fun entries_delete_deletionInvokesCorrectly() = runTest{
-        val deleteSet =
-                setOf(
-                        FORMATTED_STEPS.uuid,
-                        FORMATTED_STEPS_2.uuid
-                )
-        viewModel.setEntriesDeleteSet(deleteSet, DataType.STEPS)
-        viewModel.delete()
-        advanceUntilIdle()
-
-        val expectedDeletionType =
-                DeletionType.DeletionTypeEntries(deleteSet.toList(), DataType.STEPS)
-        verify(deleteEntriesUseCase).invoke(expectedDeletionType)
-    }
 }
-
-private val FORMATTED_STEPS =
-        FormattedEntry.FormattedDataEntry(
-                uuid = "test_id",
-                header = "7:06 - 7:06",
-                headerA11y = "from 7:06 to 7:06",
-                title = "12 steps",
-                titleA11y = "12 steps",
-                dataType = DataType.STEPS)
-private val FORMATTED_STEPS_2 =
-        FormattedEntry.FormattedDataEntry(
-                uuid = "test_id_2",
-                header = "8:06 - 8:06",
-                headerA11y = "from 8:06 to 8:06",
-                title = "15 steps",
-                titleA11y = "15 steps",
-                dataType = DataType.STEPS)

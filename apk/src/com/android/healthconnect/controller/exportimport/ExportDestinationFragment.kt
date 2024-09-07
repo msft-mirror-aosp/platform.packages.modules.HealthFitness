@@ -120,7 +120,6 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
                         providers.providers,
                         viewModel.selectedDocumentProvider.value,
                         viewModel.selectedDocumentProviderRoot.value,
-                        viewModel.selectedRootsForDocumentProviders,
                         documentProvidersList,
                         inflater,
                     ) { provider, root ->
@@ -176,13 +175,15 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
                 Toast.makeText(activity, R.string.export_invalid_storage, Toast.LENGTH_LONG).show()
             } else {
                 viewModel.updateExportUriWithSelectedFrequency(fileUri)
-                requireActivity().setResult(Activity.RESULT_OK, Intent())
                 requireActivity().finish()
             }
         }
     }
 
     private fun getDefaultFileName(): String {
-        return getString(R.string.export_default_file_name) + ".zip"
+        return getString(R.string.export_default_file_name) +
+            "_" +
+            timeSource.currentLocalDateTime().toLocalDate() +
+            ".zip"
     }
 }

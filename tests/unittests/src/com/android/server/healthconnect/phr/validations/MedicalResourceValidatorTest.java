@@ -30,8 +30,6 @@ import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4B;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_UNSUPPORTED;
 import static android.healthconnect.cts.utils.PhrDataFactory.getUpsertMedicalResourceRequestBuilder;
 
-import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
-
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
@@ -39,7 +37,6 @@ import static org.junit.Assert.assertThrows;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.MedicalResource;
-import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
@@ -47,7 +44,6 @@ import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInt
 import org.junit.Rule;
 import org.junit.Test;
 
-@EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
 public class MedicalResourceValidatorTest {
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 

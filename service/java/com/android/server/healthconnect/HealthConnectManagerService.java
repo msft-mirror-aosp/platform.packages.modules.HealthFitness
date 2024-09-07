@@ -86,9 +86,7 @@ public class HealthConnectManagerService extends SystemService {
         HealthConnectPermissionHelper permissionHelper;
 
         if (Flags.dependencyInjection()) {
-            HealthConnectInjector.setInstance(new HealthConnectInjectorImpl(context));
-            mHealthConnectInjector = HealthConnectInjector.getInstance();
-
+            mHealthConnectInjector = new HealthConnectInjectorImpl(mContext);
             mTransactionManager = mHealthConnectInjector.getTransactionManager();
             firstGrantTimeManager =
                     new FirstGrantTimeManager(

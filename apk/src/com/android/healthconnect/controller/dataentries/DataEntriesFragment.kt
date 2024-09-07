@@ -66,7 +66,6 @@ import com.android.healthconnect.controller.utils.toInstant
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
 import javax.inject.Inject
-import com.android.healthconnect.controller.data.entries.EntriesViewModel
 
 /** Fragment to show health data entries by date. */
 @Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
@@ -78,8 +77,7 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
     private val pageName = PageName.DATA_ENTRIES_PAGE
 
     private lateinit var permissionType: FitnessPermissionType
-    private val entriesViewModel: EntriesViewModel by viewModels()
-    private val viewModel: DataEntriesFragmentViewModel by viewModels()
+    private val entriesViewModel: DataEntriesFragmentViewModel by viewModels()
     private val deletionViewModel: DeletionViewModel by activityViewModels()
 
     private lateinit var dateNavigationView: DateNavigationView
@@ -179,7 +177,6 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
                 .setViewBinder(
                     PlannedExerciseSessionEntry::class.java, plannedExerciseSessionItemViewBinder)
                 .setViewBinder(FormattedAggregation::class.java, aggregationViewBinder)
-                .setViewModel(entriesViewModel) // Added to adjust to the new RecyclerViewAdapter
                 .build()
         entriesRecyclerView =
             view.findViewById<RecyclerView?>(R.id.data_entries_list).also {
@@ -200,7 +197,7 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
         dateNavigationView.setDateChangedListener(
             object : DateNavigationView.OnDateChangedListener {
                 override fun onDateChanged(selectedDate: Instant) {
-                    viewModel.loadData(permissionType, selectedDate)
+                    entriesViewModel.loadData(permissionType, selectedDate)
                 }
             })
         observeDeleteState()
@@ -210,13 +207,13 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
     override fun onResume() {
         super.onResume()
         setTitle(fromPermissionType(permissionType).uppercaseLabel)
-        if (viewModel.currentSelectedDate.value != null) {
-            val date = viewModel.currentSelectedDate.value!!
+        if (entriesViewModel.currentSelectedDate.value != null) {
+            val date = entriesViewModel.currentSelectedDate.value!!
             dateNavigationView.setDate(date)
             setDateNavigationViewMaxDate()
-            viewModel.loadData(permissionType, date)
+            entriesViewModel.loadData(permissionType, date)
         } else {
-            viewModel.loadData(permissionType, dateNavigationView.getDate())
+            entriesViewModel.loadData(permissionType, dateNavigationView.getDate())
         }
 
         logger.setPageId(pageName)
@@ -229,7 +226,7 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
                 DeletionState.STATE_DELETION_SUCCESSFUL -> {
                     val index = (params.deletionType as DeletionType.DeleteDataEntry).index
                     adapter.notifyItemRemoved(index)
-                    viewModel.loadData(permissionType, dateNavigationView.getDate())
+                    entriesViewModel.loadData(permissionType, dateNavigationView.getDate())
                 }
                 else -> {
                     // do nothing
@@ -239,7 +236,7 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
     }
 
     private fun observeEntriesUpdates() {
-        viewModel.dataEntries.observe(viewLifecycleOwner) { state ->
+        entriesViewModel.dataEntries.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is Loading -> {
                     loadingView.isVisible = true

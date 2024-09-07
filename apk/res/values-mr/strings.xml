@@ -273,12 +273,6 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"लसीकरण"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"लसीकरण"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"लसीकरणासंबंधित डेटा रीड करा"</string>
-    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
-    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"जागरूकता"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"जागरूकता"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"जागरूकता रीड करा"</string>
@@ -357,9 +351,6 @@
     <string name="next_export_text" msgid="6726252793571403846">"पुढील एक्सपोर्ट लवकरच सुरू होत आहे"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"बॅकअप घ्या आणि रिस्टोअर करा"</string>
     <string name="last_export_time" msgid="9205875050823594041">"मागील एक्सपोर्ट: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="last_export_time_now" msgid="31498024135933750">"शेवटचे एक्सपोर्ट: आता"</string>
-    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{शेवटचे एक्सपोर्ट: १ मिनिटापूर्वी}other{शेवटचे एक्सपोर्ट: # मिनिटांपूर्वी}}"</string>
-    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{शेवटचे एक्सपोर्ट: १ तासापूर्वी}other{शेवटचे एक्सपोर्ट: # तासांपूर्वी}}"</string>
     <string name="no_last_export_message" msgid="8138900854579872667">"शेवटचे एक्सपोर्ट: काहीही नाही"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"शेड्यूल केलेले एक्सपोर्ट"</string>
@@ -408,12 +399,6 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"उघडा"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"फाइल निवडा"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"जागा मोकळी करा"</string>
-    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect ला डेटा एक्सपोर्ट करता आला नाही"</string>
-    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"आणखी जागा आवश्यक आहे"</string>
-    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"<xliff:g id="DATE">%1$s</xliff:g> च्या एक्सपोर्टमध्ये समस्या आली. कृपया शेड्यूल केलेले नवीन एक्सपोर्ट सेट करा आणि पुन्हा प्रयत्न करा."</string>
-    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"शेड्यूल केलेले एक्सपोर्ट करणे सुरू ठेवण्यासाठी Health Connect ला तुमच्या फोनवर <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> स्टोरेज जागा हवी आहे."</string>
-    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"सेट करा"</string>
-    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"जागा मोकळी करा"</string>
     <string name="export_back_button" msgid="3550795479165524982">"मागे जा"</string>
     <string name="export_next_button" msgid="657930567137105172">"पुढे जा"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"रद्द करा"</string>
@@ -1022,6 +1007,7 @@
     <string name="select_all" msgid="837499881590001166">"सर्व निवडा"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connect वापरण्यास सुरुवात करा"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"अ‍ॅप्सदरम्यान आरोग्य आणि फिटनेससंबंधित डेटा शेअर करण्यासाठी तुमची सुरुवातीची अ‍ॅप्स सिंक करा"</string>
+    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"आता नको"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"सेट करा"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"अधिक अ‍ॅप्स कनेक्ट करा"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"<xliff:g id="APP_NAME">%s</xliff:g> आणि तुमच्या फोनवरील आरोग्यविषयक अ‍ॅप्सदरम्यान डेटा शेअर करण्यास सुरुवात करा"</string>

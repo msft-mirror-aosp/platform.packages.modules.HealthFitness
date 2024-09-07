@@ -19,7 +19,6 @@ package android.health.connect;
 import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
 import static android.health.connect.Constants.MINIMUM_PAGE_SIZE;
-import static android.health.connect.datatypes.MedicalDataSource.validateMedicalDataSourceIds;
 import static android.health.connect.datatypes.MedicalResource.validateMedicalResourceType;
 import static android.health.connect.datatypes.validation.ValidationUtils.requireInRange;
 
@@ -60,9 +59,6 @@ public final class ReadMedicalResourcesRequest implements Parcelable {
      *     operation.
      * @param pageToken The page token to read the requested page of the result. If not set, default
      *     to {@code null}, which means the first page.
-     * @throws IllegalArgumentException if the provided {@code medicalResourceType} is not a
-     *     supported type, or any IDs in {@code dataSourceIds} are invalid, or {@code pageSize} is
-     *     less than 1 or more than 5000.
      */
     private ReadMedicalResourcesRequest(
             @MedicalResourceType int medicalResourceType,
@@ -71,7 +67,6 @@ public final class ReadMedicalResourcesRequest implements Parcelable {
             @Nullable String pageToken) {
         validateMedicalResourceType(medicalResourceType);
         requireNonNull(dataSourceIds);
-        validateMedicalDataSourceIds(dataSourceIds);
         requireInRange(pageSize, MINIMUM_PAGE_SIZE, MAXIMUM_PAGE_SIZE, "pageSize");
 
         mMedicalResourceType = medicalResourceType;
@@ -88,7 +83,6 @@ public final class ReadMedicalResourcesRequest implements Parcelable {
         requireNonNull(in);
         mMedicalResourceType = in.readInt();
         mDataSourceIds = new HashSet<>(requireNonNull(in.createStringArrayList()));
-        validateMedicalDataSourceIds(mDataSourceIds);
         mPageSize = in.readInt();
         mPageToken = in.readString();
     }
@@ -240,13 +234,10 @@ public final class ReadMedicalResourcesRequest implements Parcelable {
          *     {@link MedicalResource}s.
          *     <p>If no {@link MedicalDataSource} ID is added, then {@link MedicalResource}s from
          *     all {@link MedicalDataSource}s will be read.
-         * @throws IllegalArgumentException if the provided {@code dataSourceId} is null, or is not
-         *     a valid ID.
          */
         @NonNull
         public Builder addDataSourceId(@NonNull String dataSourceId) {
             requireNonNull(dataSourceId);
-            validateMedicalDataSourceIds(Set.of(dataSourceId));
             mDataSourceIds.add(dataSourceId);
             return this;
         }

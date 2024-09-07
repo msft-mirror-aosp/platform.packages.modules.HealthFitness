@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.exportimport;
 
-import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_ERROR_CLEARING_LOG_TABLES;
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_ERROR_NONE;
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN;
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS;
@@ -143,10 +142,10 @@ public class ExportManager {
             try {
                 deleteLogTablesContent();
             } catch (Exception e) {
-                Slog.e(TAG, "Failed to clear log tables in preparation for export", e);
+                Slog.e(TAG, "Failed to prepare local file for export", e);
                 Slog.d(TAG, "original file size: " + intSizeInKb(mLocalExportDbFile));
                 recordError(
-                        DATA_EXPORT_ERROR_CLEARING_LOG_TABLES,
+                        DATA_EXPORT_ERROR_UNKNOWN,
                         startTimeMillis,
                         intSizeInKb(mLocalExportDbFile),
                         /* Compressed size will be 0, not yet compressed */

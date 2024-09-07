@@ -67,25 +67,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/navigation_selected_day"
-            style="?attr/spinnerStyle"
-            android:textAlignment="center" />
-
-        <TextView
-            android:id="@+id/disabled_spinner"
-            style="?attr/disabledSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:contentDescription="@string/navigation_selected_day"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:paddingStart="32dp"
-            android:paddingEnd="40dp"
-            android:textAlignment="center" />
+            style="?attr/spinnerStyle"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

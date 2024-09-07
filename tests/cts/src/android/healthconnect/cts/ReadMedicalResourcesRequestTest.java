@@ -92,15 +92,6 @@ public class ReadMedicalResourcesRequestTest {
     }
 
     @Test
-    public void testRequestBuilder_addInvalidDataSourceId_throws() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () ->
-                        new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
-                                .addDataSourceId("foo"));
-    }
-
-    @Test
     public void testRequestBuilder_fromExistingBuilder() {
         ReadMedicalResourcesRequest.Builder original =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
@@ -156,13 +147,18 @@ public class ReadMedicalResourcesRequestTest {
         ReadMedicalResourcesRequest request =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .addDataSourceId(DATA_SOURCE_ID)
+                        .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .setPageSize(100)
                         .setPageToken(PAGE_TOKEN)
                         .build();
         String expectedPropertiesString =
                 String.format(
-                        "medicalResourceType=%d,dataSourceIds={%s},pageSize=%d,pageToken=%s",
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, DATA_SOURCE_ID, 100, PAGE_TOKEN);
+                        "medicalResourceType=%d,dataSourceIds={%s, %s},pageSize=%d,pageToken=%s",
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                        DATA_SOURCE_ID,
+                        DIFFERENT_DATA_SOURCE_ID,
+                        100,
+                        PAGE_TOKEN);
 
         assertThat(request.toString())
                 .isEqualTo(

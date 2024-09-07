@@ -52,7 +52,6 @@ import com.android.server.healthconnect.exportimport.DatabaseContext;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -156,7 +155,6 @@ public class ExportImportApiTest {
         assertThat(stepsRecordsAfterImport).isEqualTo(stepsRecords);
     }
 
-    @Ignore("TODO(b/364855153): Fix before flag is enabled.")
     @RequiresFlagsEnabled({FLAG_EXPORT_IMPORT_FAST_FOLLOW})
     @Test
     public void exportOn_thenExportOff_noJobScheduled() throws Exception {

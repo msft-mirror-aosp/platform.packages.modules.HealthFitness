@@ -131,7 +131,6 @@
     <attr name="permissionGrantButtonList" format="reference"/>
     <attr name="permissionGrantButtonTop" format="reference"/>
     <attr name="permissionGrantButtonBottom" format="reference"/>
-    <attr name="disabledSpinner" format="reference" />
 
     <!-- Dialogs -->
     <attr name="alertDialogTheme" format="reference"/>

@@ -235,7 +235,8 @@ public class DevelopmentDatabaseHelperTest {
      */
     private static void usePhrDataSourceTable(SQLiteDatabase db) {
         UUID uuid = UUID.randomUUID();
-        ReadTableRequest request = MedicalDataSourceHelper.getReadTableRequest(List.of(uuid));
+        ReadTableRequest request =
+                MedicalDataSourceHelper.getReadTableRequest(List.of(uuid.toString()));
         try (Cursor cursor = db.rawQuery(request.getReadCommand(), new String[] {})) {
             assertThat(cursor.getCount()).isEqualTo(0);
         }

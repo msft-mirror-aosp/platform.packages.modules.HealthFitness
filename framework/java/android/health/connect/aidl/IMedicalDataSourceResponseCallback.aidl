@@ -4,7 +4,8 @@ import android.health.connect.aidl.HealthConnectExceptionParcel;
 import android.health.connect.datatypes.MedicalDataSource;
 
 /**
- * Callback for {@link IHealthConnectService#createMedicalDataSource}
+ * Callback for {@link IHealthConnectService#createMedicalDataSource} and
+ * {@link IHealthConnectService#updateMedicalDataSource}
  *
  * @hide
  */

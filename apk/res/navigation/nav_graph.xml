@@ -117,6 +117,9 @@
             android:id="@+id/action_backupAndRestoreSettingsFragment_to_systemUpdateActivity"
             app:destination="@id/systemUpdateActivity" />
         <action
+            android:id="@+id/action_backupAndRestoreSettingsFragment_to_exportSetupActivity"
+            app:destination="@id/exportSetupActivity" />
+        <action
             android:id="@+id/action_backupAndRestoreSettingsFragment_to_scheduledExportFragment"
             app:destination="@id/scheduledExportFragment" />
     </fragment>

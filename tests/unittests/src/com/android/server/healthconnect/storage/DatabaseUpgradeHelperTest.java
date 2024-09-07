@@ -55,7 +55,6 @@ public class DatabaseUpgradeHelperTest {
 
     private static final int NUM_OF_TABLES_AT_MIN_SUPPORTED_VERSION = 57;
     private static final int NUM_OF_TABLES_AT_MINDFULNESS_VERSION = 64;
-    private static final int NUM_OF_TABLES_IN_STAGING = 64;
     private static final int LATEST_DB_VERSION_IN_STAGING = DB_VERSION_MINDFULNESS_SESSION;
 
     private SQLiteDatabase mSQLiteDatabase;
@@ -89,7 +88,6 @@ public class DatabaseUpgradeHelperTest {
     // For historical reasons, we don't have schema tests before mindfulness session, so we opt for
     // testing the easiest: number of table.
     @Test
-    @EnableFlags(FLAG_INFRA_TO_GUARD_DB_CHANGES)
     public void onUpgrade_upToMindfulnessSession_numOfTablesMatches() {
         onUpgrade(mSQLiteDatabase, 0, DB_VERSION_MINDFULNESS_SESSION);
         assertNumberOfTables(mSQLiteDatabase, NUM_OF_TABLES_AT_MINDFULNESS_VERSION);
@@ -109,10 +107,10 @@ public class DatabaseUpgradeHelperTest {
     }
 
     /**
-     * Asserts that the db schema of {@link #LATEST_DB_VERSION_IN_STAGING} matches the desired
+     * Asserts that the db schema of {@link LATEST_DB_VERSION_IN_STAGING} matches the desired
      * schema.
      */
     private void assertDbSchemaUpToDate() {
-        assertNumberOfTables(mSQLiteDatabase, NUM_OF_TABLES_IN_STAGING);
+        assertNumberOfTables(mSQLiteDatabase, NUM_OF_TABLES_AT_MINDFULNESS_VERSION);
     }
 }

@@ -121,7 +121,6 @@ class HealthPermissionReaderTest {
                 HealthPermissions.READ_EXERCISE_ROUTES,
                 HealthPermissions.WRITE_EXERCISE_ROUTE,
                 HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
-                HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE,
                 HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION,
                 HealthPermissions.WRITE_MEDICAL_DATA)
     }

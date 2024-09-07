@@ -35,7 +35,6 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionTy
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.TOTAL_CALORIES_BURNED
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
@@ -71,19 +70,6 @@ constructor(
     private val _appInfo = MutableLiveData<AppMetadata>()
     val appInfo: LiveData<AppMetadata>
         get() = _appInfo
-
-    private val _setOfEntriesToBeDeleted = MutableLiveData<Set<String>>()
-
-    val setOfEntriesToBeDeleted: LiveData<Set<String>>
-        get() = _setOfEntriesToBeDeleted
-
-    private var dataType: DataType? = null
-
-    private val _isDeletionState = MutableLiveData<Boolean>(false)
-    val isDeletionState:LiveData<Boolean>
-        get() = _isDeletionState
-
-    private var dateNavigationText: String? = null
 
     fun loadEntries(
         permissionType: HealthPermissionType,
@@ -250,45 +236,6 @@ constructor(
                 }
             }
         }
-    }
-
-    fun addToDeleteSet(entryID: String){
-        val deleteSet = _setOfEntriesToBeDeleted.value.orEmpty().toMutableSet()
-        deleteSet.add(entryID)
-        _setOfEntriesToBeDeleted.value = deleteSet.toSet()
-    }
-
-    fun removeFromDeleteSet(entryID: String){
-        val deleteSet = _setOfEntriesToBeDeleted.value.orEmpty().toMutableSet()
-        deleteSet.remove(entryID)
-        _setOfEntriesToBeDeleted.value = deleteSet.toSet()
-    }
-
-    private fun resetDeleteSet() {
-        _setOfEntriesToBeDeleted.value = emptySet()
-    }
-
-    fun setIsDeletionState(isDeletionState: Boolean){
-        _isDeletionState.value = isDeletionState
-        if(_isDeletionState.value == false){
-            resetDeleteSet()
-        }
-    }
-
-    fun setDataType(dataType: DataType){
-        this.dataType = dataType
-    }
-
-    fun getDataType(): DataType? {
-        return dataType
-    }
-
-    fun setDateNavigationText(text: String){
-        this.dateNavigationText = text
-    }
-
-    fun getDateNavigationText(): String? {
-        return dateNavigationText
     }
 
     sealed class EntriesFragmentState {

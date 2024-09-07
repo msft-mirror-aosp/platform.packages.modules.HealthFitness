@@ -23,7 +23,6 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SleepSessionEntry
-import com.android.healthconnect.controller.shared.recyclerview.SimpleViewBinder
 import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -36,7 +35,7 @@ class SleepSessionItemViewBinder(
     private val showSecondAction: Boolean = true,
     private val onItemClickedListener: OnClickEntryListener?,
     private val onDeleteEntryListenerClicked: OnDeleteEntryListener?,
-) : SimpleViewBinder<SleepSessionEntry, View> {
+) : ViewBinder<SleepSessionEntry, View> {
 
     private lateinit var logger: HealthConnectLogger
 

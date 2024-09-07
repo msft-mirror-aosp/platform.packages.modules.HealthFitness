@@ -18,50 +18,39 @@ package com.android.server.healthconnect.storage.request;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import static org.junit.Assert.assertThrows;
-
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.List;
+import java.util.Collections;
 
 @RunWith(AndroidJUnit4.class)
 public class CreateIndexRequestTest {
+    private static final String TABLE_NAME = "sample_table";
+    private static final String INDEX_NAME = "index_column";
+    private static final String COLUMN_NAME = "sample_column";
+    private static final String UNIQUE = "UNIQUE";
 
     @Test
-    public void testCreateIndexGetCommand_withUnique() {
-        CreateIndexRequest createIndexRequest =
-                new CreateIndexRequest("sample_table", "sample_idx", true, List.of("col1"));
-
-        assertThat(createIndexRequest.getCommand())
-                .isEqualTo("CREATE UNIQUE INDEX sample_idx ON sample_table (col1)");
-    }
-
-    @Test
-    public void testCreateIndexGetCommand_withoutUnique() {
-        CreateIndexRequest createIndexRequest =
-                new CreateIndexRequest("sample_table", "sample_idx", false, List.of("col1"));
-
-        assertThat(createIndexRequest.getCommand())
-                .isEqualTo("CREATE INDEX sample_idx ON sample_table (col1)");
-    }
-
-    @Test
-    public void testCreateIndexGetCommand_uniqueMultipleColumns() {
+    public void testCreateIndex_getCommandWithUnique() {
         CreateIndexRequest createIndexRequest =
                 new CreateIndexRequest(
-                        "sample_table", "sample_idx", true, List.of("col1", "col2", "col3"));
-
-        assertThat(createIndexRequest.getCommand())
-                .isEqualTo("CREATE UNIQUE INDEX sample_idx ON sample_table (col1, col2, col3)");
+                        TABLE_NAME, INDEX_NAME, true, Collections.singletonList(COLUMN_NAME));
+        assertThat(createIndexRequest.getCommand()).contains(TABLE_NAME);
+        assertThat(createIndexRequest.getCommand()).contains(INDEX_NAME);
+        assertThat(createIndexRequest.getCommand()).contains(COLUMN_NAME);
+        assertThat(createIndexRequest.getCommand()).contains(UNIQUE);
     }
 
     @Test
-    public void testCreateIndexGetCommand_uniqueNoColumns() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new CreateIndexRequest("sample_table", "sample_idx", true, List.of()));
+    public void testCreateIndex_getCommandWithoutUnique() {
+        CreateIndexRequest createIndexRequest =
+                new CreateIndexRequest(
+                        TABLE_NAME, INDEX_NAME, false, Collections.singletonList(COLUMN_NAME));
+        assertThat(createIndexRequest.getCommand()).contains(TABLE_NAME);
+        assertThat(createIndexRequest.getCommand()).contains(INDEX_NAME);
+        assertThat(createIndexRequest.getCommand()).contains(COLUMN_NAME);
+        assertThat(createIndexRequest.getCommand()).doesNotContain(UNIQUE);
     }
 }

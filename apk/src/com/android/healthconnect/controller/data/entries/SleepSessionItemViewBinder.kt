@@ -16,14 +16,13 @@ package com.android.healthconnect.controller.data.entries
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SleepSessionEntry
-import com.android.healthconnect.controller.shared.recyclerview.DeletionViewBinder
 import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -33,8 +32,7 @@ import dagger.hilt.android.EntryPointAccessors
 /** ViewBinder for [SleepSessionEntry]. */
 class SleepSessionItemViewBinder(
     private val onItemClickedListener: OnClickEntryListener?,
-    private val onDeleteEntryListener: OnDeleteEntryListener? = null
-) : DeletionViewBinder<SleepSessionEntry, View> {
+) : ViewBinder<SleepSessionEntry, View> {
 
     private lateinit var logger: HealthConnectLogger
 
@@ -45,16 +43,16 @@ class SleepSessionItemViewBinder(
                 context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
         logger = hiltEntryPoint.logger()
         return LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_sleep_session_entry_new_ia, parent, false)
+            .inflate(R.layout.item_sleep_session_entry, parent, false)
     }
 
-    override fun bind(view: View, data: SleepSessionEntry, index: Int, isDeletionState: Boolean, isChecked: Boolean) {
+    override fun bind(view: View, data: SleepSessionEntry, index: Int) {
         val container = view.findViewById<RelativeLayout>(R.id.item_data_entry_container)
         val divider = view.findViewById<LinearLayout>(R.id.item_data_entry_divider)
         val header = view.findViewById<TextView>(R.id.item_data_entry_header)
         val title = view.findViewById<TextView>(R.id.item_data_entry_title)
         val notes = view.findViewById<TextView>(R.id.item_data_entry_notes)
-        val checkBox = view.findViewById<CheckBox>(R.id.item_checkbox_button)
+        val deleteButton = view.findViewById<ImageButton>(R.id.item_data_entry_delete)
         logger.logImpression(DataEntriesElement.SLEEP_SESSION_ENTRY_BUTTON)
         logger.logImpression(DataEntriesElement.DATA_ENTRY_DELETE_BUTTON)
 
@@ -64,20 +62,11 @@ class SleepSessionItemViewBinder(
         header.contentDescription = data.headerA11y
         notes.isVisible = !data.notes.isNullOrBlank()
         notes.text = data.notes
+        deleteButton.isVisible = false
         divider.isVisible = false
         container.setOnClickListener {
-            if (isDeletionState) {
-                onDeleteEntryListener?.onDeleteEntry(data.uuid, data.dataType, index)
-                checkBox.toggle()
-            } else {
-                logger.logInteraction(DataEntriesElement.SLEEP_SESSION_ENTRY_BUTTON)
-                onItemClickedListener?.onItemClicked(data.uuid, index)
-            }
-        }
-        checkBox.isVisible = isDeletionState
-        checkBox.isChecked = isChecked
-        checkBox.setOnClickListener{
-            onDeleteEntryListener?.onDeleteEntry(data.uuid, data.dataType, index)
+            logger.logInteraction(DataEntriesElement.SLEEP_SESSION_ENTRY_BUTTON)
+            onItemClickedListener?.onItemClicked(data.uuid, index)
         }
     }
 }

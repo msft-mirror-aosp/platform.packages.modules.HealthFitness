@@ -18,7 +18,6 @@ package android.health.connect;
 
 import static android.health.connect.HealthPermissions.HEALTH_PERMISSION_GROUP;
 import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTE;
-import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 
@@ -109,7 +108,6 @@ public class HealthPermissionsTest {
                     HealthPermissions.READ_SKIN_TEMPERATURE,
                     HealthPermissions.READ_MINDFULNESS,
                     HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION,
-                    HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE,
                     HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED,
                     HealthPermissions.WRITE_DISTANCE,
                     HealthPermissions.WRITE_ELEVATION_GAINED,
@@ -281,11 +279,7 @@ public class HealthPermissionsTest {
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalPermissions_returnsValidPermissions() {
         Set<String> permissions = HealthPermissions.getAllMedicalPermissions();
-        assertThat(permissions)
-                .containsAtLeast(
-                        WRITE_MEDICAL_DATA,
-                        READ_MEDICAL_DATA_IMMUNIZATION,
-                        READ_MEDICAL_DATA_ALLERGY_INTOLERANCE);
+        assertThat(permissions).containsAtLeast(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATION);
     }
 
     @Test

@@ -156,7 +156,6 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
                     FormattedEntry.FormattedAggregation::class.java, aggregationViewBinder)
                 .setViewBinder(
                     FormattedEntry.EntryDateSectionHeader::class.java, sectionTitleViewBinder)
-                .setViewModel(entriesViewModel)
                 .build()
         entriesRecyclerView =
             view.findViewById<RecyclerView?>(R.id.data_entries_list).also {

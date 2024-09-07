@@ -28,8 +28,6 @@ import android.os.Environment;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectUserContext;
-import com.android.server.healthconnect.injector.HealthConnectInjector;
-import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
@@ -61,7 +59,6 @@ public class NoMockAutoDeleteServiceTest {
 
     private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
-    private HealthConnectInjector mHealthConnectInjector;
 
     @Before
     public void setup() throws Exception {
@@ -70,7 +67,6 @@ public class NoMockAutoDeleteServiceTest {
         DatabaseHelper.clearAllData(mTransactionManager);
         mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
-        mHealthConnectInjector = HealthConnectInjectorImpl.newBuilderForTest(context).build();
     }
 
     @Test
@@ -88,9 +84,7 @@ public class NoMockAutoDeleteServiceTest {
 
         AutoDeleteService.setRecordRetentionPeriodInDays(30);
         assertThat(AutoDeleteService.getRecordRetentionPeriodInDays()).isEqualTo(30);
-        AutoDeleteService.startAutoDelete(
-                testRule.getUserContext(),
-                mHealthConnectInjector.getHealthDataCategoryPriorityHelper());
+        AutoDeleteService.startAutoDelete(testRule.getUserContext());
 
         try (Cursor cursor = mTransactionManager.read(new ReadTableRequest(STEPS_TABLE_NAME))) {
             List<RecordInternal<?>> records = helper.getInternalRecords(cursor);

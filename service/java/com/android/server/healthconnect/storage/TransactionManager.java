@@ -18,6 +18,7 @@ package com.android.server.healthconnect.storage;
 
 import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.HealthConnectException.ERROR_INTERNAL;
+import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_DELETE;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
 
@@ -312,6 +313,9 @@ public final class TransactionManager {
     @NonNull
     public void populateWithAggregation(AggregateTableRequest aggregateTableRequest) {
         final SQLiteDatabase db = getReadableDb();
+        if (!aggregateTableRequest.getRecordHelper().isRecordOperationsEnabled()) {
+            return;
+        }
         try (Cursor cursor = db.rawQuery(aggregateTableRequest.getAggregationCommand(), null);
                 Cursor metaDataCursor =
                         db.rawQuery(
@@ -339,10 +343,12 @@ public final class TransactionManager {
         for (ReadTableRequest readTableRequest : request.getReadRequests()) {
             RecordHelper<?> helper = readTableRequest.getRecordHelper();
             requireNonNull(helper);
-            try (Cursor cursor = read(readTableRequest)) {
-                List<RecordInternal<?>> internalRecords = helper.getInternalRecords(cursor);
-                populateInternalRecordsWithExtraData(internalRecords, readTableRequest);
-                recordInternals.addAll(internalRecords);
+            if (helper.isRecordOperationsEnabled()) {
+                try (Cursor cursor = read(readTableRequest)) {
+                    List<RecordInternal<?>> internalRecords = helper.getInternalRecords(cursor);
+                    populateInternalRecordsWithExtraData(internalRecords, readTableRequest);
+                    recordInternals.addAll(internalRecords);
+                }
             }
         }
         return recordInternals;
@@ -373,6 +379,10 @@ public final class TransactionManager {
         List<RecordInternal<?>> recordInternalList;
         RecordHelper<?> helper = readTableRequest.getRecordHelper();
         requireNonNull(helper);
+        if (!helper.isRecordOperationsEnabled()) {
+            recordInternalList = new ArrayList<>(0);
+            return Pair.create(recordInternalList, EMPTY_PAGE_TOKEN);
+        }
 
         PageTokenWrapper pageToken;
         try (Cursor cursor = read(readTableRequest)) {

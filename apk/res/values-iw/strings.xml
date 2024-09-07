@@ -273,12 +273,6 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"חיסונים"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"חיסונים"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"הרשאה לקרוא את נתוני החיסונים"</string>
-    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
-    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"מיינדפולנס"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"מיינדפולנס"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"קריאה של נתוני מיינדפולנס"</string>
@@ -357,9 +351,6 @@
     <string name="next_export_text" msgid="6726252793571403846">"פעולת הייצוא הבאה תתחיל בקרוב"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"גיבוי ושחזור"</string>
     <string name="last_export_time" msgid="9205875050823594041">"הייצוא האחרון: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <string name="last_export_time_now" msgid="31498024135933750">"הייצוא האחרון: עכשיו"</string>
-    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{הייצוא האחרון: לפני דקה}one{הייצוא האחרון: לפני # דקות}two{הייצוא האחרון: לפני # דקות}other{הייצוא האחרון: לפני # דקות}}"</string>
-    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{הייצוא האחרון: לפני שעה}one{הייצוא האחרון: לפני # שעות}two{הייצוא האחרון: לפני שעתיים (#)}other{הייצוא האחרון: לפני # שעות}}"</string>
     <string name="no_last_export_message" msgid="8138900854579872667">"הייצוא האחרון: אין"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"ייצוא מתוזמן"</string>
@@ -408,12 +399,6 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"פתיחה"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"בחירת קובץ"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"פינוי מקום אחסון"</string>
-    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"הנתונים לא יוצאו על ידי Health Connect"</string>
-    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"צריך עוד מקום אחסון"</string>
-    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"הייתה בעיה בייצוא ב-<xliff:g id="DATE">%1$s</xliff:g>. עליך להגדיר ייצוא מתוזמן חדש ולנסות שוב."</string>
-    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"אפליקציית Health Connect זקוקה לנפח אחסון של <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> בטלפון כדי להמשיך את הייצוא המתוזמן."</string>
-    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"הגדרה"</string>
-    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"פינוי מקום אחסון"</string>
     <string name="export_back_button" msgid="3550795479165524982">"חזרה"</string>
     <string name="export_next_button" msgid="657930567137105172">"הבא"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"ביטול"</string>
@@ -1022,6 +1007,7 @@
     <string name="select_all" msgid="837499881590001166">"בחירת הכול"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"סנכרון דרך Health Connect"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"אפשר לסנכרן את האפליקציות הקיימות כדי לשתף ביניהן נתונים של בריאות וכושר"</string>
+    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"לא עכשיו"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"הגדרה"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"חיבור אפליקציות נוספות"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"אפשר להתחיל לשתף נתונים בין <xliff:g id="APP_NAME">%s</xliff:g> לבין האפליקציות בתחום הבריאות בטלפון"</string>

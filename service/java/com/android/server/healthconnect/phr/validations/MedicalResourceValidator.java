@@ -16,11 +16,9 @@
 
 package com.android.server.healthconnect.phr.validations;
 
-import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.FhirResource.FhirResourceType;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import static android.health.connect.internal.datatypes.utils.FhirResourceTypeStringToIntMapper.getFhirResourceTypeInt;
@@ -183,9 +181,6 @@ public class MedicalResourceValidator {
         // message.
         if (fhirResourceType == FHIR_RESOURCE_TYPE_IMMUNIZATION) {
             return MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
-        }
-        if (fhirResourceType == FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE) {
-            return MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
         } else {
             throw new IllegalArgumentException(
                     "Resource with type "

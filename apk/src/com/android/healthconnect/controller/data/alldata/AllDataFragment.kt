@@ -30,7 +30,6 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment.Companion.CATEGORY_KEY
 import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
-import com.android.healthconnect.controller.data.entries.EntriesViewModel
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.START_DELETION_KEY
@@ -86,8 +85,6 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     private val noDataPreference: NoDataPreference by pref(KEY_NO_DATA)
 
     private val footerPreference: FooterPreference by pref(KEY_FOOTER)
-
-    private val entriesViewModel: EntriesViewModel by activityViewModels()
 
     // Empty state
     private val onDataSourcesClick: (MenuItem) -> Boolean = { menuItem ->
@@ -292,7 +289,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     }
 
     private fun deleteData() {
-        deletionViewModel.setPermissionTypesDeleteSet(viewModel.setOfPermissionTypesToBeDeleted.value.orEmpty())
+        deletionViewModel.setDeleteSet(viewModel.setOfPermissionTypesToBeDeleted.value.orEmpty())
         childFragmentManager.setFragmentResult(START_DELETION_KEY, bundleOf())
     }
 
@@ -317,8 +314,6 @@ open class AllDataFragment : Hilt_AllDataFragment() {
                 preference.setHealthPermissionType(permissionType)
 
                 preference.setOnPreferenceClickListener(onDeletionMethod(preference)) {
-                    entriesViewModel.setIsDeletionState(false)
-                    entriesViewModel.currentSelectedDate.value = null
                     findNavController()
                         .navigate(
                             R.id.action_allData_to_entriesAndAccess,

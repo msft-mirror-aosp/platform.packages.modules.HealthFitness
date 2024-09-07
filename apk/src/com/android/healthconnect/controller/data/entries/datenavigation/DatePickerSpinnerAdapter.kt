@@ -34,16 +34,11 @@ class DatePickerSpinnerAdapter(
             context.getString(R.string.date_picker_week),
             context.getString(R.string.date_picker_month))) {
     private val dateFormatter = LocalDateTimeFormatter(context)
-    private var text: String? = null
 
     fun setStartTimeAndPeriod(displayedStartTime: Instant, period: DateNavigationPeriod) {
         this.displayedStartDate = displayedStartTime
         this.period = period
         notifyDataSetChanged()
-    }
-
-    fun getText(): String? {
-        return text
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -52,7 +47,6 @@ class DatePickerSpinnerAdapter(
             getItem(position)?.let {
                 val dateView = formatDateTimeForTimePeriod(displayedStartDate, period)
                 view.text = maybeReplaceWithTemporalDeixis(dateView, displayedStartDate, period)
-                text= view.text as String
             }
         }
         return view

@@ -16,7 +16,6 @@
 
 package android.health.connect.internal.datatypes.utils;
 
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
@@ -52,9 +51,6 @@ public final class MedicalResourceTypePermissionMapper {
         sMedicalResourceTypeToReadPermissionMap.put(
                 MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                 HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION);
-        sMedicalResourceTypeToReadPermissionMap.put(
-                MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
-                HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE);
 
         // Populate sMedicalResourceTypeToReadPermissionMap.
         sMedicalResourceTypeToReadPermissionMap.forEach(

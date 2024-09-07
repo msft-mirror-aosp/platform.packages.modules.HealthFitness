@@ -49,7 +49,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.exportimport.ExportDestinationFragment
 import com.android.healthconnect.controller.exportimport.ImportSourceLocationFragment
 import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
 import com.android.healthconnect.controller.service.HealthDataExportManagerModule
@@ -82,28 +81,31 @@ import org.mockito.kotlin.verify
 @UninstallModules(DeviceInfoUtilsModule::class, HealthDataExportManagerModule::class)
 class ImportSourceLocationFragmentTest {
     companion object {
-        private const val TEST_DOCUMENT_PROVIDER_1_TITLE = "Document provider 1"
-        private const val TEST_DOCUMENT_PROVIDER_1_AUTHORITY = "documentprovider1.com"
-        private const val TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE = 1
-        private const val TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY = "Account 1"
+        private val TEST_DOCUMENT_PROVIDER_1_TITLE = "Document provider 1"
+        private val TEST_DOCUMENT_PROVIDER_1_AUTHORITY = "documentprovider1.com"
+        private val TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE = 1
+        private val TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY = "Account 1"
         private val TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI =
             Uri.parse(
-                "content://android.healthconnect.tests.documentprovider1.documents/root/account1"
-            )
-        private const val TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY = "Account 2"
+                "content://android.healthconnect.tests.documentprovider1.documents/root/account1")
+        private val TEST_DOCUMENT_PROVIDER_1_ROOT_1_DOCUMENT_URI =
+            Uri.parse(
+                "content://android.healthconnect.tests.documentprovider1.documents/root/account1/document")
+        private val TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY = "Account 2"
         private val TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI =
             Uri.parse(
-                "content://android.healthconnect.tests.documentprovider1.documents/root/account2"
-            )
+                "content://android.healthconnect.tests.documentprovider1.documents/root/account2")
+        private val TEST_DOCUMENT_PROVIDER_1_ROOT_2_DOCUMENT_URI =
+            Uri.parse(
+                "content://android.healthconnect.tests.documentprovider1.documents/root/account2/document")
 
-        private const val TEST_DOCUMENT_PROVIDER_2_TITLE = "Document provider 2"
-        private const val TEST_DOCUMENT_PROVIDER_2_AUTHORITY = "documentprovider2.com"
-        private const val TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE = 2
-        private const val TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY = "Account"
+        private val TEST_DOCUMENT_PROVIDER_2_TITLE = "Document provider 2"
+        private val TEST_DOCUMENT_PROVIDER_2_AUTHORITY = "documentprovider2.com"
+        private val TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE = 2
+        private val TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY = "Account"
         private val TEST_DOCUMENT_PROVIDER_2_ROOT_URI =
             Uri.parse(
-                "content://android.healthconnect.tests.documentprovider2.documents/root/account"
-            )
+                "content://android.healthconnect.tests.documentprovider2.documents/root/account")
 
         private val EXTERNAL_STORAGE_DOCUMENT_URI =
             Uri.parse("content://com.android.externalstorage.documents/document")
@@ -114,7 +116,7 @@ class ImportSourceLocationFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @BindValue val healthDataExportManager: HealthDataExportManager = FakeHealthDataExportManager()
-    private val fakeHealthDataExportManager = healthDataExportManager as FakeHealthDataExportManager
+    val fakeHealthDataExportManager = healthDataExportManager as FakeHealthDataExportManager
     @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
@@ -185,16 +187,13 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
-                ),
-            )
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -204,20 +203,14 @@ class ImportSourceLocationFragmentTest {
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY), isDisplayed())
-                    )
-                )
-            )
+                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY), isDisplayed()))))
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_2_TITLE))
             .check(matches(isDisplayed()))
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_2_TITLE))
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withText(TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY), isDisplayed())
-                    )
-                )
-            )
+                        allOf(withText(TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY), isDisplayed()))))
     }
 
     @Test
@@ -229,16 +222,13 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
-                ),
-            )
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -246,18 +236,12 @@ class ImportSourceLocationFragmentTest {
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withId(R.id.item_document_provider_radio_button), isNotChecked())
-                    )
-                )
-            )
+                        allOf(withId(R.id.item_document_provider_radio_button), isNotChecked()))))
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_2_TITLE))
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withId(R.id.item_document_provider_radio_button), isNotChecked())
-                    )
-                )
-            )
+                        allOf(withId(R.id.item_document_provider_radio_button), isNotChecked()))))
     }
 
     @Test
@@ -269,16 +253,13 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
-                ),
-            )
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -288,10 +269,7 @@ class ImportSourceLocationFragmentTest {
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withId(R.id.item_document_provider_radio_button), isChecked())
-                    )
-                )
-            )
+                        allOf(withId(R.id.item_document_provider_radio_button), isChecked()))))
     }
 
     @Test
@@ -303,16 +281,13 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
-                ),
-            )
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -323,18 +298,12 @@ class ImportSourceLocationFragmentTest {
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withId(R.id.item_document_provider_radio_button), isNotChecked())
-                    )
-                )
-            )
+                        allOf(withId(R.id.item_document_provider_radio_button), isNotChecked()))))
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_2_TITLE))
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withId(R.id.item_document_provider_radio_button), isChecked())
-                    )
-                )
-            )
+                        allOf(withId(R.id.item_document_provider_radio_button), isChecked()))))
     }
 
     @Test
@@ -346,16 +315,13 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
-                ),
-            )
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -373,16 +339,13 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
-                ),
-            )
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -405,16 +368,13 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
-                ),
-            )
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.import_nav_graph)
@@ -447,9 +407,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                )
-            )
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.import_nav_graph)
@@ -475,9 +433,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                )
-            )
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.import_nav_graph)
@@ -503,23 +459,19 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_1_TITLE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
-                ),
-            )
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -527,10 +479,7 @@ class ImportSourceLocationFragmentTest {
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withId(R.id.item_document_provider_summary), not(isDisplayed()))
-                    )
-                )
-            )
+                        allOf(withId(R.id.item_document_provider_summary), not(isDisplayed())))))
     }
 
     @Test
@@ -542,23 +491,19 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_1_TITLE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
-                ),
-            )
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -584,23 +529,19 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_1_TITLE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
-                ),
-            )
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -614,10 +555,7 @@ class ImportSourceLocationFragmentTest {
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY), isDisplayed())
-                    )
-                )
-            )
+                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY), isDisplayed()))))
     }
 
     @Test
@@ -629,23 +567,19 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_1_TITLE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
-                ),
-            )
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -735,9 +669,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                )
-            )
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -754,9 +686,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                )
-            )
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -772,9 +702,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                )
-            )
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -794,16 +722,13 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_1_TITLE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
-            )
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -819,16 +744,13 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_1_TITLE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
-            )
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -854,16 +776,13 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_1_TITLE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
-            )
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -877,10 +796,7 @@ class ImportSourceLocationFragmentTest {
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY), isDisplayed())
-                    )
-                )
-            )
+                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY), isDisplayed()))))
     }
 
     @Test
@@ -892,16 +808,13 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_1_TITLE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
-            )
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -928,9 +841,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                )
-            )
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -948,9 +859,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                )
-            )
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -969,9 +878,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                )
-            )
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -989,9 +896,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                )
-            )
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -1009,9 +914,7 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                )
-            )
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         launchFragment<ImportSourceLocationFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.import_nav_graph)
@@ -1025,67 +928,6 @@ class ImportSourceLocationFragmentTest {
     }
 
     @Test
-    fun importSourceLocationFragment_switchBackToPreviousSelectedDocumentProvider_previousSelectedAccountIsChecked() {
-        val documentProviders =
-            listOf(
-                ExportImportDocumentProvider(
-                    TEST_DOCUMENT_PROVIDER_1_TITLE,
-                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
-                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
-                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
-                ExportImportDocumentProvider(
-                    TEST_DOCUMENT_PROVIDER_1_TITLE,
-                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
-                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
-                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
-                ExportImportDocumentProvider(
-                    TEST_DOCUMENT_PROVIDER_2_TITLE,
-                    TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
-                    TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
-                    TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
-                ),
-            )
-        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
-        launchFragment<ExportDestinationFragment>(Bundle())
-
-        // Selects the second account for provider 1.
-        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
-        onView(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY))
-            .inRoot(isDialog())
-            .perform(click())
-        onView(withText("Done")).inRoot(isDialog()).perform(click())
-        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE))
-            .check(
-                matches(
-                    hasDescendant(
-                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY), isDisplayed())
-                    )
-                )
-            )
-        // Selects the provider 2.
-        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_2_TITLE)).perform(click())
-        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_2_TITLE))
-            .check(
-                matches(
-                    hasDescendant(
-                        allOf(withId(R.id.item_document_provider_radio_button), isChecked())
-                    )
-                )
-            )
-        // Switches back to provider 1.
-        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
-
-        onView(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY))
-            .inRoot(isDialog())
-            .check(matches(isChecked()))
-    }
-
-    @Test
     fun importSourceLocationFragment_orientationChanged_keepsSelection() {
         val documentProviders =
             listOf(
@@ -1094,23 +936,19 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_1_TITLE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
-                ),
-            )
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         val scenario = launchFragment<ImportSourceLocationFragment>(Bundle())
 
@@ -1127,18 +965,12 @@ class ImportSourceLocationFragmentTest {
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withId(R.id.item_document_provider_radio_button), isChecked())
-                    )
-                )
-            )
+                        allOf(withId(R.id.item_document_provider_radio_button), isChecked()))))
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE))
             .check(
                 matches(
                     hasDescendant(
-                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY), isDisplayed())
-                    )
-                )
-            )
+                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY), isDisplayed()))))
     }
 
     @Test
@@ -1150,23 +982,19 @@ class ImportSourceLocationFragmentTest {
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_1_TITLE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
-                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
-                ),
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
                 ExportImportDocumentProvider(
                     TEST_DOCUMENT_PROVIDER_2_TITLE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_SUMMARY,
                     TEST_DOCUMENT_PROVIDER_2_ICON_RESOURCE,
                     TEST_DOCUMENT_PROVIDER_2_ROOT_URI,
-                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY,
-                ),
-            )
+                    TEST_DOCUMENT_PROVIDER_2_AUTHORITY))
         fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
         val scenario = launchFragment<ImportSourceLocationFragment>(Bundle())
 

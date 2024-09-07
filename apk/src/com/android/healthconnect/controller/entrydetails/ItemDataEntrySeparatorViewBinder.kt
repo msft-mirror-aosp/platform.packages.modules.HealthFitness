@@ -18,10 +18,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.ItemDataEntrySeparator
-import com.android.healthconnect.controller.shared.recyclerview.SimpleViewBinder
 import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
 
-class ItemDataEntrySeparatorViewBinder : SimpleViewBinder<ItemDataEntrySeparator, View> {
+class ItemDataEntrySeparatorViewBinder : ViewBinder<ItemDataEntrySeparator, View> {
     override fun newView(parent: ViewGroup): View {
         return LayoutInflater.from(parent.context)
             .inflate(R.layout.item_data_entry_separator, parent, false)

@@ -17,8 +17,6 @@ package com.android.healthconnect.controller.tests.data.entries.datenavigation
 
 import android.content.Context
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TextView
@@ -49,7 +47,6 @@ class DateNavigationViewTest {
     private lateinit var previousDayButton: ImageButton
     private lateinit var nextDayButton: ImageButton
     private lateinit var datePickerSpinner: Spinner
-    private lateinit var disabledSpinner: TextView
 
     private lateinit var context: Context
     private val dateChangedListener =
@@ -64,7 +61,6 @@ class DateNavigationViewTest {
 
         dateNavigationView =
             DateNavigationView(context = context, attrs = null, timeSource = timeSource)
-        disabledSpinner = dateNavigationView.findViewById(R.id.disabled_spinner)
         datePickerSpinner = dateNavigationView.findViewById(R.id.date_picker_spinner) as Spinner
         previousDayButton = dateNavigationView.findViewById(R.id.navigation_previous_day)
         nextDayButton = dateNavigationView.findViewById(R.id.navigation_next_day)
@@ -72,7 +68,7 @@ class DateNavigationViewTest {
 
     @Test
     fun initDateNavigationPreference_titleSetToToday() {
-        assertThat(datePickerSpinner.visibility).isEqualTo(VISIBLE)
+        assertThat(datePickerSpinner.visibility).isEqualTo(View.VISIBLE)
 
         assertSpinnerView("Today")
     }
@@ -250,18 +246,6 @@ class DateNavigationViewTest {
         assertSpinnerDropDownView("Day", position = 0)
         assertSpinnerDropDownView("Week", position = 1)
         assertSpinnerDropDownView("Month", position = 2)
-    }
-
-    @Test
-    fun disableDateNavigationView_disablesCorrectly(){
-        dateNavigationView.setDate(NOW.minus(Duration.ofDays(1)))
-        dateNavigationView.disableDateNavigationView(isEnabled = false, text = "Yesterday")
-
-        assertSpinnerView("Yesterday")
-        assertThat(datePickerSpinner.visibility).isEqualTo(GONE)
-        assertThat(disabledSpinner.visibility).isEqualTo(VISIBLE)
-        assertThat(nextDayButton.isEnabled).isFalse()
-        assertThat(previousDayButton.isEnabled).isFalse()
     }
 
     private fun assertSpinnerView(expected: String) {
