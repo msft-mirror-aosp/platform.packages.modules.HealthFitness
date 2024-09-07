@@ -273,6 +273,12 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Ónæming"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"ónæming"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Lesa ónæmingu"</string>
+    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
+    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Núvitund"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"núvitund"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Lesa núvitund"</string>
@@ -351,12 +357,9 @@
     <string name="next_export_text" msgid="6726252793571403846">"Næsti útflutningur hefst fljótlega"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Öryggisafritun og endurheimt"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Síðasti útflutningur: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for last_export_time_now (31498024135933750) -->
-    <skip />
-    <!-- no translation found for last_export_time_minutes_ago (5279296486877765961) -->
-    <skip />
-    <!-- no translation found for last_export_time_hours_ago (3174986640795245343) -->
-    <skip />
+    <string name="last_export_time_now" msgid="31498024135933750">"Síðasti útflutningur: núna"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Síðasti útflutningur: fyrir einni mínútu}one{Síðasti útflutningur: fyrir # mínútu}other{Síðasti útflutningur: fyrir # mínútum}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Síðasti útflutningur: fyrir einni klukkustund}one{Síðasti útflutningur: fyrir # klukkustund}other{Síðasti útflutningur: fyrir # klukkustundum}}"</string>
     <string name="no_last_export_message" msgid="8138900854579872667">"Síðasti útflutningur: ekkert"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Tímasettur útflutningur"</string>
@@ -405,18 +408,12 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Opna"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Velja skrá"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Losa um pláss"</string>
-    <!-- no translation found for export_notification_error_generic_error_title (7940091379629095465) -->
-    <skip />
-    <!-- no translation found for export_notification_error_more_space_needed_title (5089783781556500431) -->
-    <skip />
-    <!-- no translation found for export_notification_error_generic_error_body_text (4161925150551602640) -->
-    <skip />
-    <!-- no translation found for export_notification_error_more_space_needed_body_text (5519192430780383427) -->
-    <skip />
-    <!-- no translation found for export_notification_set_up_intent_button (1484836974815713693) -->
-    <skip />
-    <!-- no translation found for export_notification_free_up_space_intent_button (2902823222861202203) -->
-    <skip />
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Heilsutengingu tókst ekki að flytja út gögn"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Aukins geymslurýmis krafist"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Vandamál kom upp við útflutninginn fyrir <xliff:g id="DATE">%1$s</xliff:g>. Settu upp nýja útflutningsáætlun og reyndu aftur."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Heilsutenging þarf <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> geymslurými í símanum til að halda áfram með áætlaðan útflutning."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"Setja upp"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Losa geymslupláss"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Til baka"</string>
     <string name="export_next_button" msgid="657930567137105172">"Áfram"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"Hætta við"</string>
@@ -1025,7 +1022,6 @@
     <string name="select_all" msgid="837499881590001166">"Velja allt"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Byrja að nota Heilsutengingu"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Samstilltu fyrstu forritin þín til að deila heilsu- og hreystigögnum á milli þeirra"</string>
-    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"Ekki núna"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Setja upp"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Tengja fleiri forrit"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Byrja að deila gögnum á milli <xliff:g id="APP_NAME">%s</xliff:g> og heilsuforritsins í símanum þínum"</string>

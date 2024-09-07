@@ -37,6 +37,7 @@ import static android.healthconnect.cts.utils.DataFactory.getRecordsAndIdentifie
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_FIELD_MISSING_INVALID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_ID_EMPTY;
@@ -2324,6 +2325,90 @@ public class HealthConnectManagerTest {
 
         mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
         assertThat(receiver.getResponse().getMedicalResources()).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testReadMedicalResources_byRequest_filtersByMedicalResourceType()
+            throws InterruptedException {
+        // Create two data sources.
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
+        // Insert two Immunizations and one Allergy.
+        MedicalResource immunization1 =
+                upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource immunization2 =
+                upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
+        // Read all Immunizations.
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesRequest allImmunizationsRequest =
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
+
+        mManager.readMedicalResources(
+                allImmunizationsRequest, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse().getMedicalResources())
+                .containsExactly(immunization1, immunization2);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testReadMedicalResources_byRequest_filtersByMedicalResourceTypeAndOneDataSource()
+            throws InterruptedException {
+        // Create two data sources.
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
+        // Insert two Immunizations and one Allergy.
+        MedicalResource immunizationFromDataSource1 =
+                upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
+        // Read Immunizations only from data source 1.
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesRequest immunizationsFromDataSource1Request =
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addDataSourceId(dataSource1.getId())
+                        .build();
+
+        mManager.readMedicalResources(
+                immunizationsFromDataSource1Request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse().getMedicalResources())
+                .containsExactly(immunizationFromDataSource1);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testReadMedicalResources_byRequest_filtersByMedicalResourceTypeAndBothDataSources()
+            throws InterruptedException {
+        // Create two data sources.
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
+        // Insert two Immunizations and one Allergy.
+        MedicalResource immunizationFromDataSource1 =
+                upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource immunizationFromDataSource2 =
+                upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
+        // Read Immunizations only from both data sources.
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesRequest immunizationsFromBothDataSourcesRequest =
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addDataSourceId(dataSource1.getId())
+                        .addDataSourceId(dataSource2.getId())
+                        .build();
+
+        mManager.readMedicalResources(
+                immunizationsFromBothDataSourcesRequest,
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        assertThat(receiver.getResponse().getMedicalResources())
+                .containsExactly(immunizationFromDataSource1, immunizationFromDataSource2);
     }
 
     @Test

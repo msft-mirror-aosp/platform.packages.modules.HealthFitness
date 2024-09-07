@@ -273,6 +273,12 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"खोप"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"खोप"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"खोपसम्बन्धी जानकारी रिड गर्नुहोस्"</string>
+    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
+    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"सचेतना"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"सचेतना"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"सचेतना सत्रसम्बन्धी डेटा रिड गर्नुहोस्"</string>
@@ -351,12 +357,9 @@
     <string name="next_export_text" msgid="6726252793571403846">"एक्स्पोर्ट गर्ने अर्को प्रक्रिया चाँडै सुरु हुँदै छ"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ब्याकअप र रिस्टोर"</string>
     <string name="last_export_time" msgid="9205875050823594041">"पछिल्लो पटक एक्स्पोर्ट गरिएको मिति: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for last_export_time_now (31498024135933750) -->
-    <skip />
-    <!-- no translation found for last_export_time_minutes_ago (5279296486877765961) -->
-    <skip />
-    <!-- no translation found for last_export_time_hours_ago (3174986640795245343) -->
-    <skip />
+    <string name="last_export_time_now" msgid="31498024135933750">"पछिल्लो पटक एक्स्पोर्ट गरिएको समय: अहिले"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{पछिल्लो पटक एक्स्पोर्ट गरिएको समय: १ मिनेटअघि}other{पछिल्लो पटक एक्स्पोर्ट गरिएको समय: # मिनेटअघि}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{पछिल्लो पटक एक्स्पोर्ट गरिएको समय: १ घण्टाअघि}other{पछिल्लो पटक एक्स्पोर्ट गरिएको समय: # घण्टाअघि}}"</string>
     <string name="no_last_export_message" msgid="8138900854579872667">"अन्तिम पटक एक्स्पोर्ट गरिएको मिति र समय: कुनै पनि छैन"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"समय तोकिएको एक्स्पोर्ट"</string>
@@ -405,18 +408,12 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"खोल्नुहोस्"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"फाइल छनौट गर्नुहोस्"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"ठाउँ खाली गर्नुहोस्"</string>
-    <!-- no translation found for export_notification_error_generic_error_title (7940091379629095465) -->
-    <skip />
-    <!-- no translation found for export_notification_error_more_space_needed_title (5089783781556500431) -->
-    <skip />
-    <!-- no translation found for export_notification_error_generic_error_body_text (4161925150551602640) -->
-    <skip />
-    <!-- no translation found for export_notification_error_more_space_needed_body_text (5519192430780383427) -->
-    <skip />
-    <!-- no translation found for export_notification_set_up_intent_button (1484836974815713693) -->
-    <skip />
-    <!-- no translation found for export_notification_free_up_space_intent_button (2902823222861202203) -->
-    <skip />
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect ले जानकारी एक्स्पोर्ट गर्न सकेन"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"अझ धेरै खाली ठाउँ चाहिन्छ"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"<xliff:g id="DATE">%1$s</xliff:g> मा निर्धारित गरिएको जानकारी एक्स्पोर्ट गर्ने क्रममा कुनै समस्या आयो। कृपया एक्स्पोर्ट गर्ने नयाँ निर्धारित समय सेटअप गरेर फेरि प्रयास गर्नुहोस्।"</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Health Connect लाई निर्धारित समयमा एक्स्पोर्ट गर्ने कार्य जारी राख्नका निम्ति तपाईंको फोनको भण्डारणमा <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> खाली ठाउँ चाहिन्छ।"</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"सेटअप गर्नुहोस्"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"ठाउँ खाली गर्नुहोस्"</string>
     <string name="export_back_button" msgid="3550795479165524982">"पछाडि"</string>
     <string name="export_next_button" msgid="657930567137105172">"अर्को"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"रद्द गर्नुहोस्"</string>
@@ -1025,7 +1022,6 @@
     <string name="select_all" msgid="837499881590001166">"सबै चयन गर्नुहोस्"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connect प्रयोग गर्न थाल्नुहोस्"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"तपाईं सर्वप्रथम जुन जुन एपहरूका बिचमा स्वास्थ्य तथा तन्दुरुस्तीसम्बन्धी डेटा सेयर गर्न चाहनुहुन्छ ती एपहरू सिंक गर्नुहोस्"</string>
-    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"अहिले होइन"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"सेटअप गर्नुहोस्"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"थप एपहरू कनेक्ट गर्नुहोस्"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"<xliff:g id="APP_NAME">%s</xliff:g> र तपाईंको फोनमा भएका स्वास्थ्यसम्बन्धी एपहरूका बिचमा डेटा सेयर गर्न थाल्नुहोस्"</string>

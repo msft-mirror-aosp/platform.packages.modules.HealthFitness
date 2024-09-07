@@ -192,7 +192,7 @@ public class MedicalDataSourceHelper {
      * @param ids the ids to limit to.
      */
     @NonNull
-    private static WhereClauses getReadTableWhereClause(@NonNull List<UUID> ids) {
+    public static WhereClauses getReadTableWhereClause(@NonNull List<UUID> ids) {
         return new WhereClauses(AND)
                 .addWhereInClauseWithoutQuotes(
                         DATA_SOURCE_UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(ids));

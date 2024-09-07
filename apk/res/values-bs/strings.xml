@@ -273,6 +273,12 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Imunizacija"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"imunizacija"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Čitanje podataka o imunizaciji"</string>
+    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
+    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Usredotočena svjesnost"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"usredotočena svjesnost"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Čitanje podataka o usredotočenoj svjesnosti"</string>
@@ -351,12 +357,9 @@
     <string name="next_export_text" msgid="6726252793571403846">"Uskoro počinje sljedeći izvoz"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Izrada sigurnosne kopije i vraćanje"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Posljednji izvoz: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for last_export_time_now (31498024135933750) -->
-    <skip />
-    <!-- no translation found for last_export_time_minutes_ago (5279296486877765961) -->
-    <skip />
-    <!-- no translation found for last_export_time_hours_ago (3174986640795245343) -->
-    <skip />
+    <string name="last_export_time_now" msgid="31498024135933750">"Posljednji izvoz: sada"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Posljednji izvoz: prije 1 minute}one{Posljednji izvoz: prije # minute}few{Posljednji izvoz: prije # minute}other{Posljednji izvoz: prije # minuta}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Posljednji izvoz: prije 1 sata}one{Posljednji izvoz: prije # sata}few{Posljednji izvoz: prije # sata}other{Posljednji izvoz: prije # sati}}"</string>
     <string name="no_last_export_message" msgid="8138900854579872667">"Posljednji izvoz: nema"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Zakazani izvoz"</string>
@@ -405,18 +408,12 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Otvori"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Odaberite fajl"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Oslobodite prostor"</string>
-    <!-- no translation found for export_notification_error_generic_error_title (7940091379629095465) -->
-    <skip />
-    <!-- no translation found for export_notification_error_more_space_needed_title (5089783781556500431) -->
-    <skip />
-    <!-- no translation found for export_notification_error_generic_error_body_text (4161925150551602640) -->
-    <skip />
-    <!-- no translation found for export_notification_error_more_space_needed_body_text (5519192430780383427) -->
-    <skip />
-    <!-- no translation found for export_notification_set_up_intent_button (1484836974815713693) -->
-    <skip />
-    <!-- no translation found for export_notification_free_up_space_intent_button (2902823222861202203) -->
-    <skip />
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect nije uspio izvesti podatke"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Potrebno je više prostora"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Došlo je do problema prilikom izvoza za dan <xliff:g id="DATE">%1$s</xliff:g>. Postavite novi zakazani izvoz i pokušajte ponovo."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Health Connect treba <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> prostora za pohranu na telefonu da nastavi sa zakazanim izvozom."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"Postavi"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Oslobodite prostor"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Nazad"</string>
     <string name="export_next_button" msgid="657930567137105172">"Naprijed"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"Otkaži"</string>
@@ -1025,7 +1022,6 @@
     <string name="select_all" msgid="837499881590001166">"Odaberi sve"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Počnite koristiti Health Connect"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sinhronizirajte prve aplikacije da međusobno dijele podatke o zdravlju i fitnesu"</string>
-    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"Ne sada"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Postavite"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Povežite više aplikacija"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Počnite dijeliti podatke između aplikacije <xliff:g id="APP_NAME">%s</xliff:g> i aplikacija za zdravlje na telefonu"</string>
