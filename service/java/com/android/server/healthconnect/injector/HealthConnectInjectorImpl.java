@@ -18,10 +18,10 @@ package com.android.server.healthconnect.injector;
 
 import android.content.Context;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
@@ -39,6 +39,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final PackageInfoUtils mPackageInfoUtils;
     private final TransactionManager mTransactionManager;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private final PriorityMigrationHelper mPriorityMigrationHelper;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -57,24 +58,31 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mHealthDataCategoryPriorityHelper == null
                         ? HealthDataCategoryPriorityHelper.getInstance()
                         : builder.mHealthDataCategoryPriorityHelper;
+        mPriorityMigrationHelper =
+                builder.mPriorityMigrationHelper == null
+                        ? PriorityMigrationHelper.getInstance(
+                                mHealthDataCategoryPriorityHelper, mTransactionManager)
+                        : builder.mPriorityMigrationHelper;
     }
 
-    @NonNull
     @Override
     public PackageInfoUtils getPackageInfoUtils() {
         return mPackageInfoUtils;
     }
 
-    @NonNull
     @Override
     public TransactionManager getTransactionManager() {
         return mTransactionManager;
     }
 
-    @NonNull
     @Override
     public HealthDataCategoryPriorityHelper getHealthDataCategoryPriorityHelper() {
         return mHealthDataCategoryPriorityHelper;
+    }
+
+    @Override
+    public PriorityMigrationHelper getPriorityMigrationHelper() {
+        return mPriorityMigrationHelper;
     }
 
     /**
@@ -99,6 +107,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private PackageInfoUtils mPackageInfoUtils;
         @Nullable private TransactionManager mTransactionManager;
         @Nullable private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+        @Nullable private PriorityMigrationHelper mPriorityMigrationHelper;
 
         private Builder(Context context) {
             mHealthConnectUserContext = new HealthConnectUserContext(context, context.getUser());
@@ -123,6 +132,13 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
             Objects.requireNonNull(healthDataCategoryPriorityHelper);
             mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
+            return this;
+        }
+
+        /** Set fake or custom PriorityMigrationHelper */
+        public Builder setPriorityMigrationHelper(PriorityMigrationHelper priorityMigrationHelper) {
+            Objects.requireNonNull(priorityMigrationHelper);
+            mPriorityMigrationHelper = priorityMigrationHelper;
             return this;
         }
 
