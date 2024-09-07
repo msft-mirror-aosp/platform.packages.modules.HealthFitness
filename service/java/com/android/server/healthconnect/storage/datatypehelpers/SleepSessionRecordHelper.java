@@ -25,14 +25,11 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.health.connect.HealthConnectException;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
-import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.SleepSessionRecordInternal;
 import android.util.Pair;
 
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
@@ -121,12 +118,6 @@ public final class SleepSessionRecordHelper
     }
 
     @Override
-    public boolean isRecordOperationsEnabled() {
-        return HealthConnectDeviceConfigManager.getInitialisedInstance()
-                .isSessionDatatypeFeatureEnabled();
-    }
-
-    @Override
     List<UpsertTableRequest> getChildTableUpsertRequests(
             @NonNull SleepSessionRecordInternal record) {
         if (record.getSleepStages() != null) {
@@ -146,15 +137,5 @@ public final class SleepSessionRecordHelper
     @Override
     SqlJoin getJoinForReadRequest() {
         return SleepStageRecordHelper.getJoinReadRequest(getMainTableName());
-    }
-
-    @Override
-    public void checkRecordOperationsAreEnabled(RecordInternal<?> recordInternal) {
-        super.checkRecordOperationsAreEnabled(recordInternal);
-        if (!isRecordOperationsEnabled()) {
-            throw new HealthConnectException(
-                    HealthConnectException.ERROR_UNSUPPORTED_OPERATION,
-                    "Writing sleep sessions is not supported.");
-        }
     }
 }

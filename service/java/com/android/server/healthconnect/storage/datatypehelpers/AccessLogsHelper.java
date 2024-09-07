@@ -269,8 +269,9 @@ public final class AccessLogsHelper extends DatabaseHelper {
         return columnInfo;
     }
 
+    /** Gets the columns to add for an {@link AlterTableRequest} for adding PHR specific columns, */
     @NonNull
-    private static List<Pair<String, String>> getPhrAccessLogsColumnInfo() {
+    public static List<Pair<String, String>> getPhrAccessLogsColumnInfo() {
         return List.of(
                 // This is list of comma separated integers that represent
                 // the medicalResourceTypes accessed.

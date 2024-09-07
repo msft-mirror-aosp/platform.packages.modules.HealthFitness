@@ -86,6 +86,23 @@ public class DevelopmentDatabaseHelperTest {
 
     @Test
     @EnableFlags(FLAG_DEVELOPMENT_DATABASE)
+    public void testChangesIdempotent() {
+        // Database changes should be idempotent so you don't leave a teammate on a development
+        // database that can't be fixed after switching the flag on or off.
+        // Test this is true by running onOpen twice, dropping the version in between.
+
+        try (HealthConnectDatabase helper = new HealthConnectDatabase(mContext)) {
+            // make sure a database file exists
+            SQLiteDatabase db = helper.getWritableDatabase();
+            // Drop the settings table to make sure the update code is run completely a second time.
+            DevelopmentDatabaseHelper.dropDevelopmentSettingsTable(db);
+            // Force a second run of onOpen(), and make sure there are no errors
+            DevelopmentDatabaseHelper.onOpen(db);
+        }
+    }
+
+    @Test
+    @EnableFlags(FLAG_DEVELOPMENT_DATABASE)
     public void testOnOpen_readOnlyDatabase_successful() {
         // GIVEN we have a guaranteed read only database.
         try (HealthConnectDatabase helper = new HealthConnectDatabase(mContext)) {
@@ -218,8 +235,7 @@ public class DevelopmentDatabaseHelperTest {
      */
     private static void usePhrDataSourceTable(SQLiteDatabase db) {
         UUID uuid = UUID.randomUUID();
-        ReadTableRequest request =
-                MedicalDataSourceHelper.getReadTableRequest(List.of(uuid.toString()));
+        ReadTableRequest request = MedicalDataSourceHelper.getReadTableRequest(List.of(uuid));
         try (Cursor cursor = db.rawQuery(request.getReadCommand(), new String[] {})) {
             assertThat(cursor.getCount()).isEqualTo(0);
         }

@@ -67,10 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"ආර්තව චක්‍ර නිරීක්‍ෂණය"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"පෝෂණය"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"පෝෂණය"</string>
-    <!-- no translation found for wellness_category_uppercase (5900304317921557780) -->
-    <skip />
-    <!-- no translation found for wellness_category_lowercase (1327642415424743588) -->
-    <skip />
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"සුවතාව"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"සුවතාව"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"දත්ත බ්‍රවුස් කරන්න"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"දත්ත කළමනා කරන්න"</string>
     <string name="export_data_button" msgid="7783329820434117744">"දත්ත නිර්යාත කරන්න"</string>
@@ -275,6 +273,12 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"ප්‍රතිශක්තිකරණය"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"ප්‍රතිශක්තිකරණය"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"ප්‍රතිශක්තිකරණය කියවන්න"</string>
+    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
+    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"සිහිකල්පනාව"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"සිහිකල්පනාව"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"සිහිකල්පනාව කියවන්න"</string>
@@ -353,6 +357,10 @@
     <string name="next_export_text" msgid="6726252793571403846">"මීළඟ අපනයනය ඉක්මනින් ආරම්භ වේ"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"උපස්ථ සහ ප්‍රතිසාධනය කිරීම"</string>
     <string name="last_export_time" msgid="9205875050823594041">"අවසන් නිර්යාත කිරීම: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="last_export_time_now" msgid="31498024135933750">"අවසන් නිර්යාත කිරීම: දැන්"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{අවසන් නිර්යාත කිරීම: මිනිත්තු 1කට පෙර}one{අවසන් නිර්යාත කිරීම: මිනිත්තු #කට පෙර}other{අවසන් නිර්යාත කිරීම: මිනිත්තු #කට පෙර}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{අවසන් නිර්යාත කිරීම: පැය 1කට පෙර}one{අවසන් නිර්යාත කිරීම: පැය #කට පෙර}other{අවසන් නිර්යාත කිරීම: පැය #කට පෙර}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"අවසන් නිර්යාතය: නැත"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"කාලසටහන්ගත නිර්යාත කිරීම"</string>
     <string name="import_data" msgid="404502315533233094">"දත්ත ආයාත කරන්න"</string>
@@ -400,6 +408,12 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"විවෘත කරන්න"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"ගොනුව තෝරන්න"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"ඉඩ නිදහස් කර ගන්න"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect හට දත්ත නිර්යාත කළ නොහැකි විය"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"තව ඉඩ අවශ්‍යයි"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"<xliff:g id="DATE">%1$s</xliff:g> සඳහා ආයාත කිරීමේ දී ගැටලුවක් ඇති විය. නව කාලසටහන්ගත නිර්යාතයක් පිහිටුවා නැවත උත්සාහ කරන්න."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"කාල සටහන්ගත නිර්යාත කිරීම දිගටම කරගෙන යාමට Health Connect හට ඔබේ දුරකථනයෙහි <xliff:g id="SPACE_NEEDED">%1$s</xliff:g>ක ආචයන ඉඩක් අවශ්‍ය වේ."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"පිහිටුවන්න"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"ඉඩ නිදහස් කර ගන්න"</string>
     <string name="export_back_button" msgid="3550795479165524982">"ආපසු"</string>
     <string name="export_next_button" msgid="657930567137105172">"මීළඟ"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"අවලංගු කරන්න"</string>
@@ -657,18 +671,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"සැහැල්ලු නින්ද"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"ගැඹුරු නින්ද"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"නොදනී"</string>
-    <!-- no translation found for mindfulness_type_breathing (3175952922332753437) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_meditation (4453014833652749254) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_movement (600930756800362680) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_music (7041364137895485917) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_other (793524328911038908) -->
-    <skip />
-    <!-- no translation found for mindfulness_type_unguided (2367259868577157922) -->
-    <skip />
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"හුස්ම ගැනීම"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"භාවනාව"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"චලනය"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"සංගීතය"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"වෙනත්"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"මගපෙන්වීමක් නැත"</string>
     <string name="minute_duration" msgid="9035288227090160206">"මිනි <xliff:g id="MINUTE">%1$s</xliff:g>ක්"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"පැ<xliff:g id="HOUR">%1$s</xliff:g> මි<xliff:g id="MIN">%2$s</xliff:g>"</string>
     <string name="hour_duration" msgid="3472489613837138711">"පැය <xliff:g id="HOUR">%1$s</xliff:g>ක්"</string>
@@ -1014,7 +1022,6 @@
     <string name="select_all" msgid="837499881590001166">"සියල්ල තෝරන්න"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connect භාවිත කිරීම අරඹන්න"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"ඔවුන් අතර සෞඛ්‍ය සහ යෝග්‍යතා දත්ත බෙදා ගැනීමට ඔබේ පළමු යෙදුම් සමමුහුර්ත කරන්න"</string>
-    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"දැන් නොවේ"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"පිහිටුවන්න"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"තවත් යෙදුම් සම්බන්ධ කරන්න"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"<xliff:g id="APP_NAME">%s</xliff:g> සහ ඔබේ දුරකථනයේ සෞඛ්‍ය යෙදුම් අතර දත්ත බෙදා ගැනීම ආරම්භ කරන්න"</string>
