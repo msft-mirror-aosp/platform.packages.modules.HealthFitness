@@ -27,6 +27,7 @@ import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_MINDFU
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_PLANNED_EXERCISE_SESSIONS;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_SKIN_TEMPERATURE;
 import static com.android.healthfitness.flags.DatabaseVersions.MIN_SUPPORTED_DB_VERSION;
+import static com.android.server.healthconnect.storage.TransactionManager.runAsTransaction;
 import static com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper.PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME;
 
 import android.annotation.NonNull;
@@ -221,15 +222,7 @@ final class DatabaseUpgradeHelper {
 
     /** Executes a list of SQL statements one after another, in a transaction. */
     public static void executeSqlStatements(SQLiteDatabase db, List<String> statements) {
-        db.beginTransaction();
-        try {
-            for (String statement : statements) {
-                db.execSQL(statement);
-            }
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
-        }
+        runAsTransaction(db, unused -> statements.forEach(db::execSQL));
     }
 
     private static boolean doesTableAlreadyExist(SQLiteDatabase db, String tableName) {

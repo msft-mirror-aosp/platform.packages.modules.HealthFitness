@@ -235,20 +235,6 @@ public final class MindfulnessSessionRecord extends IntervalRecord {
             return this;
         }
 
-        /** Sets the start zone offset of this record to system default. */
-        @NonNull
-        public Builder clearStartZoneOffset() {
-            mStartZoneOffset = RecordUtils.getDefaultZoneOffset();
-            return this;
-        }
-
-        /** Sets the start zone offset of this record to system default. */
-        @NonNull
-        public Builder clearEndZoneOffset() {
-            mEndZoneOffset = RecordUtils.getDefaultZoneOffset();
-            return this;
-        }
-
         /**
          * Sets a title of this activity
          *

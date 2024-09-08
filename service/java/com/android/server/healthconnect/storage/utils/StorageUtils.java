@@ -49,17 +49,18 @@ import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 
 import java.nio.ByteBuffer;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * An util class for HC storage
@@ -390,13 +391,6 @@ public final class StorageUtils {
         return recordCategory == ACTIVITY || recordCategory == SLEEP || recordCategory == WELLNESS;
     }
 
-    /** Returns list of app Ids of contributing apps for the record type in the priority order */
-    public static List<Long> getAppIdPriorityList(int recordType) {
-        return HealthDataCategoryPriorityHelper.getInstance()
-                .getAppIdPriorityOrder(
-                        RecordTypeRecordCategoryMapper.getRecordCategoryForRecordType(recordType));
-    }
-
     /** Returns if derivation needs to be done to calculate aggregate */
     public static boolean isDerivedType(int recordType) {
         return recordType == RECORD_TYPE_BASAL_METABOLIC_RATE
@@ -451,6 +445,33 @@ public final class StorageUtils {
     /** Convert a long value to bytes. */
     public static long convertBytesToLong(byte[] bytes) {
         return ByteBuffer.wrap(bytes).getLong();
+    }
+
+    /**
+     * Creates a list of UUIDs from a collection of the string representation of the UUIDs. Any ids
+     * which cannot be parsed as UUIDs are ignores. It is the responsibility of the caller to handle
+     * the case where a non-empty list becomes empty.
+     *
+     * @param ids the ids to parse
+     * @return a possibly empty list of UUIDs
+     */
+    public static List<UUID> toUuids(Collection<String> ids) {
+        return ids.stream()
+                .flatMap(
+                        id -> {
+                            try {
+                                return Stream.of(UUID.fromString(id));
+                            } catch (IllegalArgumentException ex) {
+                                return Stream.of();
+                            }
+                        })
+                .toList();
+    }
+
+    /** Converts a list of {@link UUID} strings to a list of hex strings. */
+    @NonNull
+    public static List<String> convertUuidStringsToHexStrings(@NonNull List<String> ids) {
+        return StorageUtils.getListOfHexStrings(toUuids(ids));
     }
 
     public static String getHexString(byte[] value) {

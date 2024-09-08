@@ -188,6 +188,7 @@ import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import org.json.JSONException;
 
@@ -567,6 +568,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             new AggregateTransactionRequest(
                                             attributionSource.getPackageName(),
                                             request,
+                                            mHealthDataCategoryPriorityHelper,
                                             startDateAccess)
                                     .getAggregateDataResponseParcel());
                     logger.setDataTypesFromRecordTypes(recordTypesToTest)
@@ -2157,7 +2159,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 unsupportedException.getErrorCode());
                         return;
                     }
-                    if (ids.isEmpty()) {
+                    List<UUID> dataSourceUuids = StorageUtils.toUuids(ids);
+                    if (dataSourceUuids.isEmpty()) {
                         tryAndReturnResult(callback, List.of(), logger);
                         return;
                     }
@@ -2168,7 +2171,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     if (holdsDataManagementPermission) {
                         medicalDataSources =
                                 mMedicalDataSourceHelper
-                                        .getMedicalDataSourcesByIdsWithoutPermissionChecks(ids);
+                                        .getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                                                dataSourceUuids);
                     } else {
                         boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
                         logger.setCallerForegroundState(isInForeground);
@@ -2208,7 +2212,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         medicalDataSources =
                                 mMedicalDataSourceHelper
                                         .getMedicalDataSourcesByIdsWithPermissionChecks(
-                                                ids,
+                                                dataSourceUuids,
                                                 getPopulatedMedicalResourceTypesWithReadPermissions(
                                                         grantedMedicalPermissions),
                                                 callingPackageName,
@@ -2368,6 +2372,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 ERROR_INVALID_ARGUMENT);
                         return;
                     }
+                    UUID uuid = UUID.fromString(id);
                     enforceIsForegroundUser(userHandle);
                     verifyPackageNameFromUid(uid, attributionSource);
                     throwExceptionIfDataSyncInProgress();
@@ -2391,7 +2396,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                     // This also deletes the contained data, because they are referenced
                     // by foreign key, and so are handled by ON DELETE CASCADE in the db.
-                    mMedicalDataSourceHelper.deleteMedicalDataSource(id, appInfoIdRestriction);
+                    mMedicalDataSourceHelper.deleteMedicalDataSource(uuid, appInfoIdRestriction);
                     tryAndReturnResult(callback, logger);
                 },
                 logger,
@@ -2788,30 +2793,30 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         return;
                     }
 
-                    if (request.getDataSourceIds().isEmpty()) {
+                    if (request.getDataSourceIds().isEmpty()
+                            && request.getMedicalResourceTypes().isEmpty()) {
                         tryAndReturnResult(callback, logger);
                         return;
+                    }
+                    List<UUID> dataSourceUuids = StorageUtils.toUuids(request.getDataSourceIds());
+                    if (dataSourceUuids.isEmpty() && !request.getDataSourceIds().isEmpty()) {
+                        throw new IllegalArgumentException("Invalid data source id used");
                     }
                     enforceIsForegroundUser(userHandle);
                     verifyPackageNameFromUid(uid, attributionSource);
                     throwExceptionIfDataSyncInProgress();
-                    Long appInfoRestriction;
                     if (holdsDataManagementPermission) {
-                        appInfoRestriction = null;
+                        mMedicalResourceHelper
+                                .deleteMedicalResourcesByRequestWithoutPermissionChecks(request);
                     } else {
                         boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
                         tryAcquireApiCallQuota(
                                 uid, QuotaCategory.QUOTA_CATEGORY_WRITE, isInForeground, logger);
                         mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
                                 attributionSource);
-                        appInfoRestriction = mAppInfoHelper.getAppInfoId(callingPackageName);
-                        if (appInfoRestriction == Constants.DEFAULT_LONG) {
-                            throw new IllegalArgumentException(
-                                    "Deletion not permitted as app has inserted no data.");
-                        }
+                        mMedicalResourceHelper.deleteMedicalResourcesByRequestWithPermissionChecks(
+                                request, callingPackageName);
                     }
-                    mMedicalResourceHelper.deleteMedicalResourcesByDataSources(
-                            new ArrayList<>(request.getDataSourceIds()), appInfoRestriction);
                     tryAndReturnResult(callback, logger);
                 },
                 logger,
