@@ -27,6 +27,7 @@ import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
 import android.util.ArrayMap;
 
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
@@ -52,8 +53,9 @@ public final class AggregateTransactionRequest {
     private final AggregationTypeIdMapper mAggregationTypeIdMapper;
 
     public AggregateTransactionRequest(
-            @NonNull String packageName,
-            @NonNull AggregateDataRequestParcel request,
+            String packageName,
+            AggregateDataRequestParcel request,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             long startDateAccess) {
         mPackageName = packageName;
         mAggregateTableRequests = new ArrayList<>(request.getAggregateIds().length);
@@ -71,6 +73,7 @@ public final class AggregateTransactionRequest {
                             aggregationType,
                             packageName,
                             request.getPackageFilters(),
+                            healthDataCategoryPriorityHelper,
                             request.getStartTime(),
                             request.getEndTime(),
                             startDateAccess,
