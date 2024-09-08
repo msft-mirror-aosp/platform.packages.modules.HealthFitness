@@ -16,11 +16,10 @@
 
 package com.android.server.healthconnect.injector;
 
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
+import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
@@ -35,19 +34,19 @@ public abstract class HealthConnectInjector {
     @Nullable private static HealthConnectInjector sHealthConnectInjector;
 
     /** Getter for PackageInfoUtils instance initialised by the Health Connect Injector. */
-    @NonNull
     public abstract PackageInfoUtils getPackageInfoUtils();
 
     /** Getter for TransactionManager instance initialised by the Health Connect Injector. */
-    @NonNull
     public abstract TransactionManager getTransactionManager();
 
     /**
      * Getter for HealthDataCategoryPriorityHelper instance initialised by the Health Connect
      * Injector.
      */
-    @NonNull
     public abstract HealthDataCategoryPriorityHelper getHealthDataCategoryPriorityHelper();
+
+    /** Getter for PriorityMigrationHelper instance initialised by the Health Connect Injector. */
+    public abstract PriorityMigrationHelper getPriorityMigrationHelper();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {
