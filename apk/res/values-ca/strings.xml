@@ -273,6 +273,12 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Immunització"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"immunització"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Llegir la immunització"</string>
+    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
+    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Consciència plena"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"consciència plena"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Llegir consciència plena"</string>
@@ -351,8 +357,10 @@
     <string name="next_export_text" msgid="6726252793571403846">"La pròxima exportació començarà aviat"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Còpia de seguretat i restauració"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Darrera exportació: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for no_last_export_message (8138900854579872667) -->
-    <skip />
+    <string name="last_export_time_now" msgid="31498024135933750">"Darrera exportació: ara"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Darrera exportació: fa 1 minut}other{Darrera exportació: fa # minuts}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Darrera exportació: fa 1 hora}other{Darrera exportació: fa # hores}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"Darrera exportació: cap"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Exportació programada"</string>
     <string name="import_data" msgid="404502315533233094">"Importa les dades"</string>
@@ -400,6 +408,12 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Obre"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Tria un fitxer"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Allibera espai"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Salut connectada no ha pogut export. dades"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Es necessita més espai"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Hi ha hagut un problema amb l\'exportació del dia <xliff:g id="DATE">%1$s</xliff:g>. Configura una exportació programada nova i torna-ho a provar."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Salut connectada necessita <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> d\'espai d\'emmagatzematge al telèfon per continuar amb l\'exportació programada."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"Configura"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Allibera espai"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Enrere"</string>
     <string name="export_next_button" msgid="657930567137105172">"Següent"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"Cancel·la"</string>
@@ -1008,7 +1022,6 @@
     <string name="select_all" msgid="837499881590001166">"Selecciona-ho tot"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Començar a utilitzar Salut connectada"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sincronitza les teves primeres aplicacions perquè comparteixin dades de salut i fitnes entre elles"</string>
-    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"Ara no"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Configura"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Connecta més aplicacions"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Comença a compartir dades entre <xliff:g id="APP_NAME">%s</xliff:g> i les aplicacions de salut del teu telèfon"</string>

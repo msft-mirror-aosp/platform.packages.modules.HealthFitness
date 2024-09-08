@@ -24,6 +24,7 @@ import com.android.healthconnect.controller.utils.logging.ElementName
 import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
+import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
 import com.android.settingslib.widget.AppPreference
 import dagger.hilt.android.EntryPointAccessors
 
@@ -31,7 +32,7 @@ class HealthAppPreference(context: Context, private val appMetadata: AppMetadata
     AppPreference(context), ComparablePreference {
 
     private var logger: HealthConnectLogger
-    var logName : ElementName = ErrorPageElement.UNKNOWN_ELEMENT
+    var logName : ElementName = UnknownGenericElement.UNKNOWN_HEALTH_PREFERENCE
 
     init {
         title = appMetadata.appName
