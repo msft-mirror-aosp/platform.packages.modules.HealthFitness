@@ -133,6 +133,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             AggregationType<?> aggregationType,
             String callingPackage,
             List<String> packageFilters,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             long startTime,
             long endTime,
             long startDateAccess,
@@ -180,7 +181,13 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             whereClauses.addWhereGreaterThanOrEqualClause(startTimeColumnName, startTime);
         }
 
-        return new AggregateTableRequest(params, aggregationType, this, whereClauses, useLocalTime)
+        return new AggregateTableRequest(
+                        params,
+                        aggregationType,
+                        this,
+                        whereClauses,
+                        healthDataCategoryPriorityHelper,
+                        useLocalTime)
                 .setTimeFilter(startTime, endTime);
     }
 
@@ -577,11 +584,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         }
     }
 
-    /** Returns is the read of this record type is enabled */
-    public boolean isRecordOperationsEnabled() {
-        return true;
-    }
-
     /** Populate internalRecords fields using extraDataCursor */
     @SuppressWarnings("unchecked")
     public void updateInternalRecordsWithExtraFields(
@@ -864,9 +866,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
         return columnInfo;
     }
-
-    /** Checks that operation with current record type are supported. */
-    public void checkRecordOperationsAreEnabled(RecordInternal<?> recordInternal) {}
 
     /** Returns permissions required to read extra record data. */
     public List<String> getExtraReadPermissions() {

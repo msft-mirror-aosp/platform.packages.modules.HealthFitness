@@ -2081,8 +2081,16 @@ public class HealthConnectManager {
      * provided, this will throw an {@link IllegalArgumentException} with the first data source id
      * that is invalid. In this case, none of the given {@link UpsertMedicalResourceRequest}s will
      * be upserted into the HealthConnect database.
+     *
+     * <p>Only apps that have the {@link HealthPermissions#WRITE_MEDICAL_DATA} are allowed to call
+     * this API.
      */
+    // Suppress missing because API flagged out. Suppress Requires because the javadoc mentions the
+    // WRITE_MEDICAL_DATA permission.
+    // TODO: b/355156275 - remove suppression once API not flagged out.
+    @SuppressWarnings({"MissingPermission", "RequiresPermission"})
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresPermission(WRITE_MEDICAL_DATA)
     public void upsertMedicalResources(
             @NonNull List<UpsertMedicalResourceRequest> requests,
             @NonNull @CallbackExecutor Executor executor,
@@ -2216,7 +2224,8 @@ public class HealthConnectManager {
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
      * @throws IllegalArgumentException if request page size set is less than 1 or more than 5000 in
-     *     {@link ReadMedicalResourcesRequest}.
+     *     {@link ReadMedicalResourcesRequest}, or if the request contains invalid {@link
+     *     MedicalDataSource} IDs to read from.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public void readMedicalResources(
@@ -2269,7 +2278,8 @@ public class HealthConnectManager {
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     // Suppress missing because API flagged out. Suppress Requires because javadoc explains the
-    // the difference between the permissions.
+    // difference between the permissions.
+    // TODO: b/355156275 - remove suppression once API not flagged out.
     @SuppressWarnings({"MissingPermission", "RequiresPermission"})
     @RequiresPermission(anyOf = {WRITE_MEDICAL_DATA, MANAGE_HEALTH_DATA_PERMISSION})
     public void deleteMedicalResources(
@@ -2321,7 +2331,7 @@ public class HealthConnectManager {
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     // Suppress missing because API flagged out. Suppress Requires because javadoc explains the
-    // the difference between the permissions.
+    // difference between the permissions.
     // TODO: b/355156275 - remove suppression once API not flagged out.
     @SuppressWarnings({"MissingPermission", "RequiresPermission"})
     @RequiresPermission(anyOf = {WRITE_MEDICAL_DATA, MANAGE_HEALTH_DATA_PERMISSION})
@@ -2362,13 +2372,18 @@ public class HealthConnectManager {
      * Retrieves information about all medical resource types and returns a list of {@link
      * MedicalResourceTypeInfo}.
      *
+     * <p>Only apps that have {@link HealthPermissions#MANAGE_HEALTH_DATA_PERMISSION} are allowed to
+     * call this API.
+     *
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
      * @hide
      */
     @SystemApi
-    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    // Suppress Requires because the javadoc mentions the MANAGE_HEALTH_DATA_PERMISSION permission.
+    @SuppressWarnings("RequiresPermission")
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
     public void queryAllMedicalResourceTypeInfos(
             @NonNull @CallbackExecutor Executor executor,
             @NonNull
@@ -2406,8 +2421,8 @@ public class HealthConnectManager {
      * <p>The following rules apply to {@link MedicalDataSource} creation.
      *
      * <ul>
-     *   <li>Only apps that have the android.health.connect.HealthPermissions#WRITE_MEDICAL_DATA are
-     *       allowed to create data sources.
+     *   <li>Only apps that have the {@link HealthPermissions#WRITE_MEDICAL_DATA} are allowed to
+     *       create data sources.
      *   <li>The {@link CreateMedicalDataSourceRequest.Builder#setFhirBaseUri} must be unique across
      *       all medical data sources created by an app. The FHIR base uri cannot be updated after
      *       creating the data source.
@@ -2418,6 +2433,11 @@ public class HealthConnectManager {
      * @param callback Callback to receive result of performing this operation.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    // Suppress missing because API flagged out. Suppress Requires because the javadoc mentions the
+    // WRITE_MEDICAL_DATA permission.
+    // TODO: b/355156275 - remove suppression once API not flagged out.
+    @SuppressWarnings({"MissingPermission", "RequiresPermission"})
+    @RequiresPermission(WRITE_MEDICAL_DATA)
     public void createMedicalDataSource(
             @NonNull CreateMedicalDataSourceRequest request,
             @NonNull Executor executor,
@@ -2598,11 +2618,26 @@ public class HealthConnectManager {
      * <p>If the datasource does not exist, {@code callback.onError()} is passed an exception with
      * code {@link HealthConnectException#ERROR_INVALID_ARGUMENT}.
      *
+     * <p>Regarding permissions:
+     *
+     * <ul>
+     *   <li>Callers with system permission {@link HealthPermissions#MANAGE_HEALTH_DATA_PERMISSION}
+     *       can delete any data source.
+     *   <li>Other callers require permission {@link HealthPermissions#WRITE_MEDICAL_DATA} to
+     *       delete, and may only delete data sources created by themselves.
+     *   <li>Deletes are permitted in the foreground or background.
+     * </ul>
+     *
      * @param id The id of the data source to delete.
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    // Suppress missing because API flagged out. Suppress Requires because javadoc explains the
+    // difference between the permissions.
+    // TODO: b/355156275 - remove suppression once API not flagged out.
+    @SuppressWarnings({"MissingPermission", "RequiresPermission"})
+    @RequiresPermission(anyOf = {WRITE_MEDICAL_DATA, MANAGE_HEALTH_DATA_PERMISSION})
     public void deleteMedicalDataSourceWithData(
             @NonNull String id,
             @NonNull Executor executor,

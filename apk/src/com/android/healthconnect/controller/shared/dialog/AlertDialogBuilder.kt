@@ -32,9 +32,9 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.increaseViewTouchTargetSize
 import com.android.healthconnect.controller.utils.logging.ElementName
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
+import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
 import dagger.hilt.android.EntryPointAccessors
 
 /** {@link AlertDialog.Builder} wrapper for applying theming attributes. */
@@ -61,8 +61,8 @@ class AlertDialogBuilder(private val context: Context, private val containerLogN
 
     private var iconView: ImageView? = null
 
-    private var positiveButtonKey: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
-    private var negativeButtonKey: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
+    private var positiveButtonKey: ElementName = UnknownGenericElement.UNKNOWN_DIALOG_POSITIVE_BUTTON
+    private var negativeButtonKey: ElementName = UnknownGenericElement.UNKNOWN_DIALOG_NEGATIVE_BUTTON
     private var loggingAction = {}
 
     private var hasPositiveButton = false

@@ -67,7 +67,7 @@ class EntriesViewModelTest {
                 dataType = DataType.STEPS)
         private val FORMATTED_STEPS_2 =
             FormattedEntry.FormattedDataEntry(
-                uuid = "test_id",
+                uuid = "test_id_2",
                 header = "8:06 - 8:06",
                 headerA11y = "from 8:06 to 8:06",
                 title = "15 steps",
@@ -191,5 +191,30 @@ class EntriesViewModelTest {
         val actual = testObserver.getLastValue()
         val expected = EntriesViewModel.EntriesFragmentState.With(listOf(FORMATTED_IMMUNIZATION))
         assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
+    fun addToDeleteSet_updatesDeleteSetCorrectly() {
+        assertThat(viewModel.setOfEntriesToBeDeleted.value.orEmpty()).isEmpty()
+
+        viewModel.addToDeleteSet(FORMATTED_STEPS.uuid)
+
+        assertThat(viewModel.setOfEntriesToBeDeleted.value).containsExactly(FORMATTED_STEPS.uuid)
+    }
+
+    @Test
+    fun removeFromDeleteSet_updatesDeleteSetCorrectly() {
+        viewModel.addToDeleteSet(FORMATTED_STEPS.uuid)
+        viewModel.addToDeleteSet(FORMATTED_STEPS_2.uuid)
+        viewModel.removeFromDeleteSet(FORMATTED_STEPS.uuid)
+
+        assertThat(viewModel.setOfEntriesToBeDeleted.value).containsExactly(FORMATTED_STEPS_2.uuid)
+    }
+
+    @Test
+    fun setDeletionState_setsCorrectly(){
+        viewModel.setIsDeletionState(true)
+
+        assertThat(viewModel.isDeletionState.value).isTrue()
     }
 }
