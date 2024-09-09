@@ -20,10 +20,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.EntryDateSectionHeader
+import com.android.healthconnect.controller.shared.recyclerview.SimpleViewBinder
 import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
 
 /** View binder for a section title that looks like a PreferenceCategory. */
-class SectionTitleViewBinder : ViewBinder<EntryDateSectionHeader, LinearLayout> {
+class SectionTitleViewBinder : SimpleViewBinder<EntryDateSectionHeader, LinearLayout> {
     override fun newView(parent: ViewGroup): LinearLayout {
         return LayoutInflater.from(parent.context).inflate(R.layout.section_title, parent, false)
             as LinearLayout

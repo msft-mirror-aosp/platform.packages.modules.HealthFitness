@@ -57,10 +57,10 @@ import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HomePageElement
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
 import com.android.healthfitness.flags.Flags.exportImport
 import com.android.healthfitness.flags.Flags.newInformationArchitecture
 import com.android.healthfitness.flags.Flags.onboarding
@@ -381,7 +381,7 @@ class HomeFragment : Hilt_HomeFragment() {
 
     // Onboarding banners
     private fun getStartUsingHealthConnectBanner(): BannerPreference {
-        return BannerPreference(requireContext(), ErrorPageElement.UNKNOWN_ELEMENT).also { banner ->
+        return BannerPreference(requireContext(), UnknownGenericElement.UNKNOWN_BANNER).also { banner ->
             banner.title = resources.getString(R.string.start_using_hc_banner_title)
             banner.summary = resources.getString(R.string.start_using_hc_banner_content)
             banner.key = START_USING_HC_BANNER_KEY
@@ -390,13 +390,13 @@ class HomeFragment : Hilt_HomeFragment() {
             banner.order = 1
             banner.setPrimaryButton(
                 resources.getString(R.string.start_using_hc_set_up_button),
-                ErrorPageElement.UNKNOWN_ELEMENT,
+                UnknownGenericElement.UNKNOWN_BANNER_BUTTON,
             )
             banner.setPrimaryButtonOnClickListener {
                 findNavController().navigate(R.id.action_homeFragment_to_connectedAppsFragment)
             }
             banner.setIsDismissable(true)
-            banner.setDismissAction(ErrorPageElement.UNKNOWN_ELEMENT) {
+            banner.setDismissAction(UnknownGenericElement.UNKNOWN_BANNER_BUTTON) {
                 val sharedPreference =
                     requireActivity()
                         .getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
@@ -410,7 +410,7 @@ class HomeFragment : Hilt_HomeFragment() {
     }
 
     private fun getConnectMoreAppsBanner(appMetadata: AppMetadata): BannerPreference {
-        return BannerPreference(requireContext(), ErrorPageElement.UNKNOWN_ELEMENT).also { banner ->
+        return BannerPreference(requireContext(), UnknownGenericElement.UNKNOWN_BANNER).also { banner ->
             banner.title = resources.getString(R.string.connect_more_apps_banner_title)
             banner.summary =
                 resources.getString(R.string.connect_more_apps_banner_content, appMetadata.appName)
@@ -419,13 +419,13 @@ class HomeFragment : Hilt_HomeFragment() {
             banner.order = 1
             banner.setPrimaryButton(
                 resources.getString(R.string.connect_more_apps_set_up_button),
-                ErrorPageElement.UNKNOWN_ELEMENT,
+                UnknownGenericElement.UNKNOWN_BANNER_BUTTON,
             )
             banner.setPrimaryButtonOnClickListener {
                 findNavController().navigate(R.id.action_homeFragment_to_connectedAppsFragment)
             }
             banner.setIsDismissable(true)
-            banner.setDismissAction(ErrorPageElement.UNKNOWN_ELEMENT) {
+            banner.setDismissAction(UnknownGenericElement.UNKNOWN_BANNER_BUTTON) {
                 val sharedPreference =
                     requireActivity()
                         .getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
@@ -439,7 +439,7 @@ class HomeFragment : Hilt_HomeFragment() {
     }
 
     private fun getSeeCompatibleAppsBanner(appMetadata: AppMetadata): BannerPreference {
-        return BannerPreference(requireContext(), ErrorPageElement.UNKNOWN_ELEMENT).also { banner ->
+        return BannerPreference(requireContext(), UnknownGenericElement.UNKNOWN_BANNER).also { banner ->
             banner.title = resources.getString(R.string.see_compatible_apps_banner_title)
             banner.summary =
                 resources.getString(
@@ -455,13 +455,13 @@ class HomeFragment : Hilt_HomeFragment() {
             banner.order = 1
             banner.setPrimaryButton(
                 resources.getString(R.string.see_compatible_apps_set_up_button),
-                ErrorPageElement.UNKNOWN_ELEMENT,
+                UnknownGenericElement.UNKNOWN_BANNER_BUTTON,
             )
             banner.setPrimaryButtonOnClickListener {
                 findNavController().navigate(R.id.action_homeFragment_to_playstoreActivity)
             }
             banner.setIsDismissable(true)
-            banner.setDismissAction(ErrorPageElement.UNKNOWN_ELEMENT) {
+            banner.setDismissAction(UnknownGenericElement.UNKNOWN_BANNER_BUTTON) {
                 val sharedPreference =
                     requireActivity()
                         .getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)

@@ -71,9 +71,11 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
     private final TransactionManager mTransactionManager;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private PriorityMigrationHelper() {
-        mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
-        mTransactionManager = TransactionManager.getInitialisedInstance();
+    private PriorityMigrationHelper(
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            TransactionManager transactionManager) {
+        mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
+        mTransactionManager = transactionManager;
     }
 
     /**
@@ -134,7 +136,6 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
         synchronized (mPriorityMigrationHelperInstanceLock) {
             mPreMigrationPriorityCache = null;
         }
-
     }
 
     /** Returns a requests for creating pre-migration priority table. */
@@ -211,10 +212,21 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
     /** Creates(if it was not already created) and returns instance of PriorityMigrationHelper. */
     @NonNull
     public static PriorityMigrationHelper getInstance() {
+        return getInstance(
+                HealthDataCategoryPriorityHelper.getInstance(),
+                TransactionManager.getInitialisedInstance());
+    }
+
+    /** Creates(if it was not already created) and returns instance of PriorityMigrationHelper. */
+    public static PriorityMigrationHelper getInstance(
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            TransactionManager transactionManager) {
         if (sPriorityMigrationHelper == null) {
             synchronized (sPriorityMigrationHelperLock) {
                 if (sPriorityMigrationHelper == null) {
-                    sPriorityMigrationHelper = new PriorityMigrationHelper();
+                    sPriorityMigrationHelper =
+                            new PriorityMigrationHelper(
+                                    healthDataCategoryPriorityHelper, transactionManager);
                 }
             }
         }

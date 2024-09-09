@@ -39,6 +39,7 @@ import android.database.sqlite.SQLiteException;
 import android.health.connect.Constants;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.datatypes.MedicalDataSource;
+import android.net.Uri;
 import android.util.Pair;
 
 import com.android.internal.annotations.VisibleForTesting;
@@ -57,7 +58,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 /**
  * Helper class for MedicalDataSource.
@@ -132,8 +132,21 @@ public class MedicalDataSourceHelper {
      */
     @NonNull
     public static ReadTableRequest getReadTableRequest(
-            @NonNull List<String> ids, @Nullable Long appInfoRestriction) {
+            @NonNull List<UUID> ids, @Nullable Long appInfoRestriction) {
         ReadTableRequest readTableRequest = new ReadTableRequest(getMainTableName());
+        WhereClauses whereClauses = getWhereClauses(ids, appInfoRestriction);
+        return readTableRequest.setWhereClause(whereClauses);
+    }
+
+    /**
+     * Gets a where clauses that filters the data source table by the given restrictions.
+     *
+     * @param ids the ids to include, or if empty do not filter by ids
+     * @param appInfoRestriction the app info id to restrict to, or if null do not filter by app
+     *     info
+     */
+    public static @NonNull WhereClauses getWhereClauses(
+            @NonNull List<UUID> ids, @Nullable Long appInfoRestriction) {
         WhereClauses whereClauses;
         if (ids.isEmpty()) {
             whereClauses = new WhereClauses(AND);
@@ -144,7 +157,7 @@ public class MedicalDataSourceHelper {
             whereClauses.addWhereInLongsClause(
                     APP_INFO_ID_COLUMN_NAME, List.of(appInfoRestriction));
         }
-        return readTableRequest.setWhereClause(whereClauses);
+        return whereClauses;
     }
 
     /**
@@ -152,17 +165,13 @@ public class MedicalDataSourceHelper {
      * for the given list of {@code ids}.
      */
     @NonNull
-    public static ReadTableRequest getReadTableRequestJoinWithAppInfo(@NonNull List<String> ids) {
+    public static ReadTableRequest getReadTableRequestJoinWithAppInfo(@NonNull List<UUID> ids) {
         return getReadTableRequest(ids).setJoinClause(getJoinClauseWithAppInfoTable());
     }
 
-    /**
-     * Creates {@link ReadTableRequest} for the given list of {@code ids}.
-     *
-     * <p>If any of the ids are obviously not valid (eg not UUID strings) they are ignored.
-     */
+    /** Creates {@link ReadTableRequest} for the given list of {@code ids}. */
     @NonNull
-    public static ReadTableRequest getReadTableRequest(@NonNull List<String> ids) {
+    public static ReadTableRequest getReadTableRequest(@NonNull List<UUID> ids) {
         return new ReadTableRequest(getMainTableName())
                 .setWhereClause(getReadTableWhereClause(ids));
     }
@@ -183,21 +192,10 @@ public class MedicalDataSourceHelper {
      * @param ids the ids to limit to.
      */
     @NonNull
-    private static WhereClauses getReadTableWhereClause(@NonNull List<String> ids) {
-        List<UUID> uuids =
-                ids.stream()
-                        .flatMap(
-                                id -> {
-                                    try {
-                                        return Stream.of(UUID.fromString(id));
-                                    } catch (IllegalArgumentException ex) {
-                                        return Stream.of();
-                                    }
-                                })
-                        .toList();
+    public static WhereClauses getReadTableWhereClause(@NonNull List<UUID> ids) {
         return new WhereClauses(AND)
                 .addWhereInClauseWithoutQuotes(
-                        DATA_SOURCE_UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(uuids));
+                        DATA_SOURCE_UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(ids));
     }
 
     /**
@@ -227,7 +225,8 @@ public class MedicalDataSourceHelper {
                         /* id= */ getCursorUUID(cursor, DATA_SOURCE_UUID_COLUMN_NAME).toString(),
                         /* packageName= */ getCursorString(
                                 cursor, AppInfoHelper.PACKAGE_COLUMN_NAME),
-                        /* fhirBaseUri= */ getCursorString(cursor, FHIR_BASE_URI_COLUMN_NAME),
+                        /* fhirBaseUri= */ Uri.parse(
+                                getCursorString(cursor, FHIR_BASE_URI_COLUMN_NAME)),
                         /* displayName= */ getCursorString(cursor, DISPLAY_NAME_COLUMN_NAME))
                 .build();
     }
@@ -275,7 +274,7 @@ public class MedicalDataSourceHelper {
      */
     @NonNull
     public List<MedicalDataSource> getMedicalDataSourcesByIdsWithoutPermissionChecks(
-            @NonNull List<String> ids) throws SQLiteException {
+            @NonNull List<UUID> ids) throws SQLiteException {
         ReadTableRequest readTableRequest = getReadTableRequestJoinWithAppInfo(ids);
         try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
             return getMedicalDataSources(cursor);
@@ -292,7 +291,7 @@ public class MedicalDataSourceHelper {
      */
     @NonNull
     public List<MedicalDataSource> getMedicalDataSourcesByIdsWithPermissionChecks(
-            @NonNull List<String> ids,
+            @NonNull List<UUID> ids,
             @NonNull Set<Integer> ignoredGrantedReadMedicalResourceTypes,
             @NonNull String ignoredCallingPackageName,
             boolean ignoredHasWritePermission,
@@ -389,19 +388,13 @@ public class MedicalDataSourceHelper {
      * @throws IllegalArgumentException if the id does not exist, or there is an
      *     appInfoIdRestriction and the data source is owned by a different app
      */
-    public void deleteMedicalDataSource(@NonNull String id, @Nullable Long appInfoIdRestriction)
+    public void deleteMedicalDataSource(@NonNull UUID id, @Nullable Long appInfoIdRestriction)
             throws SQLiteException {
-        UUID uuid;
-        try {
-            uuid = UUID.fromString(id);
-        } catch (IllegalArgumentException ex) {
-            throw new IllegalArgumentException("Id " + id + " does not exist");
-        }
         DeleteTableRequest request =
                 new DeleteTableRequest(MEDICAL_DATA_SOURCE_TABLE_NAME)
                         .setIds(
                                 DATA_SOURCE_UUID_COLUMN_NAME,
-                                StorageUtils.getListOfHexStrings(List.of(uuid)));
+                                StorageUtils.getListOfHexStrings(List.of(id)));
         if (appInfoIdRestriction != null) {
             request.setPackageFilter(APP_INFO_ID_COLUMN_NAME, List.of(appInfoIdRestriction));
         }
@@ -454,7 +447,7 @@ public class MedicalDataSourceHelper {
      */
     @NonNull
     public Map<String, Long> getUuidToRowIdMap(
-            @NonNull SQLiteDatabase db, @NonNull List<String> dataSourceUuids) {
+            @NonNull SQLiteDatabase db, @NonNull List<UUID> dataSourceUuids) {
         Map<String, Long> uuidToRowId = new HashMap<>();
         try (Cursor cursor = mTransactionManager.read(db, getReadTableRequest(dataSourceUuids))) {
             if (cursor.moveToFirst()) {
@@ -478,7 +471,8 @@ public class MedicalDataSourceHelper {
         contentValues.put(
                 DISPLAY_NAME_COLUMN_NAME, createMedicalDataSourceRequest.getDisplayName());
         contentValues.put(
-                FHIR_BASE_URI_COLUMN_NAME, createMedicalDataSourceRequest.getFhirBaseUri());
+                FHIR_BASE_URI_COLUMN_NAME,
+                createMedicalDataSourceRequest.getFhirBaseUri().toString());
         contentValues.put(APP_INFO_ID_COLUMN_NAME, appInfoId);
         return contentValues;
     }

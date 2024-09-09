@@ -30,6 +30,7 @@ public final class FhirResourceTypeStringToIntMapper {
     private static final Map<String, Integer> sFhirResourceTypeStringToIntMap = new HashMap<>();
 
     private static final String FHIR_RESOURCE_TYPE_IMMUNIZATION_STR = "IMMUNIZATION";
+    private static final String FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE_STR = "ALLERGYINTOLERANCE";
 
     /**
      * Returns the corresponding {@code IntDef} {@link FhirResourceType} from a {@code String}
@@ -43,8 +44,6 @@ public final class FhirResourceTypeStringToIntMapper {
 
         populateFhirResourceTypeStringToIntMap();
 
-        // TODO(b/342574702): remove the default value once we have validation and it is more
-        // clear what resources should through to the database.
         return sFhirResourceTypeStringToIntMap.getOrDefault(
                 fhirResourceType.toUpperCase(Locale.ROOT), FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN);
     }
@@ -61,5 +60,8 @@ public final class FhirResourceTypeStringToIntMapper {
 
         sFhirResourceTypeStringToIntMap.put(
                 FHIR_RESOURCE_TYPE_IMMUNIZATION_STR, FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        sFhirResourceTypeStringToIntMap.put(
+                FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE_STR,
+                FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
     }
 }

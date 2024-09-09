@@ -20,7 +20,6 @@ import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.healthconnect.cts.utils.DataFactory.buildDevice;
 import static android.healthconnect.cts.utils.DataFactory.getCompleteStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getUpdatedStepsRecord;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.utils.PhrDataFactory.getUpsertMedicalResourceRequest;
@@ -88,6 +87,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
@@ -324,25 +324,23 @@ public class RateLimiterTest {
         float quotaAcquired = acquireCallQuotaForWrite();
         HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
         HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        CreateMedicalDataSourceRequest.Builder request =
-                PhrDataFactory.getCreateMedicalDataSourceRequestBuilder();
         int count = 0;
 
         while (quotaAcquired > 1) {
             count++;
             // Append request count to the fhir base uri to avoid duplicates.
-            request.setFhirBaseUri(DATA_SOURCE_FHIR_BASE_URI + count);
-            manager.createMedicalDataSource(
-                    request.build(), Executors.newSingleThreadExecutor(), receiver);
+            CreateMedicalDataSourceRequest request =
+                    PhrDataFactory.getCreateMedicalDataSourceRequest(String.valueOf(count));
+            manager.createMedicalDataSource(request, Executors.newSingleThreadExecutor(), receiver);
             receiver.verifyNoExceptionOrThrow();
             quotaAcquired--;
         }
         int tryWriteWithBuffer = 20;
         while (tryWriteWithBuffer > 0) {
             count++;
-            request.setFhirBaseUri(DATA_SOURCE_FHIR_BASE_URI + count);
-            manager.createMedicalDataSource(
-                    request.build(), Executors.newSingleThreadExecutor(), receiver);
+            CreateMedicalDataSourceRequest request =
+                    PhrDataFactory.getCreateMedicalDataSourceRequest(String.valueOf(count));
+            manager.createMedicalDataSource(request, Executors.newSingleThreadExecutor(), receiver);
             receiver.verifyNoExceptionOrThrow();
             tryWriteWithBuffer--;
         }
@@ -378,7 +376,9 @@ public class RateLimiterTest {
         // We will try to delete a data source that doesn't exist. This doesn't matter for quota
         // check.
         DeleteMedicalResourcesRequest request =
-                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addDataSourceId(UUID.randomUUID().toString())
+                        .build();
 
         while (quotaAcquired > 1) {
             // Using a non-existent id is fine for quota check.

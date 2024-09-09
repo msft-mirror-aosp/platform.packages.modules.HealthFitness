@@ -273,6 +273,12 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Imunizácia"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"imunizácia"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Čítať imunizáciu"</string>
+    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
+    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Bdelá pozornosť"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"bdelá pozornosť"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Čítať údaje bdelej pozornosti"</string>
@@ -351,8 +357,10 @@
     <string name="next_export_text" msgid="6726252793571403846">"Ďalší export sa začne čoskoro"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Záloha a obnovenie"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Posledný export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for no_last_export_message (8138900854579872667) -->
-    <skip />
+    <string name="last_export_time_now" msgid="31498024135933750">"Posledný export: teraz"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Posledný export: pred 1 minútou}few{Posledný export: pred # minútami}many{Posledný export: pred # minúty}other{Posledný export: pred # minútami}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Posledný export: pred 1 hodinou}few{Posledný export: pred # hodinami}many{Posledný export: pred # hodiny}other{Posledný export: pred # hodinami}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"Posledný export: žiadny"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Naplánovaný export"</string>
     <string name="import_data" msgid="404502315533233094">"Importovať údaje"</string>
@@ -400,6 +408,12 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Otvoriť"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Vybrať súbor"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Uvoľniť priestor"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Dátam o zdraví sa nepodar. export. údaje"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Vyžaduje sa viac priestoru"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Pri exporte dňa <xliff:g id="DATE">%1$s</xliff:g> sa vyskytol problém. Nastavte nový naplánovaný export a skúste to znova."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Dáta o zdraví potrebujú <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> priestoru v telefóne, aby mohli pokračovať v plánovanom exporte."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"Nastaviť"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Uvoľniť priestor"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Späť"</string>
     <string name="export_next_button" msgid="657930567137105172">"Ďalej"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"Zrušiť"</string>
@@ -1008,7 +1022,6 @@
     <string name="select_all" msgid="837499881590001166">"Vybrať všetko"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Začnite používať Dáta o zdraví"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Synchronizujte svoje prvé aplikácie a zdieľajte medzi nimi údaje o zdraví a kondícii"</string>
-    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"Teraz nie"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Nastaviť"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Pripojte ďalšie aplikácie"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Začnite zdieľať údaje medzi aplikáciou <xliff:g id="APP_NAME">%s</xliff:g> a zdravotnými aplikáciami v telefóne"</string>

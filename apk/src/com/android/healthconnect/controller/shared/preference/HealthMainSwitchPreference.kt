@@ -22,6 +22,7 @@ import com.android.healthconnect.controller.utils.logging.ElementName
 import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
+import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
 import com.android.settingslib.widget.MainSwitchPreference
 import dagger.hilt.android.EntryPointAccessors
 
@@ -31,8 +32,8 @@ class HealthMainSwitchPreference
 constructor(context: Context, attrs: AttributeSet? = null) : MainSwitchPreference(context, attrs) {
 
     private var logger: HealthConnectLogger
-    var logNameActive: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
-    var logNameInactive: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
+    var logNameActive: ElementName = UnknownGenericElement.UNKNOWN_SWITCH_ACTIVE_PREFERENCE
+    var logNameInactive: ElementName = UnknownGenericElement.UNKNOWN_SWITCH_INACTIVE_PREFERENCE
     private var loggingSwitchListener: OnCheckedChangeListener
 
     init {
