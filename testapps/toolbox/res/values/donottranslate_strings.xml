@@ -144,7 +144,9 @@
   <string name="phr_options_create_data_source">Create data source</string>
   <string name="phr_options_data_source_id_placeholder">Create data source to see the id</string>
   <string name="phr_options_insert_immunization">Insert immunization</string>
-  <string name="phr_options_resource_id_placeholder">Insert immunization to see the id</string>
+  <string name="phr_options_immunization_id_placeholder">Insert immunization to see the id</string>
+  <string name="phr_options_insert_allergy">Insert allergy</string>
+  <string name="phr_options_allergy_id_placeholder">Insert allergy to see the id</string>
   <string name="phr_options_read_by_id">Read FHIR Resource For Id</string>
   <string name="phr_options_seed_fhir_jsons">Seed FHIR JSONs</string>
   <string name="phr_options_request_immunization">Request read immunization permission</string>
