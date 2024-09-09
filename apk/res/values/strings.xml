@@ -365,8 +365,12 @@
     <string name="all_medical_data_content_description" description="Content description for switch that enables permissions for writing the user's medical data [CHAR_LIMIT=NONE]">Write all medical data</string>
 
     <string name="immunization_uppercase_label" description="Uppercase label used to show the user's immunization data [CHAR_LIMIT=50]">Immunization</string>
-    <string name="immunization_lowercase_label" description="Lowercase label used to show the user's active calories burned data [CHAR_LIMIT=50]">immunization</string>
+    <string name="immunization_lowercase_label" description="Lowercase label used to show the user's immunization data [CHAR_LIMIT=50]">immunization</string>
     <string name="immunization_content_description" description="Content description for switch that enables permissions for reading the user's immunization data [CHAR_LIMIT=NONE]">Read immunization</string>
+
+    <string name="allergy_intolerance_uppercase_label" description="Uppercase label used to show the user's allergy intolerance data [CHAR_LIMIT=50]">Allergy &amp; intolerance</string>
+    <string name="allergy_intolerance_lowercase_label" description="Lowercase label used to show the user's allergy intolerance data [CHAR_LIMIT=50]">Allergy &amp; intolerance</string>
+    <string name="allergy_intolerance_content_description" description="Content description for switch that enables permissions for reading the user's allergy intolerance data [CHAR_LIMIT=NONE]">Read allergy &amp; intolerance</string>
     <!--endregion-->
 
     <!-- region Wellness -->
@@ -525,6 +529,8 @@
     <string name="import_notification_open_intent_button" description="Button text on notification that returns the user to the Export-Import section of Health Connect to see their completed import. [CHAR_LIMIT=40]">Open</string>
     <string name="import_notification_choose_file_intent_button" description="Button text on notification restarts the file selection stage of the import process. [CHAR_LIMIT=40]">Choose file</string>
     <string name="import_notification_free_up_space_intent_button" description="Button text on notification that lets the user open their cloud storage provider to delete/move files to create space. [CHAR_LIMIT=40]">Free up space</string>
+
+    <string name="scheduled_export_on_toast_text" description="Toast text displayed when user sets up a scheduled export. [CHAR_LIMIT=NONE]">Scheduled export is on</string>
 
     <string name="export_notification_error_generic_error_title" description="Title text of notification displayed when export fails due to an unknown error. [CHAR_LIMIT=40]">Health&#160;Connect couldn\'t export data</string>
     <string name="export_notification_error_more_space_needed_title" description="Title text of notification displayed when export fails due to needing additional space. [CHAR_LIMIT=NONE]">More space needed</string>

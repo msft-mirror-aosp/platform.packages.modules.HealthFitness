@@ -24,6 +24,7 @@ import com.android.healthconnect.controller.utils.logging.ElementName
 import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
+import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
 import dagger.hilt.android.EntryPointAccessors
 
 /** A [Preference] that allows logging. */
@@ -33,7 +34,7 @@ constructor(context: Context, attrs: AttributeSet? = null) :
     Preference(context, attrs), ComparablePreference {
 
     private var logger: HealthConnectLogger
-    var logName: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
+    var logName: ElementName = UnknownGenericElement.UNKNOWN_HEALTH_PREFERENCE
 
     init {
         val hiltEntryPoint =

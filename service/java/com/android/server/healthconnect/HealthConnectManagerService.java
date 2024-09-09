@@ -69,7 +69,9 @@ public class HealthConnectManagerService extends SystemService {
     private MigrationUiStateManager mMigrationUiStateManager;
     private final MigrationNotificationSender mMigrationNotificationSender;
 
-    @Nullable private HealthConnectInjector mHealthConnectInjector;
+    @SuppressWarnings("NullAway") // TODO(b/341654919): Remove Nullable when DI is launched.
+    @Nullable
+    private HealthConnectInjector mHealthConnectInjector;
 
     public HealthConnectManagerService(Context context) {
         super(context);
@@ -84,9 +86,12 @@ public class HealthConnectManagerService extends SystemService {
                 new HealthPermissionIntentAppsTracker(context);
         FirstGrantTimeManager firstGrantTimeManager;
         HealthConnectPermissionHelper permissionHelper;
+        MigrationCleaner migrationCleaner;
 
         if (Flags.dependencyInjection()) {
-            mHealthConnectInjector = new HealthConnectInjectorImpl(mContext);
+            HealthConnectInjector.setInstance(new HealthConnectInjectorImpl(context));
+            mHealthConnectInjector = HealthConnectInjector.getInstance();
+
             mTransactionManager = mHealthConnectInjector.getTransactionManager();
             firstGrantTimeManager =
                     new FirstGrantTimeManager(
@@ -110,6 +115,10 @@ public class HealthConnectManagerService extends SystemService {
                             permissionHelper,
                             mCurrentForegroundUser,
                             mHealthConnectInjector.getHealthDataCategoryPriorityHelper());
+            migrationCleaner =
+                    new MigrationCleaner(
+                            mHealthConnectInjector.getTransactionManager(),
+                            mHealthConnectInjector.getPriorityMigrationHelper());
         } else {
             mTransactionManager =
                     TransactionManager.initializeInstance(
@@ -132,14 +141,15 @@ public class HealthConnectManagerService extends SystemService {
                             firstGrantTimeManager,
                             permissionHelper,
                             mCurrentForegroundUser);
+            migrationCleaner =
+                    new MigrationCleaner(
+                            mTransactionManager, PriorityMigrationHelper.getInstance());
         }
 
         mUserManager = context.getSystemService(UserManager.class);
         mMigrationBroadcastScheduler =
                 new MigrationBroadcastScheduler(mCurrentForegroundUser.getIdentifier());
         migrationStateManager.setMigrationBroadcastScheduler(mMigrationBroadcastScheduler);
-        final MigrationCleaner migrationCleaner =
-                new MigrationCleaner(mTransactionManager, PriorityMigrationHelper.getInstance());
         mMigrationNotificationSender = new MigrationNotificationSender(context);
         mMigrationUiStateManager =
                 new MigrationUiStateManager(

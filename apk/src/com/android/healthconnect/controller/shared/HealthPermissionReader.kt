@@ -73,6 +73,7 @@ constructor(
             setOf(
                 HealthPermissions.WRITE_MEDICAL_DATA,
                 HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION,
+                HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE,
             )
     }
 
