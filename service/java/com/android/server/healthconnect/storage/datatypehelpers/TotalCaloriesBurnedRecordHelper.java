@@ -33,7 +33,6 @@ import android.util.Pair;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
-import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -105,8 +104,7 @@ public final class TotalCaloriesBurnedRecordHelper
         int index = 0;
         List<Pair<Long, Long>> groupIntervals = request.getGroupSplitIntervals();
 
-        List<Long> priorityList =
-                StorageUtils.getAppIdPriorityList(RECORD_TYPE_TOTAL_CALORIES_BURNED);
+        List<Long> priorityList = request.getAppIdPriorityList(RECORD_TYPE_TOTAL_CALORIES_BURNED);
         MergeDataHelper mergeDataHelper =
                 new MergeDataHelper(
                         cursor,

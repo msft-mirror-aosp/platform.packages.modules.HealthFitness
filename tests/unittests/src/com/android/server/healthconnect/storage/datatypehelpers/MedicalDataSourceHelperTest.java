@@ -34,6 +34,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMAR
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getHexString;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.toUuids;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -182,8 +183,7 @@ public class MedicalDataSourceHelperTest {
         List<String> hexValues = List.of(getHexString(uuid1), getHexString(uuid2));
 
         ReadTableRequest readRequest =
-                MedicalDataSourceHelper.getReadTableRequest(
-                        List.of(uuid1.toString(), uuid2.toString()));
+                MedicalDataSourceHelper.getReadTableRequest(List.of(uuid1, uuid2));
 
         assertThat(readRequest.getTableName()).isEqualTo(MEDICAL_DATA_SOURCE_TABLE_NAME);
         assertThat(readRequest.getReadCommand())
@@ -200,8 +200,7 @@ public class MedicalDataSourceHelperTest {
         List<String> hexValues = List.of(getHexString(uuid1), getHexString(uuid2));
 
         ReadTableRequest readRequest =
-                MedicalDataSourceHelper.getReadTableRequestJoinWithAppInfo(
-                        List.of(uuid1.toString(), uuid2.toString()));
+                MedicalDataSourceHelper.getReadTableRequestJoinWithAppInfo(List.of(uuid1, uuid2));
 
         assertThat(readRequest.getTableName()).isEqualTo(MEDICAL_DATA_SOURCE_TABLE_NAME);
         assertThat(readRequest.getReadCommand())
@@ -226,7 +225,7 @@ public class MedicalDataSourceHelperTest {
 
         ReadTableRequest request =
                 MedicalDataSourceHelper.getReadTableRequest(
-                        List.of(expected.getId()), /* appInfoRestriction= */ null);
+                        List.of(UUID.fromString(expected.getId())), /* appInfoRestriction= */ null);
 
         try (Cursor cursor = mTransactionManager.read(request)) {
             assertThat(getIds(cursor)).containsExactly(expected.getId());
@@ -247,7 +246,7 @@ public class MedicalDataSourceHelperTest {
         long appInfoRestriction = mAppInfoHelper.getAppInfoId(DATA_SOURCE_PACKAGE_NAME);
         ReadTableRequest request =
                 MedicalDataSourceHelper.getReadTableRequest(
-                        List.of(correctDataSource.getId()), appInfoRestriction);
+                        List.of(UUID.fromString(correctDataSource.getId())), appInfoRestriction);
 
         try (Cursor cursor = mTransactionManager.read(request)) {
             assertThat(getIds(cursor)).containsExactly(correctDataSource.getId());
@@ -273,7 +272,7 @@ public class MedicalDataSourceHelperTest {
 
         ReadTableRequest request =
                 MedicalDataSourceHelper.getReadTableRequest(
-                        List.of(correctDataSource.getId()), appInfoRestriction);
+                        List.of(UUID.fromString(correctDataSource.getId())), appInfoRestriction);
 
         try (Cursor cursor = mTransactionManager.read(request)) {
             assertThat(getIds(cursor)).isEmpty();
@@ -342,7 +341,7 @@ public class MedicalDataSourceHelperTest {
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
-                        List.of(expected.getId()));
+                        List.of(UUID.fromString(expected.getId())));
 
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0)).isEqualTo(expected);
@@ -360,7 +359,7 @@ public class MedicalDataSourceHelperTest {
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
-                        List.of(dataSource1.getId()));
+                        List.of(UUID.fromString(dataSource1.getId())));
 
         assertThat(result).containsExactly(dataSource1);
     }
@@ -383,7 +382,7 @@ public class MedicalDataSourceHelperTest {
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
-                        List.of(dataSource1.getId(), dataSource2.getId()));
+                        toUuids(List.of(dataSource1.getId(), dataSource2.getId())));
 
         assertThat(result).containsExactly(dataSource1, dataSource2);
     }
@@ -407,7 +406,7 @@ public class MedicalDataSourceHelperTest {
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
-                        List.of(dataSource1.getId(), dataSource2.getId()));
+                        toUuids(List.of(dataSource1.getId(), dataSource2.getId())));
 
         assertThat(result.size()).isEqualTo(2);
         assertThat(result).containsExactlyElementsIn(expected);
@@ -433,7 +432,7 @@ public class MedicalDataSourceHelperTest {
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
-                        List.of(dataSource1.getId(), dataSource2.getId()));
+                        toUuids(List.of(dataSource1.getId(), dataSource2.getId())));
 
         assertThat(result).containsExactly(dataSource1, dataSource2);
     }
@@ -495,7 +494,7 @@ public class MedicalDataSourceHelperTest {
                 IllegalArgumentException.class,
                 () -> {
                     mMedicalDataSourceHelper.deleteMedicalDataSource(
-                            "foo", /* appInfoIdRestriction= */ null);
+                            UUID.randomUUID(), /* appInfoIdRestriction= */ null);
                 });
     }
 
@@ -513,12 +512,12 @@ public class MedicalDataSourceHelperTest {
                 IllegalArgumentException.class,
                 () -> {
                     mMedicalDataSourceHelper.deleteMedicalDataSource(
-                            "foo", /* appInfoIdRestriction= */ null);
+                            UUID.randomUUID(), /* appInfoIdRestriction= */ null);
                 });
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
-                        List.of(existing.getId()));
+                        List.of(UUID.fromString(existing.getId())));
         assertThat(result).containsExactly(existing);
     }
 
@@ -544,11 +543,11 @@ public class MedicalDataSourceHelperTest {
                 IllegalArgumentException.class,
                 () ->
                         mMedicalDataSourceHelper.deleteMedicalDataSource(
-                                existing.getId(), differentAppInfoId));
+                                UUID.fromString(existing.getId()), differentAppInfoId));
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
-                        List.of(existing.getId(), different.getId()));
+                        toUuids(List.of(existing.getId(), different.getId())));
         assertThat(result).containsExactly(existing, different);
     }
 
@@ -562,13 +561,14 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        UUID existingUuid = UUID.fromString(existing.getId());
 
         mMedicalDataSourceHelper.deleteMedicalDataSource(
-                existing.getId(), /* appInfoIdRestriction= */ null);
+                existingUuid, /* appInfoIdRestriction= */ null);
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
-                        List.of(existing.getId()));
+                        List.of(existingUuid));
         assertThat(result).isEmpty();
     }
 
@@ -590,11 +590,11 @@ public class MedicalDataSourceHelperTest {
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
         mMedicalDataSourceHelper.deleteMedicalDataSource(
-                dataSource1.getId(), /* appInfoIdRestriction= */ null);
+                UUID.fromString(dataSource1.getId()), /* appInfoIdRestriction= */ null);
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
-                        List.of(dataSource1.getId(), dataSource2.getId()));
+                        toUuids(List.of(dataSource1.getId(), dataSource2.getId())));
         assertThat(result).containsExactly(dataSource2);
     }
 
@@ -616,11 +616,12 @@ public class MedicalDataSourceHelperTest {
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
         mMedicalDataSourceHelper.deleteMedicalDataSource(
-                dataSource1.getId(), mAppInfoHelper.getAppInfoId(DATA_SOURCE_PACKAGE_NAME));
+                UUID.fromString(dataSource1.getId()),
+                mAppInfoHelper.getAppInfoId(DATA_SOURCE_PACKAGE_NAME));
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
-                        List.of(dataSource1.getId(), dataSource2.getId()));
+                        toUuids(List.of(dataSource1.getId(), dataSource2.getId())));
         assertThat(result).containsExactly(dataSource2);
     }
 
@@ -645,12 +646,12 @@ public class MedicalDataSourceHelperTest {
                 IllegalArgumentException.class,
                 () ->
                         mMedicalDataSourceHelper.deleteMedicalDataSource(
-                                dataSource1.getId(),
+                                UUID.fromString(dataSource1.getId()),
                                 mAppInfoHelper.getAppInfoId(DIFFERENT_DATA_SOURCE_PACKAGE_NAME)));
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
-                        List.of(dataSource1.getId(), dataSource2.getId()));
+                        toUuids(List.of(dataSource1.getId(), dataSource2.getId())));
         assertThat(result).containsExactly(dataSource1, dataSource2);
     }
 
@@ -681,11 +682,11 @@ public class MedicalDataSourceHelperTest {
                         .get(0);
 
         mMedicalDataSourceHelper.deleteMedicalDataSource(
-                dataSource.getId(), /* appInfoIdRestriction= */ null);
+                UUID.fromString(dataSource.getId()), /* appInfoIdRestriction= */ null);
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
-                        List.of(dataSource.getId()));
+                        toUuids(List.of(dataSource.getId())));
         assertThat(result).isEmpty();
         List<MedicalResource> resourceResult =
                 resourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(

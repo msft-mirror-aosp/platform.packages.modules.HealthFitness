@@ -773,13 +773,22 @@ public final class HealthPermissions {
     /** Personal Health Record permissions */
 
     /**
-     * Allows an application to read the user's immunization data.
+     * Allows an application to read the user's Immunization data.
      *
      * <p>Protection level: dangerous.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public static final String READ_MEDICAL_DATA_IMMUNIZATION =
             "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION";
+
+    /**
+     * Allows an application to read the user's AllergyIntolerance data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_ALLERGY_INTOLERANCE =
+            "android.permission.health.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE";
 
     /**
      * Allows an application to write the user's medical data.
@@ -920,6 +929,7 @@ public final class HealthPermissions {
         Set<String> permissions = new ArraySet<>();
         permissions.add(WRITE_MEDICAL_DATA);
         permissions.add(READ_MEDICAL_DATA_IMMUNIZATION);
+        permissions.add(READ_MEDICAL_DATA_ALLERGY_INTOLERANCE);
         return permissions;
     }
 
