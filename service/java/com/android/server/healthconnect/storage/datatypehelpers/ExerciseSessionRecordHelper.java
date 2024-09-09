@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.Constants.PARENT_KEY;
-import static android.health.connect.HealthConnectException.ERROR_UNSUPPORTED_OPERATION;
 import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTE;
 import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES;
 import static android.health.connect.HealthPermissions.WRITE_EXERCISE_ROUTE;
@@ -46,7 +45,6 @@ import static com.android.server.healthconnect.storage.utils.WhereClauses.Logica
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.health.connect.HealthConnectException;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -60,7 +58,6 @@ import android.util.Pair;
 
 import androidx.annotation.Nullable;
 
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.logging.ExerciseRoutesLogger;
 import com.android.server.healthconnect.logging.ExerciseRoutesLogger.Operations;
 import com.android.server.healthconnect.storage.request.AggregateParams;
@@ -124,8 +121,7 @@ public final class ExerciseSessionRecordHelper
         exerciseSessionRecord.setExerciseType(getCursorInt(cursor, EXERCISE_TYPE_COLUMN_NAME));
         exerciseSessionRecord.setTitle(getCursorString(cursor, TITLE_COLUMN_NAME));
         exerciseSessionRecord.setHasRoute(
-                isExerciseRouteFeatureEnabled()
-                        && getIntegerAndConvertToBoolean(cursor, HAS_ROUTE_COLUMN_NAME));
+                getIntegerAndConvertToBoolean(cursor, HAS_ROUTE_COLUMN_NAME));
         if (!isNullValue(cursor, PLANNED_EXERCISE_SESSION_ID_COLUMN_NAME)) {
             exerciseSessionRecord.setPlannedExerciseSessionId(
                     StorageUtils.getCursorUUID(cursor, PLANNED_EXERCISE_SESSION_ID_COLUMN_NAME));
@@ -328,36 +324,11 @@ public final class ExerciseSessionRecordHelper
         return List.of(getRouteReadRequest(sessionsWithAccessibleRouteClause));
     }
 
-    @Override
-    public boolean isRecordOperationsEnabled() {
-        return HealthConnectDeviceConfigManager.getInitialisedInstance()
-                .isSessionDatatypeFeatureEnabled();
-    }
-
-    @Override
-    public void checkRecordOperationsAreEnabled(RecordInternal<?> recordInternal) {
-        super.checkRecordOperationsAreEnabled(recordInternal);
-        if (!isRecordOperationsEnabled()) {
-            throw new HealthConnectException(
-                    ERROR_UNSUPPORTED_OPERATION, "Writing exercise sessions is not supported.");
-        }
-
-        ExerciseSessionRecordInternal session = (ExerciseSessionRecordInternal) recordInternal;
-        if (session.getRoute() != null && !isExerciseRouteFeatureEnabled()) {
-            throw new HealthConnectException(
-                    ERROR_UNSUPPORTED_OPERATION, "Writing exercise route is not supported.");
-        }
-    }
-
     /** Returns extra permissions required to write given record. */
     @Override
     public List<String> getRequiredExtraWritePermissions(RecordInternal<?> recordInternal) {
         ExerciseSessionRecordInternal session = (ExerciseSessionRecordInternal) recordInternal;
         if (session.getRoute() != null) {
-            if (!isExerciseRouteFeatureEnabled()) {
-                throw new HealthConnectException(
-                        ERROR_UNSUPPORTED_OPERATION, "Writing exercise route is not supported.");
-            }
             return Collections.singletonList(WRITE_EXERCISE_ROUTE);
         }
         return Collections.emptyList();
@@ -424,18 +395,6 @@ public final class ExerciseSessionRecordHelper
                             mapping.get(getCursorInt(cursorExtraData, PARENT_KEY_COLUMN_NAME)));
             record.addRouteLocation(ExerciseRouteRecordHelper.populateLocation(cursorExtraData));
         }
-    }
-
-    private boolean isExerciseRouteFeatureEnabled() {
-        return isRecordOperationsEnabled()
-                && HealthConnectDeviceConfigManager.getInitialisedInstance()
-                        .isExerciseRouteFeatureEnabled();
-    }
-
-    private boolean isReadExerciseRouteAllFeatureEnabled() {
-        return isExerciseRouteFeatureEnabled()
-                && HealthConnectDeviceConfigManager.getInitialisedInstance()
-                        .isExerciseRoutesReadAllFeatureEnabled();
     }
 
     /**
@@ -587,7 +546,7 @@ public final class ExerciseSessionRecordHelper
 
     private int getExerciseRouteReadAccessType(
             String packageName, Set<String> grantedExtraReadPermissions, boolean isInForeground) {
-        if (!isExerciseRouteFeatureEnabled() || grantedExtraReadPermissions.isEmpty()) {
+        if (grantedExtraReadPermissions.isEmpty()) {
             return ROUTE_READ_ACCESS_TYPE_NONE;
         }
 
@@ -605,9 +564,7 @@ public final class ExerciseSessionRecordHelper
         }
 
         boolean canReadAllRoutes =
-                isInForeground
-                        && isReadExerciseRouteAllFeatureEnabled()
-                        && grantedExtraReadPermissions.contains(READ_EXERCISE_ROUTES);
+                isInForeground && grantedExtraReadPermissions.contains(READ_EXERCISE_ROUTES);
 
         return canReadAllRoutes ? ROUTE_READ_ACCESS_TYPE_ALL : ROUTE_READ_ACCESS_TYPE_OWN;
     }

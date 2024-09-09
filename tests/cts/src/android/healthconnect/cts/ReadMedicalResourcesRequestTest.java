@@ -92,6 +92,15 @@ public class ReadMedicalResourcesRequestTest {
     }
 
     @Test
+    public void testRequestBuilder_addInvalidDataSourceId_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                                .addDataSourceId("foo"));
+    }
+
+    @Test
     public void testRequestBuilder_fromExistingBuilder() {
         ReadMedicalResourcesRequest.Builder original =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)

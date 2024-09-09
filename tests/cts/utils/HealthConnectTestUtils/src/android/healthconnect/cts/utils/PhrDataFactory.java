@@ -59,7 +59,6 @@ public class PhrDataFactory {
     public static final String DIFFERENT_FHIR_DATA_IMMUNIZATION =
             "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization2\"}";
     public static final String DIFFERENT_FHIR_RESOURCE_ID_IMMUNIZATION = "Immunization2";
-    public static final String FHIR_RESOURCE_TYPE_STRING_IMMUNIZATION = "Immunization";
 
     public static final String FHIR_DATA_IMMUNIZATION_ID_NOT_EXISTS =
             "{\"resourceType\" : \"Immunization\"}";
@@ -74,11 +73,9 @@ public class PhrDataFactory {
     public static final String FHIR_RESOURCE_ID_IMMUNIZATION = "Immunization1";
 
     public static final String FHIR_DATA_ALLERGY =
-            "{\"resourceType\" : \"Allergy\", \"id\" : \"Allergy1\"}";
-    public static final String FHIR_RESOURCE_TYPE_ALLERGY = "Allergy";
+            "{\"resourceType\" : \"AllergyIntolerance\", \"id\" : \"Allergy1\"}";
     public static final String FHIR_RESOURCE_ID_ALLERGY = "Allergy1";
 
-    public static final String RESOURCE_TYPE_FIELD_NAME = "resourceType";
     public static final String RESOURCE_ID_FIELD_NAME = "id";
 
     /**
