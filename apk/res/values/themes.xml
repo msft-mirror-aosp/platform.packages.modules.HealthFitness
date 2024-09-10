@@ -45,6 +45,7 @@
         <item name="nutritionCategoryIcon">@drawable/ic_category_nutrition</item>
         <item name="sleepCategoryIcon">@drawable/ic_category_sleep</item>
         <item name="vitalsCategoryIcon">@drawable/ic_category_vitals</item>
+        <item name="wellnessCategoryIcon">@drawable/ic_category_wellness</item>
 
         <!-- Permission types page -->
         <item name="appPriorityIcon">@drawable/ic_view_list</item>
@@ -130,6 +131,7 @@
         <item name="permissionGrantButtonList">@style/PermissionGrantButtonListMaterial3</item>
         <item name="permissionGrantButtonTop">@style/PermissionGrantButtonTop</item>
         <item name="permissionGrantButtonBottom">@style/PermissionGrantButtonBottom</item>
+        <item name="disabledSpinner">@style/Widget.HealthConnect.Button.DisabledButton</item>
 
         <!-- Dialogs -->
         <item name="alertDialogTheme">@style/Theme.HealthConnect.Dialog.Alert</item>
@@ -153,6 +155,11 @@
 
         <!-- Popup Menu -->
         <item name="android:itemBackground">@color/settingslib_dialog_background</item>
+        <!-- END REGION -->
+
+        <!-- REGION CLIPPING -->
+        <item name="android:clipToPadding">true</item>
+        <item name="android:clipChildren">true</item>
         <!-- END REGION -->
     </style>
 

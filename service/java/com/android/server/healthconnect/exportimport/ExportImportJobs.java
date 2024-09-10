@@ -17,6 +17,7 @@
 package com.android.server.healthconnect.exportimport;
 
 import static com.android.healthfitness.flags.Flags.exportImport;
+import static com.android.healthfitness.flags.Flags.exportImportFastFollow;
 
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -29,6 +30,7 @@ import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectDailyService;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.util.Objects;
 
@@ -49,6 +51,21 @@ public class ExportImportJobs {
     /** Schedule the periodic export job. */
     public static void schedulePeriodicExportJob(Context context, int userId) {
         int periodInDays = ExportImportSettingsStorage.getScheduledExportPeriodInDays();
+        if (exportImportFastFollow() && periodInDays <= 0) {
+            ExportManager exportManager = new ExportManager(context, Clock.systemUTC());
+
+            // If period is 0 the user has turned export off, so we should cancel the job.
+            Objects.requireNonNull(context.getSystemService(JobScheduler.class))
+                    .forNamespace(NAMESPACE)
+                    .cancelAll();
+            // If export is off we try to delete the local files, just in case it happened the
+            // rare case where those files weren't delete after the last export.
+            exportManager.deleteLocalExportFiles();
+
+            return;
+        }
+        // TODO(b/325599089): Remove once exportImportFastFollow flag has been deployed and
+        //  without concerns of needing to roll-back.
         if (periodInDays <= 0) {
             return;
         }
@@ -113,14 +130,13 @@ public class ExportImportJobs {
             // reschedule.
             return true;
         }
+
         boolean exportSuccess = exportManager.runExport();
         boolean firstExport = extras.getBoolean(IS_FIRST_EXPORT, false);
         if (exportSuccess && firstExport) {
             schedulePeriodicExportJob(context, userId);
         }
         return exportSuccess;
-
-        // TODO(b/325599089): Cancel job if flag is off.
 
         // TODO(b/325599089): Do we need an additional periodic / one-off task to make sure a single
         //  export completes? We need to test if JobScheduler will call the job again if jobFinished

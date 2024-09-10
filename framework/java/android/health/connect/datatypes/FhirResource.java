@@ -34,9 +34,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Set;
 
 /**
- * Captures the FHIR resource data. This is the class used for all FHIR resource types, and the type
- * is specified via {@link FhirResourceType}, which is a subset of the resource list in <a
- * href="https://build.fhir.org/resourcelist.html">the official FHIR website</a>.
+ * Captures the FHIR resource data. This is the class used for all supported FHIR resource types,
+ * which is a subset of the resource list in <a href="https://build.fhir.org/resourcelist.html">the
+ * official FHIR website</a>.
+ *
+ * <p>FHIR stands for the <a href="https://hl7.org/fhir/">Fast Healthcare Interoperability Resources
+ * </a> standard.
  */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class FhirResource implements Parcelable {
@@ -46,8 +49,15 @@ public final class FhirResource implements Parcelable {
     /** FHIR resource type for Immunization. */
     public static final int FHIR_RESOURCE_TYPE_IMMUNIZATION = 1;
 
+    /** FHIR resource type for AllergyIntolerance. */
+    public static final int FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE = 2;
+
     /** @hide */
-    @IntDef({FHIR_RESOURCE_TYPE_UNKNOWN, FHIR_RESOURCE_TYPE_IMMUNIZATION})
+    @IntDef({
+        FHIR_RESOURCE_TYPE_UNKNOWN,
+        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE
+    })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FhirResourceType {}
 
@@ -91,8 +101,8 @@ public final class FhirResource implements Parcelable {
             };
 
     /**
-     * Returns the FHIR resource type. This is extracted from the "resourceType" field in {@code
-     * data}, and mapped into an {@code IntDef} {@link FhirResourceType}.
+     * Returns the FHIR resource type. This is extracted from the "resourceType" field in {@link
+     * #getData}.
      */
     @FhirResourceType
     public int getType() {
@@ -133,7 +143,10 @@ public final class FhirResource implements Parcelable {
      * type.
      */
     private static final Set<Integer> VALID_TYPES =
-            Set.of(FHIR_RESOURCE_TYPE_UNKNOWN, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+            Set.of(
+                    FHIR_RESOURCE_TYPE_UNKNOWN,
+                    FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                    FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
 
     /**
      * Validates the provided {@code fhirResourceType} is in the {@link FhirResource#VALID_TYPES}
@@ -183,9 +196,11 @@ public final class FhirResource implements Parcelable {
 
         /**
          * @param type The FHIR resource type extracted from the "resourceType" field in {@code
-         *     data}, and mapped into an {@code IntDef} {@link FhirResourceType}.
+         *     data}.
          * @param id The FHIR resource ID extracted from the "id" field in {@code data}.
          * @param data The FHIR resource data in JSON representation.
+         * @throws IllegalArgumentException if the provided FHIR resource {@code type} is not a
+         *     valid supported type.
          */
         public Builder(@FhirResourceType int type, @NonNull String id, @NonNull String data) {
             validateFhirResourceType(type);
@@ -221,7 +236,10 @@ public final class FhirResource implements Parcelable {
 
         /**
          * Sets the FHIR resource type. This is extracted from the "resourceType" field in {@code
-         * data}, and mapped into an {@code IntDef} {@link FhirResourceType}.
+         * data}.
+         *
+         * @throws IllegalArgumentException if the provided FHIR resource {@code type} is not a
+         *     valid supported type.
          */
         @NonNull
         public Builder setType(@FhirResourceType int type) {

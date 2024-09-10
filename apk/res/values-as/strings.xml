@@ -35,10 +35,8 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{১ টা এপে এক্সেছ কৰিব পাৰে}one{# টা এপে এক্সেছ কৰিব পাৰে}other{# টা এপে এক্সেছ কৰিব পাৰে}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"নাই"</string>
     <string name="entry_details_title" msgid="590184849040247850">"প্ৰৱিষ্টিৰ সবিশেষ"</string>
-    <!-- no translation found for browse_data_title (5232691805953326097) -->
-    <skip />
-    <!-- no translation found for browse_data_subtitle (7025164374898103993) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"ডেটা ব্ৰাউজ কৰক"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"ডেটা আৰু সেয়া এক্সেছ কৰিব পৰা এপ্‌সমূহ চাওক"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"স্বয়ংক্ৰিয়ভাৱে মচা, ডেটাৰ উৎস, বেকআপ আৰু পুনঃস্থাপন"</string>
     <string name="backup_title" msgid="211503191266235085">"বেকআপ"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"ডেটাৰ উৎস আৰু অগ্ৰাধিকাৰ"</string>
@@ -69,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"ঋতুচক্ৰ ট্ৰেক কৰা"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"পৰিপুষ্টিৰ ডেটা"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"পৰিপুষ্টিৰ ডেটা"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"সুস্থতা"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"সুস্থতা"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"ডেটা ব্ৰাউজ কৰক"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"ডেটা পৰিচালনা কৰক"</string>
     <string name="export_data_button" msgid="7783329820434117744">"ডেটা ৰপ্তানি কৰক"</string>
@@ -273,6 +273,12 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"প্ৰতিষেধক"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"প্ৰতিষেধক"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"প্ৰতিষেধক প্ৰদান সম্পৰ্কীয় তথ্য পঢ়ক"</string>
+    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
+    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"চিন্তাশীল"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"চিন্তাশীল"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"চিন্তাশীল ছেশ্বনৰ ডেটা পঢ়ক"</string>
@@ -330,10 +336,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"অতিৰিক্ত এক্সেছ"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"এই এপ্‌টোৰ বাবে অতিৰিক্ত অনুমতি আঁতৰোৱা হৈছে"</string>
     <string name="permissions_header" msgid="6519976063360071569">"অনুমতি"</string>
-    <string name="manage_fitness_permissions" msgid="3363128122122446755">"ফিটনেছ আৰু সুস্থতা"</string>
-    <string name="manage_fitness_permissions_summary" msgid="2558503899466623148">"ব্যায়াম, টোপনি, পুষ্টি আৰু অন্যান্য"</string>
-    <string name="manage_medical_permissions" msgid="3772912800582350567">"স্বাস্থ্য সম্বন্ধীয় নথি"</string>
-    <string name="manage_medical_permissions_summary" msgid="2624707097284112258">"লেবৰ ফলাফল, ঔষধ, প্ৰতিষেধক আৰু অন্যান্য"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"ফিটনেছ আৰু সুস্থতা"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"ব্যায়াম, টোপনি, পুষ্টি আৰু অন্যান্য"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"স্বাস্থ্য সম্বন্ধীয় নথি"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"স্বাস্থ্য সম্বন্ধীয় নথি"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"লেবৰ ফলাফল, ঔষধ, প্ৰতিষেধক আৰু অন্যান্য"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"অনুমতি আঁতৰোৱা এপ্‌সমূহ"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connectএ <xliff:g id="APP_DATA">%s</xliff:g>ৰ অনুমতি আঁতৰাইছে"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connectএ <xliff:g id="APP_DATA_0">%1$s</xliff:g> আৰু <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>ৰ অনুমতি আঁতৰাইছে"</string>
@@ -347,10 +354,13 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"ডেটা ৰপ্তানি কৰিব পৰা নগ’ল"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g>ৰ বাবে ৰপ্তানিৰ ক্ষেত্ৰত সমস্যা হৈছে। অনুগ্ৰহ কৰি এটা নতুন সময়সূচী নিৰ্ধাৰিত ৰপ্তানি ছেট আপ কৰক আৰু পুনৰ চেষ্টা কৰক।"</string>
     <string name="next_export_time" msgid="3138247220014510213">"পৰৱৰ্তী ৰপ্তানি: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for next_export_text (6726252793571403846) -->
-    <skip />
+    <string name="next_export_text" msgid="6726252793571403846">"পৰৱৰ্তী ৰপ্তানি সোনকালেই আৰম্ভ হ’ব"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"বেকআপ লওক আৰু পুনঃস্থাপন কৰক"</string>
     <string name="last_export_time" msgid="9205875050823594041">"অন্তিম ৰপ্তানি: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="last_export_time_now" msgid="31498024135933750">"অন্তিম ৰপ্তানি: এতিয়া"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{শেষবাৰ ৰপ্তানি কৰা সময়: ১ মিনিট পূৰ্বে}one{শেষবাৰ ৰপ্তানি কৰা সময়: # মিনিট পূৰ্বে}other{শেষবাৰ ৰপ্তানি কৰা সময়: # মিনিট পূৰ্বে}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{শেষবাৰ ৰপ্তানি কৰা সময়: ১ ঘণ্টা পূৰ্বে}one{শেষবাৰ ৰপ্তানি কৰা সময়: # ঘণ্টা পূৰ্বে}other{শেষবাৰ ৰপ্তানি কৰা সময়: # ঘণ্টা পূৰ্বে}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"অন্তিম ৰপ্তানি: নাই"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"সময়সূচী নিৰ্ধাৰিত ৰপ্তানি"</string>
     <string name="import_data" msgid="404502315533233094">"ডেটা আমদানি কৰক"</string>
@@ -385,6 +395,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"আমদানি কৰক"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connectৰ পুনঃস্থাপন প্ৰক্ৰিয়া চলি আছে"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connectৰ পুনঃস্থাপন প্ৰক্ৰিয়া সম্পূৰ্ণ হৈছে"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"পুনঃস্থাপন কৰাৰ প্ৰক্ৰিয়াটো চলি আছে"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"ডেটা পুনঃস্থাপন কৰাটো সমাপ্ত হৈছে"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connectএ ডেটা পুনঃস্থাপন কৰিব নোৱাৰিলে"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"অধিক ঠাইৰ আৱশ্যক"</string>
@@ -397,6 +408,12 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"খোলক"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"ফাইল বাছনি কৰক"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"ঠাই খালী কৰক"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connectএ ডেটা পুনঃস্থাপন কৰিব নোৱাৰিলে"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"অধিক ঠাইৰ আৱশ্যক"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"<xliff:g id="DATE">%1$s</xliff:g>ৰ বাবে ৰপ্তানিৰ ক্ষেত্ৰত সমস্যা হৈছে। অনুগ্ৰহ কৰি এটা নতুন সময়সূচী নিৰ্ধাৰিত ৰপ্তানি ছেট আপ কৰক আৰু পুনৰ চেষ্টা কৰক।"</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Health Connectক সময়সূচী নিৰ্ধাৰণ কৰি থোৱা ৰপ্তানিটো অব্যাহত ৰাখিবলৈ আপোনাৰ ফ’নত <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> ষ্ট’ৰেজৰ খালী ঠাই লাগে।"</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"ছেট আপ কৰক"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"ঠাই খালী কৰক"</string>
     <string name="export_back_button" msgid="3550795479165524982">"উভতি যাওক"</string>
     <string name="export_next_button" msgid="657930567137105172">"পৰৱৰ্তী"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"বাতিল কৰক"</string>
@@ -643,6 +660,7 @@
     <string name="rest" msgid="5937058337671252210">"বিশ্ৰাম"</string>
     <string name="pause" msgid="5161459047750335691">"পজ কৰক"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"অষ্ট্ৰেলিয়ান ফুটবল"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"অজ্ঞাত প্ৰকাৰ"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g>ৰ টোপনি"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>⁠"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"জাগ্ৰত"</string>
@@ -653,6 +671,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"পাতল টোপনি"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"গভীৰ টোপনি"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"অজ্ঞাত"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"শ্বাস-প্ৰশ্বাস"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"ধ্যান"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"লৰচৰ"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"সংগীত"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"অন্য"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"অনিয়ন্ত্ৰিত"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> মি"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> ঘ <xliff:g id="MIN">%2$s</xliff:g> মি"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> ঘ"</string>
@@ -996,4 +1020,13 @@
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>ৰ ডেটা মচা হ’ল"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> টা বস্তু মচা হ’ল"</string>
     <string name="select_all" msgid="837499881590001166">"আটাইবোৰ বাছনি কৰক"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connect ব্যৱহাৰ কৰা আৰম্ভ কৰক"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"আপোনাৰ প্ৰথম এপ্‌সমূহৰ মাজত স্বাস্থ্য আৰু শৰীৰচৰ্চাৰ ডেটা শ্বেয়াৰ কৰিবলৈ সেইবোৰ ছিংক কৰক"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"ছেট আপ কৰক"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"অধিক এপ্‌ সংযোগ কৰক"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"<xliff:g id="APP_NAME">%s</xliff:g> আৰু আপোনাৰ ফ’নত থকা স্বাস্থ্য সম্পৰ্কীয় এপৰ মাজত ডেটা শ্বেয়াৰ কৰা আৰম্ভ কৰক"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"ছেট আপ কৰক"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"সমিল এপ্‌ চাওক"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Health Connectৰ জৰিয়তে <xliff:g id="APP_NAME">%s</xliff:g>ৰ সৈতে ছিংক কৰিবলৈ অধিক এপ্‌বিচাৰক"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"app storeত চাওক"</string>
 </resources>

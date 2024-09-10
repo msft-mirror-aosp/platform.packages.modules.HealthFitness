@@ -59,7 +59,7 @@ package android.health.connect {
     method public static boolean isHealthPermission(@NonNull android.content.Context, @NonNull String);
     method @RequiresPermission(android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION) public void queryAccessLogs(@NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<android.health.connect.accesslog.AccessLog>,android.health.connect.HealthConnectException>);
     method @RequiresPermission(android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION) public void queryActivityDates(@NonNull java.util.List<java.lang.Class<? extends android.health.connect.datatypes.Record>>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<java.time.LocalDate>,android.health.connect.HealthConnectException>);
-    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") @RequiresPermission(android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION) public void queryAllMedicalResourceTypesInfo(@NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<android.health.connect.MedicalResourceTypeInfoResponse>,android.health.connect.HealthConnectException>);
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") @RequiresPermission(android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION) public void queryAllMedicalResourceTypeInfos(@NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<android.health.connect.MedicalResourceTypeInfo>,android.health.connect.HealthConnectException>);
     method @RequiresPermission(android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION) public void queryAllRecordTypesInfo(@NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.Map<java.lang.Class<? extends android.health.connect.datatypes.Record>,android.health.connect.RecordTypeInfoResponse>,android.health.connect.HealthConnectException>);
     method @RequiresPermission(android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION) public void setRecordRetentionPeriodInDays(@IntRange(from=0, to=7300) int, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.lang.Void,android.health.connect.HealthConnectException>);
     method @RequiresPermission(android.Manifest.permission.STAGE_HEALTH_CONNECT_REMOTE_DATA) public void stageAllHealthConnectRemoteData(@NonNull java.util.Map<java.lang.String,android.os.ParcelFileDescriptor>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.lang.Void,android.health.connect.restore.StageRemoteDataException>) throws java.lang.NullPointerException;
@@ -138,20 +138,13 @@ package android.health.connect {
     field public static final String MANAGE_HEALTH_PERMISSIONS = "android.permission.MANAGE_HEALTH_PERMISSIONS";
   }
 
-  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalPermissionCategory {
-    field public static final int ALL_MEDICAL_DATA = 1; // 0x1
-    field public static final int IMMUNIZATION = 2; // 0x2
-    field public static final int UNKNOWN = 0; // 0x0
-  }
-
-  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalResourceTypeInfoResponse implements android.os.Parcelable {
-    ctor public MedicalResourceTypeInfoResponse(int, int, @NonNull java.util.Set<android.health.connect.datatypes.MedicalDataSource>);
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalResourceTypeInfo implements android.os.Parcelable {
+    ctor public MedicalResourceTypeInfo(int, @NonNull java.util.Set<android.health.connect.datatypes.MedicalDataSource>);
     method public int describeContents();
     method @NonNull public java.util.Set<android.health.connect.datatypes.MedicalDataSource> getContributingDataSources();
     method public int getMedicalResourceType();
-    method public int getPermissionCategoryType();
     method public void writeToParcel(@NonNull android.os.Parcel, int);
-    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.MedicalResourceTypeInfoResponse> CREATOR;
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.MedicalResourceTypeInfo> CREATOR;
   }
 
   public class RecordTypeInfoResponse {
@@ -173,9 +166,11 @@ package android.health.connect.accesslog {
   public final class AccessLog implements android.os.Parcelable {
     method public int describeContents();
     method @NonNull public java.time.Instant getAccessTime();
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") @NonNull public java.util.Set<java.lang.Integer> getMedicalResourceTypes();
     method public int getOperationType();
     method @NonNull public String getPackageName();
     method @NonNull public java.util.List<java.lang.Class<? extends android.health.connect.datatypes.Record>> getRecordTypes();
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public boolean isMedicalDataSourceAccessed();
     method public void writeToParcel(@NonNull android.os.Parcel, int);
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.accesslog.AccessLog> CREATOR;
   }

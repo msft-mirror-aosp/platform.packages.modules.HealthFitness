@@ -29,6 +29,7 @@ java_library {
         "cts-install-lib",
         "platform-test-annotations",
         "healthfitness-aconfig-flags-lib",
+        "healthfitness-aconfig-flags-helper",
     ],
     sdk_version: "test_current",
 }

@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.permission;
 
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
@@ -116,9 +117,12 @@ public class MedicalDataPermissionEnforcerTest {
     /** getGrantedMedicalPermissions */
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetGrantedMedicalPermissions_permissionGranted_returnsPermissions() {
+    public void testGetGrantedMedicalPermissions_allPermissionsGranted_returnsAllPermissions() {
         when(mPermissionManager.checkPermissionForPreflight(
                         READ_MEDICAL_DATA_IMMUNIZATION, mAttributionSource))
+                .thenReturn(PERMISSION_GRANTED);
+        when(mPermissionManager.checkPermissionForPreflight(
+                        READ_MEDICAL_DATA_ALLERGY_INTOLERANCE, mAttributionSource))
                 .thenReturn(PERMISSION_GRANTED);
         when(mPermissionManager.checkPermissionForPreflight(WRITE_MEDICAL_DATA, mAttributionSource))
                 .thenReturn(PERMISSION_GRANTED);
@@ -127,15 +131,22 @@ public class MedicalDataPermissionEnforcerTest {
                 mMedicalDataPermissionEnforcer.getGrantedMedicalPermissionsForPreflight(
                         mAttributionSource);
 
-        assertThat(permissions).containsExactly(READ_MEDICAL_DATA_IMMUNIZATION, WRITE_MEDICAL_DATA);
+        assertThat(permissions)
+                .containsExactly(
+                        READ_MEDICAL_DATA_IMMUNIZATION,
+                        READ_MEDICAL_DATA_ALLERGY_INTOLERANCE,
+                        WRITE_MEDICAL_DATA);
     }
 
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetGrantedMedicalPermissions_onePermissionDenied_returnsOnePermission() {
+    public void testGetGrantedMedicalPermissions_onePermissionGranted_returnsOnePermission() {
         when(mPermissionManager.checkPermissionForPreflight(
                         READ_MEDICAL_DATA_IMMUNIZATION, mAttributionSource))
                 .thenReturn(PERMISSION_GRANTED);
+        when(mPermissionManager.checkPermissionForPreflight(
+                        READ_MEDICAL_DATA_ALLERGY_INTOLERANCE, mAttributionSource))
+                .thenReturn(PERMISSION_HARD_DENIED);
         when(mPermissionManager.checkPermissionForPreflight(WRITE_MEDICAL_DATA, mAttributionSource))
                 .thenReturn(PERMISSION_HARD_DENIED);
 

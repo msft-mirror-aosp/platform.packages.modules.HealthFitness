@@ -81,6 +81,7 @@ class AppEntriesFragmentTest {
                         TEST_APP_PACKAGE_NAME,
                         TEST_APP_NAME,
                         context.getDrawable(R.drawable.health_connect_logo))))
+        Mockito.`when`(viewModel.setOfEntriesToBeDeleted).thenReturn(MutableLiveData())
     }
 
     @Test
@@ -129,16 +130,6 @@ class AppEntriesFragmentTest {
         onView(withText("12 steps")).check(matches(isDisplayed()))
         onView(withText("8:06 - 8:06")).check(matches(isDisplayed()))
         onView(withText("15 steps")).check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun appEntries_withData_notShowingDeleteAction() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
-
-        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
-
-        onView(withIndex(withId(R.id.item_data_entry_delete), 0))
-            .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
     }
 }
 

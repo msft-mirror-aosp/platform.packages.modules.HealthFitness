@@ -26,6 +26,7 @@ import static java.util.Objects.requireNonNull;
 import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.annotation.NonNull;
+import android.health.connect.MedicalResourceId;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -36,21 +37,32 @@ import java.util.Set;
 /**
  * Captures the user's medical data. This is the class used for all medical resource types, and the
  * type is specified via {@link MedicalResourceType}.
+ *
+ * <p>The data representation follows the <a href="https://hl7.org/fhir/">Fast Healthcare
+ * Interoperability Resources (FHIR)</a> standard.
  */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class MedicalResource implements Parcelable {
     /** Unknown medical resource type. */
     public static final int MEDICAL_RESOURCE_TYPE_UNKNOWN = 0;
 
-    /** Medical resource type to capture the immunizations data. */
+    /** Medical resource type to capture the Immunization data. */
     public static final int MEDICAL_RESOURCE_TYPE_IMMUNIZATION = 1;
 
+    /** Medical resource type to capture the AllergyIntolerance data. */
+    public static final int MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE = 2;
+
     /** @hide */
-    @IntDef({MEDICAL_RESOURCE_TYPE_UNKNOWN, MEDICAL_RESOURCE_TYPE_IMMUNIZATION})
+    @IntDef({
+        MEDICAL_RESOURCE_TYPE_UNKNOWN,
+        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+        MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
+    })
     @Retention(RetentionPolicy.SOURCE)
     public @interface MedicalResourceType {}
 
     @MedicalResourceType private final int mType;
+    @NonNull private final MedicalResourceId mId;
     @NonNull private final String mDataSourceId;
     @NonNull private final FhirVersion mFhirVersion;
     @NonNull private final FhirResource mFhirResource;
@@ -76,6 +88,7 @@ public final class MedicalResource implements Parcelable {
         mDataSourceId = dataSourceId;
         mFhirVersion = fhirVersion;
         mFhirResource = fhirResource;
+        mId = new MedicalResourceId(dataSourceId, fhirResource.getType(), fhirResource.getId());
     }
 
     /**
@@ -92,6 +105,7 @@ public final class MedicalResource implements Parcelable {
         mFhirResource =
                 requireNonNull(
                         in.readParcelable(FhirResource.class.getClassLoader(), FhirResource.class));
+        mId = new MedicalResourceId(mDataSourceId, mFhirResource.getType(), mFhirResource.getId());
     }
 
     @NonNull
@@ -116,6 +130,12 @@ public final class MedicalResource implements Parcelable {
     @MedicalResourceType
     public int getType() {
         return mType;
+    }
+
+    /** Returns the ID of this {@link MedicalResource} as {@link MedicalResourceId}. */
+    @NonNull
+    public MedicalResourceId getId() {
+        return mId;
     }
 
     /** Returns The data source ID where the data comes from. */
@@ -156,7 +176,10 @@ public final class MedicalResource implements Parcelable {
      * type.
      */
     private static final Set<Integer> VALID_TYPES =
-            Set.of(MEDICAL_RESOURCE_TYPE_UNKNOWN, MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+            Set.of(
+                    MEDICAL_RESOURCE_TYPE_UNKNOWN,
+                    MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
 
     /**
      * Validates the provided {@code medicalResourceType} is in the {@link

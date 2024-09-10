@@ -30,6 +30,8 @@ interface DeviceInfoUtils {
 
     fun openHCGetStartedLink(activity: FragmentActivity)
 
+    fun openHCBackupAndRestoreLink(activity: FragmentActivity)
+
     fun openSendFeedbackActivity(activity: FragmentActivity)
 
     fun isIntentHandlerAvailable(context: Context, intent: Intent): Boolean
@@ -61,7 +63,15 @@ class DeviceInfoUtilsImpl @Inject constructor() : DeviceInfoUtils {
     }
 
     override fun openHCGetStartedLink(activity: FragmentActivity) {
-        val helpUrlString = activity.getString(R.string.hc_get_started_link)
+        openHealthConnectHelpCenterLink(activity, R.string.hc_get_started_link)
+    }
+
+    override fun openHCBackupAndRestoreLink(activity: FragmentActivity) {
+        openHealthConnectHelpCenterLink(activity, R.string.hc_backup_and_restore_link)
+    }
+
+    private fun openHealthConnectHelpCenterLink(activity: FragmentActivity, resourceId: Int) {
+        val helpUrlString = activity.getString(resourceId)
         val fullUri = HelpUtils.uriWithAddedParameters(activity, Uri.parse(helpUrlString))
         val intent =
             Intent(Intent.ACTION_VIEW, fullUri).apply {
@@ -70,7 +80,7 @@ class DeviceInfoUtilsImpl @Inject constructor() : DeviceInfoUtils {
         try {
             activity.startActivity(intent)
         } catch (e: ActivityNotFoundException) {
-            Log.w(TAG, "Unable to open help center URL.", e)
+            Log.e(TAG, "Unable to open help center URL.", e)
         }
     }
 

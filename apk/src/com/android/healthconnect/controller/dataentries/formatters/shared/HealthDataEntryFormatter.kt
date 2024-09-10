@@ -40,6 +40,7 @@ import android.health.connect.datatypes.HydrationRecord
 import android.health.connect.datatypes.IntermenstrualBleedingRecord
 import android.health.connect.datatypes.LeanBodyMassRecord
 import android.health.connect.datatypes.MenstruationFlowRecord
+import android.health.connect.datatypes.MindfulnessSessionRecord
 import android.health.connect.datatypes.NutritionRecord
 import android.health.connect.datatypes.OvulationTestRecord
 import android.health.connect.datatypes.OxygenSaturationRecord
@@ -81,6 +82,7 @@ import com.android.healthconnect.controller.dataentries.formatters.HydrationForm
 import com.android.healthconnect.controller.dataentries.formatters.IntermenstrualBleedingFormatter
 import com.android.healthconnect.controller.dataentries.formatters.LeanBodyMassFormatter
 import com.android.healthconnect.controller.dataentries.formatters.MenstruationFlowFormatter
+import com.android.healthconnect.controller.dataentries.formatters.MindfulnessSessionFormatter
 import com.android.healthconnect.controller.dataentries.formatters.NutritionFormatter
 import com.android.healthconnect.controller.dataentries.formatters.OvulationTestFormatter
 import com.android.healthconnect.controller.dataentries.formatters.OxygenSaturationFormatter
@@ -145,7 +147,8 @@ constructor(
     private val intermenstrualBleedingFormatter: IntermenstrualBleedingFormatter,
     private val heartRateVariabilityRmssdFormatter: HeartRateVariabilityRmssdFormatter,
     private val skinTemperatureFormatter: SkinTemperatureFormatter,
-    private val plannedExerciseSessionRecordFormatter: PlannedExerciseSessionRecordFormatter
+    private val plannedExerciseSessionRecordFormatter: PlannedExerciseSessionRecordFormatter,
+    private val mindfulnessSessionFormatter: MindfulnessSessionFormatter,
 ) {
 
     suspend fun format(record: Record, showDataOrigin: Boolean = true): FormattedEntry {
@@ -194,6 +197,7 @@ constructor(
             is SkinTemperatureRecord -> skinTemperatureFormatter.format(record, appName)
             is PlannedExerciseSessionRecord ->
                 plannedExerciseSessionRecordFormatter.format(record, appName)
+            is MindfulnessSessionRecord -> mindfulnessSessionFormatter.format(record, appName)
             else -> throw IllegalArgumentException("${record::class.java} Not supported!")
         }
     }

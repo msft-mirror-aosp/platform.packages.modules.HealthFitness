@@ -25,6 +25,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.data.entries.EntriesViewModel
 import com.android.healthconnect.controller.data.entries.FormattedEntry.ExercisePerformanceGoalEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.ExerciseSessionEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedSectionContent
@@ -86,6 +87,7 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
     @Inject lateinit var logger: HealthConnectLogger
 
     private val viewModel: DataEntryDetailsViewModel by viewModels()
+    private val entriesViewModel: EntriesViewModel by viewModels()
 
     private lateinit var permissionType: FitnessPermissionType
     private lateinit var recyclerView: RecyclerView
@@ -192,6 +194,7 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
                 .setViewBinder(
                     ExercisePerformanceGoalEntry::class.java, exercisePerformanceGoalViewBinder)
                 .setViewBinder(ItemDataEntrySeparator::class.java, itemDataEntrySeparatorViewBinder)
+                .setViewModel(entriesViewModel) // Added to adjust to the new RecyclerViewAdapter
                 .build()
         recyclerView =
             view.findViewById<RecyclerView?>(R.id.data_entries_list).apply {

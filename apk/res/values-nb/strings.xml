@@ -35,10 +35,8 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 app har tilgang}other{# apper har tilgang}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Ingen"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Oppføringsdetaljer"</string>
-    <!-- no translation found for browse_data_title (5232691805953326097) -->
-    <skip />
-    <!-- no translation found for browse_data_subtitle (7025164374898103993) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"Bla gjennom data"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Se data og hvilke apper som har tilgang til dem"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"Automatisk sletting, datakilder, sikkerhetskopiering og gjenoppretting"</string>
     <string name="backup_title" msgid="211503191266235085">"Sikkerhetskopiering"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Datakilder og prioritet"</string>
@@ -69,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"syklussporing"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Ernæring"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"ernæring"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"Velvære"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"velvære"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"Bla gjennom data"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Administrer data"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Eksporter data"</string>
@@ -273,6 +273,12 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Vaksinering"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"vaksinering"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Les vaksinering"</string>
+    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
+    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Oppmerksomt nærvær"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"oppmerksomt nærvær"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Les oppmerksomt nærvær"</string>
@@ -330,14 +336,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"Annen tilgang"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Fjernet tilleggstillatelser for denne appen"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Tillatelser"</string>
-    <!-- no translation found for manage_fitness_permissions (3363128122122446755) -->
-    <skip />
-    <!-- no translation found for manage_fitness_permissions_summary (2558503899466623148) -->
-    <skip />
-    <!-- no translation found for manage_medical_permissions (3772912800582350567) -->
-    <skip />
-    <!-- no translation found for manage_medical_permissions_summary (2624707097284112258) -->
-    <skip />
+    <string name="fitness_permissions" msgid="586264186537460254">"Trening og velvære"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Trening, søvn, ernæring og annet"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"Helsejournaler"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"helsejournaler"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"Labresultater/medisiner/vaksinering m.m."</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Fjernet apptillatelser"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect fjernet tillatelser for <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect fjernet tillatelser for <xliff:g id="APP_DATA_0">%1$s</xliff:g> og <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -351,10 +354,13 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Kunne ikke eksportere dataene"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Det har oppstått et problem med eksporten for <xliff:g id="DATE">%1$s</xliff:g>. Konfigurer en ny planlagt eksport, og prøv på nytt."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Neste eksport: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for next_export_text (6726252793571403846) -->
-    <skip />
+    <string name="next_export_text" msgid="6726252793571403846">"Neste eksport starter snart"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Sikkerhetskopiering og gjenoppretting"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Siste eksport: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="last_export_time_now" msgid="31498024135933750">"Siste eksport: nå"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Forrige eksport: for 1 minutt siden}other{Forrige eksport: for # minutter siden}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Forrige eksport: for 1 time siden}other{Forrige eksport: for # timer siden}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"Forrige eksport: ingen"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Planlagt eksport"</string>
     <string name="import_data" msgid="404502315533233094">"Importer data"</string>
@@ -389,6 +395,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Importér"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"En Health Connect-gjenoppretting pågår"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect-gjenopprettingen er ferdig"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"En gjenoppretting pågår"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"Dataene er gjenopprettet"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect kunne ikke gjenopprette data"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Mer plass er nødvendig"</string>
@@ -401,6 +408,12 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Åpne"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Velg fil"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Frigjør plass"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Dataeksport fra Health Connect mislyktes"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Mer plass er nødvendig"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Det har oppstått et problem med eksporten for <xliff:g id="DATE">%1$s</xliff:g>. Konfigurer en ny planlagt eksport, og prøv på nytt."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Health Connect trenger <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> lagringsplass på telefonen for å fortsette den planlagte eksporten."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"Konfigurer"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Frigjør plass"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Tilbake"</string>
     <string name="export_next_button" msgid="657930567137105172">"Neste"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"Avbryt"</string>
@@ -647,6 +660,7 @@
     <string name="rest" msgid="5937058337671252210">"Hvile"</string>
     <string name="pause" msgid="5161459047750335691">"Pause"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"Australsk fotball"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"Ukjent type"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> søvn"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>⁠"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"våken"</string>
@@ -657,6 +671,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"lett søvn"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"dyp søvn"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"ukjent"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"Pusting"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"Meditasjon"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"Bevegelse"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"Musikk"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"Annet"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Uten veiledning"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> m"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> t <xliff:g id="MIN">%2$s</xliff:g> m"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> t"</string>
@@ -1000,4 +1020,13 @@
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>-dataene er slettet"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> elementer er slettet"</string>
     <string name="select_all" msgid="837499881590001166">"Merk alt"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Begynn å bruke Health Connect"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Synkroniser de første appene dine for å dele helse- og treningsdata mellom dem"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Konfigurer"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Koble til flere apper"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Begynn å dele data mellom <xliff:g id="APP_NAME">%s</xliff:g> og helseappene på telefonen"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"Konfigurer"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Se kompatible apper"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Finn flere apper å synkronisere med <xliff:g id="APP_NAME">%s</xliff:g> via Health Connect"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Se i appbutikken"</string>
 </resources>

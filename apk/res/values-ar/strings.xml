@@ -35,10 +35,8 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{هناك تطبيق واحد مسموح له بالوصول إلى البيانات}zero{هناك # تطبيق مسموح له بالوصول إلى البيانات}two{هناك تطبيقان مسموح لهما بالوصول إلى البيانات}few{هناك # تطبيقات مسموح لها بالوصول إلى البيانات}many{هناك # تطبيقًا مسموح له بالوصول إلى البيانات}other{هناك # تطبيق مسموح له بالوصول إلى البيانات}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"ما مِن تطبيقات"</string>
     <string name="entry_details_title" msgid="590184849040247850">"تفاصيل الإدخال"</string>
-    <!-- no translation found for browse_data_title (5232691805953326097) -->
-    <skip />
-    <!-- no translation found for browse_data_subtitle (7025164374898103993) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"تصفّح البيانات"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"الاطّلاع على البيانات والتطبيقات التي يمكنها الوصول إليها"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"الحذف التلقائي ومصادر البيانات والاحتفاظ بنسخة احتياطية من البيانات واستعادتها"</string>
     <string name="backup_title" msgid="211503191266235085">"الاحتفاظ بنسخة احتياطية"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"مصادر البيانات وأولوية التطبيقات"</string>
@@ -69,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"تتبُّع الدورة الشهريّة"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"المعلومات الغذائية"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"المعلومات الغذائية"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"الصحة والعافية"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"الصحة والعافية"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"تصفّح البيانات"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"إدارة البيانات"</string>
     <string name="export_data_button" msgid="7783329820434117744">"تصدير البيانات"</string>
@@ -273,6 +273,12 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"بيانات التحصين"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"بيانات التحصين"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"قراءة بيانات التحصين"</string>
+    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
+    <skip />
+    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
+    <skip />
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"اليقظة والوعي التام"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"اليقظة والوعي التام"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"قراءة بيانات جلسة اليقظة والوعي التام"</string>
@@ -330,14 +336,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"إذن الوصول الإضافي"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"تمت إزالة الأذونات الإضافية لهذا التطبيق"</string>
     <string name="permissions_header" msgid="6519976063360071569">"الأذونات"</string>
-    <!-- no translation found for manage_fitness_permissions (3363128122122446755) -->
-    <skip />
-    <!-- no translation found for manage_fitness_permissions_summary (2558503899466623148) -->
-    <skip />
-    <!-- no translation found for manage_medical_permissions (3772912800582350567) -->
-    <skip />
-    <!-- no translation found for manage_medical_permissions_summary (2624707097284112258) -->
-    <skip />
+    <string name="fitness_permissions" msgid="586264186537460254">"الصحة واللياقة البدنية"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"التمارين الرياضية والنوم والتغذية وغيرها"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"السجلّات الصحية"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"السجلّات الصحية"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"نتائج معملية وأدوية وتطعيمات وغيرها"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"أذونات التطبيقات التي تمت إزالتها"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"أزال تطبيق Health Connect أذونات \"<xliff:g id="APP_DATA">%s</xliff:g>\"."</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"أزال تطبيق Health Connect أذونات \"<xliff:g id="APP_DATA_0">%1$s</xliff:g>\" و\"<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>\"."</string>
@@ -351,10 +354,13 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"تعذَّر تصدير البيانات"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"حدثت مشكلة أثناء عملية التصدير المحدَّدة في ‎<xliff:g id="DATE">%1$s</xliff:g>. يُرجى إعداد عملية تصدير مُجدوَلة جديدة وإعادة المحاولة."</string>
     <string name="next_export_time" msgid="3138247220014510213">"تاريخ عملية التصدير القادمة: ‎<xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for next_export_text (6726252793571403846) -->
-    <skip />
+    <string name="next_export_text" msgid="6726252793571403846">"ستبدأ قريبًا عملية التصدير التالية"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"الاحتفاظ بنسخة احتياطية والاستعادة"</string>
     <string name="last_export_time" msgid="9205875050823594041">"تاريخ عملية التصدير الأخيرة: ‎<xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="last_export_time_now" msgid="31498024135933750">"وقت آخر عملية تصدير: الآن"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{آخر عملية تصدير: قبل دقيقة واحدة}zero{آخر عملية تصدير: قبل # دقيقة}two{آخر عملية تصدير: قبل دقيقتَين}few{آخر عملية تصدير: قبل # دقائق}many{آخر عملية تصدير: قبل # دقيقة}other{آخر عملية تصدير: قبل # دقيقة}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{آخر عملية تصدير: قبل ساعة واحدة}zero{آخر عملية تصدير: قبل # ساعة}two{آخر عملية تصدير: قبل ساعتَين}few{آخر عملية تصدير: قبل # ساعات}many{آخر عملية تصدير: قبل # ساعة}other{آخر عملية تصدير: قبل # ساعة}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"ما مِن عمليات تصدير سابقة"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"عملية التصدير المُجدوَلة"</string>
     <string name="import_data" msgid="404502315533233094">"استيراد البيانات"</string>
@@ -389,6 +395,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"استيراد"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"يستعيد تطبيق Health Connect البيانات حاليًا"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"اكتملت عملية استعادة بيانات تطبيق Health Connect"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"جارٍ استعادة البيانات"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"اكتملت عملية استعادة البيانات"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"تعذَّر على تطبيق Health Connect استعادة البيانات"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"مطلوب المزيد من مساحة التخزين"</string>
@@ -401,6 +408,12 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"فتح"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"اختيار ملف"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"إخلاء بعض المساحة"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"تعذَّر على Health Connect تصدير البيانات"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"مطلوب المزيد من مساحة التخزين"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"حدثت مشكلة أثناء عملية التصدير المحدَّدة في ‎<xliff:g id="DATE">%1$s</xliff:g>. يُرجى إعداد عملية تصدير مُجدوَلة جديدة وإعادة المحاولة."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"يحتاج تطبيق Health Connect إلى <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> من مساحة التخزين على هاتفك لمواصلة عملية التصدير المُجدوَلة."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"إعداد"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"إخلاء بعض المساحة"</string>
     <string name="export_back_button" msgid="3550795479165524982">"رجوع"</string>
     <string name="export_next_button" msgid="657930567137105172">"التالي"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"إلغاء"</string>
@@ -647,6 +660,7 @@
     <string name="rest" msgid="5937058337671252210">"استراحة"</string>
     <string name="pause" msgid="5161459047750335691">"إيقاف مؤقت"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"كرة القدم الأسترالية"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"نوع غير معروف"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> نوم"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>⁠"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"استيقاظ"</string>
@@ -657,6 +671,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"نوم خفيف"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"نوم عميق"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"مرحلة غير معروفة"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"تنفُّس"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"تأمُّل"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"حركة"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"موسيقى"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"غير ذلك"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"غير موجَّهة"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> د"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> ساعة و<xliff:g id="MIN">%2$s</xliff:g> دقيقة"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> س"</string>
@@ -1000,4 +1020,13 @@
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"تم حذف بيانات <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"تم حذف <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>"</string>
     <string name="select_all" msgid="837499881590001166">"اختيار الكل"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"بدء استخدام Health Connect"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"مزامنة التطبيقات الرئيسية لمشاركة بيانات الصحة واللياقة البدنية بينها"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"إعداد"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"ربط المزيد من التطبيقات"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"بدء مشاركة البيانات بين \"<xliff:g id="APP_NAME">%s</xliff:g>\" والتطبيقات المختصّة بالصحة على هاتفك"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"إعداد"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"عرض التطبيقات المتوافقة"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"العثور على المزيد من التطبيقات لمزامنة البيانات مع \"<xliff:g id="APP_NAME">%s</xliff:g>\" من خلال تطبيق Health Connect"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"العرض في متجر التطبيقات"</string>
 </resources>
