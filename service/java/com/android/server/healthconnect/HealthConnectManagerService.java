@@ -29,6 +29,7 @@ import android.util.Slog;
 import com.android.healthfitness.flags.Flags;
 import com.android.server.SystemService;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
+import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
@@ -43,6 +44,7 @@ import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PermissionPackageChangesOrchestrator;
+import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
@@ -50,6 +52,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourc
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
+import java.time.Clock;
 import java.util.Objects;
 
 /**
@@ -68,8 +71,9 @@ public class HealthConnectManagerService extends SystemService {
     private UserHandle mCurrentForegroundUser;
     private MigrationUiStateManager mMigrationUiStateManager;
     private final MigrationNotificationSender mMigrationNotificationSender;
+    private final ExportImportSettingsStorage mExportImportSettingsStorage;
+    private final ExportManager mExportManager;
 
-    @SuppressWarnings("NullAway") // TODO(b/341654919): Remove Nullable when DI is launched.
     @Nullable
     private HealthConnectInjector mHealthConnectInjector;
 
@@ -79,6 +83,17 @@ public class HealthConnectManagerService extends SystemService {
         mCurrentForegroundUser = context.getUser();
         HealthConnectDeviceConfigManager healthConnectDeviceConfigManager =
                 HealthConnectDeviceConfigManager.initializeInstance(context);
+
+        if (Flags.dependencyInjection()) {
+            HealthConnectInjector.setInstance(new HealthConnectInjectorImpl(context));
+            mHealthConnectInjector = HealthConnectInjector.getInstance();
+            mTransactionManager = mHealthConnectInjector.getTransactionManager();
+        } else {
+            mTransactionManager =
+                    TransactionManager.initializeInstance(
+                            new HealthConnectUserContext(mContext, mCurrentForegroundUser));
+        }
+
         MigrationStateManager migrationStateManager =
                 MigrationStateManager.initializeInstance(mCurrentForegroundUser.getIdentifier());
 
@@ -88,11 +103,7 @@ public class HealthConnectManagerService extends SystemService {
         HealthConnectPermissionHelper permissionHelper;
         MigrationCleaner migrationCleaner;
 
-        if (Flags.dependencyInjection()) {
-            HealthConnectInjector.setInstance(new HealthConnectInjectorImpl(context));
-            mHealthConnectInjector = HealthConnectInjector.getInstance();
-
-            mTransactionManager = mHealthConnectInjector.getTransactionManager();
+        if (Flags.dependencyInjection() && mHealthConnectInjector != null) {
             firstGrantTimeManager =
                     new FirstGrantTimeManager(
                             context,
@@ -119,10 +130,9 @@ public class HealthConnectManagerService extends SystemService {
                     new MigrationCleaner(
                             mHealthConnectInjector.getTransactionManager(),
                             mHealthConnectInjector.getPriorityMigrationHelper());
+            mExportImportSettingsStorage = mHealthConnectInjector.getExportImportSettingsStorage();
+            mExportManager = mHealthConnectInjector.getExportManager();
         } else {
-            mTransactionManager =
-                    TransactionManager.initializeInstance(
-                            new HealthConnectUserContext(mContext, mCurrentForegroundUser));
             firstGrantTimeManager =
                     new FirstGrantTimeManager(
                             context,
@@ -144,6 +154,14 @@ public class HealthConnectManagerService extends SystemService {
             migrationCleaner =
                     new MigrationCleaner(
                             mTransactionManager, PriorityMigrationHelper.getInstance());
+            mExportImportSettingsStorage =
+                    new ExportImportSettingsStorage(PreferenceHelper.getInstance());
+            mExportManager =
+                    new ExportManager(
+                            context,
+                            Clock.systemUTC(),
+                            mExportImportSettingsStorage,
+                            mTransactionManager);
         }
 
         mUserManager = context.getSystemService(UserManager.class);
@@ -170,7 +188,9 @@ public class HealthConnectManagerService extends SystemService {
                         mMigrationUiStateManager,
                         mContext,
                         new MedicalResourceHelper(mTransactionManager, medicalDataSourceHelper),
-                        medicalDataSourceHelper);
+                        medicalDataSourceHelper,
+                        mExportManager,
+                        mExportImportSettingsStorage);
     }
 
     @Override
@@ -295,7 +315,10 @@ public class HealthConnectManagerService extends SystemService {
                 () -> {
                     try {
                         ExportImportJobs.schedulePeriodicExportJob(
-                                mContext, mCurrentForegroundUser.getIdentifier());
+                                mCurrentForegroundUser.getIdentifier(),
+                                mContext,
+                                mExportImportSettingsStorage,
+                                mExportManager);
                     } catch (Exception e) {
                         Slog.e(TAG, "Failed to schedule periodic export job.", e);
                     }

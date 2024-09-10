@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FakePreferenceHelper extends PreferenceHelper {
 
     public FakePreferenceHelper() {
+        super(null);
         mPreferences = new ConcurrentHashMap<>();
     }
 

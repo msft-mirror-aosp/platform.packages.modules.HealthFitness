@@ -810,7 +810,7 @@ class LoadEntriesHelperUseCaseTest {
             LoadMedicalEntriesInput(
                 packageName = null,
                 showDataOrigin = true,
-                permissionType = permissionType,
+                medicalPermissionType = permissionType,
             )
 
         val mockitoStubber: Stubber =

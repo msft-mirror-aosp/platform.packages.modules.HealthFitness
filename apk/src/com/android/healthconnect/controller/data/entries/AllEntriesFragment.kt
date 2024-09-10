@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.data.entries
 
+import android.health.connect.MedicalResourceId
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -40,6 +41,7 @@ import com.android.healthconnect.controller.data.entries.EntriesViewModel.Entrie
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.With
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationView
+import com.android.healthconnect.controller.data.rawfhir.RawFhirFragment.Companion.MEDICAL_RESOURCE_ID_KEY
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsFragment
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
@@ -107,13 +109,28 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                     .navigate(
                         R.id.action_entriesAndAccessFragment_to_dataEntryDetailsFragment,
                         DataEntryDetailsFragment.createBundle(
-                            permissionType as FitnessPermissionType, id, showDataOrigin = true))
+                            permissionType as FitnessPermissionType,
+                            id,
+                            showDataOrigin = true,
+                        ),
+                    )
+            }
+        }
+    }
+    private val onClickMedicalEntryListener by lazy {
+        object : OnClickMedicalEntryListener {
+            override fun onItemClicked(id: MedicalResourceId, index: Int) {
+                findNavController()
+                    .navigate(
+                        R.id.action_entriesAndAccessFragment_to_rawFhirFragment,
+                        bundleOf(MEDICAL_RESOURCE_ID_KEY to id),
+                    )
             }
         }
     }
     private val aggregationViewBinder by lazy { AggregationViewBinder() }
     private val entryViewBinder by lazy { EntryItemViewBinder(onDeleteEntryListener = onDeleteEntryListener) }
-    private val medicalEntryViewBinder by lazy { MedicalEntryItemViewBinder() }
+    private val medicalEntryViewBinder by lazy { MedicalEntryItemViewBinder(onClickMedicalEntryListener = onClickMedicalEntryListener) }
     private val sectionTitleViewBinder by lazy { SectionTitleViewBinder() }
     private val sleepSessionViewBinder by lazy {
         SleepSessionItemViewBinder(onItemClickedListener = onClickEntryListener, onDeleteEntryListener = onDeleteEntryListener)
@@ -163,7 +180,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
 
         val view = inflater.inflate(R.layout.fragment_entries, container, false)
@@ -187,13 +204,19 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             RecyclerViewAdapter.Builder()
                 .setViewBinder(FormattedEntry.FormattedDataEntry::class.java, entryViewBinder)
                 .setViewBinder(
-                    FormattedEntry.FormattedMedicalDataEntry::class.java, medicalEntryViewBinder)
+                    FormattedEntry.FormattedMedicalDataEntry::class.java,
+                    medicalEntryViewBinder,
+                )
                 .setViewBinder(FormattedEntry.SleepSessionEntry::class.java, sleepSessionViewBinder)
                 .setViewBinder(
-                    FormattedEntry.ExerciseSessionEntry::class.java, exerciseSessionItemViewBinder)
+                    FormattedEntry.ExerciseSessionEntry::class.java,
+                    exerciseSessionItemViewBinder,
+                )
                 .setViewBinder(FormattedEntry.SeriesDataEntry::class.java, seriesDataItemViewBinder)
                 .setViewBinder(
-                    FormattedEntry.FormattedAggregation::class.java, aggregationViewBinder)
+                    FormattedEntry.FormattedAggregation::class.java,
+                    aggregationViewBinder,
+                )
                 .setViewBinder(
                     FormattedEntry.EntryDateSectionHeader::class.java, sectionTitleViewBinder)
                 .setViewModel(entriesViewModel)
@@ -217,11 +240,12 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             object : DateNavigationView.OnDateChangedListener {
                 override fun onDateChanged(
                     displayedStartDate: Instant,
-                    period: DateNavigationPeriod
+                    period: DateNavigationPeriod,
                 ) {
                     entriesViewModel.loadEntries(permissionType, displayedStartDate, period)
                 }
-            })
+            }
+        )
 
         deletionViewModel.entriesReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded
             ->
@@ -240,8 +264,10 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     override fun onResume() {
         super.onResume()
         setTitle(permissionType.upperCaseLabel())
-        if (entriesViewModel.currentSelectedDate.value != null &&
-            entriesViewModel.period.value != null) {
+        if (
+            entriesViewModel.currentSelectedDate.value != null &&
+                entriesViewModel.period.value != null
+        ) {
             val date = entriesViewModel.currentSelectedDate.value!!
             val selectedPeriod = entriesViewModel.period.value!!
             dateNavigationView.setDate(date)
@@ -249,7 +275,10 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             entriesViewModel.loadEntries(permissionType, date, selectedPeriod)
         } else {
             entriesViewModel.loadEntries(
-                permissionType, dateNavigationView.getDate(), dateNavigationView.getPeriod())
+                permissionType,
+                dateNavigationView.getDate(),
+                dateNavigationView.getPeriod(),
+            )
         }
         //
         //        logger.setPageId(pageName)

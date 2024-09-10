@@ -133,6 +133,9 @@ class AppDataFragmentTest {
         onView(withText("Sexual activity")).perform(scrollTo()).check(matches(isDisplayed()))
 
         onView(withText("Body measurements")).check(doesNotExist())
+        onView(withText("Nutrition")).check(doesNotExist())
+        onView(withText("Sleep")).check(doesNotExist())
+        onView(withText("Vitals")).check(doesNotExist())
         onView(withText("Health records")).check(doesNotExist())
         onView(withText("Immunizations")).check(doesNotExist())
     }

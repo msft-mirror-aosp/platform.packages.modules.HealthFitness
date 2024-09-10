@@ -72,6 +72,8 @@ public class MedicalDataSourceHelper {
     @VisibleForTesting static final String FHIR_BASE_URI_COLUMN_NAME = "fhir_base_uri";
     @VisibleForTesting static final String DATA_SOURCE_UUID_COLUMN_NAME = "data_source_uuid";
     private static final String APP_INFO_ID_COLUMN_NAME = "app_info_id";
+    private static final String MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME =
+            "medical_data_source_row_id";
     private static final List<Pair<String, Integer>> UNIQUE_COLUMNS_INFO =
             List.of(new Pair<>(DATA_SOURCE_UUID_COLUMN_NAME, UpsertTableRequest.TYPE_BLOB));
 
@@ -90,6 +92,11 @@ public class MedicalDataSourceHelper {
     }
 
     @NonNull
+    public static String getPrimaryColumnName() {
+        return MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME;
+    }
+
+    @NonNull
     public static String getDataSourceUuidColumnName() {
         return DATA_SOURCE_UUID_COLUMN_NAME;
     }
@@ -102,7 +109,7 @@ public class MedicalDataSourceHelper {
     @NonNull
     private static List<Pair<String, String>> getColumnInfo() {
         return List.of(
-                Pair.create(PRIMARY_COLUMN_NAME, PRIMARY),
+                Pair.create(MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME, PRIMARY),
                 Pair.create(APP_INFO_ID_COLUMN_NAME, INTEGER_NOT_NULL),
                 Pair.create(DISPLAY_NAME_COLUMN_NAME, TEXT_NOT_NULL),
                 Pair.create(FHIR_BASE_URI_COLUMN_NAME, TEXT_NOT_NULL),
@@ -158,6 +165,13 @@ public class MedicalDataSourceHelper {
                     APP_INFO_ID_COLUMN_NAME, List.of(appInfoRestriction));
         }
         return whereClauses;
+    }
+
+    /** Creates {@link ReadTableRequest} that joins with {@link AppInfoHelper#TABLE_NAME}. */
+    @NonNull
+    private static ReadTableRequest getReadTableRequestJoinWithAppInfo() {
+        return new ReadTableRequest(getMainTableName())
+                .setJoinClause(getJoinClauseWithAppInfoTable());
     }
 
     /**
@@ -316,10 +330,8 @@ public class MedicalDataSourceHelper {
      */
     @NonNull
     public List<MedicalDataSource> getMedicalDataSourcesByPackageWithoutPermissionChecks(
-            Set<String> packageNames) throws SQLiteException {
-        ReadTableRequest readTableRequest =
-                new ReadTableRequest(getMainTableName())
-                        .setJoinClause(getJoinClauseWithAppInfoTable());
+            @NonNull Set<String> packageNames) throws SQLiteException {
+        ReadTableRequest readTableRequest = getReadTableRequestJoinWithAppInfo();
         if (!packageNames.isEmpty()) {
             List<Long> appInfoIds = mAppInfoHelper.getAppInfoIds(packageNames.stream().toList());
             readTableRequest.setWhereClause(
@@ -340,7 +352,7 @@ public class MedicalDataSourceHelper {
      */
     @NonNull
     public List<MedicalDataSource> getMedicalDataSourcesByPackageWithPermissionChecks(
-            Set<String> packageNames,
+            @NonNull Set<String> packageNames,
             @NonNull Set<Integer> ignoredGrantedReadMedicalResourceTypes,
             @NonNull String ignoredCallingPackageName,
             boolean ignoredHasWritePermission,
@@ -348,9 +360,7 @@ public class MedicalDataSourceHelper {
             throws SQLiteException {
         // TODO(b/361540290): Use ignored fields for permission checks in read table request.
         // TODO(b/359892459): Add CTS tests once it is properly implemented.
-        ReadTableRequest readTableRequest =
-                new ReadTableRequest(getMainTableName())
-                        .setJoinClause(getJoinClauseWithAppInfoTable());
+        ReadTableRequest readTableRequest = getReadTableRequestJoinWithAppInfo();
         if (!packageNames.isEmpty()) {
             List<Long> appInfoIds = mAppInfoHelper.getAppInfoIds(packageNames.stream().toList());
             readTableRequest.setWhereClause(
@@ -401,19 +411,18 @@ public class MedicalDataSourceHelper {
         ReadTableRequest readTableRequest = getReadTableRequest(List.of(id), appInfoIdRestriction);
         boolean success =
                 mTransactionManager.runAsTransaction(
-                                db -> {
-                                    try (Cursor cursor =
-                                            mTransactionManager.read(db, readTableRequest)) {
-                                        if (cursor.getCount() != 1) {
-                                            return false;
-                                        }
-                                    }
-                                    // This also deletes the contained data, because they are
-                                    // referenced by foreign key, and so are handled by ON DELETE
-                                    // CASCADE in the db.
-                                    mTransactionManager.delete(db, request);
-                                    return true;
-                                });
+                        db -> {
+                            try (Cursor cursor = mTransactionManager.read(db, readTableRequest)) {
+                                if (cursor.getCount() != 1) {
+                                    return false;
+                                }
+                            }
+                            // This also deletes the contained data, because they are
+                            // referenced by foreign key, and so are handled by ON DELETE
+                            // CASCADE in the db.
+                            mTransactionManager.delete(db, request);
+                            return true;
+                        });
         if (!success) {
             if (appInfoIdRestriction == null) {
                 throw new IllegalArgumentException("Id " + id + " does not exist");
@@ -452,13 +461,33 @@ public class MedicalDataSourceHelper {
         try (Cursor cursor = mTransactionManager.read(db, getReadTableRequest(dataSourceUuids))) {
             if (cursor.moveToFirst()) {
                 do {
-                    long rowId = getCursorLong(cursor, PRIMARY_COLUMN_NAME);
+                    long rowId = getCursorLong(cursor, MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME);
                     UUID uuid = getCursorUUID(cursor, DATA_SOURCE_UUID_COLUMN_NAME);
                     uuidToRowId.put(uuid.toString(), rowId);
                 } while (cursor.moveToNext());
             }
         }
         return uuidToRowId;
+    }
+
+    /**
+     * Creates a row ID to {@link MedicalDataSource} map for all {@link MedicalDataSource}s stored
+     * in {@code MEDICAL_DATA_SOURCE_TABLE}.
+     */
+    @NonNull
+    public Map<Long, MedicalDataSource> getAllRowIdToDataSourceMap(@NonNull SQLiteDatabase db) {
+        ReadTableRequest readTableRequest = getReadTableRequestJoinWithAppInfo();
+        Map<Long, MedicalDataSource> rowIdToDataSourceMap = new HashMap<>();
+        try (Cursor cursor = mTransactionManager.read(db, readTableRequest)) {
+            if (cursor.moveToFirst()) {
+                do {
+                    long rowId = getCursorLong(cursor, MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME);
+                    MedicalDataSource dataSource = getMedicalDataSource(cursor);
+                    rowIdToDataSourceMap.put(rowId, dataSource);
+                } while (cursor.moveToNext());
+            }
+        }
+        return rowIdToDataSourceMap;
     }
 
     @NonNull

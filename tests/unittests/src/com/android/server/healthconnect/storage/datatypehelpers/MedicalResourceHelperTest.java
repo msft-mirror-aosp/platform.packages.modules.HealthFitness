@@ -54,11 +54,11 @@ import static com.android.server.healthconnect.storage.datatypehelpers.MedicalRe
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.MEDICAL_RESOURCE_TABLE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getCreateTableRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getPrimaryColumn;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getReadQueryForMedicalResourceTypeToDataSourceIdsMap;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getParentColumnReference;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getTableName;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
-import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.UUID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_UNIQUE_NON_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
@@ -119,6 +119,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -192,7 +193,8 @@ public class MedicalResourceHelperTest {
                         .addForeignKey(
                                 MedicalDataSourceHelper.getMainTableName(),
                                 Collections.singletonList(DATA_SOURCE_ID_COLUMN_NAME),
-                                Collections.singletonList(PRIMARY_COLUMN_NAME))
+                                Collections.singletonList(
+                                        MedicalDataSourceHelper.getPrimaryColumnName()))
                         .setChildTableRequests(List.of(childTableRequest));
 
         CreateTableRequest result = getCreateTableRequest();
@@ -270,7 +272,7 @@ public class MedicalResourceHelperTest {
                                 + " inner_query_result.medical_resource_row_id ="
                                 + " medical_resource_indices_table.medical_resource_id  INNER JOIN"
                                 + " medical_data_source_table ON inner_query_result.data_source_id"
-                                + " = medical_data_source_table.row_id");
+                                + " = medical_data_source_table.medical_data_source_row_id");
     }
 
     @Test
@@ -286,16 +288,17 @@ public class MedicalResourceHelperTest {
         assertThat(request.getReadCommand())
                 .isEqualTo(
                         "SELECT DISTINCT medical_resource_type FROM ( SELECT * FROM"
-                            + " medical_resource_table ) AS inner_query_result  INNER JOIN ( SELECT"
-                            + " * FROM medical_data_source_table WHERE app_info_id = '"
+                                + " medical_resource_table ) AS inner_query_result"
+                                + "  INNER JOIN ( SELECT"
+                                + " * FROM medical_data_source_table WHERE app_info_id = '"
                                 + appId
                                 + "'"
                                 + " AND data_source_uuid IN ("
                                 + String.join(", ", hexValues)
                                 + ")) medical_data_source_table ON"
                                 + " inner_query_result.data_source_id ="
-                                + " medical_data_source_table.row_id  INNER JOIN"
-                                + " medical_resource_indices_table ON"
+                                + " medical_data_source_table.medical_data_source_row_id"
+                                + "  INNER JOIN medical_resource_indices_table ON"
                                 + " inner_query_result.medical_resource_row_id ="
                                 + " medical_resource_indices_table.medical_resource_id");
     }
@@ -325,7 +328,7 @@ public class MedicalResourceHelperTest {
                                 + " inner_query_result.medical_resource_row_id ="
                                 + " medical_resource_indices_table.medical_resource_id  INNER JOIN"
                                 + " medical_data_source_table ON inner_query_result.data_source_id"
-                                + " = medical_data_source_table.row_id");
+                                + " = medical_data_source_table.medical_data_source_row_id");
     }
 
     @Test
@@ -365,7 +368,25 @@ public class MedicalResourceHelperTest {
                                 + String.join(", ", dataSourceIdHexValues)
                                 + ")) medical_data_source_table ON"
                                 + " inner_query_result.data_source_id ="
-                                + " medical_data_source_table.row_id");
+                                + " medical_data_source_table.medical_data_source_row_id");
+    }
+
+    @Test
+    public void getReadQuery_forMedicalResourceTypeToDataSourceIdsMap_correctQuery() {
+        String readQuery = getReadQueryForMedicalResourceTypeToDataSourceIdsMap();
+
+        assertThat(readQuery)
+                .isEqualTo(
+                        "SELECT medical_resource_type, "
+                                + "GROUP_CONCAT(data_source_id, ',') AS data_source_id "
+                                + "FROM ("
+                                + "SELECT DISTINCT medical_resource_type,data_source_id "
+                                + "FROM ( SELECT * FROM medical_resource_table )"
+                                + " AS inner_query_result "
+                                + " INNER JOIN medical_resource_indices_table"
+                                + " ON inner_query_result.medical_resource_row_id"
+                                + " = medical_resource_indices_table.medical_resource_id)"
+                                + " GROUP BY medical_resource_type");
     }
 
     @Test
@@ -2592,6 +2613,57 @@ public class MedicalResourceHelperTest {
                                         allergyResource.getId(),
                                         immunizationResourceDataSource2.getId())))
                 .hasSize(2);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void testGetMedicalResourceTypeToContributingDataSourcesMap_success() {
+        // Create some data sources with data: ds1 contains [immunization, differentImmunization,
+        // allergy], ds2 contains [immunization], and ds3 contains [allergy].
+        MedicalDataSource dataSource1 = insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2 = insertMedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource3 =
+                insertMedicalDataSource("ds3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1.getId());
+        upsertResource(
+                PhrDataFactory::createDifferentImmunizationMedicalResource, dataSource1.getId());
+        upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource2.getId());
+        upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1.getId());
+        upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource3.getId());
+
+        Map<Integer, Set<MedicalDataSource>> response =
+                mMedicalResourceHelper.getMedicalResourceTypeToContributingDataSourcesMap();
+
+        assertThat(response).hasSize(2);
+        assertThat(response.keySet())
+                .containsExactly(
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                        MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
+        assertThat(response.get(MEDICAL_RESOURCE_TYPE_IMMUNIZATION))
+                .containsExactly(dataSource1, dataSource2);
+        assertThat(response.get(MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE))
+                .containsExactly(dataSource1, dataSource3);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void testGetMedicalResourceTypeToContributingDataSourcesMap_noDataSources_success() {
+        Map<Integer, Set<MedicalDataSource>> response =
+                mMedicalResourceHelper.getMedicalResourceTypeToContributingDataSourcesMap();
+
+        assertThat(response).isEmpty();
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void
+            testGetMedicalResourceTypeToContributingDataSourcesMap_noMedicalResources_success() {
+        insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
+
+        Map<Integer, Set<MedicalDataSource>> response =
+                mMedicalResourceHelper.getMedicalResourceTypeToContributingDataSourcesMap();
+
+        assertThat(response).isEmpty();
     }
 
     /**

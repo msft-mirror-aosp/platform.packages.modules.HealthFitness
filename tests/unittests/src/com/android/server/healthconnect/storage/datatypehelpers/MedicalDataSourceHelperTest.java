@@ -133,7 +133,7 @@ public class MedicalDataSourceHelperTest {
     public void getCreateTableRequest_correctResult() {
         List<Pair<String, String>> columnInfo =
                 List.of(
-                        Pair.create(PRIMARY_COLUMN_NAME, PRIMARY),
+                        Pair.create(MedicalDataSourceHelper.getPrimaryColumnName(), PRIMARY),
                         Pair.create(
                                 MedicalDataSourceHelper.getAppInfoIdColumnName(), INTEGER_NOT_NULL),
                         Pair.create(DISPLAY_NAME_COLUMN_NAME, TEXT_NOT_NULL),
@@ -408,7 +408,7 @@ public class MedicalDataSourceHelperTest {
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
                         toUuids(List.of(dataSource1.getId(), dataSource2.getId())));
 
-        assertThat(result.size()).isEqualTo(2);
+        assertThat(result).hasSize(2);
         assertThat(result).containsExactlyElementsIn(expected);
     }
 

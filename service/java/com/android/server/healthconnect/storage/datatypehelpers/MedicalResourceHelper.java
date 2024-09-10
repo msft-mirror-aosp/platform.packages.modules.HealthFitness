@@ -31,11 +31,11 @@ import static com.android.server.healthconnect.storage.datatypehelpers.MedicalRe
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getTableName;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
-import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.UUID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.request.ReadTableRequest.UNION;
 import static com.android.server.healthconnect.storage.utils.SqlJoin.SQL_JOIN_INNER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_UNIQUE_NON_NULL;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY_AUTOINCREMENT;
@@ -43,9 +43,13 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 import static com.android.server.healthconnect.storage.utils.StorageUtils.generateMedicalResourceUUID;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLongList;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
+
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
@@ -59,7 +63,9 @@ import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.FhirVersion;
+import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
+import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import android.util.Pair;
 import android.util.Slog;
 
@@ -68,6 +74,7 @@ import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.TransactionManager.TransactionRunnableWithReturn;
+import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.CreateIndexRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -82,9 +89,11 @@ import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -148,7 +157,7 @@ public final class MedicalResourceHelper {
                 .addForeignKey(
                         MedicalDataSourceHelper.getMainTableName(),
                         Collections.singletonList(DATA_SOURCE_ID_COLUMN_NAME),
-                        Collections.singletonList(PRIMARY_COLUMN_NAME))
+                        Collections.singletonList(MedicalDataSourceHelper.getPrimaryColumnName()))
                 .setChildTableRequests(
                         Collections.singletonList(getCreateMedicalResourceIndicesTableRequest()));
     }
@@ -252,6 +261,58 @@ public final class MedicalResourceHelper {
                     }
                     return medicalResources;
                 });
+    }
+
+    /**
+     * Reads from the storage and creates a map between {@link MedicalResourceType}s and all its
+     * contributing {@link MedicalDataSource}s.
+     *
+     * <p>This map does not guarantee to contain all the valid {@link MedicalResourceType}s we
+     * support, but only contain those we have data for in the storage.
+     */
+    @NonNull
+    public Map<Integer, Set<MedicalDataSource>>
+            getMedicalResourceTypeToContributingDataSourcesMap() {
+        return mTransactionManager.runAsTransaction(
+                db -> {
+                    Map<Long, MedicalDataSource> allRowIdToDataSourceMap =
+                            mMedicalDataSourceHelper.getAllRowIdToDataSourceMap(db);
+                    Map<Integer, List<Long>> resourceTypeToDataSourceIdsMap =
+                            getMedicalResourceTypeToDataSourceIdsMap(db);
+                    return resourceTypeToDataSourceIdsMap.keySet().stream()
+                            .collect(
+                                    toMap(
+                                            medicalResourceType -> medicalResourceType,
+                                            medicalResourceType ->
+                                                    resourceTypeToDataSourceIdsMap
+                                                            .getOrDefault(
+                                                                    medicalResourceType, List.of())
+                                                            .stream()
+                                                            .map(allRowIdToDataSourceMap::get)
+                                                            // This should not happen, but we
+                                                            // filter out nulls for extra safe.
+                                                            .filter(Objects::nonNull)
+                                                            .collect(toSet())));
+                });
+    }
+
+    @NonNull
+    private Map<Integer, List<Long>> getMedicalResourceTypeToDataSourceIdsMap(
+            @NonNull SQLiteDatabase db) {
+        String readMainTableQuery = getReadQueryForMedicalResourceTypeToDataSourceIdsMap();
+        Map<Integer, List<Long>> resourceTypeToDataSourceIdsMap = new HashMap<>();
+        try (Cursor cursor = db.rawQuery(readMainTableQuery, /* selectionArgs= */ null)) {
+            if (cursor.moveToFirst()) {
+                do {
+                    int medicalResourceType =
+                            getCursorInt(cursor, getMedicalResourceTypeColumnName());
+                    List<Long> dataSourceIds =
+                            getCursorLongList(cursor, DATA_SOURCE_ID_COLUMN_NAME, DELIMITER);
+                    resourceTypeToDataSourceIdsMap.put(medicalResourceType, dataSourceIds);
+                } while (cursor.moveToNext());
+            }
+        }
+        return resourceTypeToDataSourceIdsMap;
     }
 
     @NonNull
@@ -554,6 +615,37 @@ public final class MedicalResourceHelper {
     }
 
     /**
+     * Creates raw SQL query for {@link
+     * MedicalResourceHelper#getMedicalResourceTypeToDataSourceIdsMap}.
+     *
+     * <p>"GROUP BY" is not supported in {@link ReadTableRequest} and should be achieved via {@link
+     * AggregateTableRequest}. But the {@link AggregateTableRequest} is too complicated for our
+     * simple use case here (requiring {@link RecordHelper}). Thus we just build and return raw SQL
+     * query which appends the "GROUP BY" clause directly.
+     */
+    @NonNull
+    @VisibleForTesting
+    static String getReadQueryForMedicalResourceTypeToDataSourceIdsMap() {
+        ReadTableRequest readDistinctResourceTypeToDataSourceIdRequest =
+                new ReadTableRequest(getMainTableName())
+                        .setDistinctClause(true)
+                        .setColumnNames(
+                                List.of(
+                                        getMedicalResourceTypeColumnName(),
+                                        DATA_SOURCE_ID_COLUMN_NAME))
+                        .setJoinClause(joinWithMedicalResourceIndicesTable());
+
+        return String.format(
+                "SELECT %1$s, GROUP_CONCAT(%2$s, '%3$s') AS %4$s FROM (%5$s) GROUP BY %6$s",
+                /* 1 */ getMedicalResourceTypeColumnName(),
+                /* 2 */ DATA_SOURCE_ID_COLUMN_NAME,
+                /* 3 */ DELIMITER,
+                /* 4 */ DATA_SOURCE_ID_COLUMN_NAME,
+                /* 5 */ readDistinctResourceTypeToDataSourceIdRequest.getReadCommand(),
+                /* 6 */ getMedicalResourceTypeColumnName());
+    }
+
+    /**
      * Creates {@link SqlJoin} that is an inner join from medical_resource_table to
      * medical_resource_indices_table followed by another inner join from medical_resource_table to
      * medical_data_source_table.
@@ -659,7 +751,7 @@ public final class MedicalResourceHelper {
                         MEDICAL_RESOURCE_TABLE_NAME,
                         MedicalDataSourceHelper.getMainTableName(),
                         DATA_SOURCE_ID_COLUMN_NAME,
-                        PRIMARY_COLUMN_NAME)
+                        MedicalDataSourceHelper.getPrimaryColumnName())
                 .setJoinType(SQL_JOIN_INNER);
     }
 
@@ -1084,7 +1176,7 @@ public final class MedicalResourceHelper {
 
         ReadTableRequest innerRead =
                 MedicalDataSourceHelper.getReadTableRequest(List.of(), appId)
-                        .setColumnNames(List.of(PRIMARY_COLUMN_NAME));
+                        .setColumnNames(List.of(MedicalDataSourceHelper.getPrimaryColumnName()));
         List<String> hexUuids = medicalResourceIdsToHexUuids(medicalResourceIds);
         WhereClauses innerRequest =
                 new WhereClauses(AND)
