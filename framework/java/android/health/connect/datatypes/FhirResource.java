@@ -37,6 +37,9 @@ import java.util.Set;
  * Captures the FHIR resource data. This is the class used for all supported FHIR resource types,
  * which is a subset of the resource list in <a href="https://build.fhir.org/resourcelist.html">the
  * official FHIR website</a>.
+ *
+ * <p>FHIR stands for the <a href="https://hl7.org/fhir/">Fast Healthcare Interoperability Resources
+ * </a> standard.
  */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class FhirResource implements Parcelable {

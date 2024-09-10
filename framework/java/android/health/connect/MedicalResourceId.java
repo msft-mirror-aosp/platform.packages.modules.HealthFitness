@@ -38,6 +38,9 @@ import java.util.regex.Pattern;
  *
  * <p>This class contains a set of properties that together represent a unique identifier of a
  * medical resource.
+ *
+ * <p>The medical resource data representation follows the <a href="https://hl7.org/fhir/">Fast
+ * Healthcare Interoperability Resources (FHIR)</a> standard.
  */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class MedicalResourceId implements Parcelable {

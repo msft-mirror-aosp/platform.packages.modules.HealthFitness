@@ -409,6 +409,10 @@
     <string name="default_error" description="Label shown when a user initiated action fails (e.g. deleting data) [CHAR_LIMIT=NONE]">Something went wrong. Please try again.</string>
     <!-- endregion -->
 
+    <!-- region Raw FHIR -->
+    <string name="raw_fhir_content_description" description="Content description for a JSON file that is an electronic health care record [CHAR_LIMIT=NONE]">Detailed health record</string>
+    <!-- endregion -->
+
     <!-- region Connected apps -->
     <string name="health_permission_header_description" description="Description text shown on screen for managing which apps have access to health and fitness data. Note: Health Connect is the brand [CHAR_LIMIT=NONE]">Apps with this permission can read and write your health and fitness data.</string>
     <string name="connected_apps_text" description="Description text shown on screen for managing which apps have access to health and fitness data. Note: Health Connect is the brand [CHAR_LIMIT=NONE]">Control which apps can access data stored in Health&#160;Connect. Tap an app to review the data it can read or write.</string>

@@ -504,7 +504,35 @@ val TEST_FHIR_RESOURCE_IMMUNIZATION: FhirResource =
     FhirResource.Builder(
             FHIR_RESOURCE_TYPE_IMMUNIZATION,
             "Immunization1",
-            "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization1\"}",
+            "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization_1\"}",
+        )
+        .build()
+val TEST_FHIR_RESOURCE_IMMUNIZATION_2: FhirResource =
+    FhirResource.Builder(
+            FHIR_RESOURCE_TYPE_IMMUNIZATION,
+            "Immunization2",
+            "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization_2\"}",
+        )
+        .build()
+val TEST_FHIR_RESOURCE_IMMUNIZATION_3: FhirResource =
+    FhirResource.Builder(
+            FHIR_RESOURCE_TYPE_IMMUNIZATION,
+            "Immunization3",
+            "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization_3\"}",
+        )
+        .build()
+val TEST_FHIR_RESOURCE_IMMUNIZATION_LONG: FhirResource =
+    FhirResource.Builder(
+            FHIR_RESOURCE_TYPE_IMMUNIZATION,
+            "Immunization11",
+            "{\"resourceType\":\"Immunization\",\"id\":\"immunization_1\",\"status\":\"completed\",\"vaccineCode\":{\"coding\":[{\"system\":\"http://hl7.org/fhir/sid/cvx\",\"code\":\"115\"},{\"system\":\"http://hl7.org/fhir/sid/ndc\",\"code\":\"58160-842-11\"}],\"text\":\"Tdap\"},\"patient\":{\"reference\":\"Patient/patient_1\",\"display\":\"Example, Anne\"},\"encounter\":{\"reference\":\"Encounter/encounter_unk\",\"display\":\"GP Visit\"},\"occurrenceDateTime\":\"2018-05-21\",\"primarySource\":true,\"manufacturer\":{\"display\":\"Sanofi Pasteur\"},\"lotNumber\":\"1\",\"site\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ActSite\",\"code\":\"LA\",\"display\":\"Left Arm\"}],\"text\":\"Left Arm\"},\"route\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-RouteOfAdministration\",\"code\":\"IM\",\"display\":\"Injection, intramuscular\"}],\"text\":\"Injection, intramuscular\"},\"doseQuantity\":{\"value\":0.5,\"unit\":\"mL\"},\"performer\":[{\"function\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0443\",\"code\":\"AP\",\"display\":\"Administering Provider\"}],\"text\":\"Administering Provider\"},\"actor\":{\"reference\":\"Practitioner/practitioner_1\",\"type\":\"Practitioner\",\"display\":\"Dr Maria Hernandez\"}}]}",
+        )
+        .build()
+val TEST_FHIR_RESOURCE_INVALID_JSON: FhirResource =
+    FhirResource.Builder(
+            FHIR_RESOURCE_TYPE_IMMUNIZATION,
+            "invalid_json",
+            "{\"resourceType\" : \"Immunization\", {{{\"id\"\" : \"Immunization_3\"}",
         )
         .build()
 val TEST_MEDICAL_RESOURCE_IMMUNIZATION: MedicalResource =
@@ -513,6 +541,38 @@ val TEST_MEDICAL_RESOURCE_IMMUNIZATION: MedicalResource =
             TEST_DATASOURCE_ID,
             TEST_FHIR_VERSION,
             TEST_FHIR_RESOURCE_IMMUNIZATION,
+        )
+        .build()
+val TEST_MEDICAL_RESOURCE_IMMUNIZATION_2: MedicalResource =
+    MedicalResource.Builder(
+            MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+            TEST_DATASOURCE_ID,
+            TEST_FHIR_VERSION,
+            TEST_FHIR_RESOURCE_IMMUNIZATION_2,
+        )
+        .build()
+val TEST_MEDICAL_RESOURCE_IMMUNIZATION_3: MedicalResource =
+    MedicalResource.Builder(
+            MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+            TEST_DATASOURCE_ID,
+            TEST_FHIR_VERSION,
+            TEST_FHIR_RESOURCE_IMMUNIZATION_3,
+        )
+        .build()
+val TEST_MEDICAL_RESOURCE_IMMUNIZATION_LONG: MedicalResource =
+    MedicalResource.Builder(
+            MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+            TEST_DATASOURCE_ID,
+            TEST_FHIR_VERSION,
+            TEST_FHIR_RESOURCE_IMMUNIZATION_LONG,
+        )
+        .build()
+val TEST_MEDICAL_RESOURCE_INVALID_JSON: MedicalResource =
+    MedicalResource.Builder(
+            MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+            TEST_DATASOURCE_ID,
+            TEST_FHIR_VERSION,
+            TEST_FHIR_RESOURCE_INVALID_JSON,
         )
         .build()
 val TEST_MEDICAL_DATA_SOURCE: MedicalDataSource =

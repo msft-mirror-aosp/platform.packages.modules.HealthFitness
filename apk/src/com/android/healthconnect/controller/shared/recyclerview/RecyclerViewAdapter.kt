@@ -28,7 +28,7 @@ class RecyclerViewAdapter
 private constructor(
     private val itemClassToItemViewTypeMap: Map<Class<*>, Int>,
     private val itemViewTypeToViewBinderMap: Map<Int, ViewBinder<*, out View>>,
-        private val entriesViewModel: EntriesViewModel
+        private val viewModel: ViewModel
 ) : RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
 
     class Builder {
@@ -41,7 +41,7 @@ private constructor(
         private val itemClassToItemViewTypeMap: MutableMap<Class<*>, Int> = mutableMapOf()
         private val itemViewTypeToViewBinderMap: MutableMap<Int, ViewBinder<*, out View>> =
             mutableMapOf()
-        private lateinit var entriesViewModel : EntriesViewModel
+        private lateinit var viewModel : ViewModel
 
         fun <T> setViewBinder(clazz: Class<T>, viewBinder: ViewBinder<T, out View>): Builder {
             itemClassToItemViewTypeMap[clazz] = nextItemType
@@ -51,11 +51,11 @@ private constructor(
         }
 
         fun setViewModel(viewModel: ViewModel): Builder{
-            entriesViewModel = viewModel as EntriesViewModel
+            this.viewModel = viewModel
             return this
         }
 
-        fun build() = RecyclerViewAdapter(itemClassToItemViewTypeMap, itemViewTypeToViewBinderMap, entriesViewModel)
+        fun build() = RecyclerViewAdapter(itemClassToItemViewTypeMap, itemViewTypeToViewBinderMap, viewModel)
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
@@ -87,8 +87,8 @@ private constructor(
         val item = data[position]
         if (viewBinder is SimpleViewBinder) {
             viewBinder.bind(holder.itemView, item, position)
-        } else if (viewBinder is DeletionViewBinder) {
-            this.deleteSet = entriesViewModel.setOfEntriesToBeDeleted.value.orEmpty()
+        } else if (viewBinder is DeletionViewBinder && viewModel is EntriesViewModel) {
+            this.deleteSet = viewModel.setOfEntriesToBeDeleted.value.orEmpty()
             isChecked = (item as FormattedEntry).uuid in deleteSet
             viewBinder.bind(holder.itemView, item, position, isDeletionState, isChecked)
         }
