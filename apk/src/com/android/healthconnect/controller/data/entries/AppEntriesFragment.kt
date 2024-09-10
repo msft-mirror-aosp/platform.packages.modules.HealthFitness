@@ -16,11 +16,13 @@
 package com.android.healthconnect.controller.data.entries
 
 import android.content.Intent.EXTRA_PACKAGE_NAME
+import android.health.connect.MedicalResourceId
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commitNow
@@ -37,6 +39,7 @@ import com.android.healthconnect.controller.data.entries.EntriesViewModel.Entrie
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.With
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationView
+import com.android.healthconnect.controller.data.rawfhir.RawFhirFragment
 import com.android.healthconnect.controller.deletion.DeletionConstants.FRAGMENT_TAG_DELETION
 import com.android.healthconnect.controller.deletion.DeletionFragment
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsFragment
@@ -82,13 +85,30 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
                     .navigate(
                         R.id.action_appEntriesFragment_to_dataEntryDetailsFragment,
                         DataEntryDetailsFragment.createBundle(
-                            permissionType as FitnessPermissionType, id, showDataOrigin = false))
+                            permissionType as FitnessPermissionType,
+                            id,
+                            showDataOrigin = false,
+                        ),
+                    )
+            }
+        }
+    }
+    private val onClickMedicalEntryListener by lazy {
+        object : OnClickMedicalEntryListener {
+            override fun onItemClicked(id: MedicalResourceId, index: Int) {
+                findNavController()
+                    .navigate(
+                        R.id.action_entriesAndAccessFragment_to_rawFhirFragment,
+                        bundleOf(RawFhirFragment.MEDICAL_RESOURCE_ID_KEY to id),
+                    )
             }
         }
     }
     private val aggregationViewBinder by lazy { AggregationViewBinder() }
     private val entryViewBinder by lazy { EntryItemViewBinder() }
-    private val medicalEntryViewBinder by lazy { MedicalEntryItemViewBinder() }
+    private val medicalEntryViewBinder by lazy {
+        MedicalEntryItemViewBinder(onClickMedicalEntryListener = onClickMedicalEntryListener)
+    }
     private val sectionTitleViewBinder by lazy { SectionTitleViewBinder() }
     private val sleepSessionViewBinder by lazy {
         SleepSessionItemViewBinder(onItemClickedListener = onClickEntryListener)
@@ -103,16 +123,20 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         // TODO(b/291249677): Log pagename.
 
-        if (requireArguments().containsKey(EXTRA_PACKAGE_NAME) &&
-            requireArguments().getString(EXTRA_PACKAGE_NAME) != null) {
+        if (
+            requireArguments().containsKey(EXTRA_PACKAGE_NAME) &&
+                requireArguments().getString(EXTRA_PACKAGE_NAME) != null
+        ) {
             packageName = requireArguments().getString(EXTRA_PACKAGE_NAME)!!
         }
-        if (requireArguments().containsKey(Constants.EXTRA_APP_NAME) &&
-            requireArguments().getString(Constants.EXTRA_APP_NAME) != null) {
+        if (
+            requireArguments().containsKey(Constants.EXTRA_APP_NAME) &&
+                requireArguments().getString(Constants.EXTRA_APP_NAME) != null
+        ) {
             appName = requireArguments().getString(Constants.EXTRA_APP_NAME)!!
         }
 
@@ -147,13 +171,19 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
             RecyclerViewAdapter.Builder()
                 .setViewBinder(FormattedEntry.FormattedDataEntry::class.java, entryViewBinder)
                 .setViewBinder(
-                    FormattedEntry.FormattedMedicalDataEntry::class.java, medicalEntryViewBinder)
+                    FormattedEntry.FormattedMedicalDataEntry::class.java,
+                    medicalEntryViewBinder,
+                )
                 .setViewBinder(FormattedEntry.SleepSessionEntry::class.java, sleepSessionViewBinder)
                 .setViewBinder(
-                    FormattedEntry.ExerciseSessionEntry::class.java, exerciseSessionItemViewBinder)
+                    FormattedEntry.ExerciseSessionEntry::class.java,
+                    exerciseSessionItemViewBinder,
+                )
                 .setViewBinder(FormattedEntry.SeriesDataEntry::class.java, seriesDataItemViewBinder)
                 .setViewBinder(
-                    FormattedEntry.FormattedAggregation::class.java, aggregationViewBinder)
+                    FormattedEntry.FormattedAggregation::class.java,
+                    aggregationViewBinder,
+                )
                 .setViewBinder(
                     FormattedEntry.EntryDateSectionHeader::class.java, sectionTitleViewBinder)
                 .setViewModel(entriesViewModel)
@@ -178,12 +208,17 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
             object : DateNavigationView.OnDateChangedListener {
                 override fun onDateChanged(
                     displayedStartDate: Instant,
-                    period: DateNavigationPeriod
+                    period: DateNavigationPeriod,
                 ) {
                     entriesViewModel.loadEntries(
-                        permissionType, packageName, displayedStartDate, period)
+                        permissionType,
+                        packageName,
+                        displayedStartDate,
+                        period,
+                    )
                 }
-            })
+            }
+        )
 
         header = AppHeaderPreference(requireContext())
         entriesViewModel.loadAppInfo(packageName)
@@ -201,8 +236,10 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
     override fun onResume() {
         super.onResume()
         setTitle(permissionType.upperCaseLabel())
-        if (entriesViewModel.currentSelectedDate.value != null &&
-            entriesViewModel.period.value != null) {
+        if (
+            entriesViewModel.currentSelectedDate.value != null &&
+                entriesViewModel.period.value != null
+        ) {
             val date = entriesViewModel.currentSelectedDate.value!!
             val selectedPeriod = entriesViewModel.period.value!!
             dateNavigationView.setDate(date)
@@ -213,7 +250,8 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
                 permissionType,
                 packageName,
                 dateNavigationView.getDate(),
-                dateNavigationView.getPeriod())
+                dateNavigationView.getPeriod(),
+            )
         }
 
         // TODO(b/291249677): Log pagename.
