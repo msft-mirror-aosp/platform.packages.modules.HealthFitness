@@ -58,7 +58,6 @@ import static com.android.server.healthconnect.storage.datatypehelpers.MedicalRe
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getParentColumnReference;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getTableName;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
-import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.UUID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_UNIQUE_NON_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
@@ -192,7 +191,8 @@ public class MedicalResourceHelperTest {
                         .addForeignKey(
                                 MedicalDataSourceHelper.getMainTableName(),
                                 Collections.singletonList(DATA_SOURCE_ID_COLUMN_NAME),
-                                Collections.singletonList(PRIMARY_COLUMN_NAME))
+                                Collections.singletonList(
+                                        MedicalDataSourceHelper.getPrimaryColumnName()))
                         .setChildTableRequests(List.of(childTableRequest));
 
         CreateTableRequest result = getCreateTableRequest();
@@ -270,7 +270,7 @@ public class MedicalResourceHelperTest {
                                 + " inner_query_result.medical_resource_row_id ="
                                 + " medical_resource_indices_table.medical_resource_id  INNER JOIN"
                                 + " medical_data_source_table ON inner_query_result.data_source_id"
-                                + " = medical_data_source_table.row_id");
+                                + " = medical_data_source_table.medical_data_source_row_id");
     }
 
     @Test
@@ -286,16 +286,17 @@ public class MedicalResourceHelperTest {
         assertThat(request.getReadCommand())
                 .isEqualTo(
                         "SELECT DISTINCT medical_resource_type FROM ( SELECT * FROM"
-                            + " medical_resource_table ) AS inner_query_result  INNER JOIN ( SELECT"
-                            + " * FROM medical_data_source_table WHERE app_info_id = '"
+                                + " medical_resource_table ) AS inner_query_result"
+                                + "  INNER JOIN ( SELECT"
+                                + " * FROM medical_data_source_table WHERE app_info_id = '"
                                 + appId
                                 + "'"
                                 + " AND data_source_uuid IN ("
                                 + String.join(", ", hexValues)
                                 + ")) medical_data_source_table ON"
                                 + " inner_query_result.data_source_id ="
-                                + " medical_data_source_table.row_id  INNER JOIN"
-                                + " medical_resource_indices_table ON"
+                                + " medical_data_source_table.medical_data_source_row_id"
+                                + "  INNER JOIN medical_resource_indices_table ON"
                                 + " inner_query_result.medical_resource_row_id ="
                                 + " medical_resource_indices_table.medical_resource_id");
     }
@@ -325,7 +326,7 @@ public class MedicalResourceHelperTest {
                                 + " inner_query_result.medical_resource_row_id ="
                                 + " medical_resource_indices_table.medical_resource_id  INNER JOIN"
                                 + " medical_data_source_table ON inner_query_result.data_source_id"
-                                + " = medical_data_source_table.row_id");
+                                + " = medical_data_source_table.medical_data_source_row_id");
     }
 
     @Test
@@ -365,7 +366,7 @@ public class MedicalResourceHelperTest {
                                 + String.join(", ", dataSourceIdHexValues)
                                 + ")) medical_data_source_table ON"
                                 + " inner_query_result.data_source_id ="
-                                + " medical_data_source_table.row_id");
+                                + " medical_data_source_table.medical_data_source_row_id");
     }
 
     @Test

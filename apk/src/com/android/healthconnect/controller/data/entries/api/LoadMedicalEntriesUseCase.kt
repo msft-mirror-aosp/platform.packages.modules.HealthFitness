@@ -44,13 +44,14 @@ constructor(
                 titleA11y = it.dataSourceId,
                 header = it.id.toString(),
                 headerA11y = it.id.toString(),
+                medicalResourceId = it.id,
             )
         }
     }
 }
 
 data class LoadMedicalEntriesInput(
-    val permissionType: MedicalPermissionType,
+    val medicalPermissionType: MedicalPermissionType,
     val packageName: String?,
     val showDataOrigin: Boolean,
 )
