@@ -45,7 +45,7 @@ class SeriesDataItemViewBinder(
                 context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
         logger = hiltEntryPoint.logger()
         return LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_heart_rate_entry, parent, false)
+            .inflate(R.layout.item_series_data_entry, parent, false)
     }
 
     override fun bind(view: View, data: SeriesDataEntry, index: Int) {

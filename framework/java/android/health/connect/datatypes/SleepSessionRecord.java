@@ -87,7 +87,14 @@ public final class SleepSessionRecord extends IntervalRecord {
             @Nullable CharSequence notes,
             @Nullable CharSequence title,
             boolean skipValidation) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
+        super(
+                metadata,
+                startTime,
+                startZoneOffset,
+                endTime,
+                endZoneOffset,
+                skipValidation,
+                /* enforceFutureTimeRestrictions= */ true);
         Objects.requireNonNull(stages);
         mStages =
                 Collections.unmodifiableList(

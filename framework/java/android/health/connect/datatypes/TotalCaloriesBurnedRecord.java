@@ -67,7 +67,14 @@ public final class TotalCaloriesBurnedRecord extends IntervalRecord {
             @NonNull ZoneOffset endZoneOffset,
             @NonNull Energy energy,
             boolean skipValidation) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
+        super(
+                metadata,
+                startTime,
+                startZoneOffset,
+                endTime,
+                endZoneOffset,
+                skipValidation,
+                /* enforceFutureTimeRestrictions= */ true);
         Objects.requireNonNull(metadata);
         Objects.requireNonNull(startTime);
         Objects.requireNonNull(startZoneOffset);

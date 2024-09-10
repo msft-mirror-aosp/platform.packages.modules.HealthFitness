@@ -32,16 +32,15 @@ public final class MigrationCleaner {
 
     private static final String LOG_TAG = "MigrationCleaner";
 
-    private final TransactionManager mTransactionManager;
     private final MigrationEntityHelper mMigrationEntityHelper;
+    private final TransactionManager mTransactionManager;
     private final PriorityMigrationHelper mPriorityMigrationHelper;
 
     public MigrationCleaner(
             @NonNull TransactionManager transactionManager,
-            @NonNull MigrationEntityHelper migrationEntityHelper,
             @NonNull PriorityMigrationHelper priorityMigrationHelper) {
+        mMigrationEntityHelper = new MigrationEntityHelper();
         mTransactionManager = transactionManager;
-        mMigrationEntityHelper = migrationEntityHelper;
         mPriorityMigrationHelper = priorityMigrationHelper;
     }
 

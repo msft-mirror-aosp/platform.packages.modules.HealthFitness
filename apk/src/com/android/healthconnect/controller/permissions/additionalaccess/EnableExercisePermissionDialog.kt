@@ -28,9 +28,9 @@ import androidx.fragment.app.activityViewModels
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.ENABLE_EXERCISE_PERMISSION_DIALOG_CONTAINER
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.ENABLE_EXERCISE_PERMISSION_DIALOG_NEGATIVE_BUTTON
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.ENABLE_EXERCISE_PERMISSION_DIALOG_POSITIVE_BUTTON
+import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.ENABLE_EXERCISE_PERMISSION_DIALOG_CONTAINER
+import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.ENABLE_EXERCISE_PERMISSION_DIALOG_NEGATIVE_BUTTON
+import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.ENABLE_EXERCISE_PERMISSION_DIALOG_POSITIVE_BUTTON
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -62,22 +62,25 @@ class EnableExercisePermissionDialog : Hilt_EnableExercisePermissionDialog() {
         }
         appName = appNameExtra
 
-        return AlertDialogBuilder(this, ENABLE_EXERCISE_PERMISSION_DIALOG_CONTAINER)
-            .setTitle(R.string.exercise_permission_dialog_enable_title)
-            .setMessage(getString(R.string.exercise_permission_dialog_enabled_summary, appName))
-            .setPositiveButton(
-                R.string.exercise_permission_dialog_positive_button,
-                ENABLE_EXERCISE_PERMISSION_DIALOG_POSITIVE_BUTTON) { _, _ ->
-                    viewModel.enableExercisePermission(packageName)
-                    dismiss()
-                }
-            .setNegativeButton(
-                R.string.exercise_permission_dialog_negative_button,
-                ENABLE_EXERCISE_PERMISSION_DIALOG_NEGATIVE_BUTTON) { _, _ ->
-                    dismiss()
-                }
-            .setCancelable(false)
-            .create()
+        val dialog =
+            AlertDialogBuilder(this, ENABLE_EXERCISE_PERMISSION_DIALOG_CONTAINER)
+                .setTitle(R.string.exercise_permission_dialog_enable_title)
+                .setMessage(getString(R.string.exercise_permission_dialog_enabled_summary, appName))
+                .setPositiveButton(
+                    R.string.exercise_permission_dialog_positive_button,
+                    ENABLE_EXERCISE_PERMISSION_DIALOG_POSITIVE_BUTTON) { _, _ ->
+                        viewModel.enableExercisePermission(packageName)
+                        dismiss()
+                    }
+                .setNegativeButton(
+                    R.string.exercise_permission_dialog_negative_button,
+                    ENABLE_EXERCISE_PERMISSION_DIALOG_NEGATIVE_BUTTON) { _, _ ->
+                        dismiss()
+                    }
+                .create()
+        setCancelable(false)
+        dialog.setCanceledOnTouchOutside(false)
+        return dialog
     }
 
     override fun dismiss() {

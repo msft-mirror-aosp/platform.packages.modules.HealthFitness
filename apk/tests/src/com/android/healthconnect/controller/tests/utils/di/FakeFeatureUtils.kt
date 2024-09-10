@@ -16,7 +16,10 @@ class FakeFeatureUtils : FeatureUtils {
     private var isNewAppPriorityEnabled = false
     private var isNewInformationArchitectureEnabled = false
     private var isBackgroundReadEnabled = false
-    private var isImportExportEnabled = false
+    private var isHistoryReadEnabled = false
+    private var isSkinTemperatureEnabled = false
+    private var isPlannedExerciseEnabled = false
+    private var isPersonalHealthRecordEnabled = false
 
     fun setIsSessionTypesEnabled(boolean: Boolean) {
         isSessionTypesEnabled = boolean
@@ -42,8 +45,20 @@ class FakeFeatureUtils : FeatureUtils {
         this.isBackgroundReadEnabled = isBackgroundReadEnabled
     }
 
-    fun setIsImportExportEnabled(isImportExportEnabled: Boolean) {
-        this.isImportExportEnabled = isImportExportEnabled
+    fun setIsHistoryReadEnabled(isHistoryReadEnabled: Boolean) {
+        this.isHistoryReadEnabled = isHistoryReadEnabled
+    }
+
+    fun setIsSkinTemperatureEnabled(isSkinTemperatureEnabled: Boolean) {
+        this.isSkinTemperatureEnabled = isSkinTemperatureEnabled
+    }
+
+    fun setIsPlannedExerciseEnabled(isPlannedExerciseEnabled: Boolean) {
+        this.isPlannedExerciseEnabled = isPlannedExerciseEnabled
+    }
+
+    fun setIsPersonalHealthRecordEnabled(isPersonalHealthRecordEnabled: Boolean) {
+        this.isPersonalHealthRecordEnabled = isPersonalHealthRecordEnabled
     }
 
     override fun isNewAppPriorityEnabled(): Boolean {
@@ -70,8 +85,20 @@ class FakeFeatureUtils : FeatureUtils {
         return isBackgroundReadEnabled
     }
 
-    override fun isImportExportEnabled(): Boolean {
-        return isImportExportEnabled
+    override fun isHistoryReadEnabled(): Boolean {
+        return isHistoryReadEnabled
+    }
+
+    override fun isPlannedExerciseEnabled(): Boolean {
+        return isPlannedExerciseEnabled
+    }
+
+    override fun isSkinTemperatureEnabled(): Boolean {
+        return isSkinTemperatureEnabled
+    }
+
+    override fun isPersonalHealthRecordEnabled(): Boolean {
+        return isPersonalHealthRecordEnabled
     }
 }
 

@@ -31,9 +31,17 @@ import java.time.Instant
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
+import com.android.compatibility.common.util.DisableAnimationRule
+import com.android.compatibility.common.util.FreezeRotationRule
+import org.junit.Rule
 
 /** CTS test for HealthConnect Categories screen. */
 class CategoriesFragmentTest : HealthConnectBaseTest() {
+    @get:Rule
+    val disableAnimationRule = DisableAnimationRule()
+
+    @get:Rule
+    val freezeRotationRule = FreezeRotationRule()
 
     companion object {
 

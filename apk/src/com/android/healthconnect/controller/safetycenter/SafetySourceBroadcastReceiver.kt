@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_BOOT_COMPLETED
 import android.content.pm.PackageManager
+import android.os.UserManager
 import android.safetycenter.SafetyCenterManager
 import android.safetycenter.SafetyCenterManager.ACTION_REFRESH_SAFETY_SOURCES
 import android.safetycenter.SafetyCenterManager.EXTRA_REFRESH_SAFETY_SOURCE_IDS
@@ -29,6 +30,7 @@ import android.safetycenter.SafetyEvent
 import android.safetycenter.SafetyEvent.SAFETY_EVENT_TYPE_DEVICE_REBOOTED
 import android.safetycenter.SafetyEvent.SAFETY_EVENT_TYPE_REFRESH_REQUESTED
 import com.android.healthconnect.controller.safetycenter.HealthConnectSafetySource.Companion.HEALTH_CONNECT_SOURCE_ID
+import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -37,11 +39,16 @@ class SafetySourceBroadcastReceiver : Hilt_SafetySourceBroadcastReceiver() {
 
     @Inject lateinit var safetySource: HealthConnectSafetySource
     @Inject lateinit var safetyCenterManagerWrapper: SafetyCenterManagerWrapper
+    @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
         tryEnableLegacySettingsEntryPoint(context)
         if (!safetyCenterManagerWrapper.isEnabled(context)) {
+            return
+        }
+        // (b/320250695) HC doesn't support user profiles
+        if ((context.getSystemService(Context.USER_SERVICE) as UserManager).isProfile) {
             return
         }
         when (intent.action) {
@@ -65,7 +72,7 @@ class SafetySourceBroadcastReceiver : Hilt_SafetySourceBroadcastReceiver() {
             else -> return
         }
     }
-    
+
     private fun tryEnableLegacySettingsEntryPoint(context: Context) {
         val legacySettingsEntryPointComponent =
             ComponentName(context.packageName, LEGACY_SETTINGS_ACTIVITY_ALIAS)
@@ -82,19 +89,9 @@ class SafetySourceBroadcastReceiver : Hilt_SafetySourceBroadcastReceiver() {
     }
 
     private fun shouldEnableLegacySettingsEntryPoint(context: Context): Boolean {
-        return !safetyCenterManagerWrapper.isEnabled(context) && isHardwareSupported(context)
+        return !safetyCenterManagerWrapper.isEnabled(context) &&
+            deviceInfoUtils.isHealthConnectAvailable(context)
     }
-
-    private fun isHardwareSupported(context: Context): Boolean {
-        // These UI tests are not optimised for Watches, TVs, Auto;
-        // IoT devices do not have a UI to run these UI tests
-        val pm: PackageManager = context.packageManager
-        return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED) &&
-                !pm.hasSystemFeature(PackageManager.FEATURE_WATCH) &&
-                !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) &&
-                !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE))
-    }
-
 
     private fun refreshSafetySources(
         context: Context,

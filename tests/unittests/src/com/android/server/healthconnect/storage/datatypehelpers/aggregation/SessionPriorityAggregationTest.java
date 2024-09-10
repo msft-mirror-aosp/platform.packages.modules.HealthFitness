@@ -75,7 +75,7 @@ public class SessionPriorityAggregationTest {
         when(HealthConnectDeviceConfigManager.getInitialisedInstance())
                 .thenReturn(mHealthConnectDeviceConfigManager);
         when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(false);
+                .thenReturn(true);
     }
 
     @Test
@@ -148,8 +148,6 @@ public class SessionPriorityAggregationTest {
 
     @Test
     public void testOneSession_newAggregation_noPriority_returnsNothing() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
         doReturn(createSessionData(10, 20, Integer.MIN_VALUE))
                 .when(mOneGroupAggregator)
                 .readNewData(mCursor);
@@ -160,8 +158,6 @@ public class SessionPriorityAggregationTest {
 
     @Test
     public void testTwoSessions_newAggregation_sessionWithoutPriority_isNotCounted() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
         doReturn(
                         createSessionData(5, 18, 1),
                         createSessionData(12, 25, Integer.MIN_VALUE, List.of(13L), List.of(16L)))
@@ -175,8 +171,6 @@ public class SessionPriorityAggregationTest {
     // TODO testTwoSessions_noneHasPriority_returnsNothing
     @Test
     public void testTwoSessions_newAggregation_sessionsWithoutPriority_returnsNull() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
         doReturn(
                         createSessionData(5, 18, Integer.MIN_VALUE),
                         createSessionData(12, 25, Integer.MIN_VALUE, List.of(13L), List.of(16L)))

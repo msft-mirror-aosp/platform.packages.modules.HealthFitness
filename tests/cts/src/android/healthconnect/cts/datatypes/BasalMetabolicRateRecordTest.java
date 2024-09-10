@@ -16,7 +16,13 @@
 
 package android.healthconnect.cts.datatypes;
 
+import static android.health.connect.HealthConnectException.ERROR_INVALID_ARGUMENT;
+import static android.health.connect.RecordIdFilter.fromId;
+import static android.healthconnect.cts.lib.TestAppProxy.APP_WRITE_PERMS_ONLY;
+
 import static com.google.common.truth.Truth.assertThat;
+
+import static org.junit.Assert.assertThrows;
 
 import android.content.Context;
 import android.health.connect.DeleteUsingFiltersRequest;
@@ -141,8 +147,9 @@ public class BasalMetabolicRateRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BasalMetabolicRateRecord.class)
                                 .build());
-        BasalMetabolicRateRecord testRecord = getCompleteBasalMetabolicRateRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        BasalMetabolicRateRecord testRecord =
+                (BasalMetabolicRateRecord)
+                        TestUtils.insertRecord(getCompleteBasalMetabolicRateRecord());
         List<BasalMetabolicRateRecord> newBasalMetabolicRateRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BasalMetabolicRateRecord.class)
@@ -164,8 +171,9 @@ public class BasalMetabolicRateRecordTest {
                         .setStartTime(Instant.now().minus(1, ChronoUnit.DAYS))
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        BasalMetabolicRateRecord testRecord = getCompleteBasalMetabolicRateRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        BasalMetabolicRateRecord testRecord =
+                (BasalMetabolicRateRecord)
+                        TestUtils.insertRecord(getCompleteBasalMetabolicRateRecord());
         List<BasalMetabolicRateRecord> newBasalMetabolicRateRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BasalMetabolicRateRecord.class)
@@ -191,8 +199,9 @@ public class BasalMetabolicRateRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        BasalMetabolicRateRecord testRecord = getCompleteBasalMetabolicRateRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        BasalMetabolicRateRecord testRecord =
+                (BasalMetabolicRateRecord)
+                        TestUtils.insertRecord(getCompleteBasalMetabolicRateRecord());
         List<BasalMetabolicRateRecord> newBasalMetabolicRateRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BasalMetabolicRateRecord.class)
@@ -248,8 +257,10 @@ public class BasalMetabolicRateRecordTest {
     @Test
     public void testDeleteBasalMetabolicRateRecord_recordId_filters() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseBasalMetabolicRateRecord(), getCompleteBasalMetabolicRateRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseBasalMetabolicRateRecord(),
+                                getCompleteBasalMetabolicRateRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -289,11 +300,13 @@ public class BasalMetabolicRateRecordTest {
     @Test
     public void testDeleteBasalMetabolicRateRecord_usingIds() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseBasalMetabolicRateRecord(), getCompleteBasalMetabolicRateRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseBasalMetabolicRateRecord(),
+                                getCompleteBasalMetabolicRateRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
-            recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
+        for (Record record : records) {
+            recordIds.add(fromId(record.getClass(), record.getMetadata().getId()));
         }
 
         TestUtils.verifyDeleteRecords(recordIds);
@@ -312,6 +325,45 @@ public class BasalMetabolicRateRecordTest {
         String id = TestUtils.insertRecordAndGetId(getCompleteBasalMetabolicRateRecord());
         TestUtils.verifyDeleteRecords(BasalMetabolicRateRecord.class, timeRangeFilter);
         TestUtils.assertRecordNotFound(id, BasalMetabolicRateRecord.class);
+    }
+
+    @Test
+    public void testDeleteBasalMetabolicRateRecord_usingIds_forAnotherApp_fails() throws Exception {
+        // Insert a record to make sure the app is connected to Health Connect
+        TestUtils.insertRecordAndGetId(getCompleteBasalMetabolicRateRecord());
+        String id = APP_WRITE_PERMS_ONLY.insertRecord(getBaseBasalMetabolicRateRecord());
+
+        HealthConnectException error =
+                assertThrows(
+                        HealthConnectException.class,
+                        () ->
+                                TestUtils.verifyDeleteRecords(
+                                        List.of(fromId(BasalMetabolicRateRecord.class, id))));
+        assertThat(error.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    public void testDeleteBasalMetabolicRateRecord_usingTime_forAnotherApp_notDeleted()
+            throws Exception {
+        // Insert a record to make sure the app is connected to Health Connect
+        TestUtils.insertRecordAndGetId(getCompleteBasalMetabolicRateRecord());
+        String id = APP_WRITE_PERMS_ONLY.insertRecord(getBaseBasalMetabolicRateRecord());
+
+        TestUtils.verifyDeleteRecords(
+                BasalMetabolicRateRecord.class,
+                new TimeInstantRangeFilter.Builder()
+                        .setStartTime(Instant.EPOCH)
+                        .setEndTime(Instant.now())
+                        .build());
+
+        List<BasalMetabolicRateRecord> records =
+                TestUtils.readRecords(
+                        new ReadRecordsRequestUsingIds.Builder<>(BasalMetabolicRateRecord.class)
+                                .addId(id)
+                                .build());
+
+        assertThat(records).isNotEmpty();
+        assertThat(records.get(0).getMetadata().getId()).isEqualTo(id);
     }
 
     @Test
@@ -468,8 +520,9 @@ public class BasalMetabolicRateRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteBasalMetabolicRateRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(
+                        Collections.singletonList(getCompleteBasalMetabolicRateRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -486,7 +539,13 @@ public class BasalMetabolicRateRecordTest {
                         .addRecordType(BasalMetabolicRateRecord.class)
                         .build());
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getDeletedLogs()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(testRecord.size());
+        assertThat(
+                        response.getDeletedLogs().stream()
+                                .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                                .toList())
+                .containsExactlyElementsIn(
+                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
     }
 
     private void readBasalMetabolicRateRecordUsingClientId(List<Record> insertedRecord)

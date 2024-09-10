@@ -17,6 +17,7 @@
 package android.health.connect.internal.datatypes;
 
 import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.health.connect.datatypes.CyclingPedalingCadenceRecord;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -124,7 +125,7 @@ public class CyclingPedalingCadenceRecordInternal
         }
 
         @Override
-        public boolean equals(@NonNull Object object) {
+        public boolean equals(@Nullable Object object) {
             if (super.equals(object)
                     && object
                             instanceof

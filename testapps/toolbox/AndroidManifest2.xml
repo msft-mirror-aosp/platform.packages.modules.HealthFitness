@@ -16,6 +16,6 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="com.android.healthconnect.testapps.toolbox" >
+          package="com.android.healthconnect.testapps.toolbox2" >
   <application android:label="Health Connect Toolbox 2" tools:replace="android:label"/>
 </manifest>

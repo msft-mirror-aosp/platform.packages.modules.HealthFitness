@@ -39,6 +39,7 @@ import com.android.healthconnect.controller.tests.utils.setLocale
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -55,7 +56,6 @@ import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import org.mockito.invocation.InvocationOnMock
-import java.util.Locale
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
@@ -151,6 +151,47 @@ class AllDataViewModelTest {
                     HealthDataCategory.VITALS, listOf(HealthPermissionType.HEART_RATE)))
         assertThat(testObserver.getLastValue())
             .isEqualTo(AllDataViewModel.AllDataState.WithData(expected))
+    }
+
+    @Test
+    fun addToDeleteSet_updatesDeleteSetCorrectly() = runTest {
+        assertThat(viewModel.getDeleteSet()).isEmpty()
+
+        viewModel.addToDeleteSet(HealthPermissionType.DISTANCE)
+
+        assertThat(viewModel.getDeleteSet()).containsExactly(HealthPermissionType.DISTANCE)
+    }
+
+    @Test
+    fun removeFromDeleteSet_updatesDeleteSetCorrectly() {
+        viewModel.addToDeleteSet(HealthPermissionType.DISTANCE)
+        viewModel.addToDeleteSet(HealthPermissionType.MENSTRUATION)
+        viewModel.removeFromDeleteSet(HealthPermissionType.DISTANCE)
+
+        assertThat(viewModel.getDeleteSet()).containsExactly(HealthPermissionType.MENSTRUATION)
+    }
+
+    @Test
+    fun setDeletionState_setsCorrectly() {
+        viewModel.setDeletionState(true)
+
+        assertThat(viewModel.getDeletionState()).isTrue()
+    }
+
+    @Test
+    fun getDeletionState_getsCorrectValue() {
+        viewModel.setDeletionState(false)
+
+        assertThat(viewModel.getDeletionState()).isFalse()
+    }
+
+    @Test
+    fun resetDeleteSet_emptiesDeleteSet() {
+        viewModel.addToDeleteSet(HealthPermissionType.MENSTRUATION)
+        viewModel.addToDeleteSet(HealthPermissionType.DISTANCE)
+        viewModel.resetDeleteSet()
+
+        assertThat(viewModel.getDeleteSet()).isEmpty()
     }
 
     private fun prepareAnswer(

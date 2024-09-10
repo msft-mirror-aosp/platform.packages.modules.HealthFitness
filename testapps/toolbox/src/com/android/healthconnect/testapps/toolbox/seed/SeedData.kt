@@ -20,16 +20,14 @@ import android.health.connect.HealthConnectManager
 import android.health.connect.datatypes.DataOrigin
 import android.health.connect.datatypes.Device
 import android.health.connect.datatypes.HeartRateRecord
-import android.health.connect.datatypes.HeightRecord
 import android.health.connect.datatypes.MenstruationFlowRecord
 import android.health.connect.datatypes.MenstruationFlowRecord.MenstruationFlowType
 import android.health.connect.datatypes.MenstruationPeriodRecord
 import android.health.connect.datatypes.Metadata
-import android.health.connect.datatypes.Record
+import android.health.connect.datatypes.SkinTemperatureRecord
 import android.health.connect.datatypes.StepsRecord
-import android.health.connect.datatypes.WeightRecord
-import android.health.connect.datatypes.units.Length
-import android.health.connect.datatypes.units.Mass
+import android.health.connect.datatypes.units.Temperature
+import android.health.connect.datatypes.units.TemperatureDelta
 import android.os.Build.MANUFACTURER
 import android.os.Build.MODEL
 import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils.Companion.insertRecords
@@ -38,12 +36,19 @@ import java.time.Duration.ofMinutes
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.Random
+import kotlin.random.Random as ktRandom
 import kotlinx.coroutines.runBlocking
 
 class SeedData(private val context: Context, private val manager: HealthConnectManager) {
 
     companion object {
         const val NUMBER_OF_SERIES_RECORDS_TO_INSERT = 200L
+        val VALID_READING_LOCATIONS =
+            setOf(
+                SkinTemperatureRecord.MEASUREMENT_LOCATION_FINGER,
+                SkinTemperatureRecord.MEASUREMENT_LOCATION_TOE,
+                SkinTemperatureRecord.MEASUREMENT_LOCATION_WRIST,
+                SkinTemperatureRecord.MEASUREMENT_LOCATION_UNKNOWN)
     }
 
     fun seedData() {
@@ -52,6 +57,7 @@ class SeedData(private val context: Context, private val manager: HealthConnectM
                 seedMenstruationData()
                 seedStepsData()
                 seedHeartRateData(10)
+                seedSkinTemperatureData(10)
             } catch (ex: Exception) {
                 throw ex
             }
@@ -60,10 +66,7 @@ class SeedData(private val context: Context, private val manager: HealthConnectM
 
     private suspend fun seedStepsData() {
         val start = Instant.now().truncatedTo(ChronoUnit.DAYS)
-        val records =
-            (1L..50).map { count ->
-                getStepsRecord(count, start.plus(ofMinutes(count)))
-            }
+        val records = (1L..50).map { count -> getStepsRecord(count, start.plus(ofMinutes(count))) }
 
         insertRecords(records, manager)
     }
@@ -104,6 +107,40 @@ class SeedData(private val context: Context, private val manager: HealthConnectM
                     start.plus(ofMinutes(timeOffset + 100)))
             }
         insertRecords(records, manager)
+    }
+
+    private suspend fun seedSkinTemperatureData(numberOfRecordsPerBatch: Long) {
+        val start = Instant.now().truncatedTo(ChronoUnit.DAYS)
+        val records =
+            (1L..numberOfRecordsPerBatch).map { timeOffset ->
+                val skinTempSamples = ArrayList<SkinTemperatureRecord.Delta>()
+                repeat(10) { i ->
+                    skinTempSamples.add(
+                        SkinTemperatureRecord.Delta(
+                            getValidTemperatureDelta(), start.plus(ofMinutes(timeOffset + i))))
+                }
+                getSkinTemperatureRecord(
+                    skinTempSamples,
+                    start.plus(ofMinutes(timeOffset)),
+                    start.plus(ofMinutes(timeOffset + 100)))
+            }
+        insertRecords(records, manager)
+    }
+
+    private fun getSkinTemperatureRecord(
+        deltasList: List<SkinTemperatureRecord.Delta>,
+        startTime: Instant,
+        endTime: Instant
+    ): SkinTemperatureRecord {
+        return SkinTemperatureRecord.Builder(getMetaData(), startTime, endTime)
+            .setDeltas(deltasList)
+            .setBaseline(Temperature.fromCelsius(25.0))
+            .setMeasurementLocation(VALID_READING_LOCATIONS.random())
+            .build()
+    }
+
+    private fun getValidTemperatureDelta(): TemperatureDelta {
+        return TemperatureDelta.fromCelsius((ktRandom.nextInt(-30, 30)).toDouble() / 10)
     }
 
     private fun getHeartRateRecord(

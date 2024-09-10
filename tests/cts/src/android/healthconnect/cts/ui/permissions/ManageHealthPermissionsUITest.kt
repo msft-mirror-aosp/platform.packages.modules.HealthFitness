@@ -26,12 +26,21 @@ import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManage
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import androidx.test.uiautomator.By
+import com.android.compatibility.common.util.DisableAnimationRule
+import com.android.compatibility.common.util.FreezeRotationRule
 import com.google.common.truth.Truth
 import org.junit.After
 import org.junit.Ignore
+import org.junit.Rule
 import org.junit.Test
 
 class ManageHealthPermissionsUITest : HealthConnectBaseTest() {
+
+    @get:Rule
+    val disableAnimationRule = DisableAnimationRule()
+
+    @get:Rule
+    val freezeRotationRule = FreezeRotationRule()
 
     @Test
     fun showsListOfHealthConnectApps() {

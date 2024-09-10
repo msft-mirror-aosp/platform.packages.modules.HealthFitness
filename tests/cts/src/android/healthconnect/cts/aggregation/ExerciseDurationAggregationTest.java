@@ -20,6 +20,9 @@ import static android.health.connect.datatypes.ExerciseSessionRecord.EXERCISE_DU
 import static android.healthconnect.cts.utils.DataFactory.SESSION_END_TIME;
 import static android.healthconnect.cts.utils.DataFactory.SESSION_START_TIME;
 import static android.healthconnect.cts.utils.DataFactory.generateMetadata;
+import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
+import static android.healthconnect.cts.utils.TestUtils.insertRecord;
+import static android.healthconnect.cts.utils.TestUtils.setupAggregation;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -95,7 +98,7 @@ public class ExerciseDurationAggregationTest {
 
     @Test
     public void testSimpleAggregation_oneSession_returnsItsDuration() throws InterruptedException {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
+        setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         ExerciseSessionRecord session =
                 new ExerciseSessionRecord.Builder(
                                 generateMetadata(),
@@ -104,8 +107,8 @@ public class ExerciseDurationAggregationTest {
                                 ExerciseSessionType
                                         .EXERCISE_SESSION_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING)
                         .build();
-        AggregateRecordsResponse<Long> response =
-                TestUtils.getAggregateResponse(mAggregateAllRecordsRequest, List.of(session));
+        insertRecord(session);
+        AggregateRecordsResponse<Long> response = getAggregateResponse(mAggregateAllRecordsRequest);
 
         assertThat(response.get(EXERCISE_DURATION_TOTAL)).isNotNull();
         assertThat(response.get(EXERCISE_DURATION_TOTAL))
@@ -113,13 +116,13 @@ public class ExerciseDurationAggregationTest {
                         session.getEndTime().toEpochMilli()
                                 - session.getStartTime().toEpochMilli());
         assertThat(response.getZoneOffset(EXERCISE_DURATION_TOTAL))
-                .isEqualTo(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()));
+                .isEqualTo(session.getStartZoneOffset());
     }
 
     @Test
     public void testSimpleAggregation_oneSessionStartEarlierThanWindow_returnsOverlapDuration()
             throws InterruptedException {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
+        setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         ExerciseSessionRecord session =
                 new ExerciseSessionRecord.Builder(
                                 generateMetadata(),
@@ -128,20 +131,20 @@ public class ExerciseDurationAggregationTest {
                                 ExerciseSessionType
                                         .EXERCISE_SESSION_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING)
                         .build();
-        AggregateRecordsResponse<Long> response =
-                TestUtils.getAggregateResponse(mAggregateInSmallWindow, List.of(session));
+        insertRecord(session);
+        AggregateRecordsResponse<Long> response = getAggregateResponse(mAggregateInSmallWindow);
 
         assertThat(response.get(EXERCISE_DURATION_TOTAL)).isNotNull();
         assertThat(response.get(EXERCISE_DURATION_TOTAL))
                 .isEqualTo(SESSION_END_TIME.toEpochMilli() - SESSION_START_TIME.toEpochMilli());
         assertThat(response.getZoneOffset(EXERCISE_DURATION_TOTAL))
-                .isEqualTo(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()));
+                .isEqualTo(session.getStartZoneOffset());
     }
 
     @Test
     public void testSimpleAggregation_oneSessionBiggerThanWindow_returnsOverlapDuration()
             throws InterruptedException {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
+        setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
 
         ExerciseSessionRecord session =
                 new ExerciseSessionRecord.Builder(
@@ -151,20 +154,20 @@ public class ExerciseDurationAggregationTest {
                                 ExerciseSessionType
                                         .EXERCISE_SESSION_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING)
                         .build();
-        AggregateRecordsResponse<Long> response =
-                TestUtils.getAggregateResponse(mAggregateInSmallWindow, List.of(session));
+        insertRecord(session);
+        AggregateRecordsResponse<Long> response = getAggregateResponse(mAggregateInSmallWindow);
 
         assertThat(response.get(EXERCISE_DURATION_TOTAL)).isNotNull();
         assertThat(response.get(EXERCISE_DURATION_TOTAL))
                 .isEqualTo(SESSION_END_TIME.toEpochMilli() - SESSION_START_TIME.toEpochMilli());
         assertThat(response.getZoneOffset(EXERCISE_DURATION_TOTAL))
-                .isEqualTo(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()));
+                .isEqualTo(session.getStartZoneOffset());
     }
 
     @Test
     public void testSimpleAggregation_oneSessionWithRest_returnsDurationMinusRest()
             throws InterruptedException {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
+        setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
 
         ExerciseSegment restSegment =
                 new ExerciseSegment.Builder(
@@ -189,8 +192,8 @@ public class ExerciseDurationAggregationTest {
                                                 .build()))
                         .build();
 
-        AggregateRecordsResponse<Long> response =
-                TestUtils.getAggregateResponse(mAggregateAllRecordsRequest, List.of(session));
+        insertRecord(session);
+        AggregateRecordsResponse<Long> response = getAggregateResponse(mAggregateAllRecordsRequest);
 
         assertThat(response.get(EXERCISE_DURATION_TOTAL)).isNotNull();
 
@@ -206,7 +209,7 @@ public class ExerciseDurationAggregationTest {
     @Test
     public void testAggregationByDuration_oneSession_returnsSplitDurationIntoGroups()
             throws InterruptedException {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
+        setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Instant endTime = SESSION_START_TIME.plus(10, ChronoUnit.HOURS);
         ExerciseSessionRecord session =
                 new ExerciseSessionRecord.Builder(
@@ -215,7 +218,7 @@ public class ExerciseDurationAggregationTest {
                                 endTime,
                                 ExerciseSessionType.EXERCISE_SESSION_TYPE_BADMINTON)
                         .build();
-        TestUtils.insertRecords(List.of(session));
+        insertRecord(session);
 
         List<AggregateRecordsGroupedByDurationResponse<Long>> responses =
                 TestUtils.getAggregateResponseGroupByDuration(
@@ -238,7 +241,7 @@ public class ExerciseDurationAggregationTest {
     @Test
     public void testAggregation_oneSessionLocalTimeFilter_findsSessionWithMinOffset()
             throws InterruptedException {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
+        setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Instant endTime = Instant.now();
         LocalDateTime endTimeLocal = LocalDateTime.ofInstant(endTime, ZoneOffset.UTC);
 
@@ -253,16 +256,16 @@ public class ExerciseDurationAggregationTest {
                         .setEndZoneOffset(ZoneOffset.MIN)
                         .build();
 
+        insertRecord(session);
         AggregateRecordsResponse<Long> response =
-                TestUtils.getAggregateResponse(
+                getAggregateResponse(
                         new AggregateRecordsRequest.Builder<Long>(
                                         new LocalTimeRangeFilter.Builder()
                                                 .setStartTime(endTimeLocal.minusHours(25))
                                                 .setEndTime(endTimeLocal.minusHours(15))
                                                 .build())
                                 .addAggregationType(EXERCISE_DURATION_TOTAL)
-                                .build(),
-                        List.of(session));
+                                .build());
 
         assertThat(response.get(EXERCISE_DURATION_TOTAL)).isEqualTo(sessionDurationSeconds * 1000);
     }
@@ -270,7 +273,7 @@ public class ExerciseDurationAggregationTest {
     @Test
     public void testAggregation_oneSessionLocalTimeFilterExcludeSegment_substractsExcludeInterval()
             throws InterruptedException {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
+        setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Instant endTime = SESSION_START_TIME.plus(1, ChronoUnit.HOURS);
         ExerciseSessionRecord session =
                 new ExerciseSessionRecord.Builder(
@@ -291,16 +294,16 @@ public class ExerciseDurationAggregationTest {
                         .build();
 
         LocalDateTime endTimeLocal = LocalDateTime.ofInstant(endTime, ZoneOffset.UTC);
+        insertRecord(session);
         AggregateRecordsResponse<Long> response =
-                TestUtils.getAggregateResponse(
+                getAggregateResponse(
                         new AggregateRecordsRequest.Builder<Long>(
                                         new LocalTimeRangeFilter.Builder()
                                                 .setStartTime(endTimeLocal.minusHours(25))
                                                 .setEndTime(endTimeLocal.minusHours(15))
                                                 .build())
                                 .addAggregationType(EXERCISE_DURATION_TOTAL)
-                                .build(),
-                        List.of(session));
+                                .build());
 
         assertThat(response.get(EXERCISE_DURATION_TOTAL)).isEqualTo(20000);
     }

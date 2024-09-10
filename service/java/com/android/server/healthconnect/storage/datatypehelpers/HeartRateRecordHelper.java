@@ -82,7 +82,7 @@ public class HeartRateRecordHelper
     }
 
     @Override
-    final String getMainTableName() {
+    public final String getMainTableName() {
         return TABLE_NAME;
     }
 

@@ -96,6 +96,14 @@ class DateNavigationViewTest {
     }
 
     @Test
+    fun setDate_plannedExerciseEntriesAvailable_nextButtonIsEnabled() {
+        dateNavigationView.setDate(NOW.plus(Duration.ofDays(1)))
+        dateNavigationView.setMaxDate(null)
+
+        assertThat(nextDayButton.isEnabled).isTrue()
+    }
+
+    @Test
     fun onDateChanged_listenerIsCalled() {
         dateNavigationView.setDateChangedListener(dateChangedListener)
 

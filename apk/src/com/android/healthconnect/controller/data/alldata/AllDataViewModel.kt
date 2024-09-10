@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.data.appdata.AppDataUseCase
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -30,8 +31,11 @@ import kotlinx.coroutines.launch
 
 /** View model for the [AllDataFragment] . */
 @HiltViewModel
-class AllDataViewModel @Inject constructor(private val loadAppDataUseCase: AppDataUseCase) :
-    ViewModel() {
+class AllDataViewModel
+@Inject
+constructor(
+    private val loadAppDataUseCase: AppDataUseCase,
+) : ViewModel() {
 
     companion object {
         private const val TAG = "AllDataViewModel"
@@ -39,13 +43,16 @@ class AllDataViewModel @Inject constructor(private val loadAppDataUseCase: AppDa
 
     private val _allData = MutableLiveData<AllDataState>()
 
+    private var setOfPermissionTypesToBeDeleted: MutableSet<HealthPermissionType> = mutableSetOf()
+
+    private var isDeletionState: Boolean = false
+
     /** Provides a list of [PermissionTypesPerCategory]s to be displayed in [AllDataFragment]. */
     val allData: LiveData<AllDataState>
         get() = _allData
 
     fun loadAllData() {
         _allData.postValue(AllDataState.Loading)
-
         viewModelScope.launch {
             when (val result = loadAppDataUseCase.loadAllData()) {
                 is UseCaseResults.Success -> {
@@ -56,6 +63,33 @@ class AllDataViewModel @Inject constructor(private val loadAppDataUseCase: AppDa
                 }
             }
         }
+    }
+
+    fun resetDeleteSet() {
+        setOfPermissionTypesToBeDeleted.clear()
+    }
+
+    fun addToDeleteSet(permissionType: HealthPermissionType) {
+        setOfPermissionTypesToBeDeleted.add(permissionType)
+    }
+
+    fun removeFromDeleteSet(permissionType: HealthPermissionType) {
+        setOfPermissionTypesToBeDeleted.remove(permissionType)
+    }
+
+    fun getDeleteSet(): Set<HealthPermissionType> {
+        return setOfPermissionTypesToBeDeleted.toSet()
+    }
+
+    fun setDeletionState(boolean: Boolean) {
+        isDeletionState = boolean
+        if (!isDeletionState) {
+            setOfPermissionTypesToBeDeleted.clear()
+        }
+    }
+
+    fun getDeletionState(): Boolean {
+        return isDeletionState
     }
 
     sealed class AllDataState {

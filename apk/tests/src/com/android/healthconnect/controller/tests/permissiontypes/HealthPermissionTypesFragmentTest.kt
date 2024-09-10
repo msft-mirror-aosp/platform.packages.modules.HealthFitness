@@ -37,6 +37,9 @@ import com.android.healthconnect.controller.categories.HealthDataCategoriesFragm
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesViewModel
+import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesViewModel.AppsWithDataFragmentState
+import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesViewModel.PermissionTypesState
+import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesViewModel.PriorityListState
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.lowercaseTitle
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP
@@ -45,6 +48,7 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_3
 import com.android.healthconnect.controller.tests.utils.atPosition
 import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.DeletionDialogTimeRangeElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -201,6 +205,37 @@ class HealthPermissionTypesFragmentTest {
         verify(healthConnectLogger, atLeast(1)).setPageId(PageName.PERMISSION_TYPES_PAGE)
         verify(healthConnectLogger).logPageImpression()
         verify(healthConnectLogger, times(3))
+            .logImpression(PermissionTypesElement.PERMISSION_TYPE_BUTTON)
+        verify(healthConnectLogger).logImpression(PermissionTypesElement.SET_APP_PRIORITY_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(PermissionTypesElement.DELETE_CATEGORY_DATA_BUTTON)
+    }
+
+    @Test
+    fun permissionTypesFragment_activityCategory_trainingPlansAvailable_isDisplayed() {
+        whenever(viewModel.permissionTypesData).then {
+            MutableLiveData<PermissionTypesState>(
+                PermissionTypesState.WithData(listOf(HealthPermissionType.PLANNED_EXERCISE)))
+        }
+        whenever(viewModel.priorityList).then {
+            MutableLiveData<PriorityListState>(
+                PriorityListState.WithData(listOf(TEST_APP, TEST_APP_2)))
+        }
+        whenever(viewModel.appsWithData).then {
+            MutableLiveData<AppsWithDataFragmentState>(AppsWithDataFragmentState.WithData(listOf()))
+        }
+        whenever(viewModel.selectedAppFilter).then { MutableLiveData("") }
+        whenever(viewModel.editedPriorityList).then {
+            MutableLiveData(listOf(TEST_APP, TEST_APP_2))
+        }
+        whenever(viewModel.categoryLabel).then { MutableLiveData("activity") }
+        launchFragment<HealthPermissionTypesFragment>(activityCategoryBundle())
+
+        onView(withText("Training plans")).check(matches(isDisplayed()))
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.PERMISSION_TYPES_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger, times(1))
             .logImpression(PermissionTypesElement.PERMISSION_TYPE_BUTTON)
         verify(healthConnectLogger).logImpression(PermissionTypesElement.SET_APP_PRIORITY_BUTTON)
         verify(healthConnectLogger)

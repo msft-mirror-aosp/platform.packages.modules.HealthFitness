@@ -47,12 +47,15 @@ import android.health.connect.datatypes.Metadata
 import android.health.connect.datatypes.NutritionRecord
 import android.health.connect.datatypes.OvulationTestRecord
 import android.health.connect.datatypes.OxygenSaturationRecord
+import android.health.connect.datatypes.PlannedExerciseBlock
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
 import android.health.connect.datatypes.PowerRecord
 import android.health.connect.datatypes.PowerRecord.PowerRecordSample
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.RespiratoryRateRecord
 import android.health.connect.datatypes.RestingHeartRateRecord
 import android.health.connect.datatypes.SexualActivityRecord
+import android.health.connect.datatypes.SkinTemperatureRecord
 import android.health.connect.datatypes.SleepSessionRecord
 import android.health.connect.datatypes.SpeedRecord
 import android.health.connect.datatypes.SpeedRecord.SpeedRecordSample
@@ -136,6 +139,13 @@ class InsertOrUpdateRecords {
             return Mass.fromGrams(getDoubleValue(mFieldNameToFieldInput, fieldName))
         }
 
+        private fun getTemperature(
+            mFieldNameToFieldInput: HashMap<String, InputFieldView>,
+            fieldName: String
+        ): Temperature {
+            return Temperature.fromCelsius(getDoubleValue(mFieldNameToFieldInput, fieldName))
+        }
+
         fun createRecordObject(
             recordClass: KClass<out Record>,
             mFieldNameToFieldInput: HashMap<String, InputFieldView>,
@@ -160,7 +170,6 @@ class InsertOrUpdateRecords {
             mFieldNameToFieldInput: HashMap<String, InputFieldView>,
             metaData: Metadata,
         ): Record {
-
             val record: Record
             when (recordClass) {
                 StepsRecord::class -> {
@@ -468,6 +477,29 @@ class InsertOrUpdateRecords {
                                 getLongValue(mFieldNameToFieldInput, "mBeatsPerMinute"))
                             .build()
                 }
+                SkinTemperatureRecord::class -> {
+                    record =
+                        SkinTemperatureRecord.Builder(
+                                metaData,
+                                getStartTime(mFieldNameToFieldInput),
+                                getEndTime(mFieldNameToFieldInput))
+                            .apply {
+                                if (!mFieldNameToFieldInput["mDeltas"]!!.isEmpty()) {
+                                    setDeltas(
+                                        mFieldNameToFieldInput["mDeltas"]?.getFieldValue()
+                                            as List<SkinTemperatureRecord.Delta>)
+                                }
+                                if (!mFieldNameToFieldInput["mBaseline"]!!.isEmpty()) {
+                                    setBaseline(getTemperature(mFieldNameToFieldInput, "mBaseline"))
+                                }
+                                if (!mFieldNameToFieldInput["mMeasurementLocation"]!!.isEmpty()) {
+                                    setMeasurementLocation(
+                                        getIntegerValue(
+                                            mFieldNameToFieldInput, "mMeasurementLocation"))
+                                }
+                            }
+                            .build()
+                }
                 SleepSessionRecord::class -> {
                     record =
                         SleepSessionRecord.Builder(
@@ -544,6 +576,33 @@ class InsertOrUpdateRecords {
                                     setLaps(
                                         mFieldNameToFieldInput["mLaps"]?.getFieldValue()
                                             as List<ExerciseLap>)
+                                }
+                            }
+                            .build()
+                }
+                PlannedExerciseSessionRecord::class -> {
+                    val startTime = mFieldNameToFieldInput["startTime"]?.getFieldValue() as Instant
+                    record =
+                        PlannedExerciseSessionRecord.Builder(
+                                metaData,
+                                mFieldNameToFieldInput["mPlannedExerciseType"]
+                                    ?.getFieldValue()
+                                    .toString()
+                                    .toInt(),
+                                startTime,
+                                mFieldNameToFieldInput["endTime"]?.getFieldValue() as Instant,
+                            )
+                            .apply {
+                                if (!mFieldNameToFieldInput["mNotes"]!!.isEmpty()) {
+                                    setNotes(getStringValue(mFieldNameToFieldInput, "mNotes"))
+                                }
+                                if (!mFieldNameToFieldInput["mTitle"]!!.isEmpty()) {
+                                    setTitle(getStringValue(mFieldNameToFieldInput, "mTitle"))
+                                }
+                                if (!mFieldNameToFieldInput["mBlocks"]!!.isEmpty()) {
+                                    setBlocks(
+                                        mFieldNameToFieldInput["mBlocks"]?.getFieldValue()
+                                            as List<PlannedExerciseBlock>)
                                 }
                             }
                             .build()

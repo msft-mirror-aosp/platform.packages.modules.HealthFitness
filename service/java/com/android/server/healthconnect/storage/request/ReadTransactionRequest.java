@@ -58,7 +58,7 @@ public class ReadTransactionRequest {
             Set<String> grantedExtraReadPermissions,
             boolean isInForeground) {
         RecordHelper<?> recordHelper =
-                RecordHelperProvider.getInstance().getRecordHelper(request.getRecordType());
+                RecordHelperProvider.getRecordHelper(request.getRecordType());
         mReadTableRequests =
                 Collections.singletonList(
                         recordHelper.getReadTableRequest(
@@ -87,8 +87,7 @@ public class ReadTransactionRequest {
         recordTypeToUuids.forEach(
                 (recordType, uuids) ->
                         mReadTableRequests.add(
-                                RecordHelperProvider.getInstance()
-                                        .getRecordHelper(recordType)
+                                RecordHelperProvider.getRecordHelper(recordType)
                                         .getReadTableRequest(
                                                 packageName,
                                                 uuids,

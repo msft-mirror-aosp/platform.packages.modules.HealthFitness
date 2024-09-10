@@ -31,9 +31,11 @@ import static android.health.connect.HealthPermissions.READ_DISTANCE;
 import static android.health.connect.HealthPermissions.READ_ELEVATION_GAINED;
 import static android.health.connect.HealthPermissions.READ_EXERCISE;
 import static android.health.connect.HealthPermissions.READ_FLOORS_CLIMBED;
+import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.READ_HEART_RATE;
 import static android.health.connect.HealthPermissions.READ_HEART_RATE_VARIABILITY;
 import static android.health.connect.HealthPermissions.READ_HEIGHT;
+import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY;
 import static android.health.connect.HealthPermissions.READ_HYDRATION;
 import static android.health.connect.HealthPermissions.READ_INTERMENSTRUAL_BLEEDING;
 import static android.health.connect.HealthPermissions.READ_LEAN_BODY_MASS;
@@ -115,8 +117,8 @@ import java.util.Set;
 public class HealthPermissionsPresenceTest {
     private static final Set<String> HEALTH_PERMISSIONS =
             Set.of(
-                    // TODO(b/299897306): Replace with a constant when it is exposed
-                    "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND",
+                    READ_HEALTH_DATA_IN_BACKGROUND,
+                    READ_HEALTH_DATA_HISTORY,
                     READ_ACTIVE_CALORIES_BURNED,
                     READ_DISTANCE,
                     READ_ELEVATION_GAINED,

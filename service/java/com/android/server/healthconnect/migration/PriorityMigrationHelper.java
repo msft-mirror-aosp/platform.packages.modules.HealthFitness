@@ -130,7 +130,7 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
 
     /** Returns a requests for creating pre-migration priority table. */
     @NonNull
-    public CreateTableRequest getCreateTableRequest() {
+    public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(PRE_MIGRATION_TABLE_NAME, getColumnInfo());
     }
 
@@ -181,9 +181,8 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
     /**
      * This implementation should return the column names with which the table should be created.
      */
-    @Override
     @NonNull
-    protected List<Pair<String, String>> getColumnInfo() {
+    private static List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(CATEGORY_COLUMN_NAME, INTEGER_UNIQUE));
         columnInfo.add(new Pair<>(PRIORITY_ORDER_COLUMN_NAME, TEXT_NOT_NULL));

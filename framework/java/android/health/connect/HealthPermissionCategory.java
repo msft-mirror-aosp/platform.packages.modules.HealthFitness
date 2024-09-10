@@ -16,6 +16,8 @@
 
 package android.health.connect;
 
+import static com.android.healthfitness.flags.Flags.FLAG_MINDFULNESS;
+
 import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.annotation.SystemApi;
@@ -24,6 +26,7 @@ import android.health.connect.datatypes.BasalMetabolicRateRecord;
 import android.health.connect.datatypes.DistanceRecord;
 import android.health.connect.datatypes.ElevationGainedRecord;
 import android.health.connect.datatypes.HeartRateRecord;
+import android.health.connect.datatypes.MindfulnessSessionRecord;
 import android.health.connect.datatypes.PowerRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.SpeedRecord;
@@ -156,15 +159,18 @@ public class HealthPermissionCategory {
     /** Permission category for {RestingHeartRate} */
     public static final int RESTING_HEART_RATE = 34;
 
-    /**
-     * Permission category for {SkinTemperature}
-     */
+    /** Permission category for {SkinTemperature} */
     @FlaggedApi("com.android.healthconnect.flags.skin_temperature")
     public static final int SKIN_TEMPERATURE = 39;
 
     /** Permission category for {PlannedExerciseSession} */
     @FlaggedApi("com.android.healthconnect.flags.training_plans")
     public static final int PLANNED_EXERCISE = 40;
+
+    // WELLNESS
+    /** Permission category for {@link MindfulnessSessionRecord}. */
+    @FlaggedApi(FLAG_MINDFULNESS)
+    public static final int MINDFULNESS = 41;
 
     private HealthPermissionCategory() {}
 
@@ -207,7 +213,8 @@ public class HealthPermissionCategory {
         RESPIRATORY_RATE,
         RESTING_HEART_RATE,
         SKIN_TEMPERATURE,
-        PLANNED_EXERCISE
+        PLANNED_EXERCISE,
+        MINDFULNESS
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Type {}

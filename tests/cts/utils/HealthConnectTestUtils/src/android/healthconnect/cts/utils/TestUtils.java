@@ -27,12 +27,22 @@ import static android.health.connect.HealthDataCategory.VITALS;
 import static android.health.connect.HealthPermissionCategory.BASAL_METABOLIC_RATE;
 import static android.health.connect.HealthPermissionCategory.EXERCISE;
 import static android.health.connect.HealthPermissionCategory.HEART_RATE;
+import static android.health.connect.HealthPermissionCategory.PLANNED_EXERCISE;
 import static android.health.connect.HealthPermissionCategory.STEPS;
+import static android.healthconnect.cts.utils.DataFactory.NOW;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_AGGREGATE_STEPS_COUNT;
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_EXERCISE_RECORD;
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_PLANNED_EXERCISE_RECORD;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_STEPS_RECORDS;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_WEIGHT_RECORDS;
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_READ_STEPS_RECORDS_USING_FILTERS;
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_READ_STEPS_RECORDS_USING_RECORD_IDS;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_END_TIMES;
+import static android.healthconnect.test.app.TestAppReceiver.EXTRA_PACKAGE_NAMES;
+import static android.healthconnect.test.app.TestAppReceiver.EXTRA_PLANNED_EXERCISE_SESSION_ID;
+import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_CLIENT_IDS;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_IDS;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_VALUES;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_SENDER_PACKAGE_NAME;
@@ -56,6 +66,7 @@ import android.health.connect.AggregateRecordsGroupedByPeriodResponse;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.ApplicationInfoResponse;
+import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.FetchDataOriginsPriorityOrderResponse;
 import android.health.connect.HealthConnectDataState;
@@ -63,6 +74,9 @@ import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissionCategory;
 import android.health.connect.InsertRecordsResponse;
+import android.health.connect.MedicalIdFilter;
+import android.health.connect.ReadMedicalResourcesRequest;
+import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequest;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
@@ -99,12 +113,15 @@ import android.health.connect.datatypes.HeightRecord;
 import android.health.connect.datatypes.HydrationRecord;
 import android.health.connect.datatypes.IntermenstrualBleedingRecord;
 import android.health.connect.datatypes.LeanBodyMassRecord;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.MenstruationFlowRecord;
 import android.health.connect.datatypes.MenstruationPeriodRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.NutritionRecord;
 import android.health.connect.datatypes.OvulationTestRecord;
 import android.health.connect.datatypes.OxygenSaturationRecord;
+import android.health.connect.datatypes.PlannedExerciseSessionRecord;
 import android.health.connect.datatypes.PowerRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.RespiratoryRateRecord;
@@ -137,6 +154,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -157,6 +175,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -198,7 +217,7 @@ public final class TestUtils {
                 .getId();
     }
 
-     /**
+    /**
      * Insert record to the database.
      *
      * @param record record to insert
@@ -217,6 +236,16 @@ public final class TestUtils {
     public static List<Record> insertRecords(List<? extends Record> records)
             throws InterruptedException {
         return insertRecords(records, ApplicationProvider.getApplicationContext());
+    }
+
+    /**
+     * Inserts records to the database.
+     *
+     * @param records records to insert
+     * @return inserted records
+     */
+    public static List<Record> insertRecords(Record... records) throws InterruptedException {
+        return insertRecords(Arrays.asList(records), ApplicationProvider.getApplicationContext());
     }
 
     /**
@@ -249,7 +278,8 @@ public final class TestUtils {
         return record -> seen.add(record.getMetadata().getId());
     }
 
-    public static void updateRecords(List<Record> records) throws InterruptedException {
+    /** Updates the provided records in the database. */
+    public static void updateRecords(List<? extends Record> records) throws InterruptedException {
         updateRecords(records, ApplicationProvider.getApplicationContext());
     }
 
@@ -542,6 +572,26 @@ public final class TestUtils {
                 "android.permission.DELETE_STAGED_HEALTH_CONNECT_REMOTE_DATA");
     }
 
+    /** Set lower rate limits for testing */
+    public static boolean setLowerRateLimitsForTesting(boolean enabled) {
+        HealthConnectManager service = getHealthConnectManager();
+        try {
+            runWithShellPermissionIdentity(
+                    () ->
+                            // TODO(b/241542162): Avoid reflection once TestApi can be called from
+                            // CTS
+                            service.getClass()
+                                    .getMethod("setLowerRateLimitsForTesting", boolean.class)
+                                    .invoke(service, enabled),
+                    "android.permission.DELETE_STAGED_HEALTH_CONNECT_REMOTE_DATA");
+            return true;
+        } catch (RuntimeException e) {
+            // Old versions of the module don't have this API.
+            Log.e(TAG, "Couldn't override quota for testing", e);
+            return false;
+        }
+    }
+
     public static int getHealthConnectDataMigrationState() throws InterruptedException {
         HealthConnectReceiver<HealthConnectDataState> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager()
@@ -751,6 +801,9 @@ public final class TestUtils {
                 BasalMetabolicRateRecord.class,
                 new RecordTypeInfoTestResponse(
                         BODY_MEASUREMENTS, BASAL_METABOLIC_RATE, new ArrayList<>()));
+        expectedResponseMap.put(
+                PlannedExerciseSessionRecord.class,
+                new RecordTypeInfoTestResponse(ACTIVITY, PLANNED_EXERCISE, new ArrayList<>()));
     }
 
     public static FetchDataOriginsPriorityOrderResponse fetchDataOriginsPriorityOrder(
@@ -834,11 +887,39 @@ public final class TestUtils {
                 WRITE_ALLOWLISTED_DEVICE_CONFIG);
     }
 
+    /** Reads {@link StepsRecord}s using record IDs. */
+    public static void readStepsRecordsUsingRecordIdsViaTestApp(
+            Context context, List<String> recordIds) {
+        Bundle extras = new Bundle();
+        extras.putStringArrayList(EXTRA_RECORD_IDS, new ArrayList<>(recordIds));
+        sendCommandToTestAppReceiver(context, ACTION_READ_STEPS_RECORDS_USING_RECORD_IDS, extras);
+    }
+
+    /** Reads {@link StepsRecord}s using package name filters. */
+    public static void readStepsRecordsUsingFiltersViaTestApp(
+            Context context, List<String> packageNameFilters) {
+        Bundle extras = new Bundle();
+        extras.putStringArrayList(EXTRA_PACKAGE_NAMES, new ArrayList<>(packageNameFilters));
+        sendCommandToTestAppReceiver(context, ACTION_READ_STEPS_RECORDS_USING_FILTERS, extras);
+    }
+
+    /** Aggregates {@link StepsRecord}s using package name filters. */
+    public static void aggregateStepsCount(Context context, List<String> packageNameFilters) {
+        Bundle extras = new Bundle();
+        extras.putStringArrayList(EXTRA_PACKAGE_NAMES, new ArrayList<>(packageNameFilters));
+        sendCommandToTestAppReceiver(context, ACTION_AGGREGATE_STEPS_COUNT, extras);
+    }
+
     public static void sendCommandToTestAppReceiver(Context context, String action) {
         sendCommandToTestAppReceiver(context, action, /* extras= */ null);
     }
 
     public static void sendCommandToTestAppReceiver(Context context, String action, Bundle extras) {
+        // This call to reset() is important!
+        // reset() needs to be called every time before a call is made to the test app, otherwise,
+        // TestReceiver won't receive the result from the test app.
+        android.healthconnect.cts.utils.TestReceiver.reset();
+
         final Intent intent = new Intent(action).setClassName(PKG_TEST_APP, TEST_APP_RECEIVER);
         intent.putExtra(EXTRA_SENDER_PACKAGE_NAME, context.getPackageName());
         if (extras != null) {
@@ -848,40 +929,70 @@ public final class TestUtils {
     }
 
     /** Sets up the priority list for aggregation tests. */
-    public static void setupAggregation(String packageName, int dataCategory)
-            throws InterruptedException {
-        insertRecordsForPriority(packageName);
+    public static void setupAggregation(String packageName, int dataCategory) {
+        try {
+            setupAggregation(
+                    record -> insertRecords(Collections.singletonList(record)),
+                    packageName,
+                    dataCategory);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-        // Add the packageName inserting the records to the priority list manually
+    /** Sets up the priority list for aggregation tests. */
+    public static void setupAggregation(
+            ThrowingConsumer<Record> inserter, String packageName, int dataCategory)
+            throws Exception {
+        inserter.acceptOrThrow(getAnUnaggregatableRecord(packageName));
+        setupAggregation(List.of(packageName), dataCategory);
+    }
+
+    /**
+     * Sets up the priority list for aggregation tests.
+     *
+     * <p>In order for this method to work, eac of the {@code packageNames} needs to have at least
+     * one record of any type in the HC DB before this method is called.
+     *
+     * <p>This is mainly used to setup priority list for a test app, so a test can read aggregation
+     * of data inserted by a test app. It would be nicer if this method take an instance of a test
+     * app such as {@code TestAppProxy}, however, it would requires this TestUtils class depends on
+     * the dependency where the TestAppProxy comes from, which then would create a dependency cycle
+     * because TestAppProxy's dependency is already using this TestUtils class.
+     */
+    public static void setupAggregation(List<String> packageNames, int dataCategory)
+            throws Exception {
+        // Add the packageNames inserting the records to the priority list manually
         // Since CTS tests get their permissions granted at install time and skip
         // the Health Connect APIs that would otherwise add the packageName to the priority list
-
-        updatePriorityWithManageHealthDataPermission(dataCategory, Arrays.asList(packageName));
+        updatePriorityWithManageHealthDataPermission(dataCategory, packageNames);
         FetchDataOriginsPriorityOrderResponse newPriority =
                 getPriorityWithManageHealthDataPermission(dataCategory);
         List<String> newPriorityString =
                 newPriority.getDataOriginsPriorityOrder().stream()
                         .map(DataOrigin::getPackageName)
                         .toList();
-        assertThat(newPriorityString.size()).isEqualTo(1);
-        assertThat(newPriorityString.get(0)).isEqualTo(packageName);
+        assertThat(newPriorityString).isEqualTo(packageNames);
     }
 
     /** Inserts a record that does not support aggregation to enable the priority list. */
     public static void insertRecordsForPriority(String packageName) throws InterruptedException {
         // Insert records that do not support aggregation so that the AppInfoTable is initialised
-        MenstruationPeriodRecord recordToInsert =
-                new MenstruationPeriodRecord.Builder(
-                                new Metadata.Builder()
-                                        .setDataOrigin(
-                                                new DataOrigin.Builder()
-                                                        .setPackageName(packageName)
-                                                        .build())
-                                        .build(),
-                                Instant.now(),
-                                Instant.now().plusMillis(1000))
-                        .build();
-        insertRecords(Arrays.asList(recordToInsert));
+        insertRecords(List.of(getAnUnaggregatableRecord(packageName)));
+    }
+
+    /** Returns a {@link Record} that does not support aggregation. */
+    private static Record getAnUnaggregatableRecord(String packageName) {
+        return new MenstruationPeriodRecord.Builder(
+                        new Metadata.Builder()
+                                .setDataOrigin(
+                                        new DataOrigin.Builder()
+                                                .setPackageName(packageName)
+                                                .build())
+                                .build(),
+                        NOW,
+                        NOW.plusMillis(1000))
+                .build();
     }
 
     /** Updates the priority list after getting the MANAGE_HEALTH_DATA permission. */
@@ -1049,33 +1160,119 @@ public final class TestUtils {
                 .toInstant(ZoneOffset.UTC);
     }
 
-    public static List<String> insertStepsRecordViaTestApp(
+    /** Inserts {@link StepsRecord} via test app with the specified data. */
+    public static String insertStepsRecordViaTestApp(
             Context context, Instant startTime, Instant endTime, long value) {
+        return insertStepsRecordViaTestApp(
+                context, startTime, endTime, /* clientId= */ null, value);
+    }
+
+    /** Inserts {@link StepsRecord} via test app with the specified data. */
+    public static String insertStepsRecordViaTestApp(
+            Context context, Instant startTime, Instant endTime, String clientId, long value) {
         Bundle bundle = new Bundle();
         bundle.putLongArray(EXTRA_TIMES, new long[] {startTime.toEpochMilli()});
         bundle.putLongArray(EXTRA_END_TIMES, new long[] {endTime.toEpochMilli()});
+        bundle.putStringArray(EXTRA_RECORD_CLIENT_IDS, new String[] {clientId});
         bundle.putLongArray(EXTRA_RECORD_VALUES, new long[] {value});
-        android.healthconnect.cts.utils.TestReceiver.reset();
         sendCommandToTestAppReceiver(context, ACTION_INSERT_STEPS_RECORDS, bundle);
         return android.healthconnect.cts.utils.TestReceiver.getResult()
-                .getStringArrayList(EXTRA_RECORD_IDS);
+                .getStringArrayList(EXTRA_RECORD_IDS)
+                .get(0);
     }
 
     /** Inserts {@link WeightRecord} via test app with the specified data. */
-    public static List<String> insertWeightRecordViaTestApp(
-            Context context, Instant time, double value) {
+    public static String insertWeightRecordViaTestApp(Context context, Instant time, double value) {
+        return insertWeightRecordViaTestApp(context, time, /* clientId= */ null, value);
+    }
+
+    /** Inserts {@link WeightRecord} via test app with the specified data. */
+    public static String insertWeightRecordViaTestApp(
+            Context context, Instant time, String clientId, double value) {
         Bundle bundle = new Bundle();
         bundle.putLongArray(EXTRA_TIMES, new long[] {time.toEpochMilli()});
+        bundle.putStringArray(EXTRA_RECORD_CLIENT_IDS, new String[] {clientId});
         bundle.putDoubleArray(EXTRA_RECORD_VALUES, new double[] {value});
-        android.healthconnect.cts.utils.TestReceiver.reset();
         sendCommandToTestAppReceiver(context, ACTION_INSERT_WEIGHT_RECORDS, bundle);
         return android.healthconnect.cts.utils.TestReceiver.getResult()
-                .getStringArrayList(EXTRA_RECORD_IDS);
+                .getStringArrayList(EXTRA_RECORD_IDS)
+                .get(0);
+    }
+
+    /** Inserts {@link StepsRecord} via test app with the specified data. */
+    public static String insertExerciseRecordViaTestApp(
+            Context context, Instant startTime, Instant endTime, String plannedExerciseSessionId) {
+        Bundle bundle = new Bundle();
+        bundle.putLongArray(EXTRA_TIMES, new long[] {startTime.toEpochMilli()});
+        bundle.putLongArray(EXTRA_END_TIMES, new long[] {endTime.toEpochMilli()});
+        bundle.putString(EXTRA_PLANNED_EXERCISE_SESSION_ID, plannedExerciseSessionId);
+        sendCommandToTestAppReceiver(context, ACTION_INSERT_EXERCISE_RECORD, bundle);
+        return android.healthconnect.cts.utils.TestReceiver.getResult()
+                .getStringArrayList(EXTRA_RECORD_IDS)
+                .get(0);
+    }
+
+    /** Inserts {@link StepsRecord} via test app with the specified data. */
+    public static String insertPlannedExerciseSessionRecordViaTestApp(
+            Context context, Instant startTime, Instant endTime) {
+        Bundle bundle = new Bundle();
+        bundle.putLongArray(EXTRA_TIMES, new long[] {startTime.toEpochMilli()});
+        bundle.putLongArray(EXTRA_END_TIMES, new long[] {endTime.toEpochMilli()});
+        sendCommandToTestAppReceiver(context, ACTION_INSERT_PLANNED_EXERCISE_RECORD, bundle);
+        return android.healthconnect.cts.utils.TestReceiver.getResult()
+                .getStringArrayList(EXTRA_RECORD_IDS)
+                .get(0);
     }
 
     /** Extracts and returns ids of the provided records. */
     public static List<String> getRecordIds(List<? extends Record> records) {
         return records.stream().map(Record::getMetadata).map(Metadata::getId).toList();
+    }
+
+    /**
+     * Helper function to execute a request to create a medical data source and return the inserted
+     * {@link MedicalDataSource} using {@link HealthConnectManager}.
+     */
+    public static MedicalDataSource createMedicalDataSource(CreateMedicalDataSourceRequest request)
+            throws InterruptedException {
+        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
+        getHealthConnectManager()
+                .createMedicalDataSource(request, Executors.newSingleThreadExecutor(), receiver);
+        return receiver.getResponse();
+    }
+
+    /** Helper function to read medical data sources from the DB, using HealthConnectManager. */
+    public static List<MedicalDataSource> getMedicalDataSourcesByIds(List<String> ids)
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+        getHealthConnectManager()
+                .getMedicalDataSources(ids, Executors.newSingleThreadExecutor(), receiver);
+        return receiver.getResponse();
+    }
+
+    /**
+     * Helper function to read medical resources from the DB by a list of {@link MedicalIdFilter},
+     * using HealthConnectManager.
+     */
+    public static List<MedicalResource> readMedicalResourcesByIds(List<MedicalIdFilter> ids)
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        getHealthConnectManager()
+                .readMedicalResources(ids, Executors.newSingleThreadExecutor(), receiver);
+        return receiver.getResponse();
+    }
+
+    /**
+     * Helper function to read medical resources from the DB by a {@link
+     * ReadMedicalResourcesResponse}, using HealthConnectManager.
+     */
+    public static ReadMedicalResourcesResponse readMedicalResourcesByRequest(
+            ReadMedicalResourcesRequest request) throws InterruptedException {
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        getHealthConnectManager()
+                .readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+        return receiver.getResponse();
     }
 
     /**
@@ -1091,6 +1288,35 @@ public final class TestUtils {
             builder.addDataOrigins(getDataOrigin(packageName));
         }
         return builder.build();
+    }
+
+    /** Copies record ids from the one list to another in order. Workaround for b/328228842. */
+    // TODO(b/328228842): Avoid using reflection once we have Builder(Record) constructors
+    public static void copyRecordIdsViaReflection(
+            List<? extends Record> from, List<? extends Record> to) {
+        assertThat(from).hasSize(to.size());
+
+        for (int i = 0; i < from.size(); i++) {
+            copyRecordIdViaReflection(from.get(i), to.get(i));
+        }
+    }
+
+    // TODO(b/328228842): Avoid using reflection once we have Builder(Record) constructors
+    private static void copyRecordIdViaReflection(Record from, Record to) {
+        setRecordIdViaReflection(to.getMetadata(), from.getMetadata().getId());
+    }
+
+    // TODO(b/328228842): Avoid using reflection once we have Builder(Record) constructors
+    private static void setRecordIdViaReflection(Metadata metadata, String id) {
+        try {
+            Field field = Metadata.class.getDeclaredField("mId");
+            boolean isAccessible = field.isAccessible();
+            field.setAccessible(true);
+            field.set(metadata, id);
+            field.setAccessible(isAccessible);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static final class RecordAndIdentifier {
@@ -1173,5 +1399,24 @@ public final class TestUtils {
     private static final class HealthConnectReceiver<T>
             extends TestReceiver<T, HealthConnectException> {}
 
-    private static final class MigrationReceiver extends TestReceiver<Void, MigrationException> {}
+    public static final class MigrationReceiver extends TestReceiver<Void, MigrationException> {}
+
+    /**
+     * A {@link Consumer} that allows throwing checked exceptions from its single abstract method.
+     */
+    @FunctionalInterface
+    @SuppressWarnings("FunctionalInterfaceMethodChanged")
+    public interface ThrowingConsumer<T> extends Consumer<T> {
+        /** Implementations of this method might throw exception. */
+        void acceptOrThrow(T t) throws Exception;
+
+        @Override
+        default void accept(T t) {
+            try {
+                acceptOrThrow(t);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
 }

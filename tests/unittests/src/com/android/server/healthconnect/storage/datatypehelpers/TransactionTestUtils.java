@@ -17,10 +17,15 @@
 package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
+import static android.health.connect.Constants.DELETE;
 import static android.health.connect.datatypes.ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper.PACKAGE_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper.UNIQUE_COLUMN_INFO;
+import static com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper.OPERATION_TYPE_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper.UUIDS_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUIDList;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -28,6 +33,7 @@ import static java.time.Duration.ofMinutes;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.datatypes.BloodPressureRecord;
 import android.health.connect.datatypes.StepsRecord;
@@ -38,9 +44,13 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
 
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
+import com.android.server.healthconnect.storage.utils.WhereClauses;
+
+import com.google.common.collect.ImmutableList;
 
 import java.time.Instant;
 import java.util.List;
@@ -85,6 +95,7 @@ public final class TransactionTestUtils {
                         records,
                         mContext,
                         /* isInsertRequest= */ true,
+                        /* useProvidedUuid= */ false,
                         /* skipPackageNameAndLogs= */ false));
     }
 
@@ -140,6 +151,48 @@ public final class TransactionTestUtils {
                         .setRoute(createExerciseRoute(startTime))
                         .setStartTime(startTime.toEpochMilli())
                         .setEndTime(startTime.plus(ofMinutes(10)).toEpochMilli());
+    }
+
+    /** Inserts one single fake access log. */
+    public void insertAccessLog() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("record_type", "fake_record_type");
+        contentValues.put("app_id", "fake_app_id");
+        contentValues.put("access_time", "fake_access_time");
+        contentValues.put("operation_type", "fake_operation_type");
+        mTransactionManager.insert(
+                new UpsertTableRequest(AccessLogsHelper.TABLE_NAME, contentValues));
+    }
+
+    /** Inserts one single fake change log. */
+    public void insertChangeLog() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("record_type", "fake_record_type");
+        contentValues.put("app_id", "fake_app_id");
+        contentValues.put("uuids", "fake_uuids");
+        contentValues.put("operation_type", "fake_operation_type");
+        mTransactionManager.insert(
+                new UpsertTableRequest(ChangeLogsHelper.TABLE_NAME, contentValues));
+    }
+
+    /** Retrieves all delete change logs from change log table. */
+    public List<UUID> getAllDeletedUuids() {
+        WhereClauses whereClauses =
+                new WhereClauses(AND).addWhereEqualsClause(OPERATION_TYPE_COLUMN_NAME, DELETE + "");
+        ReadTableRequest readChangeLogsRequest =
+                new ReadTableRequest(ChangeLogsHelper.TABLE_NAME).setWhereClause(whereClauses);
+        ImmutableList.Builder<UUID> uuids = ImmutableList.builder();
+        try (Cursor cursor = mTransactionManager.read(readChangeLogsRequest)) {
+            while (cursor.moveToNext()) {
+                uuids.addAll(getCursorUUIDList(cursor, UUIDS_COLUMN_NAME));
+            }
+            return uuids.build();
+        }
+    }
+
+    /** Returns a valid UUID string. */
+    public static String getUUID() {
+        return "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
     }
 
     private static ExerciseRouteInternal createExerciseRoute(Instant startTime) {

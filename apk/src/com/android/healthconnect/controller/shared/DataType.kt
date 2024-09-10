@@ -41,11 +41,13 @@ import android.health.connect.datatypes.MenstruationPeriodRecord
 import android.health.connect.datatypes.NutritionRecord
 import android.health.connect.datatypes.OvulationTestRecord
 import android.health.connect.datatypes.OxygenSaturationRecord
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
 import android.health.connect.datatypes.PowerRecord
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.RespiratoryRateRecord
 import android.health.connect.datatypes.RestingHeartRateRecord
 import android.health.connect.datatypes.SexualActivityRecord
+import android.health.connect.datatypes.SkinTemperatureRecord
 import android.health.connect.datatypes.SleepSessionRecord
 import android.health.connect.datatypes.SpeedRecord
 import android.health.connect.datatypes.StepsCadenceRecord
@@ -94,4 +96,6 @@ enum class DataType(val recordClass: Class<out Record>) {
     BODY_WATER_MASS(BodyWaterMassRecord::class.java),
     INTERMENSTRUAL_BLEEDING(IntermenstrualBleedingRecord::class.java),
     HEART_RATE_VARIABILITY(HeartRateVariabilityRmssdRecord::class.java),
+    SKIN_TEMPERATURE(SkinTemperatureRecord::class.java),
+    PLANNED_EXERCISE(PlannedExerciseSessionRecord::class.java)
 }

@@ -22,9 +22,17 @@ import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.utils.TestUtils
 import androidx.test.uiautomator.By
 import org.junit.Test
+import com.android.compatibility.common.util.DisableAnimationRule
+import com.android.compatibility.common.util.FreezeRotationRule
+import org.junit.Rule
 
 /** CTS test for HealthConnect Manage data screen. */
 class ManageDataFragmentTest : HealthConnectBaseTest() {
+    @get:Rule
+    val disableAnimationRule = DisableAnimationRule()
+
+    @get:Rule
+    val freezeRotationRule = FreezeRotationRule()
 
     companion object {
         private const val THREE_MONTHS = 3 * 30

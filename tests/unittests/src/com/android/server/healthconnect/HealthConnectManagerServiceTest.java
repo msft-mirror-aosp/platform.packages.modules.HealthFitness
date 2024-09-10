@@ -59,6 +59,8 @@ import org.mockito.quality.Strictness;
 public class HealthConnectManagerServiceTest {
 
     private static final String HEALTH_CONNECT_DAILY_JOB_NAMESPACE = "HEALTH_CONNECT_DAILY_JOB";
+    private static final String HEALTH_CONNECT_IMPORT_EXPORT_JOBS_NAMESPACE =
+            "HEALTH_CONNECT_IMPORT_EXPORT_JOBS";
     private static final String ANDROID_SERVER_PACKAGE_NAME = "com.android.server";
 
     @Rule
@@ -90,6 +92,8 @@ public class HealthConnectManagerServiceTest {
         when(mJobScheduler.forNamespace(HEALTH_CONNECT_DAILY_JOB_NAMESPACE))
                 .thenReturn(mJobScheduler);
         when(mJobScheduler.forNamespace(MigrationStateChangeJob.class.toString()))
+                .thenReturn(mJobScheduler);
+        when(mJobScheduler.forNamespace(HEALTH_CONNECT_IMPORT_EXPORT_JOBS_NAMESPACE))
                 .thenReturn(mJobScheduler);
         PermissionGroupInfo permissionGroupInfo = new PermissionGroupInfo();
         permissionGroupInfo.packageName = "test";
@@ -126,7 +130,7 @@ public class HealthConnectManagerServiceTest {
                 .thenReturn(mHealthDataCategoryPriorityHelper);
         doNothing()
                 .when(mHealthDataCategoryPriorityHelper)
-                .maybeAddInactiveAppsToPriorityList(mContext);
+                .maybeAddContributingAppsToPriorityList(mContext);
         mHealthConnectManagerService = new HealthConnectManagerService(mContext);
     }
 
@@ -154,6 +158,6 @@ public class HealthConnectManagerServiceTest {
         verify(mJobScheduler, timeout(5000).times(1)).schedule(any());
         ExtendedMockito.verify(
                 () -> BackupRestore.BackupRestoreJobService.cancelAllJobs(eq(mContext)));
-        verify(mHealthDataCategoryPriorityHelper).maybeAddInactiveAppsToPriorityList(any());
+        verify(mHealthDataCategoryPriorityHelper).maybeAddContributingAppsToPriorityList(any());
     }
 }

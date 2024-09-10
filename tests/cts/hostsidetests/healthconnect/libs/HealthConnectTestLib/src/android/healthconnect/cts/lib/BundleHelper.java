@@ -34,6 +34,7 @@ import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.InstantRecord;
 import android.health.connect.datatypes.IntervalRecord;
+import android.health.connect.datatypes.MenstruationPeriodRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.SleepSessionRecord;
@@ -430,6 +431,8 @@ public final class BundleHelper {
             values = getDistanceRecordValues(distanceRecord);
         } else if (record instanceof TotalCaloriesBurnedRecord totalCaloriesBurnedRecord) {
             values = getTotalCaloriesBurnedRecord(totalCaloriesBurnedRecord);
+        } else if (record instanceof MenstruationPeriodRecord) {
+            values = new Bundle();
         } else {
             throw new IllegalArgumentException(
                     "Unsupported record type: " + record.getClass().getName());
@@ -488,6 +491,8 @@ public final class BundleHelper {
         } else if (Objects.equals(recordClassName, TotalCaloriesBurnedRecord.class.getName())) {
             return createTotalCaloriesBurnedRecord(
                     metadata, startTime, endTime, startZoneOffset, endZoneOffset, values);
+        } else if (Objects.equals(recordClassName, MenstruationPeriodRecord.class.getName())) {
+            return new MenstruationPeriodRecord.Builder(metadata, startTime, endTime).build();
         }
 
         throw new IllegalArgumentException("Unsupported record type: " + recordClassName);

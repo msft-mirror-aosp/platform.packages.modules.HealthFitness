@@ -37,7 +37,6 @@ import com.android.healthconnect.controller.R
 class HealthConnectSearchIndexablesProvider : SearchIndexablesProvider() {
 
     private val INDEX_KEY_HOME = "health_connect_settings_key_home"
-    private val INDEX_KEY_PERMISSIONS = "health_connect_settings_key_permissions"
     private val INDEX_KEY_DATA = "health_connect_settings_key_data"
 
     override fun onCreate(): Boolean {
@@ -47,7 +46,6 @@ class HealthConnectSearchIndexablesProvider : SearchIndexablesProvider() {
     override fun queryRawData(projection: Array<out String>?): Cursor {
         val cursor = MatrixCursor(INDEXABLES_RAW_COLUMNS)
         cursor.addRow(createHomeIndex())
-        cursor.addRow(createPermissionsIndex())
         cursor.addRow(createDataAccessIndex())
         return cursor
     }
@@ -62,19 +60,6 @@ class HealthConnectSearchIndexablesProvider : SearchIndexablesProvider() {
         homeIndex[COLUMN_INDEX_RAW_INTENT_ACTION] = ACTION_HEALTH_HOME_SETTINGS
         homeIndex[COLUMN_INDEX_RAW_INTENT_TARGET_PACKAGE] = context?.packageName
         return homeIndex
-    }
-
-    private fun createPermissionsIndex(): Array<String?> {
-        val permissionsIndex = arrayOfNulls<String>(INDEXABLES_RAW_COLUMNS.size)
-        permissionsIndex[COLUMN_INDEX_RAW_TITLE] = context?.getString(R.string.connected_apps_title)
-        permissionsIndex[COLUMN_INDEX_RAW_SCREEN_TITLE] =
-            context?.getString(R.string.search_breadcrumbs_permissions)
-        permissionsIndex[COLUMN_INDEX_RAW_KEYWORDS] =
-            context?.getString(R.string.search_keywords_permissions)
-        permissionsIndex[COLUMN_INDEX_RAW_KEY] = INDEX_KEY_PERMISSIONS
-        permissionsIndex[COLUMN_INDEX_RAW_INTENT_ACTION] = ACTION_MANAGE_HEALTH_PERMISSIONS
-        permissionsIndex[COLUMN_INDEX_RAW_INTENT_TARGET_PACKAGE] = context?.packageName
-        return permissionsIndex
     }
 
     private fun createDataAccessIndex(): Array<String?> {

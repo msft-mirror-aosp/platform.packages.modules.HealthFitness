@@ -133,8 +133,7 @@ public class DataPermissionEnforcer {
 
         for (RecordInternal<?> recordInternal : recordInternals) {
             int recordTypeId = recordInternal.getRecordType();
-            RecordHelper<?> recordHelper =
-                    RecordHelperProvider.getInstance().getRecordHelper(recordTypeId);
+            RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordTypeId);
 
             if (!recordTypeIdToExtraPerms.containsKey(recordTypeId)) {
                 recordTypeIdToExtraPerms.put(recordTypeId, new ArraySet<>());
@@ -194,9 +193,8 @@ public class DataPermissionEnforcer {
      */
     public Set<String> collectGrantedExtraReadPermissions(
             Set<Integer> recordTypeIds, AttributionSource attributionSource) {
-        RecordHelperProvider recordHelperProvider = RecordHelperProvider.getInstance();
         return recordTypeIds.stream()
-                .map(recordHelperProvider::getRecordHelper)
+                .map(RecordHelperProvider::getRecordHelper)
                 .flatMap(recordHelper -> recordHelper.getExtraReadPermissions().stream())
                 .distinct()
                 .filter(permission -> isPermissionGranted(permission, attributionSource))
@@ -208,8 +206,7 @@ public class DataPermissionEnforcer {
         Map<String, Boolean> mapping = new ArrayMap<>();
         for (RecordInternal<?> recordInternal : recordInternals) {
             int recordTypeId = recordInternal.getRecordType();
-            RecordHelper<?> recordHelper =
-                    RecordHelperProvider.getInstance().getRecordHelper(recordTypeId);
+            RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordTypeId);
 
             for (String permName : recordHelper.getExtraWritePermissions()) {
                 mapping.put(permName, isPermissionGranted(permName, attributionSource));

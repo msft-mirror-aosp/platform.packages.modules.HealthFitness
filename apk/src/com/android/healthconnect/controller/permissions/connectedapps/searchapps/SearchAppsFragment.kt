@@ -138,6 +138,7 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
         hideTitleFromCollapsingToolbarLayout()
         viewModel.connectedApps.observe(viewLifecycleOwner) { connectedApps ->
             emptySearchResultsPreference?.isVisible = connectedApps.isEmpty()
+            emptySearchResultsPreference?.isSelectable = false
             topIntroPreference?.isVisible = connectedApps.isNotEmpty()
 
             val connectedAppsGroup = connectedApps.groupBy { it.status }

@@ -16,10 +16,13 @@
 
 package com.android.server.healthconnect.storage.request;
 
+import android.annotation.NonNull;
 import android.util.Pair;
 import android.util.Slog;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Creates a alter table request and alter statements for it.
@@ -33,22 +36,43 @@ public final class AlterTableRequest {
     private final String mTableName;
     private final List<Pair<String, String>> mColumnInfo;
 
+    private final Map<String, Pair<String, String>> mForeignKeyConstraints = new HashMap<>();
+
     public AlterTableRequest(String tableName, List<Pair<String, String>> columnInfo) {
         mTableName = tableName;
         mColumnInfo = columnInfo;
+    }
+
+    /**
+     * Adds a foreign key constraint between one column and another. Deletion behavior is to set
+     * dangling references to null.
+     */
+    @NonNull
+    public AlterTableRequest addForeignKeyConstraint(
+            String column, String referencedTable, String referencedColumn) {
+        mForeignKeyConstraints.put(column, new Pair<>(referencedTable, referencedColumn));
+        return this;
     }
 
     /** Returns command for alter table request to add new columns */
     public String getAlterTableAddColumnsCommand() {
         final StringBuilder builder = new StringBuilder(ALTER_TABLE_COMMAND);
         builder.append(mTableName);
-        mColumnInfo.forEach(
-                (columnInfo) ->
-                        builder.append(ADD_COLUMN_COMMAND)
-                                .append(columnInfo.first)
-                                .append(" ")
-                                .append(columnInfo.second)
-                                .append(", "));
+        for (int i = 0; i < mColumnInfo.size(); i++) {
+            String columnName = mColumnInfo.get(i).first;
+            String columnType = mColumnInfo.get(i).second;
+            builder.append(ADD_COLUMN_COMMAND).append(columnName).append(" ").append(columnType);
+            if (mForeignKeyConstraints.containsKey(columnName)) {
+                builder.append(" ");
+                builder.append("REFERENCES ");
+                builder.append(mForeignKeyConstraints.get(columnName).first);
+                builder.append("(");
+                builder.append(mForeignKeyConstraints.get(columnName).second);
+                builder.append(")");
+                builder.append(" ON DELETE SET NULL");
+            }
+            builder.append(", ");
+        }
         builder.setLength(builder.length() - 2); // Remove the last 2 char i.e. ", "
         Slog.d(TAG, "Alter table: " + builder);
 

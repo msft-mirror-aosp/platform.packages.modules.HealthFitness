@@ -16,6 +16,7 @@
 
 package android.health.connect.internal.datatypes;
 
+import android.annotation.NonNull;
 import android.health.connect.datatypes.ExerciseCompletionGoal;
 import android.health.connect.datatypes.units.Energy;
 import android.health.connect.datatypes.units.Length;
@@ -31,12 +32,13 @@ import java.time.Duration;
 public abstract class ExerciseCompletionGoalInternal {
 
     /** Convert to {@link ExerciseCompletionGoal}. */
+    @NonNull
     public abstract ExerciseCompletionGoal toExternalObject();
 
     /** Subclass identifier used during serialization/deserialization. */
-    abstract int getTypeId();
+    public abstract int getTypeId();
 
-    abstract void writeFieldsToParcel(Parcel parcel);
+    abstract void writeFieldsToParcel(@NonNull Parcel parcel);
 
     /** Convert from external representation. */
     public static ExerciseCompletionGoalInternal fromExternalObject(
@@ -45,6 +47,10 @@ public abstract class ExerciseCompletionGoalInternal {
             ExerciseCompletionGoal.DistanceGoal goal =
                     (ExerciseCompletionGoal.DistanceGoal) externalObject;
             return new DistanceGoalInternal(goal.getDistance());
+        } else if (externalObject instanceof ExerciseCompletionGoal.DistanceWithVariableRestGoal) {
+            ExerciseCompletionGoal.DistanceWithVariableRestGoal goal =
+                    (ExerciseCompletionGoal.DistanceWithVariableRestGoal) externalObject;
+            return new DistanceWithVariableRestGoalInternal(goal.getDistance(), goal.getDuration());
         } else if (externalObject instanceof ExerciseCompletionGoal.StepsGoal) {
             ExerciseCompletionGoal.StepsGoal goal =
                     (ExerciseCompletionGoal.StepsGoal) externalObject;
@@ -73,13 +79,14 @@ public abstract class ExerciseCompletionGoalInternal {
     }
 
     /** Serialize to parcel. */
-    public void writeToParcel(Parcel parcel) {
+    public void writeToParcel(@NonNull Parcel parcel) {
         parcel.writeInt(getTypeId());
         writeFieldsToParcel(parcel);
     }
 
     /** Deserialize from parcel. */
-    public static ExerciseCompletionGoalInternal readFromParcel(Parcel parcel) {
+    @NonNull
+    public static ExerciseCompletionGoalInternal readFromParcel(@NonNull Parcel parcel) {
         int goalTypeId = parcel.readInt();
         switch (goalTypeId) {
             case DistanceGoalInternal.DISTANCE_GOAL_TYPE_ID:
@@ -94,6 +101,8 @@ public abstract class ExerciseCompletionGoalInternal {
                 return TotalCaloriesBurnedGoalInternal.readFieldsFromParcel(parcel);
             case ActiveCaloriesBurnedGoalInternal.ACTIVE_CALORIES_BURNED_GOAL_TYPE_ID:
                 return ActiveCaloriesBurnedGoalInternal.readFieldsFromParcel(parcel);
+            case DistanceWithVariableRestGoalInternal.DISTANCE_WITH_VARIABLE_REST_GOAL_TYPE_ID:
+                return DistanceWithVariableRestGoalInternal.readFieldsFromParcel(parcel);
             case UnspecifiedGoalInternal.UNSPECIFIED_GOAL_TYPE_ID:
                 return UnspecifiedGoalInternal.INSTANCE;
             case UnknownGoalInternal.UNKNOWN_GOAL_TYPE_ID:
@@ -105,49 +114,53 @@ public abstract class ExerciseCompletionGoalInternal {
     }
 
     public static final class DistanceGoalInternal extends ExerciseCompletionGoalInternal {
-        private static final int DISTANCE_GOAL_TYPE_ID = 2;
+        public static final int DISTANCE_GOAL_TYPE_ID = 2;
 
         @Override
-        void writeFieldsToParcel(Parcel parcel) {
+        void writeFieldsToParcel(@NonNull Parcel parcel) {
             parcel.writeDouble(this.mDistance.getInMeters());
         }
 
         /** Read from parcel. */
-        public static DistanceGoalInternal readFieldsFromParcel(Parcel parcel) {
+        @NonNull
+        public static DistanceGoalInternal readFieldsFromParcel(@NonNull Parcel parcel) {
             return new DistanceGoalInternal(Length.fromMeters(parcel.readDouble()));
         }
 
         private final Length mDistance;
 
-        public DistanceGoalInternal(Length distance) {
+        public DistanceGoalInternal(@NonNull Length distance) {
             this.mDistance = distance;
         }
 
+        @NonNull
         public Length getDistance() {
             return mDistance;
         }
 
         @Override
+        @NonNull
         public ExerciseCompletionGoal toExternalObject() {
             return new ExerciseCompletionGoal.DistanceGoal(mDistance);
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return DISTANCE_GOAL_TYPE_ID;
         }
     }
 
     public static final class StepsGoalInternal extends ExerciseCompletionGoalInternal {
-        private static final int STEPS_GOAL_TYPE_ID = 3;
+        public static final int STEPS_GOAL_TYPE_ID = 3;
 
         @Override
-        void writeFieldsToParcel(Parcel parcel) {
+        void writeFieldsToParcel(@NonNull Parcel parcel) {
             parcel.writeInt(this.mSteps);
         }
 
         /** Read from parcel. */
-        public static StepsGoalInternal readFieldsFromParcel(Parcel parcel) {
+        @NonNull
+        public static StepsGoalInternal readFieldsFromParcel(@NonNull Parcel parcel) {
             return new StepsGoalInternal(parcel.readInt());
         }
 
@@ -162,60 +175,65 @@ public abstract class ExerciseCompletionGoalInternal {
         }
 
         @Override
+        @NonNull
         public ExerciseCompletionGoal toExternalObject() {
             return new ExerciseCompletionGoal.StepsGoal(mSteps);
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return STEPS_GOAL_TYPE_ID;
         }
     }
 
     public static final class DurationGoalInternal extends ExerciseCompletionGoalInternal {
-        private static final int DURATION_GOAL_TYPE_ID = 4;
+        public static final int DURATION_GOAL_TYPE_ID = 4;
 
         @Override
-        void writeFieldsToParcel(Parcel parcel) {
+        void writeFieldsToParcel(@NonNull Parcel parcel) {
             parcel.writeLong(this.mDuration.toMillis());
         }
 
         /** Read from parcel. */
-        public static DurationGoalInternal readFieldsFromParcel(Parcel parcel) {
+        @NonNull
+        public static DurationGoalInternal readFieldsFromParcel(@NonNull Parcel parcel) {
             return new DurationGoalInternal(Duration.ofMillis(parcel.readLong()));
         }
 
         private final Duration mDuration;
 
-        public DurationGoalInternal(Duration duration) {
+        public DurationGoalInternal(@NonNull Duration duration) {
             this.mDuration = duration;
         }
 
+        @NonNull
         public Duration getDuration() {
             return mDuration;
         }
 
         @Override
+        @NonNull
         public ExerciseCompletionGoal toExternalObject() {
             return new ExerciseCompletionGoal.DurationGoal(mDuration);
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return DURATION_GOAL_TYPE_ID;
         }
     }
 
     public static final class RepetitionsGoalInternal extends ExerciseCompletionGoalInternal {
-        private static final int REPETITIONS_GOAL_TYPE_ID = 5;
+        public static final int REPETITIONS_GOAL_TYPE_ID = 5;
 
         @Override
-        void writeFieldsToParcel(Parcel parcel) {
+        void writeFieldsToParcel(@NonNull Parcel parcel) {
             parcel.writeInt(this.mReps);
         }
 
         /** Read from parcel. */
-        public static RepetitionsGoalInternal readFieldsFromParcel(Parcel parcel) {
+        @NonNull
+        public static RepetitionsGoalInternal readFieldsFromParcel(@NonNull Parcel parcel) {
             return new RepetitionsGoalInternal(parcel.readInt());
         }
 
@@ -230,36 +248,39 @@ public abstract class ExerciseCompletionGoalInternal {
         }
 
         @Override
+        @NonNull
         public ExerciseCompletionGoal toExternalObject() {
             return new ExerciseCompletionGoal.RepetitionsGoal(mReps);
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return REPETITIONS_GOAL_TYPE_ID;
         }
     }
 
     public static final class TotalCaloriesBurnedGoalInternal
             extends ExerciseCompletionGoalInternal {
-        private static final int TOTAL_CALORIES_BURNED_GOAL_TYPE_ID = 6;
+        public static final int TOTAL_CALORIES_BURNED_GOAL_TYPE_ID = 6;
 
         @Override
-        void writeFieldsToParcel(Parcel parcel) {
+        void writeFieldsToParcel(@NonNull Parcel parcel) {
             parcel.writeDouble(this.mTotalCalories.getInCalories());
         }
 
         /** Read from parcel. */
-        public static TotalCaloriesBurnedGoalInternal readFieldsFromParcel(Parcel parcel) {
+        @NonNull
+        public static TotalCaloriesBurnedGoalInternal readFieldsFromParcel(@NonNull Parcel parcel) {
             return new TotalCaloriesBurnedGoalInternal(Energy.fromCalories(parcel.readDouble()));
         }
 
         private final Energy mTotalCalories;
 
-        public TotalCaloriesBurnedGoalInternal(Energy totalCalories) {
+        public TotalCaloriesBurnedGoalInternal(@NonNull Energy totalCalories) {
             this.mTotalCalories = totalCalories;
         }
 
+        @NonNull
         public Energy getTotalCalories() {
             return mTotalCalories;
         }
@@ -270,43 +291,97 @@ public abstract class ExerciseCompletionGoalInternal {
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return TOTAL_CALORIES_BURNED_GOAL_TYPE_ID;
         }
     }
 
     public static final class ActiveCaloriesBurnedGoalInternal
             extends ExerciseCompletionGoalInternal {
-        private static final int ACTIVE_CALORIES_BURNED_GOAL_TYPE_ID = 7;
+        public static final int ACTIVE_CALORIES_BURNED_GOAL_TYPE_ID = 7;
 
         @Override
-        void writeFieldsToParcel(Parcel parcel) {
+        void writeFieldsToParcel(@NonNull Parcel parcel) {
             parcel.writeDouble(this.mActiveCalories.getInCalories());
         }
 
         /** Read from parcel. */
-        public static ActiveCaloriesBurnedGoalInternal readFieldsFromParcel(Parcel parcel) {
+        @NonNull
+        public static ActiveCaloriesBurnedGoalInternal readFieldsFromParcel(
+                @NonNull Parcel parcel) {
             return new ActiveCaloriesBurnedGoalInternal(Energy.fromCalories(parcel.readDouble()));
         }
 
         private final Energy mActiveCalories;
 
-        public ActiveCaloriesBurnedGoalInternal(Energy activeCalories) {
+        public ActiveCaloriesBurnedGoalInternal(@NonNull Energy activeCalories) {
             this.mActiveCalories = activeCalories;
         }
 
+        @NonNull
         public Energy getActiveCalories() {
             return mActiveCalories;
         }
 
         @Override
+        @NonNull
         public ExerciseCompletionGoal toExternalObject() {
             return new ExerciseCompletionGoal.ActiveCaloriesBurnedGoal(mActiveCalories);
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return ACTIVE_CALORIES_BURNED_GOAL_TYPE_ID;
+        }
+    }
+
+    public static final class DistanceWithVariableRestGoalInternal
+            extends ExerciseCompletionGoalInternal {
+        public static final int DISTANCE_WITH_VARIABLE_REST_GOAL_TYPE_ID = 8;
+
+        @Override
+        void writeFieldsToParcel(@NonNull Parcel parcel) {
+            parcel.writeDouble(this.mDistance.getInMeters());
+            parcel.writeLong(this.mDuration.toMillis());
+        }
+
+        /** Read from parcel. */
+        @NonNull
+        public static DistanceWithVariableRestGoalInternal readFieldsFromParcel(
+                @NonNull Parcel parcel) {
+            return new DistanceWithVariableRestGoalInternal(
+                    Length.fromMeters(parcel.readDouble()), Duration.ofMillis(parcel.readLong()));
+        }
+
+        private final Length mDistance;
+
+        private final Duration mDuration;
+
+        public DistanceWithVariableRestGoalInternal(
+                @NonNull Length distance, @NonNull Duration duration) {
+            this.mDistance = distance;
+            this.mDuration = duration;
+        }
+
+        @NonNull
+        public Length getDistance() {
+            return mDistance;
+        }
+
+        @NonNull
+        public Duration getDuration() {
+            return mDuration;
+        }
+
+        @Override
+        @NonNull
+        public ExerciseCompletionGoal toExternalObject() {
+            return new ExerciseCompletionGoal.DistanceWithVariableRestGoal(mDistance, mDuration);
+        }
+
+        @Override
+        public int getTypeId() {
+            return DISTANCE_WITH_VARIABLE_REST_GOAL_TYPE_ID;
         }
     }
 
@@ -316,24 +391,25 @@ public abstract class ExerciseCompletionGoalInternal {
      * the current (older) version.
      */
     public static final class UnknownGoalInternal extends ExerciseCompletionGoalInternal {
-        static final int UNKNOWN_GOAL_TYPE_ID = 0;
+        public static final int UNKNOWN_GOAL_TYPE_ID = 0;
 
         public static final UnknownGoalInternal INSTANCE = new UnknownGoalInternal();
 
         @Override
-        void writeFieldsToParcel(Parcel parcel) {
+        void writeFieldsToParcel(@NonNull Parcel parcel) {
             // No fields to write.
         }
 
         UnknownGoalInternal() {}
 
         @Override
+        @NonNull
         public ExerciseCompletionGoal toExternalObject() {
             return ExerciseCompletionGoal.UnknownGoal.INSTANCE;
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return UNKNOWN_GOAL_TYPE_ID;
         }
     }
@@ -343,24 +419,25 @@ public abstract class ExerciseCompletionGoalInternal {
      * the user to determine when the goal is complete.
      */
     public static final class UnspecifiedGoalInternal extends ExerciseCompletionGoalInternal {
-        static final int UNSPECIFIED_GOAL_TYPE_ID = 1;
+        public static final int UNSPECIFIED_GOAL_TYPE_ID = 1;
 
         public static final UnspecifiedGoalInternal INSTANCE = new UnspecifiedGoalInternal();
 
         @Override
-        void writeFieldsToParcel(Parcel parcel) {
+        void writeFieldsToParcel(@NonNull Parcel parcel) {
             // No fields to write.
         }
 
         UnspecifiedGoalInternal() {}
 
         @Override
+        @NonNull
         public ExerciseCompletionGoal toExternalObject() {
             return ExerciseCompletionGoal.UnspecifiedGoal.INSTANCE;
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return UNSPECIFIED_GOAL_TYPE_ID;
         }
     }

@@ -16,6 +16,7 @@
 package com.android.healthconnect.testapps.toolbox.utils
 
 import android.content.Context
+import android.content.Intent
 import android.health.connect.HealthConnectManager
 import android.health.connect.InsertRecordsResponse
 import android.health.connect.ReadRecordsRequest
@@ -29,11 +30,14 @@ import android.health.connect.datatypes.Record
 import android.os.Build.MANUFACTURER
 import android.os.Build.MODEL
 import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import androidx.core.os.asOutcomeReceiver
+import com.android.healthconnect.testapps.toolbox.R
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
 import kotlinx.coroutines.suspendCancellableCoroutine
+import java.io.Serializable
 
 class GeneralUtils {
 
@@ -133,6 +137,26 @@ class GeneralUtils {
                     .records
             Log.d("READ_RECORDS", "Read ${records.size} records")
             return records
+        }
+
+        inline fun <reified T> Context.requireSystemService(): T =
+            requireNotNull(getSystemService(T::class.java))
+
+        fun Intent.requireStringExtra(name: String): String =
+            requireNotNull(getStringExtra(name))
+
+        fun Intent.requireByteArrayExtra(name: String): ByteArray =
+            requireNotNull(getByteArrayExtra(name))
+
+        inline fun <reified T : Serializable> Intent.requireSerializable(name: String): T =
+            requireNotNull(getSerializableExtra(name, T::class.java))
+
+        fun Context.showMessageDialog(text: String) {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.app_label)
+                .setNegativeButton(android.R.string.cancel, null)
+                .setMessage(text)
+                .show()
         }
     }
 }

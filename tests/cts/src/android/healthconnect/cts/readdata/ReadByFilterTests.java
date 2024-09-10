@@ -119,8 +119,7 @@ public class ReadByFilterTests {
     public void filterByDataOrigin_dataOfOtherOriginsExcluded() throws Exception {
         Instant startTime = Instant.now().minus(1, DAYS);
         String id =
-                insertStepsRecordViaTestApp(mContext, startTime, startTime.plusMillis(1000), 50)
-                        .get(0);
+                insertStepsRecordViaTestApp(mContext, startTime, startTime.plusMillis(1000), 50);
         insertRecords(
                 List.of(
                         getStepsRecord(

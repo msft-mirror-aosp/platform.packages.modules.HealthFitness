@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setTitle(R.string.app_label)
+        title = packageManager.getApplicationLabel(applicationInfo)
     }
 
     override fun onBackPressed() {

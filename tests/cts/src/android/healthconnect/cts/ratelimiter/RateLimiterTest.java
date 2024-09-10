@@ -77,9 +77,10 @@ public class RateLimiterTest {
     public static final String ENABLE_RATE_LIMITER_FLAG = "enable_rate_limiter";
     private final UiAutomation mUiAutomation =
             InstrumentationRegistry.getInstrumentation().getUiAutomation();
-    private final boolean mRateLimiterFlagValue = getRateLimiterFlagValue();
 
     @Rule public ExpectedException exception = ExpectedException.none();
+
+    private int mLimitsAdjustmentForTesting = 1;
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -89,17 +90,15 @@ public class RateLimiterTest {
     @Before
     public void setUp() throws InterruptedException {
         TestUtils.deleteAllStagedRemoteData();
-        if (!mRateLimiterFlagValue) {
-            setEnableRateLimiterFlag(true);
+        if (TestUtils.setLowerRateLimitsForTesting(true)) {
+            mLimitsAdjustmentForTesting = 10;
         }
     }
 
     @After
     public void tearDown() throws InterruptedException {
         TestUtils.deleteAllStagedRemoteData();
-        if (!mRateLimiterFlagValue) {
-            setEnableRateLimiterFlag(false);
-        }
+        TestUtils.setLowerRateLimitsForTesting(false);
     }
 
     @Test
@@ -111,40 +110,23 @@ public class RateLimiterTest {
     public void testTryAcquireApiCallQuota_readCallsInLimit() throws InterruptedException {
         List<Record> testRecord = List.of(getCompleteStepsRecord());
 
-        tryAcquireCallQuotaNTimesForRead(testRecord, TestUtils.insertRecords(testRecord));
+        tryAcquireCallQuotaNTimesForRead(
+                testRecord, TestUtils.insertRecords(testRecord), MAX_FOREGROUND_READ_CALL_15M);
     }
 
     @Test
     @ApiTest(apis = {"android.health.connect#insertRecords"})
-    public void testTryAcquireApiCallQuota_writeLimitExceeded_flagEnabled()
-            throws InterruptedException {
+    public void testTryAcquireApiCallQuota_writeLimitExceeded() throws InterruptedException {
         exception.expect(HealthConnectException.class);
         exception.expectMessage(containsString("API call quota exceeded"));
         exceedWriteQuota();
     }
 
     @Test
-    @ApiTest(apis = {"android.health.connect#insertRecords"})
-    public void testTryAcquireApiCallQuota_writeLimitExceeded_flagDisabled()
-            throws InterruptedException {
-        setEnableRateLimiterFlag(false);
-        exceedWriteQuota();
-    }
-
-    @Test
     @ApiTest(apis = {"android.health.connect#readRecords"})
-    public void testTryAcquireApiCallQuota_readLimitExceeded_flagEnabled()
-            throws InterruptedException {
+    public void testTryAcquireApiCallQuota_readLimitExceeded() throws InterruptedException {
         exception.expect(HealthConnectException.class);
         exception.expectMessage(containsString("API call quota exceeded"));
-        exceedReadQuota();
-    }
-
-    @Test
-    @ApiTest(apis = {"android.health.connect#readRecords"})
-    public void testTryAcquireApiCallQuota_readLimitExceeded_flagDisabled()
-            throws InterruptedException {
-        setEnableRateLimiterFlag(false);
         exceedReadQuota();
     }
 
@@ -188,8 +170,9 @@ public class RateLimiterTest {
 
         HeartRateRecord.HeartRateSample heartRateRecord =
                 new HeartRateRecord.HeartRateSample(10, Instant.now().plusMillis(100));
+        int nCopies = 85000 / mLimitsAdjustmentForTesting;
         ArrayList<HeartRateRecord.HeartRateSample> heartRateRecords =
-                new ArrayList<>(Collections.nCopies(85000, heartRateRecord));
+                new ArrayList<>(Collections.nCopies(nCopies, heartRateRecord));
 
         HeartRateRecord testHeartRateRecord =
                 new HeartRateRecord.Builder(
@@ -203,7 +186,8 @@ public class RateLimiterTest {
 
     private void exceedRecordMemoryRollingQuotaBackgroundLimit() throws InterruptedException {
         List<Record> testRecord = Collections.nCopies(350, getCompleteStepsRecord());
-        for (int i = 0; i < 1000; i++) {
+        int nTimes = 1000 / mLimitsAdjustmentForTesting;
+        for (int i = 0; i < nTimes; i++) {
             TestUtils.insertRecords(testRecord);
         }
     }
@@ -237,7 +221,7 @@ public class RateLimiterTest {
         List<Record> testRecord = Arrays.asList(getCompleteStepsRecord());
 
         List<Record> insertedRecords = TestUtils.insertRecords(testRecord);
-        tryAcquireCallQuotaNTimesForRead(testRecord, insertedRecords);
+        tryAcquireCallQuotaNTimesForRead(testRecord, insertedRecords, MAX_FOREGROUND_READ_CALL_15M);
         Instant endTime = Instant.now();
         float quotaAcquired =
                 getQuotaAcquired(startTime, endTime, WINDOW_15M, MAX_FOREGROUND_READ_CALL_15M);
@@ -263,17 +247,18 @@ public class RateLimiterTest {
      * ChangeLogToken, ChangeLog, Read, and Aggregate APIs.
      */
     private void tryAcquireCallQuotaNTimesForRead(
-            List<Record> testRecord, List<Record> insertedRecords) throws InterruptedException {
+            List<Record> testRecord, List<Record> insertedRecords, int nTimes)
+            throws InterruptedException {
+        nTimes = nTimes / mLimitsAdjustmentForTesting;
         Context context = ApplicationProvider.getApplicationContext();
-        // 200 calls.
-        for (int i = 0; i < 100; i++) {
+
+        // Each getChangelog is 2 reads.
+        int changelogCalls = nTimes / 4;
+        for (int i = 0; i < changelogCalls; i++) {
             getChangeLog(context);
         }
 
-        for (int i = 0; i < MAX_FOREGROUND_READ_CALL_15M - 300; i++) {
-            readStepsRecordUsingIds(insertedRecords);
-        }
-
+        int aggregateCalls = nTimes / 4;
         AggregateRecordsRequest<Long> aggregateRecordsRequest =
                 new AggregateRecordsRequest.Builder<Long>(
                                 new TimeInstantRangeFilter.Builder()
@@ -282,9 +267,12 @@ public class RateLimiterTest {
                                         .build())
                         .addAggregationType(STEPS_COUNT_TOTAL)
                         .build();
-        // 100 calls.
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < aggregateCalls; i++) {
             TestUtils.getAggregateResponse(aggregateRecordsRequest, testRecord);
+        }
+
+        for (int i = 0; i < nTimes - aggregateCalls - 2 * changelogCalls; i++) {
+            readStepsRecordUsingIds(insertedRecords);
         }
     }
 
@@ -313,6 +301,7 @@ public class RateLimiterTest {
      * quota is used by MultiAppTestUtils.verifyDeleteRecords.
      */
     private void tryAcquireCallQuotaNTimesForWrite(int nTimes) throws InterruptedException {
+        nTimes = nTimes / mLimitsAdjustmentForTesting;
         List<Record> testRecord = Arrays.asList(getCompleteStepsRecord());
 
         List<Record> insertedRecords = List.of();
@@ -348,19 +337,6 @@ public class RateLimiterTest {
                 new ReadRecordsRequestUsingIds.Builder<>(StepsRecord.class);
         recordList.forEach(v -> request.addId(v.getMetadata().getId()));
         TestUtils.readRecords(request.build());
-    }
-
-    private boolean getRateLimiterFlagValue() {
-        mUiAutomation.adoptShellPermissionIdentity("android.permission.READ_DEVICE_CONFIG");
-        DeviceConfig.Properties properties =
-                DeviceConfig.getProperties(
-                        DeviceConfig.NAMESPACE_HEALTH_FITNESS, ENABLE_RATE_LIMITER_FLAG);
-        boolean flagValue = true;
-        if (properties.getKeyset().contains(ENABLE_RATE_LIMITER_FLAG)) {
-            flagValue = properties.getBoolean(ENABLE_RATE_LIMITER_FLAG, true);
-        }
-        mUiAutomation.dropShellPermissionIdentity();
-        return flagValue;
     }
 
     private void setEnableRateLimiterFlag(boolean flag) throws InterruptedException {
