@@ -20,7 +20,7 @@ import static android.health.connect.datatypes.Device.DEVICE_TYPE_FITNESS_BAND;
 import static android.health.connect.datatypes.Metadata.RECORDING_METHOD_MANUAL_ENTRY;
 import static android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_SESSION_TYPE_BREATHING;
 import static android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_SESSION_TYPE_MEDITATION;
-import static android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_SESSION_TYPE_YOGA;
+import static android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_SESSION_TYPE_OTHER;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -36,8 +36,13 @@ import android.health.connect.datatypes.SkinTemperatureRecord;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
+import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.android.healthfitness.flags.Flags;
 
 import org.junit.After;
 import org.junit.Before;
@@ -50,7 +55,12 @@ import java.time.ZoneOffset;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
+@RequiresFlagsEnabled(Flags.FLAG_MINDFULNESS)
 public class MindfulnessSessionRecordTest {
+
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
+
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
@@ -97,7 +107,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord record =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_YOGA)
+                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
                         .setTitle("title")
                         .setNotes("notes")
                         .setStartZoneOffset(startZoneOffset)
@@ -110,7 +120,7 @@ public class MindfulnessSessionRecordTest {
         assertThat(record.getEndTime()).isEqualTo(endTime);
         assertThat(record.getStartZoneOffset()).isEqualTo(startZoneOffset);
         assertThat(record.getEndZoneOffset()).isEqualTo(endZoneOffset);
-        assertThat(record.getMindfulnessSessionType()).isEqualTo(MINDFULNESS_SESSION_TYPE_YOGA);
+        assertThat(record.getMindfulnessSessionType()).isEqualTo(MINDFULNESS_SESSION_TYPE_OTHER);
         assertThat(record.getTitle()).isEqualTo("title");
         assertThat(record.getNotes()).isEqualTo("notes");
     }
@@ -151,25 +161,6 @@ public class MindfulnessSessionRecordTest {
     }
 
     @Test
-    public void mindfulnessSessionRecordBuilder_clearZoneOffsets() {
-        final ZoneOffset defaultZoneOffset = getDefaultZoneOffset(Instant.now());
-
-        MindfulnessSessionRecord.Builder builder =
-                new MindfulnessSessionRecord.Builder(
-                                new Metadata.Builder().build(),
-                                Instant.now().minusSeconds(60),
-                                Instant.now(),
-                                MINDFULNESS_SESSION_TYPE_BREATHING)
-                        .setStartZoneOffset(ZoneOffset.ofHours(-4))
-                        .setEndZoneOffset(ZoneOffset.ofHours(5));
-
-        assertThat(builder.clearStartZoneOffset().build().getStartZoneOffset())
-                .isEqualTo(defaultZoneOffset);
-        assertThat(builder.clearEndZoneOffset().build().getEndZoneOffset())
-                .isEqualTo(defaultZoneOffset);
-    }
-
-    @Test
     public void equals_hashCode_allFieldsEqual_recordsEqual() {
         Instant endTime = Instant.now();
         Instant startTime = endTime.minusSeconds(60);
@@ -179,7 +170,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordA =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_YOGA)
+                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
                         .setTitle("title")
                         .setNotes("notes")
                         .setStartZoneOffset(startZoneOffset)
@@ -188,7 +179,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordB =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_YOGA)
+                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
                         .setTitle("title")
                         .setNotes("notes")
                         .setStartZoneOffset(startZoneOffset)
@@ -210,7 +201,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordA =
                 new MindfulnessSessionRecord.Builder(
-                                metadataA, startTime, endTime, MINDFULNESS_SESSION_TYPE_YOGA)
+                                metadataA, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
                         .setTitle("title")
                         .setNotes("notes")
                         .setStartZoneOffset(startZoneOffset)
@@ -219,7 +210,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordB =
                 new MindfulnessSessionRecord.Builder(
-                                metadataB, startTime, endTime, MINDFULNESS_SESSION_TYPE_YOGA)
+                                metadataB, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
                         .setTitle("title")
                         .setNotes("notes")
                         .setStartZoneOffset(startZoneOffset)
@@ -241,7 +232,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordA =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTimeA, endTime, MINDFULNESS_SESSION_TYPE_YOGA)
+                                metadata, startTimeA, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
                         .setTitle("title")
                         .setNotes("notes")
                         .setStartZoneOffset(startZoneOffset)
@@ -250,7 +241,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordB =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTimeB, endTime, MINDFULNESS_SESSION_TYPE_YOGA)
+                                metadata, startTimeB, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
                         .setTitle("title")
                         .setNotes("notes")
                         .setStartZoneOffset(startZoneOffset)
@@ -272,7 +263,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordA =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTime, endTimeA, MINDFULNESS_SESSION_TYPE_YOGA)
+                                metadata, startTime, endTimeA, MINDFULNESS_SESSION_TYPE_OTHER)
                         .setTitle("title")
                         .setNotes("notes")
                         .setStartZoneOffset(startZoneOffset)
@@ -281,7 +272,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordB =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTime, endTimeB, MINDFULNESS_SESSION_TYPE_YOGA)
+                                metadata, startTime, endTimeB, MINDFULNESS_SESSION_TYPE_OTHER)
                         .setTitle("title")
                         .setNotes("notes")
                         .setStartZoneOffset(startZoneOffset)
@@ -302,7 +293,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordA =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_YOGA)
+                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
                         .setTitle("title")
                         .setNotes("notes")
                         .setStartZoneOffset(startZoneOffset)
@@ -332,7 +323,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordA =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_YOGA)
+                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
                         .setTitle("titleA")
                         .setNotes("notes")
                         .setStartZoneOffset(startZoneOffset)
@@ -362,7 +353,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordA =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_YOGA)
+                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
                         .setTitle("title")
                         .setNotes("notesA")
                         .setStartZoneOffset(startZoneOffset)
@@ -393,7 +384,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordA =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_YOGA)
+                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
                         .setTitle("title")
                         .setNotes("notesA")
                         .setStartZoneOffset(startZoneOffsetA)
@@ -424,7 +415,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordA =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_YOGA)
+                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
                         .setTitle("title")
                         .setNotes("notesA")
                         .setStartZoneOffset(startZoneOffset)

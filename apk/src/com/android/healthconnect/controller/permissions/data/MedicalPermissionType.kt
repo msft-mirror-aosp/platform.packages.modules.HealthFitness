@@ -15,19 +15,45 @@
  */
 package com.android.healthconnect.controller.permissions.data
 
-import android.health.connect.MedicalPermissionCategory
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN
 
-enum class MedicalPermissionType(val category: Int)  {
-    ALL_MEDICAL_DATA(MedicalPermissionCategory.ALL_MEDICAL_DATA),
-    IMMUNIZATION(MedicalPermissionCategory.IMMUNIZATION),
+enum class MedicalPermissionType : HealthPermissionType {
+    ALL_MEDICAL_DATA,
+    IMMUNIZATION,
+    ALLERGY_INTOLERANCE;
+
+    override fun lowerCaseLabel(): Int =
+        MedicalPermissionStrings.fromPermissionType(this).lowercaseLabel
+
+    override fun upperCaseLabel(): Int =
+        MedicalPermissionStrings.fromPermissionType(this).uppercaseLabel
 }
 
-fun fromMedicalPermissionCategory(medicalPermissionCategory: Int): MedicalPermissionType {
-    return when (medicalPermissionCategory) {
-        MedicalPermissionCategory.UNKNOWN ->
-            throw IllegalArgumentException("MedicalPermissionType is UNKNOWN.")
-        MedicalPermissionCategory.ALL_MEDICAL_DATA -> MedicalPermissionType.ALL_MEDICAL_DATA
-        MedicalPermissionCategory.IMMUNIZATION -> MedicalPermissionType.IMMUNIZATION
-        else -> throw IllegalArgumentException("MedicalPermissionType is not supported.")
+fun isValidMedicalPermissionType(permissionTypeString: String): Boolean {
+    try {
+        MedicalPermissionType.valueOf(permissionTypeString)
+    } catch (e: IllegalArgumentException) {
+        return false
+    }
+    return true
+}
+
+fun fromMedicalResourceType(medicalResourceType: Int): MedicalPermissionType {
+    return when (medicalResourceType) {
+        MEDICAL_RESOURCE_TYPE_UNKNOWN ->
+            throw IllegalArgumentException("MedicalResourceType is UNKNOWN.")
+        MEDICAL_RESOURCE_TYPE_IMMUNIZATION -> MedicalPermissionType.IMMUNIZATION
+        MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE -> MedicalPermissionType.ALLERGY_INTOLERANCE
+        else -> throw IllegalArgumentException("MedicalResourceType is not supported.")
+    }
+}
+
+fun toMedicalResourceType(medicalPermissionType: MedicalPermissionType): Int {
+    return when (medicalPermissionType) {
+        MedicalPermissionType.IMMUNIZATION -> MEDICAL_RESOURCE_TYPE_IMMUNIZATION
+        MedicalPermissionType.ALLERGY_INTOLERANCE -> MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
+        else -> MEDICAL_RESOURCE_TYPE_UNKNOWN
     }
 }

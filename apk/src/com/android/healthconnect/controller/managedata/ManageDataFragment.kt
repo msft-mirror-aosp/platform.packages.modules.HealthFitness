@@ -13,12 +13,10 @@ import com.android.healthconnect.controller.autodelete.AutoDeleteViewModel
 import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.ManageDataElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthfitness.flags.Flags.exportImport
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint(HealthPreferenceFragment::class)
 class ManageDataFragment : Hilt_ManageDataFragment() {
@@ -35,7 +33,6 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
     }
 
     private val autoDeleteViewModel: AutoDeleteViewModel by activityViewModels()
-    @Inject lateinit var featureUtils: FeatureUtils
 
     private val mAutoDeletePreference: HealthPreference? by lazy {
         preferenceScreen.findPreference(AUTO_DELETE_PREFERENCE_KEY)
@@ -67,19 +64,14 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
             true
         }
 
-        if (featureUtils.isNewAppPriorityEnabled()) {
-            mDataSourcesPreference?.logName = ManageDataElement.DATA_SOURCES_AND_PRIORITY_BUTTON
-            mDataSourcesPreference?.setOnPreferenceClickListener {
-                findNavController()
-                    .navigate(
-                        R.id.action_manageData_to_dataSources,
-                        bundleOf(
-                            HealthDataCategoriesFragment.CATEGORY_KEY to
-                                HealthDataCategory.UNKNOWN))
-                true
-            }
-        } else {
-            preferenceScreen.removePreferenceRecursively(DATA_SOURCES_AND_PRIORITY_PREFERENCE_KEY)
+        mDataSourcesPreference?.logName = ManageDataElement.DATA_SOURCES_AND_PRIORITY_BUTTON
+        mDataSourcesPreference?.setOnPreferenceClickListener {
+            findNavController()
+                .navigate(
+                    R.id.action_manageData_to_dataSources,
+                    bundleOf(
+                        HealthDataCategoriesFragment.CATEGORY_KEY to HealthDataCategory.UNKNOWN))
+            true
         }
 
         mSetUnitsPreference?.logName = ManageDataElement.SET_UNITS_BUTTON

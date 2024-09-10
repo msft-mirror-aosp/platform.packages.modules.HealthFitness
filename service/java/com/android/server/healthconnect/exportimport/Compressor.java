@@ -42,19 +42,17 @@ class Compressor {
             zip.mkdirs();
             zip.delete();
 
-            ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(zip));
-            FileInputStream inputStream = new FileInputStream(source);
-
-            outputStream.putNextEntry(new ZipEntry(entryName));
-            byte[] bytes = new byte[1024];
-            int length;
-            while ((length = inputStream.read(bytes)) >= 0) {
-                outputStream.write(bytes, 0, length);
+            try (ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(zip))) {
+                outputStream.putNextEntry(new ZipEntry(entryName));
+                try (FileInputStream inputStream = new FileInputStream(source)) {
+                    byte[] bytes = new byte[1024];
+                    int length;
+                    while ((length = inputStream.read(bytes)) >= 0) {
+                        outputStream.write(bytes, 0, length);
+                    }
+                    outputStream.closeEntry();
+                }
             }
-
-            outputStream.closeEntry();
-            outputStream.close();
-            inputStream.close();
             Slog.i(TAG, "File zipped: " + zip.getAbsolutePath());
         } catch (Exception e) {
             Slog.e(TAG, "Failed to compress", e);
@@ -75,32 +73,31 @@ class Compressor {
             destination.delete();
 
             ContentResolver contentResolver = userContext.getContentResolver();
-            ZipInputStream zipInputStream =
-                    new ZipInputStream(contentResolver.openInputStream(zip));
-            FileOutputStream outputStream = new FileOutputStream(destination);
+            try (ZipInputStream zipInputStream =
+                    new ZipInputStream(contentResolver.openInputStream(zip))) {
+                try (FileOutputStream outputStream = new FileOutputStream(destination)) {
 
-            ZipEntry entry;
-            while (true) {
-                entry = zipInputStream.getNextEntry();
-                if (entry == null) {
-                    throw new IllegalArgumentException("Entry not found in archive.");
+                    ZipEntry entry;
+                    while (true) {
+                        entry = zipInputStream.getNextEntry();
+                        if (entry == null) {
+                            throw new IllegalArgumentException("Entry not found in archive.");
+                        }
+                        Slog.d(TAG, "Entry found: " + entry.getName());
+                        if (Objects.equals(entry.getName(), entryName)) {
+                            break;
+                        }
+                        zipInputStream.closeEntry();
+                    }
+
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = zipInputStream.read(buffer)) > 0) {
+                        outputStream.write(buffer, 0, length);
+                    }
+                    zipInputStream.closeEntry();
                 }
-                Slog.d(TAG, "Entry found: " + entry.getName());
-                if (Objects.equals(entry.getName(), entryName)) {
-                    break;
-                }
-                zipInputStream.closeEntry();
             }
-
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = zipInputStream.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, length);
-            }
-
-            zipInputStream.closeEntry();
-            zipInputStream.close();
-            outputStream.close();
             Slog.i(TAG, "File unzipped: " + destination.getAbsolutePath());
         } catch (Exception e) {
             Slog.e(TAG, "Failed to decompress", e);

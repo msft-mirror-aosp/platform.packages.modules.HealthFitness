@@ -46,6 +46,8 @@ import android.health.connect.datatypes.Record;
 import android.healthconnect.cts.lib.RecordFactory;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
 import androidx.test.core.app.ApplicationProvider;
 
@@ -83,6 +85,9 @@ abstract class BaseApiTest<T extends Record> {
         mWritePermission = writePermission;
         mRecordFactory = recordFactory;
     }
+
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =

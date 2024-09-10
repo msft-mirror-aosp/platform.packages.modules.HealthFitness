@@ -14,6 +14,7 @@
 
 package {
     default_applicable_licenses: ["Android-Apache-2.0"],
+    default_team: "trendy_team_android_health",
 }
 
 android_test {
@@ -39,7 +40,6 @@ android_test {
         "healthfitness-aconfig-flags-lib",
         "healthfitness-aconfig-flags-helper",
         "flag-junit",
-        "healthfitness-aconfig-flags-lib",
         "androidx.test.runner",
         "mockito-target-extended-minus-junit4",
         "truth",
@@ -47,8 +47,8 @@ android_test {
         "androidx.test.ext.truth",
         "cts-healthconnect-utils",
         "flag-junit",
-        "healthfitness-aconfig-flags-lib",
         "truth-java8-extension",
+        "platform-parametric-runner-lib",
     ],
     jni_libs: [
         // Required for ExtendedMockito
@@ -56,11 +56,11 @@ android_test {
         "libstaticjvmtiagent",
     ],
     libs: [
-        "android.test.base",
-        "android.test.mock",
-        "android.test.runner",
-        "framework-sdkextensions",
-        "framework-configinfrastructure",
+        "android.test.base.stubs.system",
+        "android.test.mock.stubs.system",
+        "android.test.runner.stubs.system",
+        "framework-sdkextensions.stubs.module_lib",
+        "framework-configinfrastructure.stubs.module_lib",
     ],
     // Test coverage system runs on different devices. Need to
     // compile for all architecture.

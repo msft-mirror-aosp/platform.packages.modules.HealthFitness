@@ -31,8 +31,9 @@ import java.util.regex.Pattern;
 
 /**
  * Represents the FHIR version. This is designed according to <a
- * href="https://build.fhir.org/versions.html#versions">the official FHIR versions</a>, while the
- * "label" is not supported for now, which represents a 'working' version.
+ * href="https://build.fhir.org/versions.html#versions">the official FHIR versions</a> of the Fast
+ * Healthcare Interoperability Resources (FHIR) standard. "label", which represents a 'working'
+ * version, is not supported for now.
  */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class FhirVersion implements Parcelable {

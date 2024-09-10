@@ -18,9 +18,9 @@ package android.health.connect;
 
 import static android.health.connect.HealthPermissions.HEALTH_PERMISSION_GROUP;
 import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTE;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
-import static android.health.connect.MedicalPermissionCategory.IMMUNIZATION;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
@@ -37,7 +37,7 @@ import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
 import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
@@ -57,9 +57,8 @@ public class HealthPermissionsTest {
                     + "sets.";
 
     private static final String PHR_FAIL_MESSAGE =
-            "Add new medical permissions to"
-                + " HealthPermissions.populateReadMedicalPermissionsToMedicalPermissionCategoryMap"
-                + " mapping.";
+            "Add new medical permissions to ALL_EXPECTED_HEALTH_PERMISSIONS and "
+                    + "apk/HealthPermissionsManifest.xml.";
 
     private static final String MEDICAL_PERMISSION_IDENTIFIER = "MEDICAL_DATA";
 
@@ -110,6 +109,7 @@ public class HealthPermissionsTest {
                     HealthPermissions.READ_SKIN_TEMPERATURE,
                     HealthPermissions.READ_MINDFULNESS,
                     HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION,
+                    HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE,
                     HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED,
                     HealthPermissions.WRITE_DISTANCE,
                     HealthPermissions.WRITE_ELEVATION_GAINED,
@@ -279,22 +279,13 @@ public class HealthPermissionsTest {
 
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetMedicalReadPermission_givenCategory_returnsPermission() {
-        String readPermission = HealthPermissions.getMedicalReadPermission(IMMUNIZATION);
-        assertThat(readPermission).isEqualTo(READ_MEDICAL_DATA_IMMUNIZATION);
-    }
-
-    @Test(expected = NullPointerException.class)
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetMedicalReadPermission_unknownCategory_throwsException() {
-        HealthPermissions.getMedicalReadPermission(MedicalPermissionCategory.UNKNOWN);
-    }
-
-    @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalPermissions_returnsValidPermissions() {
         Set<String> permissions = HealthPermissions.getAllMedicalPermissions();
-        assertThat(permissions).containsAtLeast(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATION);
+        assertThat(permissions)
+                .containsAtLeast(
+                        WRITE_MEDICAL_DATA,
+                        READ_MEDICAL_DATA_IMMUNIZATION,
+                        READ_MEDICAL_DATA_ALLERGY_INTOLERANCE);
     }
 
     @Test
@@ -309,21 +300,6 @@ public class HealthPermissionsTest {
                 assertWithMessage(PHR_FAIL_MESSAGE).that(permissions).contains(permissionInfo.name);
             }
         }
-    }
-
-    @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetMedicalPermissionCategory_returnsImmunizationPermissionCategory() {
-        @MedicalPermissionCategory.Type
-        int medicalPermissionCategory =
-                HealthPermissions.getMedicalPermissionCategory(READ_MEDICAL_DATA_IMMUNIZATION);
-        assertThat(medicalPermissionCategory).isEqualTo(IMMUNIZATION);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetMedicalPermissionCategory_permissionWithoutCategory_throws() {
-        HealthPermissions.getMedicalPermissionCategory(WRITE_MEDICAL_DATA);
     }
 
     private boolean isValidHealthPermission(PermissionInfo permissionInfo) {

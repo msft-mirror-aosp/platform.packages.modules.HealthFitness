@@ -13,6 +13,7 @@
 // limitations under the License.
 package {
     default_applicable_licenses: ["Android-Apache-2.0"],
+    default_team: "trendy_team_android_health",
 }
 
 java_defaults {
@@ -55,10 +56,11 @@ java_defaults {
         "androidx.test.rules",
         "compatibility-device-util-axt",
         "mockito-kotlin2",
+        "platform-parametric-runner-lib",
     ],
     libs: [
         "kotlin-annotations",
-        "android.test.base",
+        "android.test.base.stubs.system",
         "android.test.mock.stubs",
         "framework-healthfitness.impl",
     ],

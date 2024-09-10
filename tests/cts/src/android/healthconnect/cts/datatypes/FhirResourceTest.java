@@ -16,7 +16,8 @@
 
 package android.healthconnect.cts.datatypes;
 
-import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_ALLERGY;
@@ -32,7 +33,7 @@ import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 
@@ -50,12 +51,12 @@ public class FhirResourceTest {
     public void testFhirResourceBuilder() {
         FhirResource resource =
                 new FhirResource.Builder(
-                                FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
                                 FHIR_RESOURCE_ID_IMMUNIZATION,
                                 FHIR_DATA_IMMUNIZATION)
                         .build();
 
-        assertThat(resource.getType()).isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_IMMUNIZATION);
         assertThat(resource.getId()).isEqualTo(FHIR_RESOURCE_ID_IMMUNIZATION);
         assertThat(resource.getData()).isEqualTo(FHIR_DATA_IMMUNIZATION);
     }
@@ -64,12 +65,12 @@ public class FhirResourceTest {
     public void testFhirResourceBuilder_setAllFields() {
         FhirResource resource =
                 getFhirResourceBuilder()
-                        .setType(FHIR_RESOURCE_TYPE_UNKNOWN)
+                        .setType(FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE)
                         .setId(FHIR_RESOURCE_ID_ALLERGY)
                         .setData(FHIR_DATA_ALLERGY)
                         .build();
 
-        assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_UNKNOWN);
+        assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
         assertThat(resource.getId()).isEqualTo(FHIR_RESOURCE_ID_ALLERGY);
         assertThat(resource.getData()).isEqualTo(FHIR_DATA_ALLERGY);
     }
@@ -94,14 +95,14 @@ public class FhirResourceTest {
     public void testFhirResource_toString() {
         FhirResource resource =
                 new FhirResource.Builder(
-                                FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
                                 FHIR_RESOURCE_ID_IMMUNIZATION,
                                 FHIR_DATA_IMMUNIZATION)
                         .build();
         String expectedPropertiesString =
                 String.format(
                         "type=%d,id=%s,data=%s",
-                        FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
                         FHIR_RESOURCE_ID_IMMUNIZATION,
                         FHIR_DATA_IMMUNIZATION);
 
@@ -122,7 +123,9 @@ public class FhirResourceTest {
     public void testFhirResource_equals_comparesAllValues() {
         FhirResource resource = getFhirResource();
         FhirResource resourceDifferentType =
-                new FhirResource.Builder(resource).setType(FHIR_RESOURCE_TYPE_UNKNOWN).build();
+                new FhirResource.Builder(resource)
+                        .setType(FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE)
+                        .build();
         FhirResource resourceDifferentId =
                 new FhirResource.Builder(resource).setId(FHIR_RESOURCE_ID_ALLERGY).build();
         FhirResource resourceDifferentData =

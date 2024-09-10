@@ -16,8 +16,6 @@
 
 package com.android.server.healthconnect.storage.request;
 
-import static com.android.healthfitness.flags.Flags.personalHealthRecord;
-
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
@@ -25,10 +23,8 @@ import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.FhirResource.FhirResourceType;
-
-import com.android.server.healthconnect.phr.FhirJsonExtractor;
-
-import org.json.JSONException;
+import android.health.connect.datatypes.FhirVersion;
+import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -42,8 +38,10 @@ public final class UpsertMedicalResourceInternalRequest {
     @Nullable private UUID mUuid;
     @NonNull private String mDataSourceId = "";
     @NonNull private String mData = "";
+    @MedicalResourceType private int mMedicalResourceType;
     @FhirResourceType private int mFhirResourceType;
     @NonNull private String mFhirResourceId = "";
+    @NonNull private String mFhirVersion = "";
 
     /** Returns the unique identifier of this data. */
     @Nullable
@@ -87,6 +85,19 @@ public final class UpsertMedicalResourceInternalRequest {
         return this;
     }
 
+    /** Returns the {@code IntDef} {@link MedicalResourceType} of the {@code mData}. */
+    @MedicalResourceType
+    public int getMedicalResourceType() {
+        return mMedicalResourceType;
+    }
+
+    /** Returns this object with the medical resource type. */
+    public UpsertMedicalResourceInternalRequest setMedicalResourceType(
+            @MedicalResourceType int medicalResourceType) {
+        mMedicalResourceType = medicalResourceType;
+        return this;
+    }
+
     /**
      * Returns the FHIR resource type. This is extracted from the "resourceType" field in {@code
      * mData}, and mapped into an {@code IntDef} {@link FhirResourceType}.
@@ -117,23 +128,18 @@ public final class UpsertMedicalResourceInternalRequest {
         return this;
     }
 
-    /** Converts to this object from an upsert request. */
-    // TODO(b/350010200): Refactor this once we check in the request validator code.
+    /** Returns the FHIR version as string. */
     @NonNull
-    public static UpsertMedicalResourceInternalRequest fromUpsertRequest(
-            @NonNull UpsertMedicalResourceRequest request) throws JSONException {
-        if (!personalHealthRecord()) {
-            throw new UnsupportedOperationException(
-                    "Convert from UpsertMedicalResourceRequest is not supported");
-        }
-        requireNonNull(request);
-        FhirJsonExtractor extractor = new FhirJsonExtractor(request.getData());
-        String dataSourceId = String.valueOf(request.getDataSourceId());
-        return new UpsertMedicalResourceInternalRequest()
-                .setFhirResourceId(extractor.getFhirResourceId())
-                .setFhirResourceType(extractor.getFhirResourceType())
-                .setDataSourceId(dataSourceId)
-                .setData(request.getData());
+    public String getFhirVersion() {
+        return mFhirVersion;
+    }
+
+    /** Returns this object with the FHIR version string. */
+    @NonNull
+    public UpsertMedicalResourceInternalRequest setFhirVersion(@NonNull FhirVersion fhirVersion) {
+        requireNonNull(fhirVersion);
+        mFhirVersion = fhirVersion.toString();
+        return this;
     }
 
     @Override
@@ -142,8 +148,10 @@ public final class UpsertMedicalResourceInternalRequest {
         if (!(o instanceof UpsertMedicalResourceInternalRequest that)) return false;
         return Objects.equals(getUuid(), that.getUuid())
                 && getDataSourceId().equals(that.getDataSourceId())
+                && getMedicalResourceType() == that.getMedicalResourceType()
                 && getFhirResourceType() == that.getFhirResourceType()
                 && getFhirResourceId().equals(that.getFhirResourceId())
+                && getFhirVersion().equals(that.getFhirVersion())
                 && getData().equals(that.getData());
     }
 
@@ -152,8 +160,10 @@ public final class UpsertMedicalResourceInternalRequest {
         return hash(
                 getUuid(),
                 getDataSourceId(),
+                getMedicalResourceType(),
                 getFhirResourceType(),
                 getFhirResourceId(),
+                getFhirVersion(),
                 getData());
     }
 }

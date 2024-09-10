@@ -21,8 +21,10 @@ import android.health.connect.CreateMedicalDataSourceRequest
 import android.health.connect.HealthConnectManager
 import android.health.connect.MedicalResourceId
 import android.health.connect.UpsertMedicalResourceRequest
+import android.health.connect.datatypes.FhirVersion
 import android.health.connect.datatypes.MedicalDataSource
 import android.health.connect.datatypes.MedicalResource
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -93,12 +95,17 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
 
         view.requireViewById<Button>(R.id.phr_create_data_source_button).setOnClickListener {
             executeAndShowMessage {
-                createMedicalDataSource("Hospital X", "example.fhir.com/R4/123")
+                createMedicalDataSource(view, Uri.parse("example.fhir.com/R4/123"),
+                    "Hospital X")
             }
         }
 
         view.requireViewById<Button>(R.id.phr_insert_immunization_button).setOnClickListener {
             executeAndShowMessage { insertImmunization(view) }
+        }
+
+        view.requireViewById<Button>(R.id.phr_insert_allergy_button).setOnClickListener {
+            executeAndShowMessage { insertAllergy(view) }
         }
 
         view.requireViewById<Button>(R.id.phr_read_by_id_button).setOnClickListener {
@@ -133,40 +140,75 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
 
     private suspend fun insertImmunization(view: View): String {
         val immunizationResource = loadJSONFromAsset(requireContext(), "immunization_1.json")
-        if (immunizationResource == null) {
-            return "No Immunization resource to insert"
-        }
-        Log.d("INSERT_MEDICAL_RESOURCE", "Writing immunization ${immunizationResource}")
+            ?: return "No Immunization resource to insert"
+        Log.d("INSERT_IMMUNIZATION", "Writing immunization $immunizationResource")
+        val insertedDataSourceId =
+            view.findViewById<EditText>(R.id.phr_data_source_id_text).getText().toString()
         val insertedResources = upsertMedicalResources(
             listOf(
-                UpsertMedicalResourceRequest.Builder(1, immunizationResource).build()))
-        val insertedResourceId = "1,Immunization,immunization_1"
+                UpsertMedicalResourceRequest.Builder(
+                    insertedDataSourceId,
+                    FhirVersion.parseFhirVersion("4.0.1"),
+                    immunizationResource
+                ).build()
+            )
+        )
+        val insertedResourceId = "$insertedDataSourceId,1,immunization_1"
         view.findViewById<EditText>(R.id.phr_immunization_id_text).setText(insertedResourceId)
-        return insertedResources.joinToString(separator = "\n", transform = MedicalResource::toString)
+        return insertedResources.joinToString(
+            separator = "\n",
+            transform = MedicalResource::toString
+        )
+    }
+
+    private suspend fun insertAllergy(view: View): String {
+        val allergyResource = loadJSONFromAsset(requireContext(), "allergyintolerance_1.json")
+            ?: return "No Allergy resource to insert"
+        Log.d("INSERT_ALLERGY", "Writing allergy $allergyResource")
+        val insertedDataSourceId =
+            view.findViewById<EditText>(R.id.phr_data_source_id_text).getText().toString()
+        val insertedResources = upsertMedicalResources(
+            listOf(
+                UpsertMedicalResourceRequest.Builder(
+                    insertedDataSourceId,
+                    FhirVersion.parseFhirVersion("4.0.1"),
+                    allergyResource
+                ).build()
+            )
+        )
+        val insertedResourceId = "$insertedDataSourceId,1,allergyintolerance_1"
+        view.findViewById<EditText>(R.id.phr_allergy_id_text).setText(insertedResourceId)
+        return insertedResources.joinToString(
+            separator = "\n",
+            transform = MedicalResource::toString
+        )
     }
 
     private suspend fun upsertMedicalResources(requests: List<UpsertMedicalResourceRequest>): List<MedicalResource> {
-        Log.d("UPSERT_MEDICAL_RESOURCES", "Writing ${requests.size} resources")
+        Log.d("UPSERT_RESOURCES", "Writing ${requests.size} resources")
         val resources =
             suspendCancellableCoroutine<List<MedicalResource>> { continuation ->
                 healthConnectManager.upsertMedicalResources(
                     requests,
                     Runnable::run,
-                    continuation.asOutcomeReceiver())
+                    continuation.asOutcomeReceiver()
+                )
             }
-        Log.d("UPSERT_MEDICAL_RESOURCES", "Wrote ${resources.size} resources")
+        Log.d("UPSERT_RESOURCES", "Wrote ${resources.size} resources")
         return resources
     }
 
-    private suspend fun createMedicalDataSource(displayName: String, fhirBaseUri: String): String {
+    private suspend fun createMedicalDataSource(view: View, fhirBaseUri: Uri, displayName: String): String {
         val dataSource =
             suspendCancellableCoroutine<MedicalDataSource> { continuation ->
                 healthConnectManager.createMedicalDataSource(
-                    CreateMedicalDataSourceRequest.Builder(displayName, fhirBaseUri).build(),
+                    CreateMedicalDataSourceRequest.Builder(fhirBaseUri, displayName).build(),
                     Runnable::run,
-                    continuation.asOutcomeReceiver())
+                    continuation.asOutcomeReceiver()
+                )
             }
-        Log.d("CREATE_MEDICAL_DATA_SOURCE", "Created source: ${dataSource.toString()}")
+        view.findViewById<EditText>(R.id.phr_data_source_id_text).setText(dataSource.id)
+        Log.d("CREATE_DATA_SOURCE", "Created source: $dataSource")
         return dataSource.toString()
     }
 
@@ -175,22 +217,26 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
             view.findViewById<EditText>(R.id.phr_immunization_id_text).getText().toString()
         val idParts = insertedResourceId.split(',').toList()
         if (idParts.size != 3) {
-            return "Invalid ID from inserted MedicalResource: ${insertedResourceId}"
+            return "Invalid ID from inserted MedicalResource: $insertedResourceId"
         }
         val (dataSourceId, fhirResourceType, fhirResourceId) = idParts
-        return readMedicalResourcesByIds(listOf(
-            MedicalResourceId(dataSourceId, fhirResourceType, fhirResourceId)))
+        return readMedicalResourcesByIds(
+            listOf(
+                MedicalResourceId(dataSourceId, Integer.valueOf(fhirResourceType), fhirResourceId)
+            )
+        )
             .joinToString(separator = "\n", transform = MedicalResource::toString)
     }
 
     private suspend fun readMedicalResourcesByIds(ids: List<MedicalResourceId>): List<MedicalResource> {
-        Log.d("READ_MEDICAL_RESOURCES", "Reading resource with ids ${ids.toString()}")
+        Log.d("READ_MEDICAL_RESOURCES", "Reading resource with ids $ids")
         val resources =
             suspendCancellableCoroutine<List<MedicalResource>> { continuation ->
                 healthConnectManager.readMedicalResources(
                     ids,
                     Runnable::run,
-                    continuation.asOutcomeReceiver())
+                    continuation.asOutcomeReceiver()
+                )
             }
         Log.d("READ_MEDICAL_RESOURCES", "Read ${resources.size} resources")
         return resources

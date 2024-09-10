@@ -23,7 +23,7 @@ import static com.google.common.truth.Truth.assertThat;
 import android.net.Uri;
 import android.os.Parcel;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +35,8 @@ public final class ScheduledExportSettingsTest {
 
     @Test
     public void testWithUri() {
-        ScheduledExportSettings settings = ScheduledExportSettings.withUri(TEST_URI);
+        ScheduledExportSettings settings =
+                new ScheduledExportSettings.Builder().setUri(TEST_URI).build();
 
         Parcel settingsParcel = writeToParcel(settings);
         settingsParcel.setDataPosition(0);
@@ -48,7 +49,8 @@ public final class ScheduledExportSettingsTest {
 
     @Test
     public void testWithPeriodInDays() {
-        ScheduledExportSettings settings = ScheduledExportSettings.withPeriodInDays(7);
+        ScheduledExportSettings settings =
+                new ScheduledExportSettings.Builder().setPeriodInDays(7).build();
 
         Parcel settingsParcel = writeToParcel(settings);
         settingsParcel.setDataPosition(0);
@@ -62,7 +64,7 @@ public final class ScheduledExportSettingsTest {
     @Test
     public void testWithUriAndPeriodInDays() {
         ScheduledExportSettings settings =
-                ScheduledExportSettings.withUriAndPeriodInDays(TEST_URI, 7);
+                new ScheduledExportSettings.Builder().setPeriodInDays(7).setUri(TEST_URI).build();
 
         Parcel settingsParcel = writeToParcel(settings);
         settingsParcel.setDataPosition(0);
@@ -75,8 +77,10 @@ public final class ScheduledExportSettingsTest {
 
     @Test
     public void testEquals_andHashCode_withPeriodInDays() {
-        ScheduledExportSettings settingsA = ScheduledExportSettings.withPeriodInDays(7);
-        ScheduledExportSettings settingsB = ScheduledExportSettings.withPeriodInDays(7);
+        ScheduledExportSettings settingsA =
+                new ScheduledExportSettings.Builder().setPeriodInDays(7).build();
+        ScheduledExportSettings settingsB =
+                new ScheduledExportSettings.Builder().setPeriodInDays(7).build();
 
         assertThat(settingsA).isEqualTo(settingsB);
         assertThat(settingsA.hashCode()).isEqualTo(settingsB.hashCode());
@@ -84,8 +88,10 @@ public final class ScheduledExportSettingsTest {
 
     @Test
     public void testEquals_andHashCode_withDifferentPeriodInDays() {
-        ScheduledExportSettings settingsA = ScheduledExportSettings.withPeriodInDays(7);
-        ScheduledExportSettings settingsB = ScheduledExportSettings.withPeriodInDays(8);
+        ScheduledExportSettings settingsA =
+                new ScheduledExportSettings.Builder().setPeriodInDays(7).build();
+        ScheduledExportSettings settingsB =
+                new ScheduledExportSettings.Builder().setPeriodInDays(8).build();
 
         assertThat(settingsA).isNotEqualTo(settingsB);
         assertThat(settingsA.hashCode()).isNotEqualTo(settingsB.hashCode());
@@ -93,8 +99,10 @@ public final class ScheduledExportSettingsTest {
 
     @Test
     public void testEquals_andHashCode_withUri() {
-        ScheduledExportSettings settingsA = ScheduledExportSettings.withUri(TEST_URI);
-        ScheduledExportSettings settingsB = ScheduledExportSettings.withUri(TEST_URI);
+        ScheduledExportSettings settingsA =
+                new ScheduledExportSettings.Builder().setUri(TEST_URI).build();
+        ScheduledExportSettings settingsB =
+                new ScheduledExportSettings.Builder().setUri(TEST_URI).build();
 
         assertThat(settingsA).isEqualTo(settingsB);
         assertThat(settingsA.hashCode()).isEqualTo(settingsB.hashCode());
@@ -102,8 +110,10 @@ public final class ScheduledExportSettingsTest {
 
     @Test
     public void testEquals_andHashCode_withDifferentUri() {
-        ScheduledExportSettings settingsA = ScheduledExportSettings.withUri(TEST_URI);
-        ScheduledExportSettings settingsB = ScheduledExportSettings.withUri(Uri.EMPTY);
+        ScheduledExportSettings settingsA =
+                new ScheduledExportSettings.Builder().setUri(TEST_URI).build();
+        ScheduledExportSettings settingsB =
+                new ScheduledExportSettings.Builder().setUri(Uri.EMPTY).build();
 
         assertThat(settingsA).isNotEqualTo(settingsB);
         assertThat(settingsA.hashCode()).isNotEqualTo(settingsB.hashCode());

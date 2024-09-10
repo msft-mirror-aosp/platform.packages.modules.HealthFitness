@@ -26,12 +26,13 @@ import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDat
 import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.net.Uri;
 import android.os.Parcel;
 import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 
@@ -59,7 +60,7 @@ public class CreateMedicalDataSourceRequestTest {
     @Test
     public void testCreateMedicalDataSourceRequestBuilder_setAllFields() {
         CreateMedicalDataSourceRequest request =
-                new CreateMedicalDataSourceRequest.Builder("", "")
+                new CreateMedicalDataSourceRequest.Builder(Uri.EMPTY, "")
                         .setFhirBaseUri(DATA_SOURCE_FHIR_BASE_URI)
                         .setDisplayName(DATA_SOURCE_DISPLAY_NAME)
                         .build();

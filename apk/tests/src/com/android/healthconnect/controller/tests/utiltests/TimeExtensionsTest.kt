@@ -27,6 +27,10 @@ import com.android.healthconnect.controller.utils.toInstantAtStartOfDay
 import com.android.healthconnect.controller.utils.toLocalDate
 import com.android.healthconnect.controller.utils.toLocalDateTime
 import com.android.healthconnect.controller.utils.toLocalTime
+import com.android.healthconnect.controller.utils.withinOneDayAfter
+import com.android.healthconnect.controller.utils.withinOneHourAfter
+import com.android.healthconnect.controller.utils.withinOneMinuteAfter
+import com.android.healthconnect.controller.utils.withinOneYearAfter
 import com.google.common.truth.Truth.assertThat
 import java.time.Instant
 import java.time.LocalDate
@@ -73,6 +77,78 @@ class TimeExtensionsTest {
         val expected = LocalTime.of(5, 0, 0)
         val actual = instant.toLocalTime()
         assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
+    fun instantWithinOneMinuteAfter_isWithin1MinAfter_returnsTrue() {
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+
+        val thisInstant = Instant.parse("2023-02-14T00:02:00Z")
+        val thatInstant = Instant.parse("2023-02-14T00:01:30Z")
+        assertThat(thisInstant.withinOneMinuteAfter(thatInstant)).isTrue()
+    }
+
+    @Test
+    fun instantWithinOneMinuteAfter_notWithin1MinAfter_returnsFalse() {
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+
+        val thisInstant = Instant.parse("2023-02-14T00:02:30Z")
+        val thatInstant = Instant.parse("2023-02-14T00:01:30Z")
+        assertThat(thisInstant.withinOneMinuteAfter(thatInstant)).isFalse()
+    }
+
+    @Test
+    fun instantWithinOneHourAfter_isWithin1HourAfter_returnsTrue() {
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+
+        val thisInstant = Instant.parse("2023-02-14T20:59:59Z")
+        val thatInstant = Instant.parse("2023-02-14T20:00:00Z")
+        assertThat(thisInstant.withinOneHourAfter(thatInstant)).isTrue()
+    }
+
+    @Test
+    fun instantWithinOneHourAfter_notWithin1HourAfter_returnsFalse() {
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+
+        val thisInstant = Instant.parse("2023-02-14T21:00:00Z")
+        val thatInstant = Instant.parse("2023-02-14T20:00:00Z")
+        assertThat(thisInstant.withinOneHourAfter(thatInstant)).isFalse()
+    }
+
+    @Test
+    fun instantWithinOneDayAfter_isWithin1DayAfter_returnsTrue() {
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+
+        val thisInstant = Instant.parse("2023-02-15T19:59:59Z")
+        val thatInstant = Instant.parse("2023-02-14T20:00:00Z")
+        assertThat(thisInstant.withinOneDayAfter(thatInstant)).isTrue()
+    }
+
+    @Test
+    fun instantWithinOneDayAfter_notWithin1DayAfter_returnsFalse() {
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+
+        val thisInstant = Instant.parse("2023-02-15T20:00:00Z")
+        val thatInstant = Instant.parse("2023-02-14T20:00:00Z")
+        assertThat(thisInstant.withinOneDayAfter(thatInstant)).isFalse()
+    }
+
+    @Test
+    fun localDateWithinOneYearAfter_isWithin1YearAfter_returnsTrue() {
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+
+        val testLocalDate = LocalDate.of(2021, 9, 30)
+        val thatLocalDate = LocalDate.of(2020, 10, 1)
+        assertThat(testLocalDate.withinOneYearAfter(thatLocalDate)).isTrue()
+    }
+
+    @Test
+    fun localDateWithinOneYearAfter_notWithin1YearAfter_returnsFalse() {
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+
+        val testLocalDate = LocalDate.of(2021, 10, 1)
+        val thatLocalDate = LocalDate.of(2020, 10, 1)
+        assertThat(testLocalDate.withinOneYearAfter(thatLocalDate)).isFalse()
     }
 
     @Test

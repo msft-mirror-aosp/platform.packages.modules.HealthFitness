@@ -18,10 +18,12 @@ package android.healthconnect.cts;
 
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
-import static android.healthconnect.cts.utils.DataFactory.DEFAULT_LONG;
 import static android.healthconnect.cts.utils.DataFactory.DEFAULT_PAGE_SIZE;
 import static android.healthconnect.cts.utils.DataFactory.MAXIMUM_PAGE_SIZE;
 import static android.healthconnect.cts.utils.DataFactory.MINIMUM_PAGE_SIZE;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.PAGE_TOKEN;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -29,10 +31,24 @@ import static org.junit.Assert.assertThrows;
 
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.os.Parcel;
+import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.android.healthfitness.flags.Flags;
+
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(AndroidJUnit4.class)
+@RequiresFlagsEnabled(Flags.FLAG_PERSONAL_HEALTH_RECORD)
 public class ReadMedicalResourcesRequestTest {
+
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
 
     @Test
     public void testRequestBuilder_requiredFieldsOnly() {
@@ -40,8 +56,9 @@ public class ReadMedicalResourcesRequestTest {
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
 
         assertThat(request.getMedicalResourceType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+        assertThat(request.getDataSourceIds()).isEmpty();
         assertThat(request.getPageSize()).isEqualTo(DEFAULT_PAGE_SIZE);
-        assertThat(request.getPageToken()).isEqualTo(DEFAULT_LONG);
+        assertThat(request.getPageToken()).isNull();
     }
 
     @Test
@@ -49,19 +66,47 @@ public class ReadMedicalResourcesRequestTest {
         ReadMedicalResourcesRequest request =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                         .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addDataSourceId(DATA_SOURCE_ID)
+                        .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .setPageSize(100)
-                        .setPageToken(1L)
+                        .setPageToken(PAGE_TOKEN)
                         .build();
 
         assertThat(request.getMedicalResourceType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+        assertThat(request.getDataSourceIds())
+                .containsExactly(DATA_SOURCE_ID, DIFFERENT_DATA_SOURCE_ID);
         assertThat(request.getPageSize()).isEqualTo(100);
-        assertThat(request.getPageToken()).isEqualTo(1L);
+        assertThat(request.getPageToken()).isEqualTo(PAGE_TOKEN);
+    }
+
+    @Test
+    public void testRequestBuilder_clearDataSourceIds() {
+        ReadMedicalResourcesRequest request =
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addDataSourceId(DATA_SOURCE_ID)
+                        .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
+                        .clearDataSourceIds()
+                        .build();
+
+        assertThat(request.getDataSourceIds()).isEmpty();
+    }
+
+    @Test
+    public void testRequestBuilder_addInvalidDataSourceId_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                                .addDataSourceId("foo"));
     }
 
     @Test
     public void testRequestBuilder_fromExistingBuilder() {
         ReadMedicalResourcesRequest.Builder original =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addDataSourceId(DATA_SOURCE_ID)
+                        .setPageSize(100)
+                        .setPageToken(PAGE_TOKEN);
         ReadMedicalResourcesRequest request =
                 new ReadMedicalResourcesRequest.Builder(original).build();
 
@@ -71,7 +116,11 @@ public class ReadMedicalResourcesRequestTest {
     @Test
     public void testRequestBuilder_fromExistingInstance() {
         ReadMedicalResourcesRequest original =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addDataSourceId(DATA_SOURCE_ID)
+                        .setPageSize(100)
+                        .setPageToken(PAGE_TOKEN)
+                        .build();
         ReadMedicalResourcesRequest request =
                 new ReadMedicalResourcesRequest.Builder(original).build();
 
@@ -103,16 +152,17 @@ public class ReadMedicalResourcesRequestTest {
     }
 
     @Test
-    public void testMedicalResource_toString() {
+    public void testRequest_toString() {
         ReadMedicalResourcesRequest request =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addDataSourceId(DATA_SOURCE_ID)
                         .setPageSize(100)
-                        .setPageToken(1L)
+                        .setPageToken(PAGE_TOKEN)
                         .build();
         String expectedPropertiesString =
                 String.format(
-                        "medicalResourceType=%d,pageSize=%d,pageToken=%d",
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, 100, 1L);
+                        "medicalResourceType=%d,dataSourceIds={%s},pageSize=%d,pageToken=%s",
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, DATA_SOURCE_ID, 100, PAGE_TOKEN);
 
         assertThat(request.toString())
                 .isEqualTo(
@@ -123,13 +173,15 @@ public class ReadMedicalResourcesRequestTest {
     public void testRequest_equals() {
         ReadMedicalResourcesRequest request1 =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addDataSourceId(DATA_SOURCE_ID)
                         .setPageSize(100)
-                        .setPageToken(1L)
+                        .setPageToken(PAGE_TOKEN)
                         .build();
         ReadMedicalResourcesRequest request2 =
                 new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addDataSourceId(DATA_SOURCE_ID)
                         .setPageSize(100)
-                        .setPageToken(1L)
+                        .setPageToken(PAGE_TOKEN)
                         .build();
 
         assertThat(request1.equals(request2)).isTrue();
@@ -139,20 +191,28 @@ public class ReadMedicalResourcesRequestTest {
     @Test
     public void testRequest_equals_comparesAllValues() {
         ReadMedicalResourcesRequest request =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addDataSourceId(DATA_SOURCE_ID)
+                        .build();
         ReadMedicalResourcesRequest requestDifferentType =
                 new ReadMedicalResourcesRequest.Builder(request)
                         .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                         .build();
+        ReadMedicalResourcesRequest requestDifferentDataSource =
+                new ReadMedicalResourcesRequest.Builder(request)
+                        .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
+                        .build();
         ReadMedicalResourcesRequest requestDifferentPageSize =
                 new ReadMedicalResourcesRequest.Builder(request).setPageSize(100).build();
         ReadMedicalResourcesRequest requestDifferentPageTokens =
-                new ReadMedicalResourcesRequest.Builder(request).setPageToken(1L).build();
+                new ReadMedicalResourcesRequest.Builder(request).setPageToken(PAGE_TOKEN).build();
 
         assertThat(requestDifferentType.equals(request)).isFalse();
+        assertThat(requestDifferentDataSource.equals(request)).isFalse();
         assertThat(requestDifferentPageSize.equals(request)).isFalse();
         assertThat(requestDifferentPageTokens.equals(request)).isFalse();
         assertThat(requestDifferentType.hashCode()).isNotEqualTo(request.hashCode());
+        assertThat(requestDifferentDataSource.hashCode()).isNotEqualTo(request.hashCode());
         assertThat(requestDifferentPageSize.hashCode()).isNotEqualTo(request.hashCode());
         assertThat(requestDifferentPageTokens.hashCode()).isNotEqualTo(request.hashCode());
     }
@@ -160,7 +220,12 @@ public class ReadMedicalResourcesRequestTest {
     @Test
     public void testWriteToParcelThenRestore_objectsAreIdentical() {
         ReadMedicalResourcesRequest original =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addDataSourceId(DATA_SOURCE_ID)
+                        .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
+                        .setPageSize(100)
+                        .setPageToken(PAGE_TOKEN)
+                        .build();
 
         Parcel parcel = Parcel.obtain();
         original.writeToParcel(parcel, 0);

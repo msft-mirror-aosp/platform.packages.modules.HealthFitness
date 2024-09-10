@@ -114,6 +114,18 @@ class LocalDateTimeFormatterTest {
     }
 
     @Test
+    fun formatDateAndTime_ukLocale() {
+        val formatter = setLocaleAndCreateFormatter(Locale.UK)
+        assertThat(formatter.formatDateAndTime(time)).isEqualTo("20 Oct, 14:06")
+    }
+
+    @Test
+    fun formatDateAndTime_usLocale() {
+        val formatter = setLocaleAndCreateFormatter(Locale.US)
+        assertThat(formatter.formatDateAndTime(time)).isEqualTo("Oct 20, 2:06 PM")
+    }
+
+    @Test
     fun formatTimeRange_ukLocale() {
         val formatter = setLocaleAndCreateFormatter(Locale.UK)
         val end = time.plus(1, ChronoUnit.HOURS)

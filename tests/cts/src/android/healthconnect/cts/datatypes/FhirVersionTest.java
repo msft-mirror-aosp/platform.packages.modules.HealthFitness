@@ -18,6 +18,7 @@ package android.healthconnect.cts.datatypes;
 
 import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
+import static android.healthconnect.cts.utils.PhrDataFactory.R4_VERSION_STRING;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -29,7 +30,7 @@ import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 
@@ -83,15 +84,15 @@ public class FhirVersionTest {
 
     @Test
     public void testFhirVersion_toString() {
-        FhirVersion fhirVersion = parseFhirVersion(FHIR_VERSION_R4);
+        FhirVersion fhirVersion = parseFhirVersion(R4_VERSION_STRING);
 
-        assertThat(fhirVersion.toString()).isEqualTo(FHIR_VERSION_R4);
+        assertThat(fhirVersion.toString()).isEqualTo(R4_VERSION_STRING);
     }
 
     @Test
     public void testFhirVersion_equals() {
-        FhirVersion fhirVersion1 = parseFhirVersion(FHIR_VERSION_R4);
-        FhirVersion fhirVersion2 = parseFhirVersion(FHIR_VERSION_R4);
+        FhirVersion fhirVersion1 = parseFhirVersion(R4_VERSION_STRING);
+        FhirVersion fhirVersion2 = parseFhirVersion(R4_VERSION_STRING);
 
         assertThat(fhirVersion1.equals(fhirVersion2)).isTrue();
         assertThat(fhirVersion1.hashCode()).isEqualTo(fhirVersion2.hashCode());
@@ -114,7 +115,7 @@ public class FhirVersionTest {
 
     @Test
     public void testWriteToParcelThenRestore_objectsAreIdentical() {
-        FhirVersion original = parseFhirVersion(FHIR_VERSION_R4);
+        FhirVersion original = FHIR_VERSION_R4;
 
         Parcel parcel = Parcel.obtain();
         original.writeToParcel(parcel, 0);
