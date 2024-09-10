@@ -60,7 +60,7 @@ java_defaults {
     ],
     libs: [
         "kotlin-annotations",
-        "android.test.base",
+        "android.test.base.stubs.system",
         "android.test.mock.stubs",
         "framework-healthfitness.impl",
     ],

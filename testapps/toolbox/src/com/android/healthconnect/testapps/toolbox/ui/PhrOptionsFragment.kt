@@ -104,6 +104,10 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
             executeAndShowMessage { insertImmunization(view) }
         }
 
+        view.requireViewById<Button>(R.id.phr_insert_allergy_button).setOnClickListener {
+            executeAndShowMessage { insertAllergy(view) }
+        }
+
         view.requireViewById<Button>(R.id.phr_read_by_id_button).setOnClickListener {
             executeAndShowMessage { readMedicalResourceForIdFromTextbox(view) }
         }
@@ -151,6 +155,29 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         )
         val insertedResourceId = "$insertedDataSourceId,1,immunization_1"
         view.findViewById<EditText>(R.id.phr_immunization_id_text).setText(insertedResourceId)
+        return insertedResources.joinToString(
+            separator = "\n",
+            transform = MedicalResource::toString
+        )
+    }
+
+    private suspend fun insertAllergy(view: View): String {
+        val allergyResource = loadJSONFromAsset(requireContext(), "allergyintolerance_1.json")
+            ?: return "No Allergy resource to insert"
+        Log.d("INSERT_ALLERGY", "Writing allergy $allergyResource")
+        val insertedDataSourceId =
+            view.findViewById<EditText>(R.id.phr_data_source_id_text).getText().toString()
+        val insertedResources = upsertMedicalResources(
+            listOf(
+                UpsertMedicalResourceRequest.Builder(
+                    insertedDataSourceId,
+                    FhirVersion.parseFhirVersion("4.0.1"),
+                    allergyResource
+                ).build()
+            )
+        )
+        val insertedResourceId = "$insertedDataSourceId,1,allergyintolerance_1"
+        view.findViewById<EditText>(R.id.phr_allergy_id_text).setText(insertedResourceId)
         return insertedResources.joinToString(
             separator = "\n",
             transform = MedicalResource::toString

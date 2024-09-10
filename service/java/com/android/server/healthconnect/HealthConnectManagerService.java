@@ -246,10 +246,10 @@ public class HealthConnectManagerService extends SystemService {
         mPermissionPackageChangesOrchestrator.setUserHandle(mCurrentForegroundUser);
 
         if (Flags.clearCachesAfterSwitchingUser()) {
-            // Clear all caches again after the user switching is done as there's a race condition
-            // with tasks re-populating the caches between clearing the cache and TransactionManager
-            // switching user, see b/355426144.
-            DatabaseHelper.clearAllCache();
+            // Clear preferences cache again after the user switching is done as there's a race
+            // condition with tasks re-populating the preferences cache between clearing the cache
+            // and TransactionManager switching user, see b/355426144.
+            PreferenceHelper.getInstance().clearCache();
         }
 
         HealthConnectDailyJobs.cancelAllJobs(mContext);
