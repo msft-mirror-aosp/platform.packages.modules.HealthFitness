@@ -37,6 +37,9 @@ import java.util.Set;
 /**
  * Captures the user's medical data. This is the class used for all medical resource types, and the
  * type is specified via {@link MedicalResourceType}.
+ *
+ * <p>The data representation follows the <a href="https://hl7.org/fhir/">Fast Healthcare
+ * Interoperability Resources (FHIR)</a> standard.
  */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class MedicalResource implements Parcelable {
