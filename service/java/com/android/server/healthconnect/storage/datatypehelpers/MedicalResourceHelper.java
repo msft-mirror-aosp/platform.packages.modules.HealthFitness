@@ -68,6 +68,7 @@ import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.TransactionManager.TransactionRunnableWithReturn;
+import com.android.server.healthconnect.storage.request.CreateIndexRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -155,6 +156,20 @@ public final class MedicalResourceHelper {
     /** Creates the medical_resource table. */
     public static void onInitialUpgrade(@NonNull SQLiteDatabase db) {
         createTable(db, getCreateTableRequest());
+        // There are 3 equivalent ways we could add the (Datasource, type, id) triple as a primary
+        // key - primary key, unique index, or unique constraint.
+        // Primary Key and unique constraints cannot be altered after table creation. Indexes can be
+        // dropped later and added to. So it seems most flexible to add as a named index.
+        db.execSQL(
+                new CreateIndexRequest(
+                                MEDICAL_RESOURCE_TABLE_NAME,
+                                MEDICAL_RESOURCE_TABLE_NAME + "_fhir_idx",
+                                /* isUnique= */ true,
+                                List.of(
+                                        DATA_SOURCE_ID_COLUMN_NAME,
+                                        FHIR_RESOURCE_TYPE_COLUMN_NAME,
+                                        FHIR_RESOURCE_ID_COLUMN_NAME))
+                        .getCommand());
     }
 
     /**

@@ -409,6 +409,10 @@
     <string name="default_error" description="Label shown when a user initiated action fails (e.g. deleting data) [CHAR_LIMIT=NONE]">Something went wrong. Please try again.</string>
     <!-- endregion -->
 
+    <!-- region Raw FHIR -->
+    <string name="raw_fhir_content_description" description="Content description for a JSON file that is an electronic health care record [CHAR_LIMIT=NONE]">Detailed health record</string>
+    <!-- endregion -->
+
     <!-- region Connected apps -->
     <string name="health_permission_header_description" description="Description text shown on screen for managing which apps have access to health and fitness data. Note: Health Connect is the brand [CHAR_LIMIT=NONE]">Apps with this permission can read and write your health and fitness data.</string>
     <string name="connected_apps_text" description="Description text shown on screen for managing which apps have access to health and fitness data. Note: Health Connect is the brand [CHAR_LIMIT=NONE]">Control which apps can access data stored in Health&#160;Connect. Tap an app to review the data it can read or write.</string>
@@ -529,6 +533,8 @@
     <string name="import_notification_open_intent_button" description="Button text on notification that returns the user to the Export-Import section of Health Connect to see their completed import. [CHAR_LIMIT=40]">Open</string>
     <string name="import_notification_choose_file_intent_button" description="Button text on notification restarts the file selection stage of the import process. [CHAR_LIMIT=40]">Choose file</string>
     <string name="import_notification_free_up_space_intent_button" description="Button text on notification that lets the user open their cloud storage provider to delete/move files to create space. [CHAR_LIMIT=40]">Free up space</string>
+
+    <string name="scheduled_export_on_toast_text" description="Toast text displayed when user sets up a scheduled export. [CHAR_LIMIT=NONE]">Scheduled export is on</string>
 
     <string name="export_notification_error_generic_error_title" description="Title text of notification displayed when export fails due to an unknown error. [CHAR_LIMIT=40]">Health&#160;Connect couldn\'t export data</string>
     <string name="export_notification_error_more_space_needed_title" description="Title text of notification displayed when export fails due to needing additional space. [CHAR_LIMIT=NONE]">More space needed</string>

@@ -37,6 +37,9 @@ public final class CreateIndexRequest {
             @NonNull String indexName,
             boolean isUnique,
             @NonNull List<String> columnNames) {
+        if (columnNames.isEmpty()) {
+            throw new IllegalArgumentException("Index must have at least one column");
+        }
         mTableName = tableName;
         mIndexName = indexName;
         mIsUnique = isUnique;
