@@ -56,11 +56,11 @@ android_test {
         "libstaticjvmtiagent",
     ],
     libs: [
-        "android.test.base",
-        "android.test.mock",
-        "android.test.runner",
-        "framework-sdkextensions",
-        "framework-configinfrastructure",
+        "android.test.base.stubs.system",
+        "android.test.mock.stubs.system",
+        "android.test.runner.stubs.system",
+        "framework-sdkextensions.stubs.module_lib",
+        "framework-configinfrastructure.stubs.module_lib",
     ],
     // Test coverage system runs on different devices. Need to
     // compile for all architecture.

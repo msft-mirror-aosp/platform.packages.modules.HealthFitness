@@ -120,6 +120,8 @@ import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.LocalManagerRegistry;
 import com.android.server.appop.AppOpsManagerLocal;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationCleaner;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.migration.MigrationTestUtils;
@@ -313,6 +315,11 @@ public class HealthConnectServiceImplTest {
                 .thenReturn(mPermissionManager);
         setUpAllMedicalPermissionChecksHardDenied();
 
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                        .setPreferenceHelper(mPreferenceHelper)
+                        .build();
+
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mTransactionManager,
@@ -324,7 +331,9 @@ public class HealthConnectServiceImplTest {
                         mMigrationUiStateManager,
                         mServiceContext,
                         mMedicalResourceHelper,
-                        mMedicalDataSourceHelper);
+                        mMedicalDataSourceHelper,
+                        healthConnectInjector.getExportManager(),
+                        healthConnectInjector.getExportImportSettingsStorage());
     }
 
     @After

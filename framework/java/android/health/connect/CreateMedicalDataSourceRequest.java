@@ -28,7 +28,12 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/** Represents a create request for {@link HealthConnectManager#createMedicalDataSource}. */
+/**
+ * Represents a create request for {@link HealthConnectManager#createMedicalDataSource}
+ *
+ * <p>Medical data is represented using the <a href="https://hl7.org/fhir/">Fast Healthcare
+ * Interoperability Resources (FHIR)</a> standard.
+ */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class CreateMedicalDataSourceRequest implements Parcelable {
     @NonNull private final Uri mFhirBaseUri;
