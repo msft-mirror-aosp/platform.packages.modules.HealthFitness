@@ -31,7 +31,6 @@ import static com.android.server.healthconnect.storage.datatypehelpers.MedicalRe
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getTableName;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
-import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.UUID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.request.ReadTableRequest.UNION;
 import static com.android.server.healthconnect.storage.utils.SqlJoin.SQL_JOIN_INNER;
@@ -148,7 +147,7 @@ public final class MedicalResourceHelper {
                 .addForeignKey(
                         MedicalDataSourceHelper.getMainTableName(),
                         Collections.singletonList(DATA_SOURCE_ID_COLUMN_NAME),
-                        Collections.singletonList(PRIMARY_COLUMN_NAME))
+                        Collections.singletonList(MedicalDataSourceHelper.getPrimaryColumnName()))
                 .setChildTableRequests(
                         Collections.singletonList(getCreateMedicalResourceIndicesTableRequest()));
     }
@@ -659,7 +658,7 @@ public final class MedicalResourceHelper {
                         MEDICAL_RESOURCE_TABLE_NAME,
                         MedicalDataSourceHelper.getMainTableName(),
                         DATA_SOURCE_ID_COLUMN_NAME,
-                        PRIMARY_COLUMN_NAME)
+                        MedicalDataSourceHelper.getPrimaryColumnName())
                 .setJoinType(SQL_JOIN_INNER);
     }
 
@@ -1084,7 +1083,7 @@ public final class MedicalResourceHelper {
 
         ReadTableRequest innerRead =
                 MedicalDataSourceHelper.getReadTableRequest(List.of(), appId)
-                        .setColumnNames(List.of(PRIMARY_COLUMN_NAME));
+                        .setColumnNames(List.of(MedicalDataSourceHelper.getPrimaryColumnName()));
         List<String> hexUuids = medicalResourceIdsToHexUuids(medicalResourceIds);
         WhereClauses innerRequest =
                 new WhereClauses(AND)

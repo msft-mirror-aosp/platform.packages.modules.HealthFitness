@@ -37,7 +37,10 @@ import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.migration.MigrationStateChangeJob;
+import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
+import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import java.time.Clock;
 import java.util.Objects;
@@ -74,13 +77,25 @@ public class HealthConnectDailyService extends JobService {
         }
 
         HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper;
+        ExportImportSettingsStorage exportImportSettingsStorage;
+        ExportManager exportManager;
 
         if (Flags.dependencyInjection()) {
             HealthConnectInjector healthConnectInjector = HealthConnectInjector.getInstance();
             healthDataCategoryPriorityHelper =
                     healthConnectInjector.getHealthDataCategoryPriorityHelper();
+            exportImportSettingsStorage = healthConnectInjector.getExportImportSettingsStorage();
+            exportManager = healthConnectInjector.getExportManager();
         } else {
             healthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
+            exportImportSettingsStorage =
+                    new ExportImportSettingsStorage(PreferenceHelper.getInstance());
+            exportManager =
+                    new ExportManager(
+                            getApplicationContext(),
+                            Clock.systemUTC(),
+                            exportImportSettingsStorage,
+                            TransactionManager.getInitialisedInstance());
         }
 
         // This service executes each incoming job on a Handler running on the application's
@@ -120,8 +135,8 @@ public class HealthConnectDailyService extends JobService {
                                             getApplicationContext(),
                                             userId,
                                             params.getExtras(),
-                                            new ExportManager(
-                                                    getApplicationContext(), Clock.systemUTC()));
+                                            exportManager,
+                                            exportImportSettingsStorage);
                             // If the export is not successful, reschedule the job.
                             jobFinished(params, !isExportSuccessful);
                         });

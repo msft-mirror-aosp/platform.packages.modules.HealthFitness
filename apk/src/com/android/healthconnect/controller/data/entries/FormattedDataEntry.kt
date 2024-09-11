@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.data.entries
 
+import android.health.connect.MedicalResourceId
 import android.health.connect.datatypes.ExercisePerformanceGoal
 import android.health.connect.datatypes.ExerciseRoute
 import android.health.connect.datatypes.PlannedExerciseBlock
@@ -40,6 +41,7 @@ sealed class FormattedEntry(open val uuid: String) {
         val title: String,
         val titleA11y: String,
         val time: Instant? = null,
+        val medicalResourceId: MedicalResourceId,
     ) : FormattedEntry(uuid = "")
 
     data class SleepSessionEntry(
