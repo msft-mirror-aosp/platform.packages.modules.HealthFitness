@@ -167,6 +167,13 @@ public class MedicalDataSourceHelper {
         return whereClauses;
     }
 
+    /** Creates {@link ReadTableRequest} that joins with {@link AppInfoHelper#TABLE_NAME}. */
+    @NonNull
+    private static ReadTableRequest getReadTableRequestJoinWithAppInfo() {
+        return new ReadTableRequest(getMainTableName())
+                .setJoinClause(getJoinClauseWithAppInfoTable());
+    }
+
     /**
      * Creates {@link ReadTableRequest} that joins with {@link AppInfoHelper#TABLE_NAME} and filters
      * for the given list of {@code ids}.
@@ -323,10 +330,8 @@ public class MedicalDataSourceHelper {
      */
     @NonNull
     public List<MedicalDataSource> getMedicalDataSourcesByPackageWithoutPermissionChecks(
-            Set<String> packageNames) throws SQLiteException {
-        ReadTableRequest readTableRequest =
-                new ReadTableRequest(getMainTableName())
-                        .setJoinClause(getJoinClauseWithAppInfoTable());
+            @NonNull Set<String> packageNames) throws SQLiteException {
+        ReadTableRequest readTableRequest = getReadTableRequestJoinWithAppInfo();
         if (!packageNames.isEmpty()) {
             List<Long> appInfoIds = mAppInfoHelper.getAppInfoIds(packageNames.stream().toList());
             readTableRequest.setWhereClause(
@@ -347,7 +352,7 @@ public class MedicalDataSourceHelper {
      */
     @NonNull
     public List<MedicalDataSource> getMedicalDataSourcesByPackageWithPermissionChecks(
-            Set<String> packageNames,
+            @NonNull Set<String> packageNames,
             @NonNull Set<Integer> ignoredGrantedReadMedicalResourceTypes,
             @NonNull String ignoredCallingPackageName,
             boolean ignoredHasWritePermission,
@@ -355,9 +360,7 @@ public class MedicalDataSourceHelper {
             throws SQLiteException {
         // TODO(b/361540290): Use ignored fields for permission checks in read table request.
         // TODO(b/359892459): Add CTS tests once it is properly implemented.
-        ReadTableRequest readTableRequest =
-                new ReadTableRequest(getMainTableName())
-                        .setJoinClause(getJoinClauseWithAppInfoTable());
+        ReadTableRequest readTableRequest = getReadTableRequestJoinWithAppInfo();
         if (!packageNames.isEmpty()) {
             List<Long> appInfoIds = mAppInfoHelper.getAppInfoIds(packageNames.stream().toList());
             readTableRequest.setWhereClause(
@@ -408,19 +411,18 @@ public class MedicalDataSourceHelper {
         ReadTableRequest readTableRequest = getReadTableRequest(List.of(id), appInfoIdRestriction);
         boolean success =
                 mTransactionManager.runAsTransaction(
-                                db -> {
-                                    try (Cursor cursor =
-                                            mTransactionManager.read(db, readTableRequest)) {
-                                        if (cursor.getCount() != 1) {
-                                            return false;
-                                        }
-                                    }
-                                    // This also deletes the contained data, because they are
-                                    // referenced by foreign key, and so are handled by ON DELETE
-                                    // CASCADE in the db.
-                                    mTransactionManager.delete(db, request);
-                                    return true;
-                                });
+                        db -> {
+                            try (Cursor cursor = mTransactionManager.read(db, readTableRequest)) {
+                                if (cursor.getCount() != 1) {
+                                    return false;
+                                }
+                            }
+                            // This also deletes the contained data, because they are
+                            // referenced by foreign key, and so are handled by ON DELETE
+                            // CASCADE in the db.
+                            mTransactionManager.delete(db, request);
+                            return true;
+                        });
         if (!success) {
             if (appInfoIdRestriction == null) {
                 throw new IllegalArgumentException("Id " + id + " does not exist");
@@ -466,6 +468,26 @@ public class MedicalDataSourceHelper {
             }
         }
         return uuidToRowId;
+    }
+
+    /**
+     * Creates a row ID to {@link MedicalDataSource} map for all {@link MedicalDataSource}s stored
+     * in {@code MEDICAL_DATA_SOURCE_TABLE}.
+     */
+    @NonNull
+    public Map<Long, MedicalDataSource> getAllRowIdToDataSourceMap(@NonNull SQLiteDatabase db) {
+        ReadTableRequest readTableRequest = getReadTableRequestJoinWithAppInfo();
+        Map<Long, MedicalDataSource> rowIdToDataSourceMap = new HashMap<>();
+        try (Cursor cursor = mTransactionManager.read(db, readTableRequest)) {
+            if (cursor.moveToFirst()) {
+                do {
+                    long rowId = getCursorLong(cursor, MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME);
+                    MedicalDataSource dataSource = getMedicalDataSource(cursor);
+                    rowIdToDataSourceMap.put(rowId, dataSource);
+                } while (cursor.moveToNext());
+            }
+        }
+        return rowIdToDataSourceMap;
     }
 
     @NonNull

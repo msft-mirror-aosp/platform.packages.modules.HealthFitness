@@ -48,8 +48,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.FakePreferenceHelper;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.notifications.HealthConnectNotificationSender;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -109,6 +112,7 @@ public class ImportManagerTest {
 
     private ImportManager mImportManager;
     private HealthConnectNotificationSender mNotificationSender;
+    private ExportImportSettingsStorage mExportImportSettingsStorage;
 
     @Before
     public void setUp() throws Exception {
@@ -122,7 +126,17 @@ public class ImportManagerTest {
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         mTransactionTestUtils.insertApp("other.app");
         mNotificationSender = mock(HealthConnectNotificationSender.class);
-        mImportManager = new ImportManager(mContext, mNotificationSender);
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                        .setPreferenceHelper(new FakePreferenceHelper())
+                        .build();
+        mExportImportSettingsStorage = healthConnectInjector.getExportImportSettingsStorage();
+        mImportManager =
+                new ImportManager(
+                        mContext,
+                        mNotificationSender,
+                        mExportImportSettingsStorage,
+                        mTransactionManager);
         HealthConnectDeviceConfigManager.initializeInstance(mContext);
 
         mPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
@@ -180,7 +194,7 @@ public class ImportManagerTest {
         assertThat(records).hasSize(2);
         assertThat(records.get(0).getUuid()).isEqualTo(stepsUuids.get(0));
         assertThat(records.get(1).getUuid()).isEqualTo(bloodPressureUuids.get(0));
-        assertThat(ExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
                 .isEqualTo(DATA_IMPORT_ERROR_NONE);
     }
 
@@ -311,7 +325,7 @@ public class ImportManagerTest {
                                 .NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_INVALID_FILE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(ExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
                 .isEqualTo(DATA_IMPORT_ERROR_WRONG_FILE);
     }
 
@@ -337,7 +351,7 @@ public class ImportManagerTest {
                                 .NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_INVALID_FILE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(ExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
                 .isEqualTo(DATA_IMPORT_ERROR_WRONG_FILE);
     }
 
@@ -363,7 +377,7 @@ public class ImportManagerTest {
                                 .NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_VERSION_MISMATCH,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(ExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
                 .isEqualTo(DATA_IMPORT_ERROR_VERSION_MISMATCH);
     }
 
@@ -382,7 +396,7 @@ public class ImportManagerTest {
                         ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_COMPLETE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(ExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
                 .isEqualTo(DATA_IMPORT_ERROR_NONE);
     }
 

@@ -52,6 +52,7 @@ public class PreferenceHelper extends DatabaseHelper {
     public static final List<Pair<String, Integer>> UNIQUE_COLUMN_INFO =
             Collections.singletonList(new Pair<>(KEY_COLUMN_NAME, TYPE_STRING));
     private static final String VALUE_COLUMN_NAME = "value";
+    private final TransactionManager mTransactionManager;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private static volatile PreferenceHelper sPreferenceHelper;
@@ -59,21 +60,21 @@ public class PreferenceHelper extends DatabaseHelper {
     protected volatile ConcurrentHashMap<String, String> mPreferences;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    protected PreferenceHelper() {}
+    protected PreferenceHelper(TransactionManager transactionManager) {
+        mTransactionManager = transactionManager;
+    }
 
     /** Note: Overrides existing preference (if it exists) with the new value */
     public synchronized void insertOrReplacePreference(String key, String value) {
-        TransactionManager.getInitialisedInstance()
-                .insertOrReplace(
-                        new UpsertTableRequest(
-                                TABLE_NAME, getContentValues(key, value), UNIQUE_COLUMN_INFO));
+        mTransactionManager.insertOrReplace(
+                new UpsertTableRequest(
+                        TABLE_NAME, getContentValues(key, value), UNIQUE_COLUMN_INFO));
         getPreferences().put(key, value);
     }
 
     /** Removes key entry from the table */
     public synchronized void removeKey(String id) {
-        TransactionManager.getInitialisedInstance()
-                .delete(new DeleteTableRequest(TABLE_NAME).setId(KEY_COLUMN_NAME, id));
+        mTransactionManager.delete(new DeleteTableRequest(TABLE_NAME).setId(KEY_COLUMN_NAME, id));
         getPreferences().remove(id);
     }
 
@@ -88,7 +89,7 @@ public class PreferenceHelper extends DatabaseHelper {
                                         TABLE_NAME,
                                         getContentValues(key, value),
                                         UNIQUE_COLUMN_INFO)));
-        TransactionManager.getInitialisedInstance().insertOrReplaceAll(requests);
+        mTransactionManager.insertOrReplaceAll(requests);
         getPreferences().putAll(keyValues);
     }
 
@@ -139,8 +140,7 @@ public class PreferenceHelper extends DatabaseHelper {
         }
 
         mPreferences = new ConcurrentHashMap<>();
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        try (Cursor cursor = transactionManager.read(new ReadTableRequest(TABLE_NAME))) {
+        try (Cursor cursor = mTransactionManager.read(new ReadTableRequest(TABLE_NAME))) {
             while (cursor.moveToNext()) {
                 String key = StorageUtils.getCursorString(cursor, KEY_COLUMN_NAME);
                 String value = StorageUtils.getCursorString(cursor, VALUE_COLUMN_NAME);
@@ -158,9 +158,14 @@ public class PreferenceHelper extends DatabaseHelper {
         return columnInfo;
     }
 
-    public static synchronized PreferenceHelper getInstance() {
+    public static PreferenceHelper getInstance() {
+        return getInstance(TransactionManager.getInitialisedInstance());
+    }
+
+    /** Method to get an instance of PreferenceHelper by passing in the dependency. */
+    public static synchronized PreferenceHelper getInstance(TransactionManager transactionManager) {
         if (sPreferenceHelper == null) {
-            sPreferenceHelper = new PreferenceHelper();
+            sPreferenceHelper = new PreferenceHelper(transactionManager);
         }
 
         return sPreferenceHelper;

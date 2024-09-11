@@ -50,8 +50,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.FakePreferenceHelper;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
@@ -105,6 +108,7 @@ public class ExportManagerTest {
     private DatabaseContext mExportedDbContext;
     private Instant mTimeStamp;
     private Clock mFakeClock;
+    private ExportImportSettingsStorage mExportImportSettingsStorage;
 
     @Before
     public void setUp() throws Exception {
@@ -116,7 +120,15 @@ public class ExportManagerTest {
         mTimeStamp = Instant.parse("2024-06-04T16:39:12Z");
         mFakeClock = Clock.fixed(mTimeStamp, ZoneId.of("UTC"));
 
-        mExportManager = new ExportManager(mContext, mFakeClock);
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                        .setPreferenceHelper(new FakePreferenceHelper())
+                        .build();
+
+        mExportImportSettingsStorage = healthConnectInjector.getExportImportSettingsStorage();
+        mExportManager =
+                new ExportManager(
+                        mContext, mFakeClock, mExportImportSettingsStorage, transactionManager);
 
         mExportedDbContext =
                 DatabaseContext.create(
@@ -247,10 +259,10 @@ public class ExportManagerTest {
                 new HealthConnectDatabase(mContext, ORIGINAL_DATABASE_NAME);
         assertTableSize(originalDatabase, "steps_record_table", 2);
 
-        ExportImportSettingsStorage.setLastExportError(
+        mExportImportSettingsStorage.setLastExportError(
                 ScheduledExportStatus.DATA_EXPORT_ERROR_NONE, mTimeStamp);
         // Set export location to inaccessible directory.
-        ExportImportSettingsStorage.configure(
+        mExportImportSettingsStorage.configure(
                 new ScheduledExportSettings.Builder()
                         .setUri(Uri.fromFile(new File("inaccessible")))
                         .build());
@@ -299,7 +311,7 @@ public class ExportManagerTest {
 
         // Export running at a later time with an error
         mTimeStamp = Instant.parse("2024-12-12T16:39:12Z");
-        ExportImportSettingsStorage.configure(
+        mExportImportSettingsStorage.configure(
                 new ScheduledExportSettings.Builder()
                         .setUri(Uri.fromFile(new File("inaccessible")))
                         .build());
@@ -307,7 +319,8 @@ public class ExportManagerTest {
 
         // Last successful export should hold the previous timestamp as the last export failed
         Instant lastSuccessfulExport =
-                ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                mExportImportSettingsStorage
+                        .getScheduledExportStatus(mContext)
                         .getLastSuccessfulExportTime();
         assertThat(lastSuccessfulExport).isEqualTo(Instant.parse("2024-06-04T16:39:12Z"));
     }
@@ -329,12 +342,13 @@ public class ExportManagerTest {
         // Running a successful export records a "last successful export".
         assertThat(mExportManager.runExport()).isTrue();
         assertThat(
-                        ExportImportSettingsStorage.getScheduledExportStatus(context)
+                        mExportImportSettingsStorage
+                                .getScheduledExportStatus(context)
                                 .getLastExportFileName())
                 .isEqualTo(REMOTE_EXPORT_ZIP_FILE_NAME);
 
         // Export running at a later time with an error
-        ExportImportSettingsStorage.configure(
+        mExportImportSettingsStorage.configure(
                 new ScheduledExportSettings.Builder()
                         .setUri(Uri.fromFile(new File("inaccessible")))
                         .build());
@@ -342,13 +356,14 @@ public class ExportManagerTest {
 
         // Last successful export should hold the previous file name as the last export failed
         assertThat(
-                        ExportImportSettingsStorage.getScheduledExportStatus(context)
+                        mExportImportSettingsStorage
+                                .getScheduledExportStatus(context)
                                 .getLastExportFileName())
                 .isEqualTo(REMOTE_EXPORT_ZIP_FILE_NAME);
     }
 
     private void configureExportUri() {
-        ExportImportSettingsStorage.configure(
+        mExportImportSettingsStorage.configure(
                 new ScheduledExportSettings.Builder()
                         .setUri(
                                 Uri.fromFile(
@@ -390,18 +405,21 @@ public class ExportManagerTest {
                                 eq(compressedFileSizeKb)),
                 times(1));
         Instant lastSuccessfulExport =
-                ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                mExportImportSettingsStorage
+                        .getScheduledExportStatus(mContext)
                         .getLastSuccessfulExportTime();
         assertThat(lastSuccessfulExport).isEqualTo(timeOfSuccess);
     }
 
     private void assertErrorStatusStored(int exportStatus, Instant timeOfError) {
         assertThat(
-                        ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                        mExportImportSettingsStorage
+                                .getScheduledExportStatus(mContext)
                                 .getDataExportError())
                 .isEqualTo(exportStatus);
         assertThat(
-                        ExportImportSettingsStorage.getScheduledExportStatus(mContext)
+                        mExportImportSettingsStorage
+                                .getScheduledExportStatus(mContext)
                                 .getLastFailedExportTime())
                 .isEqualTo(timeOfError);
     }

@@ -408,7 +408,7 @@ public class MedicalDataSourceHelperTest {
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
                         toUuids(List.of(dataSource1.getId(), dataSource2.getId())));
 
-        assertThat(result.size()).isEqualTo(2);
+        assertThat(result).hasSize(2);
         assertThat(result).containsExactlyElementsIn(expected);
     }
 
