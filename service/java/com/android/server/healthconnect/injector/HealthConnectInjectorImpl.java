@@ -21,11 +21,15 @@ import android.content.Context;
 import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
+import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
+import java.time.Clock;
 import java.util.Objects;
 
 /**
@@ -40,6 +44,9 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final TransactionManager mTransactionManager;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     private final PriorityMigrationHelper mPriorityMigrationHelper;
+    private final PreferenceHelper mPreferenceHelper;
+    private final ExportImportSettingsStorage mExportImportSettingsStorage;
+    private final ExportManager mExportManager;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -63,6 +70,22 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         ? PriorityMigrationHelper.getInstance(
                                 mHealthDataCategoryPriorityHelper, mTransactionManager)
                         : builder.mPriorityMigrationHelper;
+        mPreferenceHelper =
+                builder.mPreferenceHelper == null
+                        ? PreferenceHelper.getInstance(mTransactionManager)
+                        : builder.mPreferenceHelper;
+        mExportImportSettingsStorage =
+                builder.mExportImportSettingsStorage == null
+                        ? new ExportImportSettingsStorage(mPreferenceHelper)
+                        : builder.mExportImportSettingsStorage;
+        mExportManager =
+                builder.mExportManager == null
+                        ? new ExportManager(
+                                builder.mHealthConnectUserContext,
+                                Clock.systemUTC(),
+                                mExportImportSettingsStorage,
+                                mTransactionManager)
+                        : builder.mExportManager;
     }
 
     @Override
@@ -83,6 +106,21 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     @Override
     public PriorityMigrationHelper getPriorityMigrationHelper() {
         return mPriorityMigrationHelper;
+    }
+
+    @Override
+    public PreferenceHelper getPreferenceHelper() {
+        return mPreferenceHelper;
+    }
+
+    @Override
+    public ExportImportSettingsStorage getExportImportSettingsStorage() {
+        return mExportImportSettingsStorage;
+    }
+
+    @Override
+    public ExportManager getExportManager() {
+        return mExportManager;
     }
 
     /**
@@ -108,6 +146,9 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private TransactionManager mTransactionManager;
         @Nullable private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
         @Nullable private PriorityMigrationHelper mPriorityMigrationHelper;
+        @Nullable private PreferenceHelper mPreferenceHelper;
+        @Nullable private ExportImportSettingsStorage mExportImportSettingsStorage;
+        @Nullable private ExportManager mExportManager;
 
         private Builder(Context context) {
             mHealthConnectUserContext = new HealthConnectUserContext(context, context.getUser());
@@ -139,6 +180,28 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         public Builder setPriorityMigrationHelper(PriorityMigrationHelper priorityMigrationHelper) {
             Objects.requireNonNull(priorityMigrationHelper);
             mPriorityMigrationHelper = priorityMigrationHelper;
+            return this;
+        }
+
+        /** Set fake or custom PreferenceHelper */
+        public Builder setPreferenceHelper(PreferenceHelper preferenceHelper) {
+            Objects.requireNonNull(preferenceHelper);
+            mPreferenceHelper = preferenceHelper;
+            return this;
+        }
+
+        /** Set fake or custom ExportImportSettingsStorage */
+        public Builder setExportImportSettingsStorage(
+                ExportImportSettingsStorage exportImportSettingsStorage) {
+            Objects.requireNonNull(exportImportSettingsStorage);
+            mExportImportSettingsStorage = exportImportSettingsStorage;
+            return this;
+        }
+
+        /** Set fake or custom ExportManager */
+        public Builder setExportManager(ExportManager exportManager) {
+            Objects.requireNonNull(exportManager);
+            mExportManager = exportManager;
             return this;
         }
 
