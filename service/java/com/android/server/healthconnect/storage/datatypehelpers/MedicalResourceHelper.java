@@ -103,7 +103,10 @@ public final class MedicalResourceHelper {
     private static final String MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME = "medical_resource_row_id";
     @VisibleForTesting static final String FHIR_RESOURCE_TYPE_COLUMN_NAME = "fhir_resource_type";
     @VisibleForTesting static final String FHIR_DATA_COLUMN_NAME = "fhir_data";
-    @VisibleForTesting static final String FHIR_VERSION_COLUMN_NAME = "fhir_version";
+
+    @VisibleForTesting
+    static final String FHIR_VERSION_COLUMN_NAME = "medical_resource_fhir_version";
+
     @VisibleForTesting static final String DATA_SOURCE_ID_COLUMN_NAME = "data_source_id";
     @VisibleForTesting static final String FHIR_RESOURCE_ID_COLUMN_NAME = "fhir_resource_id";
     private static final String MEDICAL_RESOURCE_COLUMNS =
@@ -920,6 +923,7 @@ public final class MedicalResourceHelper {
                                         upsertMedicalResourceInternalRequests));
     }
 
+    // TODO(b/365958801) Check if MedicalResource's fhirVersion matches data source.
     private List<MedicalResource> readDataSourcesAndUpsertMedicalResources(
             SQLiteDatabase db,
             String callingPackageName,

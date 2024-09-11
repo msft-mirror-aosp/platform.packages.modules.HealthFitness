@@ -40,17 +40,19 @@ package android.health.connect {
     method public int describeContents();
     method @NonNull public String getDisplayName();
     method @NonNull public android.net.Uri getFhirBaseUri();
+    method @NonNull public android.health.connect.datatypes.FhirVersion getFhirVersion();
     method public void writeToParcel(@NonNull android.os.Parcel, int);
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.CreateMedicalDataSourceRequest> CREATOR;
   }
 
   public static final class CreateMedicalDataSourceRequest.Builder {
-    ctor public CreateMedicalDataSourceRequest.Builder(@NonNull android.net.Uri, @NonNull String);
+    ctor public CreateMedicalDataSourceRequest.Builder(@NonNull android.net.Uri, @NonNull String, @NonNull android.health.connect.datatypes.FhirVersion);
     ctor public CreateMedicalDataSourceRequest.Builder(@NonNull android.health.connect.CreateMedicalDataSourceRequest.Builder);
     ctor public CreateMedicalDataSourceRequest.Builder(@NonNull android.health.connect.CreateMedicalDataSourceRequest);
     method @NonNull public android.health.connect.CreateMedicalDataSourceRequest build();
     method @NonNull public android.health.connect.CreateMedicalDataSourceRequest.Builder setDisplayName(@NonNull String);
     method @NonNull public android.health.connect.CreateMedicalDataSourceRequest.Builder setFhirBaseUri(@NonNull android.net.Uri);
+    method @NonNull public android.health.connect.CreateMedicalDataSourceRequest.Builder setFhirVersion(@NonNull android.health.connect.datatypes.FhirVersion);
   }
 
   @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class DeleteMedicalResourcesRequest implements android.os.Parcelable {
@@ -1056,6 +1058,7 @@ package android.health.connect.datatypes {
     method public int getMajor();
     method public int getMinor();
     method public int getPatch();
+    method public boolean isSupportedFhirVersion();
     method @NonNull public static android.health.connect.datatypes.FhirVersion parseFhirVersion(@NonNull String);
     method public void writeToParcel(@NonNull android.os.Parcel, int);
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.datatypes.FhirVersion> CREATOR;
@@ -1182,6 +1185,7 @@ package android.health.connect.datatypes {
     method public int describeContents();
     method @NonNull public String getDisplayName();
     method @NonNull public android.net.Uri getFhirBaseUri();
+    method @Nullable public android.health.connect.datatypes.FhirVersion getFhirVersion();
     method @NonNull public String getId();
     method @Nullable public java.time.Instant getLastDataUpdateTime();
     method @NonNull public String getPackageName();
@@ -1196,6 +1200,7 @@ package android.health.connect.datatypes {
     method @NonNull public android.health.connect.datatypes.MedicalDataSource build();
     method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setDisplayName(@NonNull String);
     method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setFhirBaseUri(@NonNull android.net.Uri);
+    method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setFhirVersion(@Nullable android.health.connect.datatypes.FhirVersion);
     method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setId(@NonNull String);
     method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setLastDataUpdateTime(@Nullable java.time.Instant);
     method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setPackageName(@NonNull String);

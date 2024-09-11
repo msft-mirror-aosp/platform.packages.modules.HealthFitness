@@ -1978,6 +1978,7 @@ public class HealthConnectManagerTest {
         assertThat(responseDataSource.getId()).isNotEmpty();
         assertThat(responseDataSource.getFhirBaseUri()).isEqualTo(request.getFhirBaseUri());
         assertThat(responseDataSource.getDisplayName()).isEqualTo(request.getDisplayName());
+        assertThat(responseDataSource.getFhirVersion()).isEqualTo(request.getFhirVersion());
         assertThat(responseDataSource.getPackageName()).isEqualTo(APP_PACKAGE_NAME);
     }
 

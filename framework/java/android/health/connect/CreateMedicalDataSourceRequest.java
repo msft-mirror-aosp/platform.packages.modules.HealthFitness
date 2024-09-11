@@ -24,6 +24,7 @@ import static java.util.Objects.requireNonNull;
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.health.connect.datatypes.FhirVersion;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -43,6 +44,7 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
 
     @NonNull private final Uri mFhirBaseUri;
     @NonNull private final String mDisplayName;
+    @NonNull private final FhirVersion mFhirVersion;
     private long mDataSize;
 
     @NonNull
@@ -65,14 +67,20 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
                 }
             };
 
-    private CreateMedicalDataSourceRequest(@NonNull Uri fhirBaseUri, @NonNull String displayName) {
+    private CreateMedicalDataSourceRequest(
+            @NonNull Uri fhirBaseUri,
+            @NonNull String displayName,
+            @NonNull FhirVersion fhirVersion) {
         requireNonNull(fhirBaseUri);
         requireNonNull(displayName);
+        requireNonNull(fhirVersion);
         validateFhirBaseUriCharacterLimit(fhirBaseUri);
         validateDisplayNameCharacterLimit(displayName);
+        validateFhirVersion(fhirVersion);
 
         mFhirBaseUri = fhirBaseUri;
         mDisplayName = displayName;
+        mFhirVersion = fhirVersion;
     }
 
     private CreateMedicalDataSourceRequest(@NonNull Parcel in) {
@@ -81,9 +89,13 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
 
         mFhirBaseUri = requireNonNull(in.readParcelable(Uri.class.getClassLoader(), Uri.class));
         mDisplayName = requireNonNull(in.readString());
+        mFhirVersion =
+                requireNonNull(
+                        in.readParcelable(FhirVersion.class.getClassLoader(), FhirVersion.class));
 
         validateFhirBaseUriCharacterLimit(mFhirBaseUri);
         validateDisplayNameCharacterLimit(mDisplayName);
+        validateFhirVersion(mFhirVersion);
     }
 
     /** Returns the fhir base uri. */
@@ -96,6 +108,12 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
     @NonNull
     public String getDisplayName() {
         return mDisplayName;
+    }
+
+    /** Returns the fhir version. */
+    @NonNull
+    public FhirVersion getFhirVersion() {
+        return mFhirVersion;
     }
 
     /**
@@ -116,6 +134,7 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeParcelable(mFhirBaseUri, 0);
         dest.writeString(mDisplayName);
+        dest.writeParcelable(mFhirVersion, 0);
     }
 
     /** Indicates whether some other object is "equal to" this one. */
@@ -124,13 +143,14 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
         if (this == o) return true;
         if (!(o instanceof CreateMedicalDataSourceRequest that)) return false;
         return getFhirBaseUri().equals(that.getFhirBaseUri())
-                && getDisplayName().equals(that.getDisplayName());
+                && getDisplayName().equals(that.getDisplayName())
+                && getFhirVersion().equals(that.getFhirVersion());
     }
 
     /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
-        return hash(getFhirBaseUri(), getDisplayName());
+        return hash(getFhirBaseUri(), getDisplayName(), getFhirVersion());
     }
 
     /** Returns a string representation of this {@link CreateMedicalDataSourceRequest}. */
@@ -140,6 +160,7 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
         sb.append(this.getClass().getSimpleName()).append("{");
         sb.append("fhirBaseUri=").append(getFhirBaseUri());
         sb.append(",displayName=").append(getDisplayName());
+        sb.append(",fhirVersion=").append(getFhirVersion());
         sb.append("}");
         return sb.toString();
     }
@@ -148,6 +169,7 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
     public static final class Builder {
         @NonNull private Uri mFhirBaseUri;
         @NonNull private String mDisplayName;
+        @NonNull private FhirVersion mFhirVersion;
 
         /**
          * @param fhirBaseUri The FHIR base URI of the data source. For data coming from a FHIR
@@ -155,25 +177,35 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
          *     characters.
          * @param displayName The display name that describes the data source. The maximum length
          *     for the display name is 90 characters.
+         * @param fhirVersion The fhir version of the medical data that will be linked to this data
+         *     source. This has to be a version supported by Health Connect, as documented on the
+         *     {@link FhirVersion}.
          */
-        public Builder(@NonNull Uri fhirBaseUri, @NonNull String displayName) {
+        public Builder(
+                @NonNull Uri fhirBaseUri,
+                @NonNull String displayName,
+                @NonNull FhirVersion fhirVersion) {
             requireNonNull(fhirBaseUri);
             requireNonNull(displayName);
+            requireNonNull(fhirVersion);
 
             mFhirBaseUri = fhirBaseUri;
             mDisplayName = displayName;
+            mFhirVersion = fhirVersion;
         }
 
         public Builder(@NonNull Builder original) {
             requireNonNull(original);
             mFhirBaseUri = original.mFhirBaseUri;
             mDisplayName = original.mDisplayName;
+            mFhirVersion = original.mFhirVersion;
         }
 
         public Builder(@NonNull CreateMedicalDataSourceRequest original) {
             requireNonNull(original);
             mFhirBaseUri = original.getFhirBaseUri();
             mDisplayName = original.getDisplayName();
+            mFhirVersion = original.getFhirVersion();
         }
 
         /**
@@ -200,16 +232,25 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
             return this;
         }
 
+        /** Sets the fhir version of data from this data source. */
+        @NonNull
+        public Builder setFhirVersion(@NonNull FhirVersion fhirVersion) {
+            requireNonNull(fhirVersion);
+            mFhirVersion = fhirVersion;
+            return this;
+        }
+
         /**
          * Returns a new instance of {@link CreateMedicalDataSourceRequest} with the specified
          * parameters.
          *
          * @throws IllegalArgumentException if the {@code mFhirBaseUri} or {@code mDisplayName}
-         *     exceed the character limits.
+         *     exceed the character limits or if the {@code mFhirVersion} is not supported by Health
+         *     Connect.
          */
         @NonNull
         public CreateMedicalDataSourceRequest build() {
-            return new CreateMedicalDataSourceRequest(mFhirBaseUri, mDisplayName);
+            return new CreateMedicalDataSourceRequest(mFhirBaseUri, mDisplayName, mFhirVersion);
         }
     }
 
@@ -235,6 +276,12 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
                     "Fhir base uri cannot be longer than "
                             + FHIR_BASE_URI_CHARACTER_LIMIT
                             + " characters.");
+        }
+    }
+
+    private static void validateFhirVersion(FhirVersion fhirVersion) {
+        if (!fhirVersion.isSupportedFhirVersion()) {
+            throw new IllegalArgumentException("Unsupported FHIR version " + fhirVersion + ".");
         }
     }
 }

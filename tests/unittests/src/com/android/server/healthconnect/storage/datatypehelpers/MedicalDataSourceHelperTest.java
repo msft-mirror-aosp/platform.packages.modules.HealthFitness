@@ -23,18 +23,22 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_VERSION;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_BASE_URI;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_DISPLAY_NAME;
+import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_FHIR_VERSION;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_PACKAGE_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.createAllergyMedicalResource;
 import static android.healthconnect.cts.utils.PhrDataFactory.createImmunizationMedicalResource;
+import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 
 import static com.android.server.healthconnect.storage.PhrTestUtils.ACCESS_LOG_EQUIVALENCE;
 import static com.android.server.healthconnect.storage.PhrTestUtils.makeUpsertRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.DATA_SOURCE_UUID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.DISPLAY_NAME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.FHIR_BASE_URI_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.FHIR_VERSION_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.MAX_ALLOWED_MEDICAL_DATA_SOURCES;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.MEDICAL_DATA_SOURCE_TABLE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
@@ -65,6 +69,7 @@ import android.graphics.drawable.Drawable;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.accesslog.AccessLog;
+import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.utils.PhrDataFactory;
@@ -177,6 +182,7 @@ public class MedicalDataSourceHelperTest {
                                 MedicalDataSourceHelper.getAppInfoIdColumnName(), INTEGER_NOT_NULL),
                         Pair.create(DISPLAY_NAME_COLUMN_NAME, TEXT_NOT_NULL),
                         Pair.create(FHIR_BASE_URI_COLUMN_NAME, TEXT_NOT_NULL),
+                        Pair.create(FHIR_VERSION_COLUMN_NAME, TEXT_NOT_NULL),
                         Pair.create(DATA_SOURCE_UUID_COLUMN_NAME, BLOB_UNIQUE_NON_NULL),
                         Pair.create(LAST_MODIFIED_TIME_COLUMN_NAME, INTEGER_NOT_NULL));
         CreateTableRequest expected =
@@ -195,7 +201,9 @@ public class MedicalDataSourceHelperTest {
     public void getUpsertTableRequest_correctResult() {
         CreateMedicalDataSourceRequest createMedicalDataSourceRequest =
                 new CreateMedicalDataSourceRequest.Builder(
-                                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME)
+                                DATA_SOURCE_FHIR_BASE_URI,
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
                         .build();
         UUID uuid = UUID.randomUUID();
 
@@ -206,10 +214,12 @@ public class MedicalDataSourceHelperTest {
 
         assertThat(upsertRequest.getTable()).isEqualTo(MEDICAL_DATA_SOURCE_TABLE_NAME);
         assertThat(upsertRequest.getUniqueColumnsCount()).isEqualTo(1);
-        assertThat(contentValues.size()).isEqualTo(5);
+        assertThat(contentValues.size()).isEqualTo(6);
         assertThat(contentValues.get(FHIR_BASE_URI_COLUMN_NAME))
                 .isEqualTo(DATA_SOURCE_FHIR_BASE_URI.toString());
         assertThat(contentValues.get(DISPLAY_NAME_COLUMN_NAME)).isEqualTo(DATA_SOURCE_DISPLAY_NAME);
+        assertThat(contentValues.get(FHIR_VERSION_COLUMN_NAME))
+                .isEqualTo(DATA_SOURCE_FHIR_VERSION.toString());
         assertThat(contentValues.get(DATA_SOURCE_UUID_COLUMN_NAME))
                 .isEqualTo(StorageUtils.convertUUIDToBytes(uuid));
         assertThat(contentValues.get(MedicalDataSourceHelper.getAppInfoIdColumnName()))
@@ -268,12 +278,21 @@ public class MedicalDataSourceHelperTest {
                                 Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
                                 /* appId= */ 123L);
 
+        List<String> selectColumns =
+                List.of(
+                        "package_name",
+                        "data_source_uuid",
+                        "fhir_base_uri",
+                        "display_name",
+                        "data_source_fhir_version");
         assertThat(readRequest.getReadCommand())
                 .isEqualTo(
-                        "SELECT DISTINCT package_name,data_source_uuid,fhir_base_uri,display_name"
-                            + " FROM ( SELECT * FROM medical_resource_table ) AS inner_query_result"
-                            + "  INNER JOIN ( SELECT * FROM medical_data_source_table WHERE"
-                            + " app_info_id = '123' AND data_source_uuid IN ("
+                        "SELECT DISTINCT "
+                                + String.join(",", selectColumns)
+                                + " FROM ( SELECT * FROM medical_resource_table ) AS"
+                                + " inner_query_result  INNER JOIN ( SELECT * FROM"
+                                + " medical_data_source_table WHERE app_info_id = '123' AND"
+                                + " data_source_uuid IN ("
                                 + String.join(", ", hexValues)
                                 + ")) medical_data_source_table ON"
                                 + " inner_query_result.data_source_id ="
@@ -297,12 +316,20 @@ public class MedicalDataSourceHelperTest {
                 MedicalDataSourceHelper.getReadTableRequestForDataSourcesFilterOnResourceTypes(
                         List.of(uuid1, uuid2), Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION));
 
+        List<String> selectColumns =
+                List.of(
+                        "package_name",
+                        "data_source_uuid",
+                        "fhir_base_uri",
+                        "display_name",
+                        "data_source_fhir_version");
         assertThat(readRequest.getReadCommand())
                 .isEqualTo(
-                        "SELECT DISTINCT package_name,data_source_uuid,fhir_base_uri,display_name"
-                            + " FROM ( SELECT * FROM medical_resource_table ) AS inner_query_result"
-                            + "  INNER JOIN ( SELECT * FROM medical_data_source_table WHERE"
-                            + " data_source_uuid IN ("
+                        "SELECT DISTINCT "
+                                + String.join(",", selectColumns)
+                                + " FROM ( SELECT * FROM medical_resource_table ) AS"
+                                + " inner_query_result  INNER JOIN ( SELECT * FROM"
+                                + " medical_data_source_table WHERE data_source_uuid IN ("
                                 + String.join(", ", hexValues)
                                 + ")) medical_data_source_table ON"
                                 + " inner_query_result.data_source_id ="
@@ -324,6 +351,7 @@ public class MedicalDataSourceHelperTest {
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
 
         ReadTableRequest request =
@@ -344,6 +372,7 @@ public class MedicalDataSourceHelperTest {
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
 
         long appInfoRestriction = mAppInfoHelper.getAppInfoId(DATA_SOURCE_PACKAGE_NAME);
@@ -366,10 +395,12 @@ public class MedicalDataSourceHelperTest {
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
         createDataSource(
                 DIFFERENT_DATA_SOURCE_BASE_URI,
                 DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                DIFFERENT_DATA_SOURCE_FHIR_VERSION,
                 DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         long appInfoRestriction = mAppInfoHelper.getAppInfoId(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
@@ -389,11 +420,15 @@ public class MedicalDataSourceHelperTest {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
         setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         createDataSource(
-                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME, DATA_SOURCE_PACKAGE_NAME);
+                DATA_SOURCE_FHIR_BASE_URI,
+                DATA_SOURCE_DISPLAY_NAME,
+                DATA_SOURCE_FHIR_VERSION,
+                DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource otherDataSource =
                 createDataSource(
                         DIFFERENT_DATA_SOURCE_BASE_URI,
                         DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                        DIFFERENT_DATA_SOURCE_FHIR_VERSION,
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         long appInfoRestriction = mAppInfoHelper.getAppInfoId(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
@@ -415,11 +450,13 @@ public class MedicalDataSourceHelperTest {
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource otherDataSource =
                 createDataSource(
                         DIFFERENT_DATA_SOURCE_BASE_URI,
                         DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                        DIFFERENT_DATA_SOURCE_FHIR_VERSION,
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
         ReadTableRequest request =
@@ -440,6 +477,7 @@ public class MedicalDataSourceHelperTest {
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> result =
@@ -458,6 +496,7 @@ public class MedicalDataSourceHelperTest {
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> result =
@@ -474,7 +513,9 @@ public class MedicalDataSourceHelperTest {
         mMedicalDataSourceHelper.createMedicalDataSource(
                 mContext,
                 new CreateMedicalDataSourceRequest.Builder(
-                                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME)
+                                DATA_SOURCE_FHIR_BASE_URI,
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
                         .build(),
                 DATA_SOURCE_PACKAGE_NAME);
 
@@ -485,7 +526,8 @@ public class MedicalDataSourceHelperTest {
                                 mContext,
                                 new CreateMedicalDataSourceRequest.Builder(
                                                 DIFFERENT_DATA_SOURCE_BASE_URI,
-                                                DATA_SOURCE_DISPLAY_NAME)
+                                                DATA_SOURCE_DISPLAY_NAME,
+                                                DATA_SOURCE_FHIR_VERSION)
                                         .build(),
                                 DATA_SOURCE_PACKAGE_NAME));
     }
@@ -495,7 +537,10 @@ public class MedicalDataSourceHelperTest {
     public void createMedicalDataSource_lastModifiedTimeIsPopulated() {
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
         createDataSource(
-                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME, DATA_SOURCE_PACKAGE_NAME);
+                DATA_SOURCE_FHIR_BASE_URI,
+                DATA_SOURCE_DISPLAY_NAME,
+                DATA_SOURCE_FHIR_VERSION,
+                DATA_SOURCE_PACKAGE_NAME);
 
         long lastModifiedTimestamp =
                 mUtil.readLastModifiedTimestamp(MEDICAL_DATA_SOURCE_TABLE_NAME);
@@ -512,11 +557,13 @@ public class MedicalDataSourceHelperTest {
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 createDataSource(
                         DIFFERENT_DATA_SOURCE_BASE_URI,
                         DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                        DIFFERENT_DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> result =
@@ -535,11 +582,13 @@ public class MedicalDataSourceHelperTest {
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 createDataSource(
                         DIFFERENT_DATA_SOURCE_BASE_URI,
                         DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                        DIFFERENT_DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
         List<MedicalDataSource> expected = List.of(dataSource1, dataSource2);
 
@@ -562,11 +611,13 @@ public class MedicalDataSourceHelperTest {
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 createDataSource(
                         DIFFERENT_DATA_SOURCE_BASE_URI,
                         DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                        DIFFERENT_DATA_SOURCE_FHIR_VERSION,
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> result =
@@ -586,6 +637,7 @@ public class MedicalDataSourceHelperTest {
             createDataSource(
                     Uri.withAppendedPath(DATA_SOURCE_FHIR_BASE_URI, "/" + suffix),
                     DATA_SOURCE_DISPLAY_NAME + " " + suffix,
+                    DATA_SOURCE_FHIR_VERSION,
                     DATA_SOURCE_PACKAGE_NAME);
         }
 
@@ -595,6 +647,7 @@ public class MedicalDataSourceHelperTest {
                     createDataSource(
                             DATA_SOURCE_FHIR_BASE_URI,
                             DATA_SOURCE_DISPLAY_NAME,
+                            DATA_SOURCE_FHIR_VERSION,
                             DATA_SOURCE_PACKAGE_NAME);
                 });
     }
@@ -608,11 +661,13 @@ public class MedicalDataSourceHelperTest {
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 createDataSource(
                         DIFFERENT_DATA_SOURCE_BASE_URI,
                         DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                        DIFFERENT_DATA_SOURCE_FHIR_VERSION,
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> dataSources =
@@ -631,11 +686,13 @@ public class MedicalDataSourceHelperTest {
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 createDataSource(
                         DIFFERENT_DATA_SOURCE_BASE_URI,
                         DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                        DIFFERENT_DATA_SOURCE_FHIR_VERSION,
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> dataSources1 =
@@ -711,12 +768,8 @@ public class MedicalDataSourceHelperTest {
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
     public void createMedicalDataSource_createsAccessLog() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
-        CreateMedicalDataSourceRequest request =
-                new CreateMedicalDataSourceRequest.Builder(
-                                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME)
-                        .build();
         mMedicalDataSourceHelper.createMedicalDataSource(
-                mContext, request, DATA_SOURCE_PACKAGE_NAME);
+                mContext, getCreateMedicalDataSourceRequest(), DATA_SOURCE_PACKAGE_NAME);
 
         AccessLog expected =
                 new AccessLog(
@@ -2379,6 +2432,7 @@ public class MedicalDataSourceHelperTest {
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
 
         assertThrows(
@@ -2404,11 +2458,13 @@ public class MedicalDataSourceHelperTest {
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource different =
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
         assertThrows(
@@ -2434,6 +2490,7 @@ public class MedicalDataSourceHelperTest {
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         UUID existingUuid = UUID.fromString(existing.getId());
 
@@ -2455,11 +2512,13 @@ public class MedicalDataSourceHelperTest {
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 createDataSource(
                         DIFFERENT_DATA_SOURCE_BASE_URI,
                         DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                        DIFFERENT_DATA_SOURCE_FHIR_VERSION,
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
         mMedicalDataSourceHelper.deleteMedicalDataSourceWithoutPermissionChecks(
@@ -2481,11 +2540,13 @@ public class MedicalDataSourceHelperTest {
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 createDataSource(
                         DIFFERENT_DATA_SOURCE_BASE_URI,
                         DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                        DIFFERENT_DATA_SOURCE_FHIR_VERSION,
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
         mMedicalDataSourceHelper.deleteMedicalDataSourceWithPermissionChecks(
@@ -2507,11 +2568,13 @@ public class MedicalDataSourceHelperTest {
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 createDataSource(
                         DIFFERENT_DATA_SOURCE_BASE_URI,
                         DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                        DIFFERENT_DATA_SOURCE_FHIR_VERSION,
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
         assertThrows(
@@ -2536,6 +2599,7 @@ public class MedicalDataSourceHelperTest {
                 createDataSource(
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
                         DATA_SOURCE_PACKAGE_NAME);
         MedicalResourceHelper resourceHelper =
                 new MedicalResourceHelper(
@@ -2577,14 +2641,19 @@ public class MedicalDataSourceHelperTest {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
         setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         createDataSource(
-                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME, DATA_SOURCE_PACKAGE_NAME);
-        createDataSource(
-                DIFFERENT_DATA_SOURCE_BASE_URI,
-                DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                DATA_SOURCE_FHIR_BASE_URI,
+                DATA_SOURCE_DISPLAY_NAME,
+                DATA_SOURCE_FHIR_VERSION,
                 DATA_SOURCE_PACKAGE_NAME);
         createDataSource(
                 DIFFERENT_DATA_SOURCE_BASE_URI,
                 DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                DATA_SOURCE_FHIR_VERSION,
+                DATA_SOURCE_PACKAGE_NAME);
+        createDataSource(
+                DIFFERENT_DATA_SOURCE_BASE_URI,
+                DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                DATA_SOURCE_FHIR_VERSION,
                 DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         long appInfoId = mAppInfoHelper.getAppInfoId(DATA_SOURCE_PACKAGE_NAME);
         long differentAppInfoId = mAppInfoHelper.getAppInfoId(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
@@ -2610,9 +2679,10 @@ public class MedicalDataSourceHelperTest {
     }
 
     private MedicalDataSource createDataSource(
-            Uri baseUri, String displayName, String packageName) {
+            Uri baseUri, String displayName, FhirVersion fhirVersion, String packageName) {
         CreateMedicalDataSourceRequest request =
-                new CreateMedicalDataSourceRequest.Builder(baseUri, displayName).build();
+                new CreateMedicalDataSourceRequest.Builder(baseUri, displayName, fhirVersion)
+                        .build();
         return mMedicalDataSourceHelper.createMedicalDataSource(mContext, request, packageName);
     }
 

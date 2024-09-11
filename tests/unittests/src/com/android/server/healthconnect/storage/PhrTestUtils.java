@@ -19,6 +19,7 @@ package com.android.server.healthconnect.storage;
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
@@ -124,7 +125,8 @@ public class PhrTestUtils {
         String displayName = String.format("%s %s", DATA_SOURCE_DISPLAY_NAME, name);
 
         CreateMedicalDataSourceRequest createMedicalDataSourceRequest =
-                new CreateMedicalDataSourceRequest.Builder(uri, displayName).build();
+                new CreateMedicalDataSourceRequest.Builder(uri, displayName, FHIR_VERSION_R4)
+                        .build();
         return mMedicalDataSourceHelper.createMedicalDataSource(
                 mContext, createMedicalDataSourceRequest, packageName);
     }

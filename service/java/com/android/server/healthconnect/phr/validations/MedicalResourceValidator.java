@@ -185,7 +185,7 @@ public class MedicalResourceValidator {
     }
 
     private static void validateFhirVersion(FhirVersion fhirVersion, String resourceId) {
-        if (!SUPPORTED_FHIR_VERSIONS.contains(fhirVersion)) {
+        if (!fhirVersion.isSupportedFhirVersion()) {
             throw new IllegalArgumentException(
                     "Unsupported FHIR version "
                             + fhirVersion
