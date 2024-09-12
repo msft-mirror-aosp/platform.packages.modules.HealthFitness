@@ -24,22 +24,27 @@ import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.insertRecords
 import android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords
+import android.platform.test.annotations.RequiresFlagsDisabled
+import android.platform.test.flag.junit.CheckFlagsRule
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.uiautomator.By
+import com.android.compatibility.common.util.DisableAnimationRule
+import com.android.compatibility.common.util.FreezeRotationRule
+import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import java.time.Duration
 import java.time.Instant
 import org.junit.AfterClass
-import org.junit.Test
-import com.android.compatibility.common.util.DisableAnimationRule
-import com.android.compatibility.common.util.FreezeRotationRule
 import org.junit.Rule
+import org.junit.Test
 
-/** CTS test for HealthConnect Data access screen. */
+/** CTS test for HealthConnect Data access screen in the old IA. */
+@RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
 class DataAccessFragmentTest : HealthConnectBaseTest() {
-    @get:Rule
-    val disableAnimationRule = DisableAnimationRule()
+    @get:Rule val disableAnimationRule = DisableAnimationRule()
 
-    @get:Rule
-    val freezeRotationRule = FreezeRotationRule()
+    @get:Rule val freezeRotationRule = FreezeRotationRule()
+
+    @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
     companion object {
         private const val TAG = "DataAccessFragmentTest"
@@ -55,7 +60,8 @@ class DataAccessFragmentTest : HealthConnectBaseTest() {
                 TimeInstantRangeFilter.Builder()
                     .setStartTime(Instant.EPOCH)
                     .setEndTime(Instant.now())
-                    .build())
+                    .build(),
+            )
         }
     }
 

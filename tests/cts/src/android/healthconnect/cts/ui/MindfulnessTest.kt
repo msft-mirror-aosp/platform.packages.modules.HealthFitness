@@ -35,7 +35,6 @@ import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.scrollToEnd
 import android.healthconnect.cts.lib.UiTestUtils.verifyObjectNotFound
 import android.healthconnect.cts.lib.UiTestUtils.verifyTextNotFound
-import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.lib.UiTestUtils.waitForObjectNotFound
 import android.healthconnect.cts.utils.AssumptionCheckerRule
 import android.healthconnect.cts.utils.TestUtils
@@ -48,6 +47,7 @@ import androidx.test.uiautomator.By
 import com.android.compatibility.common.util.DisableAnimationRule
 import com.android.compatibility.common.util.FreezeRotationRule
 import com.android.healthfitness.flags.Flags
+import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import com.google.common.truth.Correspondence.transforming
 import com.google.common.truth.Truth.assertThat
 import java.time.Duration
@@ -93,8 +93,9 @@ class MindfulnessTest : HealthConnectBaseTest() {
     }
 
     @RequiresFlagsEnabled(Flags.FLAG_MINDFULNESS)
+    @RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
     @Test
-    fun dataAndAccess_seeAllEntries_flagEnabled_showsMindfulness() {
+    fun oldIA_dataAndAccess_seeAllEntries_flagEnabled_showsMindfulness() {
         context.launchMainActivity {
             findTextAndClick("Data and access")
             findText("Wellness")
@@ -142,8 +143,9 @@ class MindfulnessTest : HealthConnectBaseTest() {
     }
 
     @RequiresFlagsEnabled(Flags.FLAG_MINDFULNESS)
+    @RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
     @Test
-    fun dataAndAccess_deleteMindfulnessData() {
+    fun oldIA_dataAndAccess_deleteMindfulnessData() {
         context.launchMainActivity {
             findTextAndClick("Data and access")
             findTextAndClick("See all categories")
@@ -220,9 +222,9 @@ class MindfulnessTest : HealthConnectBaseTest() {
         }
     }
 
-    @RequiresFlagsDisabled(Flags.FLAG_MINDFULNESS)
+    @RequiresFlagsDisabled(Flags.FLAG_MINDFULNESS, FLAG_NEW_INFORMATION_ARCHITECTURE)
     @Test
-    fun dataAndAccess_seeAllCategories_flagDisabled_doesNotShowWellness() {
+    fun oldIA_dataAndAccess_seeAllCategories_flagDisabled_doesNotShowWellness() {
         context.launchMainActivity {
             findTextAndClick("Data and access")
             findObject(By.text("Activity").enabled(true), timeout = Duration.ofSeconds(2))

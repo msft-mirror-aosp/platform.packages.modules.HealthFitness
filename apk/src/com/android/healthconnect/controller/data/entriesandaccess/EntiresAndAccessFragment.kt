@@ -16,7 +16,6 @@
 package com.android.healthconnect.controller.data.entriesandaccess
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -39,6 +38,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import androidx.fragment.app.activityViewModels
+import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesDeletionScreenState.VIEW
+import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesDeletionScreenState.DELETE
 
 /** Fragment with [AllEntriesFragment] tab and [AccessFragment] tab. */
 @AndroidEntryPoint(Fragment::class)
@@ -77,19 +78,24 @@ class EntriesAndAccessFragment : Hilt_EntriesAndAccessFragment() {
         tabLayout = view.findViewById(R.id.tab_layout)
         tabLayoutDisabled = view.findViewById(R.id.tab_layout_disabled)
 
-        entriesViewModel.isDeletionState.observe(viewLifecycleOwner) { isDeletionState ->
-            if (isDeletionState) {
-                tabLayoutMediator(tabLayoutDisabled, isDeletionState)
-                tabLayout.visibility = GONE
-                tabLayoutDisabled.visibility = VISIBLE
-                viewPager.isUserInputEnabled = false
-            } else {
-                tabLayoutMediator(tabLayout, isDeletionState)
-                tabLayout.visibility = VISIBLE
-                tabLayoutDisabled.visibility = GONE
-                viewPager.isUserInputEnabled = true
+        entriesViewModel.screenState.observe(viewLifecycleOwner) { screenState ->
+            when(screenState) {
+                DELETE -> {
+                    tabLayoutMediator(tabLayoutDisabled, isDeletionState = true)
+                    tabLayout.visibility = GONE
+                    tabLayoutDisabled.visibility = VISIBLE
+                    viewPager.isUserInputEnabled = false
+                }
+                VIEW -> {
+                    tabLayoutMediator(tabLayout, isDeletionState = false)
+                    tabLayout.visibility = VISIBLE
+                    tabLayoutDisabled.visibility = GONE
+                    viewPager.isUserInputEnabled = true
+                }
+                else -> {
+                    //do nothing
+                }
             }
-
         }
     }
 

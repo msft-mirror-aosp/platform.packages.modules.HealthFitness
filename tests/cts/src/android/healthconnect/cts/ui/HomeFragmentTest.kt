@@ -24,10 +24,14 @@ import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
 import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords
+import android.platform.test.annotations.RequiresFlagsDisabled
+import android.platform.test.flag.junit.CheckFlagsRule
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.filters.FlakyTest
 import androidx.test.uiautomator.By
 import com.android.compatibility.common.util.DisableAnimationRule
 import com.android.compatibility.common.util.FreezeRotationRule
+import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import java.time.Duration
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -43,6 +47,8 @@ class HomeFragmentTest : HealthConnectBaseTest() {
 
     @get:Rule val freezeRotationRule = FreezeRotationRule()
 
+    @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
+
     companion object {
 
         private val APP_A_WITH_READ_WRITE_PERMS: TestAppProxy =
@@ -56,7 +62,8 @@ class HomeFragmentTest : HealthConnectBaseTest() {
             }
             val now = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             APP_A_WITH_READ_WRITE_PERMS.insertRecords(
-                StepsRecord.Builder(getEmptyMetadata(), now.minusSeconds(30), now, 43).build())
+                StepsRecord.Builder(getEmptyMetadata(), now.minusSeconds(30), now, 43).build()
+            )
         }
 
         @JvmStatic
@@ -70,7 +77,8 @@ class HomeFragmentTest : HealthConnectBaseTest() {
                 TimeInstantRangeFilter.Builder()
                     .setStartTime(Instant.EPOCH)
                     .setEndTime(Instant.now())
-                    .build())
+                    .build(),
+            )
         }
     }
 
@@ -86,6 +94,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
     fun homeFragment_openDataManagement() {
         context.launchMainActivity {
             clickOnText("Data and access")
