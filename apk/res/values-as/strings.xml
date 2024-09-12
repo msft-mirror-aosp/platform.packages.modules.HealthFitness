@@ -273,12 +273,9 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"প্ৰতিষেধক"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"প্ৰতিষেধক"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"প্ৰতিষেধক প্ৰদান সম্পৰ্কীয় তথ্য পঢ়ক"</string>
-    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
-    <skip />
+    <string name="allergy_intolerance_uppercase_label" msgid="726821034032305942">"এলাৰ্জি আৰু অসহিষ্ণুতা"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="3259399258428458578">"এলাৰ্জি আৰু অসহিষ্ণুতা"</string>
+    <string name="allergy_intolerance_content_description" msgid="450723157436883417">"এলাৰ্জি আৰু অসহিষ্ণুতাৰ ডেটা পঢ়ক"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"চিন্তাশীল"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"চিন্তাশীল"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"চিন্তাশীল ছেশ্বনৰ ডেটা পঢ়ক"</string>
@@ -306,6 +303,8 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"বাছনি কৰা দিন"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"পূৰ্বৱৰ্তী দিন"</string>
     <string name="default_error" msgid="7966868260616403475">"কিবা ভুল হ’ল। অনুগ্ৰহ কৰি আকৌ চেষ্টা কৰক।"</string>
+    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"এই অনুমতিটো লাভ কৰা এপে আপোনাৰ স্বাস্থ্য আৰু শৰীৰচৰ্চাৰ ডেটা পঢ়িব আৰু লিখিব পাৰে"</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connectত ষ্ট’ৰ হৈ থকা ডেটা কোনবোৰ এপে এক্সেছ কৰিব পাৰে সেয়া নিয়ন্ত্ৰণ কৰক। কোনো এটা এপে পঢ়িব অথবা লিখিব পৰা ডেটাখিনি পৰ্যালোচনা কৰিবলৈ সেই এপ্‌টোত টিপক।"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"অনুমতি দিয়া এক্সেছ"</string>
@@ -408,6 +407,7 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"খোলক"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"ফাইল বাছনি কৰক"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"ঠাই খালী কৰক"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"সময়সূচী নিৰ্ধাৰিত ৰপ্তানি অন আছে"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connectএ ডেটা পুনঃস্থাপন কৰিব নোৱাৰিলে"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"অধিক ঠাইৰ আৱশ্যক"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"<xliff:g id="DATE">%1$s</xliff:g>ৰ বাবে ৰপ্তানিৰ ক্ষেত্ৰত সমস্যা হৈছে। অনুগ্ৰহ কৰি এটা নতুন সময়সূচী নিৰ্ধাৰিত ৰপ্তানি ছেট আপ কৰক আৰু পুনৰ চেষ্টা কৰক।"</string>

@@ -273,12 +273,9 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"ಇಮ್ಯುನೈಸೇಶನ್"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"ಇಮ್ಯುನೈಸೇಶನ್"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"ಇಮ್ಯುನೈಸೇಶನ್ ಡೇಟಾವನ್ನು ಓದಿ"</string>
-    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
-    <skip />
+    <string name="allergy_intolerance_uppercase_label" msgid="726821034032305942">"ಅಲರ್ಜಿ &amp; ಅಸಹಿಷ್ಣುತೆ"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="3259399258428458578">"ಅಲರ್ಜಿ &amp; ಅಸಹಿಷ್ಣುತೆ"</string>
+    <string name="allergy_intolerance_content_description" msgid="450723157436883417">"ಅಲರ್ಜಿ &amp; ಅಸಹಿಷ್ಣುತೆಯ ಕುರಿತು ಓದಿರಿ"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"ಜಾಗರೂಕತೆ ಸೆಶನ್"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"ಜಾಗರೂಕತೆ ಸೆಶನ್"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"ಜಾಗರೂಕತೆ ಸೆಶನ್‌ನ ಡೇಟಾವನ್ನು ಓದಿ"</string>
@@ -306,6 +303,8 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"ಆಯ್ಕೆ ಮಾಡಿದ ದಿನ"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"ಹಿಂದಿನ ದಿನ"</string>
     <string name="default_error" msgid="7966868260616403475">"ಏನೋ ಸಮಸ್ಯೆ ಉಂಟಾಗಿದೆ. ಪುನಃ ಪ್ರಯತ್ನಿಸಿ."</string>
+    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"ಈ ಅನುಮತಿಯನ್ನು ಹೊಂದಿರುವ ಆ್ಯಪ್‌ಗಳು ನಿಮ್ಮ ಆರೋಗ್ಯ ಹಾಗೂ ಫಿಟ್‌ನೆಸ್‌ ಡೇಟಾವನ್ನು ಓದಬಹುದು ಮತ್ತು ಬರೆಯಬಹುದು."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connect ನಲ್ಲಿ ಸಂಗ್ರಹವಾಗಿರುವ ಡೇಟಾವನ್ನು ಯಾವ ಆ್ಯಪ್‌ಗಳು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಬಹುದು ಎಂಬುದನ್ನು ನಿಯಂತ್ರಿಸಿ. ಆ್ಯಪ್ ಓದಬಹುದಾದ ಅಥವಾ ಬರೆಯಬಹುದಾದ ಡೇಟಾವನ್ನು ಪರಿಶೀಲಿಸಲು ಆ್ಯಪ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"ಆ್ಯಕ್ಸೆಸ್ ಅನುಮತಿಸಲಾಗಿದೆ"</string>
@@ -408,6 +407,7 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"ತೆರೆಯಿರಿ"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"ಫೈಲ್ ಆಯ್ಕೆ ಮಾಡಿ"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"ಸ್ಥಳಾವಕಾಶವನ್ನು ತೆರವುಗೊಳಿಸಿ"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"ನಿಗದಿತ ರಫ್ತು ಆನ್ ಆಗಿದೆ"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect ಗೆ ಡೇಟಾ ರಫ್ತು ಸಾಧ್ಯವಿಲ್ಲ"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"ಹೆಚ್ಚು ಸ್ಥಳ ಅಗತ್ಯವಿದೆ"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"<xliff:g id="DATE">%1$s</xliff:g> ಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಎಕ್ಸ್‌ಪೋರ್ಟ್‌ನಲ್ಲಿ ಸಮಸ್ಯೆ ಕಂಡುಬಂದಿದೆ. ಹೊಸ ನಿಗದಿತ ಎಕ್ಸ್‌ಪೋರ್ಟ್ ಅನ್ನು ಸೆಟಪ್ ಮಾಡಿ ಹಾಗೂ ಪುನಃ ಪ್ರಯತ್ನಿಸಿ."</string>

@@ -22,12 +22,13 @@ import android.healthconnect.cts.lib.TestAppProxy
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
-import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords
+import android.platform.test.annotations.RequiresFlagsDisabled
+import android.platform.test.flag.junit.CheckFlagsRule
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.filters.FlakyTest
 import androidx.test.uiautomator.By
-import com.android.compatibility.common.util.DisableAnimationRule
-import com.android.compatibility.common.util.FreezeRotationRule
+import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import java.time.Duration
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -39,9 +40,7 @@ import org.junit.Test
 /** CTS test for HealthConnect Home screen. */
 class HomeFragmentTest : HealthConnectBaseTest() {
 
-    @get:Rule val disableAnimationRule = DisableAnimationRule()
-
-    @get:Rule val freezeRotationRule = FreezeRotationRule()
+    @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
     companion object {
 
@@ -51,26 +50,22 @@ class HomeFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @BeforeClass
         fun setup() {
-            if (!TestUtils.isHardwareSupported()) {
-                return
-            }
             val now = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             APP_A_WITH_READ_WRITE_PERMS.insertRecords(
-                StepsRecord.Builder(getEmptyMetadata(), now.minusSeconds(30), now, 43).build())
+                StepsRecord.Builder(getEmptyMetadata(), now.minusSeconds(30), now, 43).build()
+            )
         }
 
         @JvmStatic
         @AfterClass
         fun teardown() {
-            if (!TestUtils.isHardwareSupported()) {
-                return
-            }
             verifyDeleteRecords(
                 StepsRecord::class.java,
                 TimeInstantRangeFilter.Builder()
                     .setStartTime(Instant.EPOCH)
                     .setEndTime(Instant.now())
-                    .build())
+                    .build(),
+            )
         }
     }
 
@@ -86,7 +81,8 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     }
 
     @Test
-    fun homeFragment_openDataManagement() {
+    @RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
+    fun homeFragment_openDataManagement_oldIA() {
         context.launchMainActivity {
             clickOnText("Data and access")
 

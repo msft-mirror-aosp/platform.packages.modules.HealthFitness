@@ -273,12 +273,9 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"ការចាក់ថ្នាំបង្ការ"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"ការចាក់ថ្នាំបង្ការ"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"អានអំពីការចាក់ថ្នាំបង្ការ"</string>
-    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
-    <skip />
+    <string name="allergy_intolerance_uppercase_label" msgid="726821034032305942">"ប្រតិកម្ម និងភាពពុំអាចហូបបាន"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="3259399258428458578">"ប្រតិកម្ម និងភាពពុំអាចហូបបាន"</string>
+    <string name="allergy_intolerance_content_description" msgid="450723157436883417">"អានប្រតិកម្ម និងភាពពុំអាចហូបបាន"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"ការ​ចេះ​គិត​គូរ"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"ការ​ចេះ​គិត​គូរ"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"អានទិន្នន័យអំពីការ​ចេះ​គិត​គូរ"</string>
@@ -306,6 +303,8 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"ថ្ងៃដែលបានជ្រើសរើស"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"ថ្ងៃ​មុន"</string>
     <string name="default_error" msgid="7966868260616403475">"មានអ្វីមួយខុសប្រក្រតី។ សូមព្យាយាមម្ដងទៀត។"</string>
+    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"កម្មវិធីដែល​មានការអនុញ្ញាតនេះ​អាចអាន និងសរសេរទិន្នន័យសុខភាព និងសម្បទា​របស់អ្នកបាន។"</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"គ្រប់គ្រងថាតើកម្មវិធីណាខ្លះអាចចូលប្រើប្រាស់ទិន្នន័យដែលបានរក្សាទុកក្នុង Health Connect។ ចុចលើកម្មវិធីមួយ ដើម្បីពិនិត្យមើលទិន្នន័យដែលកម្មវិធីនោះអាចអាន ឬសរសេរបាន។"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"សិទ្ធិចូលប្រើដែលត្រូវបានអនុញ្ញាត"</string>
@@ -408,6 +407,7 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"បើក"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"ជ្រើសរើសឯកសារ"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"បង្កើន​ទំហំផ្ទុក​ទំនេរ"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"ការនាំចេញដែលបានកំណត់ពេលត្រូវបានបើក"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect មិនអាចនាំចេញទិន្នន័យបានទេ"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"ចាំបាច់ត្រូវមានទំហំផ្ទុកបន្ថែម"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"មានបញ្ហាជាមួយនឹងការនាំចេញសម្រាប់ថ្ងៃទី <xliff:g id="DATE">%1$s</xliff:g>។ សូមរៀបចំការនាំចេញដែលបានកំណត់កាលវិភាគថ្មី រួចព្យាយាមម្ដងទៀត។"</string>

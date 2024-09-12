@@ -3141,16 +3141,14 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     private List<MedicalResourceTypeInfo> getPopulatedMedicalResourceTypeInfos() {
-        Map<Integer, Set<MedicalDataSource>> resourceTypeToDataSourcesMap =
-                mMedicalResourceHelper.getMedicalResourceTypeToContributingDataSourcesMap();
-        return MedicalResource.VALID_TYPES.stream()
-                .filter(type -> type != MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN)
+        // TODO(b/350010200): Get valid types from validator once we have it.
+        List<Integer> validTypes = List.of(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+        return validTypes.stream()
                 .map(
-                        medicalResourceType ->
-                                new MedicalResourceTypeInfo(
-                                        medicalResourceType,
-                                        resourceTypeToDataSourcesMap.getOrDefault(
-                                                medicalResourceType, Set.of())))
+                        medicalResourceType -> {
+                            // TODO(b/350014259): Get contributing data sources from DB.
+                            return new MedicalResourceTypeInfo(medicalResourceType, Set.of());
+                        })
                 .collect(toList());
     }
 
