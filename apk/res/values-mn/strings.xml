@@ -267,10 +267,14 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Дархлаажуулалт"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"дархлаажуулалт"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Дархлаажуулалтын өгөгдлийг унших"</string>
-    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Анхаарал төвлөрөл"</string>
-    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"анхаарал төвлөрөл"</string>
-    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Анхаарал төвлөрлийн өгөгдлийг унших"</string>
-    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Анхаарал төвлөрлийн өгөгдлийг бичих"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
+    <skip />
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
+    <skip />
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
+    <skip />
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"“<xliff:g id="APP_NAME">%1$s</xliff:g>” г уншихыг зөвшөөрөх"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"“<xliff:g id="APP_NAME">%1$s</xliff:g>” г бичихийг зөвшөөрөх"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Цуцлах"</string>
@@ -342,10 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Хуваарьт экспорт"</string>
     <string name="import_data" msgid="404502315533233094">"Өгөгдөл импорт хийх"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Өмнө нь экспорт хийсэн файлаас өгөгдөл сэргээнэ үү"</string>
-    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"Файл сонгох"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
     <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
-    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"Таны сонгосон файл сэргээхэд тохиромжгүй байна. Экспорт хийсэн зөв файлыг сонгоно уу."</string>
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Экспорт танд өгөгдлөө хадгалах боломжийг олгох тул та өгөгдлөө шинэ утас руу шилжүүлэх боломжтой"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Нэмэлт мэдээлэл авах"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Асаалттай"</string>
@@ -369,12 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"Дараах"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Дараахаас импорт хийх"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"Өгөгдлөө импорт хийх хадгалах сангийн аппыг сонгоно уу"</string>
-    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"Бүртгэл сонгохын тулд товшино уу"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Бүртгэл сонгоно уу"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Цуцлах"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Болсон"</string>
-    <string name="export_import_install_apps_text" msgid="5026922993254770904">"Бусад сонголтыг авах бол энд харах үүлэн хадгалах сангийн аппуудыг суулгана уу"</string>
-    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Store луу очих"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect-г ашиглаж эхлээрэй"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect таны эрүүл мэнд, фитнесийн өгөгдлийг хадгалснаар та утсан дээрээ байгаа өөр өөр аппуудыг энгийн аргаар синк хийх боломжтой болно"</string>
     <string name="share_data" msgid="3481932156368883946">"Аппуудтайгаа өгөгдөл хуваалцаарай"</string>

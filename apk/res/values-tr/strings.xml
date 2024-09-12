@@ -267,10 +267,14 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Aşı"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"aşı"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Aşı verilerini okuma"</string>
-    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Farkındalık"</string>
-    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"farkındalık"</string>
-    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Farkındalık oturumuna ait veriler okunur"</string>
-    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Farkındalık oturumuna ait veriler yazılır"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
+    <skip />
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
+    <skip />
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
+    <skip />
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"“<xliff:g id="APP_NAME">%1$s</xliff:g>” uygulamasına okuma izni ver"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"\"<xliff:g id="APP_NAME">%1$s</xliff:g>\" uygulamasına yazma izni ver"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"İptal"</string>
@@ -342,10 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Programlanmış dışa aktarma işlemi"</string>
     <string name="import_data" msgid="404502315533233094">"Verileri içe aktar"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Daha önce dışa aktarılan bir dosyadaki verileri geri yükleyin"</string>
-    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"Dosya seç"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
     <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
-    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"Seçtiğiniz dosya, geri yükleme işlemine uygun değil. Dışa aktarılacak dosyayı doğru seçtiğinizden emin olun."</string>
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Dışa aktarma özelliğiyle verilerinizi kaydederek yeni bir telefona aktarabilirsiniz"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Daha fazla bilgi"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Açık"</string>
@@ -369,12 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"Sonraki"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Şuradan içe aktar:"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"Verilerinizi içe aktarmak için lütfen bir depolama uygulaması seçin"</string>
-    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"Hesap seçmek için dokunun"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Hesap seçin"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"İptal"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Bitti"</string>
-    <string name="export_import_install_apps_text" msgid="5026922993254770904">"Daha fazla seçenek için, burada görmek istediğiniz bulut depolama alanı uygulamalarını yükleyin"</string>
-    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Store\'a git"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect\'i kullanmaya başlama"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect, sağlık ve fitness verilerinizi depolayarak telefonunuzdaki farklı uygulamaları senkronize etmek için basit bir yol sunar"</string>
     <string name="share_data" msgid="3481932156368883946">"Uygulamalarınızla veri paylaşın"</string>
@@ -454,7 +463,7 @@
     <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"100 metre başına <xliff:g id="MINUTE">%1$s</xliff:g> dakika"</string>
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g> - <xliff:g id="END_TIME">%2$s</xliff:g> arası"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g> - <xliff:g id="END_TIME">%2$s</xliff:g> arası"</string>
-    <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{Tekerlekli sandalyeyi 1 kez itme}other{Tekerlekli sandalyeyi # kez itme}}"</string>
+    <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{Tekerlekli sandalyede 1 şınav}other{Tekerlekli sandalyede # şınav}}"</string>
     <string name="liter" msgid="8276522589564337053">"{count,plural, =1{1 L}other{# L}}"</string>
     <string name="liter_long" msgid="7094280457555707835">"{count,plural, =1{1 litre}other{# litre}}"</string>
     <string name="floors_climbed" msgid="7483572478744998930">"{count,plural, =1{1 kat}other{# kat}}"</string>

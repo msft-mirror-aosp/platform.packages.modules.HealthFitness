@@ -209,10 +209,10 @@
     <string name="spotting_lowercase_label" msgid="4361141146039580583">"لکه‌بینی"</string>
     <string name="spotting_read_content_description" msgid="5422420770022357631">"خواندن لکه‌بینی"</string>
     <string name="spotting_write_content_description" msgid="9049462631184362964">"نوشتن لکه‌بینی"</string>
-    <string name="hydration_uppercase_label" msgid="1196083392597480565">"آب‌رسانی"</string>
-    <string name="hydration_lowercase_label" msgid="7793261552870970551">"آب‌رسانی"</string>
-    <string name="hydration_read_content_description" msgid="3255941233933808082">"خواندن داده آب‌رسانی"</string>
-    <string name="hydration_write_content_description" msgid="7549819425875969941">"نوشتن داده آب‌رسانی"</string>
+    <string name="hydration_uppercase_label" msgid="1196083392597480565">"سطح آب بدن"</string>
+    <string name="hydration_lowercase_label" msgid="7793261552870970551">"سطح آب بدن"</string>
+    <string name="hydration_read_content_description" msgid="3255941233933808082">"خواندن داده سطح آب بدن"</string>
+    <string name="hydration_write_content_description" msgid="7549819425875969941">"نوشتن داده سطح آب بدن"</string>
     <string name="nutrition_uppercase_label" msgid="2352959651072134084">"تغذیه"</string>
     <string name="nutrition_lowercase_label" msgid="4123518952030658702">"تغذیه"</string>
     <string name="nutrition_read_content_description" msgid="5820331769605952082">"خواندن داده تغذیه"</string>
@@ -267,10 +267,14 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"ایمن‌سازی"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"ایمن‌سازی"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"خواندن وضعیت ایمن‌سازی"</string>
-    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"ذهن‌آگاهی"</string>
-    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"ذهن‌آگاهی"</string>
-    <string name="mindfulness_read_content_description" msgid="739187536826062524">"خواندن ذهن‌آگاهی"</string>
-    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"نوشتن ذهن‌آگاهی"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
+    <skip />
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
+    <skip />
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
+    <skip />
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"اجازه دادن به «<xliff:g id="APP_NAME">%1$s</xliff:g>» برای خواندن"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"اجازه دادن به «<xliff:g id="APP_NAME">%1$s</xliff:g>» برای نوشتن"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"لغو کردن"</string>
@@ -316,7 +320,7 @@
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"‫«<xliff:g id="APP_NAME">%1$s</xliff:g>» می‌تواند داده‌های اضافه‌شده بعداز <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g> را بخواند"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"برای مدیریت سایر اجازه‌های Android که این برنامه می‌تواند به آن‌ها دسترسی داشته باشد، به «تنظیمات &gt; برنامه‌ها» بروید"</string>
     <string name="manage_permissions_rationale" msgid="9183689798847740274">"داده‌هایی که با <xliff:g id="APP_NAME">%1$s</xliff:g> هم‌رسانی می‌کنید تحت‌پوشش خط‌مشی رازداری آن است"</string>
-    <string name="other_android_permissions_content_description" msgid="2261431010048933820">"برای مدیریت دیگر اجازه‌های Android که این برنامه می‌تواند به آن‌ها دسترسی داشته باشد، به «تنظیمات» بروید و روی «برنامه‌ها» تک‌ضرب بزنید"</string>
+    <string name="other_android_permissions_content_description" msgid="2261431010048933820">"برای مدیریت دیگر اجازه‌های Android که این برنامه می‌تواند به آن‌ها دسترسی داشته باشد، به «تنظیمات» بروید و روی «برنامه‌ها» ضربه بزنید"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"خواندن خط‌مشی رازداری"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"آخرین دسترسی: در ۲۴ ساعت گذشته"</string>
     <string name="app_access_title" msgid="7137018424885371763">"دسترسی برنامه"</string>
@@ -342,10 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"صادر کردن زمان‌بندی‌شده"</string>
     <string name="import_data" msgid="404502315533233094">"وارد کردن داده"</string>
     <string name="import_data_description" msgid="4040178599441724296">"بازیابی داده از فایل قبلاً صادرشده"</string>
-    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"انتخاب فایل"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
     <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
-    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"فایلی که انتخاب کردید برای بازیابی سازگار نیست. حتماً فایل برون‌برد صحیح را انتخاب کنید."</string>
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"صادر کردن به شما امکان می‌دهد داده‌هایتان را ذخیره کنید تا بتوانید آن‌ها را به تلفن جدیدی منتقل کنید"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"بیشتر بدانید"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"روشن"</string>
@@ -369,12 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"بعدی"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"وارد کردن از"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"لطفاً برای وارد کردن داده‌هایتان برنامه ذخیره‌سازی انتخاب کنید"</string>
-    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"برای انتخاب حساب، ضربه بزنید"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"حسابی انتخاب کنید"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"لغو کردن"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"تمام"</string>
-    <string name="export_import_install_apps_text" msgid="5026922993254770904">"برای گزینه‌های بیشتر، برنامه‌های فضای ذخیره‌سازی ابری را نصب کنید تا آن‌ها را اینجا ببینید"</string>
-    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"رفتن به فروشگاه Play"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"شروع کار با Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"‫Health Connect داده‌های سلامتی و تناسب اندام شما را ذخیره می‌کند و روشی ساده برای همگام‌سازی برنامه‌های مختلف تلفن دراختیارتان می‌گذارد"</string>
     <string name="share_data" msgid="3481932156368883946">"هم‌رسانی داده‌ها با برنامه‌ها"</string>
@@ -540,8 +549,8 @@
     <string name="racquetball" msgid="8169482984904052538">"راکت‌بال"</string>
     <string name="rock_climbing" msgid="3123024521372083233">"صخره‌نوردی"</string>
     <string name="roller_hockey" msgid="3524872164646176686">"اسکیت هاکی"</string>
-    <string name="rowing" msgid="615898011726585442">"پاروزنی"</string>
-    <string name="rowing_machine" msgid="4075255566862183370">"پاروزنی با دستگاه"</string>
+    <string name="rowing" msgid="615898011726585442">"روئینگ"</string>
+    <string name="rowing_machine" msgid="4075255566862183370">"روئینگ با دستگاه"</string>
     <string name="rugby" msgid="5146215118571059267">"راگبی"</string>
     <string name="running" msgid="5135754380339217169">"دویدن"</string>
     <string name="running_treadmill" msgid="2083354407217486405">"دویدن روی تردمیل"</string>
@@ -824,7 +833,7 @@
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"انتقال به انتها"</string>
     <string name="reorder_button_content_description" msgid="2685032520710743533">"دکمه مخصوص کشیدن و تغییر ترتیب <xliff:g id="SELECTED_APP">%s</xliff:g> در فهرست اولویت"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"دکمه برداشتن <xliff:g id="SELECTED_APP">%s</xliff:g> از فهرست اولویت"</string>
-    <string name="reorder_button_action_description" msgid="5197462036756192214">"برای تغییر ترتیب، دو تک‌ضرب بزنید و بکشید"</string>
+    <string name="reorder_button_action_description" msgid="5197462036756192214">"برای تغییر ترتیب، دوضربه بزنید و بکشید"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"تناسب اندام، تندرستی"</string>
     <string name="search_keywords_permissions" msgid="7821010295153350533">"اجازه‌ها"</string>
     <string name="search_keywords_data" msgid="5359602744325490523">"health connect، داده‌های سلامت، دسته‌های سلامت، دسترسی به داده‌ها، فعالیت، سنجه‌های بدن، پیگیری قاعدگی، تغذیه، خواب، علائم حیاتی"</string>
@@ -882,10 +891,10 @@
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"برای حفظ داده‌های Health Connect، این فرایند را ظرف <xliff:g id="TIME_NEEDED">%1$s</xliff:g> آینده تکمیل کنید"</string>
     <string name="resume_button" msgid="2255148549862208047">"ازسرگیری"</string>
     <string name="migration_paused_notification_title" msgid="4368414714202113077">"عملیات ادغام موقتاً متوقف شد"</string>
-    <string name="migration_paused_notification_content" msgid="1950511270109811771">"Health Connect درحال ادغام شدن با سیستم Android است. برای ادامه تک‌ضرب بزنید"</string>
+    <string name="migration_paused_notification_content" msgid="1950511270109811771">"Health Connect درحال ادغام شدن با سیستم Android است. برای ادامه ضربه بزنید"</string>
     <string name="resume_migration_banner_title" msgid="4443957114824045317">"ازسرگیری یکپارچه‌سازی"</string>
-    <string name="resume_migration_banner_description" msgid="6236230413670826036">"برای ادامه یکپارچه‌سازی Health Connect با سیستم Android، تک‌ضرب بزنید. برای حفظ داده‌ها، این فرایند را ظرف <xliff:g id="TIME_NEEDED">%1$s</xliff:g> آینده تکمیل کنید"</string>
-    <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"برای ادامه یکپارچه‌سازی Health Connect با سیستم Android، تک‌ضرب بزنید."</string>
+    <string name="resume_migration_banner_description" msgid="6236230413670826036">"برای ادامه یکپارچه‌سازی Health Connect با سیستم Android، ضربه بزنید. برای حفظ داده‌ها، این فرایند را ظرف <xliff:g id="TIME_NEEDED">%1$s</xliff:g> آینده تکمیل کنید"</string>
+    <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"برای ادامه یکپارچه‌سازی Health Connect با سیستم Android، ضربه بزنید."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"ادامه"</string>
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"ازسرگیری یکپارچه‌سازی Health Connect"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"برای حفظ داده‌ها، این فرایند را ظرف <xliff:g id="TIME_NEEDED">%1$s</xliff:g> آینده تکمیل کنید"</string>

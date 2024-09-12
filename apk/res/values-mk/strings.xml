@@ -88,12 +88,12 @@
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Дозволува апликацијата да чита потрошени калории"</string>
     <string name="background_read_title" msgid="5061383169517186234">"Пристап до податоците во заднина"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"Да се дозволи <xliff:g id="APP_NAME">%1$s</xliff:g> да пристапува до податоците во заднина?"</string>
-    <string name="background_read_description" msgid="3203594555849969283">"Дозволете ѝ на апликацијава да пристапува до податоците од Health Connect кога не ја користите апликацијата"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Дозволете апликацијава да пристапува до податоците од Health Connect кога не ја користите апликацијата"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"Ако дозволите, апликацијава ќе може да пристапува до податоците од Health Connect кога не ја користите апликацијата."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Пристап до минатите податоци"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Да се дозволи <xliff:g id="APP_NAME">%1$s</xliff:g> да пристапува до минатите податоци?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Дозволете апликацијава да пристапува до податоците од Health Connect додадени пред <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Дозволете ѝ на апликацијава да пристапува до сите минати податоци од Health Connect"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Дозволете апликацијава да пристапува до сите минати податоци од Health Connect"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Ако дозволите, апликацијава ќе може да пристапува до податоците од Health Connect додадени пред <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Ако дозволите, апликацијава ќе може да пристапува до сите минати податоци од Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Активно потрошени калории"</string>
@@ -267,10 +267,14 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Имунизација"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"имунизација"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Читање на податоците за имунизација"</string>
-    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Промисленост"</string>
-    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"промисленост"</string>
-    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Читај за сесијата за промисленост"</string>
-    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Пишувај за сесијата за промисленост"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
+    <skip />
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
+    <skip />
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
+    <skip />
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"Дозволете „<xliff:g id="APP_NAME">%1$s</xliff:g>“ да чита"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Дозволете „<xliff:g id="APP_NAME">%1$s</xliff:g>“ да пишува"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Откажи"</string>
@@ -342,10 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Закажано извезување"</string>
     <string name="import_data" msgid="404502315533233094">"Увезете ги податоците"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Вратете ги податоците од претходно извезената датотека"</string>
-    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"Изберете датотека"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
     <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
-    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"Датотеката што ја избравте не е компатибилна за враќање. Погрижете се да ја изберете точната извезена датотека."</string>
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Функцијата за извоз ви овозможува да ги зачувате вашите податоци за да може да ги префрлите на нов телефон"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Дознајте повеќе"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Вклучено"</string>
@@ -369,12 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"Следно"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Увезете од"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"Изберете апликација за складирање за да ги увезете вашите податоци"</string>
-    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"Допрете за да изберете сметка"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Изберете сметка"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Откажи"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Готово"</string>
-    <string name="export_import_install_apps_text" msgid="5026922993254770904">"За повеќе опции, инсталирајте апликации за простор во облак за да ги гледате тука"</string>
-    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Одете во Play Store"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Започнете со Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ги складира податоците за вашето здравје и фитнес, давајќи ви едноставен начин да ги синхронизирате различните апликации на вашиот телефон"</string>
     <string name="share_data" msgid="3481932156368883946">"Споделувајте податоци со вашите апликации"</string>
@@ -942,7 +951,7 @@
     <string name="tab_access" msgid="7818197975407243701">"Пристап"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Да се дозволи дополнителен пристап за <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> сака да пристапува и до овие поставки за Health Connect"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Овозможете најмалку една дозвола за читање за да вклучите пристап на апликацијата до податоците во заднина или пристап до минатите податоци"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Овозможете најмалку една дозвола за читање за да вклучите пристап во заднина или пристап до минати податоци за апликацијава"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Овозможете најмалку една дозвола за читање за да вклучите пристап во заднина за апликацијава"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Овозможете најмалку една дозвола за читање за да вклучите пристап до минати податоци за апликацијава"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Да се избришат сите податоци од Health Connect трајно?"</string>

@@ -63,7 +63,7 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"cyclus bijhouden"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Voeding"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"voeding"</string>
-    <string name="browse_data_category" msgid="4813955610391357638">"Door gegevens browsen"</string>
+    <string name="browse_data_category" msgid="4813955610391357638">"Browsen door gegevens"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Gegevens beheren"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Gegevens exporteren"</string>
     <string name="delete_all_data_button" msgid="7238755635416521487">"Alle gegevens verwijderen"</string>
@@ -267,10 +267,14 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Vaccinatie"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"vaccinatie"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Vaccinatie lezen"</string>
-    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Mindfulness"</string>
-    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"mindfulness"</string>
-    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Mindfulness lezen"</string>
-    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Mindfulness schrijven"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
+    <skip />
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
+    <skip />
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
+    <skip />
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"<xliff:g id="APP_NAME">%1$s</xliff:g> toestaan te lezen"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"<xliff:g id="APP_NAME">%1$s</xliff:g> toestaan te schrijven"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Annuleren"</string>
@@ -342,10 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Geplande export"</string>
     <string name="import_data" msgid="404502315533233094">"Gegevens importeren"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Herstel gegevens uit een eerder geëxporteerd bestand"</string>
-    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"Bestand kiezen"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
     <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
-    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"Het geselecteerde bestand is niet compatibel voor herstellen. Selecteer het juiste geëxporteerde bestand."</string>
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Met de functie Exporteren kun je je gegevens opslaan zodat je die kunt overzetten naar een nieuwe telefoon"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Meer informatie"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Aan"</string>
@@ -369,12 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"Volgende"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Importeren vanuit"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"Kies een opslag-app om je gegevens te importeren"</string>
-    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"Tik om een account te selecteren"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Account kiezen"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Annuleren"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Klaar"</string>
-    <string name="export_import_install_apps_text" msgid="5026922993254770904">"Installeer cloudopslag-apps om hier meer opties te zien"</string>
-    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Naar de Play Store"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Aan de slag met Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect slaat je gezondheids- en fitnessgegevens op zodat je de verschillende apps op je telefoon makkelijk kunt synchroniseren"</string>
     <string name="share_data" msgid="3481932156368883946">"Gegevens delen met je apps"</string>

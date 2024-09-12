@@ -267,10 +267,14 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"חיסונים"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"חיסונים"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"הרשאה לקרוא את נתוני החיסונים"</string>
-    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"מיינדפולנס"</string>
-    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"מיינדפולנס"</string>
-    <string name="mindfulness_read_content_description" msgid="739187536826062524">"קריאה של נתוני מיינדפולנס"</string>
-    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"כתיבה של נתוני מיינדפולנס"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
+    <skip />
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
+    <skip />
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
+    <skip />
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"מתן הרשאה לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> לקרוא נתונים"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"מתן הרשאה לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> לכתוב נתונים"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"ביטול"</string>
@@ -342,10 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"ייצוא מתוזמן"</string>
     <string name="import_data" msgid="404502315533233094">"ייבוא נתונים"</string>
     <string name="import_data_description" msgid="4040178599441724296">"שחזור נתונים מקובץ שיוצא בעבר"</string>
-    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"בחירת קובץ"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
     <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
-    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"הקובץ שבחרת לא מתאים לשחזור. צריך לוודא שקובץ הייצוא הנכון נבחר."</string>
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ייצוא מאפשר לך לשמור את הנתונים שלך כדי להעביר אותם לטלפון חדש"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"מידע נוסף"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"מצב פעיל"</string>
@@ -369,12 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"הבא"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"ייבוא מ-"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"עליך לבחור אפליקציית אחסון כדי לייבא את הנתונים"</string>
-    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"כדי לבחור חשבון צריך להקיש עליו"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"בחירת חשבון"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"ביטול"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"סיום"</string>
-    <string name="export_import_install_apps_text" msgid="5026922993254770904">"לאפשרויות נוספות, צריך להתקין אפליקציות אחסון בענן כדי לראות אותן כאן"</string>
-    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"מעבר לחנות Play"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"איך מתחילים להשתמש ב-Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"אפליקציית Health Connect מאחסנת את נתוני הבריאות והכושר שלך, ומאפשרת לך לסנכרן בקלות את האפליקציות השונות בטלפון"</string>
     <string name="share_data" msgid="3481932156368883946">"שיתוף נתונים עם האפליקציות שלך"</string>

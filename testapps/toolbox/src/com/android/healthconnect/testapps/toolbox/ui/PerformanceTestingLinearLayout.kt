@@ -13,8 +13,8 @@ class PerformanceTestingLinearLayout(context: Context) : LinearLayout(context) {
 
     init {
         inflate(context, R.layout.fragment_performance_testing_dialog, this)
-        val checkbox = findViewById<CheckBox>(R.id.checkbox_insert_without_spanning)
-        numberOfMinutes = findViewById(R.id.number_of_minutes)
+        val checkbox = requireViewById<CheckBox>(R.id.checkbox_insert_without_spanning)
+        numberOfMinutes = requireViewById(R.id.number_of_minutes)
         checkbox.setOnClickListener {
             val isChecked = (it as CheckBox).isChecked
             spanOverTime = isChecked
@@ -50,11 +50,11 @@ class PerformanceTestingLinearLayout(context: Context) : LinearLayout(context) {
     }
 
     private fun getNumberOfBatches(): Long {
-        return returnIntIfNotEmpty(findViewById<EditText>(R.id.number_of_batches).text.toString())
+        return returnIntIfNotEmpty(requireViewById<EditText>(R.id.number_of_batches).text.toString())
     }
 
     private fun getNumberOfRecordsPerBatch(): Long {
-        return returnIntIfNotEmpty(findViewById<EditText>(R.id.batch_size).text.toString())
+        return returnIntIfNotEmpty(requireViewById<EditText>(R.id.batch_size).text.toString())
     }
 
     private fun returnIntIfNotEmpty(dataString: String): Long {

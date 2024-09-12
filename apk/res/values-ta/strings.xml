@@ -267,10 +267,14 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"நோய்த்தடுப்பூசி"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"நோய்த்தடுப்பூசி"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"நோய்த்தடுப்பூசி தொடர்பான தரவைப் படிக்க அனுமதிக்கும்"</string>
-    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"மனம்தெளிந்த நிலை"</string>
-    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"மனம்தெளிந்த நிலை"</string>
-    <string name="mindfulness_read_content_description" msgid="739187536826062524">"மனம்தெளிந்த நிலை தொடர்பான தரவைப் படியுங்கள்"</string>
-    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"மனம்தெளிந்த நிலை தொடர்பான தரவை எழுதுங்கள்"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
+    <skip />
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
+    <skip />
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
+    <skip />
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"படிக்க “<xliff:g id="APP_NAME">%1$s</xliff:g>” ஆப்ஸை அனுமதிக்கவும்"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"எழுத “<xliff:g id="APP_NAME">%1$s</xliff:g>” ஆப்ஸை அனுமதிக்கவும்"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"ரத்துசெய்"</string>
@@ -342,10 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"திட்டமிடப்பட்ட பதிவேற்றம்"</string>
     <string name="import_data" msgid="404502315533233094">"தரவைப் பதிவிறக்குதல்"</string>
     <string name="import_data_description" msgid="4040178599441724296">"ஏற்கெனவே பதிவேற்றப்பட்ட ஃபைலில் இருந்து தரவை மீட்டெடுக்கலாம்"</string>
-    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"ஃபைலைத் தேர்வுசெய்யுங்கள்"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
     <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
-    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"நீங்கள் தேர்ந்தெடுத்துள்ள ஃபைலை மீட்டெடுக்க முடியவில்லை. பதிவிறக்கப்பட்ட சரியான ஃபைலைத் தேர்ந்தெடுங்கள்."</string>
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"பதிவேற்றுதல் அம்சம் உங்கள் தரவைச் சேமிக்க அனுமதிக்கிறது. எனவே நீங்கள் அதைப் புதிய மொபைலுக்கு மாற்றலாம்."</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"மேலும் அறிக"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"இயக்கப்பட்டுள்ளது"</string>
@@ -369,12 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"அடுத்து"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"இங்கிருந்து பதிவிறக்கு"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"உங்கள் தரவைப் பதிவேற்றுவதற்கான சேமிப்பக ஆப்ஸைத் தேர்ந்தெடுக்கவும்"</string>
-    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"கணக்கைத் தேர்ந்தெடுக்க தட்டுங்கள்"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"கணக்கைத் தேர்வுசெய்யுங்கள்"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"ரத்துசெய்"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"முடிந்தது"</string>
-    <string name="export_import_install_apps_text" msgid="5026922993254770904">"கூடுதல் விருப்பங்களுக்கு, கிளவுடு சேமிப்பக ஆப்ஸை நிறுவி அவற்றை இங்கே பாருங்கள்"</string>
-    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Storeருக்குச் செல்லுங்கள்"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ஆப்ஸைப் பயன்படுத்தத் தொடங்குங்கள்"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ஆப்ஸ் உங்கள் ஆரோக்கியம் மற்றும் உடற்பயிற்சி தொடர்பான தரவைச் சேமிக்கிறது. இந்த ஆப்ஸ் மூலம் மொபைலிலுள்ள வெவ்வேறு ஆப்ஸை நீங்கள் எளிதாக ஒத்திசைக்கலாம்."</string>
     <string name="share_data" msgid="3481932156368883946">"ஆப்ஸுடன் தரவைப் பகிர்தல்"</string>

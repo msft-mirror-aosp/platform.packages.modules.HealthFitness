@@ -267,10 +267,14 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"প্ৰতিষেধক"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"প্ৰতিষেধক"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"প্ৰতিষেধক প্ৰদান সম্পৰ্কীয় তথ্য পঢ়ক"</string>
-    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"চিন্তাশীল"</string>
-    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"চিন্তাশীল"</string>
-    <string name="mindfulness_read_content_description" msgid="739187536826062524">"চিন্তাশীল ছেশ্বনৰ ডেটা পঢ়ক"</string>
-    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"চিন্তাশীল ছেশ্বনৰ ডেটা লিখক"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
+    <skip />
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
+    <skip />
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
+    <skip />
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”ক পঢ়িবলৈ দিয়ক"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”ক লিখিবলৈ দিয়ক"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"বাতিল কৰক"</string>
@@ -342,10 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"সময়সূচী নিৰ্ধাৰিত ৰপ্তানি"</string>
     <string name="import_data" msgid="404502315533233094">"ডেটা আমদানি কৰক"</string>
     <string name="import_data_description" msgid="4040178599441724296">"পূৰ্বতে ৰপ্তানি কৰা ফাইলৰ পৰা ডেটা পুনঃস্থাপন কৰক"</string>
-    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"ফাইল বাছনি কৰক"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
     <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
-    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"আপুনি বাছনি কৰা ফাইলটো পুনঃস্থাপন কৰিবলৈ সমিল নহয়। সঠিক ৰপ্তানি কৰা ফাইলটো বাছনি কৰাটো নিশ্চিত কৰক।"</string>
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ৰপ্তানিয়ে আপোনাক নিজৰ ডেটা ছেভ কৰিবলৈ দিয়ে যাতে আপুনি সেয়া কোনো নতুন ফ’নলৈ স্থানান্তৰ কৰিব পাৰে"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"অধিক জানক"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"অন আছে"</string>
@@ -369,12 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"পৰৱৰ্তী"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"ইয়াৰ পৰা আমদানি কৰক"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"আপোনাৰ ডেটা আমদানি কৰিবলৈ অনুগ্ৰহ কৰি এটা ষ্ট’ৰেজ এপ্‌ বাছনি কৰক"</string>
-    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"এটা একাউণ্ট বাছনি কৰিবলৈ টিপক"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"এটা একাউণ্ট বাছনি কৰক"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"বাতিল কৰক"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"কৰা হ’ল"</string>
-    <string name="export_import_install_apps_text" msgid="5026922993254770904">"অধিক বিকল্পৰ বাবে, ইয়াত দেখা পাবলৈ ক্লাউড ষ্ট’ৰেজ এপ্‌সমূহ দেখা পাবলৈ সেইসমূহ ইনষ্টল কৰক"</string>
-    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Storeলৈ যাওক"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ব্যৱহাৰ কৰা আৰম্ভ কৰক"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connectএ আপোনাৰ স্বাস্থ্য আৰু শৰীৰচৰ্চা সম্পৰ্কীয় ডেটা ষ্ট’ৰ কৰি আপোনাক আপোনাৰ ফ’নত থকা বিভিন্ন এপ্‌সমূহ ছিংক কৰাৰ সহজ উপায় প্ৰদান কৰে"</string>
     <string name="share_data" msgid="3481932156368883946">"আপোনাৰ এপ্‌সমূহৰ সৈতে ডেটা শ্বেয়াৰ কৰক"</string>

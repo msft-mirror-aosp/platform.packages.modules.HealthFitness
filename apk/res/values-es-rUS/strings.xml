@@ -203,8 +203,8 @@
     <string name="ovulation_test_write_content_description" msgid="7061493310852203463">"Registrar prueba de ovulación"</string>
     <string name="sexual_activity_uppercase_label" msgid="1093238473810194127">"Actividad sexual"</string>
     <string name="sexual_activity_lowercase_label" msgid="8285364117437418834">"actividad sexual"</string>
-    <string name="sexual_activity_read_content_description" msgid="4937721417714312007">"Leer actividad sexual"</string>
-    <string name="sexual_activity_write_content_description" msgid="3063448245882840534">"Escribir actividad sexual"</string>
+    <string name="sexual_activity_read_content_description" msgid="4937721417714312007">"Medir actividad sexual"</string>
+    <string name="sexual_activity_write_content_description" msgid="3063448245882840534">"Registrar actividad sexual"</string>
     <string name="spotting_uppercase_label" msgid="5106739829390033240">"Sangrado vaginal"</string>
     <string name="spotting_lowercase_label" msgid="4361141146039580583">"sangrado vaginal"</string>
     <string name="spotting_read_content_description" msgid="5422420770022357631">"Medir sangrado vaginal"</string>
@@ -267,10 +267,14 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Vacunación"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"vacunación"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Leer la vacunación"</string>
-    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Mindfulness"</string>
-    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"mindfulness"</string>
-    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Leer sesión de mindfulness"</string>
-    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Escribir sesión de mindfulness"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
+    <skip />
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
+    <skip />
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
+    <skip />
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"Permite que \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" tenga permiso de lectura"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Permitir que \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" tenga acceso de escritura"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Cancelar"</string>
@@ -342,10 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Se programó la exportación"</string>
     <string name="import_data" msgid="404502315533233094">"Importar datos"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Restablece datos desde un archivo exportado anteriormente"</string>
-    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"Elegir archivo"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
     <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
-    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"El archivo que seleccionaste no es compatible para restablecer. Asegúrate de elegir el archivo exportado correcto."</string>
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"La exportación te permite guardar tus datos para poder transferirlos a un teléfono nuevo"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Más información"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Activada"</string>
@@ -369,12 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"Siguiente"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Importar de"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"Elige una app de almacenamiento para importar tus datos"</string>
-    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"Presiona para seleccionar una cuenta"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Elige una cuenta"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Cancelar"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Listo"</string>
-    <string name="export_import_install_apps_text" msgid="5026922993254770904">"Para más opciones, instala apps de almacenamiento en la nube para verlas aquí"</string>
-    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Ir a Play Store"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Empieza a usar Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect almacena tus datos de salud y actividad física, lo que te brinda una manera simple de sincronizar las diferentes apps en tu teléfono."</string>
     <string name="share_data" msgid="3481932156368883946">"Compartir datos con tus apps"</string>
@@ -543,16 +552,16 @@
     <string name="rowing" msgid="615898011726585442">"Remo"</string>
     <string name="rowing_machine" msgid="4075255566862183370">"Máquina de remo"</string>
     <string name="rugby" msgid="5146215118571059267">"Rugby"</string>
-    <string name="running" msgid="5135754380339217169">"Ejecución"</string>
+    <string name="running" msgid="5135754380339217169">"Correr"</string>
     <string name="running_treadmill" msgid="2083354407217486405">"Correr en cinta"</string>
-    <string name="sailing" msgid="4924304145770903145">"Navegación con vela"</string>
+    <string name="sailing" msgid="4924304145770903145">"Navegar"</string>
     <string name="scuba_diving" msgid="4548778216122159229">"Buceo"</string>
     <string name="skating" msgid="7320438805566302784">"Patinaje"</string>
     <string name="skiing" msgid="6773127614153771204">"Esquí"</string>
     <string name="snowboarding" msgid="890584874325367973">"Snowboard"</string>
     <string name="snowshoeing" msgid="8932096199095096139">"Caminata con raquetas para nieve"</string>
     <string name="soccer" msgid="2631723269673549642">"Fútbol"</string>
-    <string name="softball" msgid="8389418982713908334">"Sóftbol"</string>
+    <string name="softball" msgid="8389418982713908334">"Softball"</string>
     <string name="squash" msgid="1588653991323140302">"Squash"</string>
     <string name="squat" msgid="7664163620113834611">"Sentadillas"</string>
     <string name="stair_climbing" msgid="4042085961630471238">"Subir escaleras"</string>
@@ -765,7 +774,7 @@
     <string name="feet_inches_format" msgid="768610500549967860">"<xliff:g id="FT">%1$s</xliff:g><xliff:g id="IN">%2$s</xliff:g>"</string>
     <string name="feet_inches_format_long" msgid="5187265716573430363">"<xliff:g id="FT">%1$s</xliff:g> <xliff:g id="IN">%2$s</xliff:g>"</string>
     <string name="calories_long" msgid="7225535148232419419">"{count,plural, =1{1 caloría}other{# calorías}}"</string>
-    <string name="calories" msgid="320906359079319632">"{count,plural, =1{1 kcal}other{# kcal}}"</string>
+    <string name="calories" msgid="320906359079319632">"{count,plural, =1{1 cal}other{# cal}}"</string>
     <string name="kj" msgid="2742876437259085714">"{count,plural, =1{1 kJ}other{# kJ}}"</string>
     <string name="kj_long" msgid="1837278261960345400">"{count,plural, =1{1 kilojulio}other{# kilojulios}}"</string>
     <string name="percent" formatted="false" msgid="9199428244800776575">"{value,plural, =1{1%}other{#%}}"</string>
@@ -809,7 +818,7 @@
     <string name="range_off" msgid="8178520557618184215">"No"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Cuando cambias estos parámetros de configuración, Health Connect borra los datos existentes para reflejar tus nuevas preferencias"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{¿Borrar automáticamente los datos después de # mes?}other{¿Borrar automáticamente los datos después de # meses?}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect borrará automáticamente los datos nuevos después de # mes. Este parámetro de configuración también borrará los datos existentes de más de # mes.}other{Health Connect borrará automáticamente los datos nuevos después de # meses. Este parámetro de configuración también borrará los datos existentes de más de # meses.}}"</string>
+    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect borrará automáticamente los datos nuevos después de # mes. Este parámetro también borrará los datos existentes de más de # mes.}other{Health Connect borrará automáticamente los datos nuevos después de # meses. Este parámetro también borrará los datos existentes de más de # meses.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Configurar la eliminación automática"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Se borrarán los datos existentes"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect borrará todos los datos que tengan más de # mes. Puede que estos cambios tarden un día en aparecer en las apps conectadas.}other{Health Connect borrará todos los datos que tengan más de # meses. Puede que estos cambios tarden un día en aparecer en las apps conectadas.}}"</string>
@@ -914,7 +923,7 @@
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Ya puedes acceder a Health Connect directamente desde la configuración. Desinstala la app de Health Connect en cualquier momento para liberar espacio de almacenamiento."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Entendido"</string>
     <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Restablecimiento en curso"</string>
-    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect está restableciendo datos y permisos. Este proceso puede demorar un poco en completarse."</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect es restableciendo datos y permisos. Este proceso puede demorar un poco en completarse."</string>
     <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Restablecimiento de Health Connect en curso"</string>
     <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"Entendido"</string>
     <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Actualización necesaria"</string>

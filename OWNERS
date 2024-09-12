@@ -2,6 +2,7 @@
 
 jstembridge@google.com
 arkivanov@google.com
+dmckaigue@google.com
 itsleo@google.com
 jhummel@google.com
 junioraw@google.com
@@ -9,8 +10,10 @@ luisamez@google.com
 magdi@google.com
 mertcan@google.com
 nickelc@google.com
+rdidukh@google.com
 rosiebye@google.com
 sameerj@google.com
 ymq@google.com
+xueweizhao@google.com
 
 include platform/packages/modules/common:/MODULES_OWNERS  # see go/mainline-owners-policy

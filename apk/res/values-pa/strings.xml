@@ -267,10 +267,14 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"ਇਮਿਊਨਾਈਜ਼ੇਸ਼ਨ"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"ਇਮਿਊਨਾਈਜ਼ੇਸ਼ਨ"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"ਇਮਿਊਨਾਈਜ਼ੇਸ਼ਨ ਡਾਟਾ ਪੜ੍ਹੋ"</string>
-    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"ਚੌਕਸੀ"</string>
-    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"ਚੌਕਸੀ"</string>
-    <string name="mindfulness_read_content_description" msgid="739187536826062524">"ਚੌਕਸੀ ਸੰਬੰਧੀ ਸੈਸ਼ਨ ਦੇ ਡਾਟੇ ਨੂੰ ਪੜ੍ਹੋ"</string>
-    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"ਚੌਕਸੀ ਸੰਬੰਧੀ ਸੈਸ਼ਨ ਦੇ ਡਾਟੇ ਨੂੰ ਲਿਖੋ"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
+    <skip />
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
+    <skip />
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
+    <skip />
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"“<xliff:g id="APP_NAME">%1$s</xliff:g>” ਨੂੰ ਪੜ੍ਹਨ ਦੀ ਆਗਿਆ ਦਿਓ"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"“<xliff:g id="APP_NAME">%1$s</xliff:g>” ਨੂੰ ਲਿਖਣ ਦੀ ਆਗਿਆ ਦਿਓ"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"ਰੱਦ ਕਰੋ"</string>
@@ -342,10 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"ਨਿਯਤ ਨਿਰਯਾਤ"</string>
     <string name="import_data" msgid="404502315533233094">"ਡਾਟਾ ਆਯਾਤ ਕਰੋ"</string>
     <string name="import_data_description" msgid="4040178599441724296">"ਪਿਛਲੀ ਨਿਰਯਾਤ ਕੀਤੀ ਫ਼ਾਈਲ ਤੋਂ ਡਾਟੇ ਨੂੰ ਮੁੜ-ਬਹਾਲ ਕਰੋ"</string>
-    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"ਫ਼ਾਈਲ ਚੁਣੋ"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
     <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
-    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"ਜਿਸ ਫ਼ਾਈਲ ਨੂੰ ਤੁਸੀਂ ਚੁਣਿਆ ਹੈ ਉਸਨੂੰ ਮੁੜ-ਬਹਾਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ। ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸਹੀ ਨਿਰਯਾਤ ਫ਼ਾਈਲ ਨੂੰ ਚੁਣਿਆ ਹੈ।"</string>
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"\'ਨਿਰਯਾਤ ਕਰੋ\' ਵਿਸ਼ੇਸ਼ਤਾ ਨਾਲ ਤੁਸੀਂ ਆਪਣੇ ਡਾਟੇ ਨੂੰ ਰੱਖਿਅਤ ਕਰ ਸਕਦੇ ਹੋ, ਤਾਂ ਜੋ ਤੁਸੀਂ ਇਸਨੂੰ ਕਿਸੇ ਨਵੇਂ ਫ਼ੋਨ \'ਤੇ ਟ੍ਰਾਂਸਫ਼ਰ ਕਰ ਸਕੋ"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"ਹੋਰ ਜਾਣੋ"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ਚਾਲੂ"</string>
@@ -369,12 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"ਅੱਗੇ"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"ਇਸ ਤੋਂ ਆਯਾਤ ਕਰੋ"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਡਾਟਾ ਆਯਾਤ ਕਰਨ ਲਈ ਕੋਈ ਸਟੋਰੇਜ ਐਪ ਚੁਣੋ"</string>
-    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"ਕੋਈ ਖਾਤਾ ਚੁਣਨ ਲਈ ਟੈਪ ਕਰੋ"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"ਕੋਈ ਖਾਤਾ ਚੁਣੋ"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"ਰੱਦ ਕਰੋ"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"ਹੋ ਗਿਆ"</string>
-    <string name="export_import_install_apps_text" msgid="5026922993254770904">"ਹੋਰ ਵਿਕਲਪਾਂ ਲਈ, ਕਲਾਊਡ ਸਟੋਰੇਜ ਐਪਾਂ ਨੂੰ ਇੱਥੇ ਦੇਖਣ ਵਾਸਤੇ ਉਨ੍ਹਾਂ ਨੂੰ ਸਥਾਪਤ ਕਰੋ"</string>
-    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Store \'ਤੇ ਜਾਓ"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ਨਾਲ ਸ਼ੁਰੂਆਤ ਕਰੋ"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ਤੁਹਾਨੂੰ ਆਪਣੇ ਫ਼ੋਨ \'ਤੇ ਵੱਖ-ਵੱਖ ਐਪਾਂ ਨੂੰ ਸਿੰਕ ਕਰਨ ਦਾ ਸਰਲ ਤਰੀਕਾ ਦੇ ਕੇ, ਤੁਹਾਡੇ ਸਿਹਤ ਅਤੇ ਫਿੱਟਨੈੱਸ ਸੰਬੰਧੀ ਡਾਟੇ ਨੂੰ ਸਟੋਰ ਕਰਦੀ ਹੈ"</string>
     <string name="share_data" msgid="3481932156368883946">"ਆਪਣੀਆਂ ਐਪਾਂ ਨਾਲ ਡਾਟਾ ਸਾਂਝਾ ਕਰੋ"</string>

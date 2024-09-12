@@ -96,8 +96,8 @@
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Cho phép ứng dụng này truy cập vào tất cả dữ liệu trước đây của Health Connect"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Nếu bạn cho phép, ứng dụng này có thể truy cập vào dữ liệu trên Health Connect được thêm vào trước ngày <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Nếu bạn cho phép, ứng dụng này có thể truy cập vào tất cả dữ liệu trước đây của Health Connect."</string>
-    <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Lượng calo đã đốt cháy khi vận động"</string>
-    <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"lượng calo đã đốt cháy khi vận động"</string>
+    <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Lượng calo hoạt động đã đốt cháy"</string>
+    <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"lượng calo hoạt động đã đốt cháy"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Đọc dữ liệu về lượng calo hoạt động đã đốt cháy"</string>
     <string name="active_calories_burned_write_content_description" msgid="8794383690157452892">"Ghi dữ liệu về lượng calo hoạt động đã đốt cháy"</string>
     <string name="exercise_uppercase_label" msgid="9174662895529523172">"Hoạt động thể dục"</string>
@@ -189,16 +189,16 @@
     <string name="cervical_mucus_lowercase_label" msgid="7460634889750669420">"dịch nhầy cổ tử cung"</string>
     <string name="cervical_mucus_read_content_description" msgid="7163132301693064124">"Đọc dữ liệu về dịch nhầy cổ tử cung"</string>
     <string name="cervical_mucus_write_content_description" msgid="175802615365382752">"Ghi dữ liệu về dịch nhầy cổ tử cung"</string>
-    <string name="intermenstrual_bleeding_uppercase_label" msgid="1681956139742028987">"Chảy máu giữa chu kỳ kinh nguyệt"</string>
-    <string name="intermenstrual_bleeding_lowercase_label" msgid="5284781275147619132">"chảy máu giữa chu kỳ kinh nguyệt"</string>
+    <string name="intermenstrual_bleeding_uppercase_label" msgid="1681956139742028987">"Máu kinh"</string>
+    <string name="intermenstrual_bleeding_lowercase_label" msgid="5284781275147619132">"máu kinh"</string>
     <string name="intermenstrual_bleeding_read_content_description" msgid="5970939335115119015">"Đọc dữ liệu về máu kinh"</string>
     <string name="intermenstrual_bleeding_write_content_description" msgid="1377719923165234099">"Ghi dữ liệu về máu kinh"</string>
     <string name="menstruation_uppercase_label" msgid="9119506748428874832">"Kinh nguyệt"</string>
     <string name="menstruation_lowercase_label" msgid="8098816978006207242">"kinh nguyệt"</string>
     <string name="menstruation_read_content_description" msgid="7710047469771882021">"Đọc dữ liệu về kinh nguyệt"</string>
     <string name="menstruation_write_content_description" msgid="5142669435897047396">"Ghi dữ liệu về kinh nguyệt"</string>
-    <string name="ovulation_test_uppercase_label" msgid="1929868571862288837">"Kiểm tra tình trạng rụng trứng"</string>
-    <string name="ovulation_test_lowercase_label" msgid="93260039417722840">"kiểm tra tình trạng rụng trứng"</string>
+    <string name="ovulation_test_uppercase_label" msgid="1929868571862288837">"Kiểm tra sự rụng trứng"</string>
+    <string name="ovulation_test_lowercase_label" msgid="93260039417722840">"kiểm tra sự rụng trứng"</string>
     <string name="ovulation_test_read_content_description" msgid="8008351738285775840">"Đọc dữ liệu về việc kiểm tra sự rụng trứng"</string>
     <string name="ovulation_test_write_content_description" msgid="7061493310852203463">"Ghi dữ liệu về việc kiểm tra sự rụng trứng"</string>
     <string name="sexual_activity_uppercase_label" msgid="1093238473810194127">"Hoạt động tình dục"</string>
@@ -237,11 +237,11 @@
     <string name="body_temperature_lowercase_label" msgid="324124730971992259">"thân nhiệt"</string>
     <string name="body_temperature_read_content_description" msgid="5966765249024688738">"Đọc dữ liệu về thân nhiệt"</string>
     <string name="body_temperature_write_content_description" msgid="5498016171067859369">"Ghi dữ liệu về thân nhiệt"</string>
-    <string name="heart_rate_uppercase_label" msgid="4990167215137642430">"Tần số tim"</string>
-    <string name="heart_rate_lowercase_label" msgid="693492686337628283">"tần số tim"</string>
+    <string name="heart_rate_uppercase_label" msgid="4990167215137642430">"Nhịp tim"</string>
+    <string name="heart_rate_lowercase_label" msgid="693492686337628283">"nhịp tim"</string>
     <string name="heart_rate_read_content_description" msgid="4165867166260001259">"Đọc dữ liệu về nhịp tim"</string>
     <string name="heart_rate_write_content_description" msgid="2876667918366409170">"Ghi dữ liệu về nhịp tim"</string>
-    <string name="heart_rate_variability_uppercase_label" msgid="2047887230527012536">"Sự thay đổi tần số tim"</string>
+    <string name="heart_rate_variability_uppercase_label" msgid="2047887230527012536">"Sự thay đổi nhịp tim"</string>
     <string name="heart_rate_variability_lowercase_label" msgid="2332638559415663836">"sự thay đổi nhịp tim"</string>
     <string name="heart_rate_variability_read_content_description" msgid="5812707457872629556">"Đọc dữ liệu về sự thay đổi nhịp tim"</string>
     <string name="heart_rate_variability_write_content_description" msgid="3628171603035566114">"Ghi dữ liệu về sự thay đổi nhịp tim"</string>
@@ -253,8 +253,8 @@
     <string name="respiratory_rate_lowercase_label" msgid="8138249029197360098">"nhịp thở"</string>
     <string name="respiratory_rate_read_content_description" msgid="8545898979648419722">"Đọc dữ liệu về nhịp thở"</string>
     <string name="respiratory_rate_write_content_description" msgid="7689533746809591931">"Ghi dữ liệu về nhịp thở"</string>
-    <string name="resting_heart_rate_uppercase_label" msgid="5700827752396195453">"Tần số tim lúc nghỉ ngơi"</string>
-    <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"tần số tim lúc nghỉ ngơi"</string>
+    <string name="resting_heart_rate_uppercase_label" msgid="5700827752396195453">"Nhịp tim lúc nghỉ ngơi"</string>
+    <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"nhịp tim lúc nghỉ ngơi"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Đọc dữ liệu về nhịp tim lúc nghỉ ngơi"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Ghi dữ liệu về nhịp tim lúc nghỉ ngơi"</string>
     <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Nhiệt độ trên da"</string>
@@ -267,10 +267,14 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Dữ liệu tiêm chủng"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"dữ liệu tiêm chủng"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Đọc dữ liệu tiêm chủng"</string>
-    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Chánh niệm"</string>
-    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"chánh niệm"</string>
-    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Đọc dữ liệu về buổi tập chánh niệm"</string>
-    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Ghi dữ liệu về buổi tập chánh niệm"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
+    <skip />
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
+    <skip />
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
+    <skip />
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"Cho phép \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" đọc dữ liệu"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Cho phép \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" ghi dữ liệu"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Huỷ"</string>
@@ -342,10 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Lần xuất theo lịch"</string>
     <string name="import_data" msgid="404502315533233094">"Nhập dữ liệu"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Khôi phục dữ liệu từ tệp đã xuất trước đó"</string>
-    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"Chọn tệp"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
     <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
-    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"Không khôi phục được do tệp bạn đã chọn không tương thích. Hãy nhớ chọn đúng tệp đã xuất."</string>
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Tính năng xuất giúp bạn lưu dữ liệu của mình để có thể chuyển dữ liệu đó sang chiếc điện thoại mới"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Tìm hiểu thêm"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Đang bật"</string>
@@ -369,12 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"Tiếp theo"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Nhập từ"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"Vui lòng chọn một ứng dụng lưu trữ để nhập dữ liệu của bạn"</string>
-    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"Nhấn để chọn một tài khoản"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Chọn một tài khoản"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Huỷ"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Xong"</string>
-    <string name="export_import_install_apps_text" msgid="5026922993254770904">"Để có thêm lựa chọn, hãy cài đặt các ứng dụng bộ nhớ trên đám mây nếu bạn muốn thấy các ứng dụng đó tại đây"</string>
-    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Chuyển tới Cửa hàng Play"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Làm quen với Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect lưu trữ dữ liệu về sức khoẻ và hoạt động thể dục của bạn, qua đó mang lại cho bạn một cách đơn giản để đồng bộ hoá nhiều ứng dụng trên điện thoại"</string>
     <string name="share_data" msgid="3481932156368883946">"Chia sẻ dữ liệu với ứng dụng"</string>
