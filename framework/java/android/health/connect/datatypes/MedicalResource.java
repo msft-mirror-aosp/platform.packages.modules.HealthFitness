@@ -174,10 +174,8 @@ public final class MedicalResource implements Parcelable {
     /**
      * Valid set of values for this IntDef. Update this set when add new type or deprecate existing
      * type.
-     *
-     * @hide
      */
-    public static final Set<Integer> VALID_TYPES =
+    private static final Set<Integer> VALID_TYPES =
             Set.of(
                     MEDICAL_RESOURCE_TYPE_UNKNOWN,
                     MEDICAL_RESOURCE_TYPE_IMMUNIZATION,

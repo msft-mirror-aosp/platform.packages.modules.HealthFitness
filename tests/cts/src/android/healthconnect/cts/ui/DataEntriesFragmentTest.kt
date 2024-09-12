@@ -27,12 +27,13 @@ import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndClick
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.utils.RevokedHealthPermissionRule
-import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.insertRecords
 import android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords
+import android.platform.test.annotations.RequiresFlagsDisabled
+import android.platform.test.flag.junit.CheckFlagsRule
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.uiautomator.By
-import com.android.compatibility.common.util.DisableAnimationRule
-import com.android.compatibility.common.util.FreezeRotationRule
+import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import java.time.Instant
 import java.time.Period.ofDays
 import java.time.ZoneId
@@ -40,12 +41,43 @@ import org.junit.AfterClass
 import org.junit.Rule
 import org.junit.Test
 
-/** CTS test for HealthConnect Data entries screen. */
+/** CTS test for HealthConnect Data entries screen in the old IA. */
+@RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
 class DataEntriesFragmentTest : HealthConnectBaseTest() {
 
-    @get:Rule val disableAnimationRule = DisableAnimationRule()
+    @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
-    @get:Rule val freezeRotationRule = FreezeRotationRule()
+    @JvmField
+    @Rule
+    val revokedWriteDistanceARule =
+        RevokedHealthPermissionRule(
+            APP_A.getPackageName(),
+            "android.permission.health.WRITE_DISTANCE",
+        )
+
+    @JvmField
+    @Rule
+    val revokedWriteDistanceBRule =
+        RevokedHealthPermissionRule(
+            APP_B.getPackageName(),
+            "android.permission.health.WRITE_DISTANCE",
+        )
+
+    @JvmField
+    @Rule
+    val revokedReadDistanceARule =
+        RevokedHealthPermissionRule(
+            APP_A.getPackageName(),
+            "android.permission.health.READ_DISTANCE",
+        )
+
+    @JvmField
+    @Rule
+    val revokedReadDistanceBRule =
+        RevokedHealthPermissionRule(
+            APP_B.getPackageName(),
+            "android.permission.health.READ_DISTANCE",
+        )
 
     companion object {
         private const val TAG = "DataEntriesFragmentTest"
@@ -59,47 +91,22 @@ class DataEntriesFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @AfterClass
         fun tearDown() {
-            if (!TestUtils.isHardwareSupported()) {
-                return
-            }
             verifyDeleteRecords(
                 StepsRecord::class.java,
                 TimeInstantRangeFilter.Builder()
                     .setStartTime(Instant.EPOCH)
                     .setEndTime(Instant.now())
-                    .build())
+                    .build(),
+            )
             verifyDeleteRecords(
                 DistanceRecord::class.java,
                 TimeInstantRangeFilter.Builder()
                     .setStartTime(Instant.EPOCH)
                     .setEndTime(Instant.now())
-                    .build())
+                    .build(),
+            )
         }
     }
-
-    @JvmField
-    @Rule
-    val revokedWriteDistanceARule =
-        RevokedHealthPermissionRule(
-            APP_A.getPackageName(), "android.permission.health.WRITE_DISTANCE")
-
-    @JvmField
-    @Rule
-    val revokedWriteDistanceBRule =
-        RevokedHealthPermissionRule(
-            APP_B.getPackageName(), "android.permission.health.WRITE_DISTANCE")
-
-    @JvmField
-    @Rule
-    val revokedReadDistanceARule =
-        RevokedHealthPermissionRule(
-            APP_A.getPackageName(), "android.permission.health.READ_DISTANCE")
-
-    @JvmField
-    @Rule
-    val revokedReadDistanceBRule =
-        RevokedHealthPermissionRule(
-            APP_B.getPackageName(), "android.permission.health.READ_DISTANCE")
 
     @Test
     fun dataEntries_showsInsertedEntry() {

@@ -273,12 +273,9 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Immunization"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"immunization"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"I-read ang immunization"</string>
-    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
-    <skip />
+    <string name="allergy_intolerance_uppercase_label" msgid="726821034032305942">"Allergy at intolerance"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="3259399258428458578">"Allergy at intolerance"</string>
+    <string name="allergy_intolerance_content_description" msgid="450723157436883417">"Basahin ang allergy at intolerance"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Pagiging Maintindihin"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"pagiging maintindihin"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"I-read ang pagiging maintindihin"</string>
@@ -306,6 +303,8 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Piniling araw"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Nakaraang araw"</string>
     <string name="default_error" msgid="7966868260616403475">"Nagkaproblema. Subukan ulit."</string>
+    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"Magagawa ng mga app na mayroon ng pahintulot na ito na mag-read at mag-write ng iyong data ng kalusugan at fitness."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Kontrolin kung aling mga app ang makaka-access sa data na naka-store sa Health Connect. Mag-tap ng app para suriin ang data na puwede nitong i-read o i-write."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Pinapayagan ang access"</string>
@@ -408,6 +407,7 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Buksan"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Pumili ng file"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Magbakante ng space"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"Ang nakaiskedyul na pag-export ay sa"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"\'Di na-export ng Health Connect ang data"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Kailangan ng higit pang space"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Nagkaproblema sa pag-export para sa <xliff:g id="DATE">%1$s</xliff:g>. Mag-set up ng bagong nakaiskedyul na pag-export at subukan ulit."</string>

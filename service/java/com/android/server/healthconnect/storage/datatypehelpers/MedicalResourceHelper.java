@@ -35,7 +35,6 @@ import static com.android.server.healthconnect.storage.datatypehelpers.RecordHel
 import static com.android.server.healthconnect.storage.request.ReadTableRequest.UNION;
 import static com.android.server.healthconnect.storage.utils.SqlJoin.SQL_JOIN_INNER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_UNIQUE_NON_NULL;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY_AUTOINCREMENT;
@@ -43,13 +42,10 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 import static com.android.server.healthconnect.storage.utils.StorageUtils.generateMedicalResourceUUID;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLongList;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getListOfHexStrings;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
-
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
@@ -63,9 +59,7 @@ import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.FhirVersion;
-import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
-import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import android.util.Pair;
 import android.util.Slog;
 
@@ -74,7 +68,6 @@ import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.TransactionManager.TransactionRunnableWithReturn;
-import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.CreateIndexRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -89,11 +82,9 @@ import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -261,58 +252,6 @@ public final class MedicalResourceHelper {
                     }
                     return medicalResources;
                 });
-    }
-
-    /**
-     * Reads from the storage and creates a map between {@link MedicalResourceType}s and all its
-     * contributing {@link MedicalDataSource}s.
-     *
-     * <p>This map does not guarantee to contain all the valid {@link MedicalResourceType}s we
-     * support, but only contain those we have data for in the storage.
-     */
-    @NonNull
-    public Map<Integer, Set<MedicalDataSource>>
-            getMedicalResourceTypeToContributingDataSourcesMap() {
-        return mTransactionManager.runAsTransaction(
-                db -> {
-                    Map<Long, MedicalDataSource> allRowIdToDataSourceMap =
-                            mMedicalDataSourceHelper.getAllRowIdToDataSourceMap(db);
-                    Map<Integer, List<Long>> resourceTypeToDataSourceIdsMap =
-                            getMedicalResourceTypeToDataSourceIdsMap(db);
-                    return resourceTypeToDataSourceIdsMap.keySet().stream()
-                            .collect(
-                                    toMap(
-                                            medicalResourceType -> medicalResourceType,
-                                            medicalResourceType ->
-                                                    resourceTypeToDataSourceIdsMap
-                                                            .getOrDefault(
-                                                                    medicalResourceType, List.of())
-                                                            .stream()
-                                                            .map(allRowIdToDataSourceMap::get)
-                                                            // This should not happen, but we
-                                                            // filter out nulls for extra safe.
-                                                            .filter(Objects::nonNull)
-                                                            .collect(toSet())));
-                });
-    }
-
-    @NonNull
-    private Map<Integer, List<Long>> getMedicalResourceTypeToDataSourceIdsMap(
-            @NonNull SQLiteDatabase db) {
-        String readMainTableQuery = getReadQueryForMedicalResourceTypeToDataSourceIdsMap();
-        Map<Integer, List<Long>> resourceTypeToDataSourceIdsMap = new HashMap<>();
-        try (Cursor cursor = db.rawQuery(readMainTableQuery, /* selectionArgs= */ null)) {
-            if (cursor.moveToFirst()) {
-                do {
-                    int medicalResourceType =
-                            getCursorInt(cursor, getMedicalResourceTypeColumnName());
-                    List<Long> dataSourceIds =
-                            getCursorLongList(cursor, DATA_SOURCE_ID_COLUMN_NAME, DELIMITER);
-                    resourceTypeToDataSourceIdsMap.put(medicalResourceType, dataSourceIds);
-                } while (cursor.moveToNext());
-            }
-        }
-        return resourceTypeToDataSourceIdsMap;
     }
 
     @NonNull
@@ -615,37 +554,6 @@ public final class MedicalResourceHelper {
     }
 
     /**
-     * Creates raw SQL query for {@link
-     * MedicalResourceHelper#getMedicalResourceTypeToDataSourceIdsMap}.
-     *
-     * <p>"GROUP BY" is not supported in {@link ReadTableRequest} and should be achieved via {@link
-     * AggregateTableRequest}. But the {@link AggregateTableRequest} is too complicated for our
-     * simple use case here (requiring {@link RecordHelper}). Thus we just build and return raw SQL
-     * query which appends the "GROUP BY" clause directly.
-     */
-    @NonNull
-    @VisibleForTesting
-    static String getReadQueryForMedicalResourceTypeToDataSourceIdsMap() {
-        ReadTableRequest readDistinctResourceTypeToDataSourceIdRequest =
-                new ReadTableRequest(getMainTableName())
-                        .setDistinctClause(true)
-                        .setColumnNames(
-                                List.of(
-                                        getMedicalResourceTypeColumnName(),
-                                        DATA_SOURCE_ID_COLUMN_NAME))
-                        .setJoinClause(joinWithMedicalResourceIndicesTable());
-
-        return String.format(
-                "SELECT %1$s, GROUP_CONCAT(%2$s, '%3$s') AS %4$s FROM (%5$s) GROUP BY %6$s",
-                /* 1 */ getMedicalResourceTypeColumnName(),
-                /* 2 */ DATA_SOURCE_ID_COLUMN_NAME,
-                /* 3 */ DELIMITER,
-                /* 4 */ DATA_SOURCE_ID_COLUMN_NAME,
-                /* 5 */ readDistinctResourceTypeToDataSourceIdRequest.getReadCommand(),
-                /* 6 */ getMedicalResourceTypeColumnName());
-    }
-
-    /**
      * Creates {@link SqlJoin} that is an inner join from medical_resource_table to
      * medical_resource_indices_table followed by another inner join from medical_resource_table to
      * medical_data_source_table.
@@ -663,8 +571,8 @@ public final class MedicalResourceHelper {
     @NonNull
     private static SqlJoin getJoinWithIndicesAndDataSourceTablesFilterOnMedicalResourceTypes(
             @NonNull Set<Integer> medicalResourceTypes) {
-        return getJoinWithMedicalResourceIndicesFilterOnMedicalResourceTypes(
-                medicalResourceTypes, joinWithMedicalDataSourceTable());
+        return getJoinWithIndicesTableFilterOnMedicalResourceTypes(medicalResourceTypes)
+                .attachJoin(joinWithMedicalDataSourceTable());
     }
 
     /**
@@ -676,8 +584,8 @@ public final class MedicalResourceHelper {
     private static SqlJoin
             getJoinWithIndicesAndDataSourceTablesFilterOnMedicalResourceTypesAndAppId(
                     @NonNull Set<Integer> medicalResourceTypes, @NonNull String packageName) {
-        return getJoinWithMedicalResourceIndicesFilterOnMedicalResourceTypes(
-                medicalResourceTypes, joinWithMedicalDataSourceTableFilterOnAppId(packageName));
+        return getJoinWithIndicesTableFilterOnMedicalResourceTypes(medicalResourceTypes)
+                .attachJoin(joinWithMedicalDataSourceTableFilterOnAppId(packageName));
     }
 
     /**
@@ -691,9 +599,8 @@ public final class MedicalResourceHelper {
             getJoinWithIndicesAndDataSourceTablesFilterOnMedicalResourceTypesAndSourceIds(
                     @NonNull Set<Integer> medicalResourceTypes,
                     @NonNull List<UUID> dataSourceUuids) {
-        return getJoinWithMedicalResourceIndicesFilterOnMedicalResourceTypes(
-                medicalResourceTypes,
-                joinWithMedicalDataSourceTableFilterOnDataSourceIds(dataSourceUuids));
+        return getJoinWithIndicesTableFilterOnMedicalResourceTypes(medicalResourceTypes)
+                .attachJoin(joinWithMedicalDataSourceTableFilterOnDataSourceIds(dataSourceUuids));
     }
 
     /**
@@ -707,10 +614,10 @@ public final class MedicalResourceHelper {
             @NonNull Set<Integer> medicalResourceTypes,
             @NonNull List<UUID> dataSourceUuids,
             @NonNull String packageName) {
-        return getJoinWithMedicalResourceIndicesFilterOnMedicalResourceTypes(
-                medicalResourceTypes,
-                joinWithMedicalDataSourceTableFilterOnDataSourceIdsAndAppId(
-                        dataSourceUuids, packageName));
+        return getJoinWithIndicesTableFilterOnMedicalResourceTypes(medicalResourceTypes)
+                .attachJoin(
+                        joinWithMedicalDataSourceTableFilterOnDataSourceIdsAndAppId(
+                                dataSourceUuids, packageName));
     }
 
     /**
@@ -719,15 +626,14 @@ public final class MedicalResourceHelper {
      * extraJoin} attached to it.
      */
     @NonNull
-    private static SqlJoin getJoinWithMedicalResourceIndicesFilterOnMedicalResourceTypes(
-            @NonNull Set<Integer> medicalResourceTypes, @NonNull SqlJoin extraJoin) {
-        SqlJoin join = joinWithMedicalResourceIndicesTable();
-        join.setSecondTableWhereClause(getMedicalResourceTypeWhereClause(medicalResourceTypes));
-        return join.attachJoin(extraJoin);
+    static SqlJoin getJoinWithIndicesTableFilterOnMedicalResourceTypes(
+            @NonNull Set<Integer> medicalResourceTypes) {
+        return joinWithMedicalResourceIndicesTable()
+                .setSecondTableWhereClause(getMedicalResourceTypeWhereClause(medicalResourceTypes));
     }
 
     @NonNull
-    private static SqlJoin getJoinWithMedicalDataSourceFilterOnDataSourceIdsAndAppId(
+    static SqlJoin getJoinWithMedicalDataSourceFilterOnDataSourceIdsAndAppId(
             @NonNull List<UUID> dataSourceIds, long appId, @NonNull SqlJoin extraJoin) {
         return joinWithMedicalDataSourceTable()
                 .setSecondTableWhereClause(
@@ -736,7 +642,15 @@ public final class MedicalResourceHelper {
     }
 
     @NonNull
-    private static SqlJoin joinWithMedicalResourceIndicesTable() {
+    static SqlJoin getJoinWithMedicalDataSourceFilterOnDataSourceIds(
+            @NonNull List<UUID> dataSourceIds, @NonNull SqlJoin extraJoin) {
+        return joinWithMedicalDataSourceTable()
+                .setSecondTableWhereClause(getDataSourceIdsWhereClause(dataSourceIds))
+                .attachJoin(extraJoin);
+    }
+
+    @NonNull
+    static SqlJoin joinWithMedicalResourceIndicesTable() {
         return new SqlJoin(
                         MEDICAL_RESOURCE_TABLE_NAME,
                         getTableName(),
@@ -799,6 +713,13 @@ public final class MedicalResourceHelper {
         whereClauses.addWhereInClauseWithoutQuotes(
                 getDataSourceUuidColumnName(), StorageUtils.getListOfHexStrings(dataSourceIds));
         return whereClauses;
+    }
+
+    @NonNull
+    private static WhereClauses getDataSourceIdsWhereClause(@NonNull List<UUID> dataSourceIds) {
+        return new WhereClauses(AND)
+                .addWhereInClauseWithoutQuotes(
+                        getDataSourceUuidColumnName(), getListOfHexStrings(dataSourceIds));
     }
 
     @NonNull
