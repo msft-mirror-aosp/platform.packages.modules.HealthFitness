@@ -73,29 +73,45 @@ public class HealthConnectManagerService extends SystemService {
     private final MigrationNotificationSender mMigrationNotificationSender;
     private final ExportImportSettingsStorage mExportImportSettingsStorage;
     private final ExportManager mExportManager;
+    private final PreferenceHelper mPreferenceHelper;
+    private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
 
-    @Nullable
-    private HealthConnectInjector mHealthConnectInjector;
+    @Nullable private HealthConnectInjector mHealthConnectInjector;
 
     public HealthConnectManagerService(Context context) {
         super(context);
         mContext = context;
         mCurrentForegroundUser = context.getUser();
-        HealthConnectDeviceConfigManager healthConnectDeviceConfigManager =
-                HealthConnectDeviceConfigManager.initializeInstance(context);
-
+        MigrationStateManager migrationStateManager;
+        // This is needed now because MigrationStatedManager uses PreferenceHelper and
+        // PreferenceHelper
+        // after refactoring needs TransactionManager in the constructor. This will be cleaned up
+        // once DI is launched.
         if (Flags.dependencyInjection()) {
             HealthConnectInjector.setInstance(new HealthConnectInjectorImpl(context));
             mHealthConnectInjector = HealthConnectInjector.getInstance();
+            mHealthConnectDeviceConfigManager =
+                    mHealthConnectInjector.getHealthConnectDeviceConfigManager();
             mTransactionManager = mHealthConnectInjector.getTransactionManager();
+            mPreferenceHelper = mHealthConnectInjector.getPreferenceHelper();
+            migrationStateManager =
+                    MigrationStateManager.initializeInstance(
+                            mCurrentForegroundUser.getIdentifier(),
+                            mHealthConnectDeviceConfigManager,
+                            mHealthConnectInjector.getPreferenceHelper());
         } else {
+            mHealthConnectDeviceConfigManager =
+                    HealthConnectDeviceConfigManager.initializeInstance(context);
             mTransactionManager =
                     TransactionManager.initializeInstance(
                             new HealthConnectUserContext(mContext, mCurrentForegroundUser));
+            mPreferenceHelper = PreferenceHelper.getInstance();
+            migrationStateManager =
+                    MigrationStateManager.initializeInstance(
+                            mCurrentForegroundUser.getIdentifier(),
+                            mHealthConnectDeviceConfigManager,
+                            mPreferenceHelper);
         }
-
-        MigrationStateManager migrationStateManager =
-                MigrationStateManager.initializeInstance(mCurrentForegroundUser.getIdentifier());
 
         HealthPermissionIntentAppsTracker permissionIntentTracker =
                 new HealthPermissionIntentAppsTracker(context);
@@ -103,7 +119,8 @@ public class HealthConnectManagerService extends SystemService {
         HealthConnectPermissionHelper permissionHelper;
         MigrationCleaner migrationCleaner;
 
-        if (Flags.dependencyInjection() && mHealthConnectInjector != null) {
+        if (Flags.dependencyInjection()) {
+            Objects.requireNonNull(mHealthConnectInjector);
             firstGrantTimeManager =
                     new FirstGrantTimeManager(
                             context,
@@ -154,8 +171,7 @@ public class HealthConnectManagerService extends SystemService {
             migrationCleaner =
                     new MigrationCleaner(
                             mTransactionManager, PriorityMigrationHelper.getInstance());
-            mExportImportSettingsStorage =
-                    new ExportImportSettingsStorage(PreferenceHelper.getInstance());
+            mExportImportSettingsStorage = new ExportImportSettingsStorage(mPreferenceHelper);
             mExportManager =
                     new ExportManager(
                             context,
@@ -166,9 +182,13 @@ public class HealthConnectManagerService extends SystemService {
 
         mUserManager = context.getSystemService(UserManager.class);
         mMigrationBroadcastScheduler =
-                new MigrationBroadcastScheduler(mCurrentForegroundUser.getIdentifier());
+                new MigrationBroadcastScheduler(
+                        mCurrentForegroundUser.getIdentifier(),
+                        mHealthConnectDeviceConfigManager,
+                        migrationStateManager);
         migrationStateManager.setMigrationBroadcastScheduler(mMigrationBroadcastScheduler);
-        mMigrationNotificationSender = new MigrationNotificationSender(context);
+        mMigrationNotificationSender =
+                new MigrationNotificationSender(context, mHealthConnectDeviceConfigManager);
         mMigrationUiStateManager =
                 new MigrationUiStateManager(
                         mContext,
@@ -180,7 +200,7 @@ public class HealthConnectManagerService extends SystemService {
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mTransactionManager,
-                        healthConnectDeviceConfigManager,
+                        mHealthConnectDeviceConfigManager,
                         permissionHelper,
                         migrationCleaner,
                         firstGrantTimeManager,
@@ -199,7 +219,7 @@ public class HealthConnectManagerService extends SystemService {
         new MigratorPackageChangesReceiver(MigrationStateManager.getInitialisedInstance())
                 .registerBroadcastReceiver(mContext);
         publishBinderService(Context.HEALTHCONNECT_SERVICE, mHealthConnectService);
-        HealthConnectDeviceConfigManager.getInitialisedInstance().updateRateLimiterValues();
+        mHealthConnectDeviceConfigManager.updateRateLimiterValues();
     }
 
     /**
@@ -269,7 +289,7 @@ public class HealthConnectManagerService extends SystemService {
             // Clear preferences cache again after the user switching is done as there's a race
             // condition with tasks re-populating the preferences cache between clearing the cache
             // and TransactionManager switching user, see b/355426144.
-            PreferenceHelper.getInstance().clearCache();
+            mPreferenceHelper.clearCache();
         }
 
         HealthConnectDailyJobs.cancelAllJobs(mContext);
@@ -305,7 +325,7 @@ public class HealthConnectManagerService extends SystemService {
         HealthConnectThreadScheduler.scheduleInternalTask(
                 () -> {
                     try {
-                        PreferenceHelper.getInstance().initializePreferences();
+                        mPreferenceHelper.initializePreferences();
                     } catch (Exception e) {
                         Slog.e(TAG, "Failed to initialize preferences cache", e);
                     }
@@ -314,7 +334,7 @@ public class HealthConnectManagerService extends SystemService {
         HealthConnectThreadScheduler.scheduleInternalTask(
                 () -> {
                     try {
-                        ExportImportJobs.schedulePeriodicExportJob(
+                        ExportImportJobs.schedulePeriodicJobIfNotScheduled(
                                 mCurrentForegroundUser.getIdentifier(),
                                 mContext,
                                 mExportImportSettingsStorage,

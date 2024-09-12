@@ -20,6 +20,7 @@ import android.content.Context;
 
 import androidx.annotation.Nullable;
 
+import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
@@ -47,20 +48,26 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final PreferenceHelper mPreferenceHelper;
     private final ExportImportSettingsStorage mExportImportSettingsStorage;
     private final ExportManager mExportManager;
+    private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
     }
 
     private HealthConnectInjectorImpl(Builder builder) {
-        mPackageInfoUtils =
-                builder.mPackageInfoUtils == null
-                        ? PackageInfoUtils.getInstance()
-                        : builder.mPackageInfoUtils;
+        mHealthConnectDeviceConfigManager =
+                builder.mHealthConnectDeviceConfigManager == null
+                        ? HealthConnectDeviceConfigManager.initializeInstance(
+                                builder.mHealthConnectUserContext)
+                        : builder.mHealthConnectDeviceConfigManager;
         mTransactionManager =
                 builder.mTransactionManager == null
                         ? TransactionManager.initializeInstance(builder.mHealthConnectUserContext)
                         : builder.mTransactionManager;
+        mPackageInfoUtils =
+                builder.mPackageInfoUtils == null
+                        ? PackageInfoUtils.getInstance()
+                        : builder.mPackageInfoUtils;
         mHealthDataCategoryPriorityHelper =
                 builder.mHealthDataCategoryPriorityHelper == null
                         ? HealthDataCategoryPriorityHelper.getInstance()
@@ -123,6 +130,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         return mExportManager;
     }
 
+    @Override
+    public HealthConnectDeviceConfigManager getHealthConnectDeviceConfigManager() {
+        return mHealthConnectDeviceConfigManager;
+    }
+
     /**
      * Returns a new Builder of Health Connect Injector
      *
@@ -149,6 +161,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private PreferenceHelper mPreferenceHelper;
         @Nullable private ExportImportSettingsStorage mExportImportSettingsStorage;
         @Nullable private ExportManager mExportManager;
+        @Nullable private HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
 
         private Builder(Context context) {
             mHealthConnectUserContext = new HealthConnectUserContext(context, context.getUser());
@@ -202,6 +215,14 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         public Builder setExportManager(ExportManager exportManager) {
             Objects.requireNonNull(exportManager);
             mExportManager = exportManager;
+            return this;
+        }
+
+        /** Set fake or custom HealthConnectDeviceConfigManager */
+        public Builder setHealthConnectDeviceConfigManager(
+                HealthConnectDeviceConfigManager healthConnectDeviceConfigManager) {
+            Objects.requireNonNull(healthConnectDeviceConfigManager);
+            mHealthConnectDeviceConfigManager = healthConnectDeviceConfigManager;
             return this;
         }
 

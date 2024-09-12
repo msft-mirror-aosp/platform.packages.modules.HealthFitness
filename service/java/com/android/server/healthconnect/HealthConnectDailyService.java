@@ -78,7 +78,9 @@ public class HealthConnectDailyService extends JobService {
 
         HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper;
         ExportImportSettingsStorage exportImportSettingsStorage;
+        PreferenceHelper preferenceHelper;
         ExportManager exportManager;
+        HealthConnectDeviceConfigManager healthConnectDeviceConfigManager;
 
         if (Flags.dependencyInjection()) {
             HealthConnectInjector healthConnectInjector = HealthConnectInjector.getInstance();
@@ -86,10 +88,15 @@ public class HealthConnectDailyService extends JobService {
                     healthConnectInjector.getHealthDataCategoryPriorityHelper();
             exportImportSettingsStorage = healthConnectInjector.getExportImportSettingsStorage();
             exportManager = healthConnectInjector.getExportManager();
+            preferenceHelper = healthConnectInjector.getPreferenceHelper();
+            healthConnectDeviceConfigManager =
+                    healthConnectInjector.getHealthConnectDeviceConfigManager();
         } else {
             healthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
-            exportImportSettingsStorage =
-                    new ExportImportSettingsStorage(PreferenceHelper.getInstance());
+            preferenceHelper = PreferenceHelper.getInstance();
+            exportImportSettingsStorage = new ExportImportSettingsStorage(preferenceHelper);
+            healthConnectDeviceConfigManager =
+                    HealthConnectDeviceConfigManager.getInitialisedInstance();
             exportManager =
                     new ExportManager(
                             getApplicationContext(),
@@ -107,7 +114,8 @@ public class HealthConnectDailyService extends JobService {
                             HealthConnectDailyJobs.execute(
                                     getApplicationContext(),
                                     params,
-                                    healthDataCategoryPriorityHelper);
+                                    healthDataCategoryPriorityHelper,
+                                    preferenceHelper);
                             jobFinished(params, false);
                         });
                 return true;
@@ -115,7 +123,9 @@ public class HealthConnectDailyService extends JobService {
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () -> {
                             MigrationStateChangeJob.executeMigrationCompletionJob(
-                                    getApplicationContext());
+                                    getApplicationContext(),
+                                    preferenceHelper,
+                                    healthConnectDeviceConfigManager);
                             jobFinished(params, false);
                         });
                 return true;
@@ -123,7 +133,9 @@ public class HealthConnectDailyService extends JobService {
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () -> {
                             MigrationStateChangeJob.executeMigrationPauseJob(
-                                    getApplicationContext());
+                                    getApplicationContext(),
+                                    preferenceHelper,
+                                    healthConnectDeviceConfigManager);
                             jobFinished(params, false);
                         });
                 return true;

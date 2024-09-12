@@ -27,6 +27,7 @@ import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndClick
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.utils.RevokedHealthPermissionRule
+import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.insertRecords
 import android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords
 import android.platform.test.annotations.RequiresFlagsDisabled
@@ -91,6 +92,9 @@ class DataEntriesFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @AfterClass
         fun tearDown() {
+            if (!TestUtils.isHardwareSupported()) {
+                return
+            }
             verifyDeleteRecords(
                 StepsRecord::class.java,
                 TimeInstantRangeFilter.Builder()

@@ -36,113 +36,77 @@ class RequestHealthPermissionUITest : HealthConnectBaseTest() {
     @Test
     fun showsAppName_showsRequestedPermissions() {
         revokePermissionViaPackageManager(
-            context,
-            TEST_APP_PACKAGE_NAME,
-            HealthPermissions.READ_HEIGHT,
-        )
+            context, TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
         revokePermissionViaPackageManager(
-            context,
-            TEST_APP_PACKAGE_NAME,
-            HealthPermissions.WRITE_BODY_FAT,
-        )
+            context, TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_BODY_FAT)
         context.launchRequestPermissionActivity(
             packageName = TEST_APP_PACKAGE_NAME,
-            permissions = listOf(HealthPermissions.READ_HEIGHT, HealthPermissions.WRITE_BODY_FAT),
-        ) {
-            waitDisplayed(By.text("Allow Health Connect cts test app to access Health Connect?"))
-            waitDisplayed(By.text("Height"))
-            waitDisplayed(By.text("Body fat"))
-        }
+            permissions = listOf(HealthPermissions.READ_HEIGHT, HealthPermissions.WRITE_BODY_FAT)) {
+                waitDisplayed(
+                    By.text("Allow Health Connect cts test app to access Health Connect?"))
+                waitDisplayed(By.text("Height"))
+                waitDisplayed(By.text("Body fat"))
+            }
     }
 
     @Test
     fun requestGrantedPermissions_doesNotShowGrantedPermissions() {
         revokePermissionViaPackageManager(
-            context,
-            TEST_APP_PACKAGE_NAME,
-            HealthPermissions.WRITE_BODY_FAT,
-        )
+            context, TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_BODY_FAT)
         grantPermissionViaPackageManager(
-            context,
-            TEST_APP_PACKAGE_NAME,
-            HealthPermissions.READ_HEIGHT,
-        )
+            context, TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
 
         context.launchRequestPermissionActivity(
             packageName = TEST_APP_PACKAGE_NAME,
-            permissions = listOf(HealthPermissions.READ_HEIGHT, HealthPermissions.WRITE_BODY_FAT),
-        ) {
-            waitNotDisplayed(By.text("Height"))
-            waitDisplayed(By.text("Body fat"))
-        }
+            permissions = listOf(HealthPermissions.READ_HEIGHT, HealthPermissions.WRITE_BODY_FAT)) {
+                waitNotDisplayed(By.text("Height"))
+                waitDisplayed(By.text("Body fat"))
+            }
     }
 
     @Test
     fun grantPermission_grantsOnlyRequestedPermission() {
         revokePermissionViaPackageManager(
-            context,
-            TEST_APP_PACKAGE_NAME,
-            HealthPermissions.READ_HEIGHT,
-        )
+            context, TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
         revokePermissionViaPackageManager(
-            context,
-            TEST_APP_PACKAGE_NAME,
-            HealthPermissions.WRITE_BODY_FAT,
-        )
+            context, TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_BODY_FAT)
         context.launchRequestPermissionActivity(
             packageName = TEST_APP_PACKAGE_NAME,
-            permissions = listOf(HealthPermissions.READ_HEIGHT, HealthPermissions.WRITE_BODY_FAT),
-        ) {
-            clickOnText("Height")
+            permissions = listOf(HealthPermissions.READ_HEIGHT, HealthPermissions.WRITE_BODY_FAT)) {
+                clickOnText("Height")
 
-            clickOnText("Allow")
+                clickOnText("Allow")
 
-            assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
-            assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_BODY_FAT)
-        }
+                assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
+                assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_BODY_FAT)
+            }
     }
 
     @Test
     fun grantAllPermissions_grantsAllPermissions() {
         revokePermissionViaPackageManager(
-            context,
-            TEST_APP_PACKAGE_NAME,
-            HealthPermissions.READ_HEIGHT,
-        )
+            context, TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
         revokePermissionViaPackageManager(
-            context,
-            TEST_APP_PACKAGE_NAME,
-            HealthPermissions.WRITE_HEIGHT,
-        )
+            context, TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_HEIGHT)
         context.launchRequestPermissionActivity(
             packageName = TEST_APP_PACKAGE_NAME,
-            permissions = listOf(HealthPermissions.READ_HEIGHT, HealthPermissions.WRITE_HEIGHT),
-        ) {
-            clickOnText("Allow all")
-            clickOnText("Allow")
+            permissions = listOf(HealthPermissions.READ_HEIGHT, HealthPermissions.WRITE_HEIGHT)) {
+                clickOnText("Allow all")
+                clickOnText("Allow")
 
-            assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
-            assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_HEIGHT)
-        }
+                assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
+                assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_HEIGHT)
+            }
     }
 
     @After
     fun tearDown() {
         revokePermissionViaPackageManager(
-            context,
-            TEST_APP_PACKAGE_NAME,
-            HealthPermissions.READ_HEIGHT,
-        )
+            context, TEST_APP_PACKAGE_NAME, HealthPermissions.READ_HEIGHT)
         revokePermissionViaPackageManager(
-            context,
-            TEST_APP_PACKAGE_NAME,
-            HealthPermissions.WRITE_HEIGHT,
-        )
+            context, TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_HEIGHT)
         revokePermissionViaPackageManager(
-            context,
-            TEST_APP_PACKAGE_NAME,
-            HealthPermissions.WRITE_BODY_FAT,
-        )
+            context, TEST_APP_PACKAGE_NAME, HealthPermissions.WRITE_BODY_FAT)
     }
 
     @Throws(Exception::class)
