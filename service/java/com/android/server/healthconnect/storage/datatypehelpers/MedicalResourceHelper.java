@@ -895,6 +895,8 @@ public final class MedicalResourceHelper {
      *     UpsertMedicalResourceInternalRequest}.
      * @return List of {@link MedicalResource}s that were upserted into the database, in the same
      *     order as their associated {@link UpsertMedicalResourceInternalRequest}s.
+     * @throws IllegalArgumentException if the data source id does not exist, or if a resource's
+     *     FHIR version does not match the data source's FHIR version.
      */
     public List<MedicalResource> upsertMedicalResources(
             String callingPackageName,
@@ -920,7 +922,6 @@ public final class MedicalResourceHelper {
                                         upsertMedicalResourceInternalRequests));
     }
 
-    // TODO(b/365958801) Check if MedicalResource's fhirVersion matches data source.
     private List<MedicalResource> readDataSourcesAndUpsertMedicalResources(
             SQLiteDatabase db,
             String callingPackageName,
@@ -930,8 +931,8 @@ public final class MedicalResourceHelper {
                         .map(UpsertMedicalResourceInternalRequest::getDataSourceId)
                         .toList();
         long appInfoIdRestriction = mAppInfoHelper.getAppInfoId(callingPackageName);
-        Map<String, Long> dataSourceUuidToRowId =
-                mMedicalDataSourceHelper.getUuidToRowIdMap(
+        Map<String, Pair<Long, FhirVersion>> dataSourceUuidToRowIdAndVersion =
+                mMedicalDataSourceHelper.getUuidToRowIdAndVersionMap(
                         db, appInfoIdRestriction, StorageUtils.toUuids(dataSourceUuids));
 
         // Standard Upsert code cannot be used as it uses a query with inline values to look for
@@ -943,10 +944,19 @@ public final class MedicalResourceHelper {
         // https://developer.android.com/reference/android/database/sqlite/package-summary.html
         // So we use this.
         for (UpsertMedicalResourceInternalRequest upsertRequest : upsertRequests) {
-            Long dataSourceRowId = dataSourceUuidToRowId.get(upsertRequest.getDataSourceId());
-            if (dataSourceRowId == null) {
+            Pair<Long, FhirVersion> dataSourceRowIdAndVersion =
+                    dataSourceUuidToRowIdAndVersion.get(upsertRequest.getDataSourceId());
+            if (dataSourceRowIdAndVersion == null) {
                 throw new IllegalArgumentException(
                         "Invalid data source id: " + upsertRequest.getDataSourceId());
+            }
+            Long dataSourceRowId = dataSourceRowIdAndVersion.first;
+            String dataSourceFhirVersion = dataSourceRowIdAndVersion.second.toString();
+            if (!upsertRequest.getFhirVersion().equals(dataSourceFhirVersion)) {
+                throw new IllegalArgumentException(
+                        "Invalid fhir version: "
+                                + upsertRequest.getFhirVersion()
+                                + ". It did not match the data source's fhir version");
             }
             ContentValues contentValues =
                     getContentValues(dataSourceRowId, upsertRequest, mTimeSource.getInstantNow());

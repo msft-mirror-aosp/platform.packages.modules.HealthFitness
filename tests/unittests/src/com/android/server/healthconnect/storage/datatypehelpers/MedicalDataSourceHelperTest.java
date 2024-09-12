@@ -743,9 +743,9 @@ public class MedicalDataSourceHelperTest {
     public void getDataSourcesByIds_inBgWithoutBgPermHasWritePerm_canReadSelfDataSources() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
@@ -789,7 +789,7 @@ public class MedicalDataSourceHelperTest {
     public void getById_inBgWithoutBgPerm_hasWritePerm_noAccessLog() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                 toUuids(List.of(dataSource1.getId())),
                 /* grantedReadMedicalResourceTypes= */ Set.of(),
@@ -817,7 +817,7 @@ public class MedicalDataSourceHelperTest {
     public void getById_inBgWithoutBgPerm_hasWritePerm_hasReadPermForResourceTypes_noAccessLog() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                 toUuids(List.of(dataSource1.getId())),
                 Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
@@ -845,7 +845,7 @@ public class MedicalDataSourceHelperTest {
     public void getById_inBgWithoutBgPerm_noWritePerm_immunizationReadPermOnly_noAccessLog() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                 toUuids(List.of(dataSource1.getId())),
                 Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
@@ -873,9 +873,9 @@ public class MedicalDataSourceHelperTest {
     public void getById_expectAccessLogsWhenDataAccessedIsThroughReadPermission() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunizationPackage1 =
                 createImmunizationMedicalResource(dataSource1.getId());
         MedicalResource allergyResourcePackage2 = createAllergyMedicalResource(dataSource2.getId());
@@ -921,9 +921,9 @@ public class MedicalDataSourceHelperTest {
     public void getById_expectAccessLogsWhenAppHasNoWritePermHasReadPermButReadOnlySelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunizationPackage1 =
                 createImmunizationMedicalResource(dataSource1.getId());
         MedicalResource allergyPackage2 = createAllergyMedicalResource(dataSource2.getId());
@@ -967,7 +967,7 @@ public class MedicalDataSourceHelperTest {
     public void getById_expectAccessLogsWhenAppHasNoWritePermHasReadPermReadNonSelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         String dataSource =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME).getId();
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME).getId();
         MedicalResource immunizationDifferentPackage =
                 createImmunizationMedicalResource(dataSource);
         mMedicalResourceHelper.upsertMedicalResources(
@@ -1020,7 +1020,7 @@ public class MedicalDataSourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getById_inForegroundOrBgWithPerm_hasWritePerm_noReadPerm_noAccessLog() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
-        String dataSource = mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME).getId();
+        String dataSource = mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME).getId();
         mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                 toUuids(List.of(dataSource)),
                 Set.of(),
@@ -1048,7 +1048,7 @@ public class MedicalDataSourceHelperTest {
     public void getById_expectAccessLogsWhenAppHasWritePermHasReadPermReadSelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
         mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
                 toUuids(List.of(dataSource.getId())),
@@ -1084,9 +1084,9 @@ public class MedicalDataSourceHelperTest {
     public void getByIds_inBgWithoutBgPermHasWritePermHasReadPerm_canReadSelfDataSources() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource2);
@@ -1109,9 +1109,9 @@ public class MedicalDataSourceHelperTest {
     public void getByIds_inBgWithoutBgPermNoWritePermImmunizationReadPermOnly_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource2);
@@ -1138,11 +1138,11 @@ public class MedicalDataSourceHelperTest {
             getById_inBgWithoutBgPermNoWritePermBothAllergyAndImmunizationReadPerm_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1176,13 +1176,13 @@ public class MedicalDataSourceHelperTest {
     public void getById_inForegroundOrinBgWithBgPermNoWritePermHasImmunizationPerm_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1213,13 +1213,13 @@ public class MedicalDataSourceHelperTest {
             getByIds_inForegroundOrBgWithBgPermHasWritePermNoReadResourceTypesPerm_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1250,13 +1250,13 @@ public class MedicalDataSourceHelperTest {
     public void getByIds_inForegroundOrBgWithBgPermNoWritePermHasAllergyPerm_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1287,13 +1287,13 @@ public class MedicalDataSourceHelperTest {
     public void getByIds_inForegroundOrBgWithBgPermNoWritePermMultipleReadPerms_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1332,13 +1332,13 @@ public class MedicalDataSourceHelperTest {
             getByIds_inForegroundOrBgWithBgPermHasWritePermHasReadImmunizationPerm_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1386,13 +1386,13 @@ public class MedicalDataSourceHelperTest {
     public void getByPackage_emptyPackages_inForegroundOrBgWithBgPermHasWriteAndReadPerm_success() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1422,13 +1422,13 @@ public class MedicalDataSourceHelperTest {
     public void getByPackages_selfIncluded_inForegroundOrBgWithBgPermHasWriteAndReadPerm_success() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1459,13 +1459,13 @@ public class MedicalDataSourceHelperTest {
             getByPackages_selfNotIncluded_inForegroundOrBgWithBgPermHasWriteAndReadPerm_success() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1494,13 +1494,13 @@ public class MedicalDataSourceHelperTest {
     public void getByPackages_emptyPackages_inBgWithoutBgPermHasWritePerm_canReadSelfDataSources() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1528,13 +1528,13 @@ public class MedicalDataSourceHelperTest {
     public void getByPackages_selfIncluded_inBgWithoutBgPermHasWritePerm_canReadSelfDataSources() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1562,13 +1562,13 @@ public class MedicalDataSourceHelperTest {
     public void getByPackages_selfNotIncluded_inBgWithoutBgPermHasWritePerm_throws() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1597,13 +1597,13 @@ public class MedicalDataSourceHelperTest {
     public void getByPackages_emptyPackages_inBgWithoutBgPermHasWriteAndReadPerm_canReadSelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1631,13 +1631,13 @@ public class MedicalDataSourceHelperTest {
     public void getByPackages_selfIncluded_inBgWithoutBgPermHasWriteAndReadPerm_canReadSelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1665,13 +1665,13 @@ public class MedicalDataSourceHelperTest {
     public void getByPackages_selfNotIncluded_inBgWithoutBgPermHasWriteAndReadPerm_throws() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1700,13 +1700,13 @@ public class MedicalDataSourceHelperTest {
     public void getByPackages_emptyPackages_inBgWithoutBgPermHasReadPermOnly_canReadSelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1734,13 +1734,13 @@ public class MedicalDataSourceHelperTest {
     public void getByPackages_selfIncluded_inBgWithoutBgPermHasReadPermOnly_canReadSelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1768,13 +1768,13 @@ public class MedicalDataSourceHelperTest {
     public void getByPackages_selfNotIncluded_inBgWithoutBgPermHasReadPermOnly_throws() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1803,13 +1803,13 @@ public class MedicalDataSourceHelperTest {
     public void getByPackages_emptyPackages_inBgWithoutBgPermHasMultipleReadPerms_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1840,13 +1840,13 @@ public class MedicalDataSourceHelperTest {
     public void getByPackages_selfIncluded_inBgWithoutBgPermHasMultipleReadPerms_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1876,13 +1876,13 @@ public class MedicalDataSourceHelperTest {
             getByPackages_emptyPackages_inForegroundOrBgWithBgPermOnlyWritePerm_canReadSelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1911,13 +1911,13 @@ public class MedicalDataSourceHelperTest {
             getByPackages_selfIncluded_inForegroundOrBgWithBgPermOnlyWritePerm_canReadSelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1945,13 +1945,13 @@ public class MedicalDataSourceHelperTest {
     public void getByPackages_selfNotIncluded_inForegroundOrBgWithBgPermOnlyWritePerm_throws() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -1980,13 +1980,13 @@ public class MedicalDataSourceHelperTest {
     public void getByPackages_emptyPackages_inForegroundOrBgWithBgPermHasAllergyPerm_correct() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -2014,13 +2014,13 @@ public class MedicalDataSourceHelperTest {
     public void getByPackages_inForegroundOrBgWithBgPermHasAllergyPerm_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -2048,13 +2048,13 @@ public class MedicalDataSourceHelperTest {
     public void getByPackages_emptyPackages_inForegroundOrBgWithBgPermMultipleReadPerms_correct() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -2090,13 +2090,13 @@ public class MedicalDataSourceHelperTest {
     public void getByPackages_inForegroundOrBgWithBgPermMultipleReadPerms_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -2132,13 +2132,13 @@ public class MedicalDataSourceHelperTest {
             getByPackages_emptyPackages_inForegroundOrBgWithBgPermHasWriteAndReadPerm_correct() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -2169,13 +2169,13 @@ public class MedicalDataSourceHelperTest {
             getByPackages_selfIncluded_inForegroundOrBgWithBgPermHasWriteAndReadPerm_correctRes() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -2206,13 +2206,13 @@ public class MedicalDataSourceHelperTest {
             getByPackages_selfNotIncluded_inForegroundOrBgWithPermHasWriteAndReadPerm_correctRes() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
-                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package1 =
-                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1Package2 =
-                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2Package2 =
-                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
@@ -2272,9 +2272,9 @@ public class MedicalDataSourceHelperTest {
     public void deleteByIdsWithPermCheck_deleteDataSourceBelongingToAnotherApp_throws() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
 
@@ -2301,7 +2301,7 @@ public class MedicalDataSourceHelperTest {
     public void deleteDataSourcesByIdsWithoutPermissionChecks_noDeleteAccessLogs() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         mMedicalDataSourceHelper.deleteMedicalDataSourceWithoutPermissionChecks(
                 UUID.fromString(dataSource1.getId()));
 
@@ -2323,9 +2323,9 @@ public class MedicalDataSourceHelperTest {
     public void deleteByIdsWithPermCheck_expectAccessLogForDeletedDataSourceAndResources() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         mMedicalDataSourceHelper.deleteMedicalDataSourceWithPermissionChecks(
@@ -2353,9 +2353,9 @@ public class MedicalDataSourceHelperTest {
     public void deleteByIdsWithPermCheck_dataSourceHasMultipleResources_correctAccessLogs() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
@@ -2387,9 +2387,9 @@ public class MedicalDataSourceHelperTest {
     public void deleteByIdsWithPermCheck_dataSourceHasNoResources_correctAccessLogs() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
         mMedicalDataSourceHelper.deleteMedicalDataSourceWithPermissionChecks(
                 UUID.fromString(dataSource1.getId()), DATA_SOURCE_PACKAGE_NAME);

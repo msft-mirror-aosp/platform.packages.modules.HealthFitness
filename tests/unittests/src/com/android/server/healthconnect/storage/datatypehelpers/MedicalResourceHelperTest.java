@@ -29,6 +29,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOUR
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_PACKAGE_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4B;
 import static android.healthconnect.cts.utils.PhrDataFactory.addCompletedStatus;
 import static android.healthconnect.cts.utils.PhrDataFactory.createAllergyMedicalResource;
 import static android.healthconnect.cts.utils.PhrDataFactory.createImmunizationMedicalResource;
@@ -266,7 +267,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
     public void insertAndUpdateResource_lastModifiedTimeIsUpdated() throws JSONException {
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         UpsertMedicalResourceInternalRequest upsertRequest =
                 makeUpsertRequest(
                         getFhirResource(),
@@ -337,9 +338,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
     public void getReadTableRequest_usingRequestWithDataSourceIds_correctQuery() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("id1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("id1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("id2", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("id2", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         ReadMedicalResourcesInitialRequest request =
                 new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .addDataSourceId(dataSource1.getId())
@@ -430,7 +431,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
     public void upsertAndReadMedicalResourcesByRequest_MedicalResourceTypeDoesNotExist_success() {
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         FhirResource fhirResource = getFhirResource();
         UpsertMedicalResourceInternalRequest upsertImmunizationResourceRequest =
                 makeUpsertRequest(
@@ -469,7 +470,7 @@ public class MedicalResourceHelperTest {
         // Upsert 3 resources in this test: immunization, differentImmunization and allergy, all
         // with the same data source.
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         FhirResource fhirResource = getFhirResource();
         MedicalResource immunization =
                 new MedicalResource.Builder(
@@ -562,9 +563,9 @@ public class MedicalResourceHelperTest {
         // which immunization and allergy are from data source 1 and the differentImmunization is
         // from data source 2.
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("id1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("id1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("id2", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("id2", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         FhirResource fhirResource = getFhirResource();
         MedicalResource immunizationDS1 =
                 new MedicalResource.Builder(
@@ -685,9 +686,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
     public void insertMedicalResources_dataSourceBelongsToDifferentApp_exceptionThrownNoWrite() {
         MedicalDataSource ownDataSource =
-                mUtil.insertMedicalDataSource("id1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("id1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource differentDataSource =
-                mUtil.insertMedicalDataSource("id2", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("id2", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         UpsertMedicalResourceInternalRequest upsertRequestOwnDataSource =
                 makeUpsertRequest(
                         getFhirResource(),
@@ -718,9 +719,38 @@ public class MedicalResourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
+    public void upsertMedicalResources_fhirVersionDoesNotMatchDataSource_exceptionThrown() {
+        MedicalDataSource dataSource =
+                mUtil.insertR4MedicalDataSource("id1", DATA_SOURCE_PACKAGE_NAME);
+        FhirResource fhirResource = getFhirResource();
+        UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest =
+                makeUpsertRequest(
+                        fhirResource,
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                        FHIR_VERSION_R4B,
+                        dataSource.getId());
+
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                mMedicalResourceHelper.upsertMedicalResources(
+                                        DATA_SOURCE_PACKAGE_NAME,
+                                        List.of(upsertMedicalResourceInternalRequest)));
+        assertThat(thrown)
+                .hasMessageThat()
+                .contains(
+                        String.format(
+                                "Invalid fhir version: %s. It did not match the data source's fhir"
+                                        + " version",
+                                FHIR_VERSION_R4B));
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
     public void readSubsetOfResourcesByIds_multipleResourcesUpserted_success() {
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         FhirResource fhirResource = getFhirResource();
         MedicalResource resource1 =
                 new MedicalResource.Builder(
@@ -768,7 +798,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
     public void insertMedicalResources_returnsMedicalResources() {
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         FhirResource fhirResource = getFhirResource();
         MedicalResource expectedResource =
                 new MedicalResource.Builder(
@@ -791,7 +821,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
     public void insertSingleMedicalResource_readSingleResource() {
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         FhirResource fhirResource = getFhirResource();
         MedicalResource expectedResource =
                 new MedicalResource.Builder(
@@ -876,9 +906,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void readById_expectAccessLogsOnlyContainsNonSelfRead() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunizationPackage1 =
                 createImmunizationMedicalResource(dataSource1.getId());
         MedicalResource immunizationPackage2 =
@@ -928,9 +958,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void readById_expectAccessLogsWhenAppHasNoWritePermHasReadPermButReadOnlySelfData() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunizationPackage1 =
                 createImmunizationMedicalResource(dataSource1.getId());
         MedicalResource allergyResourcePackage2 = createAllergyMedicalResource(dataSource2.getId());
@@ -971,7 +1001,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void readById_expectAccessLogsWhenAppHasNoWritePermHasReadPermReadNonSelfData() {
         String dataSource =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME).getId();
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME).getId();
         MedicalResource immunizationDifferentPackage =
                 createImmunizationMedicalResource(dataSource);
         mMedicalResourceHelper.upsertMedicalResources(
@@ -1037,7 +1067,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void readById_expectAccessLogsWhenAppHasWritePermHasReadPermReadSelfData() {
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunization =
                 mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
         mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
@@ -1071,7 +1101,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void readById_expectAccessLogsForEachResourceTypeReadBasedOnReadPerm() {
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunization =
                 mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
         mMedicalResourceHelper.readMedicalResourcesByIdsWithPermissionChecks(
@@ -1110,9 +1140,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE})
     public void readById_inBgWithoutBgPerm_hasWritePerm_success() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunizationDatasource1 =
                 mUtil.upsertResource(
                         PhrDataFactory::createImmunizationMedicalResource, dataSource1);
@@ -1145,9 +1175,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE})
     public void readById_inBgWithoutBgPerm_hasWritePerm_hasReadPermForResourceTypes_success() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunizationDatasource1 =
                 mUtil.upsertResource(
                         PhrDataFactory::createImmunizationMedicalResource, dataSource1);
@@ -1180,9 +1210,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE})
     public void readById_inBgWithoutBgPerm_noWritePerm_immunizationReadPermOnly_success() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunizationDatasource1 =
                 mUtil.upsertResource(
                         PhrDataFactory::createImmunizationMedicalResource, dataSource1);
@@ -1216,9 +1246,9 @@ public class MedicalResourceHelperTest {
     public void
             readById_inBgWithoutBgPerm_noWritePerm_bothAllergyAndImmunizationReadPerm_success() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunizationDatasource1 =
                 mUtil.upsertResource(
                         PhrDataFactory::createImmunizationMedicalResource, dataSource1);
@@ -1253,9 +1283,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE})
     public void readById_inForegroundOrinBgWithBgPerm_noWritePerm_success() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunizationDatasource1 =
                 mUtil.upsertResource(
                         PhrDataFactory::createImmunizationMedicalResource, dataSource1);
@@ -1288,9 +1318,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE})
     public void readById_inForeground_hasWritePerm_noReadResourceTypesPerm_canOnlyReadSelfData() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunizationDatasource1 =
                 mUtil.upsertResource(
                         PhrDataFactory::createImmunizationMedicalResource, dataSource1);
@@ -1323,9 +1353,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE})
     public void readById_inForeground_noWritePerm_readImmunizationPerm_canOnlyReadImmunization() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunizationDatasource1 =
                 mUtil.upsertResource(
                         PhrDataFactory::createImmunizationMedicalResource, dataSource1);
@@ -1358,9 +1388,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE})
     public void readById_inForeground_noWritePerm_readAllergyPerm_canOnlyReadAllergy() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunizationDatasource1 =
                 mUtil.upsertResource(
                         PhrDataFactory::createImmunizationMedicalResource, dataSource1);
@@ -1393,9 +1423,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE})
     public void readById_inForeground_noWritePerm_readImmunizationAndAllergyPerm_canReadBoth() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunizationDatasource1 =
                 mUtil.upsertResource(
                         PhrDataFactory::createImmunizationMedicalResource, dataSource1);
@@ -1436,9 +1466,9 @@ public class MedicalResourceHelperTest {
     public void
             readById_inForeground_hasWritePermAndReadImmunization_readsSelfDataAndImmunizations() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunizationDatasource1 =
                 mUtil.upsertResource(
                         PhrDataFactory::createImmunizationMedicalResource, dataSource1);
@@ -1515,9 +1545,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE})
     public void readByRequest_isNotEnforceSelfRead_immunizationFilter_canReadAllImmunizations() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         // In total inserts 8 resources, among which 6 are Immunizations to be read in 3 pages.
         List<MedicalResource> immunizationsDataSource1 =
                 mUtil.upsertResources(
@@ -1592,9 +1622,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE})
     public void readByRequest_enforceSelfRead_immunizationFilter_canReadOnlySelfImmunization() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         // In total inserts 8 resources, among which 4 are Immunizations from data source 1 to be
         // read in 2 pages.
         List<MedicalResource> immunizationsDataSource1 =
@@ -1656,7 +1686,7 @@ public class MedicalResourceHelperTest {
         // TODO(b/351992434): Create test utilities to make these large repeated code blocks
         // clearer.
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         FhirResource fhirResource1 = getFhirResource();
         MedicalResource resource1 =
                 new MedicalResource.Builder(
@@ -1701,7 +1731,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
     public void insertMedicalResourcesOfSameType_createsAccessLog_success() {
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResources(
                 PhrDataFactory::createImmunizationMedicalResources,
                 /* numOfResources= */ 6,
@@ -1723,7 +1753,7 @@ public class MedicalResourceHelperTest {
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
     public void insertMedicalResourcesOfDifferentTypes_createsAccessLog_success() {
-        String dataSource = mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME).getId();
+        String dataSource = mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME).getId();
         MedicalResource immunization = createImmunizationMedicalResource(dataSource);
         MedicalResource allergy = createAllergyMedicalResource(dataSource);
         mMedicalResourceHelper.upsertMedicalResources(
@@ -1748,7 +1778,7 @@ public class MedicalResourceHelperTest {
     @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
     public void insertAndUpdateMedicalResources_createsAccessLog_success() throws JSONException {
-        String dataSource = mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME).getId();
+        String dataSource = mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME).getId();
         MedicalResource immunization = createImmunizationMedicalResource(dataSource);
         MedicalResource allergy = createAllergyMedicalResource(dataSource);
         MedicalResource updatedImmunization = createUpdatedImmunizationMedicalResource(dataSource);
@@ -1787,9 +1817,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
     public void insertMultipleMedicalResourcesWithDifferentDataSources_readMultipleResources() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
         FhirResource fhirResource = getFhirResource();
         MedicalResource resource1 =
                 new MedicalResource.Builder(
@@ -1832,7 +1862,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void updateSingleMedicalResource_success() throws JSONException {
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         FhirResource originalFhirResource = getFhirResource();
         FhirResource fhirResourceUpdated =
                 getFhirResourceBuilder()
@@ -1874,7 +1904,7 @@ public class MedicalResourceHelperTest {
     public void insertMultipleMedicalResources_updateSingleMedicalResource_success()
             throws JSONException {
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         FhirResource fhirResource = getFhirResource();
         MedicalResource originalResource =
                 new MedicalResource.Builder(
@@ -1937,7 +1967,7 @@ public class MedicalResourceHelperTest {
     public void insertMultipleMedicalResources_updateMultipleMedicalResources_success()
             throws JSONException {
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         FhirResource fhirResource = getFhirResource();
         MedicalResource resource1 =
                 new MedicalResource.Builder(
@@ -2012,7 +2042,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void insertMultipleMedicalResources_readByRequest_success() {
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         List<MedicalResource> resources =
                 createImmunizationMedicalResources(/* numOfResources= */ 6, dataSource.getId());
         List<UpsertMedicalResourceInternalRequest> upsertRequests =
@@ -2067,7 +2097,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void insertMultipleMedicalResourcesReadByRequest_pageSizeLargerThanResources_success() {
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         List<MedicalResource> resources =
                 createImmunizationMedicalResources(/* numOfResources= */ 6, dataSource.getId());
         List<UpsertMedicalResourceInternalRequest> requests =
@@ -2125,7 +2155,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteMedicalResourcesByIdsWithoutPermissionChecks_noDeleteAccessLogs() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalResource resource1 =
                 mUtil.upsertResource(
                         PhrDataFactory::createImmunizationMedicalResource, dataSource1);
@@ -2149,9 +2179,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteByIdsWithPermissionChecks_resourcesWithDifferentPackages_correctAccessLogs() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunizationPackage1 =
                 mUtil.upsertResource(
                         PhrDataFactory::createImmunizationMedicalResource, dataSource1);
@@ -2181,9 +2211,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteByIds_withPackageName_resourcesWithSamePackages_correctAccessLogs() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunizationPackage1 =
                 mUtil.upsertResource(
                         PhrDataFactory::createImmunizationMedicalResource, dataSource1);
@@ -2237,7 +2267,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteMedicalResourcesByIds_oneIdPresent_succeedsDeleting() {
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalResource medicalResource1 =
                 mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
 
@@ -2257,7 +2287,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteMedicalResourcesByIds_oneOfTwoSpecified_onlySpecifiedDeleted() {
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalResource medicalResource1 =
                 mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
         MedicalResource medicalResource2 =
@@ -2278,7 +2308,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteMedicalResourcesByIds_oneOfTwoSpecifiedWrongPackage_nothingDeleted() {
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalResource medicalResource1 =
                 mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
         MedicalResource medicalResource2 =
@@ -2297,7 +2327,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteMedicalResourcesByIds_oneOfTwoSpecifiedRightPackage_oneOfTwo() {
         MedicalDataSource dataSource =
-                mUtil.insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalResource medicalResource1 =
                 mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource);
         MedicalResource medicalResource2 =
@@ -2316,9 +2346,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteMedicalResourcesByIds_multipleIdsFromDifferentPackages_succeeds() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds2", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds2", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalResource expectedResource1Source1 =
                 mUtil.upsertResource(
                         PhrDataFactory::createImmunizationMedicalResource, dataSource1);
@@ -2348,9 +2378,9 @@ public class MedicalResourceHelperTest {
     public void deleteMedicalResourcesByDataSources_singleDataSource_succeeds() {
         // Create two datasources, with one resource each.
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
         MedicalResource dataSource1Resource1 =
                 mUtil.upsertResource(
                         PhrDataFactory::createImmunizationMedicalResource, dataSource1);
@@ -2383,9 +2413,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteByDataSources_expectAccessLogsWhenBothDataSourcesAreFromCallingPackage() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
 
@@ -2419,9 +2449,9 @@ public class MedicalResourceHelperTest {
     public void deleteMedicalResourcesByRequest_singleResourceType_succeeds() {
         // Create two datasources, with one resource each.
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunizationResourceDataSource1 =
                 mUtil.upsertResource(
                         PhrDataFactory::createImmunizationMedicalResource, dataSource1);
@@ -2454,9 +2484,9 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteByRequest_expectAccessLogsWhenDataSourcesFromDifferentPackages() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds2", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds2", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
 
@@ -2489,7 +2519,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteByDataSources_noDataDeleted_noAccessLogsCreated() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds1", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds1", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
 
         mMedicalResourceHelper.deleteMedicalResourcesByRequestWithPermissionChecks(
@@ -2515,7 +2545,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteByDataSources_withoutPackageRestriction_noAccessLogsCreated() {
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
 
         mMedicalResourceHelper.deleteMedicalResourcesByRequestWithoutPermissionChecks(
@@ -2541,9 +2571,9 @@ public class MedicalResourceHelperTest {
     public void deleteMedicalResourcesByRequest_singleResourceTypeSingleDataSource_succeeds() {
         // Create two datasources, with one resource each.
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
         MedicalResource immunizationResourceDataSource1 =
                 mUtil.upsertResource(
                         PhrDataFactory::createImmunizationMedicalResource, dataSource1);
@@ -2579,11 +2609,11 @@ public class MedicalResourceHelperTest {
         // Create some data sources with data: ds1 contains [immunization, differentImmunization,
         // allergy], ds2 contains [immunization], and ds3 contains [allergy].
         MedicalDataSource dataSource1 =
-                mUtil.insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
-                mUtil.insertMedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds2", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource3 =
-                mUtil.insertMedicalDataSource("ds3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+                mUtil.insertR4MedicalDataSource("ds3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
         mUtil.upsertResource(
                 PhrDataFactory::createDifferentImmunizationMedicalResource, dataSource1);
@@ -2618,7 +2648,7 @@ public class MedicalResourceHelperTest {
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void
             testGetMedicalResourceTypeToContributingDataSourcesMap_noMedicalResources_success() {
-        mUtil.insertMedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
+        mUtil.insertR4MedicalDataSource("ds1", DATA_SOURCE_PACKAGE_NAME);
 
         Map<Integer, Set<MedicalDataSource>> response =
                 mMedicalResourceHelper.getMedicalResourceTypeToContributingDataSourcesMap();

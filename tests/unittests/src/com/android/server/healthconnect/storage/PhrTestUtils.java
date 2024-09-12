@@ -119,8 +119,10 @@ public class PhrTestUtils {
     /**
      * Insert and return a {@link MedicalDataSource} where the display name, and URI will contain
      * the given name.
+     *
+     * <p>The FHIR version is set to R4.
      */
-    public MedicalDataSource insertMedicalDataSource(String name, String packageName) {
+    public MedicalDataSource insertR4MedicalDataSource(String name, String packageName) {
         Uri uri = Uri.parse(String.format("%s/%s", DATA_SOURCE_FHIR_BASE_URI, name));
         String displayName = String.format("%s %s", DATA_SOURCE_DISPLAY_NAME, name);
 
