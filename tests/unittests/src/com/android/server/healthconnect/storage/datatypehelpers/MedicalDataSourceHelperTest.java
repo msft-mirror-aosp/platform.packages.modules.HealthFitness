@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
@@ -66,6 +68,7 @@ import androidx.annotation.NonNull;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.storage.PhrTestUtils;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -109,6 +112,7 @@ public class MedicalDataSourceHelperTest {
     private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
     private AppInfoHelper mAppInfoHelper;
+    private PhrTestUtils mUtil;
     @Mock private Context mContext;
     @Mock private PackageManager mPackageManager;
     @Mock private Drawable mDrawable;
@@ -121,6 +125,11 @@ public class MedicalDataSourceHelperTest {
         // We set the context to null, because we only use insertApp in this set of tests and
         // we don't need context for that.
         mTransactionTestUtils = new TransactionTestUtils(/* context= */ null, mTransactionManager);
+        mUtil =
+                new PhrTestUtils(
+                        mContext,
+                        new MedicalResourceHelper(mTransactionManager, mMedicalDataSourceHelper),
+                        mMedicalDataSourceHelper);
         when(mContext.getPackageManager()).thenReturn(mPackageManager);
     }
 
@@ -211,6 +220,67 @@ public class MedicalDataSourceHelperTest {
                                 + ") ) AS inner_query_result  INNER JOIN application_info_table ON"
                                 + " inner_query_result.app_info_id ="
                                 + " application_info_table.row_id");
+    }
+
+    @Test
+    public void getReadTableRequestForDataSourceWrittenByAppIdFilterOnResourceTypes_correctQuery() {
+        UUID uuid1 = UUID.randomUUID();
+        UUID uuid2 = UUID.randomUUID();
+        List<String> hexValues = List.of(getHexString(uuid1), getHexString(uuid2));
+
+        ReadTableRequest readRequest =
+                MedicalDataSourceHelper
+                        .getReadTableRequestForDataSourceWrittenByAppIdFilterOnResourceTypes(
+                                List.of(uuid1, uuid2),
+                                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                                /* appId= */ 123L);
+
+        assertThat(readRequest.getReadCommand())
+                .isEqualTo(
+                        "SELECT DISTINCT package_name,data_source_uuid,fhir_base_uri,display_name"
+                            + " FROM ( SELECT * FROM medical_resource_table ) AS inner_query_result"
+                            + "  INNER JOIN ( SELECT * FROM medical_data_source_table WHERE"
+                            + " app_info_id = '123' AND data_source_uuid IN ("
+                                + String.join(", ", hexValues)
+                                + ")) medical_data_source_table ON"
+                                + " inner_query_result.data_source_id ="
+                                + " medical_data_source_table.medical_data_source_row_id  INNER"
+                                + " JOIN application_info_table ON"
+                                + " medical_data_source_table.app_info_id ="
+                                + " application_info_table.row_id  INNER JOIN ( SELECT * FROM"
+                                + " medical_resource_indices_table WHERE medical_resource_type IN"
+                                + " (1)) medical_resource_indices_table ON"
+                                + " inner_query_result.medical_resource_row_id ="
+                                + " medical_resource_indices_table.medical_resource_id");
+    }
+
+    @Test
+    public void getReadTableRequestForDataSourcesFilterOnResourceTypes_correctQuery() {
+        UUID uuid1 = UUID.randomUUID();
+        UUID uuid2 = UUID.randomUUID();
+        List<String> hexValues = List.of(getHexString(uuid1), getHexString(uuid2));
+
+        ReadTableRequest readRequest =
+                MedicalDataSourceHelper.getReadTableRequestForDataSourcesFilterOnResourceTypes(
+                        List.of(uuid1, uuid2), Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION));
+
+        assertThat(readRequest.getReadCommand())
+                .isEqualTo(
+                        "SELECT DISTINCT package_name,data_source_uuid,fhir_base_uri,display_name"
+                            + " FROM ( SELECT * FROM medical_resource_table ) AS inner_query_result"
+                            + "  INNER JOIN ( SELECT * FROM medical_data_source_table WHERE"
+                            + " data_source_uuid IN ("
+                                + String.join(", ", hexValues)
+                                + ")) medical_data_source_table ON"
+                                + " inner_query_result.data_source_id ="
+                                + " medical_data_source_table.medical_data_source_row_id  INNER"
+                                + " JOIN application_info_table ON"
+                                + " medical_data_source_table.app_info_id ="
+                                + " application_info_table.row_id  INNER JOIN ( SELECT * FROM"
+                                + " medical_resource_indices_table WHERE medical_resource_type IN"
+                                + " (1)) medical_resource_indices_table ON"
+                                + " inner_query_result.medical_resource_row_id ="
+                                + " medical_resource_indices_table.medical_resource_id");
     }
 
     @Test
@@ -408,7 +478,7 @@ public class MedicalDataSourceHelperTest {
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
                         toUuids(List.of(dataSource1.getId(), dataSource2.getId())));
 
-        assertThat(result).hasSize(2);
+        assertThat(result.size()).isEqualTo(2);
         assertThat(result).containsExactlyElementsIn(expected);
     }
 
@@ -485,6 +555,340 @@ public class MedicalDataSourceHelperTest {
 
         assertThat(dataSources1).containsExactly(dataSource1);
         assertThat(dataSources2).containsExactly(dataSource2);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getDataSourcesByIds_noWriteOrReadPerm_throws() {
+        assertThrows(
+                IllegalStateException.class,
+                () -> {
+                    mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
+                            /* ids= */ List.of(),
+                            /* grantedMedicalResourceTypes= */ Set.of(),
+                            DATA_SOURCE_PACKAGE_NAME,
+                            /* hasWritePermission= */ false,
+                            /* isCalledFromBgWithoutBgRead= */ false);
+                });
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getDataSourcesByIds_hasWritePermButNeverWrittenData_noReadPerm_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
+                            /* ids= */ List.of(),
+                            /* grantedMedicalResourceTypes= */ Set.of(),
+                            DATA_SOURCE_PACKAGE_NAME,
+                            /* hasWritePermission= */ true,
+                            /* isCalledFromBgWithoutBgRead= */ false);
+                });
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getDataSourcesByIds_inBgWithoutBgPermHasWritePerm_canReadSelfDataSources() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1 =
+                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2 =
+                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+
+        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
+
+        List<MedicalDataSource> result =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
+                        toUuids(List.of(dataSource1.getId(), dataSource2.getId())),
+                        /* grantedMedicalResourceTypes= */ Set.of(),
+                        DATA_SOURCE_PACKAGE_NAME,
+                        /* hasWritePermission= */ true,
+                        /* isCalledFromBgWithoutBgRead= */ true);
+
+        assertThat(result).containsExactly(dataSource1);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByIds_inBgWithoutBgPermHasWritePermHasReadPerm_canReadSelfDataSources() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1 =
+                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2 =
+                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
+
+        List<MedicalDataSource> result =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
+                        toUuids(List.of(dataSource1.getId(), dataSource2.getId())),
+                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                        DATA_SOURCE_PACKAGE_NAME,
+                        /* hasWritePermission= */ true,
+                        /* isCalledFromBgWithoutBgRead= */ true);
+
+        assertThat(result).containsExactly(dataSource1);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByIds_inBgWithoutBgPermNoWritePermImmunizationReadPermOnly_correctResult() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1 =
+                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2 =
+                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
+
+        // App is in background without background read perm, no write permission but has
+        // immunization read permission. App can read dataSources belonging to immunizations that
+        // the app wrote itself.
+        List<MedicalDataSource> result =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
+                        toUuids(List.of(dataSource1.getId(), dataSource2.getId())),
+                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                        DATA_SOURCE_PACKAGE_NAME,
+                        /* hasWritePermission= */ false,
+                        /* isCalledFromBgWithoutBgRead= */ true);
+
+        assertThat(result).containsExactly(dataSource1);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void
+            getById_inBgWithoutBgPermNoWritePermBothAllergyAndImmunizationReadPerm_correctResult() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1Package2 =
+                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1Package2);
+
+        // App is in background without background read perm, no write permission but has
+        // immunization read permission. App can read dataSources belonging to immunizations
+        // and allergy resource types that the app wrote itself.
+        List<MedicalDataSource> result =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
+                        toUuids(
+                                List.of(
+                                        dataSource1Package1.getId(),
+                                        dataSource2Package1.getId(),
+                                        dataSource1Package2.getId())),
+                        Set.of(
+                                MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                        DATA_SOURCE_PACKAGE_NAME,
+                        /* hasWritePermission= */ false,
+                        /* isCalledFromBgWithoutBgRead= */ true);
+
+        assertThat(result).containsExactly(dataSource1Package1, dataSource2Package1);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getById_inForegroundOrinBgWithBgPermNoWritePermHasImmunizationPerm_correctResult() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1Package2 =
+                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package2 =
+                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+
+        // App is in foreground or background with background read perm, no write permission but has
+        // immunization read permission. App can read all dataSources belonging to immunizations.
+        List<MedicalDataSource> result =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
+                        toUuids(
+                                List.of(
+                                        dataSource1Package1.getId(), dataSource2Package1.getId(),
+                                        dataSource1Package2.getId(), dataSource2Package2.getId())),
+                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                        DATA_SOURCE_PACKAGE_NAME,
+                        /* hasWritePermission= */ false,
+                        /* isCalledFromBgWithoutBgRead= */ false);
+
+        assertThat(result).containsExactly(dataSource1Package1, dataSource1Package2);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void
+            getByIds_inForegroundOrBgWithBgPermHasWritePermNoReadResourceTypesPerm_correctResult() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1Package2 =
+                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package2 =
+                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+
+        // App is in foreground or background with background read perm, has write permission but
+        // no read permission for any resource types.
+        // App can read only read dataSources they wrote themselves.
+        List<MedicalDataSource> result =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
+                        toUuids(
+                                List.of(
+                                        dataSource1Package1.getId(), dataSource2Package1.getId(),
+                                        dataSource1Package2.getId(), dataSource2Package2.getId())),
+                        /* grantedMedicalResourceTypes= */ Set.of(),
+                        DATA_SOURCE_PACKAGE_NAME,
+                        /* hasWritePermission= */ true,
+                        /* isCalledFromBgWithoutBgRead= */ false);
+
+        assertThat(result).containsExactly(dataSource1Package1, dataSource2Package1);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByIds_inForegroundOrBgWithBgPermNoWritePermHasAllergyPerm_correctResult() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1Package2 =
+                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package2 =
+                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+
+        // App is in foreground or background with background read perm, no write permission but
+        // has allergy resource type read permission.
+        // App can read only read dataSources belonging to the allergy resource types.
+        List<MedicalDataSource> result =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
+                        toUuids(
+                                List.of(
+                                        dataSource1Package1.getId(), dataSource2Package1.getId(),
+                                        dataSource1Package2.getId(), dataSource2Package2.getId())),
+                        Set.of(MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE),
+                        DATA_SOURCE_PACKAGE_NAME,
+                        /* hasWritePermission= */ false,
+                        /* isCalledFromBgWithoutBgRead= */ false);
+
+        assertThat(result).containsExactly(dataSource2Package1, dataSource2Package2);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByIds_inForegroundOrBgWithBgPermNoWritePermMultipleReadPerms_correctResult() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1Package2 =
+                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package2 =
+                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+
+        // App is in foreground or background with background read perm, no write permission but
+        // has allergy resource type and immunization read permissions.
+        // App can read dataSources belonging to allergy and immunization resource types.
+        List<MedicalDataSource> result =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
+                        toUuids(
+                                List.of(
+                                        dataSource1Package1.getId(), dataSource2Package1.getId(),
+                                        dataSource1Package2.getId(), dataSource2Package2.getId())),
+                        Set.of(
+                                MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                        DATA_SOURCE_PACKAGE_NAME,
+                        /* hasWritePermission= */ false,
+                        /* isCalledFromBgWithoutBgRead= */ false);
+
+        assertThat(result)
+                .containsExactly(
+                        dataSource1Package1,
+                        dataSource2Package1,
+                        dataSource1Package2,
+                        dataSource2Package2);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void
+            getByIds_inForegroundOrBgWithBgPermHasWritePermHasReadImmunizationPerm_correctResult() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1Package2 =
+                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package2 =
+                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+
+        // App is in foreground or background with background read perm, has write permission and
+        // has immunization read permissions.
+        // App can read dataSources they wrote themselves and dataSources belonging to
+        // immunization resource types.
+        List<MedicalDataSource> result =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
+                        toUuids(
+                                List.of(
+                                        dataSource1Package1.getId(), dataSource2Package1.getId(),
+                                        dataSource1Package2.getId(), dataSource2Package2.getId())),
+                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                        DATA_SOURCE_PACKAGE_NAME,
+                        /* hasWritePermission= */ true,
+                        /* isCalledFromBgWithoutBgRead= */ false);
+
+        assertThat(result)
+                .containsExactly(dataSource1Package1, dataSource2Package1, dataSource1Package2);
     }
 
     @Test
@@ -714,6 +1118,12 @@ public class MedicalDataSourceHelperTest {
         CreateMedicalDataSourceRequest request =
                 new CreateMedicalDataSourceRequest.Builder(baseUri, displayName).build();
         return mMedicalDataSourceHelper.createMedicalDataSource(mContext, request, packageName);
+    }
+
+    private void insertApps(List<String> packageNames) {
+        for (String packageName : packageNames) {
+            mTransactionTestUtils.insertApp(packageName);
+        }
     }
 
     private static List<String> getIds(Cursor cursor) {
