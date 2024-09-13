@@ -27,8 +27,11 @@ import org.junit.Before
 import org.junit.Rule
 
 open class HealthConnectBaseTest {
+    @get:Rule
+    val disableAnimationRule = DisableAnimationRule()
 
-    protected val context: Context = ApplicationProvider.getApplicationContext()
+    @get:Rule
+    val freezeRotationRule = FreezeRotationRule()
 
     @get:Rule
     var mSupportedHardwareRule =
@@ -37,9 +40,7 @@ open class HealthConnectBaseTest {
             "Tests should run on supported hardware only.",
         )
 
-    @get:Rule val disableAnimationRule = DisableAnimationRule()
-
-    @get:Rule val freezeRotationRule = FreezeRotationRule()
+    protected val context: Context = ApplicationProvider.getApplicationContext()
 
     @Before
     fun setUpClass() {

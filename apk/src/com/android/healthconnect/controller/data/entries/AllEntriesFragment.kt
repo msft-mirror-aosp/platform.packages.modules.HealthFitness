@@ -28,7 +28,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commitNow
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -39,6 +38,8 @@ import com.android.healthconnect.controller.data.entries.EntriesViewModel.Entrie
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.Loading
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.LoadingFailed
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.With
+import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesDeletionScreenState.VIEW
+import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesDeletionScreenState.DELETE
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationView
 import com.android.healthconnect.controller.data.rawfhir.RawFhirFragment.Companion.MEDICAL_RESOURCE_ID_KEY
@@ -56,7 +57,6 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.setTitle
 import com.android.healthconnect.controller.utils.setupSharedMenu
-import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.settingslib.widget.AppHeaderPreference
 import dagger.hilt.android.AndroidEntryPoint
@@ -98,7 +98,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                         entriesViewModel.setDataType(dataType)
                     }
                 }
-                updateMenu(isDeletionState = true)
+                updateMenu(screenState = DELETE)
             }
         }
     }
@@ -147,7 +147,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         when (menuItem.itemId) {
             R.id.menu_enter_deletion_state -> {
                 // enter deletion state
-                triggerDeletionState(true)
+                triggerDeletionState(DELETE)
                 true
             }
             else -> false
@@ -170,7 +170,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         when (menuItem.itemId) {
             R.id.menu_exit_deletion_state -> {
                 // exit deletion state
-                triggerDeletionState(false)
+                triggerDeletionState(VIEW)
                 true
             }
             else -> false
@@ -250,7 +250,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         deletionViewModel.entriesReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded
             ->
             if (isReloadNeeded) {
-                entriesViewModel.setIsDeletionState(false)
+                entriesViewModel.setScreenState(VIEW)
                 entriesViewModel.loadEntries(
                         permissionType, dateNavigationView.getDate(), dateNavigationView.getPeriod())
                 deletionViewModel.resetEntriesReloadNeeded()
@@ -284,13 +284,13 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         //        logger.setPageId(pageName)
         //        logger.logPageImpression()
     }
-    private fun updateMenu(isDeletionState: Boolean, hasData: Boolean = true) {
+    private fun updateMenu(screenState: EntriesViewModel.EntriesDeletionScreenState, hasData: Boolean = true) {
         if (!hasData) {
             setupSharedMenu(viewLifecycleOwner, logger)
             return
         }
 
-        if (!isDeletionState) {
+        if (screenState == VIEW) {
             setupMenu(R.menu.all_entries_menu, viewLifecycleOwner, logger, onMenuSetup)
             return
         }
@@ -305,14 +305,14 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     }
 
     @VisibleForTesting
-    fun triggerDeletionState(isDeletionState: Boolean){
-        updateMenu(isDeletionState)
-        adapter.showCheckBox(isDeletionState)
-        entriesViewModel.setIsDeletionState(isDeletionState)
+    fun triggerDeletionState(screenState: EntriesViewModel.EntriesDeletionScreenState){
+        updateMenu(screenState)
+        adapter.showCheckBox(screenState == DELETE)
+        entriesViewModel.setScreenState(screenState)
         if(entriesViewModel.getDateNavigationText()== null){
             dateNavigationView.getDateNavigationText()?.let { entriesViewModel.setDateNavigationText(it) }
         }
-        entriesViewModel.getDateNavigationText()?.let { dateSpinnerText -> dateNavigationView.disableDateNavigationView(isEnabled = !isDeletionState, dateSpinnerText) }
+        entriesViewModel.getDateNavigationText()?.let { dateSpinnerText -> dateNavigationView.disableDateNavigationView(isEnabled = screenState == VIEW, dateSpinnerText) }
 
     }
 
@@ -335,7 +335,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                     loadingView.isVisible = false
                     errorView.isVisible = false
                     entriesRecyclerView.isVisible = false
-                    updateMenu(isDeletionState = false, hasData = false)
+                    updateMenu(screenState = VIEW, hasData = false)
                     entriesViewModel.getDateNavigationText()?.let { dateSpinnerText -> dateNavigationView.disableDateNavigationView(isEnabled = true, dateSpinnerText) }
                 }
                 is With -> {
@@ -345,7 +345,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                     errorView.isVisible = false
                     noDataView.isVisible = false
                     loadingView.isVisible = false
-                    triggerDeletionState(isDeletionState = entriesViewModel.isDeletionState.value ?: false)
+                    entriesViewModel.screenState.value?.let { triggerDeletionState(screenState = it) }
                 }
                 is LoadingFailed -> {
                     errorView.isVisible = true

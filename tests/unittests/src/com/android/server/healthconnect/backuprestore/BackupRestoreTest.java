@@ -158,7 +158,12 @@ public class BackupRestoreTest {
 
         HealthConnectDeviceConfigManager.initializeInstance(mContext);
         mBackupRestore =
-                new BackupRestore(mFirstGrantTimeManager, mMigrationStateManager, mServiceContext);
+                new BackupRestore(
+                        mFirstGrantTimeManager,
+                        mMigrationStateManager,
+                        mFakePreferenceHelper,
+                        mTransactionManager,
+                        mServiceContext);
     }
 
     @After

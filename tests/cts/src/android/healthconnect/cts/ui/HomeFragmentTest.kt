@@ -22,6 +22,7 @@ import android.healthconnect.cts.lib.TestAppProxy
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
+import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords
 import android.platform.test.annotations.RequiresFlagsDisabled
 import android.platform.test.flag.junit.CheckFlagsRule
@@ -50,6 +51,9 @@ class HomeFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @BeforeClass
         fun setup() {
+            if (!TestUtils.isHardwareSupported()) {
+                return
+            }
             val now = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             APP_A_WITH_READ_WRITE_PERMS.insertRecords(
                 StepsRecord.Builder(getEmptyMetadata(), now.minusSeconds(30), now, 43).build()
@@ -59,6 +63,9 @@ class HomeFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @AfterClass
         fun teardown() {
+            if (!TestUtils.isHardwareSupported()) {
+                return
+            }
             verifyDeleteRecords(
                 StepsRecord::class.java,
                 TimeInstantRangeFilter.Builder()
@@ -82,7 +89,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
 
     @Test
     @RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
-    fun homeFragment_openDataManagement_oldIA() {
+    fun homeFragment_openDataManagement() {
         context.launchMainActivity {
             clickOnText("Data and access")
 

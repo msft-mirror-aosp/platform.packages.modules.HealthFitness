@@ -23,6 +23,7 @@ import android.healthconnect.cts.lib.ActivityLauncher.launchDataActivity
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.stepsRecordFromTestApp
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
+import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.insertRecords
 import android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords
 import android.platform.test.annotations.RequiresFlagsDisabled
@@ -47,6 +48,9 @@ class CategoriesFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @BeforeClass
         fun setup() {
+            if (!TestUtils.isHardwareSupported()) {
+                return
+            }
             val records: List<Record> = listOf(stepsRecordFromTestApp(), stepsRecordFromTestApp())
             insertRecords(records)
         }
@@ -54,6 +58,9 @@ class CategoriesFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @AfterClass
         fun teardown() {
+            if (!TestUtils.isHardwareSupported()) {
+                return
+            }
             verifyDeleteRecords(
                 StepsRecord::class.java,
                 TimeInstantRangeFilter.Builder()

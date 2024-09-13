@@ -26,11 +26,13 @@ import static org.mockito.Mockito.when;
 
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.net.Uri;
 import android.os.PersistableBundle;
 import android.os.UserHandle;
+import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
@@ -52,6 +54,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 
 public class ExportImportJobsTest {
 
@@ -87,15 +90,15 @@ public class ExportImportJobsTest {
         when(mJobScheduler.forNamespace(ExportImportJobs.NAMESPACE)).thenReturn(mJobScheduler);
         when(mContext.getSystemService(JobScheduler.class)).thenReturn(mJobScheduler);
         when(mContext.getPackageName()).thenReturn(ANDROID_SERVER_PACKAGE_NAME);
-    }
-
-    @Test
-    public void schedulePeriodicExportJob_withPeriodZero_doesNotScheduleExportJob() {
         when(mContext.createContextAsUser(any(), anyInt())).thenReturn(mContext);
         when(mContext.getUser()).thenReturn(UserHandle.CURRENT);
         when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
         when(ExportImportNotificationSender.createSender(any()))
                 .thenReturn(mHealthConnectNotificationSender);
+    }
+
+    @Test
+    public void schedulePeriodicExportJob_withPeriodZero_doesNotScheduleExportJob() {
         mExportImportSettingsStorage.configure(
                 new ScheduledExportSettings.Builder().setPeriodInDays(0).build());
 
@@ -103,6 +106,7 @@ public class ExportImportJobsTest {
                 0, mContext, mExportImportSettingsStorage, mExportManager);
 
         verify(mJobScheduler, times(0)).schedule(any());
+        verify(mJobScheduler, times(1)).cancelAll();
     }
 
     @Test
@@ -117,6 +121,18 @@ public class ExportImportJobsTest {
         ExportImportJobs.schedulePeriodicExportJob(
                 0, mContext, mExportImportSettingsStorage, mExportManager);
         verify(mJobScheduler, times(2)).schedule(any());
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW})
+    public void schedulePeriodicExportJob_withPeriodGreaterThanZero_cancelsPreviousJob() {
+        mExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setPeriodInDays(1).build());
+
+        ExportImportJobs.schedulePeriodicExportJob(
+                0, mContext, mExportImportSettingsStorage, mExportManager);
+        verify(mJobScheduler, times(1)).schedule(any());
+        verify(mJobScheduler, times(1)).cancelAll();
     }
 
     @Test
@@ -135,6 +151,19 @@ public class ExportImportJobsTest {
                                 .getExtras()
                                 .getBoolean(ExportImportJobs.IS_FIRST_EXPORT))
                 .isTrue();
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW})
+    public void schedulePeriodicExportJob_withPeriodGreaterThanZero_persistsExportJob() {
+        mExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setPeriodInDays(1).build());
+
+        ExportImportJobs.schedulePeriodicExportJob(
+                0, mContext, mExportImportSettingsStorage, mExportManager);
+
+        verify(mJobScheduler, times(1)).schedule(mJobInfoCaptor.capture());
+        assertThat(mJobInfoCaptor.getValue().isPersisted()).isTrue();
     }
 
     @Test
@@ -272,5 +301,59 @@ public class ExportImportJobsTest {
 
         assertThat(isExportSuccessful).isTrue();
         verify(mJobScheduler, times(1)).schedule(any());
+    }
+
+    @Test
+    @DisableFlags({Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW})
+    public void schedulePeriodicJobIfNotScheduled_fastFollowFlagNotEnabled_reschedules() {
+        mExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setPeriodInDays(1).build());
+
+        ExportImportJobs.schedulePeriodicJobIfNotScheduled(
+                0, mContext, mExportImportSettingsStorage, mExportManager);
+
+        verify(mJobScheduler, times(1)).schedule(any());
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW})
+    public void
+            schedulePeriodicJobIfNotScheduled_whenPeriodIsNonZeroAndNoPendingJobs_reschedules() {
+        mExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setPeriodInDays(1).build());
+
+        ExportImportJobs.schedulePeriodicJobIfNotScheduled(
+                0, mContext, mExportImportSettingsStorage, mExportManager);
+
+        verify(mJobScheduler, times(1)).schedule(any());
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW})
+    public void schedulePeriodicJobIfNotScheduled_whenPendingJobsExist_shouldNotReschedule() {
+        mExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setPeriodInDays(1).build());
+        JobInfo jobInfo =
+                new JobInfo.Builder(
+                                1234356, new ComponentName(mContext, ExportImportJobsTest.class))
+                        .build();
+        when(mJobScheduler.getAllPendingJobs()).thenReturn(List.of(jobInfo));
+
+        ExportImportJobs.schedulePeriodicJobIfNotScheduled(
+                0, mContext, mExportImportSettingsStorage, mExportManager);
+
+        verify(mJobScheduler, times(0)).schedule(any());
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW})
+    public void schedulePeriodicJobIfNotScheduled_whenPeriodIsZero_shouldNotReschedule() {
+        mExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setPeriodInDays(0).build());
+
+        ExportImportJobs.schedulePeriodicJobIfNotScheduled(
+                0, mContext, mExportImportSettingsStorage, mExportManager);
+
+        verify(mJobScheduler, times(0)).schedule(any());
     }
 }

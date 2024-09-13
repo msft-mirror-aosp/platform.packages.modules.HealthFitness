@@ -98,7 +98,7 @@ class AllEntriesFragmentTest {
                         TEST_APP_PACKAGE_NAME,
                         TEST_APP_NAME,
                         context.getDrawable(R.drawable.health_connect_logo))))
-        Mockito.`when`(viewModel.isDeletionState).thenReturn(MutableLiveData(false))
+        Mockito.`when`(viewModel.screenState).thenReturn(MutableLiveData(EntriesViewModel.EntriesDeletionScreenState.VIEW))
         Mockito.`when`(viewModel.setOfEntriesToBeDeleted).thenReturn(MutableLiveData())
     }
 
@@ -270,7 +270,7 @@ class AllEntriesFragmentTest {
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllEntriesFragment).triggerDeletionState(true)
+            (fragment as AllEntriesFragment).triggerDeletionState(EntriesViewModel.EntriesDeletionScreenState.DELETE)
         }
 
         onView(withIndex(withId(R.id.item_checkbox_button), 0)).check(matches(isDisplayed()))
@@ -280,7 +280,7 @@ class AllEntriesFragmentTest {
     @Test
     fun allEntries_triggerDeletion_checkboxesRemainOnOrientationChange() = runTest{
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
-        Mockito.`when`(viewModel.isDeletionState).thenReturn(MutableLiveData(true))
+        Mockito.`when`(viewModel.screenState).thenReturn(MutableLiveData(EntriesViewModel.EntriesDeletionScreenState.DELETE))
 
         val scenario =
                 launchFragment<AllEntriesFragment>(
@@ -288,7 +288,7 @@ class AllEntriesFragmentTest {
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllEntriesFragment).triggerDeletionState(true)
+            (fragment as AllEntriesFragment).triggerDeletionState(EntriesViewModel.EntriesDeletionScreenState.DELETE)
         }
 
         onView(withIndex(withId(R.id.item_checkbox_button), 0)).check(matches(isDisplayed()))
@@ -316,7 +316,7 @@ class AllEntriesFragmentTest {
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllEntriesFragment).triggerDeletionState(true)
+            (fragment as AllEntriesFragment).triggerDeletionState(EntriesViewModel.EntriesDeletionScreenState.DELETE)
         }
 
 

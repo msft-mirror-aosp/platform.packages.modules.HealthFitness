@@ -29,7 +29,6 @@ import android.annotation.NonNull;
 import android.database.Cursor;
 import android.util.Pair;
 
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.TimeUtils;
 
@@ -183,11 +182,7 @@ public final class MergeDataHelper {
     // if its app has a priority assigned
     private boolean shouldAddDataPoint(RecordData recordData) {
         if (recordData == null) return false;
-        if (HealthConnectDeviceConfigManager.getInitialisedInstance()
-                .isAggregationSourceControlsEnabled()) {
-            return mReversedPriorityList.contains(recordData.mAppId);
-        }
-        return true;
+        return mReversedPriorityList.contains(recordData.mAppId);
     }
 
     private boolean cursorOutOfRange() {

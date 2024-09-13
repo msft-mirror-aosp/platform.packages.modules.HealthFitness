@@ -58,11 +58,13 @@ public final class MigrationBroadcastScheduler {
     @GuardedBy("mLock")
     private int mUserId;
 
-    public MigrationBroadcastScheduler(int userId) {
+    public MigrationBroadcastScheduler(
+            int userId,
+            HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
+            MigrationStateManager migrationStateManager) {
         mUserId = userId;
-        mHealthConnectDeviceConfigManager =
-                HealthConnectDeviceConfigManager.getInitialisedInstance();
-        mMigrationStateManager = MigrationStateManager.getInitialisedInstance();
+        mHealthConnectDeviceConfigManager = healthConnectDeviceConfigManager;
+        mMigrationStateManager = migrationStateManager;
     }
 
     /** Sets userId. Invoked when the user is switched. */
