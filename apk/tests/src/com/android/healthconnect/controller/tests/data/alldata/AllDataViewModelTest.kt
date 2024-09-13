@@ -194,17 +194,17 @@ class AllDataViewModelTest {
     }
 
     @Test
-    fun setDeletionState_setsCorrectly() {
-        viewModel.setDeletionState(true)
+    fun setScreenState_setsCorrectly() {
+        viewModel.setScreenState(AllDataViewModel.AllDataDeletionScreenState.DELETE)
 
-        assertThat(viewModel.getDeletionState()).isTrue()
+        assertThat(viewModel.getScreenState()).isEqualTo(AllDataViewModel.AllDataDeletionScreenState.DELETE)
     }
 
     @Test
-    fun getDeletionState_getsCorrectValue() {
-        viewModel.setDeletionState(false)
+    fun getScreenState_getsCorrectValue() {
+        viewModel.setScreenState(AllDataViewModel.AllDataDeletionScreenState.VIEW)
 
-        assertThat(viewModel.getDeletionState()).isFalse()
+        assertThat(viewModel.getScreenState()).isEqualTo(AllDataViewModel.AllDataDeletionScreenState.VIEW)
     }
 
     @Test

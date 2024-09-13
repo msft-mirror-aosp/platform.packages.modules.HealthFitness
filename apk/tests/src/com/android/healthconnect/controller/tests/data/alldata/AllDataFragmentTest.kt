@@ -78,6 +78,8 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import com.android.healthconnect.controller.data.alldata.AllDataViewModel.AllDataDeletionScreenState.VIEW
+import com.android.healthconnect.controller.data.alldata.AllDataViewModel.AllDataDeletionScreenState.DELETE
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
@@ -167,7 +169,7 @@ class AllDataFragmentTest {
         // trigger deletion state
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllDataFragment).triggerDeletionState(true)
+            (fragment as AllDataFragment).triggerDeletionState(DELETE)
         }
 
         assertCheckboxShown("Distance")
@@ -184,7 +186,7 @@ class AllDataFragmentTest {
         val scenario = launchFragment<AllDataFragment>()
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllDataFragment).triggerDeletionState(true)
+            (fragment as AllDataFragment).triggerDeletionState(DELETE)
         }
 
         onView(withText("Distance")).perform(click())
@@ -206,7 +208,7 @@ class AllDataFragmentTest {
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllDataFragment).triggerDeletionState(true)
+            (fragment as AllDataFragment).triggerDeletionState(DELETE)
         }
 
         advanceUntilIdle()
@@ -255,7 +257,7 @@ class AllDataFragmentTest {
         // trigger deletion state
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllDataFragment).triggerDeletionState(true)
+            (fragment as AllDataFragment).triggerDeletionState(DELETE)
         }
 
         assertCheckboxShown("Select all")
@@ -268,7 +270,7 @@ class AllDataFragmentTest {
         val scenario = launchFragment<AllDataFragment>()
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllDataFragment).triggerDeletionState(true)
+            (fragment as AllDataFragment).triggerDeletionState(DELETE)
         }
 
         advanceUntilIdle()
@@ -288,7 +290,7 @@ class AllDataFragmentTest {
         val scenario = launchFragment<AllDataFragment>()
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllDataFragment).triggerDeletionState(true)
+            (fragment as AllDataFragment).triggerDeletionState(DELETE)
         }
 
         advanceUntilIdle()
@@ -309,7 +311,7 @@ class AllDataFragmentTest {
         val scenario = launchFragment<AllDataFragment>()
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllDataFragment).triggerDeletionState(true)
+            (fragment as AllDataFragment).triggerDeletionState(DELETE)
         }
 
         assertCheckboxShown("Distance")
@@ -332,7 +334,7 @@ class AllDataFragmentTest {
         val scenario = launchFragment<AllDataFragment>()
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllDataFragment).triggerDeletionState(true)
+            (fragment as AllDataFragment).triggerDeletionState(DELETE)
         }
 
         advanceUntilIdle()
@@ -358,7 +360,7 @@ class AllDataFragmentTest {
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllDataFragment).triggerDeletionState(true)
+            (fragment as AllDataFragment).triggerDeletionState(DELETE)
         }
 
         advanceUntilIdle()

@@ -56,7 +56,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TestAppProxy {
     private static final String TEST_APP_RECEIVER_CLASS_NAME =
             "android.healthconnect.cts.testhelper.TestAppReceiver";
-    private static final long POLLING_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(20);
+    private static final long POLLING_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(30);
 
     public static final TestAppProxy APP_WRITE_PERMS_ONLY =
             TestAppProxy.forPackageName("android.healthconnect.cts.testapp.writePermsOnly");

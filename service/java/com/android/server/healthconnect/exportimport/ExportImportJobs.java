@@ -47,6 +47,21 @@ public class ExportImportJobs {
 
     public static final String PERIODIC_EXPORT_JOB_NAME = "periodic_export_job";
 
+    /** Checks if the rescheduling is needed and schedules the periodic export job if so. */
+    public static void schedulePeriodicJobIfNotScheduled(
+            int userId,
+            Context context,
+            ExportImportSettingsStorage exportImportSettingsStorage,
+            ExportManager exportManager) {
+        if (!exportImportFastFollow()
+                || Objects.requireNonNull(context.getSystemService(JobScheduler.class))
+                        .forNamespace(NAMESPACE)
+                        .getAllPendingJobs()
+                        .isEmpty()) {
+            schedulePeriodicExportJob(userId, context, exportImportSettingsStorage, exportManager);
+        }
+    }
+
     /** Schedule the periodic export job. */
     public static void schedulePeriodicExportJob(
             int userId,
@@ -54,19 +69,16 @@ public class ExportImportJobs {
             ExportImportSettingsStorage exportImportSettingsStorage,
             ExportManager exportManager) {
         int periodInDays = exportImportSettingsStorage.getScheduledExportPeriodInDays();
-        if (exportImportFastFollow() && periodInDays <= 0) {
-            // If period is 0 the user has turned export off, so we should cancel the job.
+        if (exportImportFastFollow()) {
+            // We should always cancel the job as we are persisting the job now.
             Objects.requireNonNull(context.getSystemService(JobScheduler.class))
                     .forNamespace(NAMESPACE)
                     .cancelAll();
             // If export is off we try to delete the local files, just in case it happened the
             // rare case where those files weren't delete after the last export.
             exportManager.deleteLocalExportFiles();
-
-            return;
         }
-        // TODO(b/325599089): Remove once exportImportFastFollow flag has been deployed and
-        //  without concerns of needing to roll-back.
+        // If period is 0 the user has turned export off, we should no longer schedule a new job
         if (periodInDays <= 0) {
             return;
         }
@@ -112,6 +124,9 @@ public class ExportImportJobs {
                                 // Flex is the max of the specified time, or 5% of periodInMillis.
                                 flexInMillis)
                         .setExtras(extras);
+        if (exportImportFastFollow()) {
+            builder = builder.setPersisted(true);
+        }
 
         HealthConnectDailyService.schedule(
                 Objects.requireNonNull(context.getSystemService(JobScheduler.class))

@@ -29,8 +29,8 @@ filegroup {
 android_test_helper_app {
     name: "HealthFitnessTestDocumentProviderApp2",
     libs: [
-        "android.test.base",
-        "android.test.runner",
+        "android.test.base.stubs.system",
+        "android.test.runner.stubs.system",
     ],
     srcs: [":healthfitness-testdocumentproviderapp2-srcs"],
     test_suites: [

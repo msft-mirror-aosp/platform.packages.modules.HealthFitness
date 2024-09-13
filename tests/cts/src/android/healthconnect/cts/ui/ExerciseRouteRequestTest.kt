@@ -66,6 +66,9 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
         @JvmStatic
         @AfterClass
         fun tearDown() {
+            if (!TestUtils.isHardwareSupported()) {
+                return
+            }
             TestUtils.verifyDeleteRecords(
                 ExerciseSessionRecord::class.java,
                 TimeInstantRangeFilter.Builder()

@@ -96,11 +96,13 @@ public final class MigrationStateManager {
     private int mUserId;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private MigrationStateManager(@UserIdInt int userId) {
+    private MigrationStateManager(
+            @UserIdInt int userId,
+            HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
+            PreferenceHelper preferenceHelper) {
         mUserId = userId;
-        mHealthConnectDeviceConfigManager =
-                HealthConnectDeviceConfigManager.getInitialisedInstance();
-        mPreferenceHelper = PreferenceHelper.getInstance();
+        mHealthConnectDeviceConfigManager = healthConnectDeviceConfigManager;
+        mPreferenceHelper = preferenceHelper;
     }
 
     /**
@@ -108,10 +110,15 @@ public final class MigrationStateManager {
      * instance.
      */
     @NonNull
-    public static MigrationStateManager initializeInstance(@UserIdInt int userId) {
+    public static MigrationStateManager initializeInstance(
+            @UserIdInt int userId,
+            HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
+            PreferenceHelper preferenceHelper) {
         synchronized (sInstanceLock) {
             if (Objects.isNull(sMigrationStateManager)) {
-                sMigrationStateManager = new MigrationStateManager(userId);
+                sMigrationStateManager =
+                        new MigrationStateManager(
+                                userId, healthConnectDeviceConfigManager, preferenceHelper);
             }
 
             return sMigrationStateManager;
@@ -248,13 +255,15 @@ public final class MigrationStateManager {
             case MIGRATION_STATE_MODULE_UPGRADE_REQUIRED:
                 MigrationStateChangeJob.cancelAllJobs(context);
                 updateMigrationStatePreference(context, state, timeoutReached);
-                MigrationStateChangeJob.scheduleMigrationCompletionJob(context, mUserId);
+                MigrationStateChangeJob.scheduleMigrationCompletionJob(
+                        mHealthConnectDeviceConfigManager, context, mUserId);
                 return;
             case MIGRATION_STATE_IN_PROGRESS:
                 MigrationStateChangeJob.cancelAllJobs(context);
                 updateMigrationStatePreference(
                         context, MIGRATION_STATE_IN_PROGRESS, timeoutReached);
-                MigrationStateChangeJob.scheduleMigrationPauseJob(context, mUserId);
+                MigrationStateChangeJob.scheduleMigrationPauseJob(
+                        mHealthConnectDeviceConfigManager, context, mUserId);
                 updateMigrationStartsCount();
                 return;
             case MIGRATION_STATE_ALLOWED:
@@ -266,7 +275,8 @@ public final class MigrationStateManager {
                 }
                 MigrationStateChangeJob.cancelAllJobs(context);
                 updateMigrationStatePreference(context, MIGRATION_STATE_ALLOWED, timeoutReached);
-                MigrationStateChangeJob.scheduleMigrationCompletionJob(context, mUserId);
+                MigrationStateChangeJob.scheduleMigrationCompletionJob(
+                        mHealthConnectDeviceConfigManager, context, mUserId);
                 return;
             case MIGRATION_STATE_COMPLETE:
                 updateMigrationStatePreference(context, MIGRATION_STATE_COMPLETE, timeoutReached);
@@ -575,7 +585,8 @@ public final class MigrationStateManager {
             case MIGRATION_STATE_ALLOWED:
                 if (!MigrationStateChangeJob.existsAStateChangeJob(
                         context, MIGRATION_COMPLETE_JOB_NAME)) {
-                    MigrationStateChangeJob.scheduleMigrationCompletionJob(context, mUserId);
+                    MigrationStateChangeJob.scheduleMigrationCompletionJob(
+                            mHealthConnectDeviceConfigManager, context, mUserId);
                 }
                 return;
             case MIGRATION_STATE_MODULE_UPGRADE_REQUIRED:
@@ -585,7 +596,8 @@ public final class MigrationStateManager {
             case MIGRATION_STATE_IN_PROGRESS:
                 if (!MigrationStateChangeJob.existsAStateChangeJob(
                         context, MIGRATION_PAUSE_JOB_NAME)) {
-                    MigrationStateChangeJob.scheduleMigrationPauseJob(context, mUserId);
+                    MigrationStateChangeJob.scheduleMigrationPauseJob(
+                            mHealthConnectDeviceConfigManager, context, mUserId);
                 }
                 return;
 
@@ -609,11 +621,13 @@ public final class MigrationStateManager {
             return;
         }
         if (!MigrationStateChangeJob.existsAStateChangeJob(context, MIGRATION_COMPLETE_JOB_NAME)) {
-            MigrationStateChangeJob.scheduleMigrationCompletionJob(context, mUserId);
+            MigrationStateChangeJob.scheduleMigrationCompletionJob(
+                    mHealthConnectDeviceConfigManager, context, mUserId);
         }
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    @SuppressWarnings("NullAway")
+    // TODO(b/317029272): fix this suppression
     String getAllowedStateTimeout() {
         String allowedStateStartTime =
                 mPreferenceHelper.getPreference(ALLOWED_STATE_START_TIME_KEY);

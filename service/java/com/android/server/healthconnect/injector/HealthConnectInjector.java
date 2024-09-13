@@ -19,7 +19,9 @@ package com.android.server.healthconnect.injector;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
+import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.exportimport.ExportManager;
+import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
@@ -61,6 +63,15 @@ public abstract class HealthConnectInjector {
 
     /** Getter for ExportManager instance initialised by the Health Connect Injector. */
     public abstract ExportManager getExportManager();
+
+    /** Getter for MigrationStateManager instance initialised by the Health Connect Injector. */
+    public abstract MigrationStateManager getMigrationStateManager();
+
+    /**
+     * Getter for HealthConnectDeviceConfigManager instance initialised by the Health Connect
+     * Injector.
+     */
+    public abstract HealthConnectDeviceConfigManager getHealthConnectDeviceConfigManager();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {
