@@ -23,8 +23,7 @@ import java.util.List;
 
 /** @hide */
 public final class OrderByClause {
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    List<Pair<String, Boolean>> mOrderList;
+    private final List<Pair<String, Boolean>> mOrderList = new ArrayList<>();
 
     /**
      * Adds Order By condition for the read query.
@@ -33,9 +32,6 @@ public final class OrderByClause {
      * @param isAscending to specify the sorting order
      */
     public OrderByClause addOrderByClause(String columnName, boolean isAscending) {
-        if (mOrderList == null) {
-            mOrderList = new ArrayList<>();
-        }
         mOrderList.add(new Pair<>(columnName, isAscending));
         return this;
     }
@@ -46,7 +42,7 @@ public final class OrderByClause {
      * @return ordery by clause containing all the order by column conditions in order
      */
     public String getOrderBy() {
-        if (mOrderList == null) {
+        if (mOrderList.isEmpty()) {
             return "";
         }
         final StringBuilder builder = new StringBuilder(" ORDER BY ");

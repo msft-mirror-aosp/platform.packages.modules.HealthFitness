@@ -23,18 +23,20 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SleepSessionEntry
+import com.android.healthconnect.controller.shared.recyclerview.SimpleViewBinder
 import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 /** ViewBinder for SleepSessionEntry. */
 class SleepSessionItemViewBinder(
     private val showSecondAction: Boolean = true,
     private val onItemClickedListener: OnClickEntryListener?,
     private val onDeleteEntryListenerClicked: OnDeleteEntryListener?,
-) : ViewBinder<SleepSessionEntry, View> {
+) : SimpleViewBinder<SleepSessionEntry, View> {
 
     private lateinit var logger: HealthConnectLogger
 

@@ -78,6 +78,9 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
 
     private final AppInfoHelper mAppInfoHelper;
     private final PackageInfoUtils mPackageInfoUtils;
+    private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
+    private final TransactionManager mTransactionManager;
+    private final PreferenceHelper mPreferenceHelper;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private static volatile HealthDataCategoryPriorityHelper sHealthDataCategoryPriorityHelper;
@@ -92,6 +95,10 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     private HealthDataCategoryPriorityHelper() {
         mAppInfoHelper = AppInfoHelper.getInstance();
         mPackageInfoUtils = PackageInfoUtils.getInstance();
+        mHealthConnectDeviceConfigManager =
+                HealthConnectDeviceConfigManager.getInitialisedInstance();
+        mTransactionManager = TransactionManager.getInitialisedInstance();
+        mPreferenceHelper = PreferenceHelper.getInstance();
     }
 
     /**
@@ -219,8 +226,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     public List<String> getPriorityOrder(
             @HealthDataCategory.Type int type, @NonNull Context context) {
         boolean newAggregationSourceControl =
-                HealthConnectDeviceConfigManager.getInitialisedInstance()
-                        .isAggregationSourceControlsEnabled();
+                mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled();
         if (newAggregationSourceControl) {
             reSyncHealthDataPriorityTable(context);
         }
@@ -247,8 +253,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
      */
     public void setPriorityOrder(int dataCategory, @NonNull List<String> packagePriorityOrder) {
         boolean newAggregationSourceControl =
-                HealthConnectDeviceConfigManager.getInitialisedInstance()
-                        .isAggregationSourceControlsEnabled();
+                mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled();
 
         List<Long> newPriorityOrder = mAppInfoHelper.getAppInfoIds(packagePriorityOrder);
 
@@ -288,12 +293,6 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         return newPriorityOrder;
     }
 
-    @Override
-    protected synchronized void clearData(@NonNull TransactionManager transactionManager) {
-        clearCache();
-        super.clearData(transactionManager);
-    }
-
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
     public synchronized void clearCache() {
@@ -325,8 +324,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
 
         ConcurrentHashMap<Integer, List<Long>> healthDataCategoryToAppIdPriorityMap =
                 new ConcurrentHashMap<>();
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        try (Cursor cursor = transactionManager.read(new ReadTableRequest(PRIORITY_TABLE_NAME))) {
+        try (Cursor cursor = mTransactionManager.read(new ReadTableRequest(PRIORITY_TABLE_NAME))) {
             while (cursor.moveToNext()) {
                 int dataCategory =
                         cursor.getInt(cursor.getColumnIndex(HEALTH_DATA_CATEGORY_COLUMN_NAME));
@@ -346,7 +344,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
             @HealthDataCategory.Type int dataCategory,
             List<Long> newList) {
         try {
-            TransactionManager.getInitialisedInstance().insertOrReplace(request);
+            mTransactionManager.insertOrReplace(request);
             getHealthDataCategoryToAppIdPriorityMap().put(dataCategory, newList);
         } catch (Exception e) {
             Slog.e(TAG, "Priority update failed", e);
@@ -357,7 +355,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     private synchronized void safelyUpdateDBAndUpdateCache(
             DeleteTableRequest request, @HealthDataCategory.Type int dataCategory) {
         try {
-            TransactionManager.getInitialisedInstance().delete(request);
+            mTransactionManager.delete(request);
             getHealthDataCategoryToAppIdPriorityMap().remove(dataCategory);
         } catch (Exception e) {
             Slog.e(TAG, "Delete from priority DB failed: ", e);
@@ -413,8 +411,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     public synchronized void reSyncHealthDataPriorityTable(@NonNull Context context) {
         Objects.requireNonNull(context);
         boolean newAggregationSourceControl =
-                HealthConnectDeviceConfigManager.getInitialisedInstance()
-                        .isAggregationSourceControlsEnabled();
+                mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled();
         // Candidates to be added to the priority list
         Map<Integer, List<Long>> dataCategoryToAppIdMapHavingPermission =
                 getHealthDataCategoryToAppIdPriorityMap().entrySet().stream()
@@ -465,7 +462,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
 
     /** Returns a list of PackageInfos holding health permissions for this user. */
     private List<PackageInfo> getValidHealthApps(@NonNull Context context) {
-        UserHandle user = TransactionManager.getInitialisedInstance().getCurrentUserHandle();
+        UserHandle user = mTransactionManager.getCurrentUserHandle();
         Context currentUserContext = context.createContextAsUser(user, /*flags*/ 0);
         return mPackageInfoUtils.getPackagesHoldingHealthPermissions(user, currentUserContext);
     }
@@ -477,8 +474,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     private synchronized void maybeRemoveAppFromPriorityListInternal(
             @HealthDataCategory.Type int dataCategory, @NonNull String packageName) {
         boolean newAggregationSourceControl =
-                HealthConnectDeviceConfigManager.getInitialisedInstance()
-                        .isAggregationSourceControlsEnabled();
+                mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled();
         boolean dataExistsForPackageName = appHasDataInCategory(packageName, dataCategory);
         if (newAggregationSourceControl && dataExistsForPackageName) {
             // Do not remove if data exists for packageName in the new aggregation
@@ -613,8 +609,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
                                             isInactiveApp(category, packageName, context)));
         }
 
-        PreferenceHelper.getInstance()
-                .insertOrReplacePreference(INACTIVE_APPS_ADDED, String.valueOf(true));
+        mPreferenceHelper.insertOrReplacePreference(INACTIVE_APPS_ADDED, String.valueOf(true));
     }
 
     private boolean isInactiveApp(
@@ -627,15 +622,14 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
 
     private boolean shouldAddContributingApps() {
         boolean newAggregationSourceControl =
-                HealthConnectDeviceConfigManager.getInitialisedInstance()
-                        .isAggregationSourceControlsEnabled();
+                mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled();
 
         if (!newAggregationSourceControl) {
             return false;
         }
 
         String haveInactiveAppsBeenAddedString =
-                PreferenceHelper.getInstance().getPreference(INACTIVE_APPS_ADDED);
+                mPreferenceHelper.getPreference(INACTIVE_APPS_ADDED);
 
         // No-op if this operation has already been completed
         if (haveInactiveAppsBeenAddedString != null

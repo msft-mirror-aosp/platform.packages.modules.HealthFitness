@@ -8,6 +8,7 @@ import android.platform.test.flag.junit.SetFlagsRule
 import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ActivityScenario.launchActivityForResult
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -63,7 +64,8 @@ class MainActivityTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IDLE,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(viewModel.migrationState).then {
             MutableLiveData(
@@ -71,7 +73,10 @@ class MainActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         whenever(exportStatusViewModel.storedScheduledExportStatus).then {
             MutableLiveData(
@@ -80,11 +85,13 @@ class MainActivityTest {
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
                         1,
-                        null,
-                        null,
-                        null,
-                        null)))
+                    )
+                )
+            )
         }
+        setPreferenceSeen(context, Constants.SEE_MORE_COMPATIBLE_APPS_BANNER_SEEN, true)
+        setPreferenceSeen(context, Constants.START_USING_HC_BANNER_SEEN, true)
+        setPreferenceSeen(context, Constants.CONNECT_MORE_APPS_BANNER_SEEN, true)
     }
 
     @Test
@@ -106,7 +113,8 @@ class MainActivityTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IN_PROGRESS,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(viewModel.migrationState).then {
             MutableLiveData(
@@ -114,7 +122,10 @@ class MainActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IN_PROGRESS,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         val startActivityIntent =
@@ -133,7 +144,8 @@ class MainActivityTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IDLE,
                 dataRestoreState = DataRestoreUiState.IN_PROGRESS,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(viewModel.migrationState).then {
             MutableLiveData(
@@ -141,7 +153,10 @@ class MainActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IN_PROGRESS,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         val startActivityIntent =
@@ -156,12 +171,13 @@ class MainActivityTest {
     @Test
     fun homeSettingsIntent_migrationPending_moduleUpdateSeen_launchesMainActivity() = runTest {
         showOnboarding(context, false)
-        setModuleUpdateNeededSeen(context, true)
+        setPreferenceSeen(context, Constants.MODULE_UPDATE_NEEDED_SEEN, true)
         whenever(viewModel.getCurrentMigrationUiState()).then {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.MODULE_UPGRADE_REQUIRED,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(viewModel.migrationState).then {
             MutableLiveData(
@@ -169,7 +185,10 @@ class MainActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.MODULE_UPGRADE_REQUIRED,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         val startActivityIntent =
@@ -178,20 +197,21 @@ class MainActivityTest {
 
         launchActivityForResult<MainActivity>(startActivityIntent)
 
-        onView(withText("Resume integration")).check(matches(isDisplayed()))
-        onView(withText("Recent access")).check(matches(isDisplayed()))
-        onView(withText("Permissions and data")).check(matches(isDisplayed()))
+        onView(withText("Resume integration")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Permissions and data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
     @Test
     fun homeSettingsIntent_migrationPending_appUpgradeSeen_launchesMainActivity() = runTest {
         showOnboarding(context, false)
-        setAppUpgradeNeededSeen(context, true)
+        setPreferenceSeen(context, Constants.APP_UPDATE_NEEDED_SEEN, true)
         whenever(viewModel.getCurrentMigrationUiState()).then {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.APP_UPGRADE_REQUIRED,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(viewModel.migrationState).then {
             MutableLiveData(
@@ -199,7 +219,10 @@ class MainActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.APP_UPGRADE_REQUIRED,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         val startActivityIntent =
@@ -208,20 +231,21 @@ class MainActivityTest {
 
         launchActivityForResult<MainActivity>(startActivityIntent)
 
-        onView(withText("Resume integration")).check(matches(isDisplayed()))
-        onView(withText("Recent access")).check(matches(isDisplayed()))
-        onView(withText("Permissions and data")).check(matches(isDisplayed()))
+        onView(withText("Resume integration")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Permissions and data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
     @Test
     fun homeSettingsIntent_migrationPending_IntegrationPausedSeen_launchesMainActivity() = runTest {
         showOnboarding(context, false)
-        setIntegrationPausedSeen(context, true)
+        setPreferenceSeen(context, Constants.INTEGRATION_PAUSED_SEEN_KEY, true)
         whenever(viewModel.getCurrentMigrationUiState()).then {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.ALLOWED_PAUSED,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(viewModel.migrationState).then {
             MutableLiveData(
@@ -229,7 +253,10 @@ class MainActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.ALLOWED_PAUSED,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         val startActivityIntent =
@@ -238,39 +265,28 @@ class MainActivityTest {
 
         launchActivityForResult<MainActivity>(startActivityIntent)
 
-        onView(withText("Resume integration")).check(matches(isDisplayed()))
-        onView(withText("Recent access")).check(matches(isDisplayed()))
-        onView(withText("Permissions and data")).check(matches(isDisplayed()))
+        onView(withText("Resume integration")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Permissions and data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
     @After
     fun tearDown() {
         showOnboarding(context, false)
-        setAppUpgradeNeededSeen(context, false)
-        setModuleUpdateNeededSeen(context, false)
+        setPreferenceSeen(context, Constants.APP_UPDATE_NEEDED_SEEN, false)
+        setPreferenceSeen(context, Constants.MODULE_UPDATE_NEEDED_SEEN, false)
+        setPreferenceSeen(context, Constants.INTEGRATION_PAUSED_SEEN_KEY, false)
+
+        setPreferenceSeen(context, Constants.SEE_MORE_COMPATIBLE_APPS_BANNER_SEEN, false)
+        setPreferenceSeen(context, Constants.START_USING_HC_BANNER_SEEN, false)
+        setPreferenceSeen(context, Constants.CONNECT_MORE_APPS_BANNER_SEEN, false)
     }
 
-    private fun setModuleUpdateNeededSeen(context: Context, seen: Boolean) {
+    private fun setPreferenceSeen(context: Context, preferenceName: String, seen: Boolean) {
         val sharedPreference =
             context.getSharedPreferences(Constants.USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
         val editor = sharedPreference.edit()
-        editor.putBoolean(Constants.MODULE_UPDATE_NEEDED_SEEN, seen)
-        editor.apply()
-    }
-
-    private fun setAppUpgradeNeededSeen(context: Context, seen: Boolean) {
-        val sharedPreference =
-            context.getSharedPreferences(Constants.USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
-        val editor = sharedPreference.edit()
-        editor.putBoolean(Constants.APP_UPDATE_NEEDED_SEEN, seen)
-        editor.apply()
-    }
-
-    private fun setIntegrationPausedSeen(context: Context, seen: Boolean) {
-        val sharedPreference =
-            context.getSharedPreferences(Constants.USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
-        val editor = sharedPreference.edit()
-        editor.putBoolean(Constants.INTEGRATION_PAUSED_SEEN_KEY, seen)
+        editor.putBoolean(preferenceName, seen)
         editor.apply()
     }
 }

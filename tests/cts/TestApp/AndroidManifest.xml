@@ -18,8 +18,10 @@
           package="android.healthconnect.cts.app">
 
     <uses-permission android:name="android.permission.health.READ_HEIGHT"/>
+    <uses-permission android:name="android.permission.health.READ_MINDFULNESS"/>
     <uses-permission android:name="android.permission.health.WRITE_HEIGHT"/>
     <uses-permission android:name="android.permission.health.WRITE_BODY_FAT"/>
+    <uses-permission android:name="android.permission.health.WRITE_STEPS"/>
 
     <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_HISTORY"/>
     <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"/>

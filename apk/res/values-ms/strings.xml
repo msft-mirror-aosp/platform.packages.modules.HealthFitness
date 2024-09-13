@@ -35,8 +35,9 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 apl memiliki akses}other{# apl memiliki akses}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Tiada"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Butiran kemasukan"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"Semak imbas data"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Lihat data dan apl yang boleh mengakses data tersebut"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"Autopadam, sumber data, sandaran dan pemulihan"</string>
     <string name="backup_title" msgid="211503191266235085">"Sandaran"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Sumber dan keutamaan data"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Tetapkan unit"</string>
@@ -66,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"penjejakan kitaran"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Pemakanan"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"pemakanan"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"Kesejahteraan"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"kesejahteraan"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"Semak imbas data"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Urus data"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Eksport data"</string>
@@ -78,7 +81,7 @@
     <string name="can_read" msgid="4568261079308309564">"Boleh membaca <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"Boleh menulis <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Apl yang tidak aktif"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"Apl ini tidak lagi boleh menulis <xliff:g id="DATA_TYPE">%s</xliff:g>, tetapi masih menyimpan data dalam Health Connect"</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Apl ini tidak boleh membaca atau menulis <xliff:g id="DATA_TYPE">%s</xliff:g> lagi tetapi masih menyimpan data dalam Health Connect"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Apl tidak lagi dapat membaca atau menulis <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> dan tiada data <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> yang disimpan dalam Health Connect"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Data ini mengandungi maklumat seperti masa aktif, jenis senaman, pusingan, ulangan, sesi atau kuak renang."</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Data ini mengandungi maklumat seperti peringkat tidur dan sesi tidur."</string>
@@ -270,6 +273,9 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Pengimunan"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"pengimunan"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Baca pengimunan"</string>
+    <string name="allergy_intolerance_uppercase_label" msgid="726821034032305942">"Alahan &amp; intoleran"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="3259399258428458578">"Alahan &amp; intoleran"</string>
+    <string name="allergy_intolerance_content_description" msgid="450723157436883417">"Baca tentang alahan &amp; intoleran"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Kesedaran minda"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"kesedaran minda"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Baca data kesedaran minda"</string>
@@ -297,6 +303,8 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Hari yang dipilih"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Hari sebelumnya"</string>
     <string name="default_error" msgid="7966868260616403475">"Kesilapan telah berlaku. Sila cuba lagi."</string>
+    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"Apl dengan kebenaran ini boleh membaca dan menulis data kesihatan dan kecergasan anda."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Kawal jenis apl yang boleh mengakses data yang disimpan dalam Health Connect. Ketik apl untuk menyemak data yang boleh dibaca atau ditulis oleh apl itu."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Akses yang dibenarkan"</string>
@@ -327,8 +335,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"Akses tambahan"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Kebenaran tambahan bagi apl ini dialih keluar"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Kebenaran"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"Urus kebenaran kecergasan"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"Urus kebenaran rekod kesihatan"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Kecergasan dan kesejahteraan"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Senaman, tidur, pemakanan dan lain-lain"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"Rekod kesihatan"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"rekod kesihatan"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"Keputusan makmal, ubat, imunisasi dll"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Kebenaran apl yang dialih keluar"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect mengalih keluar kebenaran untuk <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect mengalih keluar kebenaran untuk <xliff:g id="APP_DATA_0">%1$s</xliff:g> dan <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -342,8 +353,13 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Tidak dapat mengeksport data"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Terdapat masalah berkaitan dengan eksport untuk <xliff:g id="DATE">%1$s</xliff:g>. Sila sediakan eksport baharu yang dijadualkan dan cuba lagi."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Eksport seterusnya: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"Eksport seterusnya akan bermula sebentar lagi"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Sandaran dan pemulihan"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Eksport terakhir: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="last_export_time_now" msgid="31498024135933750">"Eksport terakhir: sekarang"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Eksport terakhir: 1 minit yang lalu}other{Eksport terakhir: # minit yang lalu}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Eksport terakhir: 1 jam yang lalu}other{Eksport terakhir: # jam yang lalu}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"Eksport terakhir: tiada"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Eksport dijadualkan"</string>
     <string name="import_data" msgid="404502315533233094">"Import data"</string>
@@ -360,8 +376,7 @@
     <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Hidup"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Mati"</string>
-    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
-    <skip />
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"Gunakan laporan berjadual"</string>
     <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"Tukar kekerapan"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Jika anda mematikan eksport berjadual, tindakan ini tidak akan memadamkan data yang dieksport sebelum ini daripada lokasi data itu disimpan"</string>
@@ -379,6 +394,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Import"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Pemulihan Health Connect dalam proses"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Pemulihan Health Connect selesai"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"Pemulihan dalam proses"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"Selesai memulihkan data"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect tidak dapat memulihkan data"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Lagi ruang diperlukan"</string>
@@ -391,10 +407,16 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Buka"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Pilih fail"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Kosongkan ruang"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"Eksport dijadualkan kini dihidupkan"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect gagal mengeksport data"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Lagi ruang diperlukan"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Terdapat masalah berkaitan dengan eksport untuk <xliff:g id="DATE">%1$s</xliff:g>. Sila sediakan eksport baharu yang dijadualkan dan cuba lagi."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Health Connect memerlukan <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> ruang storan pada telefon anda untuk meneruskan eksport yang dijadualkan."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"Sediakan"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Kosongkan ruang"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Kembali"</string>
-    <!-- no translation found for export_cancel_button (1952360582645412410) -->
-    <skip />
     <string name="export_next_button" msgid="657930567137105172">"Seterusnya"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"Batal"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Batal"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Seterusnya"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Import daripada"</string>
@@ -638,6 +660,7 @@
     <string name="rest" msgid="5937058337671252210">"Rehat"</string>
     <string name="pause" msgid="5161459047750335691">"Jeda"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"Bola sepak Australia"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"Jenis tidak diketahui"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> tidur"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"berjaga"</string>
@@ -648,6 +671,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"tidur layap"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"tidur nyenyak"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"tidak diketahui"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"Pernafasan"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"Meditasi"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"Pergerakan"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"Muzik"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"Lain-lain"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Tanpa bimbingan"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g>m"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g>j <xliff:g id="MIN">%2$s</xliff:g>m"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g>j"</string>
@@ -991,4 +1020,13 @@
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Data <xliff:g id="PERMISSION_TYPE">%s</xliff:g> dipadamkan"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> item dipadamkan"</string>
     <string name="select_all" msgid="837499881590001166">"Pilih semua"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Mula menggunakan Health Connect"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Segerakkan apl pertama anda untuk berkongsi data kesihatan dan kecergasan antara apl tersebut"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Sediakan"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Sambungkan apl lagi"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Mula berkongsi data antara <xliff:g id="APP_NAME">%s</xliff:g> dengan apl kesihatan pada telefon anda"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"Sediakan"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Lihat apl yang serasi"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Cari lebih banyak apl untuk disegerakkan dengan <xliff:g id="APP_NAME">%s</xliff:g> melalui Health Connect"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Lihat pada gedung apl"</string>
 </resources>

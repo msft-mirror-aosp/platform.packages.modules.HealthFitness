@@ -35,8 +35,9 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 個のアプリに権限が付与されています}other{# 個のアプリに権限が付与されています}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"なし"</string>
     <string name="entry_details_title" msgid="590184849040247850">"エントリの詳細"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"データを見る"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"データとそれにアクセスできるアプリを確認できます"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"自動削除、データソース、バックアップと復元"</string>
     <string name="backup_title" msgid="211503191266235085">"バックアップ"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"データソースと優先度"</string>
     <string name="set_units_title" msgid="2657822539603758029">"ユニットを設定"</string>
@@ -66,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"月経周期の管理"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"栄養"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"栄養"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"ウェルネス"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"ウェルネス"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"データの確認"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"データの管理"</string>
     <string name="export_data_button" msgid="7783329820434117744">"データをエクスポート"</string>
@@ -78,7 +81,7 @@
     <string name="can_read" msgid="4568261079308309564">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>の読み取り許可"</string>
     <string name="can_write" msgid="5082414937218423823">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>の書き込み許可"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"休止中のアプリ"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"これらのアプリは<xliff:g id="DATA_TYPE">%s</xliff:g>を書き込めなくなりましたが、ヘルスコネクトからデータが削除されることはありません"</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"これらのアプリは<xliff:g id="DATA_TYPE">%s</xliff:g>の読み込みや書き込みができなくなりますが、ヘルスコネクトからデータが削除されることはありません"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"アプリで<xliff:g id="DATA_TYPE_0">%1$s</xliff:g>の読み取りと書き込みができなくなりました。ヘルスコネクトに保存されている<xliff:g id="DATA_TYPE_2">%2$s</xliff:g>データはありません"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"このデータには、エクササイズの時間、エクササイズの種類、ラップ数、繰り返し数、セッション数、ストローク数（水泳）などの情報が含まれます"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"このデータには、睡眠ステージ、睡眠セッションなどの情報が含まれます"</string>
@@ -270,6 +273,9 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"予防接種データ"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"予防接種データ"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"予防接種データの読み取り"</string>
+    <string name="allergy_intolerance_uppercase_label" msgid="726821034032305942">"アレルギーと不耐症"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="3259399258428458578">"アレルギーと不耐症"</string>
+    <string name="allergy_intolerance_content_description" msgid="450723157436883417">"アレルギーと不耐症の読み取り"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"マインドフルネス"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"マインドフルネス"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"マインドフルネスを読み取る"</string>
@@ -297,6 +303,8 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"選択した日"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"前日"</string>
     <string name="default_error" msgid="7966868260616403475">"エラーが発生しました。もう一度お試しください。"</string>
+    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"この権限があるアプリは、健康とフィットネスに関するデータの読み取り / 書き込みを行えます。"</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"ヘルスコネクトに保存されているデータにアクセスできるアプリの管理を行えます。アプリをタップすると、そのアプリが読み取り / 書き込みを行えるデータが表示されます。"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"アクセスが許可されているアプリ"</string>
@@ -327,8 +335,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"アクセス権の追加"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"このアプリの追加権限を削除しました"</string>
     <string name="permissions_header" msgid="6519976063360071569">"権限"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"フィットネスの権限を管理"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"医療記録の権限を管理"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"フィットネスとウェルネス"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"エクササイズ、睡眠、栄養、その他"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"医療記録"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"医療記録"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"検査結果、医薬品、予防接種記録、その他"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"アプリの権限を削除しました"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"ヘルスコネクトにより、<xliff:g id="APP_DATA">%s</xliff:g> に対する権限が削除されました"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"ヘルスコネクトにより、<xliff:g id="APP_DATA_0">%1$s</xliff:g> と <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> の権限が削除されました"</string>
@@ -342,10 +353,14 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"データをエクスポートできませんでした"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"エラーにより、<xliff:g id="DATE">%1$s</xliff:g>のデータをエクスポートできませんでした。新しいエクスポート スケジュールを設定し、もう一度お試しください。"</string>
     <string name="next_export_time" msgid="3138247220014510213">"次回のエクスポート: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"次のエクスポートがまもなく始まります"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"バックアップと復元"</string>
     <string name="last_export_time" msgid="9205875050823594041">"前回のエクスポート: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for last_export_file_location (4069435932524304633) -->
-    <skip />
+    <string name="last_export_time_now" msgid="31498024135933750">"前回のエクスポート: 今"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{前回のエクスポート: 1 分前}other{前回のエクスポート: # 分前}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{前回のエクスポート: 1 時間前}other{前回のエクスポート: # 時間前}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"前回のエクスポート: なし"</string>
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"スケジュール設定されたエクスポート"</string>
     <string name="import_data" msgid="404502315533233094">"データをインポート"</string>
     <string name="import_data_description" msgid="4040178599441724296">"以前エクスポートしたファイルからデータを復元できます"</string>
@@ -358,14 +373,11 @@
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"エクスポートからデータを復元する際に問題が発生しました。"</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"エクスポート機能を使ってデータを保存し、保存したデータを新しいスマートフォンに移行できます"</string>
     <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"バックアップと復元について"</string>
-    <!-- no translation found for automatic_export_status (4407131306281440230) -->
-    <skip />
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ON"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"OFF"</string>
-    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
-    <skip />
-    <!-- no translation found for next_export_file_location (2117071837862240540) -->
-    <skip />
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"スケジュール設定されたエクスポートを使用する"</string>
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"間隔の変更"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"スケジュール設定されたエクスポートを OFF にしても、エクスポート済みのデータは保存場所から削除されません。"</string>
     <string name="choose_frequency" msgid="8119085390857180221">"スケジュール設定されたエクスポートをセットアップする"</string>
@@ -382,6 +394,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"インポート"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"ヘルスコネクトを復元しています"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"ヘルスコネクトの復元が完了しました"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"復元処理中"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"データを復元しました"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"ヘルスコネクトでデータを復元できませんでした"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"空き容量が不足しています"</string>
@@ -394,10 +407,16 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"開く"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"ファイルを選択"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"空き容量を増やす"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"スケジュール設定されたエクスポートが ON になっています"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"ヘルスコネクトでデータをエクスポートできません"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"空き容量が不足しています"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"エラーにより、<xliff:g id="DATE">%1$s</xliff:g>のデータをエクスポートできませんでした。新しいエクスポート スケジュールを設定し、もう一度お試しください。"</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"スケジュール設定されたエクスポートをヘルスコネクトで続けるには、スマートフォンに <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> の空き容量が必要です。"</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"設定"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"空き容量を増やす"</string>
     <string name="export_back_button" msgid="3550795479165524982">"戻る"</string>
-    <!-- no translation found for export_cancel_button (1952360582645412410) -->
-    <skip />
     <string name="export_next_button" msgid="657930567137105172">"次へ"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"キャンセル"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"キャンセル"</string>
     <string name="import_next_button" msgid="5706322508691854289">"次へ"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"インポート元の選択"</string>
@@ -641,6 +660,7 @@
     <string name="rest" msgid="5937058337671252210">"休息"</string>
     <string name="pause" msgid="5161459047750335691">"小休止"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"オーストラリアン フットボール"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"不明な種類"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> - 睡眠"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>⁠"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"覚醒状態"</string>
@@ -651,6 +671,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"浅い眠り"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"深い眠り"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"不明"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"呼吸"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"瞑想"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"動き"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"音楽"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"その他"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"ガイドなし"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> 分"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> 時間 <xliff:g id="MIN">%2$s</xliff:g> 分"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> 時間"</string>
@@ -993,6 +1019,14 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"すべてのデータを削除しました"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> のデータを削除しました"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> 件のアイテムを削除しました。"</string>
-    <!-- no translation found for select_all (837499881590001166) -->
-    <skip />
+    <string name="select_all" msgid="837499881590001166">"すべて選択"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"ヘルスコネクトの使用を開始する"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"健康とフィットネスに関するデータを共有する 1 つ目のアプリを同期する"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"設定"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"アプリをさらに接続"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"<xliff:g id="APP_NAME">%s</xliff:g> とスマートフォンの健康アプリとの間でデータの共有を開始する"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"設定"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"対応アプリを表示する"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"ヘルスコネクトで <xliff:g id="APP_NAME">%s</xliff:g> と同期するアプリをさらに探す"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"アプリストアで表示する"</string>
 </resources>

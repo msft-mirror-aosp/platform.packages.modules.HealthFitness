@@ -35,8 +35,9 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 app har adgang}one{# app har adgang}other{# apps har adgang}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Ingen"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Oplysninger om dataposten"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"Gennemse data"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Se data og de apps, der kan tilgå dem"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"Automatisk sletning, datakilder, sikkerhedskopiering og gendannelse"</string>
     <string name="backup_title" msgid="211503191266235085">"Sikkerhedskopiering"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Datakilder og prioritet"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Angiv enheder"</string>
@@ -66,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"tracking af cyklus"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Ernæring"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"ernæring"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"Velvære"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"velvære"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"Gennemse data"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Administrer data"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Eksportér data"</string>
@@ -78,7 +81,7 @@
     <string name="can_read" msgid="4568261079308309564">"Kan læse <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"Kan skrive <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Inaktive apps"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"Disse apps kan ikke længere skrive <xliff:g id="DATA_TYPE">%s</xliff:g>, men har stadig data, der er gemt i Health Connect"</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Disse apps kan ikke længere læse eller skrive <xliff:g id="DATA_TYPE">%s</xliff:g>, men har stadig data, der er gemt i Health Connect"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Apps kan ikke længere læse eller skrive data om <xliff:g id="DATA_TYPE_0">%1$s</xliff:g>, og der gemmes ingen data om <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> i Health Connect"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Disse data omfatter oplysninger som f.eks. aktiv tid og træningstype samt antallet af omgange, gentagelser, træningspas og svømmetag"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Disse data omfatter oplysninger som f.eks. søvnstadier og soveperioder"</string>
@@ -270,6 +273,9 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Vaccinationer"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"vaccinationer"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Læse vaccinationer"</string>
+    <string name="allergy_intolerance_uppercase_label" msgid="726821034032305942">"Allergi og intolerance"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="3259399258428458578">"Allergi og intolerance"</string>
+    <string name="allergy_intolerance_content_description" msgid="450723157436883417">"Data om allergier og intolerancer"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Mindfulness"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"mindfulness"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Læs data om mindfulness"</string>
@@ -297,6 +303,8 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Valgt dag"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Forrige dag"</string>
     <string name="default_error" msgid="7966868260616403475">"Noget gik galt. Prøv igen."</string>
+    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"Apps med denne tilladelse kan læse og skrive dine sundheds- og træningsdata."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Bestem, hvilke apps der kan få adgang til data, som er gemt i Health Connect. Tryk på en app for at gennemgå de data, den kan læse eller skrive."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Tilladt adgang"</string>
@@ -327,8 +335,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"Yderligere adgang"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Yderligere tilladelser for denne app er fjernet"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Tilladelser"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"Administrer tilladelser for træning"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"Administrer tilladelser for sundhedsoplysninger"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Fitness og wellness"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Træning, søvn, ernæring m.m."</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"Sundhedsoplysninger"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"sundhedsoplysninger"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"Prøvesvar, medicin, vaccinationer m.m."</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Apptilladelser blev fjernet"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect fjernede tilladelser for <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect fjernede tilladelser for <xliff:g id="APP_DATA_0">%1$s</xliff:g> og <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -342,10 +353,14 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Dataene kunne ikke eksporteres"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Der opstod et problem med eksporten til <xliff:g id="DATE">%1$s</xliff:g>. Konfigurer en ny planlagt eksport, og prøv igen."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Næste eksport: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"Næste eksport starter snart"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Sikkerhedskopiering og gendannelse"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Seneste eksport: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for last_export_file_location (4069435932524304633) -->
-    <skip />
+    <string name="last_export_time_now" msgid="31498024135933750">"Seneste eksport: nu"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Seneste eksportering: 1 minut siden}one{Seneste eksportering: # minut siden}other{Seneste eksportering: # minutter siden}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Seneste eksportering: 1 time siden}one{Seneste eksport: # time siden}other{Seneste eksport: # timer siden}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"Seneste eksportering: ingen"</string>
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Planlagt eksport"</string>
     <string name="import_data" msgid="404502315533233094">"Importér data"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Gendan data fra en tidligere eksporteret fil"</string>
@@ -358,14 +373,11 @@
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Der opstod en fejl under forsøget på at gendanne data fra din eksport."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Med eksporter kan du gemme dine data, så du kan overføre dem til en ny telefon"</string>
     <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"Om sikkerhedskopiering og gendannelse"</string>
-    <!-- no translation found for automatic_export_status (4407131306281440230) -->
-    <skip />
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Til"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Fra"</string>
-    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
-    <skip />
-    <!-- no translation found for next_export_file_location (2117071837862240540) -->
-    <skip />
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"Brug planlagt eksport"</string>
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"Skift frekvens"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Deaktivering af planlagt eksport medfører ikke automatisk, at tidligere eksporterede data slettes fra det sted, de er gemt"</string>
     <string name="choose_frequency" msgid="8119085390857180221">"Konfigurer planlagt eksport"</string>
@@ -382,6 +394,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Importér"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect-gendannelsen er i gang"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect-gendannelsen er udført"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"Gendannelse i gang"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"Dataene er nu gendannet"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect kunne ikke gendanne data"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Der kræves mere lagerplads"</string>
@@ -394,10 +407,17 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Åbn"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Vælg fil"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Frigør plads"</string>
-    <string name="export_back_button" msgid="3550795479165524982">"Tilbage"</string>
-    <!-- no translation found for export_cancel_button (1952360582645412410) -->
+    <!-- no translation found for scheduled_export_on_toast_text (945186472588537310) -->
     <skip />
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect kunne ej eksportere data"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Mere lagerplads påkrævet"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Der opstod et problem med eksporteringen for <xliff:g id="DATE">%1$s</xliff:g>. Konfigurer en ny planlagt eksportering, og prøv igen."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Health Connect kræver <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> lagerplads på din telefon for at kunne fortsætte den planlagte eksportering."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"Konfigurer"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Frigør lagerplads"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Tilbage"</string>
     <string name="export_next_button" msgid="657930567137105172">"Næste"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"Annuller"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Annuller"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Næste"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Importér fra"</string>
@@ -420,15 +440,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"Slet data"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Åbn slettetilstand"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Afslut slettetilstand"</string>
-    <!-- no translation found for time_range_title (5777596779865648336) -->
-    <skip />
+    <string name="time_range_title" msgid="5777596779865648336">"Vælg, hvilke data du vil slette fra Health Connect"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Næste"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Denne handling sletter permanent alle data, der er føjet til Health Connect i det valgte tidsrum"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"Denne handling sletter permanent alle data fra <xliff:g id="DATA_TYPE">%s</xliff:g>, som er føjet til Health Connect i det valgte tidsrum"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"Denne handling sletter permanent alle data fra <xliff:g id="CATEGORY">%s</xliff:g>, som er føjet til Health Connect i det valgte tidsrum"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"Denne handling sletter permanent alle data fra <xliff:g id="APP_DATA">%s</xliff:g>, som er føjet til Health Connect i det valgte tidsrum"</string>
-    <!-- no translation found for time_range_message_permission_type_app_data (1613568925588480588) -->
-    <skip />
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"Denne handling sletter permanent data om <xliff:g id="DATA_TYPE">%1$s</xliff:g>, som er føjet til Health Connect af <xliff:g id="APP_DATA">%2$s</xliff:g> i det valgte tidsrum"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"Slet data for de seneste 24 timer"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"Slet data for de seneste 7 dage"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"Slet data for de seneste 30 dage"</string>
@@ -449,32 +467,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"Vil du slette data fra <xliff:g id="APP_DATA">%s</xliff:g> for de seneste 24 timer permanent?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"Vil du slette data fra <xliff:g id="APP_DATA">%s</xliff:g> for de seneste 7 dage permanent?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"Vil du slette data fra <xliff:g id="APP_DATA">%s</xliff:g> for de seneste 30 dage permanent?"</string>
-    <!-- no translation found for confirming_question_permission_type_app_data_all (1210052631467085849) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_day (4377296923865256246) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_week (2253468260502709170) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_month (1656927839079630144) -->
-    <skip />
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"Vil du permanent slette alle data om <xliff:g id="DATA_TYPE">%1$s</xliff:g>, som er blevet tilføjet af <xliff:g id="APP_DATA">%2$s</xliff:g>?"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"Vil du permanent slette data om <xliff:g id="DATA_TYPE">%1$s</xliff:g>, som er blevet tilføjet af <xliff:g id="APP_DATA">%2$s</xliff:g> i løbet af de seneste 24 timer?"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"Vil du permanent slette data om <xliff:g id="DATA_TYPE">%1$s</xliff:g>, som er blevet tilføjet af <xliff:g id="APP_DATA">%2$s</xliff:g> i løbet af de seneste 7 dage?"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"Vil du permanent slette data om <xliff:g id="DATA_TYPE">%1$s</xliff:g>, som er blevet tilføjet af <xliff:g id="APP_DATA">%2$s</xliff:g> i løbet af de seneste 30 dage?"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Fjern også alle <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g>-tilladelser fra Health Connect"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Vil du slette alle data om <xliff:g id="DATA_TYPE">%1$s</xliff:g> permanent, der er tilføjet af <xliff:g id="APP_DATA">%2$s</xliff:g>?"</string>
-    <!-- no translation found for confirming_question_single_entry (2064578008447638932) -->
-    <skip />
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"Vil du permanent slette denne post fra Health Connect?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Tilknyttede apps vil ikke længere kunne tilgå disse data fra Health Connect"</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"Denne handling vil slette alle menstruationsposter fra <xliff:g id="START_DATE">%1$s</xliff:g> til <xliff:g id="END_DATE">%2$s</xliff:g>."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Slet"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Gå tilbage"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Udfør"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"Luk"</string>
-    <!-- no translation found for delete_dialog_success_title (900884533930984889) -->
-    <skip />
-    <!-- no translation found for delete_dialog_success_message (7454086333205881294) -->
-    <skip />
-    <!-- no translation found for delete_dialog_done_button (1371340030947835493) -->
-    <skip />
-    <!-- no translation found for delete_dialog_see_connected_apps_button (2975631672738138716) -->
-    <skip />
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"Dataene er slettet fra Health Connect"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"Hvis du vil slette dataene helt fra dine tilknyttede apps, skal du markere hver app, hvor dine data kan være gemt."</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"Udfør"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"Se tilknyttede apps"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"Dine data slettes"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"Dataene kunne ikke slettes"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"Noget gik galt, og Health Connect kunne ikke slette dine data"</string>
@@ -652,6 +661,7 @@
     <string name="rest" msgid="5937058337671252210">"Hvile"</string>
     <string name="pause" msgid="5161459047750335691">"Pause"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"Australsk fodbold"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"Ukendt type"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> søvn"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"vågen"</string>
@@ -662,6 +672,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"let søvn"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"dyb søvn"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"ukendt"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"Vejrtrækning"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"Meditation"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"Bevægelse"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"Musik"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"Andet"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Uden vejledning"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> min."</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> t. og <xliff:g id="MIN">%2$s</xliff:g> min."</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> t."</string>
@@ -861,17 +877,14 @@
     <string name="range_off" msgid="8178520557618184215">"Fra"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Når du ændrer dine indstillinger, sletter Health Connect eksisterende data for at afspejle dine nye præferencer"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Skal data slettes automatisk efter # måned?}one{Skal data slettes automatisk efter # måned?}other{Skal data slettes automatisk efter # måneder?}}"</string>
-    <!-- no translation found for confirming_message_x_months (986840333220382321) -->
-    <skip />
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Denne handling sletter også data, der er ældre end # måned, fra Health Connect.\n\nHvis du vil slette dataene helt fra dine tilknyttede apps, skal du markere hver app, hvor dine data kan være gemt.}one{Denne handling sletter også data, der er ældre end # måned, fra Health Connect.\n\nHvis du vil slette dataene helt fra dine tilknyttede apps, skal du markere hver app, hvor dine data kan være gemt.}other{Denne handling sletter også data, der er ældre end # måneder, fra Health Connect.\n\nHvis du vil slette dataene helt fra dine tilknyttede apps, skal du markere hver app, hvor dine data kan være gemt.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Konfigurer automatisk sletning"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Eksisterende data slettes"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect sletter alle data, som er ældre end # måned. Der kan gå en dag, før disse ændringer vises i dine tilknyttede apps.}one{Health Connect will delete all data older than # months. It may take a day for these changes to appear in your connected apps.}other{Health Connect sletter alle data, som er ældre end # måneder. Der kan gå en dag, før disse ændringer vises i dine tilknyttede apps.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Data slettes fra følgende"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Udfør"</string>
-    <!-- no translation found for auto_delete_confirmation_toast (7161651426400701306) -->
-    <skip />
-    <!-- no translation found for auto_delete_off_toast (6530926709108821768) -->
-    <skip />
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Automatisk sletning er aktiveret. Data, der er ældre end # måned, slettes}one{Automatisk sletning er aktiveret. Data, der er ældre end # måned, slettes}other{Automatisk sletning er aktiveret. Data, der er ældre end # måneder, slettes}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"Automatisk sletning er deaktiveret"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Angiv prioritet for apps"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Hvis mere end én app tilføjer data om <xliff:g id="DATA_TYPE">%s</xliff:g>, prioriterer Health Connect den app, der står øverst på denne liste. Træk i apps for at ændre rækkefølgen."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"Gem"</string>
@@ -1007,6 +1020,14 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Alle data er slettet"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> data er slettet"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> elementer er slettet"</string>
-    <!-- no translation found for select_all (837499881590001166) -->
-    <skip />
+    <string name="select_all" msgid="837499881590001166">"Vælg alle"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Begynd at bruge Health Connect"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Synkroniser dine første apps for at dele data om sundhed og fitness mellem dem"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Konfigurer"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Tilknyt flere apps"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Begynd at dele data mellem <xliff:g id="APP_NAME">%s</xliff:g> og sundhedsapps på din telefon"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"Konfigurer"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Se kompatible apps"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Find flere apps, som du kan synkronisere med <xliff:g id="APP_NAME">%s</xliff:g> via Health Connect"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Se i App Store"</string>
 </resources>

@@ -15,59 +15,38 @@
  */
 package com.android.healthconnect.controller.permissiontypes
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissiontypes.api.FilterPermissionTypesUseCase
 import com.android.healthconnect.controller.permissiontypes.api.LoadContributingAppsUseCase
 import com.android.healthconnect.controller.permissiontypes.api.LoadPermissionTypesUseCase
-import com.android.healthconnect.controller.permissiontypes.api.LoadPriorityListUseCase
-import com.android.healthconnect.controller.permissiontypes.api.UpdatePriorityListUseCase
 import com.android.healthconnect.controller.shared.HealthDataCategoryInt
-import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
-import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 class HealthPermissionTypesViewModel
 @Inject
 constructor(
     private val loadPermissionTypesUseCase: LoadPermissionTypesUseCase,
-    private val loadPriorityListUseCase: LoadPriorityListUseCase,
-    private val updatePriorityListUseCase: UpdatePriorityListUseCase,
-    private val appInfoReader: AppInfoReader,
     private val loadContributingAppsUseCase: LoadContributingAppsUseCase,
     private val filterPermissionTypesUseCase: FilterPermissionTypesUseCase
 ) : ViewModel() {
 
-    companion object {
-        private const val TAG = "PriorityListView"
-    }
-
     private val _permissionTypesData = MutableLiveData<PermissionTypesState>()
-    private val _priorityList = MutableLiveData<PriorityListState>()
     private val _appsWithData = MutableLiveData<AppsWithDataFragmentState>()
     private val _selectedAppFilter = MutableLiveData("All apps")
-    private val _editedPriorityList = MutableLiveData<List<AppMetadata>>()
-    private val _categoryLabel = MutableLiveData<String>()
 
     /** Provides a list of [FitnessPermissionType]s displayed in [HealthPermissionTypesFragment]. */
     val permissionTypesData: LiveData<PermissionTypesState>
         get() = _permissionTypesData
-
-    /**
-     * Provides a list of [AppMetadata]s used in [HealthPermissionTypesFragment] and in
-     * [com.android.healthconnect.controller.permissiontypes.prioritylist.PriorityListDialogFragment].
-     */
-    val priorityList: LiveData<PriorityListState>
-        get() = _priorityList
-
 
     /** Provides a list of apps with data in [HealthPermissionTypesFragment]. */
     val appsWithData: LiveData<AppsWithDataFragmentState>
@@ -77,52 +56,16 @@ constructor(
     val selectedAppFilter: LiveData<String>
         get() = _selectedAppFilter
 
-    /**
-     * Provides a reordered version of [priorityList] that is shown on the priority dialog but is
-     * not saved yet by the user.
-     *
-     * If it is empty then the original [priorityList] should be shown on the dialog.
-     */
-    val editedPriorityList: LiveData<List<AppMetadata>>
-        get() = _editedPriorityList
-
-    val categoryLabel: LiveData<String>
-        get() = _categoryLabel
-
     fun setAppFilter(selectedAppFilter: String) {
         _selectedAppFilter.postValue(selectedAppFilter)
     }
 
-    fun setEditedPriorityList(newList: List<AppMetadata>) {
-        _editedPriorityList.postValue(newList)
-    }
-
-    fun setCategoryLabel(label: String) {
-        _categoryLabel.postValue(label)
-    }
-
     fun loadData(category: @HealthDataCategoryInt Int) {
         _permissionTypesData.postValue(PermissionTypesState.Loading)
-        _priorityList.postValue(PriorityListState.Loading)
 
         viewModelScope.launch {
             val permissionTypes = loadPermissionTypesUseCase.invoke(category)
             _permissionTypesData.postValue(PermissionTypesState.WithData(permissionTypes))
-
-            when (val result = loadPriorityListUseCase.invoke(category)) {
-                is UseCaseResults.Success -> {
-                    _priorityList.postValue(
-                        if (result.data.isEmpty()) {
-                            PriorityListState.WithData(listOf())
-                        } else {
-                            PriorityListState.WithData(result.data)
-                        })
-                }
-                is UseCaseResults.Failed -> {
-                    Log.e(TAG, "Load error ", result.exception)
-                    _priorityList.postValue(PriorityListState.LoadingFailed)
-                }
-            }
         }
     }
 
@@ -151,31 +94,16 @@ constructor(
         }
     }
 
-    fun updatePriorityList(category: @HealthDataCategoryInt Int, newPriorityList: List<String>) {
-        _priorityList.postValue(PriorityListState.Loading)
-
-        viewModelScope.launch {
-            updatePriorityListUseCase.invoke(newPriorityList, category)
-            val appMetadataList: List<AppMetadata> =
-                newPriorityList.map { appInfoReader.getAppMetadata(it) }
-            _priorityList.postValue(PriorityListState.WithData(appMetadataList))
-        }
-    }
-
     sealed class PermissionTypesState {
         object Loading : PermissionTypesState()
-        data class WithData(val permissionTypes: List<FitnessPermissionType>) :
-            PermissionTypesState()
-    }
 
-    sealed class PriorityListState {
-        object Loading : PriorityListState()
-        object LoadingFailed : PriorityListState()
-        data class WithData(val priorityList: List<AppMetadata>) : PriorityListState()
+        data class WithData(val permissionTypes: List<HealthPermissionType>) :
+            PermissionTypesState()
     }
 
     sealed class AppsWithDataFragmentState {
         object Loading : AppsWithDataFragmentState()
+
         data class WithData(val appsWithData: List<AppMetadata>) : AppsWithDataFragmentState()
     }
 }

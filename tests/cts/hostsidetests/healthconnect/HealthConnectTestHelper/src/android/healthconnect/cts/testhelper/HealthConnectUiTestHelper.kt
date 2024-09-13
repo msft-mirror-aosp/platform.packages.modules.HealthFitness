@@ -21,7 +21,6 @@ import android.content.pm.PackageManager
 import android.health.connect.HealthConnectManager
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.UiTestUtils
-import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.uiautomator.By
 import com.android.compatibility.common.util.NonApiTest
@@ -89,17 +88,15 @@ class HealthConnectUiTestHelper {
             listOf(
                 TestHelperUtils.getBloodPressureRecord(),
                 TestHelperUtils.getHeartRateRecord(),
-                TestHelperUtils.getStepsRecord()),
-            mHealthConnectManager)
+                TestHelperUtils.getStepsRecord(),
+            ),
+            mHealthConnectManager,
+        )
         context.launchMainActivity {
             UiTestUtils.skipOnboardingIfAppears()
-            UiTestUtils.waitDisplayed(By.text("Data and access"))
-            UiTestUtils.clickOnText("Data and access")
-
-            UiTestUtils.waitDisplayed(By.text("Browse data"))
-            UiTestUtils.waitDisplayed(By.text("Manage data"))
-
-            UiTestUtils.waitDisplayed(By.text("Delete all data"))
+            UiTestUtils.waitDisplayed(By.text("App permissions"))
+            UiTestUtils.scrollDownTo(By.text("Manage data"))
+            UiTestUtils.clickOnText("Manage data")
         }
     }
 }

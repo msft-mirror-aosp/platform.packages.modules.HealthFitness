@@ -18,7 +18,7 @@ package com.android.healthconnect.controller.tests.data.appdata
 import android.content.Intent
 import android.health.connect.HealthDataCategory
 import androidx.core.os.bundleOf
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -31,7 +31,9 @@ import com.android.healthconnect.controller.data.appdata.AppDataFragment
 import com.android.healthconnect.controller.data.appdata.AppDataViewModel
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.shared.Constants
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.MEDICAL
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -56,23 +58,27 @@ class AppDataFragmentTest {
         hiltRule.inject()
         val context = InstrumentationRegistry.getInstrumentation().context
         whenever(appDataViewModel.appInfo).then {
-            MutableLiveData(
+            MediatorLiveData(
                 AppMetadata(
                     TEST_APP_PACKAGE_NAME,
                     TEST_APP_NAME,
-                    context.getDrawable(R.drawable.health_connect_logo)))
+                    context.getDrawable(R.drawable.health_connect_logo),
+                )
+            )
         }
     }
 
     @Test
-    fun allDataFragment_noData_noDataMessageDisplayed() {
-        whenever(appDataViewModel.appData).then {
-            MutableLiveData(AppDataViewModel.AppDataState.WithData(listOf()))
+    fun noData_noDataMessageDisplayed() {
+        whenever(appDataViewModel.fitnessAndMedicalData).then {
+            MediatorLiveData(AppDataViewModel.AppDataState.WithData(listOf()))
         }
         launchFragment<AppDataFragment>(
             bundleOf(
                 Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
-                Constants.EXTRA_APP_NAME to TEST_APP_NAME))
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
 
         onView(withText("No data")).check(matches(isDisplayed()))
         onView(withText("Data from apps with access to Health Connect will show here"))
@@ -80,9 +86,9 @@ class AppDataFragmentTest {
     }
 
     @Test
-    fun appDataFragment_dataPresent_populatedDataTypesDisplayed() {
-        whenever(appDataViewModel.appData).then {
-            MutableLiveData(
+    fun fitnessDataPresent_populatedDataTypesDisplayed() {
+        whenever(appDataViewModel.fitnessAndMedicalData).then {
+            MediatorLiveData(
                 AppDataViewModel.AppDataState.WithData(
                     listOf(
                         PermissionTypesPerCategory(
@@ -91,17 +97,31 @@ class AppDataFragmentTest {
                                 FitnessPermissionType.DISTANCE,
                                 FitnessPermissionType.EXERCISE,
                                 FitnessPermissionType.EXERCISE_ROUTE,
-                                FitnessPermissionType.STEPS)),
+                                FitnessPermissionType.STEPS,
+                            ),
+                        ),
+                        PermissionTypesPerCategory(HealthDataCategory.BODY_MEASUREMENTS, listOf()),
                         PermissionTypesPerCategory(
                             HealthDataCategory.CYCLE_TRACKING,
                             listOf(
                                 FitnessPermissionType.MENSTRUATION,
-                                FitnessPermissionType.SEXUAL_ACTIVITY)))))
+                                FitnessPermissionType.SEXUAL_ACTIVITY,
+                            ),
+                        ),
+                        PermissionTypesPerCategory(HealthDataCategory.NUTRITION, listOf()),
+                        PermissionTypesPerCategory(HealthDataCategory.SLEEP, listOf()),
+                        PermissionTypesPerCategory(HealthDataCategory.VITALS, listOf()),
+                        PermissionTypesPerCategory(MEDICAL, listOf()),
+                    )
+                )
+            )
         }
         launchFragment<AppDataFragment>(
             bundleOf(
                 Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
-                Constants.EXTRA_APP_NAME to TEST_APP_NAME))
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
 
         onView(withText("Activity")).check(matches(isDisplayed()))
         onView(withText("Distance")).check(matches(isDisplayed()))
@@ -111,6 +131,78 @@ class AppDataFragmentTest {
         onView(withText("Cycle tracking")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Menstruation")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Sexual activity")).perform(scrollTo()).check(matches(isDisplayed()))
+
+        onView(withText("Body measurements")).check(doesNotExist())
+        onView(withText("Nutrition")).check(doesNotExist())
+        onView(withText("Sleep")).check(doesNotExist())
+        onView(withText("Vitals")).check(doesNotExist())
+        onView(withText("Health records")).check(doesNotExist())
+        onView(withText("Immunizations")).check(doesNotExist())
+    }
+
+    @Test
+    fun fitnessAndMedicalData_fitnessAndMedicalDataShown() {
+        whenever(appDataViewModel.fitnessAndMedicalData).then {
+            MediatorLiveData(
+                AppDataViewModel.AppDataState.WithData(
+                    listOf(
+                        PermissionTypesPerCategory(
+                            HealthDataCategory.ACTIVITY,
+                            listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.EXERCISE),
+                        ),
+                        PermissionTypesPerCategory(
+                            MEDICAL,
+                            listOf(MedicalPermissionType.IMMUNIZATION),
+                        ),
+                    )
+                )
+            )
+        }
+        launchFragment<AppDataFragment>(
+            bundleOf(
+                Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
+
+        onView(withText("Activity")).check(matches(isDisplayed()))
+        onView(withText("Distance")).check(matches(isDisplayed()))
+        onView(withText("Exercise")).check(matches(isDisplayed()))
+
+        onView(withText("Health records")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Immunization")).perform(scrollTo()).check(matches(isDisplayed()))
+
+        onView(withText("Steps")).check(doesNotExist())
+        onView(withText("Body measurements")).check(doesNotExist())
+        onView(withText("Cycle tracking")).check(doesNotExist())
+    }
+
+    @Test
+    fun medicalDataOnly_populatedDataTypesDisplayed() {
+        whenever(appDataViewModel.fitnessAndMedicalData).then {
+            MediatorLiveData(
+                AppDataViewModel.AppDataState.WithData(
+                    listOf(
+                        PermissionTypesPerCategory(
+                            MEDICAL,
+                            listOf(MedicalPermissionType.IMMUNIZATION),
+                        )
+                    )
+                )
+            )
+        }
+        launchFragment<AppDataFragment>(
+            bundleOf(
+                Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
+
+        onView(withText("Activity")).check(doesNotExist())
+        onView(withText("Distance")).check(doesNotExist())
+
+        onView(withText("Health records")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Immunization")).perform(scrollTo()).check(matches(isDisplayed()))
 
         onView(withText("Body measurements")).check(doesNotExist())
     }

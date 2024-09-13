@@ -22,7 +22,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.selectabledeletion.api.DeleteEntriesUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesUseCase
+import com.android.healthconnect.controller.shared.DataType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -30,7 +32,9 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class DeletionViewModel
 @Inject
-constructor(private val deletePermissionTypesUseCase: DeletePermissionTypesUseCase) : ViewModel() {
+constructor(
+        private val deletePermissionTypesUseCase: DeletePermissionTypesUseCase,
+        private val deleteEntriesUseCase: DeleteEntriesUseCase) : ViewModel() {
 
     companion object {
         private const val TAG = "DeletionViewModel"
@@ -40,15 +44,22 @@ constructor(private val deletePermissionTypesUseCase: DeletePermissionTypesUseCa
 
     private var setOfPermissionTypesToBeDeleted: Set<FitnessPermissionType> = setOf()
 
+    private var setOfEntriesToBeDeleted: Set<String> = setOf()
+
     private var _permissionTypesReloadNeeded = MutableLiveData(false)
 
     private var _deletionProgress = MutableLiveData(DeletionProgress.NOT_STARTED)
+
+    private var _entriesReloadNeeded = MutableLiveData(false)
 
     val deletionProgress: LiveData<DeletionProgress>
         get() = _deletionProgress
 
     val permissionTypesReloadNeeded: LiveData<Boolean>
         get() = _permissionTypesReloadNeeded
+
+    val entriesReloadNeeded: LiveData<Boolean>
+        get() = _entriesReloadNeeded
 
     fun delete() {
         viewModelScope.launch {
@@ -62,6 +73,11 @@ constructor(private val deletePermissionTypesUseCase: DeletePermissionTypesUseCa
                         deletePermissionTypesUseCase.invoke(
                             deletionType as DeletionType.DeletionTypeHealthPermissionTypes)
                         _permissionTypesReloadNeeded.postValue(true)
+                    }
+                    is DeletionType.DeletionTypeEntries -> {
+                        deleteEntriesUseCase.invoke(
+                                deletionType as DeletionType.DeletionTypeEntries)
+                        _entriesReloadNeeded.postValue(true)
                     }
                     else -> {
                         // do nothing
@@ -83,16 +99,32 @@ constructor(private val deletePermissionTypesUseCase: DeletePermissionTypesUseCa
         _permissionTypesReloadNeeded.postValue(false)
     }
 
-    fun setDeleteSet(permissionTypes: Set<FitnessPermissionType>) {
+    fun resetEntriesReloadNeeded() {
+        _entriesReloadNeeded.postValue(false)
+    }
+
+    fun setPermissionTypesDeleteSet(permissionTypes: Set<FitnessPermissionType>) {
         if (permissionTypes.isNotEmpty()) {
             setOfPermissionTypesToBeDeleted = permissionTypes.toSet()
-            deletionType = DeletionType.DeletionTypeHealthPermissionTypes(setOfPermissionTypesToBeDeleted.toList())
+            deletionType = DeletionType.DeletionTypeHealthPermissionTypes((setOfPermissionTypesToBeDeleted).toList())
+        }
+    }
+
+    fun setEntriesDeleteSet(entries: Set<String>, dataType: DataType){
+        if (entries.isNotEmpty()){
+            setOfEntriesToBeDeleted = entries.toSet()
+            deletionType = DeletionType.DeletionTypeEntries((setOfEntriesToBeDeleted).toList(), dataType)
         }
     }
 
     @VisibleForTesting
-    fun getDeleteSet(): Set<FitnessPermissionType> {
+    fun getPermissionTypesDeleteSet(): Set<FitnessPermissionType> {
         return setOfPermissionTypesToBeDeleted
+    }
+
+    @VisibleForTesting
+    fun getEntriesDeleteSet(): Set<String>{
+        return setOfEntriesToBeDeleted
     }
 
     enum class DeletionProgress {

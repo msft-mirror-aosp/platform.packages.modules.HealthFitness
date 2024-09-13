@@ -28,7 +28,12 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/** Class used to create requests for {@link HealthConnectManager#upsertMedicalResources}. */
+/**
+ * Class used to create requests for {@link HealthConnectManager#upsertMedicalResources}.
+ *
+ * <p>Medical data is represented using the <a href="https://hl7.org/fhir/">Fast Healthcare
+ * Interoperability Resources (FHIR)</a> standard.
+ */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class UpsertMedicalResourceRequest implements Parcelable {
     @NonNull private final String mDataSourceId;

@@ -21,7 +21,4 @@ interface ViewBinder<T, V : View> {
 
     /** Create a new view, and attach it to the parent viewgroup */
     fun newView(parent: ViewGroup): V
-
-    /** Populate a view with data. */
-    fun bind(view: View, data: T, index: Int)
 }

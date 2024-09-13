@@ -64,8 +64,8 @@ public final class MindfulnessSessionRecord extends IntervalRecord {
     /** Meditation mindfulness session. */
     public static final int MINDFULNESS_SESSION_TYPE_MEDITATION = 1;
 
-    /** Yoga mindfulness session. */
-    public static final int MINDFULNESS_SESSION_TYPE_YOGA = 2;
+    /** Other mindfulness session. */
+    public static final int MINDFULNESS_SESSION_TYPE_OTHER = 2;
 
     /** Guided breathing mindfulness session. */
     public static final int MINDFULNESS_SESSION_TYPE_BREATHING = 3;
@@ -87,7 +87,7 @@ public final class MindfulnessSessionRecord extends IntervalRecord {
             Set.of(
                     MINDFULNESS_SESSION_TYPE_UNKNOWN,
                     MINDFULNESS_SESSION_TYPE_MEDITATION,
-                    MINDFULNESS_SESSION_TYPE_YOGA,
+                    MINDFULNESS_SESSION_TYPE_OTHER,
                     MINDFULNESS_SESSION_TYPE_BREATHING,
                     MINDFULNESS_SESSION_TYPE_MUSIC,
                     MINDFULNESS_SESSION_TYPE_MOVEMENT,
@@ -177,7 +177,7 @@ public final class MindfulnessSessionRecord extends IntervalRecord {
     @IntDef({
         MINDFULNESS_SESSION_TYPE_UNKNOWN,
         MINDFULNESS_SESSION_TYPE_MEDITATION,
-        MINDFULNESS_SESSION_TYPE_YOGA,
+        MINDFULNESS_SESSION_TYPE_OTHER,
         MINDFULNESS_SESSION_TYPE_BREATHING,
         MINDFULNESS_SESSION_TYPE_MUSIC,
         MINDFULNESS_SESSION_TYPE_MOVEMENT,
@@ -232,20 +232,6 @@ public final class MindfulnessSessionRecord extends IntervalRecord {
         public Builder setEndZoneOffset(@NonNull ZoneOffset endZoneOffset) {
             Objects.requireNonNull(endZoneOffset);
             mEndZoneOffset = endZoneOffset;
-            return this;
-        }
-
-        /** Sets the start zone offset of this record to system default. */
-        @NonNull
-        public Builder clearStartZoneOffset() {
-            mStartZoneOffset = RecordUtils.getDefaultZoneOffset();
-            return this;
-        }
-
-        /** Sets the start zone offset of this record to system default. */
-        @NonNull
-        public Builder clearEndZoneOffset() {
-            mEndZoneOffset = RecordUtils.getDefaultZoneOffset();
             return this;
         }
 

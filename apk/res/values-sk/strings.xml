@@ -35,8 +35,9 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{Prístup má 1 aplikácia}few{Prístup majú # aplikácie}many{# apps have access}other{Prístup má # aplikácií}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Žiadne"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Podrobnosti o zázname"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"Prehliadať údaje"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Zobraziť údaje a aplikácie, ktoré k nim majú prístup"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"Automatické odstraňovanie, zdroje údajov, záloha a obnovenie"</string>
     <string name="backup_title" msgid="211503191266235085">"Záloha"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Zdroje údajov a priorita"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Nastaviť jednotky"</string>
@@ -66,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"sledovanie cyklu"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Výživa"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"výživa"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"Wellness"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"wellness"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"Prehliadanie údajov"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Správa údajov"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Export údajov"</string>
@@ -78,7 +81,7 @@
     <string name="can_read" msgid="4568261079308309564">"Môže čítať údaje typu <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"Môže zapisovať údaje typu <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Neaktívne aplikácie"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"Tieto aplikácie už nemôžu zapisovať údaje typu <xliff:g id="DATA_TYPE">%s</xliff:g>, ale stále majú údaje uložené v Dátach o zdraví"</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Tieto aplikácie už nemôžu čítať ani zapisovať údaje typu <xliff:g id="DATA_TYPE">%s</xliff:g>, ale stále majú údaje uložené v Dátach o zdraví"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Aplikácie už nemôžu čítať ani zapisovať údaje typu<xliff:g id="DATA_TYPE_0">%1$s</xliff:g>. V Dátach o zdraví nie sú uložené žiadne údaje typu <xliff:g id="DATA_TYPE_2">%2$s</xliff:g>."</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Tieto údaje zahrnujú informácie ako čas aktivity, typ cvičenia, kolá, opakovania, série alebo plavecké tempá"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Tieto údaje zahrnujú informácie ako fázy a relácie spánku"</string>
@@ -270,6 +273,9 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Imunizácia"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"imunizácia"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Čítať imunizáciu"</string>
+    <string name="allergy_intolerance_uppercase_label" msgid="726821034032305942">"Alergia a intolerancia"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="3259399258428458578">"Alergia a intolerancia"</string>
+    <string name="allergy_intolerance_content_description" msgid="450723157436883417">"Čítanie údajov o alergii a intolerancii"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Bdelá pozornosť"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"bdelá pozornosť"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Čítať údaje bdelej pozornosti"</string>
@@ -297,6 +303,8 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Vybraný deň"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Predchádzajúci deň"</string>
     <string name="default_error" msgid="7966868260616403475">"Niečo sa pokazilo. Skúste to znova."</string>
+    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"Aplikácie s týmto povolením môžu čítať a zapisovať údaje o zdraví a kondícii."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Ovládajte, ktoré aplikácie majú mať prístup k údajom uloženým v Dátach o zdraví. Po klepnutí na ľubovoľnú aplikáciu môžete skontrolovať, aké údaje môže čítať a zapisovať."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Povolený prístup"</string>
@@ -327,8 +335,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"Dodatočný prístup"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Tejto aplikácii boli odstránené ďalšie povolenia"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Povolenia"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"Spravovať povolenia pre kondíciu"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"Spravovať povolenia pre zdrav. záznamy"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Kondícia a kvalita života"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Cvičenie, spánok, výživa a podobne"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"Zdravotné záznamy"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"zdravotné záznamy"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"Lab. výsledky, lieky, imunizácie a pod."</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Odstránené povolenia aplikácií"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Dáta o zdraví odstránili povolenia pre aplikáciu <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Dáta o zdraví odstránili povolenia pre aplikácie <xliff:g id="APP_DATA_0">%1$s</xliff:g> a <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -342,10 +353,14 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Údaje sa nepodarilo exportovať"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Pri exporte dňa <xliff:g id="DATE">%1$s</xliff:g> sa vyskytol problém Nastavte nový naplánovaný export a skúste to znova."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Nasledujúci export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"Ďalší export sa začne čoskoro"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Záloha a obnovenie"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Posledný export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
-    <!-- no translation found for last_export_file_location (4069435932524304633) -->
-    <skip />
+    <string name="last_export_time_now" msgid="31498024135933750">"Posledný export: teraz"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Posledný export: pred 1 minútou}few{Posledný export: pred # minútami}many{Posledný export: pred # minúty}other{Posledný export: pred # minútami}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Posledný export: pred 1 hodinou}few{Posledný export: pred # hodinami}many{Posledný export: pred # hodiny}other{Posledný export: pred # hodinami}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"Posledný export: žiadny"</string>
+    <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Naplánovaný export"</string>
     <string name="import_data" msgid="404502315533233094">"Importovať údaje"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Obnovte údaje zo súboru exportovaného v minulosti"</string>
@@ -358,14 +373,11 @@
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Vyskytol sa problém s obnovením údajov z exportu."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Export vám umožňuje uložiť si údaje, aby ste ich mohli preniesť do nového telefónu"</string>
     <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"Informácie o zálohovaní a obnovení"</string>
-    <!-- no translation found for automatic_export_status (4407131306281440230) -->
-    <skip />
+    <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Zapnuté"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Vypnuté"</string>
-    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
-    <skip />
-    <!-- no translation found for next_export_file_location (2117071837862240540) -->
-    <skip />
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"Používať naplánovaný export"</string>
+    <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"Zmena frekvencie"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Ak vypnete plánovaný export, neodstránite tým predtým exportované údaje z umiestnenia, v ktorom boli uložené"</string>
     <string name="choose_frequency" msgid="8119085390857180221">"Nastavenie plánovaného exportu"</string>
@@ -382,6 +394,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Importovať"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"V Dátach o zdraví priebeha obnova"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Obnova v Dátach o zdraví bola dokončená"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"Prebieha obnova"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"Obnova údajov bola dokončená"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Dátam o zdraví sa nepodarilo obnoviť údaje"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Vyžaduje sa viac priestoru"</string>
@@ -394,10 +407,16 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Otvoriť"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Vybrať súbor"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Uvoľniť priestor"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"Plánovaný export je zapnutý"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Dátam o zdraví sa nepodar. export. údaje"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Vyžaduje sa viac priestoru"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Pri exporte dňa <xliff:g id="DATE">%1$s</xliff:g> sa vyskytol problém. Nastavte nový naplánovaný export a skúste to znova."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Dáta o zdraví potrebujú <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> priestoru v telefóne, aby mohli pokračovať v plánovanom exporte."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"Nastaviť"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Uvoľniť priestor"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Späť"</string>
-    <!-- no translation found for export_cancel_button (1952360582645412410) -->
-    <skip />
     <string name="export_next_button" msgid="657930567137105172">"Ďalej"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"Zrušiť"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Zrušiť"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Ďalej"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Import z umiestnenia"</string>
@@ -420,15 +439,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"Odstránenie údajov"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Prejsť na odstraňovanie"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Ukončiť odstraňovanie"</string>
-    <!-- no translation found for time_range_title (5777596779865648336) -->
-    <skip />
+    <string name="time_range_title" msgid="5777596779865648336">"Vyberte údaje na odstránenie z Dát o zdraví"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Ďalej"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Týmto natrvalo odstránite všetky údaje pridané do Dát o zdraví vo vybranom období"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"Týmto natrvalo odstránite údaje typu <xliff:g id="DATA_TYPE">%s</xliff:g> pridané do Dát o zdraví vo vybranom období"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"Týmto natrvalo odstránite údaje kategórie <xliff:g id="CATEGORY">%s</xliff:g> pridané do Dát o zdraví vo vybranom období"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"Týmto natrvalo odstránite údaje aplikácie <xliff:g id="APP_DATA">%s</xliff:g> pridané do Dát o zdraví vo vybranom období"</string>
-    <!-- no translation found for time_range_message_permission_type_app_data (1613568925588480588) -->
-    <skip />
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"Týmto natrvalo odstránite údaje typu <xliff:g id="DATA_TYPE">%1$s</xliff:g> pridané do Dát o zdraví službou <xliff:g id="APP_DATA">%2$s</xliff:g> vo vybranom období"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"Odstrániť posledných 24 hodín"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"Odstrániť posledných 7 dní"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"Odstrániť posledných 30 dní"</string>
@@ -449,32 +466,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"Chcete natrvalo odstrániť údaje aplikácie <xliff:g id="APP_DATA">%s</xliff:g> z posledných 24 hodín?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"Chcete natrvalo odstrániť údaje aplikácie <xliff:g id="APP_DATA">%s</xliff:g> z posledných 7 dní?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"Chcete natrvalo odstrániť údaje aplikácie <xliff:g id="APP_DATA">%s</xliff:g> z posledných 30 dní?"</string>
-    <!-- no translation found for confirming_question_permission_type_app_data_all (1210052631467085849) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_day (4377296923865256246) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_week (2253468260502709170) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_month (1656927839079630144) -->
-    <skip />
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"Chcete natrvalo odstrániť údaje typu <xliff:g id="DATA_TYPE">%1$s</xliff:g> pridané službou <xliff:g id="APP_DATA">%2$s</xliff:g> z celého obdobia?"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"Chcete natrvalo odstrániť údaje typu <xliff:g id="DATA_TYPE">%1$s</xliff:g> pridané službou <xliff:g id="APP_DATA">%2$s</xliff:g> z posledných 24 hodín?"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"Chcete natrvalo odstrániť údaje typu <xliff:g id="DATA_TYPE">%1$s</xliff:g> pridané službou <xliff:g id="APP_DATA">%2$s</xliff:g> z posledných 7 dní?"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"Chcete natrvalo odstrániť údaje typu <xliff:g id="DATA_TYPE">%1$s</xliff:g> pridané službou <xliff:g id="APP_DATA">%2$s</xliff:g> z posledných 30 dní?"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Odstrániť aj všetky povolenia aplikácie <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> z Dát o zdraví"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Chcete natrvalo odstrániť údaje typu <xliff:g id="DATA_TYPE">%1$s</xliff:g> pridané aplikáciou <xliff:g id="APP_DATA">%2$s</xliff:g>?"</string>
-    <!-- no translation found for confirming_question_single_entry (2064578008447638932) -->
-    <skip />
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"Chcete natrvalo odstrániť tento záznam z Dát o zdraví?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Pripojené aplikácie už nebudú môcť získať prístup k týmto údajom v Dátach o zdraví"</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"Týmto odstránite všetky záznamy o menštruácii od <xliff:g id="START_DATE">%1$s</xliff:g> do <xliff:g id="END_DATE">%2$s</xliff:g>."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Odstrániť"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Prejsť späť"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Hotovo"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"Zavrieť"</string>
-    <!-- no translation found for delete_dialog_success_title (900884533930984889) -->
-    <skip />
-    <!-- no translation found for delete_dialog_success_message (7454086333205881294) -->
-    <skip />
-    <!-- no translation found for delete_dialog_done_button (1371340030947835493) -->
-    <skip />
-    <!-- no translation found for delete_dialog_see_connected_apps_button (2975631672738138716) -->
-    <skip />
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"Údaje boli z Dát o zdraví odstránené"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"Ak chcete úplne odstrániť údaje z pripojených aplikácií, skontrolujte každú aplikáciu, v ktorej môžu byť príslušné údaje uložené."</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"Hotovo"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"Zobraziť pripojené aplikácie"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"Údaje sa odstraňujú"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"Údaje sa nepodarilo odstrániť"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"Niečo sa pokazilo a Dátam o zdraví sa nepodarilo odstrániť vaše údaje"</string>
@@ -652,6 +660,7 @@
     <string name="rest" msgid="5937058337671252210">"Odpočinok"</string>
     <string name="pause" msgid="5161459047750335691">"Pauza"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"Austrálsky futbal"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"Neznámy typ"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> spánok"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"bdenie"</string>
@@ -662,6 +671,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"ľahký spánok"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"hlboký spánok"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"neznáme"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"Dýchanie"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"Meditácia"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"Pohyb"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"Hudba"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"Iné"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Bez sprievodcu"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> min"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> h <xliff:g id="MIN">%2$s</xliff:g> min"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> h"</string>
@@ -861,17 +876,14 @@
     <string name="range_off" msgid="8178520557618184215">"Vypnuté"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Keď zmeníte tieto nastavenia, Dáta o zdraví odstránia existujúce údaje, aby zohľadnili nové predvoľby"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Chcete automaticky odstraňovať údaje po # mesiaci?}few{Chcete automaticky odstraňovať údaje po # mesiacoch?}many{Chcete automaticky odstraňovať údaje po # mesiaca?}other{Chcete automaticky odstraňovať údaje po # mesiacoch?}}"</string>
-    <!-- no translation found for confirming_message_x_months (986840333220382321) -->
-    <skip />
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Týmto odstránite z Dát o zdraví aj údaje staršie ako # mesiac.\n\nAk chcete úplne odstrániť údaje z pripojených aplikácií, skontrolujte každú aplikáciu, v ktorej môžu byť príslušné údaje uložené.}few{Týmto odstránite z Dát o zdraví aj údaje staršie ako # mesiace.\n\nAk chcete úplne odstrániť údaje z pripojených aplikácií, skontrolujte každú aplikáciu, v ktorej môžu byť príslušné údaje uložené.}many{Týmto odstránite z Dát o zdraví aj údaje staršie ako # mesiaca.\n\nAk chcete úplne odstrániť údaje z pripojených aplikácií, skontrolujte každú aplikáciu, v ktorej môžu byť príslušné údaje uložené.}other{Týmto odstránite z Dát o zdraví aj údaje staršie ako # mesiacov.\n\nAk chcete úplne odstrániť údaje z pripojených aplikácií, skontrolujte každú aplikáciu, v ktorej môžu byť príslušné údaje uložené.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Nastaviť automatické odstraňovanie"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Existujúce údaje budú odstránené"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Dáta o zdraví odstránia všetky údaje staršie ako # mesiac. Môže trvať deň, kým sa tieto zmeny zobrazia v pripojených aplikáciách.}few{Dáta o zdraví odstránia všetky údaje staršie ako # mesiace. Môže trvať deň, kým sa tieto zmeny zobrazia v pripojených aplikáciách.}many{Dáta o zdraví odstránia všetky údaje staršie ako # mesiaca. Môže trvať deň, kým sa tieto zmeny zobrazia v pripojených aplikáciách.}other{Dáta o zdraví odstránia všetky údaje staršie ako # mesiacov. Môže trvať deň, kým sa tieto zmeny zobrazia v pripojených aplikáciách.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Údaje na odstránenie z týchto kategórií"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Hotovo"</string>
-    <!-- no translation found for auto_delete_confirmation_toast (7161651426400701306) -->
-    <skip />
-    <!-- no translation found for auto_delete_off_toast (6530926709108821768) -->
-    <skip />
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Automatické odstraňovanie je zapnuté. Údaje staršie ako # mesiac budú odstránené.}few{Automatické odstraňovanie je zapnuté. Údaje staršie ako # mesiace budú odstránené.}many{Automatické odstraňovanie je zapnuté. Údaje staršie ako # mesiaca budú odstránené.}other{Automatické odstraňovanie je zapnuté. Údaje staršie ako # mesiacov budú odstránené.}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"Automatické odstraňovanie je vypnuté"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Nastavenie priority aplikácií"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Ak údaje typu <xliff:g id="DATA_TYPE">%s</xliff:g> pridá viacero aplikácií, Dáta o zdraví uprednostnia aplikáciu, ktorá je v tomto zozname najvyššie. Poradie aplikácií zmeníte presunutím."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"Uložiť"</string>
@@ -1007,6 +1019,14 @@
     <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Všetky údaje boli odstránené"</string>
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Údaje typu <xliff:g id="PERMISSION_TYPE">%s</xliff:g> boli odstránené"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Odstránené položky: <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>"</string>
-    <!-- no translation found for select_all (837499881590001166) -->
-    <skip />
+    <string name="select_all" msgid="837499881590001166">"Vybrať všetko"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Začnite používať Dáta o zdraví"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Synchronizujte svoje prvé aplikácie a zdieľajte medzi nimi údaje o zdraví a kondícii"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Nastaviť"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Pripojte ďalšie aplikácie"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Začnite zdieľať údaje medzi aplikáciou <xliff:g id="APP_NAME">%s</xliff:g> a zdravotnými aplikáciami v telefóne"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"Nastaviť"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Zobrazenie kompatibilných aplikácií"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Nájdite ďalšie aplikácie na synchronizáciu s aplikáciou <xliff:g id="APP_NAME">%s</xliff:g> prostredníctvom Dát o zdraví"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Zobraziť v obchode s aplikáciami"</string>
 </resources>

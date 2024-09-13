@@ -54,8 +54,9 @@ class UpdateExportSettingsUseCaseTest {
     @Test
     fun invoke_callsHealthDataExportManager() = runTest {
         val settings =
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
+            ScheduledExportSettings.Builder()
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
+                .build()
 
         val result = useCase.invoke(settings)
 
@@ -71,8 +72,9 @@ class UpdateExportSettingsUseCaseTest {
             .setConfigureScheduledExportException(exception)
 
         val settings =
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
+            ScheduledExportSettings.Builder()
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
+                .build()
         val result = useCase.invoke(settings)
 
         assertThat(result is ExportImportUseCaseResult.Failed).isTrue()

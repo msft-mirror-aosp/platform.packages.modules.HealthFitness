@@ -16,7 +16,12 @@
 
 package healthconnect.exportimport;
 
+import static com.android.server.healthconnect.exportimport.ExportImportNotificationSender.NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR;
+import static com.android.server.healthconnect.exportimport.ExportImportNotificationSender.NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_NOT_ENOUGH_SPACE;
 import static com.android.server.healthconnect.exportimport.ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_COMPLETE;
+import static com.android.server.healthconnect.exportimport.ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_GENERIC_ERROR;
+import static com.android.server.healthconnect.exportimport.ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_INVALID_FILE;
+import static com.android.server.healthconnect.exportimport.ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_VERSION_MISMATCH;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
@@ -26,12 +31,16 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Icon;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.exportimport.ExportImportNotificationFactory;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 
@@ -39,19 +48,27 @@ import java.util.Optional;
 
 public class ExportImportNotificationFactoryTest {
 
+    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
     @Mock private Context mContext;
 
     private static final String NOTIFICATION_CHANNEL_ID = "healthconnect-channel";
 
     private static final String HEALTH_CONNECT_HOME_ACTION =
             "android.health.connect.action.HEALTH_HOME_SETTINGS";
+    private static final String HEALTH_CONNECT_RESTART_IMPORT_ACTION =
+            "android.health.connect.action.START_IMPORT_FLOW";
+    private static final String HEALTH_CONNECT_RESTART_EXPORT_SETUP =
+            "android.health.connect.action.START_EXPORT_SETUP";
+    private static final String HEALTH_CONNECT_UPDATE_ACTION =
+            "android.settings.SYSTEM_UPDATE_SETTINGS";
 
     private ExportImportNotificationFactory mFactory;
 
     @Before
     public void setUp() throws Exception {
         mContext = InstrumentationRegistry.getInstrumentation().getContext();
-        mFactory = new ExportImportNotificationFactory(mContext);
+        mFactory = new ExportImportNotificationFactory(mContext, NOTIFICATION_CHANNEL_ID);
     }
 
     @Test
@@ -73,9 +90,7 @@ public class ExportImportNotificationFactoryTest {
 
     @Test
     public void importCompletesSuccessfully_notificationDisplayedCorrectly() {
-        Notification result =
-                mFactory.createNotification(
-                        NOTIFICATION_TYPE_IMPORT_COMPLETE, NOTIFICATION_CHANNEL_ID);
+        Notification result = mFactory.createNotification(NOTIFICATION_TYPE_IMPORT_COMPLETE);
         Intent expectedIntent = new Intent(HEALTH_CONNECT_HOME_ACTION);
         PendingIntent expectedPendingIntent =
                 PendingIntent.getActivity(
@@ -90,9 +105,127 @@ public class ExportImportNotificationFactoryTest {
         assertThat(result.actions).hasLength(1);
 
         Notification.Action action = result.actions[0];
-        assertThat(action.title).isEqualTo("Open");
+        assertThat(action.title.toString()).isEqualTo("Open");
 
         PendingIntent pendingIntent = action.actionIntent;
-        assertThat(pendingIntent).isEqualTo(expectedPendingIntent);
+        assertThat(pendingIntent.getCreatorPackage())
+                .isEqualTo(expectedPendingIntent.getCreatorPackage());
+    }
+
+    @Test
+    public void importCompletesUnsuccessfully_invalidFile_notificationDisplayedCorrectly() {
+        Notification result =
+                mFactory.createNotification(NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_INVALID_FILE);
+        Intent expectedIntent = new Intent(HEALTH_CONNECT_RESTART_IMPORT_ACTION);
+        PendingIntent expectedPendingIntent =
+                PendingIntent.getActivity(
+                        mContext, 0, expectedIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        String failMessage = "Notification could not be created";
+        assertWithMessage(failMessage).that(result).isNotNull();
+
+        assertThat(result.getChannelId()).isEqualTo(NOTIFICATION_CHANNEL_ID);
+        assertThat(result.extras.getString(Notification.EXTRA_TITLE)).isNotNull();
+
+        assertThat(result.actions).hasLength(1);
+
+        Notification.Action action = result.actions[0];
+        assertThat(action.title.toString()).isEqualTo("Choose file");
+
+        PendingIntent pendingIntent = action.actionIntent;
+        assertThat(pendingIntent.getCreatorPackage())
+                .isEqualTo(expectedPendingIntent.getCreatorPackage());
+    }
+
+    @Test
+    public void importCompletesUnsuccessfully_versionMismatch_notificationDisplayedCorrectly() {
+        Notification result =
+                mFactory.createNotification(NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_VERSION_MISMATCH);
+        Intent expectedIntent = new Intent(HEALTH_CONNECT_UPDATE_ACTION);
+        PendingIntent expectedPendingIntent =
+                PendingIntent.getActivity(
+                        mContext, 0, expectedIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        String failMessage = "Notification could not be created";
+        assertWithMessage(failMessage).that(result).isNotNull();
+
+        assertThat(result.getChannelId()).isEqualTo(NOTIFICATION_CHANNEL_ID);
+        assertThat(result.extras.getString(Notification.EXTRA_TITLE)).isNotNull();
+
+        assertThat(result.actions).hasLength(1);
+
+        Notification.Action action = result.actions[0];
+        assertThat(action.title.toString()).isEqualTo("Update now");
+
+        PendingIntent pendingIntent = action.actionIntent;
+        assertThat(pendingIntent.getCreatorPackage())
+                .isEqualTo(expectedPendingIntent.getCreatorPackage());
+    }
+
+    @Test
+    public void importCompletesUnsuccessfully_unknownError_notificationDisplayedCorrectly() {
+        Notification result =
+                mFactory.createNotification(NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_GENERIC_ERROR);
+        Intent expectedIntent = new Intent(HEALTH_CONNECT_RESTART_IMPORT_ACTION);
+        PendingIntent expectedPendingIntent =
+                PendingIntent.getActivity(
+                        mContext, 0, expectedIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        String failMessage = "Notification could not be created";
+        assertWithMessage(failMessage).that(result).isNotNull();
+
+        assertThat(result.getChannelId()).isEqualTo(NOTIFICATION_CHANNEL_ID);
+        assertThat(result.extras.getString(Notification.EXTRA_TITLE)).isNotNull();
+
+        assertThat(result.actions).hasLength(1);
+
+        Notification.Action action = result.actions[0];
+        assertThat(action.title.toString()).isEqualTo("Try again");
+
+        PendingIntent pendingIntent = action.actionIntent;
+
+        assertThat(pendingIntent.getCreatorPackage())
+                .isEqualTo(expectedPendingIntent.getCreatorPackage());
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW)
+    public void exportCompletesUnsuccessfully_unknownError_notificationDisplayedCorrectly() {
+        Notification result =
+                mFactory.createNotification(NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR);
+        Intent expectedIntent = new Intent(HEALTH_CONNECT_RESTART_EXPORT_SETUP);
+        PendingIntent expectedPendingIntent =
+                PendingIntent.getActivity(
+                        mContext, 0, expectedIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        String failMessage = "Notification could not be created";
+        assertWithMessage(failMessage).that(result).isNotNull();
+
+        assertThat(result.getChannelId()).isEqualTo(NOTIFICATION_CHANNEL_ID);
+        assertThat(result.extras.getString(Notification.EXTRA_TITLE)).isNotNull();
+
+        assertThat(result.actions).hasLength(1);
+
+        Notification.Action action = result.actions[0];
+        assertThat(action.title.toString()).isEqualTo("Set up");
+
+        PendingIntent pendingIntent = action.actionIntent;
+
+        assertThat(pendingIntent.getCreatorPackage())
+                .isEqualTo(expectedPendingIntent.getCreatorPackage());
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW)
+    public void exportCompletesUnsuccessfully_moreSpaceNeeded_notificationDisplayedCorrectly() {
+        Notification result =
+                mFactory.createNotification(NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_NOT_ENOUGH_SPACE);
+
+        String failMessage = "Notification could not be created";
+        assertWithMessage(failMessage).that(result).isNotNull();
+
+        assertThat(result.getChannelId()).isEqualTo(NOTIFICATION_CHANNEL_ID);
+        assertThat(result.extras.getString(Notification.EXTRA_TITLE)).isNotNull();
+        assertThat(result.extras.getString(Notification.EXTRA_TITLE)).contains("More space needed");
     }
 }

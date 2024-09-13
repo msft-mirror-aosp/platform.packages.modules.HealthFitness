@@ -42,6 +42,7 @@
             <item type="drawable" name="ic_category_nutrition"/>
             <item type="drawable" name="ic_category_sleep"/>
             <item type="drawable" name="ic_category_vitals"/>
+            <item type="drawable" name="ic_category_wellness"/>
 
             <!-- Permission types page -->
             <item type="drawable" name="ic_view_list"/>
@@ -111,7 +112,6 @@
             <item type="style" name="TextAppearance.HealthConnect.ErrorMessage"/>
 
             <item type="style" name="Widget.HealthConnect.Button"/>
-            <item type="style" name="Widget.HealthConnect.CheckBox"/>
             <item type="style" name="Widget.HealthConnect.RadioButton.Chip"/>
             <item type="style" name="Widget.HealthConnect.CalendarSpinner"/>
             <item type="style" name="Widget.HealthConnect.TabLayout"/>

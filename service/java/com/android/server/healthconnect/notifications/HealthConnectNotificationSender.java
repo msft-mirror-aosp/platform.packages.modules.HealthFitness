@@ -38,7 +38,6 @@ import java.util.Objects;
  *
  * @hide
  */
-@FlaggedApi(FLAG_EXPORT_IMPORT)
 public final class HealthConnectNotificationSender {
 
     private static final String TAG = "HealthConnectNotificationSender";
@@ -161,8 +160,7 @@ public final class HealthConnectNotificationSender {
         }
 
         createNotificationChannel(userHandle);
-        Notification notification =
-                mNotificationFactory.createNotification(notificationType, mChannelId);
+        Notification notification = mNotificationFactory.createNotification(notificationType);
         if (notification == null) return;
         NotificationManager notificationManager = getNotificationManagerForUser(userHandle);
         notifyFromSystem(notificationManager, notification);

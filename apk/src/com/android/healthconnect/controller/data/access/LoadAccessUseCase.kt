@@ -17,7 +17,10 @@ package com.android.healthconnect.controller.data.access
 
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -33,7 +36,8 @@ import kotlinx.coroutines.withContext
 class LoadAccessUseCase
 @Inject
 constructor(
-    private val loadPermissionTypeContributorAppsUseCase: ILoadPermissionTypeContributorAppsUseCase,
+    private val loadFitnessTypeContributorAppsUseCase: ILoadFitnessTypeContributorAppsUseCase,
+    private val loadMedicalTypeContributorAppsUseCase: ILoadMedicalTypeContributorAppsUseCase,
     private val loadGrantedHealthPermissionsUseCase: IGetGrantedHealthPermissionsUseCase,
     private val healthPermissionReader: HealthPermissionReader,
     private val appInfoReader: AppInfoReader,
@@ -41,42 +45,39 @@ constructor(
 ) : ILoadAccessUseCase {
     /** Returns a map of [AppAccessState] to apps. */
     override suspend operator fun invoke(
-        permissionType: FitnessPermissionType
+        permissionType: HealthPermissionType
     ): UseCaseResults<Map<AppAccessState, List<AppAccessMetadata>>> =
         withContext(dispatcher) {
             try {
-                val appsWithFitnessPermissions: List<String> =
-                    healthPermissionReader.getAppsWithFitnessPermissions()
-                val contributingApps: List<AppMetadata> =
-                    loadPermissionTypeContributorAppsUseCase.invoke(permissionType)
+                val appsWithHealthPermissions: List<String> = appWithPermissions(permissionType)
+                val contributingApps: List<AppMetadata> = contributingApps(permissionType)
+
                 val readAppMetadataSet: MutableSet<AppAccessMetadata> = mutableSetOf()
                 val writeAppMetadataSet: MutableSet<AppAccessMetadata> = mutableSetOf()
-                val writeAppPackageNameSet: MutableSet<String> = mutableSetOf()
+                val readOrWriteAppPackageNameSet: MutableSet<String> = mutableSetOf()
                 val inactiveAppMetadataSet: MutableSet<AppAccessMetadata> = mutableSetOf()
 
-                appsWithFitnessPermissions.forEach {
+                appsWithHealthPermissions.forEach {
                     val permissionsPerPackage: List<String> =
                         loadGrantedHealthPermissionsUseCase(it)
                     val appPermissionsType = healthPermissionReader.getAppPermissionsType(it)
                     val appAccessMetadata = AppAccessMetadata(appInfoReader.getAppMetadata(it), appPermissionsType)
 
                     // Apps that can READ the given healthPermissionType.
-                    if (permissionsPerPackage.contains(
-                        FitnessPermission(permissionType, PermissionsAccessType.READ).toString())) {
+                    if (canRead(permissionType, permissionsPerPackage)) {
                         readAppMetadataSet.add(appAccessMetadata)
+                        readOrWriteAppPackageNameSet.add(it)
                     }
                     // Apps that can WRITE the given healthPermissionType.
-                    if (permissionsPerPackage.contains(
-                        FitnessPermission(permissionType, PermissionsAccessType.WRITE)
-                            .toString())) {
+                    if (canWrite(permissionType, permissionsPerPackage)) {
                         writeAppMetadataSet.add(appAccessMetadata)
-                        writeAppPackageNameSet.add(it)
+                        readOrWriteAppPackageNameSet.add(it)
                     }
                 }
-                // Apps that are inactive: can no longer WRITE, but still have data in Health
+                // Apps that are inactive: can no longer READ or WRITE, but still have data in Health
                 // Connect.
                 contributingApps.forEach { app ->
-                    if (!writeAppPackageNameSet.contains(app.packageName)) {
+                    if (!readOrWriteAppPackageNameSet.contains(app.packageName)) {
                         // Inactive apps don't navigate to appInfoScreen hence no need to specify appPermissionsType.
                         val appAccessMetadata = AppAccessMetadata(appMetadata = app)
                         inactiveAppMetadataSet.add(appAccessMetadata)
@@ -96,6 +97,44 @@ constructor(
             }
         }
 
+    private fun appWithPermissions(healthPermissionType: HealthPermissionType) : List<String> {
+        return when (healthPermissionType) {
+            is FitnessPermissionType ->  healthPermissionReader.getAppsWithFitnessPermissions()
+            is MedicalPermissionType ->  healthPermissionReader.getAppsWithMedicalPermissions()
+            else -> throw IllegalArgumentException(exceptionMessage(healthPermissionType))
+        }
+    }
+
+    private suspend fun contributingApps(healthPermissionType: HealthPermissionType) : List<AppMetadata> {
+        return when (healthPermissionType) {
+            is FitnessPermissionType ->  loadFitnessTypeContributorAppsUseCase.invoke(healthPermissionType)
+            is MedicalPermissionType ->  loadMedicalTypeContributorAppsUseCase.invoke(healthPermissionType)
+            else -> throw IllegalArgumentException(exceptionMessage(healthPermissionType))
+        }
+    }
+
+    private fun canRead(healthPermissionType: HealthPermissionType, permissionsPerPackage: List<String>) : Boolean {
+        return when (healthPermissionType) {
+            is FitnessPermissionType ->  permissionsPerPackage.contains(
+                    FitnessPermission(healthPermissionType, PermissionsAccessType.READ).toString())
+            is MedicalPermissionType ->  permissionsPerPackage.contains(
+                    MedicalPermission(healthPermissionType).toString()) && healthPermissionType != MedicalPermissionType.ALL_MEDICAL_DATA
+            else -> throw IllegalArgumentException(exceptionMessage(healthPermissionType))
+        }
+    }
+
+    private fun canWrite(healthPermissionType: HealthPermissionType, permissionsPerPackage: List<String>) : Boolean {
+        return when (healthPermissionType) {
+            is FitnessPermissionType ->  permissionsPerPackage.contains(
+                    FitnessPermission(healthPermissionType, PermissionsAccessType.WRITE).toString())
+            is MedicalPermissionType ->  permissionsPerPackage.contains(
+                    MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA).toString())
+            else -> throw IllegalArgumentException(exceptionMessage(healthPermissionType))
+        }
+    }
+
+    private fun exceptionMessage(healthPermissionType: HealthPermissionType) : String = "healthPermissionType $healthPermissionType not supported"
+
     private fun alphabeticallySortedMetadataList(
         packageNames: Set<AppAccessMetadata>
     ): List<AppAccessMetadata> {
@@ -105,6 +144,6 @@ constructor(
 
 interface ILoadAccessUseCase {
     suspend fun invoke(
-        permissionType: FitnessPermissionType
+        permissionType: HealthPermissionType
     ): UseCaseResults<Map<AppAccessState, List<AppAccessMetadata>>>
 }

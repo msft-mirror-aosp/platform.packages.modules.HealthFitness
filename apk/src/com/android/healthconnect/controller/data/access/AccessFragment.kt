@@ -24,13 +24,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_KEY
+import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
 import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_TYPE
 import com.android.healthconnect.controller.deletion.DeletionConstants.START_DELETION_EVENT
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.permissions.connectedapps.HealthAppPreference
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings.Companion.fromPermissionType
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.fromPermissionTypeName
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.inactiveapp.InactiveAppPreference
@@ -62,7 +62,7 @@ class AccessFragment : Hilt_AccessFragment() {
 
     private val viewModel: AccessViewModel by viewModels()
 
-    private lateinit var permissionType: FitnessPermissionType
+    private lateinit var permissionType: HealthPermissionType
 
     private val mCanReadSection: PreferenceGroup? by lazy {
         preferenceScreen.findPreference(CAN_READ_SECTION)
@@ -79,26 +79,25 @@ class AccessFragment : Hilt_AccessFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.access_screen, rootKey)
-        if (requireArguments().containsKey(PERMISSION_TYPE_KEY)) {
-            permissionType =
-                arguments?.getSerializable(PERMISSION_TYPE_KEY, FitnessPermissionType::class.java)
-                    ?: throw IllegalArgumentException("PERMISSION_TYPE_KEY can't be null!")
+        if (requireArguments().containsKey(PERMISSION_TYPE_NAME_KEY)) {
+            val permissionTypeName =
+                arguments?.getString(PERMISSION_TYPE_NAME_KEY)
+                    ?: throw IllegalArgumentException("PERMISSION_TYPE_NAME_KEY can't be null!")
+            permissionType = fromPermissionTypeName(permissionTypeName)
         }
 
         mCanReadSection?.isVisible = false
         mCanWriteSection?.isVisible = false
         mInactiveSection?.isVisible = false
         mCanReadSection?.title =
-            getString(
-                R.string.can_read, getString(fromPermissionType(permissionType).lowercaseLabel))
+            getString(R.string.can_read, getString(permissionType.lowerCaseLabel()))
         mCanWriteSection?.title =
-            getString(
-                R.string.can_write, getString(fromPermissionType(permissionType).lowercaseLabel))
+            getString(R.string.can_write, getString(permissionType.lowerCaseLabel()))
     }
 
     override fun onResume() {
         super.onResume()
-        setTitle(fromPermissionType(permissionType).uppercaseLabel)
+        setTitle(permissionType.upperCaseLabel())
         viewModel.loadAppMetaDataMap(permissionType)
     }
 
@@ -172,7 +171,7 @@ class AccessFragment : Hilt_AccessFragment() {
                         it.summary =
                             getString(
                                 R.string.inactive_apps_message,
-                                getString(fromPermissionType(permissionType).lowercaseLabel))
+                                getString(permissionType.lowerCaseLabel()))
                     })
                 appMetadataMap[AppAccessState.Inactive]?.forEach { appAccessMetadata ->
                     val appMetadata = appAccessMetadata.appMetadata
@@ -199,7 +198,7 @@ class AccessFragment : Hilt_AccessFragment() {
         return HealthAppPreference(requireContext(), appAccessMetadata.appMetadata).also {
             it.logName = DataAccessElement.DATA_ACCESS_APP_BUTTON
             it.setOnPreferenceClickListener {
-               navigateToAppInfoScreen(appAccessMetadata)
+                navigateToAppInfoScreen(appAccessMetadata)
                 true
             }
         }
@@ -209,9 +208,12 @@ class AccessFragment : Hilt_AccessFragment() {
         val appPermissionsType = appAccessMetadata.appPermissionsType
         val navigationId =
             when (appPermissionsType) {
-                AppPermissionsType.FITNESS_PERMISSIONS_ONLY -> R.id.action_entriesAndAccessFragment_to_fitnessApp
-                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY -> R.id.action_entriesAndAccessFragment_to_medicalApp
-                AppPermissionsType.COMBINED_PERMISSIONS -> R.id.action_entriesAndAccessFragment_to_combinedPermissions
+                AppPermissionsType.FITNESS_PERMISSIONS_ONLY ->
+                    R.id.action_entriesAndAccessFragment_to_fitnessApp
+                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY ->
+                    R.id.action_entriesAndAccessFragment_to_medicalApp
+                AppPermissionsType.COMBINED_PERMISSIONS ->
+                    R.id.action_entriesAndAccessFragment_to_combinedPermissions
             }
         findNavController()
             .navigate(

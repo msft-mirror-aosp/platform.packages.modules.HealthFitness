@@ -36,17 +36,23 @@ import static org.mockito.Mockito.verify;
 import android.Manifest;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.UserHandle;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
 
+import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.FakePreferenceHelper;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.notifications.HealthConnectNotificationSender;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -66,6 +72,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.quality.Strictness;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -85,7 +92,15 @@ public class ImportManagerTest {
 
     private static final String CHANNEL_ID = "healthconnect-channel";
 
-    @Rule
+    @Rule(order = 1)
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(HealthConnectManager.class)
+                    .mockStatic(Environment.class)
+                    .setStrictness(Strictness.LENIENT)
+                    .build();
+
+    @Rule(order = 2)
     public final HealthConnectDatabaseTestRule mDatabaseTestRule =
             new HealthConnectDatabaseTestRule();
 
@@ -97,21 +112,32 @@ public class ImportManagerTest {
 
     private ImportManager mImportManager;
     private HealthConnectNotificationSender mNotificationSender;
+    private ExportImportSettingsStorage mExportImportSettingsStorage;
 
     @Before
     public void setUp() throws Exception {
         InstrumentationRegistry.getInstrumentation()
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
+        HealthDataCategoryPriorityHelper.clearInstanceForTest();
         mContext = mDatabaseTestRule.getUserContext();
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(mContext, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         mTransactionTestUtils.insertApp("other.app");
         mNotificationSender = mock(HealthConnectNotificationSender.class);
-        mImportManager = new ImportManager(mContext, mNotificationSender);
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                        .setPreferenceHelper(new FakePreferenceHelper())
+                        .build();
+        mExportImportSettingsStorage = healthConnectInjector.getExportImportSettingsStorage();
+        mImportManager =
+                new ImportManager(
+                        mContext,
+                        mNotificationSender,
+                        mExportImportSettingsStorage,
+                        mTransactionManager);
         HealthConnectDeviceConfigManager.initializeInstance(mContext);
-        HealthDataCategoryPriorityHelper.clearInstanceForTest();
 
         mPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
         mPriorityHelper.setPriorityOrder(HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME));
@@ -168,7 +194,7 @@ public class ImportManagerTest {
         assertThat(records).hasSize(2);
         assertThat(records.get(0).getUuid()).isEqualTo(stepsUuids.get(0));
         assertThat(records.get(1).getUuid()).isEqualTo(bloodPressureUuids.get(0));
-        assertThat(ExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
                 .isEqualTo(DATA_IMPORT_ERROR_NONE);
     }
 
@@ -299,7 +325,7 @@ public class ImportManagerTest {
                                 .NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_INVALID_FILE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(ExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
                 .isEqualTo(DATA_IMPORT_ERROR_WRONG_FILE);
     }
 
@@ -325,7 +351,7 @@ public class ImportManagerTest {
                                 .NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_INVALID_FILE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(ExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
                 .isEqualTo(DATA_IMPORT_ERROR_WRONG_FILE);
     }
 
@@ -351,7 +377,7 @@ public class ImportManagerTest {
                                 .NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_VERSION_MISMATCH,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(ExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
                 .isEqualTo(DATA_IMPORT_ERROR_VERSION_MISMATCH);
     }
 
@@ -370,7 +396,7 @@ public class ImportManagerTest {
                         ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_COMPLETE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(ExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
                 .isEqualTo(DATA_IMPORT_ERROR_NONE);
     }
 

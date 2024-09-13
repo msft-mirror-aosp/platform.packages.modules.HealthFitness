@@ -133,6 +133,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             AggregationType<?> aggregationType,
             String callingPackage,
             List<String> packageFilters,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             long startTime,
             long endTime,
             long startDateAccess,
@@ -180,16 +181,23 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             whereClauses.addWhereGreaterThanOrEqualClause(startTimeColumnName, startTime);
         }
 
-        return new AggregateTableRequest(params, aggregationType, this, whereClauses, useLocalTime)
+        return new AggregateTableRequest(
+                        params,
+                        aggregationType,
+                        this,
+                        whereClauses,
+                        healthDataCategoryPriorityHelper,
+                        useLocalTime)
                 .setTimeFilter(startTime, endTime);
     }
 
     /**
      * Used to get the Aggregate result for aggregate types
      *
-     * @return {@link AggregateResult} for {@link AggregationType}
+     * @return {@link AggregateResult} for {@link AggregationType} or null if that aggregation type
+     *     is not handled.
      */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    @Nullable
     public AggregateResult<?> getAggregateResult(
             Cursor cursor, AggregationType<?> aggregationType) {
         return null;
@@ -223,7 +231,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     public final CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(getMainTableName(), getColumnInfo())
                 .addForeignKey(
-                        DeviceInfoHelper.getInstance().getTableName(),
+                        DeviceInfoHelper.getInstance().getMainTableName(),
                         Collections.singletonList(DEVICE_INFO_ID_COLUMN_NAME),
                         Collections.singletonList(PRIMARY_COLUMN_NAME))
                 .addForeignKey(
@@ -576,11 +584,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         }
     }
 
-    /** Returns is the read of this record type is enabled */
-    public boolean isRecordOperationsEnabled() {
-        return true;
-    }
-
     /** Populate internalRecords fields using extraDataCursor */
     @SuppressWarnings("unchecked")
     public void updateInternalRecordsWithExtraFields(
@@ -863,9 +866,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
         return columnInfo;
     }
-
-    /** Checks that operation with current record type are supported. */
-    public void checkRecordOperationsAreEnabled(RecordInternal<?> recordInternal) {}
 
     /** Returns permissions required to read extra record data. */
     public List<String> getExtraReadPermissions() {

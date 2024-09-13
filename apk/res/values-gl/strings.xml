@@ -20,8 +20,7 @@
     <string name="app_label" msgid="4768580772453324183">"Saúde conectada"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Xestiona o acceso das aplicacións aos datos de saúde"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Permisos e datos"</string>
-    <!-- no translation found for home_subtitle (2154213430054477787) -->
-    <skip />
+    <string name="home_subtitle" msgid="2154213430054477787">"Xestiona os datos de saúde e actividade física no dispositivo, e controla que aplicacións poden acceder a eles"</string>
     <string name="data_title" msgid="4456619761533380816">"Datos e acceso"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Consultar rexistros de información sanitaria"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Todas as categorías"</string>
@@ -36,8 +35,9 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{Unha aplicación ten acceso}other{# aplicacións teñen acceso}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Ningunha"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Detalles da entrada"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"Consultar datos"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Ver os datos e as aplicacións que poden acceder a eles"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"Eliminación automática, fontes de datos, copia de seguranza e restauración"</string>
     <string name="backup_title" msgid="211503191266235085">"Copia de seguranza"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Prioridade e fontes de datos"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Configurar unidades"</string>
@@ -67,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"seguimento do ciclo menstrual"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Nutrición"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"nutrición"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"Benestar"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"benestar"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"Consultar datos"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Xestionar datos"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Exportar datos"</string>
@@ -79,7 +81,7 @@
     <string name="can_read" msgid="4568261079308309564">"Permiso para ler datos de <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"Permiso para escribir datos de <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Aplicacións inactivas"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"Estas aplicacións xa non poden escribir datos de <xliff:g id="DATA_TYPE">%s</xliff:g>, pero aínda teñen información almacenada en Saúde conectada"</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Estas aplicacións xa non poden ler nin engadir datos de <xliff:g id="DATA_TYPE">%s</xliff:g>, pero seguen tendo información almacenada en Saúde conectada"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"As aplicacións xa non poden ler nin escribir datos de <xliff:g id="DATA_TYPE_0">%1$s</xliff:g>, e non hai datos de <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> almacenados en Saúde conectada"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Estes datos inclúen determinada información, como o tempo de actividade, o tipo de exercicio, as voltas, as repeticións, as sesións ou as brazadas"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Estes datos inclúen determinada información, como as fases e as sesións de sono"</string>
@@ -271,6 +273,9 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Inmunización"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"inmunización"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Ler os datos da inmunización"</string>
+    <string name="allergy_intolerance_uppercase_label" msgid="726821034032305942">"Alerxias e intolerancias"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="3259399258428458578">"Alerxias e intolerancias"</string>
+    <string name="allergy_intolerance_content_description" msgid="450723157436883417">"Ler os datos sobre alerxias e intolerancias"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Atención plena"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"atención plena"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Ler os datos da sesión de atención plena"</string>
@@ -298,6 +303,8 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Día seleccionado"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Día anterior"</string>
     <string name="default_error" msgid="7966868260616403475">"Produciuse un erro. Téntao de novo."</string>
+    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"As aplicacións que contan con este permiso poderán ler e escribir datos de actividade física."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Controla as aplicacións que poden acceder aos datos almacenados en Saúde conectada. Toca unha aplicación para revisar os datos que pode ler ou escribir."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Con permiso para acceder"</string>
@@ -327,12 +334,12 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Nestes momentos non tes instalada ningunha aplicación compatible"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Acceso adicional"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Quitáronse os permisos adicionais para esta aplicación"</string>
-    <!-- no translation found for permissions_header (6519976063360071569) -->
-    <skip />
-    <!-- no translation found for manage_fitness_permissions (1001729292172461314) -->
-    <skip />
-    <!-- no translation found for manage_medical_permissions (7658181359096889932) -->
-    <skip />
+    <string name="permissions_header" msgid="6519976063360071569">"Permisos"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Forma física e benestar"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"Exercicio, sono, nutrición e máis"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"Rexistros de información sanitaria"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"rexistros de información sanitaria"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"Análises, medicación, vacinas e máis"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Permisos de aplicacións quitados"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Saúde conectada quitou os permisos de <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Saúde conectada quitou os permisos de <xliff:g id="APP_DATA_0">%1$s</xliff:g> e <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -346,43 +353,39 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Non se puideron exportar os datos"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Produciuse un problema coa exportación do día <xliff:g id="DATE">%1$s</xliff:g>. Programa outra e téntao de novo."</string>
     <string name="next_export_time" msgid="3138247220014510213">"Próxima exportación: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"A seguinte exportación comezará axiña"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Copia de seguranza e restauración"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Última exportación: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="last_export_time_now" msgid="31498024135933750">"Última exportación: agora mesmo"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Última exportación: hai un minuto}other{Última exportación: hai # minutos}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Última exportación: hai unha hora}other{Última exportación: hai # horas}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"Última exportación: ningunha"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Exportación programada"</string>
     <string name="import_data" msgid="404502315533233094">"Importar datos"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Restaura os datos desde un ficheiro exportado previamente"</string>
     <string name="import_error_banner_title" msgid="1480977889067027790">"Non se puideron restaurar os datos"</string>
-    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
-    <skip />
-    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
-    <skip />
+    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"Escoller ficheiro"</string>
+    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"O ficheiro que seleccionaches non se pode restaurar. Asegúrate de que elixes o ficheiro exportado correcto."</string>
     <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"Actualizar agora"</string>
     <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Actualiza o sistema para que Saúde conectada poida restaurar os teus datos e téntao de novo."</string>
     <string name="import_other_error_banner_button" msgid="8006947649520909176">"Tentar de novo"</string>
     <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Produciuse un problema coa restauración dos datos da túa exportación."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"A exportación permíteche gardar os datos para transferilos a outro teléfono"</string>
-    <!-- no translation found for backup_and_restore_footer_link_text (9075133737244288876) -->
-    <skip />
+    <string name="backup_and_restore_footer_link_text" msgid="9075133737244288876">"Sobre copia de seguranza e restauración"</string>
     <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Opción activada"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Opción desactivada"</string>
-    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
-    <skip />
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"Usar exportación programada"</string>
     <string name="next_export_file_location" msgid="2117071837862240540">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
-    <!-- no translation found for choose_frequency_category (9094154407387676553) -->
-    <skip />
-    <!-- no translation found for scheduled_export_settings_footer_text (8488483803782086291) -->
-    <skip />
-    <!-- no translation found for choose_frequency (8119085390857180221) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (7698155810053504157) -->
-    <skip />
+    <string name="choose_frequency_category" msgid="9094154407387676553">"Cambiar frecuencia"</string>
+    <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"Se desactivas a exportación programada, os datos exportados anteriormente non se eliminarán do lugar no que se gardasen"</string>
+    <string name="choose_frequency" msgid="8119085390857180221">"Configurar unha exportación programada"</string>
+    <string name="choose_frequency_description" msgid="7698155810053504157">"Escolle con que frecuencia queres que se exporten os datos"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Diariamente"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Semanalmente"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Mensualmente"</string>
-    <!-- no translation found for export_destination_title (8352929396306002479) -->
-    <skip />
+    <string name="export_destination_title" msgid="8352929396306002479">"Escolle onde gardar os datos exportados"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"Escolle unha aplicación de almacenamento na nube á que exportar os teus datos"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Saúde conectada"</string>
     <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Queres importar este ficheiro?"</string>
@@ -391,6 +394,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Importar"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"A restauración dos datos de Saúde conectada está en curso"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Completouse a restauración dos datos de Saúde conectada"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"Restauración en curso"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"Completouse a restauración dos datos"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Saúde conectada non puido restaurar os datos"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Precísase máis espazo"</string>
@@ -403,27 +407,30 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Abrir"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Escoller ficheiro"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Liberar espazo"</string>
-    <string name="export_back_button" msgid="3550795479165524982">"Atrás"</string>
-    <!-- no translation found for export_cancel_button (1952360582645412410) -->
+    <!-- no translation found for scheduled_export_on_toast_text (945186472588537310) -->
     <skip />
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Saúde conectada non exportou os datos"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Precísase máis espazo"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Produciuse un problema coa exportación do día <xliff:g id="DATE">%1$s</xliff:g>. Programa outra e téntao de novo."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Saúde conectada precisa <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> de espazo de almacenamento no teu teléfono para seguir coa exportación programada."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"Configurar"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Liberar espazo"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Atrás"</string>
     <string name="export_next_button" msgid="657930567137105172">"Seguinte"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"Cancelar"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Cancelar"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Seguinte"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Importar desde"</string>
     <string name="import_invalid_storage" msgid="341798262315495399">"Escolle unha aplicación de almacenamento na nube desde a que importar os teus datos"</string>
-    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
-    <skip />
+    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"Toca para seleccionar unha conta"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Escoller unha conta"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Cancelar"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Feito"</string>
     <string name="export_import_no_apps_text" msgid="6403119325024893690">"Non hai ningunha aplicación dispoñible. Instala aplicacións de almacenamento na nube para velas aquí"</string>
-    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
-    <skip />
-    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
-    <skip />
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"Se queres ter máis opcións, instala aplicacións de almacenamento na nube para velas aquí"</string>
+    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Ir a Play Store"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Comeza a usar Saúde conectada"</string>
-    <!-- no translation found for onboarding_description (3479157507808350452) -->
-    <skip />
+    <string name="onboarding_description" msgid="3479157507808350452">"Saúde conectada almacena os teus datos de saúde e actividade física, e permíteche sincronizar facilmente as distintas aplicacións do dispositivo"</string>
     <string name="share_data" msgid="3481932156368883946">"Comparte datos coas túas aplicacións"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Decide que datos pode ler ou escribir cada aplicación en Saúde conectada"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Xestiona a túa configuración e privacidade"</string>
@@ -654,6 +661,7 @@
     <string name="rest" msgid="5937058337671252210">"Repouso"</string>
     <string name="pause" msgid="5161459047750335691">"Pór en pausa"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"Fútbol australiano"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"Tipo descoñecido"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> durmindo"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g>⁠<xliff:g id="NAME">%2$s</xliff:g>"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"sen durmir"</string>
@@ -664,6 +672,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"en sono lixeiro"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"en sono profundo"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"descoñecido"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"Respiración"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"Meditación"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"Movemento"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"Música"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"Outro tipo"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Sen guía"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> min"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> h e <xliff:g id="MIN">%2$s</xliff:g> min"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> h"</string>
@@ -1007,4 +1021,13 @@
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Elimináronse os datos de <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Elementos eliminados: <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>"</string>
     <string name="select_all" msgid="837499881590001166">"Seleccionar todo"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Empeza a usar Saúde conectada"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sincroniza as primeiras aplicacións para compartir datos de saúde e forma física entre elas"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Configurar"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Conecta máis aplicacións"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Empeza a compartir datos entre <xliff:g id="APP_NAME">%s</xliff:g> e as aplicacións de saúde do teu teléfono"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"Configurar"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Consulta as aplicacións compatibles"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Atopa máis aplicacións que sincronizar con <xliff:g id="APP_NAME">%s</xliff:g> a través de Saúde conectada"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Ver na tenda de aplicacións"</string>
 </resources>

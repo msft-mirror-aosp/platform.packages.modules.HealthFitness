@@ -35,8 +35,9 @@
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{‫۱ برنامه دسترسی دارد}one{‫# برنامه دسترسی دارد}other{‫# برنامه دسترسی دارد}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"هیچ‌کدام"</string>
     <string name="entry_details_title" msgid="590184849040247850">"جزئیات ورود"</string>
-    <!-- no translation found for manage_data_summary (8537870912521944449) -->
-    <skip />
+    <string name="browse_data_title" msgid="5232691805953326097">"مرور داده‌ها"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"دیدن داده‌ها و برنامه‌هایی که می‌توانند به آن دسترسی داشته باشند"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"حذف خودکار، منابع داده، پشتیبان‌گیری و بازیابی"</string>
     <string name="backup_title" msgid="211503191266235085">"پشتیبان‌گیری"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"منابع داده و اولویت"</string>
     <string name="set_units_title" msgid="2657822539603758029">"تنظیم واحدها"</string>
@@ -66,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"پیگیری قاعدگی"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"تغذیه"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"تغذیه"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"تندرستی"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"تندرستی"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"مرور داده‌ها"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"مدیریت داده‌ها"</string>
     <string name="export_data_button" msgid="7783329820434117744">"صادر کردن داده‌ها"</string>
@@ -78,7 +81,7 @@
     <string name="can_read" msgid="4568261079308309564">"می‌تواند داده‌های <xliff:g id="PERMISSION_TYPE">%s</xliff:g> را بخواند"</string>
     <string name="can_write" msgid="5082414937218423823">"می‌تواند داده‌های <xliff:g id="PERMISSION_TYPE">%s</xliff:g> را بنویسد"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"برنامه‌های غیرفعال"</string>
-    <string name="inactive_apps_message" msgid="4666501359079362486">"این برنامه‌ها دیگر نمی‌توانند داده <xliff:g id="DATA_TYPE">%s</xliff:g> را بنویسند، اما همچنان داده ذخیره‌شده‌ای در Health Connect دارند"</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"این برنامه‌ها دیگر نمی‌توانند داده <xliff:g id="DATA_TYPE">%s</xliff:g> را بخوانند یا بنویسند، اما همچنان داده ذخیره‌شده‌ای در Health Connect دارند"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"برنامه‌ها دیگر نمی‌توانند <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> را بخوانند یا بنویسند و هیچ داده <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> در Health Connect ذخیره نشده است"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"این داده‌ها شامل اطلاعاتی مثل زمان فعالیت، نوع تمرین، دورها، تکرارها، جلسه‌ها، یا حرکت‌های شنا می‌شود"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"این داده‌ها شامل اطلاعاتی مثل مراحل خواب و جلسات خواب می‌شود"</string>
@@ -270,6 +273,9 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"ایمن‌سازی"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"ایمن‌سازی"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"خواندن وضعیت ایمن‌سازی"</string>
+    <string name="allergy_intolerance_uppercase_label" msgid="726821034032305942">"حساسیت و عدم تحمل"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="3259399258428458578">"حساسیت و عدم تحمل"</string>
+    <string name="allergy_intolerance_content_description" msgid="450723157436883417">"خواندن حساسیت و عدم تحمل"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"ذهن‌آگاهی"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"ذهن‌آگاهی"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"خواندن ذهن‌آگاهی"</string>
@@ -297,6 +303,8 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"روز انتخاب‌شده"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"روز قبل"</string>
     <string name="default_error" msgid="7966868260616403475">"مشکلی پیش آمد. لطفاً دوباره امتحان کنید."</string>
+    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"برنامه‌هایی که این اجازه را دارند می‌توانند داده‌های سلامتی و تناسب اندام شما را بخوانند و بنویسند."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"کنترل کنید کدام برنامه‌ها می‌توانند به داده‌های ذخیره‌شده در Health Connect دسترسی داشته باشند. با ضربه زدن روی برنامه موردنظر، مرور کنید این برنامه چه داده‌هایی را می‌تواند بخواند یا بنویسد."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"دسترسی دارند"</string>
@@ -327,8 +335,11 @@
     <string name="additional_access_label" msgid="4645249249222528341">"دسترسی اضافی"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"اجازه‌های اضافی این برنامه برداشته شد"</string>
     <string name="permissions_header" msgid="6519976063360071569">"اجازه‌ها"</string>
-    <string name="manage_fitness_permissions" msgid="1001729292172461314">"مدیریت کردن اجازه‌های تناسب اندام"</string>
-    <string name="manage_medical_permissions" msgid="7658181359096889932">"مدیریت کردن اجازه‌های سابقه سلامتی"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"تناسب اندام و تندرستی"</string>
+    <string name="fitness_permissions_summary" msgid="6476469281589015459">"تمرین، خواب، تغذیه، و غیره"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"سوابق سلامتی"</string>
+    <string name="medical_permissions_lowercase" msgid="3969792205103436491">"سوابق سلامتی"</string>
+    <string name="medical_permissions_summary" msgid="5553982055903211592">"نتایج آزمایش، داروها، واکسن‌ها، و غیره"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"اجازه‌های برنامه‌هایی که برداشته شده‌اند"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect اجازه‌های مربوط به <xliff:g id="APP_DATA">%s</xliff:g> را برداشته است"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect اجازه‌های مربوط به <xliff:g id="APP_DATA_0">%1$s</xliff:g> و <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> را برداشته است"</string>
@@ -342,8 +353,13 @@
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"داده‌ها صادر نشد"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"مشکلی در برون‌برد <xliff:g id="DATE">%1$s</xliff:g> وجود داشت. لطفاً برون‌برد برنامه‌ریزی‌شده جدیدی تنظیم کنید و دوباره امتحان کنید."</string>
     <string name="next_export_time" msgid="3138247220014510213">"برون‌برد بعدی: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="next_export_text" msgid="6726252793571403846">"برون‌برد بعدی به‌زودی شروع می‌شود"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"پشتیبان‌گیری و بازیابی"</string>
     <string name="last_export_time" msgid="9205875050823594041">"آخرین برون‌برد: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="last_export_time_now" msgid="31498024135933750">"آخرین برون‌برد: همین‌حالا"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{آخرین برون‌برد: ۱ دقیقه قبل}one{آخرین برون‌برد: # دقیقه قبل}other{آخرین برون‌برد: # دقیقه قبل}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{آخرین برون‌برد: ۱ ساعت قبل}one{آخرین برون‌برد: # ساعت قبل}other{آخرین برون‌برد: # ساعت قبل}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"آخرین برون‌برد: هیچ"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"‫<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g>‏ • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"صادر کردن زمان‌بندی‌شده"</string>
     <string name="import_data" msgid="404502315533233094">"وارد کردن داده"</string>
@@ -360,8 +376,7 @@
     <string name="automatic_export_status" msgid="4407131306281440230">"<xliff:g id="EXPORT_ON_OR_OFF">%1$s</xliff:g> • <xliff:g id="EXPORT_FREQUENCY">%2$s</xliff:g>"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"روشن"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"خاموش"</string>
-    <!-- no translation found for automatic_export_switch_text (8277559519722722926) -->
-    <skip />
+    <string name="automatic_export_switch_text" msgid="8277559519722722926">"استفاده از برون‌برد زمان‌بندی‌شده"</string>
     <string name="next_export_file_location" msgid="2117071837862240540">"‫<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g>‏ • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="choose_frequency_category" msgid="9094154407387676553">"تغییر تناوب"</string>
     <string name="scheduled_export_settings_footer_text" msgid="8488483803782086291">"اگر برون‌برد زمان‌بندی‌شده را خاموش کنید، داده‌های برون‌بردشده قبلی از جایی‌که ذخیره شده است حذف نمی‌شود"</string>
@@ -379,6 +394,7 @@
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"وارد کردن"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"بازیابی Health Connect درحال انجام است"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"بازیابی Health Connect تکمیل شد"</string>
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"بازیابی درجریان است"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"بازیابی داده تکمیل شد"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"‫Health Connect نتوانست داده‌ها را بازیابی کند"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"فضای بیشتری لازم است"</string>
@@ -391,10 +407,16 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"باز کردن"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"انتخاب فایل"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"آزاد کردن فضا"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"صادر کردن زمان‌بندی‌شده روشن است"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"‫Health Connect داده‌ها را صادر نکرد"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"فضای بیشتری لازم است"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"مشکلی در برون‌برد <xliff:g id="DATE">%1$s</xliff:g> وجود داشت. لطفاً برون‌برد برنامه‌ریزی‌شده جدیدی تنظیم کنید و دوباره امتحان کنید."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"‫Health Connect برای ادامه برون‌برد زمان‌بندی‌شده به <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> فضای ذخیره‌سازی در تلفن نیاز دارد."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"راه‌اندازی"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"آزاد کردن فضا"</string>
     <string name="export_back_button" msgid="3550795479165524982">"برگشتن"</string>
-    <!-- no translation found for export_cancel_button (1952360582645412410) -->
-    <skip />
     <string name="export_next_button" msgid="657930567137105172">"بعدی"</string>
+    <string name="export_cancel_button" msgid="1952360582645412410">"لغو"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"لغو کردن"</string>
     <string name="import_next_button" msgid="5706322508691854289">"بعدی"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"وارد کردن از"</string>
@@ -417,15 +439,13 @@
     <string name="delete_button_content_description" msgid="9125115327455379618">"حذف داده"</string>
     <string name="enter_deletion_button_content_description" msgid="416336747251264118">"ورود به حالت حذف"</string>
     <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"خروج از حالت حذف"</string>
-    <!-- no translation found for time_range_title (5777596779865648336) -->
-    <skip />
+    <string name="time_range_title" msgid="5777596779865648336">"انتخاب داده‌های مدنظر برای حذف از Health Connect"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"بعدی"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"با این کار همه داده‌های اضافه‌شده به Health Connect درطول دوره زمانی انتخابی برای همیشه حذف می‌شود"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"با این کار داده‌های <xliff:g id="DATA_TYPE">%s</xliff:g> که درطول دوره زمانی انتخابی به Health Connect اضافه شده برای همیشه حذف می‌شود"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"با این کار داده‌های <xliff:g id="CATEGORY">%s</xliff:g> که درطول دوره زمانی انتخابی به Health Connect اضافه شده برای همیشه حذف می‌شود"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"با این کار داده‌های <xliff:g id="APP_DATA">%s</xliff:g> که درطول دوره زمانی انتخابی به Health Connect اضافه شده برای همیشه حذف می‌شود"</string>
-    <!-- no translation found for time_range_message_permission_type_app_data (1613568925588480588) -->
-    <skip />
+    <string name="time_range_message_permission_type_app_data" msgid="1613568925588480588">"با این کار، داده‌های <xliff:g id="DATA_TYPE">%1$s</xliff:g> که درطول دوره زمانی انتخابی توسط <xliff:g id="APP_DATA">%2$s</xliff:g> به Health Connect اضافه شده برای همیشه حذف می‌شود"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"حذف داده‌های ۲۴ ساعت گذشته"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"حذف داده‌های ۷ روز گذشته"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"حذف داده‌های ۳۰ روز گذشته"</string>
@@ -446,32 +466,23 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"داده‌های <xliff:g id="APP_DATA">%s</xliff:g> مربوط به ۲۴ ساعت گذشته برای همیشه حذف شود؟"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"داده‌های <xliff:g id="APP_DATA">%s</xliff:g> مربوط به ۷ روز گذشته برای همیشه حذف شود؟"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"داده‌های <xliff:g id="APP_DATA">%s</xliff:g> مربوط به ۳۰ روز گذشته برای همیشه حذف شود؟"</string>
-    <!-- no translation found for confirming_question_permission_type_app_data_all (1210052631467085849) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_day (4377296923865256246) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_week (2253468260502709170) -->
-    <skip />
-    <!-- no translation found for confirming_question_permission_type_app_data_one_month (1656927839079630144) -->
-    <skip />
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"داده‌های <xliff:g id="DATA_TYPE">%1$s</xliff:g> اضافه‌شده توسط <xliff:g id="APP_DATA">%2$s</xliff:g> مربوط به همه زمان‌ها برای همیشه حذف شود؟"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"داده‌های <xliff:g id="DATA_TYPE">%1$s</xliff:g> اضافه‌شده توسط <xliff:g id="APP_DATA">%2$s</xliff:g> در ۲۴ ساعت گذشته برای همیشه حذف شود؟"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"داده‌های <xliff:g id="DATA_TYPE">%1$s</xliff:g> اضافه‌شده توسط <xliff:g id="APP_DATA">%2$s</xliff:g> در ۷ روز گذشته برای همیشه حذف شود؟"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"داده‌های <xliff:g id="DATA_TYPE">%1$s</xliff:g> اضافه‌شده توسط <xliff:g id="APP_DATA">%2$s</xliff:g> در ۳۰ روز گذشته برای همیشه حذف شود؟"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"همچنین همه اجازه‌های <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> از Health Connect برداشته شود"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"همه داده‌های <xliff:g id="DATA_TYPE">%1$s</xliff:g> که <xliff:g id="APP_DATA">%2$s</xliff:g> اضافه کرده است برای همیشه حذف شود؟"</string>
-    <!-- no translation found for confirming_question_single_entry (2064578008447638932) -->
-    <skip />
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"این ورودی برای همیشه از Health Connect حذف شود؟"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"برنامه‌های متصل دیگر نمی‌توانند از Health Connect به این داده‌ها دسترسی پیدا کنند"</string>
     <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"با این کار همه ورودی‌های قاعدگی از تاریخ <xliff:g id="START_DATE">%1$s</xliff:g> تا <xliff:g id="END_DATE">%2$s</xliff:g> حذف خواهد شد."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"حذف"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"برگشتن"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"تمام"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"بستن"</string>
-    <!-- no translation found for delete_dialog_success_title (900884533930984889) -->
-    <skip />
-    <!-- no translation found for delete_dialog_success_message (7454086333205881294) -->
-    <skip />
-    <!-- no translation found for delete_dialog_done_button (1371340030947835493) -->
-    <skip />
-    <!-- no translation found for delete_dialog_see_connected_apps_button (2975631672738138716) -->
-    <skip />
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"داده‌ها از Health Connect حذف شد"</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"اگر می‌خواهید داده‌ها را به‌طور کامل از برنامه‌های متصل حذف کنید، هر برنامه‌ای را که ممکن است داده‌هایتان در آن ذخیره شده باشد بررسی کنید."</string>
+    <string name="delete_dialog_done_button" msgid="1371340030947835493">"تمام"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"دیدن برنامه‌های متصل"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"درحال حذف کردن داده‌ها"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"داده‌ها حذف نشد"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"مشکلی پیش آمد و Health Connect نتوانست داده‌هایتان را حذف کند"</string>
@@ -589,8 +600,8 @@
     <string name="racquetball" msgid="8169482984904052538">"راکت‌بال"</string>
     <string name="rock_climbing" msgid="3123024521372083233">"صخره‌نوردی"</string>
     <string name="roller_hockey" msgid="3524872164646176686">"اسکیت هاکی"</string>
-    <string name="rowing" msgid="615898011726585442">"روئینگ"</string>
-    <string name="rowing_machine" msgid="4075255566862183370">"روئینگ با دستگاه"</string>
+    <string name="rowing" msgid="615898011726585442">"پاروزنی"</string>
+    <string name="rowing_machine" msgid="4075255566862183370">"پاروزنی با دستگاه"</string>
     <string name="rugby" msgid="5146215118571059267">"راگبی"</string>
     <string name="running" msgid="5135754380339217169">"دویدن"</string>
     <string name="running_treadmill" msgid="2083354407217486405">"دویدن روی تردمیل"</string>
@@ -649,6 +660,7 @@
     <string name="rest" msgid="5937058337671252210">"استراحت"</string>
     <string name="pause" msgid="5161459047750335691">"مکث"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"فوتبال استرالیایی"</string>
+    <string name="unknown_type" msgid="4506151971125161053">"نوع ناشناس"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> خواب"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"بیدار"</string>
@@ -659,6 +671,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"خواب سبک"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"خواب عمیق"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"نامشخص"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"تمرین تنفس"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"مدیتیشن"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"حرکت"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"موسیقی"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"سایر موارد"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"بدون راهنما"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> دقیقه"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> ساعت و <xliff:g id="MIN">%2$s</xliff:g> دقیقه"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> ساعت"</string>
@@ -858,17 +876,14 @@
     <string name="range_off" msgid="8178520557618184215">"خاموش"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"وقتی این تنظیمات را تغییر می‌دهید، Health Connect داده‌های موجود را برای بازتاب اولویت‌های جدید حذف می‌کند"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{داده‌ها بعداز # ماه به‌طور خودکار حذف شود؟}one{داده‌ها بعداز # ماه به‌طور خودکار حذف شود؟}other{داده‌ها بعداز # ماه به‌طور خودکار حذف شود؟}}"</string>
-    <!-- no translation found for confirming_message_x_months (986840333220382321) -->
-    <skip />
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{این تنظیم داده‌های قدیمی‌تر از # ماه را نیز از Health Connect حذف می‌کند.\n\nاگر می‌خواهید داده‌ها را به‌طور کامل از برنامه‌های متصل حذف کنید، هر برنامه‌ای را که ممکن است داده‌هایتان در آن ذخیره شده باشد بررسی کنید.}one{این تنظیم داده‌های قدیمی‌تر از # ماه را نیز از Health Connect حذف می‌کند.\n\nاگر می‌خواهید داده‌ها را به‌طور کامل از برنامه‌های متصل حذف کنید، هر برنامه‌ای را که ممکن است داده‌هایتان در آن ذخیره شده باشد بررسی کنید.}other{این تنظیم داده‌های قدیمی‌تر از # ماه را نیز از Health Connect حذف می‌کند.\n\nاگر می‌خواهید داده‌ها را به‌طور کامل از برنامه‌های متصل حذف کنید، هر برنامه‌ای را که ممکن است داده‌هایتان در آن ذخیره شده باشد بررسی کنید.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"تنظیم حذف خودکار"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"داده‌های موجود حذف خواهد شد"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{‫Health Connect همه داده‌های قدیمی‌تر از # ماه را حذف خواهد کرد. ممکن است یک روز طول بکشد تا این تغییرات در برنامه‌های متصل نشان داده شود.}one{‫Health Connect همه داده‌های قدیمی‌تر از # ماه را حذف خواهد کرد. ممکن است یک روز طول بکشد تا این تغییرات در برنامه‌های متصل نشان داده شود.}other{‫Health Connect همه داده‌های قدیمی‌تر از # ماه را حذف خواهد کرد. ممکن است یک روز طول بکشد تا این تغییرات در برنامه‌های متصل نشان داده شود.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"داده‌ها از دسته‌های زیر حذف خواهد شد"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"تمام"</string>
-    <!-- no translation found for auto_delete_confirmation_toast (7161651426400701306) -->
-    <skip />
-    <!-- no translation found for auto_delete_off_toast (6530926709108821768) -->
-    <skip />
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{«حذف خودکار» روشن شد. داده‌های قدیمی‌تر از # ماه حذف خواهد شد}one{«حذف خودکار» روشن شد. داده‌های قدیمی‌تر از # ماه حذف خواهد شد}other{«حذف خودکار» روشن شد. داده‌های قدیمی‌تر از # ماه حذف خواهد شد}}"</string>
+    <string name="auto_delete_off_toast" msgid="6530926709108821768">"«حذف خودکار» خاموش است"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"تنظیم اولویت برنامه"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"اگر بیش‌از یک برنامه داده <xliff:g id="DATA_TYPE">%s</xliff:g> اضافه کند، Health Connect برنامه‌ای را که در این فهرست بالاتر قرار دارد در اولویت قرار می‌دهد. برای تغییر دادن ترتیب برنامه‌ها، آن‌ها را بکشید."</string>
     <string name="priority_dialog_positive_button" msgid="2503570694373675092">"ذخیره"</string>
@@ -961,7 +976,7 @@
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"هروقت دوباره دردسترس قرار بگیرد اعلان دریافت خواهید کرد."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"متوجه‌ام"</string>
     <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"یکپارچه‌سازی Health Connect تکمیل نشد"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"بیشتر بخوانید"</string>
+    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"جزئیات بیشتر"</string>
     <string name="migration_complete_notification_title" msgid="4988631739109332404">"یکپارچه‌سازی Health Connect تکمیل شد"</string>
     <string name="migration_complete_notification_action" msgid="5350322865206331186">"باز کردن"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"ویژگی‌های جدید"</string>
@@ -1005,4 +1020,13 @@
     <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"داده‌های <xliff:g id="PERMISSION_TYPE">%s</xliff:g> حذف شد"</string>
     <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"‫<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> مورد حذف شد"</string>
     <string name="select_all" msgid="837499881590001166">"انتخاب همه"</string>
+    <string name="start_using_hc_banner_title" msgid="2030178284749796384">"استفاده از Health Connect را شروع کنید"</string>
+    <string name="start_using_hc_banner_content" msgid="3171560198945933334">"اولین برنامه‌هایتان را همگام‌سازی کنید تا داده‌های سلامتی و تناسب اندام بین آن‌ها هم‌رسانی شود"</string>
+    <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"راه‌اندازی"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"اتصال برنامه‌های بیشتر"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"شروع به هم‌رسانی داده بین <xliff:g id="APP_NAME">%s</xliff:g> و برنامه‌های سلامتی موجود در تلفنتان کنید"</string>
+    <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"راه‌اندازی"</string>
+    <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"برنامه‌های سازگار را ببینید"</string>
+    <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"برنامه‌های بیشتری را برای همگام‌سازی با <xliff:g id="APP_NAME">%s</xliff:g> ازطریق Health Connect پیدا کنید"</string>
+    <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"مشاهده در فروشگاه برنامه"</string>
 </resources>

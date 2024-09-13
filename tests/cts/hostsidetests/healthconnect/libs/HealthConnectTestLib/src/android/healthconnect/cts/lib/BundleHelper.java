@@ -16,10 +16,12 @@
 
 package android.healthconnect.cts.lib;
 
+import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
@@ -34,6 +36,8 @@ import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.InstantRecord;
 import android.health.connect.datatypes.IntervalRecord;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.MenstruationPeriodRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
@@ -71,6 +75,18 @@ public final class BundleHelper {
     public static final String DELETE_RECORDS_QUERY = PREFIX + "DELETE_RECORDS_QUERY";
     public static final String UPDATE_RECORDS_QUERY = PREFIX + "UPDATE_RECORDS_QUERY";
     public static final String GET_CHANGE_LOG_TOKEN_QUERY = PREFIX + "GET_CHANGE_LOG_TOKEN_QUERY";
+    public static final String CREATE_MEDICAL_DATA_SOURCE_QUERY =
+            PREFIX + "CREATE_MEDICAL_DATA_SOURCE_QUERY";
+    public static final String UPSERT_MEDICAL_RESOURCES_QUERY =
+            PREFIX + "UPSERT_MEDICAL_RESOURCE_QUERY";
+
+    private static final String CREATE_MEDICAL_DATA_SOURCE_REQUEST =
+            PREFIX + "CREATE_MEDICAL_DATA_SOURCE_REQUEST";
+    public static final String MEDICAL_DATA_SOURCE_RESPONSE =
+            PREFIX + "MEDICAL_DATA_SOURCE_RESPONSE";
+    private static final String UPSERT_MEDICAL_RESOURCE_REQUESTS =
+            PREFIX + "UPSERT_MEDICAL_RESOURCE_REQUEST";
+    public static final String MEDICAL_RESOURCES_RESPONSE = PREFIX + "MEDICAL_RESOURCE_RESPONSE";
 
     public static final String SELF_REVOKE_PERMISSION_REQUEST =
             PREFIX + "SELF_REVOKE_PERMISSION_REQUEST";
@@ -388,6 +404,78 @@ public final class BundleHelper {
     /** Converts a bundle to a ChangeLogsResponse. */
     public static ChangeLogsResponse toChangeLogsResponse(Bundle bundle) {
         return bundle.getParcelable(CHANGE_LOGS_RESPONSE, ChangeLogsResponse.class);
+    }
+
+    /** Converts a {@link CreateMedicalDataSourceRequest} from a bundle. */
+    public static CreateMedicalDataSourceRequest toCreateMedicalDataSourceRequest(Bundle bundle) {
+        return bundle.getParcelable(
+                CREATE_MEDICAL_DATA_SOURCE_REQUEST, CreateMedicalDataSourceRequest.class);
+    }
+
+    /** Converts a {@link CreateMedicalDataSourceRequest} into a bundle. */
+    public static Bundle fromCreateMedicalDataSourceRequest(
+            CreateMedicalDataSourceRequest request) {
+        Bundle bundle = new Bundle();
+        bundle.putString(QUERY_TYPE, CREATE_MEDICAL_DATA_SOURCE_QUERY);
+        bundle.putParcelable(CREATE_MEDICAL_DATA_SOURCE_REQUEST, request);
+        return bundle;
+    }
+
+    /**
+     * Converts a {@link MedicalDataSource} to a bundle for sending to another app.
+     *
+     * <p>To convert back, use {@link #toMedicalDataSource(Bundle)}.
+     */
+    public static Bundle fromMedicalDataSource(MedicalDataSource medicalDataSource) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(MEDICAL_DATA_SOURCE_RESPONSE, medicalDataSource);
+        return bundle;
+    }
+
+    /**
+     * Converts a {@link MedicalDataSource} back from a bundle.
+     *
+     * <p>To create, use {@link #fromMedicalDataSource(MedicalDataSource)}.
+     */
+    public static MedicalDataSource toMedicalDataSource(Bundle bundle) {
+        return bundle.getParcelable(MEDICAL_DATA_SOURCE_RESPONSE, MedicalDataSource.class);
+    }
+
+    /** Converts a {@link CreateMedicalDataSourceRequest} from a bundle. */
+    public static List<UpsertMedicalResourceRequest> toUpsertMedicalResourceRequests(
+            Bundle bundle) {
+        return bundle.getParcelableArrayList(
+                UPSERT_MEDICAL_RESOURCE_REQUESTS, UpsertMedicalResourceRequest.class);
+    }
+
+    /** Converts a {@link CreateMedicalDataSourceRequest} into a bundle. */
+    public static Bundle fromUpsertMedicalResourceRequests(
+            List<UpsertMedicalResourceRequest> requests) {
+        Bundle bundle = new Bundle();
+        bundle.putString(QUERY_TYPE, UPSERT_MEDICAL_RESOURCES_QUERY);
+        bundle.putParcelableArrayList(UPSERT_MEDICAL_RESOURCE_REQUESTS, new ArrayList<>(requests));
+        return bundle;
+    }
+
+    /**
+     * Converts a list of {@link MedicalResource}s to a bundle for sending to another app.
+     *
+     * <p>To convert back, use {@link #toMedicalResources(Bundle)}.
+     */
+    public static Bundle fromMedicalResources(List<MedicalResource> medicalResources) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(
+                MEDICAL_RESOURCES_RESPONSE, new ArrayList<>(medicalResources));
+        return bundle;
+    }
+
+    /**
+     * Converts a list of {@link MedicalResource}s back from a bundle.
+     *
+     * <p>To create, use {@link #fromMedicalResources(List)}.
+     */
+    public static List<MedicalResource> toMedicalResources(Bundle bundle) {
+        return bundle.getParcelableArrayList(MEDICAL_RESOURCES_RESPONSE, MedicalResource.class);
     }
 
     private static List<Bundle> fromRecordList(List<? extends Record> records) {

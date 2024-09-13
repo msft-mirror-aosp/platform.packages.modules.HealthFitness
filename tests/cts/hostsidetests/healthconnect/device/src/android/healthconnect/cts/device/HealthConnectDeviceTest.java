@@ -96,8 +96,8 @@ import android.healthconnect.cts.utils.TestUtils;
 import android.util.Pair;
 
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
@@ -816,7 +816,7 @@ public class HealthConnectDeviceTest {
                                                         APP_A_WITH_READ_WRITE_PERMS
                                                                 .getPackageName()))
                                 .isEqualTo(PackageManager.PERMISSION_DENIED),
-                /* timeoutMillis= */ 7000);
+                /* timeoutMillis= */ 10000);
     }
 
     @Test

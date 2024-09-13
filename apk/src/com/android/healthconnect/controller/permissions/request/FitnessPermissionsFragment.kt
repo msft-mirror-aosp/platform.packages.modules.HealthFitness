@@ -226,7 +226,7 @@ class FitnessPermissionsFragment : Hilt_FitnessPermissionsFragment() {
     ): Preference {
         return HealthSwitchPreference(requireContext()).also {
             val healthCategory =
-                HealthDataCategoryExtensions.fromHealthPermissionType(
+                HealthDataCategoryExtensions.fromFitnessPermissionType(
                     permission.fitnessPermissionType)
             it.icon = healthCategory.icon(requireContext())
             it.setDefaultValue(defaultValue)

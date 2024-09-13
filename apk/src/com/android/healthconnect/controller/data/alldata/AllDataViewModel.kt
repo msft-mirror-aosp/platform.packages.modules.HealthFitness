@@ -50,7 +50,7 @@ constructor(
 
     private var numOfPermissionTypes: Int = 0
 
-    private var isDeletionState: Boolean = false
+    private var allDataDeletionScreenState : AllDataDeletionScreenState = AllDataDeletionScreenState.VIEW
 
     private val _allPermissionTypesSelected = MutableLiveData<Boolean>()
 
@@ -99,15 +99,15 @@ constructor(
         }
     }
 
-    fun setDeletionState(boolean: Boolean) {
-        isDeletionState = boolean
-        if (!isDeletionState) {
+    fun setScreenState(screenState: AllDataDeletionScreenState) {
+        this.allDataDeletionScreenState = screenState
+        if (allDataDeletionScreenState == AllDataDeletionScreenState.VIEW) {
             resetDeleteSet()
         }
     }
 
-    fun getDeletionState(): Boolean {
-        return isDeletionState
+    fun getScreenState(): AllDataDeletionScreenState {
+        return allDataDeletionScreenState
     }
 
     sealed class AllDataState {
@@ -116,5 +116,10 @@ constructor(
         object Error : AllDataState()
 
         data class WithData(val dataMap: List<PermissionTypesPerCategory>) : AllDataState()
+    }
+
+    enum class AllDataDeletionScreenState {
+        VIEW,
+        DELETE
     }
 }

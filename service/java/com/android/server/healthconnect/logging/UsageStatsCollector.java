@@ -42,13 +42,14 @@ import java.util.Objects;
 final class UsageStatsCollector {
     private static final String USER_MOST_RECENT_ACCESS_LOG_TIME =
             "USER_MOST_RECENT_ACCESS_LOG_TIME";
+    private static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
     private static final int NUMBER_OF_DAYS_FOR_USER_TO_BE_MONTHLY_ACTIVE = 30;
     private final Context mContext;
     private final List<PackageInfo> mAllPackagesInstalledForUser;
 
     private final PreferenceHelper mPreferenceHelper;
 
-    UsageStatsCollector(@NonNull Context context, @NonNull UserHandle userHandle) {
+    UsageStatsCollector(Context context, UserHandle userHandle, PreferenceHelper preferenceHelper) {
         Objects.requireNonNull(userHandle);
         Objects.requireNonNull(context);
 
@@ -57,7 +58,7 @@ final class UsageStatsCollector {
                 context.createContextAsUser(userHandle, /* flag= */ 0)
                         .getPackageManager()
                         .getInstalledPackages(PackageManager.PackageInfoFlags.of(GET_PERMISSIONS));
-        mPreferenceHelper = PreferenceHelper.getInstance();
+        mPreferenceHelper = preferenceHelper;
     }
 
     /**
@@ -93,6 +94,19 @@ final class UsageStatsCollector {
             }
         }
         return count;
+    }
+
+    /**
+     * Returns the configured export frequency of the user.
+     *
+     * @return Export frequency of the current user.
+     */
+    int getExportFrequency() {
+        String result = mPreferenceHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY);
+        if (result == null) {
+            return 0;
+        }
+        return Integer.parseInt(result);
     }
 
     boolean isUserMonthlyActive() {

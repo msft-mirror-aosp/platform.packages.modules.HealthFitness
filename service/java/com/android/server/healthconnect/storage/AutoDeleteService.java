@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.storage;
 
-import android.annotation.NonNull;
 import android.content.Context;
 import android.util.Slog;
 
@@ -45,26 +44,28 @@ public class AutoDeleteService {
     private static final String TAG = "HealthConnectAutoDelete";
 
     /** Gets auto delete period for automatically deleting record entries */
-    public static int getRecordRetentionPeriodInDays() {
-        String result =
-                PreferenceHelper.getInstance().getPreference(AUTO_DELETE_DURATION_RECORDS_KEY);
+    public static int getRecordRetentionPeriodInDays(PreferenceHelper preferenceHelper) {
+        String result = preferenceHelper.getPreference(AUTO_DELETE_DURATION_RECORDS_KEY);
 
         if (result == null) return 0;
         return Integer.parseInt(result);
     }
 
     /** Sets auto delete period for automatically deleting record entries */
-    public static void setRecordRetentionPeriodInDays(int days) {
-        PreferenceHelper.getInstance()
-                .insertOrReplacePreference(AUTO_DELETE_DURATION_RECORDS_KEY, String.valueOf(days));
+    public static void setRecordRetentionPeriodInDays(int days, PreferenceHelper preferenceHelper) {
+        preferenceHelper.insertOrReplacePreference(
+                AUTO_DELETE_DURATION_RECORDS_KEY, String.valueOf(days));
     }
 
     /** Starts the Auto Deletion process. */
-    public static void startAutoDelete(@NonNull Context context) {
+    public static void startAutoDelete(
+            Context context,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            PreferenceHelper preferenceHelper) {
         try {
             // Only do transactional operations here - as this job might get cancelled for several
             // reasons, such as: User switch, low battery etc.
-            deleteStaleRecordEntries();
+            deleteStaleRecordEntries(preferenceHelper);
             deleteStaleChangeLogEntries();
             deleteStaleAccessLogEntries();
             // Update the recordTypesUsed by packages if required after the deletion of records.
@@ -72,16 +73,16 @@ public class AutoDeleteService {
             // Re-sync activity dates table
             ActivityDateHelper.reSyncForAllRecords();
             // Sync health data priority list table
-            HealthDataCategoryPriorityHelper.getInstance().reSyncHealthDataPriorityTable(context);
+            healthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(context);
         } catch (Exception e) {
             Slog.e(TAG, "Auto delete run failed", e);
             // Don't rethrow as that will crash system_server
         }
     }
 
-    private static void deleteStaleRecordEntries() {
+    private static void deleteStaleRecordEntries(PreferenceHelper preferenceHelper) {
         String recordAutoDeletePeriodString =
-                PreferenceHelper.getInstance().getPreference(AUTO_DELETE_DURATION_RECORDS_KEY);
+                preferenceHelper.getPreference(AUTO_DELETE_DURATION_RECORDS_KEY);
         int recordAutoDeletePeriod =
                 recordAutoDeletePeriodString == null
                         ? 0

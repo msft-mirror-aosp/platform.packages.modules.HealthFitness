@@ -41,10 +41,13 @@ java_sdk_library {
     libs: [
         "framework-healthfitness.impl",
         "androidx.annotation_annotation",
-        "framework-sdkextensions",
-        "framework-configinfrastructure",
+        "framework-sdkextensions.stubs.module_lib",
+        "framework-configinfrastructure.stubs.module_lib",
         "keepanno-annotations",
         "modules-utils-preconditions",
+        // Keeping aconfig lib deps in "libs" instead of "static_libs" because we already have them
+        // in the framework jar which is included in this service jar.
+        // See go/fixing-strict-java-packages.
         "healthfitness-aconfig-flags-lib",
         "healthfitness-aconfig-flags-helper",
     ],
@@ -61,6 +64,7 @@ java_sdk_library {
     ],
     impl_library_visibility: [
         "//packages/modules/HealthFitness/tests/unittests",
+        "//packages/modules/HealthFitness/tests/integrationtests",
     ],
     errorprone: {
         extra_check_modules: [
