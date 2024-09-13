@@ -264,6 +264,20 @@ public class PhrDataFactory {
 
     /**
      * Creates and returns a {@link MedicalResource} of type {@link
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_IMMUNIZATION} and {@link
+     * PhrDataFactory#DIFFERENT_FHIR_DATA_IMMUNIZATION} data, with the given {@code dataSource}.
+     */
+    public static MedicalResource createDifferentImmunizationMedicalResource(String dataSource) {
+        return new MedicalResource.Builder(
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                        dataSource,
+                        FHIR_VERSION_R4,
+                        getFhirResourceDifferentImmunization())
+                .build();
+    }
+
+    /**
+     * Creates and returns a {@link MedicalResource} of type {@link
      * MedicalResource#MEDICAL_RESOURCE_TYPE_IMMUNIZATION} with the given {@code dataSource} with
      * the default {@link PhrDataFactory#FHIR_DATA_IMMUNIZATION}'s status field added.
      */
