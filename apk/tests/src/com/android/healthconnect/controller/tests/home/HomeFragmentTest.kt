@@ -35,7 +35,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.data.alldata.medical.MedicalAllDataViewModel
+import com.android.healthconnect.controller.data.alldata.AllDataViewModel
 import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
@@ -47,7 +47,6 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiError
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
-import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.recentaccess.RecentAccessEntry
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.RecentAccessState
@@ -123,9 +122,7 @@ class HomeFragmentTest {
     val exportStatusViewModel: ExportStatusViewModel =
         Mockito.mock(ExportStatusViewModel::class.java)
 
-    @BindValue
-    val medicalDataViewModel: MedicalAllDataViewModel =
-        Mockito.mock(MedicalAllDataViewModel::class.java)
+    @BindValue val allDataViewModel: AllDataViewModel = Mockito.mock(AllDataViewModel::class.java)
 
     @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
 
@@ -173,11 +170,7 @@ class HomeFragmentTest {
                 )
             )
         }
-        whenever(medicalDataViewModel.allData).then {
-            MutableLiveData<MedicalAllDataViewModel.AllDataState>(
-                MedicalAllDataViewModel.AllDataState.Loading
-            )
-        }
+        whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(false) }
         navHostController = TestNavHostController(context)
 
         // disable animations
@@ -226,13 +219,7 @@ class HomeFragmentTest {
     @DisableFlags(Flags.FLAG_ONBOARDING)
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun browseMedicalData_navigatesToBrowseMedicalData() {
-        whenever(medicalDataViewModel.allData).then {
-            MutableLiveData<MedicalAllDataViewModel.AllDataState>(
-                MedicalAllDataViewModel.AllDataState.WithData(
-                    listOf(MedicalPermissionType.IMMUNIZATION)
-                )
-            )
-        }
+        whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(true) }
         setupFragmentForNavigation()
 
         onView(withText("Browse health records")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -772,25 +759,8 @@ class HomeFragmentTest {
     @DisableFlags(Flags.FLAG_ONBOARDING)
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun browseMedicalData_errorFetchingMedicalData_notDisplayed() {
-        whenever(medicalDataViewModel.allData).then {
-            MutableLiveData<MedicalAllDataViewModel.AllDataState>(
-                MedicalAllDataViewModel.AllDataState.Error
-            )
-        }
-        setupFragmentForNavigation()
+        whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(false) }
 
-        onView(withText("Browse health records")).check(doesNotExist())
-    }
-
-    @Test
-    @DisableFlags(Flags.FLAG_ONBOARDING)
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
-    fun browseMedicalData_loadingMedicalData_notDisplayed() {
-        whenever(medicalDataViewModel.allData).then {
-            MutableLiveData<MedicalAllDataViewModel.AllDataState>(
-                MedicalAllDataViewModel.AllDataState.Loading
-            )
-        }
         setupFragmentForNavigation()
 
         onView(withText("Browse health records")).check(doesNotExist())
@@ -800,11 +770,8 @@ class HomeFragmentTest {
     @DisableFlags(Flags.FLAG_ONBOARDING)
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun browseMedicalData_emptyMedicalData_notDisplayed() {
-        whenever(medicalDataViewModel.allData).then {
-            MutableLiveData<MedicalAllDataViewModel.AllDataState>(
-                MedicalAllDataViewModel.AllDataState.WithData(emptyList())
-            )
-        }
+        whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(false) }
+
         setupFragmentForNavigation()
 
         onView(withText("Browse health records")).check(doesNotExist())
@@ -814,13 +781,8 @@ class HomeFragmentTest {
     @DisableFlags(Flags.FLAG_ONBOARDING)
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun browseMedicalData_medicalDataExists_isDisplayed() {
-        whenever(medicalDataViewModel.allData).then {
-            MutableLiveData<MedicalAllDataViewModel.AllDataState>(
-                MedicalAllDataViewModel.AllDataState.WithData(
-                    listOf(MedicalPermissionType.IMMUNIZATION)
-                )
-            )
-        }
+        whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(true) }
+
         setupFragmentForNavigation()
 
         onView(withText("Browse health records")).check(matches(isDisplayed()))
