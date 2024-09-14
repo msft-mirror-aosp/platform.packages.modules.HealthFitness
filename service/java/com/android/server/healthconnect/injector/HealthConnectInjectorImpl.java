@@ -23,6 +23,7 @@ import androidx.annotation.Nullable;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.exportimport.ExportManager;
+import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
@@ -49,20 +50,22 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final ExportImportSettingsStorage mExportImportSettingsStorage;
     private final ExportManager mExportManager;
     private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
+    private final MigrationStateManager mMigrationStateManager;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
     }
 
     private HealthConnectInjectorImpl(Builder builder) {
+        HealthConnectUserContext healthConnectUserContext = builder.mHealthConnectUserContext;
         mHealthConnectDeviceConfigManager =
                 builder.mHealthConnectDeviceConfigManager == null
                         ? HealthConnectDeviceConfigManager.initializeInstance(
-                                builder.mHealthConnectUserContext)
+                                healthConnectUserContext)
                         : builder.mHealthConnectDeviceConfigManager;
         mTransactionManager =
                 builder.mTransactionManager == null
-                        ? TransactionManager.initializeInstance(builder.mHealthConnectUserContext)
+                        ? TransactionManager.initializeInstance(healthConnectUserContext)
                         : builder.mTransactionManager;
         mPackageInfoUtils =
                 builder.mPackageInfoUtils == null
@@ -88,11 +91,18 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         mExportManager =
                 builder.mExportManager == null
                         ? new ExportManager(
-                                builder.mHealthConnectUserContext,
+                                healthConnectUserContext,
                                 Clock.systemUTC(),
                                 mExportImportSettingsStorage,
                                 mTransactionManager)
                         : builder.mExportManager;
+        mMigrationStateManager =
+                builder.mMigrationStateManager == null
+                        ? MigrationStateManager.initializeInstance(
+                                healthConnectUserContext.getUser().getIdentifier(),
+                                mHealthConnectDeviceConfigManager,
+                                mPreferenceHelper)
+                        : builder.mMigrationStateManager;
     }
 
     @Override
@@ -135,6 +145,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         return mHealthConnectDeviceConfigManager;
     }
 
+    @Override
+    public MigrationStateManager getMigrationStateManager() {
+        return mMigrationStateManager;
+    }
+
     /**
      * Returns a new Builder of Health Connect Injector
      *
@@ -162,6 +177,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private ExportImportSettingsStorage mExportImportSettingsStorage;
         @Nullable private ExportManager mExportManager;
         @Nullable private HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
+        @Nullable private MigrationStateManager mMigrationStateManager;
 
         private Builder(Context context) {
             mHealthConnectUserContext = new HealthConnectUserContext(context, context.getUser());
@@ -223,6 +239,13 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 HealthConnectDeviceConfigManager healthConnectDeviceConfigManager) {
             Objects.requireNonNull(healthConnectDeviceConfigManager);
             mHealthConnectDeviceConfigManager = healthConnectDeviceConfigManager;
+            return this;
+        }
+
+        /** Set fake or custom MigrationStateManager */
+        public Builder setMigrationStateManager(MigrationStateManager migrationStateManager) {
+            Objects.requireNonNull(migrationStateManager);
+            mMigrationStateManager = migrationStateManager;
             return this;
         }
 

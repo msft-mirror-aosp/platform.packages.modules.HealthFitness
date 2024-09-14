@@ -45,12 +45,18 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
 
     init {
         DeviceConfig.addOnPropertiesChangedListener(
-            HEALTH_FITNESS_FLAGS_NAMESPACE, context.mainExecutor, this)
+            HEALTH_FITNESS_FLAGS_NAMESPACE,
+            context.mainExecutor,
+            this,
+        )
     }
 
     private var isSessionTypesEnabled =
         DeviceConfig.getBoolean(
-            HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_SESSIONS_TYPE_ENABLED, true)
+            HEALTH_FITNESS_FLAGS_NAMESPACE,
+            PROPERTY_SESSIONS_TYPE_ENABLED,
+            true,
+        )
 
     private var isExerciseRouteReadAllEnabled = true
 

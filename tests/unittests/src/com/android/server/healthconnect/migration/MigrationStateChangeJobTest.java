@@ -122,7 +122,6 @@ public class MigrationStateChangeJobTest {
 
     @Before
     public void setUp() {
-        when(MigrationStateManager.getInitialisedInstance()).thenReturn(mMigrationStateManager);
         when(mJobScheduler.forNamespace(MIGRATION_STATE_CHANGE_NAMESPACE))
                 .thenReturn(mJobScheduler);
         when(mContext.getSystemService(JobScheduler.class)).thenReturn(mJobScheduler);
@@ -163,7 +162,10 @@ public class MigrationStateChangeJobTest {
         when(mPreferenceHelper.getPreference(eq(CURRENT_STATE_START_TIME_KEY)))
                 .thenReturn(Instant.now().minusMillis(mockElapsedTime).toString());
         MigrationStateChangeJob.executeMigrationPauseJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyNoStateChange();
     }
 
@@ -178,7 +180,10 @@ public class MigrationStateChangeJobTest {
         when(mPreferenceHelper.getPreference(eq(CURRENT_STATE_START_TIME_KEY)))
                 .thenReturn(Instant.now().minusMillis(mockElapsedTime).toString());
         MigrationStateChangeJob.executeMigrationPauseJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyStateChange(MIGRATION_STATE_ALLOWED, true);
     }
 
@@ -187,7 +192,10 @@ public class MigrationStateChangeJobTest {
     public void testExecutePauseJob_inAllowedState() {
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_ALLOWED);
         MigrationStateChangeJob.executeMigrationPauseJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyZeroInteractions(mPreferenceHelper);
         verifyNoStateChange();
     }
@@ -197,7 +205,10 @@ public class MigrationStateChangeJobTest {
     public void testExecutePauseJob_inCompleteState() {
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_COMPLETE);
         MigrationStateChangeJob.executeMigrationPauseJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyNoStateChange();
     }
 
@@ -209,7 +220,10 @@ public class MigrationStateChangeJobTest {
         when(mPreferenceHelper.getPreference(eq(CURRENT_STATE_START_TIME_KEY)))
                 .thenReturn(Instant.now().minusMillis(mockElapsedTime).toString());
         MigrationStateChangeJob.executeMigrationCompletionJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyNoStateChange();
     }
 
@@ -222,7 +236,10 @@ public class MigrationStateChangeJobTest {
         when(mPreferenceHelper.getPreference(eq(CURRENT_STATE_START_TIME_KEY)))
                 .thenReturn(Instant.now().minusMillis(mockElapsedTime).toString());
         MigrationStateChangeJob.executeMigrationCompletionJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyStateChange(MIGRATION_STATE_COMPLETE, true);
     }
 
@@ -232,7 +249,10 @@ public class MigrationStateChangeJobTest {
         setStartTime_notExpired_nonIdleState();
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_ALLOWED);
         MigrationStateChangeJob.executeMigrationCompletionJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyNoStateChange();
     }
 
@@ -242,7 +262,10 @@ public class MigrationStateChangeJobTest {
         setStartTime_expired_nonIdleState();
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_ALLOWED);
         MigrationStateChangeJob.executeMigrationCompletionJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyStateChange(MIGRATION_STATE_COMPLETE, true);
     }
 
@@ -253,7 +276,10 @@ public class MigrationStateChangeJobTest {
         when(mMigrationStateManager.getMigrationState())
                 .thenReturn(MIGRATION_STATE_APP_UPGRADE_REQUIRED);
         MigrationStateChangeJob.executeMigrationCompletionJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyNoStateChange();
     }
 
@@ -264,7 +290,10 @@ public class MigrationStateChangeJobTest {
         when(mMigrationStateManager.getMigrationState())
                 .thenReturn(MIGRATION_STATE_APP_UPGRADE_REQUIRED);
         MigrationStateChangeJob.executeMigrationCompletionJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyStateChange(MIGRATION_STATE_COMPLETE, true);
     }
 
@@ -275,7 +304,10 @@ public class MigrationStateChangeJobTest {
         when(mMigrationStateManager.getMigrationState())
                 .thenReturn(MIGRATION_STATE_MODULE_UPGRADE_REQUIRED);
         MigrationStateChangeJob.executeMigrationCompletionJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyNoStateChange();
     }
 
@@ -286,7 +318,10 @@ public class MigrationStateChangeJobTest {
         when(mMigrationStateManager.getMigrationState())
                 .thenReturn(MIGRATION_STATE_MODULE_UPGRADE_REQUIRED);
         MigrationStateChangeJob.executeMigrationCompletionJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyStateChange(MIGRATION_STATE_COMPLETE, true);
     }
 
@@ -295,7 +330,10 @@ public class MigrationStateChangeJobTest {
     public void testExecuteCompleteJob_alreadyComplete() {
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_COMPLETE);
         MigrationStateChangeJob.executeMigrationCompletionJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyZeroInteractions(mPreferenceHelper);
         verifyNoStateChange();
     }
@@ -307,7 +345,10 @@ public class MigrationStateChangeJobTest {
         setStartTimeAfterAllowedStateTimeout();
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_ALLOWED);
         MigrationStateChangeJob.executeMigrationCompletionJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyStateChange(MIGRATION_STATE_COMPLETE, true);
     }
 
@@ -318,7 +359,10 @@ public class MigrationStateChangeJobTest {
         setStartTimeBeforeAllowedStateTimeout();
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_ALLOWED);
         MigrationStateChangeJob.executeMigrationCompletionJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyNoStateChange();
     }
 
@@ -329,7 +373,10 @@ public class MigrationStateChangeJobTest {
         setStartTimeAfterAllowedStateTimeout();
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_IN_PROGRESS);
         MigrationStateChangeJob.executeMigrationCompletionJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyStateChange(MIGRATION_STATE_COMPLETE, true);
     }
 
@@ -340,7 +387,10 @@ public class MigrationStateChangeJobTest {
         setStartTimeBeforeAllowedStateTimeout();
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_IN_PROGRESS);
         MigrationStateChangeJob.executeMigrationCompletionJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyNoStateChange();
     }
 
@@ -352,7 +402,10 @@ public class MigrationStateChangeJobTest {
         when(mHealthConnectDeviceConfigManager.isCompleteStateChangeJobEnabled())
                 .thenReturn(ENABLE_STATE_CHANGE_JOB_FALSE_MOCK_VALUE_FALSE);
         MigrationStateChangeJob.executeMigrationCompletionJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyNoStateChange();
     }
 
@@ -362,7 +415,10 @@ public class MigrationStateChangeJobTest {
         setStartTime_expired_nonIdleState();
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_ALLOWED);
         MigrationStateChangeJob.executeMigrationCompletionJob(
-                mContext, mPreferenceHelper, mHealthConnectDeviceConfigManager);
+                mContext,
+                mPreferenceHelper,
+                mHealthConnectDeviceConfigManager,
+                mMigrationStateManager);
         verifyStateChange(MIGRATION_STATE_COMPLETE, true);
     }
 

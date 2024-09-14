@@ -15,54 +15,36 @@
  */
 package com.android.healthconnect.controller.selectabledeletion.api
 
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import android.health.connect.DeleteMedicalResourcesRequest
+import android.health.connect.HealthConnectManager
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.permissions.data.toMedicalResourceType
 import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeletionTypeHealthPermissionTypes
 import com.android.healthconnect.controller.service.IoDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
 /** Use case to delete all medical resources from the given permission type (e.g. Immunization). */
 @Singleton
-class DeletePermissionTypesUseCase
+class DeleteMedicalPermissionTypesUseCase
 @Inject
 constructor(
-    private val deleteFitnessPermissionTypesUseCase: DeleteFitnessPermissionTypesUseCase,
-    private val deleteMedicalPermissionTypesUseCase: DeleteMedicalPermissionTypesUseCase,
+    private val healthConnectManager: HealthConnectManager,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
 
     suspend operator fun invoke(deletePermissionTypes: DeletionTypeHealthPermissionTypes) {
+        val deleteRequest = DeleteMedicalResourcesRequest.Builder()
+
+        deletePermissionTypes.healthPermissionTypes.filterIsInstance<MedicalPermissionType>().map {
+            permissionType ->
+            deleteRequest.addMedicalResourceType(toMedicalResourceType(permissionType))
+        }
+
         withContext(dispatcher) {
-            val deleteFitness = async { maybeDeleteFitnessData(deletePermissionTypes) }
-            val deleteMedical = async { maybeDeleteMedicalData(deletePermissionTypes) }
-            deleteFitness.await()
-            deleteMedical.await()
+            healthConnectManager.deleteMedicalResources(deleteRequest.build(), Runnable::run) {}
         }
-    }
-
-    private suspend fun maybeDeleteFitnessData(deletionRequest: DeletionTypeHealthPermissionTypes) {
-        val isFitnessDataEmpty =
-            deletionRequest.healthPermissionTypes
-                .filterIsInstance<FitnessPermissionType>()
-                .isEmpty()
-        if (isFitnessDataEmpty) {
-            return
-        }
-        deleteFitnessPermissionTypesUseCase.invoke(deletionRequest)
-    }
-
-    private suspend fun maybeDeleteMedicalData(deletionRequest: DeletionTypeHealthPermissionTypes) {
-        val isMedicalDataEmpty =
-            deletionRequest.healthPermissionTypes
-                .filterIsInstance<MedicalPermissionType>()
-                .isEmpty()
-        if (isMedicalDataEmpty) {
-            return
-        }
-        deleteMedicalPermissionTypesUseCase.invoke(deletionRequest)
     }
 }

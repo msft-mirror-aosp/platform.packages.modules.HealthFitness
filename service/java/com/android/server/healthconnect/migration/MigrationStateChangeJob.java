@@ -99,12 +99,12 @@ public final class MigrationStateChangeJob {
     public static void executeMigrationCompletionJob(
             Context context,
             PreferenceHelper preferenceHelper,
-            HealthConnectDeviceConfigManager deviceConfigManager) {
+            HealthConnectDeviceConfigManager deviceConfigManager,
+            MigrationStateManager migrationStateManager) {
         if (!deviceConfigManager.isCompleteStateChangeJobEnabled()) {
             return;
         }
-        if (MigrationStateManager.getInitialisedInstance().getMigrationState()
-                == MIGRATION_STATE_COMPLETE) {
+        if (migrationStateManager.getMigrationState() == MIGRATION_STATE_COMPLETE) {
             return;
         }
 
@@ -119,20 +119,16 @@ public final class MigrationStateChangeJob {
         Instant executionTime =
                 Instant.parse(currentStateStartTime)
                         .plusMillis(
-                                MigrationStateManager.getInitialisedInstance().getMigrationState()
-                                                == MIGRATION_STATE_IDLE
+                                migrationStateManager.getMigrationState() == MIGRATION_STATE_IDLE
                                         ? deviceConfigManager.getIdleStateTimeoutPeriod().toMillis()
                                         : deviceConfigManager
                                                 .getNonIdleStateTimeoutPeriod()
                                                 .toMillis())
                         .minusMillis(deviceConfigManager.getExecutionTimeBuffer());
 
-        if (MigrationStateManager.getInitialisedInstance().getMigrationState()
-                        == MIGRATION_STATE_ALLOWED
-                || MigrationStateManager.getInitialisedInstance().getMigrationState()
-                        == MIGRATION_STATE_IN_PROGRESS) {
-            String allowedStateTimeout =
-                    MigrationStateManager.getInitialisedInstance().getAllowedStateTimeout();
+        if (migrationStateManager.getMigrationState() == MIGRATION_STATE_ALLOWED
+                || migrationStateManager.getMigrationState() == MIGRATION_STATE_IN_PROGRESS) {
+            String allowedStateTimeout = migrationStateManager.getAllowedStateTimeout();
             if (!Objects.isNull(allowedStateTimeout)) {
                 Instant parsedAllowedStateTimeout =
                         Instant.parse(allowedStateTimeout)
@@ -146,8 +142,7 @@ public final class MigrationStateChangeJob {
 
         if (Instant.now().isAfter(executionTime)) {
             // TODO (b/278728774) fix race condition
-            MigrationStateManager.getInitialisedInstance()
-                    .updateMigrationState(context, MIGRATION_STATE_COMPLETE, true);
+            migrationStateManager.updateMigrationState(context, MIGRATION_STATE_COMPLETE, true);
         }
     }
 
@@ -155,12 +150,12 @@ public final class MigrationStateChangeJob {
     public static void executeMigrationPauseJob(
             Context context,
             PreferenceHelper preferenceHelper,
-            HealthConnectDeviceConfigManager deviceConfigManager) {
+            HealthConnectDeviceConfigManager deviceConfigManager,
+            MigrationStateManager migrationStateManager) {
         if (!deviceConfigManager.isPauseStateChangeJobEnabled()) {
             return;
         }
-        if (MigrationStateManager.getInitialisedInstance().getMigrationState()
-                != MIGRATION_STATE_IN_PROGRESS) {
+        if (migrationStateManager.getMigrationState() != MIGRATION_STATE_IN_PROGRESS) {
             return;
         }
         String currentStateStartTime = preferenceHelper.getPreference(CURRENT_STATE_START_TIME_KEY);
@@ -179,9 +174,8 @@ public final class MigrationStateChangeJob {
 
         if (Instant.now().isAfter(executionTime)) {
             // If we move to ALLOWED from IN_PROGRESS, then we have reached the IN_PROGRESS_TIMEOUT
-            MigrationStateManager.getInitialisedInstance()
-                    .updateMigrationState(
-                            context, MIGRATION_STATE_ALLOWED, /* timeoutReached= */ true);
+            migrationStateManager.updateMigrationState(
+                    context, MIGRATION_STATE_ALLOWED, /* timeoutReached= */ true);
         }
     }
 

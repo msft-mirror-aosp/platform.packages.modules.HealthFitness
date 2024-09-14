@@ -2133,11 +2133,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
                             attributionSource);
 
-                    // TODO(b/344560623) - Add character limits to CreateMedicalDataSource
-                    // displayName and fhirBaseUri values and enforce limit of 20 sources per
-                    // app.
-
-                    // TODO(b/344560623) - Enforce uniqueness constraint on fhir base uri.
                     MedicalDataSource dataSource =
                             mMedicalDataSourceHelper.createMedicalDataSource(
                                     mContext, request, packageName);

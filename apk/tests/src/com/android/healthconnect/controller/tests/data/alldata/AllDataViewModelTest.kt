@@ -19,8 +19,11 @@ import android.content.Context
 import android.health.connect.HealthConnectManager
 import android.health.connect.HealthDataCategory
 import android.health.connect.HealthPermissionCategory
+import android.health.connect.MedicalResourceTypeInfo
 import android.health.connect.RecordTypeInfoResponse
 import android.health.connect.datatypes.HeartRateRecord
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.StepsRecord
 import android.health.connect.datatypes.WeightRecord
@@ -30,9 +33,12 @@ import com.android.healthconnect.controller.data.alldata.AllDataViewModel
 import com.android.healthconnect.controller.data.appdata.AppDataUseCase
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.MEDICAL
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
+import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_DATA_SOURCE
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.getDataOrigin
 import com.android.healthconnect.controller.tests.utils.setLocale
@@ -52,6 +58,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.mock
@@ -174,6 +181,89 @@ class AllDataViewModelTest {
     }
 
     @Test
+    fun loadMedicalData_noMedicalData_returnsEmptyList() = runTest {
+        doAnswer(
+                prepareAnswer(
+                    listOf(
+                        MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, setOf()),
+                        MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE, setOf()),
+                    )
+                )
+            )
+            .`when`(manager)
+            .queryAllMedicalResourceTypeInfos(Matchers.any(), Matchers.any())
+
+        val testObserver = TestObserver<AllDataViewModel.AllDataState>()
+        viewModel.allData.observeForever(testObserver)
+        viewModel.loadAllMedicalData()
+        advanceUntilIdle()
+
+        val expected = emptyList<PermissionTypesPerCategory>()
+        assertThat(testObserver.getLastValue())
+            .isEqualTo(AllDataViewModel.AllDataState.WithData(expected))
+    }
+
+    @Test
+    fun loadMedicalData_hasMedicalData_returnsMedicalData() = runTest {
+        val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
+            listOf(
+                MedicalResourceTypeInfo(
+                    MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    setOf(TEST_MEDICAL_DATA_SOURCE),
+                ),
+                MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE, setOf()),
+            )
+        doAnswer(prepareAnswer(medicalResourceTypeResources))
+            .`when`(manager)
+            .queryAllMedicalResourceTypeInfos(Matchers.any(), Matchers.any())
+
+        val testObserver = TestObserver<AllDataViewModel.AllDataState>()
+        viewModel.allData.observeForever(testObserver)
+        viewModel.loadAllMedicalData()
+        advanceUntilIdle()
+
+        val expected =
+            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATION)))
+        assertThat(testObserver.getLastValue())
+            .isEqualTo(AllDataViewModel.AllDataState.WithData(expected))
+    }
+
+    @Test
+    fun isAnyMedicalData_noMedicalData_returnsFalse() = runTest {
+        doAnswer(prepareAnswer(emptyMap()))
+            .`when`(manager)
+            .queryAllMedicalResourceTypeInfos(Matchers.any(), Matchers.any())
+
+        val testObserver = TestObserver<Boolean>()
+        viewModel.isAnyMedicalData.observeForever(testObserver)
+        viewModel.loadAllMedicalData()
+        advanceUntilIdle()
+
+        assertThat(testObserver.getLastValue()).isEqualTo(false)
+    }
+
+    @Test
+    fun isAnyMedicalData_hasMedicalData_returnsTrue() = runTest {
+        val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
+            listOf(
+                MedicalResourceTypeInfo(
+                    MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    setOf(TEST_MEDICAL_DATA_SOURCE),
+                )
+            )
+        doAnswer(prepareAnswer(medicalResourceTypeResources))
+            .`when`(manager)
+            .queryAllMedicalResourceTypeInfos(Matchers.any(), Matchers.any())
+
+        val testObserver = TestObserver<Boolean>()
+        viewModel.isAnyMedicalData.observeForever(testObserver)
+        viewModel.loadAllMedicalData()
+        advanceUntilIdle()
+
+        assertThat(testObserver.getLastValue()).isEqualTo(true)
+    }
+
+    @Test
     fun addToDeleteSet_updatesDeleteSetCorrectly() = runTest {
         assertThat(viewModel.setOfPermissionTypesToBeDeleted.value.orEmpty()).isEmpty()
 
@@ -223,6 +313,17 @@ class AllDataViewModelTest {
             val receiver = args.arguments[1] as OutcomeReceiver<Any?, *>
             receiver.onResult(recordTypeInfoMap)
             recordTypeInfoMap
+        }
+        return answer
+    }
+
+    private fun prepareAnswer(
+        medicalResourceTypeInfo: List<MedicalResourceTypeInfo>
+    ): (InvocationOnMock) -> List<MedicalResourceTypeInfo> {
+        val answer = { args: InvocationOnMock ->
+            val receiver = args.arguments[1] as OutcomeReceiver<Any?, *>
+            receiver.onResult(medicalResourceTypeInfo)
+            medicalResourceTypeInfo
         }
         return answer
     }
