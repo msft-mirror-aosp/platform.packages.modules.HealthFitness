@@ -48,6 +48,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZAT
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_UNSUPPORTED;
+import static android.healthconnect.cts.utils.PhrDataFactory.MAX_ALLOWED_MEDICAL_DATA_SOURCES;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
 import static android.healthconnect.cts.utils.PhrDataFactory.getUpsertMedicalResourceRequest;
@@ -1980,6 +1981,39 @@ public class HealthConnectManagerTest {
     }
 
     @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testCreateMedicalDataSource_maxNumberOfSources_succeeds()
+            throws InterruptedException {
+        for (int i = 0; i < MAX_ALLOWED_MEDICAL_DATA_SOURCES - 1; i++) {
+            String suffix = String.valueOf(i);
+            createDataSource(getCreateMedicalDataSourceRequest(suffix));
+        }
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(getCreateMedicalDataSourceRequest(), executor, receiver);
+
+        receiver.verifyNoExceptionOrThrow();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testCreateMedicalDataSource_moreThanAllowedMax_throws()
+            throws InterruptedException {
+        for (int i = 0; i < MAX_ALLOWED_MEDICAL_DATA_SOURCES; i++) {
+            String suffix = String.valueOf(i);
+            createDataSource(getCreateMedicalDataSourceRequest(suffix));
+        }
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(getCreateMedicalDataSourceRequest(), executor, receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalDataSources_emptyIds_returnsEmptyList() throws InterruptedException {
         HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
@@ -2423,16 +2457,15 @@ public class HealthConnectManagerTest {
 
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testDeleteMedicalResources_byIds_succeeds() throws InterruptedException {
-        // Insert a data source to ensure we have an appInfoId.
-        createDataSource(getCreateMedicalDataSourceRequest());
+    public void testDeleteMedicalResources_byIdsNonExistent_succeeds() throws InterruptedException {
+        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
         List<MedicalResourceId> ids = new ArrayList<>(MAXIMUM_PAGE_SIZE + 1);
         for (int i = 0; i < MAXIMUM_PAGE_SIZE + 1; i++) {
             ids.add(
                     new MedicalResourceId(
-                            Integer.toString(i),
+                            dataSource.getId(),
                             FHIR_RESOURCE_TYPE_IMMUNIZATION,
-                            FHIR_RESOURCE_ID_IMMUNIZATION));
+                            FHIR_RESOURCE_ID_IMMUNIZATION + "." + i));
         }
         HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
 
@@ -2445,15 +2478,14 @@ public class HealthConnectManagerTest {
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testDeleteMedicalResourcesByIds_managementPermissionNoData_succeeds()
             throws InterruptedException {
-        // Insert a data source to ensure we have an appInfoId.
-        createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
         List<MedicalResourceId> ids = new ArrayList<>(MAXIMUM_PAGE_SIZE + 1);
         for (int i = 0; i < MAXIMUM_PAGE_SIZE + 1; i++) {
             ids.add(
                     new MedicalResourceId(
-                            Integer.toString(i),
+                            dataSource.getId(),
                             FHIR_RESOURCE_TYPE_IMMUNIZATION,
-                            FHIR_RESOURCE_ID_IMMUNIZATION));
+                            FHIR_RESOURCE_ID_IMMUNIZATION + "." + i));
         }
         HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
 
@@ -2469,12 +2501,11 @@ public class HealthConnectManagerTest {
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testDeleteMedicalResourcesByIds_anIdMissing_succeeds() throws InterruptedException {
-        // Insert a data source to ensure we have an appInfoId.
-        createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
         HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
         MedicalResourceId id =
                 new MedicalResourceId(
-                        Integer.toString(1),
+                        dataSource.getId(),
                         FHIR_RESOURCE_TYPE_IMMUNIZATION,
                         FHIR_RESOURCE_ID_IMMUNIZATION);
 
@@ -2497,12 +2528,11 @@ public class HealthConnectManagerTest {
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testDeleteMedicalResourcesByIds_managementPermissionAMissingId_succeeds()
             throws InterruptedException {
-        // Insert a data source to ensure we have an appInfoId.
-        createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
         HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
         MedicalResourceId id =
                 new MedicalResourceId(
-                        Integer.toString(1),
+                        dataSource.getId(),
                         FHIR_RESOURCE_TYPE_IMMUNIZATION,
                         FHIR_RESOURCE_ID_IMMUNIZATION);
 
