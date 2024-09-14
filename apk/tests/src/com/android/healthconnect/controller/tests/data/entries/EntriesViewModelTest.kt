@@ -23,6 +23,7 @@ import com.android.healthconnect.controller.permissions.data.MedicalPermissionTy
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
+import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.TestTimeSource
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadDataAggregationsUseCase
@@ -32,6 +33,8 @@ import com.android.healthconnect.controller.tests.utils.di.FakeLoadMenstruationD
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import java.time.Instant
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -43,8 +46,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.time.Instant
-import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
@@ -55,7 +56,8 @@ class EntriesViewModelTest {
             FormattedEntry.FormattedAggregation(
                 aggregation = aggregation,
                 aggregationA11y = aggregation,
-                contributingApps = "Test App")
+                contributingApps = "Test App",
+            )
 
         private val FORMATTED_STEPS =
             FormattedEntry.FormattedDataEntry(
@@ -64,7 +66,8 @@ class EntriesViewModelTest {
                 headerA11y = "from 7:06 to 7:06",
                 title = "12 steps",
                 titleA11y = "12 steps",
-                dataType = DataType.STEPS)
+                dataType = DataType.STEPS,
+            )
         private val FORMATTED_STEPS_2 =
             FormattedEntry.FormattedDataEntry(
                 uuid = "test_id_2",
@@ -72,7 +75,8 @@ class EntriesViewModelTest {
                 headerA11y = "from 8:06 to 8:06",
                 title = "15 steps",
                 titleA11y = "15 steps",
-                dataType = DataType.STEPS)
+                dataType = DataType.STEPS,
+            )
         private val FORMATTED_MENSTRUATION_PERIOD =
             FormattedEntry.FormattedDataEntry(
                 uuid = "test_id",
@@ -80,13 +84,16 @@ class EntriesViewModelTest {
                 headerA11y = "from 8:06 to 8:06",
                 title = "15 steps",
                 titleA11y = "15 steps",
-                dataType = DataType.MENSTRUATION_PERIOD)
+                dataType = DataType.MENSTRUATION_PERIOD,
+            )
         private val FORMATTED_IMMUNIZATION =
             FormattedEntry.FormattedMedicalDataEntry(
                 header = "Health Connect Toolbox",
                 headerA11y = "Health Connect Toolbox",
                 title = "Covid vaccine",
-                titleA11y = "Covid vaccine")
+                titleA11y = "Covid vaccine",
+                medicalResourceId = TEST_MEDICAL_RESOURCE_IMMUNIZATION.id,
+            )
     }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -113,7 +120,8 @@ class EntriesViewModelTest {
                 fakeLoadDataEntriesUseCase,
                 fakeLoadMenstruationDataUseCase,
                 fakeLoadDataAggregationsUseCase,
-                fakeLoadMedicalEntriesUseCase)
+                fakeLoadMedicalEntriesUseCase,
+            )
     }
 
     @After
@@ -131,13 +139,15 @@ class EntriesViewModelTest {
         viewModel.loadEntries(
             FitnessPermissionType.STEPS,
             Instant.ofEpochMilli(timeSource.currentTimeMillis()),
-            DateNavigationPeriod.PERIOD_WEEK)
+            DateNavigationPeriod.PERIOD_WEEK,
+        )
         advanceUntilIdle()
 
         val actual = testObserver.getLastValue()
         val expected =
             EntriesViewModel.EntriesFragmentState.With(
-                listOf(formattedAggregation("12 steps"), FORMATTED_STEPS))
+                listOf(formattedAggregation("12 steps"), FORMATTED_STEPS)
+            )
         assertThat(actual).isEqualTo(expected)
     }
 
@@ -150,13 +160,15 @@ class EntriesViewModelTest {
         viewModel.loadEntries(
             FitnessPermissionType.STEPS,
             Instant.ofEpochMilli(timeSource.currentTimeMillis()),
-            DateNavigationPeriod.PERIOD_WEEK)
+            DateNavigationPeriod.PERIOD_WEEK,
+        )
         advanceUntilIdle()
 
         val actual = testObserver.getLastValue()
         val expected =
             EntriesViewModel.EntriesFragmentState.With(
-                listOf(formattedAggregation("27 steps"), FORMATTED_STEPS, FORMATTED_STEPS_2))
+                listOf(formattedAggregation("27 steps"), FORMATTED_STEPS, FORMATTED_STEPS_2)
+            )
         assertThat(actual).isEqualTo(expected)
     }
 
@@ -168,7 +180,8 @@ class EntriesViewModelTest {
         viewModel.loadEntries(
             FitnessPermissionType.MENSTRUATION,
             Instant.ofEpochMilli(timeSource.currentTimeMillis()),
-            DateNavigationPeriod.PERIOD_WEEK)
+            DateNavigationPeriod.PERIOD_WEEK,
+        )
         advanceUntilIdle()
 
         val actual = testObserver.getLastValue()
@@ -183,9 +196,10 @@ class EntriesViewModelTest {
         val testObserver = TestObserver<EntriesViewModel.EntriesFragmentState>()
         viewModel.entries.observeForever(testObserver)
         viewModel.loadEntries(
-                MedicalPermissionType.IMMUNIZATION,
-                Instant.ofEpochMilli(timeSource.currentTimeMillis()),
-                DateNavigationPeriod.PERIOD_WEEK)
+            MedicalPermissionType.IMMUNIZATION,
+            Instant.ofEpochMilli(timeSource.currentTimeMillis()),
+            DateNavigationPeriod.PERIOD_WEEK,
+        )
         advanceUntilIdle()
 
         val actual = testObserver.getLastValue()
@@ -212,9 +226,9 @@ class EntriesViewModelTest {
     }
 
     @Test
-    fun setDeletionState_setsCorrectly(){
-        viewModel.setIsDeletionState(true)
+    fun setScreenState_setsCorrectly(){
+        viewModel.setScreenState(EntriesViewModel.EntriesDeletionScreenState.DELETE)
 
-        assertThat(viewModel.isDeletionState.value).isTrue()
+        assertThat(viewModel.screenState.value).isEqualTo(EntriesViewModel.EntriesDeletionScreenState.DELETE)
     }
 }

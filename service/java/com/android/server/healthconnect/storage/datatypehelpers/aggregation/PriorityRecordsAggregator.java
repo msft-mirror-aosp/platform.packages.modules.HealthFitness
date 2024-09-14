@@ -35,7 +35,6 @@ import android.util.Slog;
 import androidx.annotation.Nullable;
 
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.storage.request.AggregateParams;
 
 import java.time.ZoneOffset;
@@ -185,9 +184,7 @@ public class PriorityRecordsAggregator {
         AggregationRecordData data = readNewData(cursor);
         int priority = data.getPriority();
 
-        if (HealthConnectDeviceConfigManager.getInitialisedInstance()
-                        .isAggregationSourceControlsEnabled()
-                && priority == Integer.MIN_VALUE) {
+        if (priority == Integer.MIN_VALUE) {
             return null;
         }
 

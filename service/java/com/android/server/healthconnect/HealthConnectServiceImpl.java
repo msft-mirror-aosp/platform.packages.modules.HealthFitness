@@ -155,6 +155,7 @@ import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.DocumentProvidersManager;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
+import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.exportimport.ImportManager;
 import com.android.server.healthconnect.logging.HealthConnectServiceLogger;
 import com.android.server.healthconnect.migration.DataMigrationManager;
@@ -181,6 +182,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.AggregateTransactionRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
@@ -248,8 +250,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final RecordMapper mRecordMapper;
     private final AggregationTypeIdMapper mAggregationTypeIdMapper;
     private final DeviceInfoHelper mDeviceInfoHelper;
+    private final ExportImportSettingsStorage mExportImportSettingsStorage;
+    private final PreferenceHelper mPreferenceHelper;
     private MedicalResourceHelper mMedicalResourceHelper;
     private MedicalDataSourceHelper mMedicalDataSourceHelper;
+    private final ExportManager mExportManager;
 
     private volatile UserHandle mCurrentForegroundUser;
 
@@ -263,7 +268,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             MigrationUiStateManager migrationUiStateManager,
             MedicalResourceHelper medicalResourceHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
-            Context context) {
+            Context context,
+            ExportManager exportManager,
+            ExportImportSettingsStorage exportImportSettingsStorage) {
         this(
                 transactionManager,
                 deviceConfigManager,
@@ -274,7 +281,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 migrationUiStateManager,
                 context,
                 medicalResourceHelper,
-                medicalDataSourceHelper);
+                medicalDataSourceHelper,
+                exportManager,
+                exportImportSettingsStorage);
     }
 
     @VisibleForTesting
@@ -288,8 +297,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             MigrationUiStateManager migrationUiStateManager,
             Context context,
             MedicalResourceHelper medicalResourceHelper,
-            MedicalDataSourceHelper medicalDataSourceHelper) {
+            MedicalDataSourceHelper medicalDataSourceHelper,
+            ExportManager exportManager,
+            ExportImportSettingsStorage exportImportSettingsStorage) {
         mTransactionManager = transactionManager;
+        mPreferenceHelper = PreferenceHelper.getInstance();
         mDeviceConfigManager = deviceConfigManager;
         mPermissionHelper = permissionHelper;
         mFirstGrantTimeManager = firstGrantTimeManager;
@@ -302,9 +314,20 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mMedicalDataPermissionEnforcer = new MedicalDataPermissionEnforcer(mPermissionManager);
         mAppOpsManagerLocal = LocalManagerRegistry.getManager(AppOpsManagerLocal.class);
         mBackupRestore =
-                new BackupRestore(mFirstGrantTimeManager, mMigrationStateManager, mContext);
+                new BackupRestore(
+                        mFirstGrantTimeManager,
+                        mMigrationStateManager,
+                        mPreferenceHelper,
+                        mTransactionManager,
+                        mContext);
         mMigrationUiStateManager = migrationUiStateManager;
-        mImportManager = Flags.exportImport() ? new ImportManager(mContext) : null;
+        mExportImportSettingsStorage = exportImportSettingsStorage;
+        mImportManager =
+                Flags.exportImport()
+                        ? new ImportManager(
+                                mContext, mExportImportSettingsStorage, mTransactionManager)
+                        : null;
+        mExportManager = exportManager;
         migrationCleaner.attachTo(migrationStateManager);
         mMigrationUiStateManager.attachTo(migrationStateManager);
         mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
@@ -1237,7 +1260,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         enforceIsForegroundUser(userHandle);
                         mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
                         throwExceptionIfDataSyncInProgress();
-                        AutoDeleteService.setRecordRetentionPeriodInDays(days);
+                        AutoDeleteService.setRecordRetentionPeriodInDays(days, mPreferenceHelper);
                         callback.onResult();
                     } catch (SQLiteException sqLiteException) {
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
@@ -1267,7 +1290,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         throwExceptionIfDataSyncInProgress();
         try {
             mContext.enforceCallingPermission(MANAGE_HEALTH_DATA_PERMISSION, null);
-            return AutoDeleteService.getRecordRetentionPeriodInDays();
+            return AutoDeleteService.getRecordRetentionPeriodInDays(mPreferenceHelper);
         } catch (Exception e) {
             if (e instanceof SecurityException) {
                 throw e;
@@ -1885,13 +1908,16 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
         try {
             mContext.enforceCallingPermission(MANAGE_HEALTH_DATA_PERMISSION, null);
-            ExportImportSettingsStorage.configure(settings);
+            mExportImportSettingsStorage.configure(settings);
 
             HealthConnectThreadScheduler.scheduleInternalTask(
                     () -> {
                         try {
                             ExportImportJobs.schedulePeriodicExportJob(
-                                    mContext, userHandle.getIdentifier());
+                                    userHandle.getIdentifier(),
+                                    mContext,
+                                    mExportImportSettingsStorage,
+                                    mExportManager);
                         } catch (Exception e) {
                             Slog.e(TAG, "Failed to schedule periodic export job.", e);
                         }
@@ -1930,7 +1956,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
                         final Context userContext = mContext.createContextAsUser(userHandle, 0);
                         ScheduledExportStatus status =
-                                ExportImportSettingsStorage.getScheduledExportStatus(userContext);
+                                mExportImportSettingsStorage.getScheduledExportStatus(userContext);
                         callback.onResult(status);
                     } catch (HealthConnectException healthConnectException) {
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
@@ -1953,7 +1979,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         throwExceptionIfDataSyncInProgress();
         try {
             mContext.enforceCallingPermission(MANAGE_HEALTH_DATA_PERMISSION, null);
-            return ExportImportSettingsStorage.getScheduledExportPeriodInDays();
+            return mExportImportSettingsStorage.getScheduledExportPeriodInDays();
         } catch (Exception e) {
             if (e instanceof SecurityException) {
                 throw e;
@@ -1978,7 +2004,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     try {
                         enforceIsForegroundUser(userHandle);
                         mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
-                        ImportStatus status = ExportImportSettingsStorage.getImportStatus();
+                        ImportStatus status = mExportImportSettingsStorage.getImportStatus();
                         callback.onResult(status);
                     } catch (HealthConnectException healthConnectException) {
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
@@ -2107,11 +2133,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
                             attributionSource);
 
-                    // TODO(b/344560623) - Add character limits to CreateMedicalDataSource
-                    // displayName and fhirBaseUri values and enforce limit of 20 sources per
-                    // app.
-
-                    // TODO(b/344560623) - Enforce uniqueness constraint on fhir base uri.
                     MedicalDataSource dataSource =
                             mMedicalDataSourceHelper.createMedicalDataSource(
                                     mContext, request, packageName);
@@ -3013,7 +3034,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 mDeviceInfoHelper,
                 mAppInfoHelper,
                 mHealthDataCategoryPriorityHelper,
-                mPriorityMigrationHelper);
+                mPriorityMigrationHelper,
+                mPreferenceHelper);
     }
 
     private void enforceCallingPackageBelongsToUid(String packageName, int callingUid) {
@@ -3123,14 +3145,16 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     private List<MedicalResourceTypeInfo> getPopulatedMedicalResourceTypeInfos() {
-        // TODO(b/350010200): Get valid types from validator once we have it.
-        List<Integer> validTypes = List.of(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
-        return validTypes.stream()
+        Map<Integer, Set<MedicalDataSource>> resourceTypeToDataSourcesMap =
+                mMedicalResourceHelper.getMedicalResourceTypeToContributingDataSourcesMap();
+        return MedicalResource.VALID_TYPES.stream()
+                .filter(type -> type != MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN)
                 .map(
-                        medicalResourceType -> {
-                            // TODO(b/350014259): Get contributing data sources from DB.
-                            return new MedicalResourceTypeInfo(medicalResourceType, Set.of());
-                        })
+                        medicalResourceType ->
+                                new MedicalResourceTypeInfo(
+                                        medicalResourceType,
+                                        resourceTypeToDataSourcesMap.getOrDefault(
+                                                medicalResourceType, Set.of())))
                 .collect(toList());
     }
 

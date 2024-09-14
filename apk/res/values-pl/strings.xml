@@ -147,10 +147,10 @@
     <string name="total_calories_burned_lowercase_label" msgid="3185370725975873922">"suma spalonych kalorii"</string>
     <string name="total_calories_burned_read_content_description" msgid="1569722345910293531">"Odczytuj dane o sumie spalonych kalorii"</string>
     <string name="total_calories_burned_write_content_description" msgid="2727752180681851608">"Zapisuj dane o sumie spalonych kalorii"</string>
-    <string name="vo2_max_uppercase_label" msgid="6614391499711390476">"Maksymalny pułap tlenowy VO2"</string>
-    <string name="vo2_max_lowercase_label" msgid="824972630000900033">"maksymalny pułap tlenowy VO2"</string>
-    <string name="vo2_max_read_content_description" msgid="8132626885797169882">"Odczytuj dane o maksymalnym pułapie tlenowym VO2"</string>
-    <string name="vo2_max_write_content_description" msgid="4783300275788728546">"Zapisuj dane o maksymalnym pułapie tlenowym VO2"</string>
+    <string name="vo2_max_uppercase_label" msgid="6614391499711390476">"Pułap tlenowy"</string>
+    <string name="vo2_max_lowercase_label" msgid="824972630000900033">"pułap tlenowy"</string>
+    <string name="vo2_max_read_content_description" msgid="8132626885797169882">"Odczytuj dane o pułapie tlenowym"</string>
+    <string name="vo2_max_write_content_description" msgid="4783300275788728546">"Zapisuj dane o pułapie tlenowym"</string>
     <string name="wheelchair_pushes_uppercase_label" msgid="5582991294340226965">"Pchnięcia wózka inwalidzkiego"</string>
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"pchnięcia wózka inwalidzkiego"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Odczytuj dane o pchnięciach wózka inwalidzkiego"</string>
@@ -273,12 +273,9 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Uodpornienie"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"uodpornienie"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Odczytuj dane o uodpornieniu"</string>
-    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
-    <skip />
+    <string name="allergy_intolerance_uppercase_label" msgid="726821034032305942">"Alergie i nietolerancje"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="3259399258428458578">"Alergie i nietolerancje"</string>
+    <string name="allergy_intolerance_content_description" msgid="450723157436883417">"Odczytaj informacje o alergiach i nietolerancjach"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Uważność"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"uważność"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Odczytuj dane o uważności"</string>
@@ -306,6 +303,8 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Wybrany dzień"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Poprzedni dzień"</string>
     <string name="default_error" msgid="7966868260616403475">"Coś poszło nie tak. Spróbuj ponownie."</string>
+    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"Aplikacje z tymi uprawnieniami mogą odczytywać i zapisywać dane dotyczące zdrowia i aktywności fizycznej"</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Określ, które aplikacje mogą mieć dostęp do danych przechowywanych w Health Connect. Kliknij nazwę aplikacji, aby sprawdzić, jakie dane może zapisywać i odczytywać."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Dostęp dozwolony"</string>
@@ -408,6 +407,8 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Otwórz"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Wybierz plik"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Zwolnij miejsce"</string>
+    <!-- no translation found for scheduled_export_on_toast_text (945186472588537310) -->
+    <skip />
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Błąd eksportu danych z Health Connect"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Potrzebne więcej miejsca"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Wystąpił problem z eksportem z dnia <xliff:g id="DATE">%1$s</xliff:g>. Skonfiguruj nowy zaplanowany eksport i spróbuj jeszcze raz."</string>

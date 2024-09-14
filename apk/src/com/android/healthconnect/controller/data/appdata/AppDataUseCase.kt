@@ -72,10 +72,10 @@ constructor(
         }
 
     /** Returns list of all medical permission types to be shown on the HC UI. */
-    suspend fun loadAllMedicalData(): UseCaseResults<List<MedicalPermissionType>> =
+    suspend fun loadAllMedicalData(): UseCaseResults<List<PermissionTypesPerCategory>> =
         withContext(dispatcher) {
             try {
-                val MedicalResourceTypeInfos: List<MedicalResourceTypeInfo> =
+                val medicalResourceTypeInfos: List<MedicalResourceTypeInfo> =
                     suspendCancellableCoroutine { continuation ->
                         healthConnectManager.queryAllMedicalResourceTypeInfos(
                             Runnable::run,
@@ -83,9 +83,16 @@ constructor(
                         )
                     }
                 val medicalPermissionTypes =
-                    MedicalResourceTypeInfos.filter { it.contributingDataSources.isNotEmpty() }
+                    medicalResourceTypeInfos
+                        .filter { it.contributingDataSources.isNotEmpty() }
                         .map { fromMedicalResourceType(it.medicalResourceType) }
-                UseCaseResults.Success(medicalPermissionTypes)
+                if (medicalPermissionTypes.isEmpty()) {
+                    UseCaseResults.Success(listOf())
+                } else {
+                    UseCaseResults.Success(
+                        listOf(PermissionTypesPerCategory(MEDICAL, medicalPermissionTypes))
+                    )
+                }
             } catch (e: Exception) {
                 Log.e("TAG_ERROR", "Loading error ", e)
                 UseCaseResults.Failed(e)
@@ -206,7 +213,7 @@ constructor(
  * Represents Health Category group to be shown in health connect screens.
  *
  * @param category Category id
- * @param data [FitnessPermissionType]s within the category that have data written by given app.
+ * @param data [HealthPermissionType]s within the category that have data written by given app.
  */
 data class PermissionTypesPerCategory(
     val category: @HealthDataCategoryInt Int,

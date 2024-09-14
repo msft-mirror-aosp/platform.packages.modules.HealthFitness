@@ -21,7 +21,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeletionTypeEntries
+import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeletionTypeHealthPermissionTypes
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteEntriesUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesUseCase
 import com.android.healthconnect.controller.shared.DataType
@@ -33,8 +35,9 @@ import kotlinx.coroutines.launch
 class DeletionViewModel
 @Inject
 constructor(
-        private val deletePermissionTypesUseCase: DeletePermissionTypesUseCase,
-        private val deleteEntriesUseCase: DeleteEntriesUseCase) : ViewModel() {
+    private val deletePermissionTypesUseCase: DeletePermissionTypesUseCase,
+    private val deleteEntriesUseCase: DeleteEntriesUseCase,
+) : ViewModel() {
 
     companion object {
         private const val TAG = "DeletionViewModel"
@@ -42,7 +45,7 @@ constructor(
 
     private lateinit var deletionType: DeletionType
 
-    private var setOfPermissionTypesToBeDeleted: Set<FitnessPermissionType> = setOf()
+    private var setOfPermissionTypesToBeDeleted: Set<HealthPermissionType> = setOf()
 
     private var setOfEntriesToBeDeleted: Set<String> = setOf()
 
@@ -69,14 +72,14 @@ constructor(
                 _deletionProgress.value = (DeletionProgress.PROGRESS_INDICATOR_CAN_START)
 
                 when (deletionType) {
-                    is DeletionType.DeletionTypeHealthPermissionTypes -> {
+                    is DeletionTypeHealthPermissionTypes -> {
                         deletePermissionTypesUseCase.invoke(
-                            deletionType as DeletionType.DeletionTypeHealthPermissionTypes)
+                            deletionType as DeletionTypeHealthPermissionTypes
+                        )
                         _permissionTypesReloadNeeded.postValue(true)
                     }
-                    is DeletionType.DeletionTypeEntries -> {
-                        deleteEntriesUseCase.invoke(
-                                deletionType as DeletionType.DeletionTypeEntries)
+                    is DeletionTypeEntries -> {
+                        deleteEntriesUseCase.invoke(deletionType as DeletionTypeEntries)
                         _entriesReloadNeeded.postValue(true)
                     }
                     else -> {
@@ -103,27 +106,31 @@ constructor(
         _entriesReloadNeeded.postValue(false)
     }
 
-    fun setPermissionTypesDeleteSet(permissionTypes: Set<FitnessPermissionType>) {
+    fun setPermissionTypesDeleteSet(permissionTypes: Set<HealthPermissionType>) {
         if (permissionTypes.isNotEmpty()) {
             setOfPermissionTypesToBeDeleted = permissionTypes.toSet()
-            deletionType = DeletionType.DeletionTypeHealthPermissionTypes((setOfPermissionTypesToBeDeleted).toList())
+            deletionType =
+                DeletionType.DeletionTypeHealthPermissionTypes(
+                    (setOfPermissionTypesToBeDeleted).toList()
+                )
         }
     }
 
-    fun setEntriesDeleteSet(entries: Set<String>, dataType: DataType){
-        if (entries.isNotEmpty()){
+    fun setEntriesDeleteSet(entries: Set<String>, dataType: DataType) {
+        if (entries.isNotEmpty()) {
             setOfEntriesToBeDeleted = entries.toSet()
-            deletionType = DeletionType.DeletionTypeEntries((setOfEntriesToBeDeleted).toList(), dataType)
+            deletionType =
+                DeletionType.DeletionTypeEntries((setOfEntriesToBeDeleted).toList(), dataType)
         }
     }
 
     @VisibleForTesting
-    fun getPermissionTypesDeleteSet(): Set<FitnessPermissionType> {
+    fun getPermissionTypesDeleteSet(): Set<HealthPermissionType> {
         return setOfPermissionTypesToBeDeleted
     }
 
     @VisibleForTesting
-    fun getEntriesDeleteSet(): Set<String>{
+    fun getEntriesDeleteSet(): Set<String> {
         return setOfEntriesToBeDeleted
     }
 
@@ -133,6 +140,6 @@ constructor(
         PROGRESS_INDICATOR_CAN_START,
         PROGRESS_INDICATOR_CAN_END,
         COMPLETED,
-        FAILED
+        FAILED,
     }
 }
