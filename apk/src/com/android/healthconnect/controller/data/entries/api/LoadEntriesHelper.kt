@@ -132,7 +132,7 @@ constructor(
 
     /** Returns a list of records from a MedicalPermissionType. */
     suspend fun readMedicalRecords(input: LoadMedicalEntriesInput): List<MedicalResource> {
-        val medicalResourceType = toMedicalResourceType(input.permissionType)
+        val medicalResourceType = toMedicalResourceType(input.medicalPermissionType)
 
         if (medicalResourceType == MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN) {
             return listOf()

@@ -57,11 +57,11 @@ public final class MigrationNotificationSender {
     private final MigrationNotificationFactory mNotificationFactory;
     private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
 
-    public MigrationNotificationSender(@NonNull Context context) {
+    public MigrationNotificationSender(
+            Context context, HealthConnectDeviceConfigManager healthConnectDeviceConfigManager) {
         mContext = context;
         mNotificationFactory = new MigrationNotificationFactory(mContext);
-        mHealthConnectDeviceConfigManager =
-                HealthConnectDeviceConfigManager.getInitialisedInstance();
+        mHealthConnectDeviceConfigManager = healthConnectDeviceConfigManager;
     }
 
     /** Sends a notification to the current user based on the notification type. */

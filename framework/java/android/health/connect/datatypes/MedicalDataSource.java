@@ -36,6 +36,9 @@ import java.util.UUID;
 /**
  * Captures the data source information of medical data. All {@link MedicalResource}s are associated
  * with a {@code MedicalDataSource}.
+ *
+ * <p>The medical data is represented using the <a href="https://hl7.org/fhir/">Fast Healthcare
+ * Interoperability Resources (FHIR)</a> standard.
  */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class MedicalDataSource implements Parcelable {

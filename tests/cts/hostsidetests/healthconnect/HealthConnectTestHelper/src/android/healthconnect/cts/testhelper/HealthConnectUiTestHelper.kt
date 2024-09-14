@@ -88,18 +88,15 @@ class HealthConnectUiTestHelper {
             listOf(
                 TestHelperUtils.getBloodPressureRecord(),
                 TestHelperUtils.getHeartRateRecord(),
-                TestHelperUtils.getStepsRecord()),
-            mHealthConnectManager)
+                TestHelperUtils.getStepsRecord(),
+            ),
+            mHealthConnectManager,
+        )
         context.launchMainActivity {
             UiTestUtils.skipOnboardingIfAppears()
-            UiTestUtils.waitDisplayed(By.text("Data and access"))
+            UiTestUtils.waitDisplayed(By.text("App permissions"))
             UiTestUtils.scrollDownTo(By.text("Manage data"))
-            UiTestUtils.clickOnText("Data and access")
-
-            UiTestUtils.waitDisplayed(By.text("Browse data"))
-            UiTestUtils.waitDisplayed(By.text("Manage data"))
-
-            UiTestUtils.waitDisplayed(By.text("Delete all data"))
+            UiTestUtils.clickOnText("Manage data")
         }
     }
 }
