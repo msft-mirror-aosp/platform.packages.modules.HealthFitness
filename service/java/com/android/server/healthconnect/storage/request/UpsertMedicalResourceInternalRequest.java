@@ -20,14 +20,10 @@ import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
 import android.annotation.NonNull;
-import android.annotation.Nullable;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.FhirResource.FhirResourceType;
 import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
-
-import java.util.Objects;
-import java.util.UUID;
 
 /**
  * Internal representation of {@link UpsertMedicalResourceRequest}.
@@ -35,27 +31,12 @@ import java.util.UUID;
  * @hide
  */
 public final class UpsertMedicalResourceInternalRequest {
-    @Nullable private UUID mUuid;
     @NonNull private String mDataSourceId = "";
     @NonNull private String mData = "";
     @MedicalResourceType private int mMedicalResourceType;
     @FhirResourceType private int mFhirResourceType;
     @NonNull private String mFhirResourceId = "";
     @NonNull private String mFhirVersion = "";
-
-    /** Returns the unique identifier of this data. */
-    @Nullable
-    public UUID getUuid() {
-        return mUuid;
-    }
-
-    /** Returns this object with the identifier. */
-    @NonNull
-    public UpsertMedicalResourceInternalRequest setUuid(@Nullable UUID uuid) {
-        requireNonNull(uuid);
-        mUuid = uuid;
-        return this;
-    }
 
     /** Returns The data source ID where the data comes from. */
     @NonNull
@@ -146,8 +127,7 @@ public final class UpsertMedicalResourceInternalRequest {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof UpsertMedicalResourceInternalRequest that)) return false;
-        return Objects.equals(getUuid(), that.getUuid())
-                && getDataSourceId().equals(that.getDataSourceId())
+        return getDataSourceId().equals(that.getDataSourceId())
                 && getMedicalResourceType() == that.getMedicalResourceType()
                 && getFhirResourceType() == that.getFhirResourceType()
                 && getFhirResourceId().equals(that.getFhirResourceId())
@@ -158,7 +138,6 @@ public final class UpsertMedicalResourceInternalRequest {
     @Override
     public int hashCode() {
         return hash(
-                getUuid(),
                 getDataSourceId(),
                 getMedicalResourceType(),
                 getFhirResourceType(),

@@ -225,7 +225,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
     @GuardedBy("mLock")
     private boolean mAggregationSourceControlsEnabled = true;
 
-    @VisibleForTesting(visibility = VisibleForTesting.Visibility.PACKAGE)
     public static HealthConnectDeviceConfigManager initializeInstance(Context context) {
         if (sDeviceConfigManager == null) {
             sDeviceConfigManager = new HealthConnectDeviceConfigManager();

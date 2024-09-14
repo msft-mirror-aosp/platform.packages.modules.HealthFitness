@@ -16,86 +16,101 @@
 package com.android.healthconnect.controller.tests.selectabledeletion.api
 
 import android.health.connect.DeleteUsingFiltersRequest
-import android.health.connect.HealthConnectManager
-import android.health.connect.datatypes.CyclingPedalingCadenceRecord
-import android.health.connect.datatypes.ExerciseSessionRecord
-import android.health.connect.datatypes.HeartRateRecord
-import android.health.connect.datatypes.MenstruationFlowRecord
-import android.health.connect.datatypes.MenstruationPeriodRecord
-import android.health.connect.datatypes.SleepSessionRecord
-import android.health.connect.datatypes.StepsCadenceRecord
-import android.health.connect.datatypes.StepsRecord
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeletionTypeHealthPermissionTypes
+import com.android.healthconnect.controller.selectabledeletion.api.DeleteFitnessPermissionTypesUseCase
+import com.android.healthconnect.controller.selectabledeletion.api.DeleteMedicalPermissionTypesUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesUseCase
-import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
-import org.mockito.Matchers.any
-import org.mockito.Mockito
-import org.mockito.Mockito.doAnswer
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyZeroInteractions
 import org.mockito.MockitoAnnotations
-import org.mockito.invocation.InvocationOnMock
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
 class DeletePermissionTypesUseCaseTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     private lateinit var useCase: DeletePermissionTypesUseCase
-    var manager: HealthConnectManager = Mockito.mock(HealthConnectManager::class.java)
+
+    private val deleteFitnessPermissionTypesUseCase: DeleteFitnessPermissionTypesUseCase =
+        mock(DeleteFitnessPermissionTypesUseCase::class.java)
+    private val deleteMedicalPermissionTypesUseCase: DeleteMedicalPermissionTypesUseCase =
+        mock(DeleteMedicalPermissionTypesUseCase::class.java)
 
     @Captor lateinit var filtersCaptor: ArgumentCaptor<DeleteUsingFiltersRequest>
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        useCase = DeletePermissionTypesUseCase(manager, Dispatchers.Main)
+        useCase =
+            DeletePermissionTypesUseCase(
+                deleteFitnessPermissionTypesUseCase,
+                deleteMedicalPermissionTypesUseCase,
+                Dispatchers.Main,
+            )
     }
 
     @Test
-    fun invoke_deletePermissionTypes_callsHealthManager() = runTest {
-        doAnswer(prepareAnswer())
-            .`when`(manager)
-            .deleteRecords(any(DeleteUsingFiltersRequest::class.java), any(), any())
+    fun permissionTypes_emptyDeleteMethod_noDeletionInvoked() = runTest {
+        useCase.invoke(DeletionTypeHealthPermissionTypes(listOf()))
+        advanceUntilIdle()
 
-        val deletePermissionType =
-            DeletionTypeHealthPermissionTypes(
-                listOf(
-                    FitnessPermissionType.STEPS,
-                    FitnessPermissionType.HEART_RATE,
-                    FitnessPermissionType.SLEEP,
-                    FitnessPermissionType.EXERCISE,
-                    FitnessPermissionType.MENSTRUATION))
-
-        useCase.invoke(deletePermissionType)
-
-        Mockito.verify(manager, Mockito.times(1))
-            .deleteRecords(filtersCaptor.capture(), any(), any())
-
-        assertThat(filtersCaptor.value.timeRangeFilter).isNull()
-        assertThat(filtersCaptor.value.dataOrigins).isEmpty()
-        assertThat(filtersCaptor.value.recordTypes)
-            .containsExactly(
-                StepsRecord::class.java,
-                StepsCadenceRecord::class.java,
-                HeartRateRecord::class.java,
-                SleepSessionRecord::class.java,
-                ExerciseSessionRecord::class.java,
-                MenstruationFlowRecord::class.java,
-                MenstruationPeriodRecord::class.java,
-                CyclingPedalingCadenceRecord::class.java)
+        verifyZeroInteractions(deleteFitnessPermissionTypesUseCase)
+        verifyZeroInteractions(deleteMedicalPermissionTypesUseCase)
     }
 
-    private fun prepareAnswer(): (InvocationOnMock) -> Nothing? {
-        val answer = { _: InvocationOnMock -> null }
-        return answer
+    @Test
+    fun permissionTypes_delete_deletionInvokedCorrectly() = runTest {
+        useCase.invoke(DeletionTypeHealthPermissionTypes(listOf(FitnessPermissionType.DISTANCE)))
+        advanceUntilIdle()
+
+        val expectedDeletionType =
+            DeletionTypeHealthPermissionTypes(listOf(FitnessPermissionType.DISTANCE))
+        verify(deleteFitnessPermissionTypesUseCase).invoke(expectedDeletionType)
+        verifyZeroInteractions(deleteMedicalPermissionTypesUseCase)
+    }
+
+    @Test
+    fun permissionTypes_deleteFitnessAndMedical_deletionInvokedCorrectly() = runTest {
+        useCase.invoke(
+            DeletionTypeHealthPermissionTypes(
+                listOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.IMMUNIZATION)
+            )
+        )
+        advanceUntilIdle()
+
+        val expectedDeletionType =
+            DeletionTypeHealthPermissionTypes(
+                listOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.IMMUNIZATION)
+            )
+        verify(deleteFitnessPermissionTypesUseCase).invoke(expectedDeletionType)
+        verify(deleteMedicalPermissionTypesUseCase).invoke(expectedDeletionType)
+    }
+
+    @Test
+    fun permissionTypes_deleteMedical_deletionInvokedCorrectly() = runTest {
+        useCase.invoke(
+            DeletionTypeHealthPermissionTypes(listOf(MedicalPermissionType.IMMUNIZATION))
+        )
+        advanceUntilIdle()
+
+        val expectedDeletionType =
+            DeletionTypeHealthPermissionTypes(listOf(MedicalPermissionType.IMMUNIZATION))
+        verify(deleteMedicalPermissionTypesUseCase).invoke(expectedDeletionType)
+        verifyZeroInteractions(deleteFitnessPermissionTypesUseCase)
     }
 }

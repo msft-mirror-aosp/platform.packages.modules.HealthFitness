@@ -69,11 +69,11 @@ public class MedicalResourceIndicesHelper {
 
     /** Creates {@link UpsertTableRequest} for medical_resource_indices table. */
     @NonNull
-    public static UpsertTableRequest getChildTableUpsertRequests(int medicalResourceType) {
+    public static ContentValues getContentValues(long parentRowId, int medicalResourceType) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(MEDICAL_RESOURCE_TYPE, medicalResourceType);
-        return new UpsertTableRequest(MEDICAL_RESOURCE_INDICES_TABLE_NAME, contentValues)
-                .setParentColumnForChildTables(MEDICAL_RESOURCE_ID);
+        contentValues.put(MEDICAL_RESOURCE_ID, parentRowId);
+        return contentValues;
     }
 
     @NonNull

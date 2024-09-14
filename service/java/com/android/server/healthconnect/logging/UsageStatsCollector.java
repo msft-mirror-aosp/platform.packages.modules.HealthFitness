@@ -49,7 +49,7 @@ final class UsageStatsCollector {
 
     private final PreferenceHelper mPreferenceHelper;
 
-    UsageStatsCollector(@NonNull Context context, @NonNull UserHandle userHandle) {
+    UsageStatsCollector(Context context, UserHandle userHandle, PreferenceHelper preferenceHelper) {
         Objects.requireNonNull(userHandle);
         Objects.requireNonNull(context);
 
@@ -58,7 +58,7 @@ final class UsageStatsCollector {
                 context.createContextAsUser(userHandle, /* flag= */ 0)
                         .getPackageManager()
                         .getInstalledPackages(PackageManager.PackageInfoFlags.of(GET_PERMISSIONS));
-        mPreferenceHelper = PreferenceHelper.getInstance();
+        mPreferenceHelper = preferenceHelper;
     }
 
     /**

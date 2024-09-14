@@ -2069,6 +2069,9 @@ public class HealthConnectManager {
     /**
      * Inserts or updates a list of {@link MedicalResource}s into the HealthConnect database.
      *
+     * <p>Medical data is represented using the <a href="https://hl7.org/fhir/">Fast Healthcare
+     * Interoperability Resources (FHIR)</a> standard.
+     *
      * <p>The returned list of {@link MedicalResource}s will be in the same order as the {@code
      * requests}.
      *
@@ -2417,6 +2420,9 @@ public class HealthConnectManager {
      *
      * <p>A {@link MedicalDataSource} needs to be created before any {@link MedicalResource}s for
      * that source can be inserted.
+     *
+     * <p>Medical data is represented using the <a href="https://hl7.org/fhir/">Fast Healthcare
+     * Interoperability Resources (FHIR)</a> standard.
      *
      * <p>The following rules apply to {@link MedicalDataSource} creation.
      *

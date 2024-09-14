@@ -22,11 +22,11 @@ android_test {
     team: "trendy_team_android_health",
     defaults: ["cts_defaults"],
     libs: [
-        "android.test.runner",
-        "android.test.base",
-        "framework-healthfitness",
-        "framework-configinfrastructure",
-        "framework-sdkextensions",
+        "android.test.runner.stubs.system",
+        "android.test.base.stubs.system",
+        "framework-healthfitness.stubs.module_lib",
+        "framework-configinfrastructure.stubs.module_lib",
+        "framework-sdkextensions.stubs.module_lib",
     ],
     srcs: [
         ":healthfitness-cts-testapp-srcs",
@@ -77,9 +77,9 @@ android_test {
     team: "trendy_team_android_health",
     defaults: ["cts_defaults"],
     libs: [
-        "android.test.runner",
-        "android.test.base",
-        "framework-healthfitness",
+        "android.test.runner.stubs.test",
+        "android.test.base.stubs.test",
+        "framework-healthfitness.stubs.system",
     ],
     srcs: [
         "src/android/healthconnect/cts/nopermission/HealthConnectManagerNoPermissionsGrantedTest.java",
@@ -117,9 +117,9 @@ android_test {
     team: "trendy_team_android_health",
     defaults: ["cts_defaults"],
     libs: [
-        "android.test.runner",
-        "android.test.base",
-        "framework-healthfitness",
+        "android.test.runner.stubs.system",
+        "android.test.base.stubs.system",
+        "framework-healthfitness.stubs.module_lib",
     ],
     srcs: [
         "src/android/healthconnect/cts/nopermission/HealthConnectManagerNotAllPermissionsAreGrantedTest.java",
@@ -154,11 +154,11 @@ android_test {
     name: "CtsHealthFitnessDeviceTestCasesRateLimiter",
     defaults: ["cts_defaults"],
     libs: [
-        "android.test.runner",
-        "android.test.base",
-        "framework-healthfitness",
-        "framework-configinfrastructure",
-        "framework-sdkextensions",
+        "android.test.runner.stubs.test",
+        "android.test.base.stubs.test",
+        "framework-healthfitness.stubs.system",
+        "framework-configinfrastructure.stubs.system",
+        "framework-sdkextensions.stubs.system",
     ],
     srcs: [
         "src/android/healthconnect/cts/ratelimiter/*.java",
@@ -192,10 +192,10 @@ android_test {
     team: "trendy_team_android_health",
     defaults: ["cts_defaults"],
     libs: [
-        "android.test.runner",
-        "android.test.base",
-        "android.test.mock",
-        "framework-healthfitness",
+        "android.test.runner.stubs.test",
+        "android.test.base.stubs.test",
+        "android.test.mock.stubs.system",
+        "framework-healthfitness.stubs.system",
     ],
     srcs: [
         ":healthfitness-cts-testapp-srcs",
@@ -240,10 +240,10 @@ android_test {
     name: "CtsHealthFitnessShowMigrationInfoIntentAbsentTests",
     defaults: ["cts_defaults"],
     libs: [
-        "android.test.runner",
-        "android.test.base",
-        "framework-healthfitness",
-        "framework-sdkextensions",
+        "android.test.runner.stubs.test",
+        "android.test.base.stubs.test",
+        "framework-healthfitness.stubs.system",
+        "framework-sdkextensions.stubs.system",
     ],
     srcs: [
         "src/android/healthconnect/cts/showmigrationinfointent/ShowMigrationInfoIntentAbsentTest.java",
@@ -276,11 +276,11 @@ android_test {
     team: "trendy_team_android_health",
     defaults: ["cts_defaults"],
     libs: [
-        "android.test.runner",
-        "android.test.base",
-        "framework-healthfitness",
-        "framework-configinfrastructure",
-        "framework-sdkextensions",
+        "android.test.runner.stubs.system",
+        "android.test.base.stubs.system",
+        "framework-healthfitness.stubs.module_lib",
+        "framework-configinfrastructure.stubs.module_lib",
+        "framework-sdkextensions.stubs.module_lib",
     ],
     srcs: [
         "src/android/healthconnect/cts/historicaccess/HistoricAccessLimitWithPermissionTest.java",

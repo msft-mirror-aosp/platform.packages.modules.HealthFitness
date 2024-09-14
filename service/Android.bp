@@ -41,8 +41,8 @@ java_sdk_library {
     libs: [
         "framework-healthfitness.impl",
         "androidx.annotation_annotation",
-        "framework-sdkextensions",
-        "framework-configinfrastructure",
+        "framework-sdkextensions.stubs.module_lib",
+        "framework-configinfrastructure.stubs.module_lib",
         "keepanno-annotations",
         "modules-utils-preconditions",
         // Keeping aconfig lib deps in "libs" instead of "static_libs" because we already have them

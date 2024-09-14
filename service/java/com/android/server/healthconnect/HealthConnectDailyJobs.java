@@ -34,6 +34,7 @@ import android.os.UserHandle;
 import com.android.server.healthconnect.logging.DailyLoggingService;
 import com.android.server.healthconnect.storage.AutoDeleteService;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -74,10 +75,13 @@ public class HealthConnectDailyJobs {
     public static void execute(
             @NonNull Context context,
             JobParameters params,
-            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            PreferenceHelper preferenceHelper) {
         int userId = params.getExtras().getInt(EXTRA_USER_ID, /* defaultValue= */ DEFAULT_INT);
 
-        AutoDeleteService.startAutoDelete(context, healthDataCategoryPriorityHelper);
-        DailyLoggingService.logDailyMetrics(context, UserHandle.getUserHandleForUid(userId));
+        AutoDeleteService.startAutoDelete(
+                context, healthDataCategoryPriorityHelper, preferenceHelper);
+        DailyLoggingService.logDailyMetrics(
+                context, UserHandle.getUserHandleForUid(userId), preferenceHelper);
     }
 }

@@ -20,7 +20,6 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.MEDICAL_RESOURCE_TABLE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getPrimaryColumn;
-import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getChildTableUpsertRequests;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getCreateMedicalResourceIndicesTableRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getParentColumnReference;
@@ -33,7 +32,6 @@ import android.content.ContentValues;
 import android.util.Pair;
 
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
-import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 
 import org.junit.Test;
 
@@ -60,14 +58,15 @@ public class MedicalResourceIndicesHelperTest {
     }
 
     @Test
-    public void getUpsertTableRequest_correctResult() {
-        UpsertTableRequest upsertRequest =
-                getChildTableUpsertRequests(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
-        ContentValues contentValues = upsertRequest.getContentValues();
+    public void getContentValues_correctResult() {
+        long rowId = 1L;
+        ContentValues contentValues =
+                MedicalResourceIndicesHelper.getContentValues(
+                        rowId, MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
 
-        assertThat(upsertRequest.getTable()).isEqualTo(getTableName());
-        assertThat(contentValues.size()).isEqualTo(1);
         assertThat(contentValues.get(getMedicalResourceTypeColumnName()))
+                .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+        assertThat(contentValues.get(MedicalResourceIndicesHelper.getParentColumnReference()))
                 .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
     }
 }

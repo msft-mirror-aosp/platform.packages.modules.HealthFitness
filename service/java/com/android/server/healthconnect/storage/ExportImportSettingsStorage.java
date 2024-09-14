@@ -60,12 +60,18 @@ public final class ExportImportSettingsStorage {
 
     private static final String TAG = "HealthConnectExportImport";
 
+    private final PreferenceHelper mPreferenceHelper;
+
+    public ExportImportSettingsStorage(PreferenceHelper preferenceHelper) {
+        mPreferenceHelper = preferenceHelper;
+    }
+
     /**
      * Configures the settings for the scheduled export of Health Connect data.
      *
      * @param settings Settings to use for the scheduled export. Use null to clear the settings.
      */
-    public static void configure(@Nullable ScheduledExportSettings settings) {
+    public void configure(@Nullable ScheduledExportSettings settings) {
         if (settings != null) {
             configureNonNull(settings);
         } else {
@@ -74,98 +80,89 @@ public final class ExportImportSettingsStorage {
     }
 
     /** Configures the settings for the scheduled export of Health Connect data. */
-    private static void configureNonNull(@NonNull ScheduledExportSettings settings) {
+    private void configureNonNull(@NonNull ScheduledExportSettings settings) {
         if (settings.getUri() != null) {
             Uri uri = settings.getUri();
-            PreferenceHelper.getInstance()
-                    .insertOrReplacePreference(EXPORT_URI_PREFERENCE_KEY, uri.toString());
+            mPreferenceHelper.insertOrReplacePreference(EXPORT_URI_PREFERENCE_KEY, uri.toString());
             String lastExportError =
-                    PreferenceHelper.getInstance().getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY);
+                    mPreferenceHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY);
             if (lastExportError != null) {
-                PreferenceHelper.getInstance().removeKey(LAST_EXPORT_ERROR_PREFERENCE_KEY);
+                mPreferenceHelper.removeKey(LAST_EXPORT_ERROR_PREFERENCE_KEY);
             }
         }
 
         if (settings.getPeriodInDays() != DEFAULT_INT) {
             String periodInDays = String.valueOf(settings.getPeriodInDays());
-            PreferenceHelper.getInstance()
-                    .insertOrReplacePreference(EXPORT_PERIOD_PREFERENCE_KEY, periodInDays);
+            mPreferenceHelper.insertOrReplacePreference(EXPORT_PERIOD_PREFERENCE_KEY, periodInDays);
         }
     }
 
     /** Clears the settings for the scheduled export of Health Connect data. */
-    private static void clear() {
-        PreferenceHelper.getInstance().removeKey(EXPORT_URI_PREFERENCE_KEY);
-        PreferenceHelper.getInstance().removeKey(EXPORT_PERIOD_PREFERENCE_KEY);
+    private void clear() {
+        mPreferenceHelper.removeKey(EXPORT_URI_PREFERENCE_KEY);
+        mPreferenceHelper.removeKey(EXPORT_PERIOD_PREFERENCE_KEY);
     }
 
     /** Gets scheduled export URI for exporting Health Connect data. */
-    public static Uri getUri() {
-        String result = PreferenceHelper.getInstance().getPreference(EXPORT_URI_PREFERENCE_KEY);
+    public Uri getUri() {
+        String result = mPreferenceHelper.getPreference(EXPORT_URI_PREFERENCE_KEY);
         if (result == null) throw new IllegalArgumentException("Export URI cannot be null.");
         return Uri.parse(result);
     }
 
     /** Get the uri of the last successful export. */
-    public static @Nullable Uri getLastSuccessfulExportUri() {
-        String result =
-                PreferenceHelper.getInstance()
-                        .getPreference(LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY);
+    public @Nullable Uri getLastSuccessfulExportUri() {
+        String result = mPreferenceHelper.getPreference(LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY);
         return result == null ? null : Uri.parse(result);
     }
 
     /** Get the time of the last successful export. */
-    public static @Nullable Instant getLastSuccessfulExportTime() {
-        String result =
-                PreferenceHelper.getInstance().getPreference(LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY);
+    public @Nullable Instant getLastSuccessfulExportTime() {
+        String result = mPreferenceHelper.getPreference(LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY);
         return result == null ? null : Instant.ofEpochMilli(Long.parseLong(result));
     }
 
     /** Gets scheduled export period for exporting Health Connect data. */
-    public static int getScheduledExportPeriodInDays() {
-        String result = PreferenceHelper.getInstance().getPreference(EXPORT_PERIOD_PREFERENCE_KEY);
+    public int getScheduledExportPeriodInDays() {
+        String result = mPreferenceHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY);
 
         if (result == null) return 0;
         return Integer.parseInt(result);
     }
 
     /** Set the last successful export time for the currently configured export. */
-    public static void setLastSuccessfulExport(Instant instant, Uri uri) {
-        PreferenceHelper.getInstance()
-                .insertOrReplacePreference(
-                        LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY,
-                        String.valueOf(instant.toEpochMilli()));
-        PreferenceHelper.getInstance().removeKey(LAST_EXPORT_ERROR_PREFERENCE_KEY);
-        PreferenceHelper.getInstance()
-                .insertOrReplacePreference(
-                        LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY, uri.toString());
+    public void setLastSuccessfulExport(Instant instant, Uri uri) {
+        mPreferenceHelper.insertOrReplacePreference(
+                LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY, String.valueOf(instant.toEpochMilli()));
+        mPreferenceHelper.removeKey(LAST_EXPORT_ERROR_PREFERENCE_KEY);
+        mPreferenceHelper.insertOrReplacePreference(
+                LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY, uri.toString());
     }
 
     /** Set errors and time during the last failed export attempt. */
-    public static void setLastExportError(
+    public void setLastExportError(
             @ScheduledExportStatus.DataExportError int error, Instant instant) {
-        PreferenceHelper.getInstance()
-                .insertOrReplacePreference(LAST_EXPORT_ERROR_PREFERENCE_KEY, String.valueOf(error));
-        PreferenceHelper.getInstance()
-                .insertOrReplacePreference(
-                        LAST_FAILED_EXPORT_PREFERENCE_KEY, String.valueOf(instant.toEpochMilli()));
+        mPreferenceHelper.insertOrReplacePreference(
+                LAST_EXPORT_ERROR_PREFERENCE_KEY, String.valueOf(error));
+        mPreferenceHelper.insertOrReplacePreference(
+                LAST_FAILED_EXPORT_PREFERENCE_KEY, String.valueOf(instant.toEpochMilli()));
     }
 
     /** Get the status of the currently scheduled export. */
-    public static ScheduledExportStatus getScheduledExportStatus(Context context) {
-        PreferenceHelper prefHelper = PreferenceHelper.getInstance();
-        String lastExportTime = prefHelper.getPreference(LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY);
-        String lastFailedExportTime = prefHelper.getPreference(LAST_FAILED_EXPORT_PREFERENCE_KEY);
-        String lastExportError = prefHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY);
-        String periodInDays = prefHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY);
+    public ScheduledExportStatus getScheduledExportStatus(Context context) {
+        String lastExportTime =
+                mPreferenceHelper.getPreference(LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY);
+        String lastFailedExportTime =
+                mPreferenceHelper.getPreference(LAST_FAILED_EXPORT_PREFERENCE_KEY);
+        String lastExportError = mPreferenceHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY);
+        String periodInDays = mPreferenceHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY);
 
         String lastExportFileName = null;
         String lastExportAppName = null;
         String nextExportFileName = null;
         String nextExportAppName = null;
 
-        String nextExportUriString =
-                PreferenceHelper.getInstance().getPreference(EXPORT_URI_PREFERENCE_KEY);
+        String nextExportUriString = mPreferenceHelper.getPreference(EXPORT_URI_PREFERENCE_KEY);
         if (nextExportUriString != null) {
             Uri uri = Uri.parse(nextExportUriString);
             nextExportAppName = getExportAppName(context, uri);
@@ -173,8 +170,7 @@ public final class ExportImportSettingsStorage {
         }
 
         String lastSuccessfulExportUriString =
-                PreferenceHelper.getInstance()
-                        .getPreference(LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY);
+                mPreferenceHelper.getPreference(LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY);
         if (lastSuccessfulExportUriString != null) {
             Uri uri = Uri.parse(lastSuccessfulExportUriString);
             lastExportAppName = getExportAppName(context, uri);
@@ -203,24 +199,23 @@ public final class ExportImportSettingsStorage {
     }
 
     /** Set to true when an import starts and to false when a data import completes */
-    public static void setImportOngoing(boolean importOngoing) {
-        PreferenceHelper.getInstance()
-                .insertOrReplacePreference(
-                        IMPORT_ONGOING_PREFERENCE_KEY, String.valueOf(importOngoing));
+    public void setImportOngoing(boolean importOngoing) {
+        mPreferenceHelper.insertOrReplacePreference(
+                IMPORT_ONGOING_PREFERENCE_KEY, String.valueOf(importOngoing));
     }
 
     /** Set errors during the last failed import attempt. */
-    public static void setLastImportError(@ImportStatus.DataImportError int error) {
-        PreferenceHelper.getInstance()
-                .insertOrReplacePreference(LAST_IMPORT_ERROR_PREFERENCE_KEY, String.valueOf(error));
+    public void setLastImportError(@ImportStatus.DataImportError int error) {
+        mPreferenceHelper.insertOrReplacePreference(
+                LAST_IMPORT_ERROR_PREFERENCE_KEY, String.valueOf(error));
     }
 
     /** Get the status of the last data import. */
-    public static ImportStatus getImportStatus() {
-        PreferenceHelper prefHelper = PreferenceHelper.getInstance();
-        String lastImportError = prefHelper.getPreference(LAST_IMPORT_ERROR_PREFERENCE_KEY);
+    public ImportStatus getImportStatus() {
+        String lastImportError = mPreferenceHelper.getPreference(LAST_IMPORT_ERROR_PREFERENCE_KEY);
         boolean importOngoing =
-                Boolean.parseBoolean(prefHelper.getPreference(IMPORT_ONGOING_PREFERENCE_KEY));
+                Boolean.parseBoolean(
+                        mPreferenceHelper.getPreference(IMPORT_ONGOING_PREFERENCE_KEY));
 
         return new ImportStatus(
                 lastImportError == null

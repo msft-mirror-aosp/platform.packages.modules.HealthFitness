@@ -17,7 +17,9 @@ class DeletionTypeTest {
             DeletionType.DeletionTypeHealthPermissionTypes(
                 listOf(
                     FitnessPermissionType.ACTIVE_CALORIES_BURNED,
-                    FitnessPermissionType.BLOOD_GLUCOSE))
+                    FitnessPermissionType.BLOOD_GLUCOSE,
+                )
+            )
 
         val parcel = Parcel.obtain()
         deletionType.writeToParcel(parcel, 0)
@@ -27,7 +29,8 @@ class DeletionTypeTest {
             DeletionType.DeletionTypeHealthPermissionTypes.CREATOR.createFromParcel(parcel)
 
         assertTrue(
-            recreatedDeletionType.fitnessPermissionTypes == deletionType.fitnessPermissionTypes)
+            recreatedDeletionType.healthPermissionTypes == deletionType.healthPermissionTypes
+        )
         assertTrue(recreatedDeletionType.hasPermissionTypes)
         assertTrue(!recreatedDeletionType.hasAppData)
         assertTrue(!recreatedDeletionType.hasEntryIds)
@@ -37,7 +40,9 @@ class DeletionTypeTest {
     fun deletionTypeAppData_isParcelable() {
         val deletionType =
             DeletionType.DeletionTypeAppData(
-                packageName = TEST_APP_PACKAGE_NAME, appName = TEST_APP_NAME)
+                packageName = TEST_APP_PACKAGE_NAME,
+                appName = TEST_APP_NAME,
+            )
 
         val parcel = Parcel.obtain()
         deletionType.writeToParcel(parcel, 0)
@@ -57,7 +62,9 @@ class DeletionTypeTest {
     fun deletionTypeEntries_isParcelable() {
         val deletionType =
             DeletionType.DeletionTypeEntries(
-                listOf("dataEntryId1", "dataEntryId2"), DataType.ACTIVE_CALORIES_BURNED)
+                listOf("dataEntryId1", "dataEntryId2"),
+                DataType.ACTIVE_CALORIES_BURNED,
+            )
 
         val parcel = Parcel.obtain()
         deletionType.writeToParcel(parcel, 0)
@@ -79,9 +86,11 @@ class DeletionTypeTest {
             DeletionType.DeletionTypeHealthPermissionTypesFromApp(
                 listOf(
                     FitnessPermissionType.ACTIVE_CALORIES_BURNED,
-                    FitnessPermissionType.BLOOD_GLUCOSE),
+                    FitnessPermissionType.BLOOD_GLUCOSE,
+                ),
                 packageName = TEST_APP_PACKAGE_NAME,
-                appName = TEST_APP_NAME)
+                appName = TEST_APP_NAME,
+            )
 
         val parcel = Parcel.obtain()
         deletionType.writeToParcel(parcel, 0)
@@ -93,7 +102,8 @@ class DeletionTypeTest {
         assertTrue(recreatedDeletionType.appName == deletionType.appName)
         assertTrue(recreatedDeletionType.packageName == deletionType.packageName)
         assertTrue(
-            recreatedDeletionType.fitnessPermissionTypes == deletionType.fitnessPermissionTypes)
+            recreatedDeletionType.healthPermissionTypes == deletionType.healthPermissionTypes
+        )
         assertTrue(recreatedDeletionType.hasPermissionTypes)
         assertTrue(recreatedDeletionType.hasAppData)
         assertTrue(!deletionType.hasEntryIds)

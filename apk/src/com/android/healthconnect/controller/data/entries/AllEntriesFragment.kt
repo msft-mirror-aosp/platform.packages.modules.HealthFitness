@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.data.entries
 
+import android.health.connect.MedicalResourceId
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -27,7 +28,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commitNow
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,8 +38,11 @@ import com.android.healthconnect.controller.data.entries.EntriesViewModel.Entrie
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.Loading
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.LoadingFailed
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.With
+import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesDeletionScreenState.VIEW
+import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesDeletionScreenState.DELETE
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationView
+import com.android.healthconnect.controller.data.rawfhir.RawFhirFragment.Companion.MEDICAL_RESOURCE_ID_KEY
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsFragment
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
@@ -54,7 +57,6 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.setTitle
 import com.android.healthconnect.controller.utils.setupSharedMenu
-import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.settingslib.widget.AppHeaderPreference
 import dagger.hilt.android.AndroidEntryPoint
@@ -96,7 +98,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                         entriesViewModel.setDataType(dataType)
                     }
                 }
-                updateMenu(isDeletionState = true)
+                updateMenu(screenState = DELETE)
             }
         }
     }
@@ -107,13 +109,28 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                     .navigate(
                         R.id.action_entriesAndAccessFragment_to_dataEntryDetailsFragment,
                         DataEntryDetailsFragment.createBundle(
-                            permissionType as FitnessPermissionType, id, showDataOrigin = true))
+                            permissionType as FitnessPermissionType,
+                            id,
+                            showDataOrigin = true,
+                        ),
+                    )
+            }
+        }
+    }
+    private val onClickMedicalEntryListener by lazy {
+        object : OnClickMedicalEntryListener {
+            override fun onItemClicked(id: MedicalResourceId, index: Int) {
+                findNavController()
+                    .navigate(
+                        R.id.action_entriesAndAccessFragment_to_rawFhirFragment,
+                        bundleOf(MEDICAL_RESOURCE_ID_KEY to id),
+                    )
             }
         }
     }
     private val aggregationViewBinder by lazy { AggregationViewBinder() }
     private val entryViewBinder by lazy { EntryItemViewBinder(onDeleteEntryListener = onDeleteEntryListener) }
-    private val medicalEntryViewBinder by lazy { MedicalEntryItemViewBinder() }
+    private val medicalEntryViewBinder by lazy { MedicalEntryItemViewBinder(onClickMedicalEntryListener = onClickMedicalEntryListener) }
     private val sectionTitleViewBinder by lazy { SectionTitleViewBinder() }
     private val sleepSessionViewBinder by lazy {
         SleepSessionItemViewBinder(onItemClickedListener = onClickEntryListener, onDeleteEntryListener = onDeleteEntryListener)
@@ -130,7 +147,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         when (menuItem.itemId) {
             R.id.menu_enter_deletion_state -> {
                 // enter deletion state
-                triggerDeletionState(true)
+                triggerDeletionState(DELETE)
                 true
             }
             else -> false
@@ -153,7 +170,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         when (menuItem.itemId) {
             R.id.menu_exit_deletion_state -> {
                 // exit deletion state
-                triggerDeletionState(false)
+                triggerDeletionState(VIEW)
                 true
             }
             else -> false
@@ -163,7 +180,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
 
         val view = inflater.inflate(R.layout.fragment_entries, container, false)
@@ -187,13 +204,19 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             RecyclerViewAdapter.Builder()
                 .setViewBinder(FormattedEntry.FormattedDataEntry::class.java, entryViewBinder)
                 .setViewBinder(
-                    FormattedEntry.FormattedMedicalDataEntry::class.java, medicalEntryViewBinder)
+                    FormattedEntry.FormattedMedicalDataEntry::class.java,
+                    medicalEntryViewBinder,
+                )
                 .setViewBinder(FormattedEntry.SleepSessionEntry::class.java, sleepSessionViewBinder)
                 .setViewBinder(
-                    FormattedEntry.ExerciseSessionEntry::class.java, exerciseSessionItemViewBinder)
+                    FormattedEntry.ExerciseSessionEntry::class.java,
+                    exerciseSessionItemViewBinder,
+                )
                 .setViewBinder(FormattedEntry.SeriesDataEntry::class.java, seriesDataItemViewBinder)
                 .setViewBinder(
-                    FormattedEntry.FormattedAggregation::class.java, aggregationViewBinder)
+                    FormattedEntry.FormattedAggregation::class.java,
+                    aggregationViewBinder,
+                )
                 .setViewBinder(
                     FormattedEntry.EntryDateSectionHeader::class.java, sectionTitleViewBinder)
                 .setViewModel(entriesViewModel)
@@ -217,16 +240,17 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             object : DateNavigationView.OnDateChangedListener {
                 override fun onDateChanged(
                     displayedStartDate: Instant,
-                    period: DateNavigationPeriod
+                    period: DateNavigationPeriod,
                 ) {
                     entriesViewModel.loadEntries(permissionType, displayedStartDate, period)
                 }
-            })
+            }
+        )
 
         deletionViewModel.entriesReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded
             ->
             if (isReloadNeeded) {
-                entriesViewModel.setIsDeletionState(false)
+                entriesViewModel.setScreenState(VIEW)
                 entriesViewModel.loadEntries(
                         permissionType, dateNavigationView.getDate(), dateNavigationView.getPeriod())
                 deletionViewModel.resetEntriesReloadNeeded()
@@ -240,8 +264,10 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     override fun onResume() {
         super.onResume()
         setTitle(permissionType.upperCaseLabel())
-        if (entriesViewModel.currentSelectedDate.value != null &&
-            entriesViewModel.period.value != null) {
+        if (
+            entriesViewModel.currentSelectedDate.value != null &&
+                entriesViewModel.period.value != null
+        ) {
             val date = entriesViewModel.currentSelectedDate.value!!
             val selectedPeriod = entriesViewModel.period.value!!
             dateNavigationView.setDate(date)
@@ -249,19 +275,22 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             entriesViewModel.loadEntries(permissionType, date, selectedPeriod)
         } else {
             entriesViewModel.loadEntries(
-                permissionType, dateNavigationView.getDate(), dateNavigationView.getPeriod())
+                permissionType,
+                dateNavigationView.getDate(),
+                dateNavigationView.getPeriod(),
+            )
         }
         //
         //        logger.setPageId(pageName)
         //        logger.logPageImpression()
     }
-    private fun updateMenu(isDeletionState: Boolean, hasData: Boolean = true) {
+    private fun updateMenu(screenState: EntriesViewModel.EntriesDeletionScreenState, hasData: Boolean = true) {
         if (!hasData) {
             setupSharedMenu(viewLifecycleOwner, logger)
             return
         }
 
-        if (!isDeletionState) {
+        if (screenState == VIEW) {
             setupMenu(R.menu.all_entries_menu, viewLifecycleOwner, logger, onMenuSetup)
             return
         }
@@ -276,14 +305,14 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     }
 
     @VisibleForTesting
-    fun triggerDeletionState(isDeletionState: Boolean){
-        updateMenu(isDeletionState)
-        adapter.showCheckBox(isDeletionState)
-        entriesViewModel.setIsDeletionState(isDeletionState)
+    fun triggerDeletionState(screenState: EntriesViewModel.EntriesDeletionScreenState){
+        updateMenu(screenState)
+        adapter.showCheckBox(screenState == DELETE)
+        entriesViewModel.setScreenState(screenState)
         if(entriesViewModel.getDateNavigationText()== null){
             dateNavigationView.getDateNavigationText()?.let { entriesViewModel.setDateNavigationText(it) }
         }
-        entriesViewModel.getDateNavigationText()?.let { dateSpinnerText -> dateNavigationView.disableDateNavigationView(isEnabled = !isDeletionState, dateSpinnerText) }
+        entriesViewModel.getDateNavigationText()?.let { dateSpinnerText -> dateNavigationView.disableDateNavigationView(isEnabled = screenState == VIEW, dateSpinnerText) }
 
     }
 
@@ -306,7 +335,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                     loadingView.isVisible = false
                     errorView.isVisible = false
                     entriesRecyclerView.isVisible = false
-                    updateMenu(isDeletionState = false, hasData = false)
+                    updateMenu(screenState = VIEW, hasData = false)
                     entriesViewModel.getDateNavigationText()?.let { dateSpinnerText -> dateNavigationView.disableDateNavigationView(isEnabled = true, dateSpinnerText) }
                 }
                 is With -> {
@@ -316,7 +345,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                     errorView.isVisible = false
                     noDataView.isVisible = false
                     loadingView.isVisible = false
-                    triggerDeletionState(isDeletionState = entriesViewModel.isDeletionState.value ?: false)
+                    entriesViewModel.screenState.value?.let { triggerDeletionState(screenState = it) }
                 }
                 is LoadingFailed -> {
                     errorView.isVisible = true
