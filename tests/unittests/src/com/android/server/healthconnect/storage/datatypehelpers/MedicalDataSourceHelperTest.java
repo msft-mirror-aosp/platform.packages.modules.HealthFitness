@@ -28,7 +28,9 @@ import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOUR
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.DATA_SOURCE_UUID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.DISPLAY_NAME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.FHIR_BASE_URI_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.MAX_ALLOWED_MEDICAL_DATA_SOURCES;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.MEDICAL_DATA_SOURCE_TABLE_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_UNIQUE_NON_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
@@ -83,6 +85,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.quality.Strictness;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -108,11 +111,14 @@ public class MedicalDataSourceHelperTest {
     public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
             new HealthConnectDatabaseTestRule();
 
+    private static final Instant INSTANT_NOW = Instant.now();
+
     private MedicalDataSourceHelper mMedicalDataSourceHelper;
     private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
     private AppInfoHelper mAppInfoHelper;
     private PhrTestUtils mUtil;
+    private FakeTimeSource mFakeTimeSource;
     @Mock private Context mContext;
     @Mock private PackageManager mPackageManager;
     @Mock private Drawable mDrawable;
@@ -121,14 +127,18 @@ public class MedicalDataSourceHelperTest {
     public void setup() throws NameNotFoundException {
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         mAppInfoHelper = AppInfoHelper.getInstance();
-        mMedicalDataSourceHelper = new MedicalDataSourceHelper(mTransactionManager, mAppInfoHelper);
+        mFakeTimeSource = new FakeTimeSource(INSTANT_NOW);
+        mMedicalDataSourceHelper =
+                new MedicalDataSourceHelper(mTransactionManager, mAppInfoHelper, mFakeTimeSource);
         // We set the context to null, because we only use insertApp in this set of tests and
         // we don't need context for that.
         mTransactionTestUtils = new TransactionTestUtils(/* context= */ null, mTransactionManager);
         mUtil =
                 new PhrTestUtils(
                         mContext,
-                        new MedicalResourceHelper(mTransactionManager, mMedicalDataSourceHelper),
+                        mTransactionManager,
+                        new MedicalResourceHelper(
+                                mTransactionManager, mMedicalDataSourceHelper, mFakeTimeSource),
                         mMedicalDataSourceHelper);
         when(mContext.getPackageManager()).thenReturn(mPackageManager);
     }
@@ -147,7 +157,8 @@ public class MedicalDataSourceHelperTest {
                                 MedicalDataSourceHelper.getAppInfoIdColumnName(), INTEGER_NOT_NULL),
                         Pair.create(DISPLAY_NAME_COLUMN_NAME, TEXT_NOT_NULL),
                         Pair.create(FHIR_BASE_URI_COLUMN_NAME, TEXT_NOT_NULL),
-                        Pair.create(DATA_SOURCE_UUID_COLUMN_NAME, BLOB_UNIQUE_NON_NULL));
+                        Pair.create(DATA_SOURCE_UUID_COLUMN_NAME, BLOB_UNIQUE_NON_NULL),
+                        Pair.create(LAST_MODIFIED_TIME_COLUMN_NAME, INTEGER_NOT_NULL));
         CreateTableRequest expected =
                 new CreateTableRequest(MEDICAL_DATA_SOURCE_TABLE_NAME, columnInfo)
                         .addForeignKey(
@@ -169,13 +180,13 @@ public class MedicalDataSourceHelperTest {
         UUID uuid = UUID.randomUUID();
 
         UpsertTableRequest upsertRequest =
-                MedicalDataSourceHelper.getUpsertTableRequest(
-                        uuid, createMedicalDataSourceRequest, APP_INFO_ID);
+                mMedicalDataSourceHelper.getUpsertTableRequest(
+                        uuid, createMedicalDataSourceRequest, APP_INFO_ID, INSTANT_NOW);
         ContentValues contentValues = upsertRequest.getContentValues();
 
         assertThat(upsertRequest.getTable()).isEqualTo(MEDICAL_DATA_SOURCE_TABLE_NAME);
         assertThat(upsertRequest.getUniqueColumnsCount()).isEqualTo(1);
-        assertThat(contentValues.size()).isEqualTo(4);
+        assertThat(contentValues.size()).isEqualTo(5);
         assertThat(contentValues.get(FHIR_BASE_URI_COLUMN_NAME))
                 .isEqualTo(DATA_SOURCE_FHIR_BASE_URI.toString());
         assertThat(contentValues.get(DISPLAY_NAME_COLUMN_NAME)).isEqualTo(DATA_SOURCE_DISPLAY_NAME);
@@ -183,6 +194,8 @@ public class MedicalDataSourceHelperTest {
                 .isEqualTo(StorageUtils.convertUUIDToBytes(uuid));
         assertThat(contentValues.get(MedicalDataSourceHelper.getAppInfoIdColumnName()))
                 .isEqualTo(APP_INFO_ID);
+        assertThat(contentValues.get(LAST_MODIFIED_TIME_COLUMN_NAME))
+                .isEqualTo(INSTANT_NOW.toEpochMilli());
     }
 
     @Test
@@ -435,6 +448,19 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void createMedicalDataSource_lastModifiedTimeIsPopulated() {
+        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
+        createDataSource(
+                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME, DATA_SOURCE_PACKAGE_NAME);
+
+        long lastModifiedTimestamp =
+                mUtil.readLastModifiedTimestamp(MEDICAL_DATA_SOURCE_TABLE_NAME);
+
+        assertThat(lastModifiedTimestamp).isEqualTo(INSTANT_NOW.toEpochMilli());
+    }
+
+    @Test
     @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
     public void createAndGetMultipleMedicalDataSources_bothPackagesAlreadyExist_success() {
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
@@ -505,6 +531,29 @@ public class MedicalDataSourceHelperTest {
                         toUuids(List.of(dataSource1.getId(), dataSource2.getId())));
 
         assertThat(result).containsExactly(dataSource1, dataSource2);
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    public void createMultipleMedicalDataSources_maxLimitExceeded_throws()
+            throws NameNotFoundException {
+        setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
+        for (int i = 0; i < MAX_ALLOWED_MEDICAL_DATA_SOURCES; i++) {
+            String suffix = String.valueOf(i);
+            createDataSource(
+                    Uri.withAppendedPath(DATA_SOURCE_FHIR_BASE_URI, "/" + suffix),
+                    DATA_SOURCE_DISPLAY_NAME + " " + suffix,
+                    DATA_SOURCE_PACKAGE_NAME);
+        }
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    createDataSource(
+                            DATA_SOURCE_FHIR_BASE_URI,
+                            DATA_SOURCE_DISPLAY_NAME,
+                            DATA_SOURCE_PACKAGE_NAME);
+                });
     }
 
     @Test
@@ -1069,7 +1118,10 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_DISPLAY_NAME,
                         DATA_SOURCE_PACKAGE_NAME);
         MedicalResourceHelper resourceHelper =
-                new MedicalResourceHelper(mTransactionManager, mMedicalDataSourceHelper);
+                new MedicalResourceHelper(
+                        mTransactionManager,
+                        mMedicalDataSourceHelper,
+                        new FakeTimeSource(INSTANT_NOW));
         MedicalResource medicalResource =
                 PhrDataFactory.createImmunizationMedicalResource(dataSource.getId());
         UpsertMedicalResourceInternalRequest upsertRequest =

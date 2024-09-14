@@ -18,7 +18,6 @@ package com.android.healthconnect.controller.tests.selectabledeletion.api
 import android.health.connect.DeleteUsingFiltersRequest
 import android.health.connect.HealthConnectManager
 import android.health.connect.datatypes.CyclingPedalingCadenceRecord
-import android.health.connect.datatypes.DataOrigin
 import android.health.connect.datatypes.ExerciseSessionRecord
 import android.health.connect.datatypes.HeartRateRecord
 import android.health.connect.datatypes.MenstruationFlowRecord
@@ -28,8 +27,8 @@ import android.health.connect.datatypes.StepsCadenceRecord
 import android.health.connect.datatypes.StepsRecord
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
-import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeletionTypeHealthPermissionTypesFromApp
-import com.android.healthconnect.controller.selectabledeletion.api.DeleteFitnessPermissionTypesFromAppUseCase
+import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeletionTypeHealthPermissionTypes
+import com.android.healthconnect.controller.selectabledeletion.api.DeleteFitnessPermissionTypesUseCase
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -47,11 +46,11 @@ import org.mockito.MockitoAnnotations
 import org.mockito.invocation.InvocationOnMock
 
 @HiltAndroidTest
-class DeletePermissionTypeUseCaseTest {
+class DeleteFitnessPermissionTypesUseCaseTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
-    private lateinit var useCase: DeleteFitnessPermissionTypesFromAppUseCase
+    private lateinit var useCase: DeleteFitnessPermissionTypesUseCase
     var manager: HealthConnectManager = Mockito.mock(HealthConnectManager::class.java)
 
     @Captor lateinit var filtersCaptor: ArgumentCaptor<DeleteUsingFiltersRequest>
@@ -59,17 +58,17 @@ class DeletePermissionTypeUseCaseTest {
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        useCase = DeleteFitnessPermissionTypesFromAppUseCase(manager, Dispatchers.Main)
+        useCase = DeleteFitnessPermissionTypesUseCase(manager, Dispatchers.Main)
     }
 
     @Test
-    fun invoke_deletePermissionTypesFromApp_callsHealthManager() = runTest {
+    fun invoke_deletePermissionTypes_callsHealthManager() = runTest {
         doAnswer(prepareAnswer())
             .`when`(manager)
             .deleteRecords(any(DeleteUsingFiltersRequest::class.java), any(), any())
 
-        val deletePermissionTypes =
-            DeletionTypeHealthPermissionTypesFromApp(
+        val deletePermissionType =
+            DeletionTypeHealthPermissionTypes(
                 listOf(
                     FitnessPermissionType.STEPS,
                     FitnessPermissionType.HEART_RATE,
@@ -77,19 +76,16 @@ class DeletePermissionTypeUseCaseTest {
                     FitnessPermissionType.EXERCISE,
                     FitnessPermissionType.MENSTRUATION,
                     MedicalPermissionType.IMMUNIZATION,
-                ),
-                packageName = "package.name",
-                appName = "APP_NAME",
+                )
             )
 
-        useCase.invoke(deletePermissionTypes)
+        useCase.invoke(deletePermissionType)
 
         Mockito.verify(manager, Mockito.times(1))
             .deleteRecords(filtersCaptor.capture(), any(), any())
 
         assertThat(filtersCaptor.value.timeRangeFilter).isNull()
-        assertThat(filtersCaptor.value.dataOrigins)
-            .containsExactly(DataOrigin.Builder().setPackageName("package.name").build())
+        assertThat(filtersCaptor.value.dataOrigins).isEmpty()
         assertThat(filtersCaptor.value.recordTypes)
             .containsExactly(
                 StepsRecord::class.java,

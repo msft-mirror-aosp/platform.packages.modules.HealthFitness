@@ -53,6 +53,8 @@ import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCatego
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.utils.TimeSource;
+import com.android.server.healthconnect.utils.TimeSourceImpl;
 
 import java.time.Clock;
 import java.util.Objects;
@@ -196,8 +198,10 @@ public class HealthConnectManagerService extends SystemService {
                         mCurrentForegroundUser,
                         mMigrationStateManager,
                         mMigrationNotificationSender);
+        TimeSource timeSource = new TimeSourceImpl();
         MedicalDataSourceHelper medicalDataSourceHelper =
-                new MedicalDataSourceHelper(mTransactionManager, AppInfoHelper.getInstance());
+                new MedicalDataSourceHelper(
+                        mTransactionManager, AppInfoHelper.getInstance(), timeSource);
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mTransactionManager,
@@ -207,9 +211,10 @@ public class HealthConnectManagerService extends SystemService {
                         firstGrantTimeManager,
                         mMigrationStateManager,
                         mMigrationUiStateManager,
-                        mContext,
-                        new MedicalResourceHelper(mTransactionManager, medicalDataSourceHelper),
+                        new MedicalResourceHelper(
+                                mTransactionManager, medicalDataSourceHelper, timeSource),
                         medicalDataSourceHelper,
+                        mContext,
                         mExportManager,
                         mExportImportSettingsStorage);
     }
