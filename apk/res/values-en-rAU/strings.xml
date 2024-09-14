@@ -273,12 +273,9 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Immunisation"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"immunisation"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Read immunisation"</string>
-    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
-    <skip />
+    <string name="allergy_intolerance_uppercase_label" msgid="726821034032305942">"Allergy and intolerance"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="3259399258428458578">"Allergy and intolerance"</string>
+    <string name="allergy_intolerance_content_description" msgid="450723157436883417">"Read allergy and intolerance"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Mindfulness"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"mindfulness"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Read mindfulness"</string>
@@ -306,6 +303,8 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Selected day"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Previous day"</string>
     <string name="default_error" msgid="7966868260616403475">"Something went wrong. Please try again."</string>
+    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"Apps with this permission can read and write your health and fitness data."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Control which apps can access data stored in Health Connect. Tap an app to review the data it can read or write."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Allowed access"</string>
@@ -408,6 +407,8 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Open"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Choose file"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Free up space"</string>
+    <!-- no translation found for scheduled_export_on_toast_text (945186472588537310) -->
+    <skip />
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect couldn\'t export data"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"More space needed"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"There was a problem with the export for <xliff:g id="DATE">%1$s</xliff:g>. Please set up a new scheduled export and try again."</string>

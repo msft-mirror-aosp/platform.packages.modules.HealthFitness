@@ -30,8 +30,8 @@ android_test_helper_app {
     name: "MedicalPermissionsTestApp",
 
     libs: [
-        "android.test.base",
-        "android.test.runner",
+        "android.test.base.stubs.system",
+        "android.test.runner.stubs.system",
     ],
 
     srcs: [":healthconnect-ui-testapp5-srcs"],

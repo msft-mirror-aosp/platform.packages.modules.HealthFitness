@@ -46,6 +46,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceI
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+import static com.android.server.healthconnect.TestUtils.waitForAllScheduledTasksToComplete;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_DOWNLOAD_STATE_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_RESTORE_STATE_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.INTERNAL_RESTORE_STATE_STAGING_DONE;
@@ -120,6 +121,8 @@ import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.LocalManagerRegistry;
 import com.android.server.appop.AppOpsManagerLocal;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationCleaner;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.migration.MigrationTestUtils;
@@ -129,6 +132,7 @@ import com.android.server.healthconnect.permission.HealthConnectPermissionHelper
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -245,6 +249,7 @@ public class HealthConnectServiceImplTest {
                     .mockStatic(LocalManagerRegistry.class)
                     .mockStatic(UserHandle.class)
                     .mockStatic(TransactionManager.class)
+                    .mockStatic(HealthDataCategoryPriorityHelper.class)
                     .spyStatic(RateLimiter.class)
                     .setStrictness(Strictness.LENIENT)
                     .build();
@@ -264,6 +269,7 @@ public class HealthConnectServiceImplTest {
     @Mock private PermissionManager mPermissionManager;
     @Mock private MedicalDataSourceHelper mMedicalDataSourceHelper;
     @Mock private MedicalResourceHelper mMedicalResourceHelper;
+    @Mock private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     @Mock IMigrationCallback mMigrationCallback;
     @Mock IMedicalDataSourceResponseCallback mMedicalDataSourceCallback;
     @Mock IMedicalDataSourcesResponseCallback mMedicalDataSourcesResponseCallback;
@@ -311,7 +317,14 @@ public class HealthConnectServiceImplTest {
                 .thenReturn(mAppOpsManagerLocal);
         when(mServiceContext.getSystemService(PermissionManager.class))
                 .thenReturn(mPermissionManager);
+        when(HealthDataCategoryPriorityHelper.getInstance())
+                .thenReturn(mHealthDataCategoryPriorityHelper);
         setUpAllMedicalPermissionChecksHardDenied();
+
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                        .setPreferenceHelper(mPreferenceHelper)
+                        .build();
 
         mHealthConnectService =
                 new HealthConnectServiceImpl(
@@ -324,7 +337,9 @@ public class HealthConnectServiceImplTest {
                         mMigrationUiStateManager,
                         mServiceContext,
                         mMedicalResourceHelper,
-                        mMedicalDataSourceHelper);
+                        mMedicalDataSourceHelper,
+                        healthConnectInjector.getExportManager(),
+                        healthConnectInjector.getExportImportSettingsStorage());
     }
 
     @After
@@ -1905,6 +1920,18 @@ public class HealthConnectServiceImplTest {
         verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
         assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    public void testUserSwitching() throws TimeoutException {
+        doNothing()
+                .when(mHealthDataCategoryPriorityHelper)
+                .maybeAddContributingAppsToPriorityList(mContext);
+
+        mHealthConnectService.onUserSwitching(mUserHandle);
+
+        waitForAllScheduledTasksToComplete();
+        verify(mHealthDataCategoryPriorityHelper).maybeAddContributingAppsToPriorityList(any());
     }
 
     private void setUpCreateMedicalDataSourceDefaultMocks() {

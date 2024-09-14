@@ -17,8 +17,8 @@ package com.android.healthconnect.controller.selectabledeletion.api
 
 import android.health.connect.DeleteUsingFiltersRequest
 import android.health.connect.HealthConnectManager
-import android.health.connect.datatypes.DataOrigin
-import com.android.healthconnect.controller.selectabledeletion.DeletionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeletionTypeHealthPermissionTypes
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
 import javax.inject.Inject
@@ -26,31 +26,24 @@ import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-/**
- * Use case to delete all records from the given permission type (e.g. Steps) written by a given
- * app.
- */
+/** Use case to delete all records from the given permission type (e.g. Steps). */
 @Singleton
-class DeletePermissionTypesFromAppUseCase
+class DeleteFitnessPermissionTypesUseCase
 @Inject
 constructor(
     private val healthConnectManager: HealthConnectManager,
-    @IoDispatcher private val dispatcher: CoroutineDispatcher
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
 
-    suspend operator fun invoke(
-        deletePermissionTypesFromApp: DeletionType.DeletionTypeHealthPermissionTypesFromApp,
-    ) {
+    suspend operator fun invoke(deletePermissionTypes: DeletionTypeHealthPermissionTypes) {
         val deleteRequest = DeleteUsingFiltersRequest.Builder()
 
-        deletePermissionTypesFromApp.fitnessPermissionTypes.map { permissionType ->
+        deletePermissionTypes.healthPermissionTypes.filterIsInstance<FitnessPermissionType>().map {
+            permissionType ->
             HealthPermissionToDatatypeMapper.getDataTypes(permissionType).map { recordType ->
                 deleteRequest.addRecordType(recordType)
             }
         }
-
-        deleteRequest.addDataOrigin(
-            DataOrigin.Builder().setPackageName(deletePermissionTypesFromApp.packageName).build())
 
         withContext(dispatcher) {
             healthConnectManager.deleteRecords(deleteRequest.build(), Runnable::run) {}

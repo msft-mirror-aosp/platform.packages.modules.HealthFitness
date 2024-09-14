@@ -79,21 +79,10 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
     public FirstGrantTimeManager(
             Context context,
             HealthPermissionIntentAppsTracker tracker,
-            FirstGrantTimeDatastore datastore) {
-        this(
-                context,
-                tracker,
-                datastore,
-                PackageInfoUtils.getInstance(),
-                HealthDataCategoryPriorityHelper.getInstance());
-    }
-
-    public FirstGrantTimeManager(
-            Context context,
-            HealthPermissionIntentAppsTracker tracker,
             FirstGrantTimeDatastore datastore,
             PackageInfoUtils packageInfoUtils,
-            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            MigrationStateManager migrationStateManager) {
         mTracker = tracker;
         mDatastore = datastore;
         mPackageManager = context.getPackageManager();
@@ -102,7 +91,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
         mContext = context;
         mPackageInfoHelper = packageInfoUtils;
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
-        mMigrationStateManager = MigrationStateManager.getInitialisedInstance();
+        mMigrationStateManager = migrationStateManager;
         mPackageManager.addOnPermissionsChangeListener(this);
     }
 

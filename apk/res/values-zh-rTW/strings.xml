@@ -273,12 +273,9 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"免疫接種"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"免疫接種"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"讀取免疫接種資料"</string>
-    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
-    <skip />
+    <string name="allergy_intolerance_uppercase_label" msgid="726821034032305942">"過敏與不耐症資料"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="3259399258428458578">"過敏與不耐症資料"</string>
+    <string name="allergy_intolerance_content_description" msgid="450723157436883417">"讀取過敏與不耐症資料"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"正念"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"正念"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"讀取正念練習資料"</string>
@@ -306,6 +303,8 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"所選日期"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"前一天"</string>
     <string name="default_error" msgid="7966868260616403475">"發生錯誤，請再試一次。"</string>
+    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"具有這項權限的應用程式可以讀取及寫入你的健康與健身資料。"</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"控制哪些應用程式可以存取「健康資料同步」中儲存的資料。輕觸應用程式即可查看該應用程式可讀取或寫入的資料。"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"已允許存取"</string>
@@ -408,6 +407,8 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"開啟"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"選擇檔案"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"釋出空間"</string>
+    <!-- no translation found for scheduled_export_on_toast_text (945186472588537310) -->
+    <skip />
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"「健康資料同步」無法匯出資料"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"需要更多空間"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"匯出 <xliff:g id="DATE">%1$s</xliff:g>的資料時發生問題，請設定新的資料匯出時間，然後再試一次。"</string>

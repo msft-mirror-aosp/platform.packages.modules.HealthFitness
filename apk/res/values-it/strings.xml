@@ -306,6 +306,8 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Giorno selezionato"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Giorno precedente"</string>
     <string name="default_error" msgid="7966868260616403475">"Si è verificato un errore. Riprova."</string>
+    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"Le app con questa autorizzazione possono leggere e scrivere i dati relativi alla salute e all\'attività fisica."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Stabilisci quali app possono accedere ai dati archiviati in Connessione Salute. Tocca un\'app per controllare quali dati può leggere o scrivere."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Accesso consentito"</string>
@@ -408,6 +410,8 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Apri"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Scegli file"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Libera spazio"</string>
+    <!-- no translation found for scheduled_export_on_toast_text (945186472588537310) -->
+    <skip />
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Connessione Salute non ha potuto esportare i dati"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Più spazio richiesto"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Si è verificato un problema con l\'esportazione del giorno <xliff:g id="DATE">%1$s</xliff:g>. Configura una nuova esportazione pianificata e riprova."</string>
