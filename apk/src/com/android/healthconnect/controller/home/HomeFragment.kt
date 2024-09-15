@@ -27,7 +27,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.data.alldata.medical.MedicalAllDataViewModel
+import com.android.healthconnect.controller.data.alldata.AllDataFragment.Companion.IS_BROWSE_MEDICAL_DATA_SCREEN
+import com.android.healthconnect.controller.data.alldata.AllDataViewModel
 import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
@@ -104,7 +105,7 @@ class HomeFragment : Hilt_HomeFragment() {
     private val homeFragmentViewModel: HomeFragmentViewModel by viewModels()
     private val migrationViewModel: MigrationViewModel by activityViewModels()
     private val exportStatusViewModel: ExportStatusViewModel by activityViewModels()
-    private val medicalDataViewModel: MedicalAllDataViewModel by viewModels()
+    private val allDataViewModel: AllDataViewModel by viewModels()
 
     private val mTopIntroPreference: TopIntroPreference? by lazy {
         preferenceScreen.findPreference(TOP_INTRO_PREFERENCE_KEY)
@@ -172,7 +173,11 @@ class HomeFragment : Hilt_HomeFragment() {
         if (personalHealthRecord()) {
             // TODO(b/343148212): Add logname.
             mBrowseMedicalDataPreference?.setOnPreferenceClickListener {
-                findNavController().navigate(R.id.action_homeFragment_to_medicalDataFragment)
+                findNavController()
+                    .navigate(
+                        R.id.action_homeFragment_to_medicalDataFragment,
+                        bundleOf(IS_BROWSE_MEDICAL_DATA_SCREEN to true),
+                    )
                 true
             }
             mBrowseMedicalDataPreference?.isVisible = false
@@ -192,7 +197,7 @@ class HomeFragment : Hilt_HomeFragment() {
             exportStatusViewModel.loadScheduledExportStatus()
         }
         if (personalHealthRecord()) {
-            medicalDataViewModel.loadAllMedicalData()
+            allDataViewModel.loadAllMedicalData()
         }
     }
 
@@ -239,19 +244,9 @@ class HomeFragment : Hilt_HomeFragment() {
             }
         }
         if (personalHealthRecord()) {
-            medicalDataViewModel.loadAllMedicalData()
-            medicalDataViewModel.allData.observe(viewLifecycleOwner) { state ->
-                when (state) {
-                    is MedicalAllDataViewModel.AllDataState.Loading -> {
-                        mBrowseMedicalDataPreference?.isVisible = false
-                    }
-                    is MedicalAllDataViewModel.AllDataState.Error -> {
-                        mBrowseMedicalDataPreference?.isVisible = false
-                    }
-                    is MedicalAllDataViewModel.AllDataState.WithData -> {
-                        mBrowseMedicalDataPreference?.isVisible = state.dataMap.isNotEmpty()
-                    }
-                }
+            allDataViewModel.loadAllMedicalData()
+            allDataViewModel.isAnyMedicalData.observe(viewLifecycleOwner) { isAnyMedicalData ->
+                mBrowseMedicalDataPreference?.isVisible = isAnyMedicalData
             }
         }
     }
@@ -381,7 +376,8 @@ class HomeFragment : Hilt_HomeFragment() {
 
     // Onboarding banners
     private fun getStartUsingHealthConnectBanner(): BannerPreference {
-        return BannerPreference(requireContext(), UnknownGenericElement.UNKNOWN_BANNER).also { banner ->
+        return BannerPreference(requireContext(), UnknownGenericElement.UNKNOWN_BANNER).also {
+            banner ->
             banner.title = resources.getString(R.string.start_using_hc_banner_title)
             banner.summary = resources.getString(R.string.start_using_hc_banner_content)
             banner.key = START_USING_HC_BANNER_KEY
@@ -410,7 +406,8 @@ class HomeFragment : Hilt_HomeFragment() {
     }
 
     private fun getConnectMoreAppsBanner(appMetadata: AppMetadata): BannerPreference {
-        return BannerPreference(requireContext(), UnknownGenericElement.UNKNOWN_BANNER).also { banner ->
+        return BannerPreference(requireContext(), UnknownGenericElement.UNKNOWN_BANNER).also {
+            banner ->
             banner.title = resources.getString(R.string.connect_more_apps_banner_title)
             banner.summary =
                 resources.getString(R.string.connect_more_apps_banner_content, appMetadata.appName)
@@ -439,7 +436,8 @@ class HomeFragment : Hilt_HomeFragment() {
     }
 
     private fun getSeeCompatibleAppsBanner(appMetadata: AppMetadata): BannerPreference {
-        return BannerPreference(requireContext(), UnknownGenericElement.UNKNOWN_BANNER).also { banner ->
+        return BannerPreference(requireContext(), UnknownGenericElement.UNKNOWN_BANNER).also {
+            banner ->
             banner.title = resources.getString(R.string.see_compatible_apps_banner_title)
             banner.summary =
                 resources.getString(

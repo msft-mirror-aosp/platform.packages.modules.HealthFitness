@@ -121,7 +121,6 @@ public class FirstGrantTimeUnitTest {
         MockitoAnnotations.initMocks(this);
         HealthConnectDeviceConfigManager.initializeInstance(context);
         TransactionManager.initializeInstance(new HealthConnectUserContext(context, CURRENT_USER));
-        when(MigrationStateManager.getInitialisedInstance()).thenReturn(mMigrationStateManager);
         when(mMigrationStateManager.isMigrationInProgress()).thenReturn(false);
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_CURRENT))
                 .thenReturn(new UserGrantTimeState(DEFAULT_VERSION));
@@ -135,7 +134,9 @@ public class FirstGrantTimeUnitTest {
         when(mContext.getSystemService(UserManager.class)).thenReturn(mUserManager);
         when(mUserManager.isUserUnlocked()).thenReturn(true);
 
-        mHealthConnectInjectorBuilder = HealthConnectInjectorImpl.newBuilderForTest(context);
+        mHealthConnectInjectorBuilder =
+                HealthConnectInjectorImpl.newBuilderForTest(context)
+                        .setMigrationStateManager(mMigrationStateManager);
         mUiAutomation.adoptShellPermissionIdentity(
                 "android.permission.OBSERVE_GRANT_REVOKE_PERMISSIONS");
     }
@@ -485,6 +486,7 @@ public class FirstGrantTimeUnitTest {
                 mTracker,
                 mDatastore,
                 healthConnectInjector.getPackageInfoUtils(),
-                healthConnectInjector.getHealthDataCategoryPriorityHelper());
+                healthConnectInjector.getHealthDataCategoryPriorityHelper(),
+                mHealthConnectInjectorBuilder.build().getMigrationStateManager());
     }
 }

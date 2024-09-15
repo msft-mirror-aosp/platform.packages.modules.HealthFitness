@@ -182,6 +182,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.AggregateTransactionRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
@@ -250,6 +251,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final AggregationTypeIdMapper mAggregationTypeIdMapper;
     private final DeviceInfoHelper mDeviceInfoHelper;
     private final ExportImportSettingsStorage mExportImportSettingsStorage;
+    private final PreferenceHelper mPreferenceHelper;
     private MedicalResourceHelper mMedicalResourceHelper;
     private MedicalDataSourceHelper mMedicalDataSourceHelper;
     private final ExportManager mExportManager;
@@ -299,6 +301,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ExportManager exportManager,
             ExportImportSettingsStorage exportImportSettingsStorage) {
         mTransactionManager = transactionManager;
+        mPreferenceHelper = PreferenceHelper.getInstance();
         mDeviceConfigManager = deviceConfigManager;
         mPermissionHelper = permissionHelper;
         mFirstGrantTimeManager = firstGrantTimeManager;
@@ -311,7 +314,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mMedicalDataPermissionEnforcer = new MedicalDataPermissionEnforcer(mPermissionManager);
         mAppOpsManagerLocal = LocalManagerRegistry.getManager(AppOpsManagerLocal.class);
         mBackupRestore =
-                new BackupRestore(mFirstGrantTimeManager, mMigrationStateManager, mContext);
+                new BackupRestore(
+                        mFirstGrantTimeManager,
+                        mMigrationStateManager,
+                        mPreferenceHelper,
+                        mTransactionManager,
+                        mContext);
         mMigrationUiStateManager = migrationUiStateManager;
         mExportImportSettingsStorage = exportImportSettingsStorage;
         mImportManager =
@@ -1252,7 +1260,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         enforceIsForegroundUser(userHandle);
                         mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
                         throwExceptionIfDataSyncInProgress();
-                        AutoDeleteService.setRecordRetentionPeriodInDays(days);
+                        AutoDeleteService.setRecordRetentionPeriodInDays(days, mPreferenceHelper);
                         callback.onResult();
                     } catch (SQLiteException sqLiteException) {
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
@@ -1282,7 +1290,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         throwExceptionIfDataSyncInProgress();
         try {
             mContext.enforceCallingPermission(MANAGE_HEALTH_DATA_PERMISSION, null);
-            return AutoDeleteService.getRecordRetentionPeriodInDays();
+            return AutoDeleteService.getRecordRetentionPeriodInDays(mPreferenceHelper);
         } catch (Exception e) {
             if (e instanceof SecurityException) {
                 throw e;
@@ -2125,11 +2133,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
                             attributionSource);
 
-                    // TODO(b/344560623) - Add character limits to CreateMedicalDataSource
-                    // displayName and fhirBaseUri values and enforce limit of 20 sources per
-                    // app.
-
-                    // TODO(b/344560623) - Enforce uniqueness constraint on fhir base uri.
                     MedicalDataSource dataSource =
                             mMedicalDataSourceHelper.createMedicalDataSource(
                                     mContext, request, packageName);
@@ -3031,7 +3034,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 mDeviceInfoHelper,
                 mAppInfoHelper,
                 mHealthDataCategoryPriorityHelper,
-                mPriorityMigrationHelper);
+                mPriorityMigrationHelper,
+                mPreferenceHelper);
     }
 
     private void enforceCallingPackageBelongsToUid(String packageName, int callingUid) {

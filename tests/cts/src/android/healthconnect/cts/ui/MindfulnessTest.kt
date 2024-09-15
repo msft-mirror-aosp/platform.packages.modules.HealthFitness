@@ -36,7 +36,6 @@ import android.healthconnect.cts.lib.UiTestUtils.scrollToEnd
 import android.healthconnect.cts.lib.UiTestUtils.verifyObjectNotFound
 import android.healthconnect.cts.lib.UiTestUtils.verifyTextNotFound
 import android.healthconnect.cts.lib.UiTestUtils.waitForObjectNotFound
-import android.healthconnect.cts.utils.AssumptionCheckerRule
 import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.readAllRecords
 import android.platform.test.annotations.RequiresFlagsDisabled
@@ -44,8 +43,6 @@ import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.uiautomator.By
-import com.android.compatibility.common.util.DisableAnimationRule
-import com.android.compatibility.common.util.FreezeRotationRule
 import com.android.healthfitness.flags.Flags
 import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import com.google.common.truth.Correspondence.transforming
@@ -61,17 +58,6 @@ import org.junit.Test
 class MindfulnessTest : HealthConnectBaseTest() {
 
     @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
-
-    @get:Rule val disableAnimationRule = DisableAnimationRule()
-
-    @get:Rule val freezeRotationRule = FreezeRotationRule()
-
-    @get:Rule
-    var mSupportedHardwareRule =
-        AssumptionCheckerRule(
-            { TestUtils.isHardwareSupported() },
-            "Tests should run on supported hardware only.",
-        )
 
     @Before
     fun setup() {

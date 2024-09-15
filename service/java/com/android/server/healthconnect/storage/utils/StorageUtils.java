@@ -49,7 +49,6 @@ import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
-import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 
 import java.nio.ByteBuffer;
 import java.time.ZoneOffset;
@@ -131,18 +130,6 @@ public final class StorageUtils {
                         .put(dataSourceIdBytes)
                         .array();
         return UUID.nameUUIDFromBytes(bytes);
-    }
-
-    /**
-     * Sets {@link UUID} for the given {@code upsertMedicalResourceInternalRequest}. Since the rest
-     * of the fields in {@link UpsertMedicalResourceInternalRequest} are not yet created, the UUID
-     * is randomly generated.
-     */
-    public static void addNameBasedUUIDTo(
-            @NonNull UpsertMedicalResourceInternalRequest upsertMedicalResourceInternalRequest) {
-        // TODO(b/338195583): generate uuid based on medical_data_source_id, resource_type and
-        // resource_id.
-        upsertMedicalResourceInternalRequest.setUuid(UUID.randomUUID());
     }
 
     /**

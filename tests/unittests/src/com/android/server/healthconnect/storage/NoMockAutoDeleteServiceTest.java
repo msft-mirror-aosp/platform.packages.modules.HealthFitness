@@ -86,11 +86,16 @@ public class NoMockAutoDeleteServiceTest {
             assertThat(records.get(0).getUuid()).isEqualTo(UUID.fromString(uuid));
         }
 
-        AutoDeleteService.setRecordRetentionPeriodInDays(30);
-        assertThat(AutoDeleteService.getRecordRetentionPeriodInDays()).isEqualTo(30);
+        AutoDeleteService.setRecordRetentionPeriodInDays(
+                30, mHealthConnectInjector.getPreferenceHelper());
+        assertThat(
+                        AutoDeleteService.getRecordRetentionPeriodInDays(
+                                mHealthConnectInjector.getPreferenceHelper()))
+                .isEqualTo(30);
         AutoDeleteService.startAutoDelete(
                 testRule.getUserContext(),
-                mHealthConnectInjector.getHealthDataCategoryPriorityHelper());
+                mHealthConnectInjector.getHealthDataCategoryPriorityHelper(),
+                mHealthConnectInjector.getPreferenceHelper());
 
         try (Cursor cursor = mTransactionManager.read(new ReadTableRequest(STEPS_TABLE_NAME))) {
             List<RecordInternal<?>> records = helper.getInternalRecords(cursor);

@@ -23,6 +23,7 @@ import static com.android.server.healthconnect.storage.HealthConnectDatabase.cre
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getJoinWithIndicesTableFilterOnMedicalResourceTypes;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getJoinWithMedicalDataSourceFilterOnDataSourceIds;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getJoinWithMedicalDataSourceFilterOnDataSourceIdsAndAppId;
+import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.request.ReadTableRequest.UNION;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_UNIQUE_NON_NULL;
@@ -56,7 +57,9 @@ import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
+import com.android.server.healthconnect.utils.TimeSource;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -70,6 +73,9 @@ import java.util.UUID;
  * @hide
  */
 public class MedicalDataSourceHelper {
+    // The number of {@link MedicalDataSource}s that an app is allowed to create
+    @VisibleForTesting static final int MAX_ALLOWED_MEDICAL_DATA_SOURCES = 20;
+
     @VisibleForTesting
     static final String MEDICAL_DATA_SOURCE_TABLE_NAME = "medical_data_source_table";
 
@@ -84,11 +90,15 @@ public class MedicalDataSourceHelper {
 
     private final TransactionManager mTransactionManager;
     private final AppInfoHelper mAppInfoHelper;
+    private final TimeSource mTimeSource;
 
     public MedicalDataSourceHelper(
-            @NonNull TransactionManager transactionManager, @NonNull AppInfoHelper appInfoHelper) {
+            @NonNull TransactionManager transactionManager,
+            @NonNull AppInfoHelper appInfoHelper,
+            @NonNull TimeSource timeSource) {
         mTransactionManager = transactionManager;
         mAppInfoHelper = appInfoHelper;
+        mTimeSource = timeSource;
     }
 
     @NonNull
@@ -118,7 +128,8 @@ public class MedicalDataSourceHelper {
                 Pair.create(APP_INFO_ID_COLUMN_NAME, INTEGER_NOT_NULL),
                 Pair.create(DISPLAY_NAME_COLUMN_NAME, TEXT_NOT_NULL),
                 Pair.create(FHIR_BASE_URI_COLUMN_NAME, TEXT_NOT_NULL),
-                Pair.create(DATA_SOURCE_UUID_COLUMN_NAME, BLOB_UNIQUE_NON_NULL));
+                Pair.create(DATA_SOURCE_UUID_COLUMN_NAME, BLOB_UNIQUE_NON_NULL),
+                Pair.create(LAST_MODIFIED_TIME_COLUMN_NAME, INTEGER_NOT_NULL));
     }
 
     @NonNull
@@ -268,20 +279,50 @@ public class MedicalDataSourceHelper {
         return mTransactionManager.runAsTransaction(
                 (TransactionManager.TransactionRunnableWithReturn<
                                 MedicalDataSource, RuntimeException>)
-                        db -> createMedicalDataSourceAndAppInfo(db, context, request, packageName));
+                        db ->
+                                createMedicalDataSourceAndAppInfoAndCheckLimits(
+                                        db,
+                                        context,
+                                        request,
+                                        packageName,
+                                        mTimeSource.getInstantNow()));
     }
 
-    private MedicalDataSource createMedicalDataSourceAndAppInfo(
+    private MedicalDataSource createMedicalDataSourceAndAppInfoAndCheckLimits(
             @NonNull SQLiteDatabase db,
             @NonNull Context context,
             @NonNull CreateMedicalDataSourceRequest request,
-            @NonNull String packageName) {
+            @NonNull String packageName,
+            @NonNull Instant instant) {
         long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(db, packageName, context);
+
+        if (getMedicalDataSourcesCount(appInfoId) >= MAX_ALLOWED_MEDICAL_DATA_SOURCES) {
+            throw new IllegalArgumentException(
+                    "The maximum number of data sources has been reached.");
+        }
+
         UUID dataSourceUuid = UUID.randomUUID();
         UpsertTableRequest upsertTableRequest =
-                getUpsertTableRequest(dataSourceUuid, request, appInfoId);
+                getUpsertTableRequest(dataSourceUuid, request, appInfoId, instant);
         mTransactionManager.insert(db, upsertTableRequest);
         return buildMedicalDataSource(dataSourceUuid, request, packageName);
+    }
+
+    private int getMedicalDataSourcesCount(long appInfoId) {
+        ReadTableRequest readTableRequest =
+                new ReadTableRequest(getMainTableName())
+                        .setColumnNames(List.of("COUNT(*)"))
+                        .setJoinClause(getJoinClauseWithAppInfoTable());
+        readTableRequest.setWhereClause(
+                new WhereClauses(AND)
+                        .addWhereInLongsClause(APP_INFO_ID_COLUMN_NAME, List.of(appInfoId)));
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+            if (cursor.moveToFirst()) {
+                return cursor.getInt(0);
+            } else {
+                throw new IllegalStateException("Could not get data sources count");
+            }
+        }
     }
 
     /**
@@ -519,9 +560,10 @@ public class MedicalDataSourceHelper {
     public static UpsertTableRequest getUpsertTableRequest(
             @NonNull UUID uuid,
             @NonNull CreateMedicalDataSourceRequest createMedicalDataSourceRequest,
-            long appInfoId) {
+            long appInfoId,
+            @NonNull Instant instant) {
         ContentValues contentValues =
-                getContentValues(uuid, createMedicalDataSourceRequest, appInfoId);
+                getContentValues(uuid, createMedicalDataSourceRequest, appInfoId, instant);
         return new UpsertTableRequest(getMainTableName(), contentValues, UNIQUE_COLUMNS_INFO);
     }
 
@@ -633,7 +675,8 @@ public class MedicalDataSourceHelper {
     private static ContentValues getContentValues(
             @NonNull UUID uuid,
             @NonNull CreateMedicalDataSourceRequest createMedicalDataSourceRequest,
-            long appInfoId) {
+            long appInfoId,
+            @NonNull Instant instant) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DATA_SOURCE_UUID_COLUMN_NAME, StorageUtils.convertUUIDToBytes(uuid));
         contentValues.put(
@@ -642,6 +685,7 @@ public class MedicalDataSourceHelper {
                 FHIR_BASE_URI_COLUMN_NAME,
                 createMedicalDataSourceRequest.getFhirBaseUri().toString());
         contentValues.put(APP_INFO_ID_COLUMN_NAME, appInfoId);
+        contentValues.put(LAST_MODIFIED_TIME_COLUMN_NAME, instant.toEpochMilli());
         return contentValues;
     }
 }

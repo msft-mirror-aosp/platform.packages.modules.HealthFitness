@@ -42,8 +42,6 @@ import android.healthconnect.cts.utils.RevokedHealthPermissionRule
 import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.insertRecordAndGetId
 import androidx.test.uiautomator.By
-import com.android.compatibility.common.util.DisableAnimationRule
-import com.android.compatibility.common.util.FreezeRotationRule
 import com.google.common.truth.Truth.assertThat
 import java.time.Duration
 import java.time.Instant
@@ -54,9 +52,6 @@ import org.junit.Rule
 import org.junit.Test
 
 class ExerciseRouteRequestTest : HealthConnectBaseTest() {
-    @get:Rule val disableAnimationRule = DisableAnimationRule()
-
-    @get:Rule val freezeRotationRule = FreezeRotationRule()
 
     @JvmField
     @Rule
@@ -71,6 +66,9 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
         @JvmStatic
         @AfterClass
         fun tearDown() {
+            if (!TestUtils.isHardwareSupported()) {
+                return
+            }
             TestUtils.verifyDeleteRecords(
                 ExerciseSessionRecord::class.java,
                 TimeInstantRangeFilter.Builder()

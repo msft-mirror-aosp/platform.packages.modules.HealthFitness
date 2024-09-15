@@ -114,8 +114,6 @@ public class DailyLoggingServiceTest {
         mPackageInfoNotConnectedApp.requestedPermissions = new String[] {HEALTH_PERMISSION};
         mPackageInfoNotConnectedApp.requestedPermissionsFlags =
                 new int[] {PackageInfo.REQUESTED_PERMISSION_NEVER_FOR_LOCATION};
-
-        when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
     }
 
     @Test
@@ -144,7 +142,7 @@ public class DailyLoggingServiceTest {
             doReturn(2L).when(transactionManager).getNumberOfEntriesInTheTable(tableName);
         }
 
-        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser);
+        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser, mPreferenceHelper);
 
         ExtendedMockito.verify(
                 () ->
@@ -186,7 +184,7 @@ public class DailyLoggingServiceTest {
             doReturn(0L).when(transactionManager).getNumberOfEntriesInTheTable(tableName);
         }
 
-        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser);
+        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser, mPreferenceHelper);
 
         ExtendedMockito.verify(
                 () ->
@@ -212,7 +210,7 @@ public class DailyLoggingServiceTest {
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 0)));
 
-        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser);
+        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser, mPreferenceHelper);
 
         // Makes sure we do not have count any app that does not have Health Connect permission
         // declared in the manifest as a connected or an available app.
@@ -235,7 +233,7 @@ public class DailyLoggingServiceTest {
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 0)));
 
-        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser);
+        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser, mPreferenceHelper);
 
         ExtendedMockito.verify(
                 () ->
@@ -256,7 +254,7 @@ public class DailyLoggingServiceTest {
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 31)));
 
-        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser);
+        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser, mPreferenceHelper);
 
         ExtendedMockito.verify(
                 () ->
@@ -277,7 +275,7 @@ public class DailyLoggingServiceTest {
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 1)));
 
-        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser);
+        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser, mPreferenceHelper);
 
         ExtendedMockito.verify(
                 () ->
@@ -292,7 +290,7 @@ public class DailyLoggingServiceTest {
                 .when(AccessLogsHelper::getLatestAccessLogTimeStamp);
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 1)));
-        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser);
+        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser, mPreferenceHelper);
 
         ExtendedMockito.verify(
                 () ->
@@ -311,7 +309,7 @@ public class DailyLoggingServiceTest {
                 .thenReturn(List.of(mPackageInfoNotConnectedApp, mPackageInfoNotConnectedApp));
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 31)));
-        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser);
+        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser, mPreferenceHelper);
 
         ExtendedMockito.verify(
                 () ->
@@ -328,7 +326,7 @@ public class DailyLoggingServiceTest {
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 1)));
         when(mPreferenceHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY))
                 .thenReturn(String.valueOf(7));
-        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser);
+        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser, mPreferenceHelper);
 
         ExtendedMockito.verify(
                 () ->
@@ -344,7 +342,7 @@ public class DailyLoggingServiceTest {
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 1)));
         when(mPreferenceHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY)).thenReturn(null);
-        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser);
+        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser, mPreferenceHelper);
 
         ExtendedMockito.verify(
                 () ->
@@ -359,7 +357,7 @@ public class DailyLoggingServiceTest {
                 .when(AccessLogsHelper::getLatestAccessLogTimeStamp);
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 31)));
-        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser);
+        DailyLoggingService.logDailyMetrics(mContext, mCurrentUser, mPreferenceHelper);
 
         ExtendedMockito.verify(
                 () ->

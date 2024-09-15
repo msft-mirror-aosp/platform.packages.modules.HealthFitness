@@ -40,6 +40,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
@@ -67,16 +68,18 @@ public final class DataMigrationManager {
     private final AppInfoHelper mAppInfoHelper;
     private final PriorityMigrationHelper mPriorityMigrationHelper;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private final PreferenceHelper mPreferenceHelper;
 
     public DataMigrationManager(
-            @NonNull Context userContext,
-            @NonNull TransactionManager transactionManager,
-            @NonNull HealthConnectPermissionHelper permissionHelper,
-            @NonNull FirstGrantTimeManager firstGrantTimeManager,
-            @NonNull DeviceInfoHelper deviceInfoHelper,
-            @NonNull AppInfoHelper appInfoHelper,
-            @NonNull HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
-            @NonNull PriorityMigrationHelper priorityMigrationHelper) {
+            Context userContext,
+            TransactionManager transactionManager,
+            HealthConnectPermissionHelper permissionHelper,
+            FirstGrantTimeManager firstGrantTimeManager,
+            DeviceInfoHelper deviceInfoHelper,
+            AppInfoHelper appInfoHelper,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            PriorityMigrationHelper priorityMigrationHelper,
+            PreferenceHelper preferenceHelper) {
         mUserContext = userContext;
         mTransactionManager = transactionManager;
         mPermissionHelper = permissionHelper;
@@ -85,6 +88,7 @@ public final class DataMigrationManager {
         mAppInfoHelper = appInfoHelper;
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
         mPriorityMigrationHelper = priorityMigrationHelper;
+        mPreferenceHelper = preferenceHelper;
     }
 
     /**
@@ -308,6 +312,7 @@ public final class DataMigrationManager {
      * @param payload of type MetadataMigrationPayload having retention period.
      */
     private void migrateMetadata(MetadataMigrationPayload payload) {
-        AutoDeleteService.setRecordRetentionPeriodInDays(payload.getRecordRetentionPeriodDays());
+        AutoDeleteService.setRecordRetentionPeriodInDays(
+                payload.getRecordRetentionPeriodDays(), mPreferenceHelper);
     }
 }
