@@ -273,12 +273,9 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Imunizacija"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"imunizacija"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Čitanje podataka o imunizaciji"</string>
-    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
-    <skip />
+    <string name="allergy_intolerance_uppercase_label" msgid="726821034032305942">"Alergije i intolerancija"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="3259399258428458578">"Alergije i intolerancija"</string>
+    <string name="allergy_intolerance_content_description" msgid="450723157436883417">"Čitanje podataka o alergijama ili intoleranciji"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Usredotočena svjesnost"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"usredotočena svjesnost"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Čitanje podataka o usredotočenoj svjesnosti"</string>
@@ -306,6 +303,8 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Odabrani dan"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Prethodni dan"</string>
     <string name="default_error" msgid="7966868260616403475">"Nešto nije uredu. Pokušajte ponovo."</string>
+    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"Aplikacije s ovim odobrenjem mogu čitati i zapisivati vaše podatke o zdravlju i fitnesu."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Kontrolirajte koje aplikacije mogu pristupiti podacima pohranjenim u Health Connectu. Dodirnite aplikaciju da pregledate podatke kojima ona ima pristup za čitanje ili pisanje."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Dozvoljen pristup"</string>
@@ -408,6 +407,8 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Otvori"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Odaberite fajl"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Oslobodite prostor"</string>
+    <!-- no translation found for scheduled_export_on_toast_text (945186472588537310) -->
+    <skip />
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect nije uspio izvesti podatke"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Potrebno je više prostora"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Došlo je do problema prilikom izvoza za dan <xliff:g id="DATE">%1$s</xliff:g>. Postavite novi zakazani izvoz i pokušajte ponovo."</string>

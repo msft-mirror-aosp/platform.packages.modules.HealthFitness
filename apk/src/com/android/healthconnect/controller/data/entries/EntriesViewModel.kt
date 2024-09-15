@@ -79,9 +79,9 @@ constructor(
 
     private var dataType: DataType? = null
 
-    private val _isDeletionState = MutableLiveData<Boolean>(false)
-    val isDeletionState:LiveData<Boolean>
-        get() = _isDeletionState
+    private val _screenState = MutableLiveData<EntriesDeletionScreenState>(EntriesDeletionScreenState.VIEW)
+    val screenState:LiveData<EntriesDeletionScreenState>
+        get() = _screenState
 
     private var dateNavigationText: String? = null
 
@@ -268,9 +268,9 @@ constructor(
         _setOfEntriesToBeDeleted.value = emptySet()
     }
 
-    fun setIsDeletionState(isDeletionState: Boolean){
-        _isDeletionState.value = isDeletionState
-        if(_isDeletionState.value == false){
+    fun setScreenState(screenState: EntriesDeletionScreenState){
+        _screenState.value = screenState
+        if(_screenState.value == EntriesDeletionScreenState.VIEW){
             resetDeleteSet()
         }
     }
@@ -299,5 +299,10 @@ constructor(
         object LoadingFailed : EntriesFragmentState()
 
         data class With(val entries: List<FormattedEntry>) : EntriesFragmentState()
+    }
+
+    enum class EntriesDeletionScreenState {
+        VIEW,
+        DELETE
     }
 }

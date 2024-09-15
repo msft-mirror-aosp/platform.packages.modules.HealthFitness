@@ -22,7 +22,7 @@ filegroup {
         "src/**/*.java",
     ],
     visibility: [
-        "//packages/modules/HealthFitness:__subpackages__"
+        "//packages/modules/HealthFitness:__subpackages__",
     ],
 }
 
@@ -31,8 +31,8 @@ android_test_helper_app {
     defaults: ["cts_defaults"],
 
     libs: [
-        "android.test.base",
-        "android.test.runner",
+        "android.test.base.stubs.system",
+        "android.test.runner.stubs.system",
     ],
 
     srcs: [":healthfitness-cts-testapp-srcs"],
