@@ -63,7 +63,7 @@ public class StepsCadenceRecordHelper
     }
 
     @Override
-    String getMainTableName() {
+    public String getMainTableName() {
         return TABLE_NAME;
     }
 

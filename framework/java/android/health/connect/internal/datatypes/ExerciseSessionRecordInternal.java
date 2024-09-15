@@ -21,12 +21,14 @@ import android.annotation.Nullable;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.ExerciseSessionType;
 import android.health.connect.datatypes.Identifier;
+import android.health.connect.datatypes.PlannedExerciseSessionRecord;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.os.Parcel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @see ExerciseSessionRecord
@@ -53,6 +55,8 @@ public final class ExerciseSessionRecordInternal
     private List<ExerciseSegmentInternal> mExerciseSegments;
 
     private boolean mHasRoute;
+
+    @Nullable private UUID mPlannedExerciseSessionId;
 
     @Nullable
     public String getNotes() {
@@ -143,11 +147,28 @@ public final class ExerciseSessionRecordInternal
     }
 
     /** returns this object with exercise segments set */
+    @NonNull
     public ExerciseSessionRecordInternal setExerciseSegments(
             @NonNull List<ExerciseSegmentInternal> exerciseSegments) {
         Objects.requireNonNull(exerciseSegments);
         mExerciseSegments = new ArrayList<>(exerciseSegments);
         return this;
+    }
+
+    /** Sets the {@link PlannedExerciseSessionRecord} that this session was based upon. */
+    @NonNull
+    public ExerciseSessionRecordInternal setPlannedExerciseSessionId(@Nullable UUID id) {
+        mPlannedExerciseSessionId = id;
+        return this;
+    }
+
+    /**
+     * Returns the ID of the {@link PlannedExerciseSessionRecord} that this session was based upon.
+     * If not set, returns null.
+     */
+    @Nullable
+    public UUID getPlannedExerciseSessionId() {
+        return mPlannedExerciseSessionId;
     }
 
     @NonNull
@@ -186,6 +207,9 @@ public final class ExerciseSessionRecordInternal
         if (getSegments() != null) {
             builder.setSegments(ExerciseSegmentInternal.getExternalSegments(mExerciseSegments));
         }
+
+        builder.setPlannedExerciseSessionId(
+                mPlannedExerciseSessionId == null ? null : mPlannedExerciseSessionId.toString());
         return builder.buildWithoutValidation();
     }
 
@@ -198,6 +222,8 @@ public final class ExerciseSessionRecordInternal
         ExerciseRouteInternal.writeToParcel(mExerciseRoute, parcel);
         ExerciseLapInternal.writeLapsToParcel(mExerciseLaps, parcel);
         ExerciseSegmentInternal.writeSegmentsToParcel(mExerciseSegments, parcel);
+        parcel.writeString(
+                mPlannedExerciseSessionId == null ? null : mPlannedExerciseSessionId.toString());
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
@@ -210,6 +236,8 @@ public final class ExerciseSessionRecordInternal
         mExerciseRoute = ExerciseRouteInternal.readFromParcel(parcel);
         mExerciseLaps = ExerciseLapInternal.populateLapsFromParcel(parcel);
         mExerciseSegments = ExerciseSegmentInternal.populateSegmentsFromParcel(parcel);
+        String uuid = parcel.readString();
+        mPlannedExerciseSessionId = uuid == null ? null : UUID.fromString(uuid);
     }
 
     /** Add route location to the session */

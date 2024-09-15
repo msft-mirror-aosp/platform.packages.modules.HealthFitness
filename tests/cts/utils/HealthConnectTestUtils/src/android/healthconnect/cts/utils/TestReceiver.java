@@ -16,6 +16,11 @@
 
 package android.healthconnect.cts.utils;
 
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_RESULT_ERROR;
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_RESULT_SUCCESS;
+import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RESULT_ERROR_CODE;
+import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RESULT_ERROR_MESSAGE;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -29,11 +34,6 @@ import java.util.concurrent.TimeUnit;
  * android.healthconnect.test.app.TestAppReceiver}.
  */
 public class TestReceiver extends BroadcastReceiver {
-
-    private static final String ACTION_SUCCESS = "action.SUCCESS";
-    private static final String ACTION_ERROR = "action.ERROR";
-    private static final String EXTRA_ERROR_CODE = "extra.ERROR_CODE";
-    private static final String EXTRA_ERROR_MESSAGE = "extra.ERROR_MESSAGE";
 
     private static CountDownLatch sLatch = new CountDownLatch(1);
     private static Bundle sResult = null;
@@ -75,13 +75,13 @@ public class TestReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         switch (intent.getAction()) {
-            case ACTION_SUCCESS:
+            case ACTION_RESULT_SUCCESS:
                 sResult = intent.getExtras();
                 sLatch.countDown();
                 break;
-            case ACTION_ERROR:
-                sErrorCode = intent.getIntExtra(EXTRA_ERROR_CODE, 0);
-                sErrorMessage = intent.getStringExtra(EXTRA_ERROR_MESSAGE);
+            case ACTION_RESULT_ERROR:
+                sErrorCode = intent.getIntExtra(EXTRA_RESULT_ERROR_CODE, 0);
+                sErrorMessage = intent.getStringExtra(EXTRA_RESULT_ERROR_MESSAGE);
                 sLatch.countDown();
                 break;
             default:

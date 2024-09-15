@@ -197,6 +197,36 @@ public final class CreateTableRequest {
                 + ")";
     }
 
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     *
+     * @param obj the reference object with which to compare.
+     * @return {@code true} if this object is the same as the obj
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof CreateTableRequest that)) return false;
+        return Objects.equals(mTableName, that.mTableName)
+                && Objects.equals(mColumnInfo, that.mColumnInfo)
+                && Objects.equals(mUniqueColumns, that.mUniqueColumns)
+                && Objects.equals(mForeignKeys, that.mForeignKeys)
+                && Objects.equals(mChildTableRequests, that.mChildTableRequests)
+                && Objects.equals(mGeneratedColumnInfo, that.mGeneratedColumnInfo);
+    }
+
+    /** Returns a hash code value for the object. */
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                mTableName,
+                mColumnInfo,
+                mUniqueColumns,
+                mForeignKeys,
+                mChildTableRequests,
+                mGeneratedColumnInfo);
+    }
+
     public static final class GeneratedColumnInfo {
         private final String columnName;
         private final String type;
@@ -218,6 +248,27 @@ public final class CreateTableRequest {
 
         public String getExpression() {
             return expression;
+        }
+
+        /**
+         * Indicates whether some other object is "equal to" this one.
+         *
+         * @param obj the reference object with which to compare.
+         * @return {@code true} if this object is the same as the obj
+         */
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (!(obj instanceof GeneratedColumnInfo that)) return false;
+            return (Objects.equals(columnName, that.columnName)
+                    && Objects.equals(type, that.type)
+                    && Objects.equals(expression, that.expression));
+        }
+
+        /** Returns a hash code value for the object. */
+        @Override
+        public int hashCode() {
+            return Objects.hash(columnName, type, expression);
         }
     }
 
@@ -248,6 +299,27 @@ public final class CreateTableRequest {
 
         String getFkIndexStatement(int fkNumber) {
             return getCreateIndexCommand(mTableName + "_" + fkNumber, mColumnNames);
+        }
+
+        /**
+         * Indicates whether some other object is "equal to" this one.
+         *
+         * @param obj the reference object with which to compare.
+         * @return {@code true} if this object is the same as the obj
+         */
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (!(obj instanceof ForeignKey that)) return false;
+            return (Objects.equals(mColumnNames, that.mColumnNames)
+                    && Objects.equals(mReferencedTableName, that.mReferencedTableName)
+                    && Objects.equals(mReferencedColumnNames, that.mReferencedColumnNames));
+        }
+
+        /** Returns a hash code value for the object. */
+        @Override
+        public int hashCode() {
+            return Objects.hash(mColumnNames, mReferencedTableName, mReferencedColumnNames);
         }
     }
 }

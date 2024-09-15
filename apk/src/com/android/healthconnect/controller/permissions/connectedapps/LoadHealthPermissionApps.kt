@@ -40,7 +40,7 @@ constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) : ILoadHealthPermissionApps {
 
-    /** Returns a list of ConnectedAppMetadata. */
+    /** Returns a list of [ConnectedAppMetadata]. */
     override suspend operator fun invoke(): List<ConnectedAppMetadata> =
         withContext(dispatcher) {
             val appsWithHealthPermissions = healthPermissionReader.getAppsWithHealthPermissions()

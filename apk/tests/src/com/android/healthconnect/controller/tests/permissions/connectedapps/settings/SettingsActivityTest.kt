@@ -31,7 +31,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.permissions.shared.SettingsActivity
@@ -78,7 +78,7 @@ class SettingsActivityTest {
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
             TEST_APP_PACKAGE_NAME, listOf())
         whenever(viewModel.grantedPermissions).then {
-            MutableLiveData<Set<HealthPermission>>(emptySet())
+            MutableLiveData<Set<FitnessPermission>>(emptySet())
         }
         showOnboarding(context, false)
 
@@ -102,13 +102,14 @@ class SettingsActivityTest {
                     context.getDrawable(R.drawable.health_connect_logo)))
         }
         val writePermission =
-            HealthPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+            FitnessPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
         val readPermission =
-            HealthPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
+            FitnessPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
         whenever(viewModel.appPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
         whenever(viewModel.grantedPermissions).then { MutableLiveData(setOf(writePermission)) }
+        whenever(viewModel.lastReadPermissionDisconnected).then { MutableLiveData(false) }
     }
 
     @Test

@@ -25,6 +25,7 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_TOTAL_CALORIES_BURNED;
 import static android.text.TextUtils.isEmpty;
 
+import static com.android.internal.annotations.VisibleForTesting.Visibility.PRIVATE;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.CLIENT_RECORD_ID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.UUID_COLUMN_NAME;
@@ -37,14 +38,18 @@ import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.HealthDataCategory;
+import android.health.connect.MedicalResourceId;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.internal.datatypes.InstantRecordInternal;
 import android.health.connect.internal.datatypes.IntervalRecordInternal;
+import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper;
 import android.util.Slog;
 
+import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
 import java.nio.ByteBuffer;
@@ -55,6 +60,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * An util class for HC storage
@@ -76,6 +82,7 @@ public final class StorageUtils {
     public static final String DELIMITER = ",";
     public static final String BLOB = "BLOB";
     public static final String BLOB_UNIQUE_NULL = "BLOB UNIQUE";
+    public static final String BLOB_NULL = "BLOB NULL";
     public static final String BLOB_UNIQUE_NON_NULL = "BLOB NOT NULL UNIQUE";
     public static final String BLOB_NON_NULL = "BLOB NOT NULL";
     public static final String SELECT_ALL = "SELECT * FROM ";
@@ -102,6 +109,40 @@ public final class StorageUtils {
             Slog.e(TAG, "", exception);
             return null;
         }
+    }
+
+    /**
+     * Returns a UUID for the given triple {@code resourceId}, {@code resourceType} and {@code
+     * dataSourceId}.
+     */
+    public static UUID generateMedicalResourceUUID(
+            @NonNull String resourceId,
+            @NonNull String resourceType,
+            @NonNull String dataSourceId) {
+        final byte[] resourceIdBytes = resourceId.getBytes();
+        final byte[] resourceTypeBytes = resourceType.getBytes();
+        final byte[] dataSourceIdBytes = dataSourceId.getBytes();
+        return getUUID(resourceIdBytes, resourceTypeBytes, dataSourceIdBytes);
+    }
+
+    private static UUID getUUID(byte[]... byteArrays) {
+        int total = Stream.of(byteArrays).mapToInt(arr -> arr.length).sum();
+        ByteBuffer byteBuffer = ByteBuffer.allocate(total);
+        for (byte[] byteArray : byteArrays) {
+            byteBuffer.put(byteArray);
+        }
+        return UUID.nameUUIDFromBytes(byteBuffer.array());
+    }
+
+    /**
+     * Sets {@link UUID} for the given {@code medicalResourceInternal}. Since the rest of the fields
+     * in {@link MedicalResourceInternal} are not yet created, the UUID is randomly generated.
+     */
+    public static void addNameBasedUUIDTo(
+            @NonNull MedicalResourceInternal medicalResourceInternal) {
+        // TODO(b/338195583): generate uuid based on medical_data_source_id, resource_type and
+        // resource_id.
+        medicalResourceInternal.setUuid(UUID.randomUUID());
     }
 
     /**
@@ -140,6 +181,14 @@ public final class StorageUtils {
                         clientRecordId,
                         recordInternal.getRecordType());
         recordInternal.setUuid(uuid);
+    }
+
+    /** Returns a UUID for the given {@link MedicalResourceId}. */
+    public static UUID getUUIDFor(@NonNull MedicalResourceId medicalResourceId) {
+        return generateMedicalResourceUUID(
+                medicalResourceId.getFhirResourceId(),
+                medicalResourceId.getFhirResourceType(),
+                medicalResourceId.getDataSourceId());
     }
 
     /**
@@ -377,6 +426,42 @@ public final class StorageUtils {
         return byteBuffer.array();
     }
 
+    /** Convert a double value to bytes. */
+    public static byte[] convertDoubleToBytes(double value) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[8]);
+        byteBuffer.putDouble(value);
+        return byteBuffer.array();
+    }
+
+    /** Convert bytes to a double. */
+    public static double convertBytesToDouble(byte[] bytes) {
+        return ByteBuffer.wrap(bytes).getDouble();
+    }
+
+    /** Convert an integer value to bytes. */
+    public static byte[] convertIntToBytes(int value) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[4]);
+        byteBuffer.putInt(value);
+        return byteBuffer.array();
+    }
+
+    /** Convert bytes to an integer. */
+    public static int convertBytesToInt(byte[] bytes) {
+        return ByteBuffer.wrap(bytes).getInt();
+    }
+
+    /** Convert bytes to a long. */
+    public static byte[] convertLongToBytes(long value) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[8]);
+        byteBuffer.putLong(value);
+        return byteBuffer.array();
+    }
+
+    /** Convert a long value to bytes. */
+    public static long convertBytesToLong(byte[] bytes) {
+        return ByteBuffer.wrap(bytes).getLong();
+    }
+
     public static String getHexString(byte[] value) {
         if (value == null) {
             return "";
@@ -395,7 +480,8 @@ public final class StorageUtils {
         return getHexString(convertUUIDToBytes(uuid));
     }
 
-    public static List<String> getListOfHexString(List<UUID> uuids) {
+    /** Creates a list of Hex strings for a given list of {@code UUID}s. */
+    public static List<String> getListOfHexStrings(List<UUID> uuids) {
         List<String> hexStrings = new ArrayList<>();
         for (UUID uuid : uuids) {
             hexStrings.add(getHexString(convertUUIDToBytes(uuid)));
@@ -404,6 +490,10 @@ public final class StorageUtils {
         return hexStrings;
     }
 
+    /**
+     * Returns a byte array containing sublist of the given uuids list, from position {@code
+     * start}(inclusive) to {@code end}(exclusive).
+     */
     public static byte[] getSingleByteArray(List<UUID> uuids) {
         byte[] allByteArray = new byte[UUID_BYTE_SIZE * uuids.size()];
 
@@ -417,6 +507,12 @@ public final class StorageUtils {
 
     public static List<UUID> getCursorUUIDList(Cursor cursor, String columnName) {
         byte[] bytes = cursor.getBlob(cursor.getColumnIndex(columnName));
+        return bytesToUuids(bytes);
+    }
+
+    /** Turns a byte array to a UUID list. */
+    @VisibleForTesting(visibility = PRIVATE)
+    public static List<UUID> bytesToUuids(byte[] bytes) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
 
         List<UUID> uuidList = new ArrayList<>();
@@ -425,7 +521,6 @@ public final class StorageUtils {
             long low = byteBuffer.getLong();
             uuidList.add(new UUID(high, low));
         }
-
         return uuidList;
     }
 
@@ -445,6 +540,19 @@ public final class StorageUtils {
         }
 
         return id;
+    }
+
+    public static boolean checkTableExists(HealthConnectDatabase database, String tableName) {
+        try (Cursor cursor =
+                database.getReadableDatabase()
+                        .rawQuery(
+                                "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+                                new String[] {tableName})) {
+            if (cursor.getCount() == 0) {
+                Slog.d(TAG, "Table does not exist: " + tableName);
+            }
+            return cursor.getCount() > 0;
+        }
     }
 
     /** Extracts and holds data from {@link ContentValues}. */

@@ -25,6 +25,7 @@ import android.health.connect.datatypes.DistanceRecord
 import android.health.connect.datatypes.ElevationGainedRecord
 import android.health.connect.datatypes.ExerciseSessionRecord
 import android.health.connect.datatypes.FloorsClimbedRecord
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
 import android.health.connect.datatypes.PowerRecord
 import android.health.connect.datatypes.SpeedRecord
 import android.health.connect.datatypes.StepsCadenceRecord
@@ -105,7 +106,8 @@ class DeleteCategoryUseCaseTest {
                 ElevationGainedRecord::class.java,
                 Vo2MaxRecord::class.java,
                 CyclingPedalingCadenceRecord::class.java,
-                ExerciseSessionRecord::class.java)
+                ExerciseSessionRecord::class.java,
+                PlannedExerciseSessionRecord::class.java)
     }
 
     private fun prepareAnswer(): (InvocationOnMock) -> Nothing? {

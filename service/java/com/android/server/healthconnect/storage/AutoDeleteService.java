@@ -28,6 +28,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsReques
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
+import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import java.util.ArrayList;
@@ -69,7 +70,7 @@ public class AutoDeleteService {
             // Update the recordTypesUsed by packages if required after the deletion of records.
             AppInfoHelper.getInstance().syncAppInfoRecordTypesUsed();
             // Re-sync activity dates table
-            ActivityDateHelper.getInstance().reSyncForAllRecords();
+            ActivityDateHelper.reSyncForAllRecords();
             // Sync health data priority list table
             HealthDataCategoryPriorityHelper.getInstance().reSyncHealthDataPriorityTable(context);
         } catch (Exception e) {
@@ -88,8 +89,7 @@ public class AutoDeleteService {
         if (recordAutoDeletePeriod != 0) {
             // 0 represents that no period is set,to delete only if not 0 else don't do anything
             List<DeleteTableRequest> deleteTableRequests = new ArrayList<>();
-            RecordHelperProvider.getInstance()
-                    .getRecordHelpers()
+            RecordHelperProvider.getRecordHelpers()
                     .values()
                     .forEach(
                             (recordHelper) -> {
@@ -100,7 +100,7 @@ public class AutoDeleteService {
                             });
             try {
                 TransactionManager.getInitialisedInstance()
-                        .deleteWithoutChangeLogs(deleteTableRequests);
+                        .deleteAll(new DeleteTransactionRequest(deleteTableRequests));
             } catch (Exception exception) {
                 Slog.e(TAG, "Auto delete for records failed", exception);
                 // Don't rethrow as that will crash system_server
@@ -113,9 +113,8 @@ public class AutoDeleteService {
             TransactionManager.getInitialisedInstance()
                     .deleteWithoutChangeLogs(
                             List.of(
-                                    ChangeLogsHelper.getInstance().getDeleteRequestForAutoDelete(),
-                                    ChangeLogsRequestHelper.getInstance()
-                                            .getDeleteRequestForAutoDelete()));
+                                    ChangeLogsHelper.getDeleteRequestForAutoDelete(),
+                                    ChangeLogsRequestHelper.getDeleteRequestForAutoDelete()));
         } catch (Exception exception) {
             Slog.e(TAG, "Auto delete for Change logs failed", exception);
             // Don't rethrow as that will crash system_server
@@ -126,9 +125,7 @@ public class AutoDeleteService {
         try {
             TransactionManager.getInitialisedInstance()
                     .deleteWithoutChangeLogs(
-                            List.of(
-                                    AccessLogsHelper.getInstance()
-                                            .getDeleteRequestForAutoDelete()));
+                            List.of(AccessLogsHelper.getDeleteRequestForAutoDelete()));
         } catch (Exception exception) {
             Slog.e(TAG, "Auto delete for Access logs failed", exception);
             // Don't rethrow as that will crash system_server

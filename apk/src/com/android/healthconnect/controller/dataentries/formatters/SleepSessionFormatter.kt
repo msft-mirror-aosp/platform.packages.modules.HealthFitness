@@ -29,7 +29,7 @@ import com.android.healthconnect.controller.data.entries.FormattedEntry.Formatte
 import com.android.healthconnect.controller.dataentries.formatters.DurationFormatter.formatDurationLong
 import com.android.healthconnect.controller.dataentries.formatters.DurationFormatter.formatDurationShort
 import com.android.healthconnect.controller.dataentries.formatters.shared.BaseFormatter
-import com.android.healthconnect.controller.dataentries.formatters.shared.SessionDetailsFormatter
+import com.android.healthconnect.controller.dataentries.formatters.shared.RecordDetailsFormatter
 import com.android.healthconnect.controller.dataentries.formatters.shared.UnitFormatter
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
@@ -41,7 +41,7 @@ import javax.inject.Inject
 /** Formatter for printing SleepSessionRecord data. */
 class SleepSessionFormatter @Inject constructor(@ApplicationContext private val context: Context) :
     BaseFormatter<SleepSessionRecord>(context),
-    SessionDetailsFormatter<SleepSessionRecord>,
+    RecordDetailsFormatter<SleepSessionRecord>,
     UnitFormatter<Long> {
 
     private val timeFormatter = LocalDateTimeFormatter(context)

@@ -27,6 +27,7 @@ android_test_helper_app {
     ],
     sdk_version: "test_current",
     min_sdk_version: "34",
+    target_sdk_version: "34",
     srcs: [
         "HealthConnectTestHelper/src/**/*.java",
         "HealthConnectTestHelper/src/**/*.kt",
@@ -37,45 +38,66 @@ android_test_helper_app {
 android_test_helper_app {
     name: "CtsHealthConnectTestAppAWithNormalReadWritePermission",
     manifest: "HealthConnectTestHelper/CtsHealthConnectTestAppAWithNormalReadWritePermission.xml",
-    static_libs: ["cts-healthconnect-lib", "cts-healthconnect-test-helper"],
+    static_libs: [
+        "cts-healthconnect-lib",
+        "cts-healthconnect-test-helper",
+    ],
     sdk_version: "test_current",
     min_sdk_version: "34",
+    target_sdk_version: "34",
 }
 
 android_test_helper_app {
     name: "CtsHealthConnectTestAppBWithNormalReadWritePermission",
     manifest: "HealthConnectTestHelper/CtsHealthConnectTestAppBWithNormalReadWritePermission.xml",
-    static_libs: ["cts-healthconnect-lib", "cts-healthconnect-test-helper"],
+    static_libs: [
+        "cts-healthconnect-lib",
+        "cts-healthconnect-test-helper",
+    ],
     sdk_version: "test_current",
     min_sdk_version: "34",
+    target_sdk_version: "34",
 }
 
 android_test_helper_app {
     name: "CtsHealthConnectTestAppWithDataManagePermission",
     manifest: "HealthConnectTestHelper/CtsHealthConnectTestAppWithDataManagePermission.xml",
-    static_libs: ["cts-healthconnect-lib", "cts-healthconnect-test-helper"],
+    static_libs: [
+        "cts-healthconnect-lib",
+        "cts-healthconnect-test-helper",
+    ],
     sdk_version: "test_current",
     min_sdk_version: "34",
+    target_sdk_version: "34",
 }
 
 android_test_helper_app {
     name: "CtsHealthConnectTestAppWithNoPermission",
     manifest: "HealthConnectTestHelper/CtsHealthConnectTestAppWithNoPermission.xml",
-    static_libs: ["cts-healthconnect-lib", "cts-healthconnect-test-helper"],
+    static_libs: [
+        "cts-healthconnect-lib",
+        "cts-healthconnect-test-helper",
+    ],
     sdk_version: "test_current",
     min_sdk_version: "34",
+    target_sdk_version: "34",
 }
 
 android_test_helper_app {
     name: "CtsHealthConnectTestAppWithWritePermissionsOnly",
     manifest: "HealthConnectTestHelper/CtsHealthConnectTestAppWithWritePermissionsOnly.xml",
-    static_libs: ["cts-healthconnect-lib", "cts-healthconnect-test-helper"],
+    static_libs: [
+        "cts-healthconnect-lib",
+        "cts-healthconnect-test-helper",
+    ],
     sdk_version: "test_current",
     min_sdk_version: "34",
+    target_sdk_version: "34",
 }
 
 android_test {
     name: "CtsHealthConnectHostSideDeviceTestCases",
+    team: "trendy_team_android_health",
     manifest: "device/AndroidManifest.xml",
     test_config: "device/AndroidTest.xml",
     defaults: ["cts_defaults"],
@@ -103,10 +125,10 @@ android_test {
     sdk_version: "test_current",
     min_sdk_version: "34",
     libs: [
-        "android.test.base",
-        "android.test.mock",
-        "android.test.runner",
-        "framework-healthfitness",
+        "android.test.base.stubs.test",
+        "android.test.mock.stubs.test",
+        "android.test.runner.stubs.test",
+        "framework-healthfitness.stubs.system",
     ],
     java_resource_dirs: ["res"],
     data: [
@@ -120,6 +142,7 @@ android_test {
 
 java_test_host {
     name: "CtsHealthConnectHostTestCases",
+    team: "trendy_team_android_health",
     defaults: ["cts_defaults"],
     srcs: [
         "host/**/*.java",

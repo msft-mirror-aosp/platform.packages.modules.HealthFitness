@@ -42,6 +42,8 @@ import android.healthconnect.cts.utils.RevokedHealthPermissionRule
 import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.insertRecordAndGetId
 import androidx.test.uiautomator.By
+import com.android.compatibility.common.util.DisableAnimationRule
+import com.android.compatibility.common.util.FreezeRotationRule
 import com.google.common.truth.Truth.assertThat
 import java.time.Duration
 import java.time.Instant
@@ -52,6 +54,9 @@ import org.junit.Rule
 import org.junit.Test
 
 class ExerciseRouteRequestTest : HealthConnectBaseTest() {
+    @get:Rule val disableAnimationRule = DisableAnimationRule()
+
+    @get:Rule val freezeRotationRule = FreezeRotationRule()
 
     companion object {
         private const val READ_ROUTES_ALL_FEATURE_FLAG = "exercise_routes_read_all_enable"
@@ -340,7 +345,7 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
         val requestIntent =
             Intent(ACTION_REQUEST_EXERCISE_ROUTE).putExtra(EXTRA_SESSION_ID, recordId)
 
-        val result = ProxyActivity.launchActivityForResult(requestIntent) {}
+        val result = ProxyActivity.launchActivityForResult(requestIntent)
 
         assertThat(result.resultCode).isEqualTo(Activity.RESULT_CANCELED)
         val extras = result.resultData.extras!!
@@ -357,7 +362,7 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
         val requestIntent =
             Intent(ACTION_REQUEST_EXERCISE_ROUTE).putExtra(EXTRA_SESSION_ID, recordId)
 
-        val result = ProxyActivity.launchActivityForResult(requestIntent) {}
+        val result = ProxyActivity.launchActivityForResult(requestIntent)
 
         assertThat(result.resultCode).isEqualTo(Activity.RESULT_CANCELED)
         val extras = result.resultData.extras!!

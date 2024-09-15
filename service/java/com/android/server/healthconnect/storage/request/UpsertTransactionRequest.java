@@ -18,6 +18,7 @@ package com.android.server.healthconnect.storage.request;
 
 import static android.health.connect.Constants.UPSERT;
 
+import static com.android.server.healthconnect.storage.utils.StorageUtils.addNameBasedUUIDTo;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
@@ -32,7 +33,6 @@ import android.util.Slog;
 
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
@@ -61,12 +61,11 @@ import java.util.stream.Collectors;
 public class UpsertTransactionRequest {
     private static final String TAG = "HealthConnectUTR";
     @NonNull private final List<UpsertTableRequest> mUpsertRequests = new ArrayList<>();
-    @NonNull private final String mPackageName;
     private final List<UpsertTableRequest> mAccessLogs = new ArrayList<>();
     private final boolean mSkipPackageNameAndLogs;
     @RecordTypeIdentifier.RecordType Set<Integer> mRecordTypes = new ArraySet<>();
 
-    private ArrayMap<String, Boolean> mExtraWritePermissionsToState;
+    @Nullable private ArrayMap<String, Boolean> mExtraWritePermissionsToState;
 
     public UpsertTransactionRequest(
             @Nullable String packageName,
@@ -79,6 +78,7 @@ public class UpsertTransactionRequest {
                 recordInternals,
                 context,
                 isInsertRequest,
+                false /* useProvidedUuid */,
                 false /* skipPackageNameAndLogs */,
                 extraPermsStateMap);
     }
@@ -88,25 +88,28 @@ public class UpsertTransactionRequest {
             @NonNull List<RecordInternal<?>> recordInternals,
             Context context,
             boolean isInsertRequest,
+            boolean useProvidedUuid,
             boolean skipPackageNameAndLogs) {
         this(
                 packageName,
                 recordInternals,
                 context,
                 isInsertRequest,
+                useProvidedUuid,
                 skipPackageNameAndLogs,
                 Collections.emptyMap());
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public UpsertTransactionRequest(
+    private UpsertTransactionRequest(
             @Nullable String packageName,
             @NonNull List<RecordInternal<?>> recordInternals,
             Context context,
             boolean isInsertRequest,
+            // TODO(b/329237732): Use builder pattern for this class.
+            boolean useProvidedUuid,
             boolean skipPackageNameAndLogs,
             Map<String, Boolean> extraPermsStateMap) {
-        mPackageName = packageName;
         mSkipPackageNameAndLogs = skipPackageNameAndLogs;
         if (extraPermsStateMap != null && !extraPermsStateMap.isEmpty()) {
             mExtraWritePermissionsToState = new ArrayMap<>();
@@ -122,15 +125,19 @@ public class UpsertTransactionRequest {
             DeviceInfoHelper.getInstance().populateDeviceInfoId(recordInternal);
 
             if (isInsertRequest) {
-                // Always generate an uuid field for insert requests, we should not trust what is
-                // already present.
-                StorageUtils.addNameBasedUUIDTo(recordInternal);
-                mRecordTypes.add(recordInternal.getRecordType());
+                if (useProvidedUuid && recordInternal.getUuid() != null) {
+                    // Do nothing i.e. leave the UUID as provided. This is desired for backup and
+                    // restore to ensure references between records remain intact.
+                } else {
+                    // Otherwise, we should generate a fresh UUID. Don't let the client choose it.
+                    addNameBasedUUIDTo(recordInternal);
+                }
             } else {
                 // For update requests, generate uuid if the clientRecordID is present, else use the
                 // uuid passed as input.
                 StorageUtils.updateNameBasedUUIDIfRequired(recordInternal);
             }
+            mRecordTypes.add(recordInternal.getRecordType());
             recordInternal.setLastModifiedTime(Instant.now().toEpochMilli());
             addRequest(recordInternal, isInsertRequest);
         }
@@ -138,9 +145,8 @@ public class UpsertTransactionRequest {
         if (!mRecordTypes.isEmpty()) {
             if (!mSkipPackageNameAndLogs) {
                 mAccessLogs.add(
-                        AccessLogsHelper.getInstance()
-                                .getUpsertTableRequest(
-                                        packageName, new ArrayList<>(mRecordTypes), UPSERT));
+                        AccessLogsHelper.getUpsertTableRequest(
+                                packageName, new ArrayList<>(mRecordTypes), UPSERT));
             }
 
             if (Constants.DEBUG) {
@@ -156,24 +162,6 @@ public class UpsertTransactionRequest {
 
     public List<UpsertTableRequest> getAccessLogs() {
         return mAccessLogs;
-    }
-
-    @NonNull
-    public List<UpsertTableRequest> getInsertRequestsForChangeLogs() {
-        if (mSkipPackageNameAndLogs) {
-            return Collections.emptyList();
-        }
-        long currentTime = Instant.now().toEpochMilli();
-        ChangeLogsHelper.ChangeLogs insertChangeLogs =
-                new ChangeLogsHelper.ChangeLogs(UPSERT, mPackageName, currentTime);
-        for (UpsertTableRequest upsertRequest : mUpsertRequests) {
-            insertChangeLogs.addUUID(
-                    upsertRequest.getRecordInternal().getRecordType(),
-                    upsertRequest.getRecordInternal().getAppInfoId(),
-                    upsertRequest.getRecordInternal().getUuid());
-        }
-
-        return insertChangeLogs.getUpsertTableRequests();
     }
 
     @NonNull
@@ -200,7 +188,7 @@ public class UpsertTransactionRequest {
 
     private void addRequest(@NonNull RecordInternal<?> recordInternal, boolean isInsertRequest) {
         RecordHelper<?> recordHelper =
-                RecordHelperProvider.getInstance().getRecordHelper(recordInternal.getRecordType());
+                RecordHelperProvider.getRecordHelper(recordInternal.getRecordType());
         Objects.requireNonNull(recordHelper);
 
         UpsertTableRequest request =

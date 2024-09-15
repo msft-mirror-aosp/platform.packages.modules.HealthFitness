@@ -16,6 +16,7 @@ import com.android.healthconnect.controller.shared.preference.HealthPreferenceFr
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.ManageDataElement
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthfitness.flags.Flags
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -26,6 +27,7 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
         private const val AUTO_DELETE_PREFERENCE_KEY = "auto_delete"
         private const val DATA_SOURCES_AND_PRIORITY_PREFERENCE_KEY = "data_sources_and_priority"
         private const val SET_UNITS_PREFERENCE_KEY = "set_units"
+        private const val BACKUP_AND_RESTORE_PREFERENCE_KEY = "backup_and_restore"
     }
 
     init {
@@ -47,9 +49,17 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
         preferenceScreen.findPreference(SET_UNITS_PREFERENCE_KEY)
     }
 
+    private val backupAndRestorePreference: HealthPreference? by lazy {
+        preferenceScreen.findPreference(BACKUP_AND_RESTORE_PREFERENCE_KEY)
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
-        setPreferencesFromResource(R.xml.manage_data_screen, rootKey)
+        if (Flags.exportImport()) {
+            setPreferencesFromResource(R.xml.new_manage_data_screen, rootKey)
+        } else {
+            setPreferencesFromResource(R.xml.manage_data_screen, rootKey)
+        }
 
         mAutoDeletePreference?.logName = ManageDataElement.AUTO_DELETE_BUTTON
         mAutoDeletePreference?.setOnPreferenceClickListener {
@@ -76,6 +86,14 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
         mSetUnitsPreference?.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_manageData_to_setUnits)
             true
+        }
+
+        if (Flags.exportImport()) {
+            // TODO: b/325917291 - Add proper log name for the backup and restore button.
+            backupAndRestorePreference?.setOnPreferenceClickListener {
+                findNavController().navigate(R.id.action_manageData_to_backupAndRestore)
+                true
+            }
         }
     }
 

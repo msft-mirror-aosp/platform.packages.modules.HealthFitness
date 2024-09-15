@@ -30,11 +30,18 @@ import android.healthconnect.cts.lib.UiTestUtils.revokePermissionViaPackageManag
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import androidx.test.uiautomator.By
+import com.android.compatibility.common.util.DisableAnimationRule
+import com.android.compatibility.common.util.FreezeRotationRule
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
+import org.junit.Rule
 import org.junit.Test
 
 class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
+
+    @get:Rule val disableAnimationRule = DisableAnimationRule()
+
+    @get:Rule val freezeRotationRule = FreezeRotationRule()
 
     @Test
     fun showDeclaredPermissions() {
@@ -42,6 +49,19 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
             navigateToManageAppPermissions()
 
             waitDisplayed(By.text("Height"))
+        }
+    }
+
+    @Test
+    fun showsAdditionalPermissions() {
+        context.launchMainActivity {
+            navigateToManageAppPermissions()
+
+            waitDisplayed(By.text("Delete app data"))
+            waitDisplayed(By.text("Additional access"))
+            clickOnText("Additional access")
+            waitDisplayed(By.text("Access past data"))
+            waitDisplayed(By.text("Access data in the background"))
         }
     }
 

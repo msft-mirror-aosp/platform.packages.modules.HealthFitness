@@ -68,7 +68,7 @@ abstract class BaseFormatter<T : Record>(private val context: Context) : Formatt
     private fun getHeaderA11y(record: T, appName: String): String {
         if (appName == "")
             return context.getString(
-                R.string.data_entry_header_without_source_app, getFormattedTime(record))
+                R.string.data_entry_header_without_source_app, getFormattedA11yTime(record))
         return context.getString(
             R.string.data_entry_header_with_source_app, getFormattedA11yTime(record), appName)
     }

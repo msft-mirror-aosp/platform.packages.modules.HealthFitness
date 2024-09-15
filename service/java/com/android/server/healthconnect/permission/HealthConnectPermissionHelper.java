@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -250,20 +251,17 @@ public final class HealthConnectPermissionHelper {
      * Returns the date from which an app can read / write health data. See {@link
      * HealthConnectManager#getHealthDataHistoricalAccessStartDate}
      */
-    @Nullable
-    public Instant getHealthDataStartDateAccess(String packageName, UserHandle user)
+    public Optional<Instant> getHealthDataStartDateAccess(String packageName, UserHandle user)
             throws IllegalArgumentException {
         Objects.requireNonNull(packageName);
         enforceManageHealthPermissions(/* message= */ "getHealthDataStartDateAccess");
         UserHandle checkedUser = UserHandle.of(handleIncomingUser(user.getIdentifier()));
         enforceValidPackage(packageName, checkedUser);
 
-        Instant grantTimeDate = mFirstGrantTimeManager.getFirstGrantTime(packageName, checkedUser);
-        if (grantTimeDate == null) {
-            return null;
-        }
-
-        return grantTimeDate.minus(GRANT_TIME_TO_START_ACCESS_DATE_PERIOD);
+        return mFirstGrantTimeManager
+                .getFirstGrantTime(packageName, checkedUser)
+                .map(grantTime -> grantTime.minus(GRANT_TIME_TO_START_ACCESS_DATE_PERIOD))
+                .or(Optional::empty);
     }
 
     /**
@@ -271,14 +269,13 @@ public final class HealthConnectPermissionHelper {
      * throws {@link IllegalAccessException} if health permission is in an incorrect state where
      * first grant time can't be fetched.
      */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @NonNull
     public Instant getHealthDataStartDateAccessOrThrow(String packageName, UserHandle user) {
-        Instant startDateAccess = getHealthDataStartDateAccess(packageName, user);
-        if (startDateAccess == null) {
+        Optional<Instant> startDateAccess = getHealthDataStartDateAccess(packageName, user);
+        if (startDateAccess.isEmpty()) {
             throwExceptionIncorrectPermissionState();
         }
-        return startDateAccess;
+        return startDateAccess.get();
     }
 
     private void throwExceptionIncorrectPermissionState() {

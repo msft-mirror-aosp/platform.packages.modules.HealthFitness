@@ -27,6 +27,6 @@ class LoadDeclaredHealthPermissionUseCase
 @Inject
 constructor(private val healthPermissionReader: HealthPermissionReader) {
     operator fun invoke(packageName: String): List<String> {
-        return healthPermissionReader.getHealthPermissions(packageName)
+        return healthPermissionReader.getDeclaredHealthPermissions(packageName)
     }
 }

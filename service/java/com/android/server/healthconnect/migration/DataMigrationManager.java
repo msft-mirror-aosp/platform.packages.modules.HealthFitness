@@ -65,11 +65,8 @@ public final class DataMigrationManager {
     private final FirstGrantTimeManager mFirstGrantTimeManager;
     private final DeviceInfoHelper mDeviceInfoHelper;
     private final AppInfoHelper mAppInfoHelper;
-    private final MigrationEntityHelper mMigrationEntityHelper;
-    private final RecordHelperProvider mRecordHelperProvider;
     private final PriorityMigrationHelper mPriorityMigrationHelper;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
-    private final ActivityDateHelper mActivityDateHelper;
 
     public DataMigrationManager(
             @NonNull Context userContext,
@@ -78,22 +75,16 @@ public final class DataMigrationManager {
             @NonNull FirstGrantTimeManager firstGrantTimeManager,
             @NonNull DeviceInfoHelper deviceInfoHelper,
             @NonNull AppInfoHelper appInfoHelper,
-            @NonNull MigrationEntityHelper migrationEntityHelper,
-            @NonNull RecordHelperProvider recordHelperProvider,
             @NonNull HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
-            @NonNull PriorityMigrationHelper priorityMigrationHelper,
-            @NonNull ActivityDateHelper activityDateHelper) {
+            @NonNull PriorityMigrationHelper priorityMigrationHelper) {
         mUserContext = userContext;
         mTransactionManager = transactionManager;
         mPermissionHelper = permissionHelper;
         mFirstGrantTimeManager = firstGrantTimeManager;
         mDeviceInfoHelper = deviceInfoHelper;
         mAppInfoHelper = appInfoHelper;
-        mMigrationEntityHelper = migrationEntityHelper;
-        mRecordHelperProvider = recordHelperProvider;
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
         mPriorityMigrationHelper = priorityMigrationHelper;
-        mActivityDateHelper = activityDateHelper;
     }
 
     /**
@@ -150,7 +141,7 @@ public final class DataMigrationManager {
         long recordRowId = mTransactionManager.insertOrIgnore(db, parseRecord(payload));
         if (recordRowId != -1) {
             mTransactionManager.insertOrIgnore(
-                    db, mActivityDateHelper.getUpsertTableRequest(payload.getRecordInternal()));
+                    db, ActivityDateHelper.getUpsertTableRequest(payload.getRecordInternal()));
         }
     }
 
@@ -164,8 +155,7 @@ public final class DataMigrationManager {
             StorageUtils.addNameBasedUUIDTo(record);
         }
 
-        return mRecordHelperProvider
-                .getRecordHelper(record.getRecordType())
+        return RecordHelperProvider.getRecordHelper(record.getRecordType())
                 .getUpsertTableRequest(record);
     }
 
@@ -249,7 +239,7 @@ public final class DataMigrationManager {
     @GuardedBy("sLock")
     private boolean insertEntityIdIfNotPresent(
             @NonNull SQLiteDatabase db, @NonNull String entityId) {
-        final UpsertTableRequest request = mMigrationEntityHelper.getInsertRequest(entityId);
+        final UpsertTableRequest request = MigrationEntityHelper.getInsertRequest(entityId);
         return mTransactionManager.insertOrIgnore(db, request) != -1;
     }
 

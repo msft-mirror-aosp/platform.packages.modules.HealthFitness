@@ -65,7 +65,7 @@ public class CyclingPedalingCadenceRecordHelper
     }
 
     @Override
-    String getMainTableName() {
+    public String getMainTableName() {
         return TABLE_NAME;
     }
 

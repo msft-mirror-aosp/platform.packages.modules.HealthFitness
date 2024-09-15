@@ -17,6 +17,7 @@
 package android.health.connect.internal.datatypes;
 
 import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.health.connect.datatypes.Identifier;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsCadenceRecord;
@@ -117,7 +118,7 @@ public class StepsCadenceRecordInternal
         }
 
         @Override
-        public boolean equals(@NonNull Object object) {
+        public boolean equals(@Nullable Object object) {
             if (super.equals(object)
                     && object instanceof StepsCadenceRecordInternal.StepsCadenceRecordSample) {
                 StepsCadenceRecordInternal.StepsCadenceRecordSample other =

@@ -88,7 +88,14 @@ public final class SpeedRecord extends IntervalRecord {
             @NonNull ZoneOffset endZoneOffset,
             @NonNull List<SpeedRecordSample> speedRecordSamples,
             boolean skipValidation) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
+        super(
+                metadata,
+                startTime,
+                startZoneOffset,
+                endTime,
+                endZoneOffset,
+                skipValidation,
+                /* enforceFutureTimeRestrictions= */ true);
         Objects.requireNonNull(speedRecordSamples);
         if (!skipValidation) {
             ValidationUtils.validateSampleStartAndEndTime(

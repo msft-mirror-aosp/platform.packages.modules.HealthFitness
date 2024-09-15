@@ -22,8 +22,10 @@ import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.logging.DisconnectAppDialogElement
@@ -34,6 +36,8 @@ import javax.inject.Inject
 /** A Dialog Fragment to get confirmation from user for disconnecting from Health Connect. */
 @AndroidEntryPoint(DialogFragment::class)
 class DisconnectDialogFragment constructor() : Hilt_DisconnectDialogFragment() {
+
+    private val viewModel: AdditionalAccessViewModel by activityViewModels()
 
     constructor(appName: String, enableDeleteData: Boolean = true) : this() {
         this.appName = appName
@@ -47,10 +51,14 @@ class DisconnectDialogFragment constructor() : Hilt_DisconnectDialogFragment() {
         const val KEY_DELETE_DATA = "KEY_DELETE_DATA"
         const val KEY_APP_NAME = "KEY_APP_NAME"
         const val KEY_ENABLE_DELETE_DATA = "KEY_ENABLE_DELETE_DATA"
+        const val KEY_INCLUDE_BACKGROUND_READ = "KEY_INCLUDE_BACKGROUND_READ"
+        const val KEY_INCLUDE_HISTORY_READ = "KEY_INCLUDE_HISTORY_READ"
     }
 
     lateinit var appName: String
-    var enableDeleteData: Boolean = true
+    private var enableDeleteData: Boolean = true
+    private var includeBackgroundRead: Boolean = false
+    private var includeHistoryRead: Boolean = false
 
     @Inject lateinit var logger: HealthConnectLogger
 
@@ -58,11 +66,28 @@ class DisconnectDialogFragment constructor() : Hilt_DisconnectDialogFragment() {
         if (savedInstanceState != null) {
             appName = savedInstanceState.getString(KEY_APP_NAME, "")
             enableDeleteData = savedInstanceState.getBoolean(KEY_ENABLE_DELETE_DATA, true)
+            includeBackgroundRead =
+                savedInstanceState.getBoolean(KEY_INCLUDE_BACKGROUND_READ, false)
+            includeHistoryRead = savedInstanceState.getBoolean(KEY_INCLUDE_HISTORY_READ, false)
         }
+
+        val additionalPermissionsState =
+            viewModel.additionalAccessState.value ?: AdditionalAccessViewModel.State()
+        includeHistoryRead = additionalPermissionsState.historyReadUIState.isDeclared
+        includeBackgroundRead = additionalPermissionsState.backgroundReadUIState.isDeclared
 
         val body = layoutInflater.inflate(R.layout.dialog_message_with_checkbox, null)
         body.findViewById<TextView>(R.id.dialog_message).apply {
-            text = getString(R.string.permissions_disconnect_dialog_message, appName)
+            text =
+                if (includeBackgroundRead && includeHistoryRead) {
+                    getString(R.string.permissions_disconnect_dialog_message_combined, appName)
+                } else if (includeBackgroundRead) {
+                    getString(R.string.permissions_disconnect_dialog_message_background, appName)
+                } else if (includeHistoryRead) {
+                    getString(R.string.permissions_disconnect_dialog_message_history, appName)
+                } else {
+                    getString(R.string.permissions_disconnect_dialog_message, appName)
+                }
         }
         body.findViewById<TextView>(R.id.dialog_title).apply {
             text = getString(R.string.permissions_disconnect_dialog_title)
@@ -110,5 +135,7 @@ class DisconnectDialogFragment constructor() : Hilt_DisconnectDialogFragment() {
         super.onSaveInstanceState(outState)
         outState.putString(KEY_APP_NAME, appName)
         outState.putBoolean(KEY_ENABLE_DELETE_DATA, enableDeleteData)
+        outState.putBoolean(KEY_INCLUDE_BACKGROUND_READ, includeBackgroundRead)
+        outState.putBoolean(KEY_INCLUDE_HISTORY_READ, includeHistoryRead)
     }
 }

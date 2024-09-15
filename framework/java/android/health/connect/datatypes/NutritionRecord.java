@@ -1412,7 +1412,14 @@ public final class NutritionRecord extends IntervalRecord {
             @Nullable Mass folicAcid,
             @Nullable Mass sugar,
             boolean skipValidation) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
+        super(
+                metadata,
+                startTime,
+                startZoneOffset,
+                endTime,
+                endZoneOffset,
+                skipValidation,
+                /* enforceFutureTimeRestrictions= */ true);
         validateIntDefValue(mealType, MealType.VALID_TYPES, MealType.class.getSimpleName());
         if (!skipValidation) {
             requireInRangeIfExists(unsaturatedFat, MASS_0_0, MASS_100000, "unsaturatedFat");

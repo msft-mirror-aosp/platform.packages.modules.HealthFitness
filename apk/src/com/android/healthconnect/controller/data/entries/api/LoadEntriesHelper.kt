@@ -56,10 +56,10 @@ class LoadEntriesHelper
 constructor(
     @ApplicationContext private val context: Context,
     private val healthDataEntryFormatter: HealthDataEntryFormatter,
-    private val healthConnectManager: HealthConnectManager
+    private val healthConnectManager: HealthConnectManager,
+    private val timeSource: TimeSource = SystemTimeSource
 ) {
     private val dateFormatter = LocalDateTimeFormatter(context)
-    private val timeSource: TimeSource = SystemTimeSource
 
     companion object {
         private const val TAG = "LoadDataUseCaseHelper"
