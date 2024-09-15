@@ -74,6 +74,7 @@ public class ExportManager {
     private final UserHandle mUserHandle;
     private final File mLocalExportDbFile;
     private final File mLocalExportZipFile;
+    private final ExportImportSettingsStorage mExportImportSettingsStorage;
 
     // Tables to drop instead of tables to keep to avoid risk of bugs if new data types are added.
 
@@ -89,14 +90,25 @@ public class ExportManager {
     private final DatabaseContext mDatabaseContext;
     private final HealthConnectNotificationSender mNotificationSender;
 
-    public ExportManager(@NonNull Context context, Clock clock) {
-        this(context, clock, ExportImportNotificationSender.createSender(context));
+    public ExportManager(
+            @NonNull Context context,
+            Clock clock,
+            ExportImportSettingsStorage exportImportSettingsStorage,
+            TransactionManager transactionManager) {
+        this(
+                context,
+                clock,
+                ExportImportNotificationSender.createSender(context),
+                exportImportSettingsStorage,
+                transactionManager);
     }
 
     public ExportManager(
             @NonNull Context context,
             Clock clock,
-            HealthConnectNotificationSender notificationSender) {
+            HealthConnectNotificationSender notificationSender,
+            ExportImportSettingsStorage exportImportSettingsStorage,
+            TransactionManager transactionManager) {
         requireNonNull(context);
         requireNonNull(clock);
         requireNonNull(notificationSender);
@@ -106,12 +118,13 @@ public class ExportManager {
 
         mClock = clock;
         mDatabaseContext = DatabaseContext.create(userContext, LOCAL_EXPORT_DIR_NAME, mUserHandle);
-        mTransactionManager = TransactionManager.getInitialisedInstance();
+        mTransactionManager = transactionManager;
         mNotificationSender = notificationSender;
         mLocalExportDbFile =
                 new File(mDatabaseContext.getDatabaseDir(), LOCAL_EXPORT_DATABASE_FILE_NAME);
         mLocalExportZipFile =
                 new File(mDatabaseContext.getDatabaseDir(), LOCAL_EXPORT_ZIP_FILE_NAME);
+        mExportImportSettingsStorage = exportImportSettingsStorage;
     }
 
     /**
@@ -171,7 +184,7 @@ public class ExportManager {
                 return false;
             }
 
-            Uri destinationUri = ExportImportSettingsStorage.getUri();
+            Uri destinationUri = mExportImportSettingsStorage.getUri();
             try {
                 exportToUri(mLocalExportZipFile, destinationUri);
             } catch (FileNotFoundException e) {
@@ -213,7 +226,7 @@ public class ExportManager {
             int originalDataSizeKb,
             int compressedDataSizeKb,
             Uri destinationUri) {
-        ExportImportSettingsStorage.setLastSuccessfulExport(mClock.instant(), destinationUri);
+        mExportImportSettingsStorage.setLastSuccessfulExport(mClock.instant(), destinationUri);
 
         // The logging proto holds an int32 not an in64 to save on logs storage. The cast makes this
         // explicit. The int can hold 24.855 days worth of milli seconds, which
@@ -231,7 +244,7 @@ public class ExportManager {
             long startTimeMillis,
             int originalDataSizeKb,
             int compressedDataSizeKb) {
-        ExportImportSettingsStorage.setLastExportError(exportStatus, mClock.instant());
+        mExportImportSettingsStorage.setLastExportError(exportStatus, mClock.instant());
 
         // Convert to int to save on logs storage, int can hold about 68 years
         int timeToErrorMillis = (int) (mClock.millis() - startTimeMillis);

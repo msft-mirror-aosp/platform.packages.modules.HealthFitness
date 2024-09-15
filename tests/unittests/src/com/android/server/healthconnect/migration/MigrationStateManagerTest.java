@@ -148,7 +148,10 @@ public class MigrationStateManagerTest {
                 .thenReturn(MAX_START_MIGRATION_CALLS_MOCK_VALUE);
         MigrationStateManager.resetInitializedInstanceForTest();
         mMigrationStateManager =
-                MigrationStateManager.initializeInstance(DEFAULT_USER_HANDLE.getIdentifier());
+                MigrationStateManager.initializeInstance(
+                        DEFAULT_USER_HANDLE.getIdentifier(),
+                        mHealthConnectDeviceConfigManager,
+                        mPreferenceHelper);
         mMigrationStateManager.addStateChangedListener(mMockListener::onMigrationStateChanged);
     }
 
@@ -1008,22 +1011,26 @@ public class MigrationStateManagerTest {
         ExtendedMockito.verify(
                 () ->
                         MigrationStateChangeJob.scheduleMigrationCompletionJob(
-                                eq(mContext), anyInt()));
+                                eq(mHealthConnectDeviceConfigManager), eq(mContext), anyInt()));
     }
 
     private void verifyScheduleMigrationPauseJob() {
         ExtendedMockito.verify(
-                () -> MigrationStateChangeJob.scheduleMigrationPauseJob(eq(mContext), anyInt()));
+                () ->
+                        MigrationStateChangeJob.scheduleMigrationPauseJob(
+                                eq(mHealthConnectDeviceConfigManager), eq(mContext), anyInt()));
     }
 
     private void verifyNoJobScheduled() {
         ExtendedMockito.verify(
-                () -> MigrationStateChangeJob.scheduleMigrationPauseJob(eq(mContext), anyInt()),
+                () ->
+                        MigrationStateChangeJob.scheduleMigrationPauseJob(
+                                eq(mHealthConnectDeviceConfigManager), eq(mContext), anyInt()),
                 never());
         ExtendedMockito.verify(
                 () ->
                         MigrationStateChangeJob.scheduleMigrationCompletionJob(
-                                eq(mContext), anyInt()),
+                                eq(mHealthConnectDeviceConfigManager), eq(mContext), anyInt()),
                 never());
     }
 
