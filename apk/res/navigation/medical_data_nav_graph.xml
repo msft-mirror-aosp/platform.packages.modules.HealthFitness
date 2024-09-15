@@ -24,7 +24,7 @@
     <fragment
         android:id="@+id/medicalAllDataFragment"
         android:label="@string/browse_medical_data"
-        android:name="com.android.healthconnect.controller.data.alldata.medical.MedicalAllDataFragment">
+        android:name="com.android.healthconnect.controller.data.alldata.AllDataFragment">
         <action
             android:id="@+id/action_medicalAllData_to_entriesAndAccess"
             app:destination="@id/entriesAndAccessFragment" />

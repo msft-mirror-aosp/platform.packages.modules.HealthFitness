@@ -32,7 +32,7 @@ import com.android.healthconnect.controller.data.appdata.AppDataUseCase
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
-import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.MEDICAL
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults.Success
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -227,12 +227,7 @@ class AppDataUseCaseTest {
 
         val actual = appDataUseCase.loadMedicalAppData(TEST_APP_PACKAGE_NAME)
         val expected =
-            listOf(
-                PermissionTypesPerCategory(
-                    HealthDataCategoryExtensions.MEDICAL,
-                    listOf(MedicalPermissionType.IMMUNIZATION),
-                )
-            )
+            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATION)))
         assertThat(actual).isEqualTo(Success(expected))
     }
 
@@ -255,12 +250,7 @@ class AppDataUseCaseTest {
 
         val actual = appDataUseCase.loadMedicalAppData(TEST_APP_PACKAGE_NAME)
         val expected =
-            listOf(
-                PermissionTypesPerCategory(
-                    HealthDataCategoryExtensions.MEDICAL,
-                    listOf(MedicalPermissionType.IMMUNIZATION),
-                )
-            )
+            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATION)))
         assertThat(actual).isEqualTo(Success(expected))
     }
 
@@ -322,7 +312,8 @@ class AppDataUseCaseTest {
             .queryAllMedicalResourceTypeInfos(Matchers.any(), Matchers.any())
 
         val actual = appDataUseCase.loadAllMedicalData()
-        val expected = listOf(MedicalPermissionType.IMMUNIZATION)
+        val expected =
+            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATION)))
         assertThat(actual).isEqualTo(Success(expected))
     }
 
@@ -344,7 +335,8 @@ class AppDataUseCaseTest {
             .queryAllMedicalResourceTypeInfos(Matchers.any(), Matchers.any())
 
         val actual = appDataUseCase.loadAllMedicalData()
-        val expected = listOf(MedicalPermissionType.IMMUNIZATION)
+        val expected =
+            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATION)))
         assertThat(actual).isEqualTo(Success(expected))
     }
 

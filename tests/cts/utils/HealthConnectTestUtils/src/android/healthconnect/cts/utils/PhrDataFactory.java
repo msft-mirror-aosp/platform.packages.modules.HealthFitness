@@ -41,12 +41,24 @@ import java.util.Set;
 import java.util.UUID;
 
 public class PhrDataFactory {
+    private static final int FHIR_BASE_URI_CHARACTER_LIMIT = 2000;
+    private static final int MEDICAL_DATA_SOURCE_DISPLAY_NAME_CHARACTER_LIMIT = 90;
+
+    public static final int MAX_ALLOWED_MEDICAL_DATA_SOURCES = 20;
     public static final UUID DATA_SOURCE_UUID = UUID.randomUUID();
     public static final String DATA_SOURCE_ID = DATA_SOURCE_UUID.toString();
     public static final String DATA_SOURCE_PACKAGE_NAME = "com.example.app";
     public static final Uri DATA_SOURCE_FHIR_BASE_URI =
             Uri.parse("https://fhir.com/oauth/api/FHIR/R4/");
+    public static final Uri DATA_SOURCE_FHIR_BASE_URI_MAX_CHARS =
+            Uri.parse("d".repeat(FHIR_BASE_URI_CHARACTER_LIMIT));
+    public static final Uri DATA_SOURCE_FHIR_BASE_URI_EXCEEDED_CHARS =
+            Uri.parse("d".repeat(FHIR_BASE_URI_CHARACTER_LIMIT + 1));
     public static final String DATA_SOURCE_DISPLAY_NAME = "Hospital X";
+    public static final String DATA_SOURCE_DISPLAY_NAME_MAX_CHARS =
+            "d".repeat(MEDICAL_DATA_SOURCE_DISPLAY_NAME_CHARACTER_LIMIT);
+    public static final String DATA_SOURCE_DISPLAY_NAME_EXCEEDED_CHARS =
+            "d".repeat(MEDICAL_DATA_SOURCE_DISPLAY_NAME_CHARACTER_LIMIT + 1);
     public static final UUID DIFFERENT_DATA_SOURCE_UUID = UUID.randomUUID();
     public static final String DIFFERENT_DATA_SOURCE_ID = DIFFERENT_DATA_SOURCE_UUID.toString();
     public static final String DIFFERENT_DATA_SOURCE_PACKAGE_NAME = "com.other.app";
@@ -109,7 +121,7 @@ public class PhrDataFactory {
                 DATA_SOURCE_DISPLAY_NAME);
     }
 
-    /** Creates and returns a {@link MedicalResource} with default arguments. */
+    /** Creates and returns a {@link MedicalDataSource} with default arguments. */
     public static MedicalDataSource getMedicalDataSource() {
         return getMedicalDataSourceBuilder().build();
     }
@@ -259,6 +271,20 @@ public class PhrDataFactory {
                         dataSource,
                         FHIR_VERSION_R4,
                         getFhirResource())
+                .build();
+    }
+
+    /**
+     * Creates and returns a {@link MedicalResource} of type {@link
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_IMMUNIZATION} and {@link
+     * PhrDataFactory#DIFFERENT_FHIR_DATA_IMMUNIZATION} data, with the given {@code dataSource}.
+     */
+    public static MedicalResource createDifferentImmunizationMedicalResource(String dataSource) {
+        return new MedicalResource.Builder(
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                        dataSource,
+                        FHIR_VERSION_R4,
+                        getFhirResourceDifferentImmunization())
                 .build();
     }
 

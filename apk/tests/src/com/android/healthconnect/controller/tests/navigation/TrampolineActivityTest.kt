@@ -122,7 +122,8 @@ class TrampolineActivityTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IDLE,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -130,13 +131,21 @@ class TrampolineActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         whenever(exportStatusViewModel.storedScheduledExportStatus).then {
             MutableLiveData(
                 ScheduledExportUiStatus.WithData(
                     ScheduledExportUiState(
-                        NOW, ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE, 1)))
+                        NOW,
+                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        1,
+                    )
+                )
+            )
         }
         val writePermission =
             FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
@@ -144,8 +153,8 @@ class TrampolineActivityTest {
             FitnessPermission(FitnessPermissionType.DISTANCE, PermissionsAccessType.READ)
         whenever(appPermissionViewModel.appInfo).then { MutableLiveData(TEST_APP) }
         whenever(
-                appPermissionViewModel.shouldNavigateToAppPermissionsFragment(
-                    TEST_APP_PACKAGE_NAME))
+                appPermissionViewModel.shouldNavigateToAppPermissionsFragment(TEST_APP_PACKAGE_NAME)
+            )
             .then { true }
         whenever(appPermissionViewModel.fitnessPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
@@ -172,8 +181,14 @@ class TrampolineActivityTest {
                 AllDataViewModel.AllDataState.WithData(
                     listOf(
                         PermissionTypesPerCategory(
-                            HealthDataCategory.ACTIVITY, listOf(FitnessPermissionType.STEPS)))))
+                            HealthDataCategory.ACTIVITY,
+                            listOf(FitnessPermissionType.STEPS),
+                        )
+                    )
+                )
+            )
         }
+        whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(false) }
         whenever(allDataViewModel.setOfPermissionTypesToBeDeleted).then {
             MutableLiveData<Set<FitnessPermissionType>>(emptySet())
         }
@@ -250,12 +265,15 @@ class TrampolineActivityTest {
     @Test
     fun manageHealthPermissions_launchesSettingsActivity() {
         launchActivityForResult<TrampolineActivity>(
-            createStartIntent(ACTION_MANAGE_HEALTH_PERMISSIONS))
+            createStartIntent(ACTION_MANAGE_HEALTH_PERMISSIONS)
+        )
 
         onView(
                 withText(
                     "Apps with this permission can read and write your" +
-                        " health and fitness data."))
+                        " health and fitness data."
+                )
+            )
             .check(matches(isDisplayed()))
     }
 

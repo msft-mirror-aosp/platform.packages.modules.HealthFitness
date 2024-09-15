@@ -473,6 +473,18 @@ public final class TransactionManager {
     }
 
     /**
+     * Do a read using {@link SQLiteDatabase#rawQuery(String, String[])}. This method should be used
+     * in preference to {@link ReadTableRequest} when it is necessary to read using a query with
+     * untrusted user input, to prevent SQL injection attacks.
+     *
+     * <p>Note: It is the responsibility of the caller to close the returned cursor
+     */
+    @NonNull
+    public Cursor rawQuery(@NonNull String sql, @Nullable String[] selectionArgs) {
+        return getReadableDb().rawQuery(sql, selectionArgs);
+    }
+
+    /**
      * Reads the given {@link SQLiteDatabase} using the given {@link ReadTableRequest}.
      *
      * <p>Note: It is the responsibility of the caller to close the returned cursor.

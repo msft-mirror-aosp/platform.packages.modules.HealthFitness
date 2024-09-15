@@ -226,9 +226,9 @@ class EntriesViewModelTest {
     }
 
     @Test
-    fun setDeletionState_setsCorrectly(){
-        viewModel.setIsDeletionState(true)
+    fun setScreenState_setsCorrectly(){
+        viewModel.setScreenState(EntriesViewModel.EntriesDeletionScreenState.DELETE)
 
-        assertThat(viewModel.isDeletionState.value).isTrue()
+        assertThat(viewModel.screenState.value).isEqualTo(EntriesViewModel.EntriesDeletionScreenState.DELETE)
     }
 }
