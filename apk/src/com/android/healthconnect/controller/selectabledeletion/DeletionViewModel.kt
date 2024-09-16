@@ -23,7 +23,7 @@ import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteEntries
 import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteHealthPermissionTypes
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteEntriesUseCase
-import com.android.healthconnect.controller.selectabledeletion.api.DeleteFitnessPermissionTypesFromAppUseCase
+import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesFromAppUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -35,8 +35,7 @@ class DeletionViewModel
 constructor(
     private val deletePermissionTypesUseCase: DeletePermissionTypesUseCase,
     private val deleteEntriesUseCase: DeleteEntriesUseCase,
-    private val deleteFitnessPermissionTypesFromAppUseCase:
-        DeleteFitnessPermissionTypesFromAppUseCase,
+    private val deletesPermissionTypesFromAppUseCase: DeletePermissionTypesFromAppUseCase,
 ) : ViewModel() {
 
     companion object {
@@ -84,7 +83,7 @@ constructor(
                         _entriesReloadNeeded.postValue(true)
                     }
                     is DeletionType.DeleteHealthPermissionTypesFromApp -> {
-                        deleteFitnessPermissionTypesFromAppUseCase.invoke(
+                        deletesPermissionTypesFromAppUseCase.invoke(
                             deletionType as DeletionType.DeleteHealthPermissionTypesFromApp
                         )
                         _appPermissionTypesReloadNeeded.postValue(true)

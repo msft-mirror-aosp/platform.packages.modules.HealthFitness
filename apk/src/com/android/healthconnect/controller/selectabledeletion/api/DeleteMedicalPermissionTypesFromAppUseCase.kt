@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -15,49 +15,48 @@
  */
 package com.android.healthconnect.controller.selectabledeletion.api
 
-import android.health.connect.DeleteUsingFiltersRequest
+import android.health.connect.DeleteMedicalResourcesRequest
 import android.health.connect.HealthConnectManager
-import android.health.connect.datatypes.DataOrigin
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.permissions.data.toMedicalResourceType
 import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.service.IoDispatcher
-import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
+import com.android.healthconnect.controller.shared.app.MedicalDataSourceReader
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 /**
- * Use case to delete all fitness records from the given permission type (e.g. Steps) written by a
- * given app.
+ * Use case to delete all medical resources the given medical permission type (e.g. Immunization)
+ * written by a given app.
  */
 @Singleton
-class DeleteFitnessPermissionTypesFromAppUseCase
+class DeleteMedicalPermissionTypesFromAppUseCase
 @Inject
 constructor(
     private val healthConnectManager: HealthConnectManager,
+    private val medicalDataSourceReader: MedicalDataSourceReader,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
 
     suspend operator fun invoke(
         deletePermissionTypesFromApp: DeletionType.DeleteHealthPermissionTypesFromApp
     ) {
-        val deleteRequest = DeleteUsingFiltersRequest.Builder()
+        val deleteRequest = DeleteMedicalResourcesRequest.Builder()
 
         deletePermissionTypesFromApp.healthPermissionTypes
-            .filterIsInstance<FitnessPermissionType>()
+            .filterIsInstance<MedicalPermissionType>()
             .map { permissionType ->
-                HealthPermissionToDatatypeMapper.getDataTypes(permissionType).map { recordType ->
-                    deleteRequest.addRecordType(recordType)
-                }
+                deleteRequest.addMedicalResourceType(toMedicalResourceType(permissionType))
             }
 
-        deleteRequest.addDataOrigin(
-            DataOrigin.Builder().setPackageName(deletePermissionTypesFromApp.packageName).build()
-        )
+        val medicalDataSources =
+            medicalDataSourceReader.fromPackageName(deletePermissionTypesFromApp.packageName)
+        medicalDataSources.forEach { deleteRequest.addDataSourceId(it.id) }
 
         withContext(dispatcher) {
-            healthConnectManager.deleteRecords(deleteRequest.build(), Runnable::run) {}
+            healthConnectManager.deleteMedicalResources(deleteRequest.build(), Runnable::run) {}
         }
     }
 }
