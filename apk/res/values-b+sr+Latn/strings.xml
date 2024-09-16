@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Izabrani dan"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Prethodni dan"</string>
     <string name="default_error" msgid="7966868260616403475">"Došlo je do greške. Probajte ponovo."</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"Detaljna zdravstvena evidencija"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Aplikacije sa ovom dozvolom mogu da čitaju i upisuju podatke o zdravlju i fitnesu."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Kontrolišite koje aplikacije mogu da pristupaju podacima sačuvanim u Povezivanju zdravlja. Dodirnite aplikaciju da biste pregledali podatke koje može da čita ili piše."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Dozvoljen pristup"</string>

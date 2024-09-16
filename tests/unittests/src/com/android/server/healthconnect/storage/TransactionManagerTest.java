@@ -17,7 +17,14 @@
 package com.android.server.healthconnect.storage;
 
 import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_DELETE;
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
+import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.HEART_RATE_RECORD_BPM_AVG;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEART_RATE;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 
+import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.queryAccessLogs;
+import static com.android.server.healthconnect.storage.datatypehelpers.InstantRecordHelper.TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.getReadTransactionRequest;
@@ -33,22 +40,32 @@ import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.accesslog.AccessLog;
 import android.health.connect.aidl.DeleteUsingFiltersRequestParcel;
 import android.health.connect.aidl.RecordIdFiltersParcel;
+import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.BloodPressureRecord;
+import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.internal.datatypes.RecordInternal;
+import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
 import android.os.Environment;
+import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
+import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
+import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -58,8 +75,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.quality.Strictness;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class TransactionManagerTest {
@@ -136,7 +155,7 @@ public class TransactionManagerTest {
         ReadTransactionRequest request =
                 getReadTransactionRequest(
                         ImmutableMap.of(
-                                RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                                RECORD_TYPE_STEPS,
                                 stepsUuids,
                                 RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE,
                                 bloodPressureUuids));
@@ -225,7 +244,9 @@ public class TransactionManagerTest {
                 new DeleteUsingFiltersRequestParcel(
                         new RecordIdFiltersParcel(ids), TEST_PACKAGE_NAME);
         assertThat(parcel.usesIdFilters()).isTrue();
-        mTransactionManager.deleteAll(new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel));
+        mTransactionManager.deleteAll(
+                new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel),
+                /* shouldRecordDeleteAccessLogs= */ false);
 
         List<UUID> uuidList = mTransactionTestUtils.getAllDeletedUuids();
         assertThat(uuidList).hasSize(1);
@@ -247,7 +268,9 @@ public class TransactionManagerTest {
                         .build();
         DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
         assertThat(parcel.usesIdFilters()).isFalse();
-        mTransactionManager.deleteAll(new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel));
+        mTransactionManager.deleteAll(
+                new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel),
+                /* shouldRecordDeleteAccessLogs= */ false);
 
         List<UUID> uuidList = mTransactionTestUtils.getAllDeletedUuids();
         assertThat(uuidList).hasSize(1);
@@ -270,9 +293,95 @@ public class TransactionManagerTest {
                                         .build())
                         .build();
         DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
-        mTransactionManager.deleteAll(new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel));
+        mTransactionManager.deleteAll(
+                new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel),
+                /* shouldRecordDeleteAccessLogs= */ false);
 
         List<UUID> uuidList = mTransactionTestUtils.getAllDeletedUuids();
         assertThat(uuidList).hasSize(DEFAULT_PAGE_SIZE + 1);
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_ADD_MISSING_ACCESS_LOGS)
+    public void deleteAll_shouldRecordAccessLog_logged() {
+        DeleteUsingFiltersRequest deleteRequest =
+                new DeleteUsingFiltersRequest.Builder()
+                        .addRecordType(StepsRecord.class)
+                        .addRecordType(HeartRateRecord.class)
+                        .setTimeRangeFilter(
+                                new TimeInstantRangeFilter.Builder()
+                                        .setStartTime(Instant.EPOCH)
+                                        .build())
+                        .build();
+        DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
+        mTransactionManager.deleteAll(
+                new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel),
+                /* shouldRecordDeleteAccessLogs= */ true);
+
+        List<AccessLog> result = queryAccessLogs();
+        assertThat(result).hasSize(1);
+        AccessLog log = result.get(0);
+        assertThat(log.getPackageName()).isEqualTo(TEST_PACKAGE_NAME);
+        assertThat(log.getRecordTypes()).containsExactly(StepsRecord.class, HeartRateRecord.class);
+        assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_DELETE);
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_ADD_MISSING_ACCESS_LOGS)
+    public void deleteAll_shouldNotRecordAccessLog_noLog() {
+        DeleteUsingFiltersRequest deleteRequest =
+                new DeleteUsingFiltersRequest.Builder()
+                        .addRecordType(StepsRecord.class)
+                        .addRecordType(HeartRateRecord.class)
+                        .setTimeRangeFilter(
+                                new TimeInstantRangeFilter.Builder()
+                                        .setStartTime(Instant.EPOCH)
+                                        .build())
+                        .build();
+        DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
+        mTransactionManager.deleteAll(
+                new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel),
+                /* shouldRecordDeleteAccessLogs= */ false);
+
+        List<AccessLog> result = queryAccessLogs();
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_ADD_MISSING_ACCESS_LOGS)
+    public void populateWithAggregation_accessLogRecorded() {
+        RecordHelper<?> helper = RecordHelperProvider.getRecordHelper(RECORD_TYPE_HEART_RATE);
+        AggregationType<?> aggregationType =
+                AggregationTypeIdMapper.getInstance()
+                        .getAggregationTypeFor(HEART_RATE_RECORD_BPM_AVG);
+        AggregateTableRequest request =
+                helper.getAggregateTableRequest(
+                        aggregationType,
+                        TEST_PACKAGE_NAME,
+                        /* packageFilters= */ List.of(),
+                        HealthDataCategoryPriorityHelper.getInstance(),
+                        /* startTime= */ 123,
+                        /* endTime= */ 456,
+                        /* startDateAccess= */ 0,
+                        /* useLocalTime= */ false);
+
+        // We have to set group by for single aggregation here because in the
+        // AggregateDataRequestParcel this is set and the implementation relies on it
+        request.setGroupBy(
+                TIME_COLUMN_NAME,
+                /* period= */ null,
+                Duration.ofMillis(456 - 123),
+                new TimeInstantRangeFilter.Builder()
+                        .setStartTime(Instant.ofEpochMilli(123))
+                        .setEndTime(Instant.ofEpochMilli(456))
+                        .build());
+        mTransactionManager.populateWithAggregation(
+                request, TEST_PACKAGE_NAME, Set.of(RECORD_TYPE_HEART_RATE));
+
+        List<AccessLog> result = queryAccessLogs();
+        AccessLog log = result.get(0);
+        assertThat(log.getPackageName()).isEqualTo(TEST_PACKAGE_NAME);
+        assertThat(log.getRecordTypes()).containsExactly(HeartRateRecord.class);
+        assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
     }
 }

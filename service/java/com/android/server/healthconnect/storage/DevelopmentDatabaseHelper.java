@@ -50,7 +50,7 @@ public final class DevelopmentDatabaseHelper {
      * The current version number for the development database features. Increment this whenever you
      * make a breaking schema change to a development feature.
      */
-    @VisibleForTesting static final int CURRENT_VERSION = 6;
+    @VisibleForTesting static final int CURRENT_VERSION = 7;
 
     /** The name of the table to store development specific key value pairs. */
     private static final String SETTINGS_TABLE_NAME = "development_database_settings";

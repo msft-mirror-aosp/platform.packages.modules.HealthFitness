@@ -15,9 +15,13 @@
  */
 package com.android.healthconnect.controller.permissions.data
 
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN
+import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.utils.AttributeResolver
 
 enum class MedicalPermissionType : HealthPermissionType {
     ALL_MEDICAL_DATA,
@@ -29,6 +33,16 @@ enum class MedicalPermissionType : HealthPermissionType {
 
     override fun upperCaseLabel(): Int =
         MedicalPermissionStrings.fromPermissionType(this).uppercaseLabel
+
+    override fun icon(context: Context): Drawable? {
+        val attrRes: Int =
+            when (this) {
+                ALLERGY_INTOLERANCE -> R.attr.allergiesIcon
+                IMMUNIZATION -> R.attr.immunizationIcon
+                else -> throw IllegalArgumentException("PermissionType $this is not supported.")
+            }
+        return AttributeResolver.getDrawable(context, attrRes)
+    }
 }
 
 fun isValidMedicalPermissionType(permissionTypeString: String): Boolean {

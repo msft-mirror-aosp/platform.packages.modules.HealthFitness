@@ -628,7 +628,7 @@
 
     <string name="confirming_question_single_entry" description="Description of what permanent deletion of a single data point means. [CHAR_LIMIT=NONE]">Permanently delete this entry from Health&#160;Connect?</string>
     <string name="confirming_question_message" description="Description of what permanent deletion of some data means. [CHAR_LIMIT=NONE]">Connected apps will no longer be able to access this data from Health&#160;Connect</string>
-    <string name="confirming_question_message_menstruation" description="Description of what menstruation entries this action will delete [CHAR_LIMIT=NONE]">This will delete all menstruation entries from <xliff:g example="22 January 2022" id="start_date">%1$s</xliff:g> to <xliff:g example="22 January 2022" id="end_date">%2$s</xliff:g>.</string>
+    <string name="confirming_question_message_menstruation" description="Description of what menstruation entries this action will delete [CHAR_LIMIT=NONE]">This will delete all period entries from <xliff:g example="22 January 2022" id="start_date">%1$s</xliff:g> to <xliff:g example="22 January 2022" id="end_date">%2$s</xliff:g>.</string>
     <!--endregion-->
 
     <!-- region Dialog buttons -->

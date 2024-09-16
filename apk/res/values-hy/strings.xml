@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Ընտրված օրը"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Նախորդ օրը"</string>
     <string name="default_error" msgid="7966868260616403475">"Սխալ առաջացավ։ Նորից փորձեք։"</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"Առողջության մասին մանրամասն տեղեկություններ"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Այս թույլտվությունն ունեցող հավելվածները կարող են կարդալ և գրանցել ձեր առողջության և ֆիզիկական ակտիվության վերաբերյալ տվյալները"</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Ընտրեք, թե որ հավելվածներին կարող են հասանելի լինել Health Connect-ում պահվող տվյալները։ Հպեք հավելվածին՝ դիտելու տվյալները, որոնք այն կարող է կարդալ կամ գրանցել։"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Թույլատրված մուտք"</string>
@@ -406,15 +405,14 @@
     <string name="import_notification_try_again_intent_button" msgid="3833062670098674999">"Նորից փորձել"</string>
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Բացել"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Ընտրել ֆայլը"</string>
-    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Ազատել տարածք"</string>
-    <!-- no translation found for scheduled_export_on_toast_text (945186472588537310) -->
-    <skip />
+    <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Տարածք ազատել"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"Պլանավորված արտահանումը միացված է"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect-ը չարտահանեց տվյալները"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Ավելի շատ տարածք է պահանջվում"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Անհայտ խնդրի պատճառով <xliff:g id="DATE">%1$s</xliff:g>-ին պլանավորված արտահանումը չհաջողվեց կատարել։ Կարգավորեք նոր պլանավորված արտահանում և նորից փորձեք։"</string>
     <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Պլանավորված արտահանումը շարունակելու համար Health Connect-ին անհրաժեշտ է <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> տարածք ձեր հեռախոսում։"</string>
     <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"Կարգավորել"</string>
-    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Ազատել տարածք"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Տարածք ազատել"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Հետ"</string>
     <string name="export_next_button" msgid="657930567137105172">"Առաջ"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"Չեղարկել"</string>
@@ -944,7 +942,7 @@
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Ավելի շատ տարածք է պահանջվում"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Health Connect-ին անհրաժեշտ է <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> տարածք ձեր հեռախոսում, որպեսզի ինտեգրումը շարունակվի։.\n\nՄաքրեք որոշ տարածք հեռախոսում և նորից փորձեք։"</string>
     <string name="try_again_button" msgid="8745496819992160789">"Նորից փորձել"</string>
-    <string name="free_up_space_button" msgid="4141013808635654695">"Ազատել տարածք"</string>
+    <string name="free_up_space_button" msgid="4141013808635654695">"Տարածք ազատել"</string>
     <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Ավելի շատ տարածք է պահանջվում"</string>
     <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Health Connect-ին անհրաժեշտ է <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> տարածք ձեր հեռախոսում՝ ինտեգրումը շարունակելու համար։"</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Ինտեգրումը դադարեցվել է"</string>

@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Ngày đã chọn"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Ngày hôm trước"</string>
     <string name="default_error" msgid="7966868260616403475">"Đã xảy ra lỗi. Vui lòng thử lại."</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"Hồ sơ sức khoẻ chi tiết"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Các ứng dụng được cấp quyền này có thể đọc cũng như ghi dữ liệu sức khoẻ và hoạt động thể dục của bạn."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Kiểm soát những ứng dụng có thể truy cập vào dữ liệu được lưu trữ trong Health Connect. Nhấn vào một ứng dụng để xem dữ liệu mà ứng dụng đó có thể đọc hoặc ghi."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Được phép truy cập"</string>
@@ -407,8 +406,7 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Mở"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Chọn tệp"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Giải phóng dung lượng"</string>
-    <!-- no translation found for scheduled_export_on_toast_text (945186472588537310) -->
-    <skip />
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"Tính năng xuất theo lịch đang bật"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect không xuất được dữ liệu"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Cần có thêm dung lượng lưu trữ"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Đã xảy ra vấn đề khi xuất dữ liệu cho ngày <xliff:g id="DATE">%1$s</xliff:g>. Vui lòng thiết lập một lượt xuất mới theo lịch rồi thử lại."</string>

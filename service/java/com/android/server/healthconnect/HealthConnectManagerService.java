@@ -199,9 +199,9 @@ public class HealthConnectManagerService extends SystemService {
                         mMigrationStateManager,
                         mMigrationNotificationSender);
         TimeSource timeSource = new TimeSourceImpl();
+        AppInfoHelper appInfoHelper = AppInfoHelper.getInstance();
         MedicalDataSourceHelper medicalDataSourceHelper =
-                new MedicalDataSourceHelper(
-                        mTransactionManager, AppInfoHelper.getInstance(), timeSource);
+                new MedicalDataSourceHelper(mTransactionManager, appInfoHelper, timeSource);
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mTransactionManager,
@@ -212,7 +212,10 @@ public class HealthConnectManagerService extends SystemService {
                         mMigrationStateManager,
                         mMigrationUiStateManager,
                         new MedicalResourceHelper(
-                                mTransactionManager, medicalDataSourceHelper, timeSource),
+                                mTransactionManager,
+                                appInfoHelper,
+                                medicalDataSourceHelper,
+                                timeSource),
                         medicalDataSourceHelper,
                         mContext,
                         mExportManager,

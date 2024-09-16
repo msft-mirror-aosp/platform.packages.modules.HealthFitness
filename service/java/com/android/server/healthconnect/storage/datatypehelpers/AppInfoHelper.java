@@ -289,13 +289,17 @@ public final class AppInfoHelper extends DatabaseHelper {
         return packageNames;
     }
 
-    /** Returns a list of AppInfo objects which are contributing data to some recordType. */
-    public List<AppInfo> getApplicationInfosWithRecordTypes() {
+    /**
+     * Returns a list of AppInfo objects which are contributing data to some recordType, or belongs
+     * to the provided {@code appInfoIds}.
+     */
+    public List<AppInfo> getApplicationInfosWithRecordTypesOrInIdsList(Set<Long> appInfoIds) {
         return getAppInfoMap().values().stream()
                 .filter(
                         (appInfo) ->
                                 (appInfo.getRecordTypesUsed() != null
-                                        && !appInfo.getRecordTypesUsed().isEmpty()))
+                                                && !appInfo.getRecordTypesUsed().isEmpty())
+                                        || appInfoIds.contains(appInfo.getId()))
                 .map(AppInfoInternal::toExternal)
                 .collect(Collectors.toList());
     }

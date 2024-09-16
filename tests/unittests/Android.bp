@@ -49,6 +49,7 @@ android_test {
         "flag-junit",
         "truth-java8-extension",
         "platform-parametric-runner-lib",
+        "framework-annotations-lib",
     ],
     jni_libs: [
         // Required for ExtendedMockito

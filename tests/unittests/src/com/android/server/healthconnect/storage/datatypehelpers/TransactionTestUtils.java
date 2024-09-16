@@ -43,6 +43,7 @@ import android.health.connect.internal.datatypes.ExerciseSessionRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
 
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
@@ -65,10 +66,15 @@ public final class TransactionTestUtils {
     private static final String TEST_PACKAGE_NAME = "package.name";
     private final TransactionManager mTransactionManager;
     private final Context mContext;
+    private final HealthConnectInjectorImpl.Builder mHealthConnectInjectorBuilder;
 
     public TransactionTestUtils(Context context, TransactionManager transactionManager) {
+        DeviceInfoHelper.resetInstanceForTest();
+
         mContext = context;
         mTransactionManager = transactionManager;
+        mHealthConnectInjectorBuilder = HealthConnectInjectorImpl.newBuilderForTest(mContext);
+        mHealthConnectInjectorBuilder.setTransactionManager(transactionManager);
     }
 
     public void insertApp(String packageName) {
@@ -93,6 +99,7 @@ public final class TransactionTestUtils {
                 new UpsertTransactionRequest(
                         packageName,
                         records,
+                        mHealthConnectInjectorBuilder.build().getDeviceInfoHelper(),
                         mContext,
                         /* isInsertRequest= */ true,
                         /* useProvidedUuid= */ false,
@@ -106,7 +113,8 @@ public final class TransactionTestUtils {
                 recordTypeToUuids,
                 /* startDateAccessMillis= */ 0,
                 NO_EXTRA_PERMS,
-                /* isInForeground= */ true);
+                /* isInForeground= */ true,
+                DeviceInfoHelper.getInstance());
     }
 
     public static ReadTransactionRequest getReadTransactionRequest(
@@ -117,7 +125,8 @@ public final class TransactionTestUtils {
                 /* startDateAccessMillis= */ 0,
                 /* enforceSelfRead= */ false,
                 NO_EXTRA_PERMS,
-                /* isInForeground= */ true);
+                /* isInForeground= */ true,
+                DeviceInfoHelper.getInstance());
     }
 
     public static RecordInternal<StepsRecord> createStepsRecord(

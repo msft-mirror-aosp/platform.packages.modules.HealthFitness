@@ -40,6 +40,7 @@ import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.health.connect.Constants;
@@ -50,6 +51,7 @@ import android.util.Pair;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.request.CreateIndexRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -62,6 +64,7 @@ import com.android.server.healthconnect.utils.TimeSource;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -144,6 +147,16 @@ public class MedicalDataSourceHelper {
     /** Creates the medical_data_source table. */
     public static void onInitialUpgrade(@NonNull SQLiteDatabase db) {
         createTable(db, getCreateTableRequest());
+        // There's no significant difference between a unique constraint and unique index.
+        // The latter would allow us to drop or recreate it later.
+        // The combination of (display_name, app_info_id) should be unique.
+        db.execSQL(
+                new CreateIndexRequest(
+                                MEDICAL_DATA_SOURCE_TABLE_NAME,
+                                MEDICAL_DATA_SOURCE_TABLE_NAME + "_display_name_idx",
+                                /* isUnique= */ true,
+                                List.of(DISPLAY_NAME_COLUMN_NAME, APP_INFO_ID_COLUMN_NAME))
+                        .getCommand());
     }
 
     /**
@@ -258,6 +271,8 @@ public class MedicalDataSourceHelper {
                         /* fhirBaseUri= */ Uri.parse(
                                 getCursorString(cursor, FHIR_BASE_URI_COLUMN_NAME)),
                         /* displayName= */ getCursorString(cursor, DISPLAY_NAME_COLUMN_NAME))
+                // TODO(b/365756516) Populate this value from DB
+                .setLastDataUpdateTime(null)
                 .build();
     }
 
@@ -276,16 +291,24 @@ public class MedicalDataSourceHelper {
             @NonNull CreateMedicalDataSourceRequest request,
             @NonNull String packageName) {
         // TODO(b/344781394): Add support for access logs.
-        return mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnableWithReturn<
-                                MedicalDataSource, RuntimeException>)
-                        db ->
-                                createMedicalDataSourceAndAppInfoAndCheckLimits(
-                                        db,
-                                        context,
-                                        request,
-                                        packageName,
-                                        mTimeSource.getInstantNow()));
+        try {
+            return mTransactionManager.runAsTransaction(
+                    (TransactionManager.TransactionRunnableWithReturn<
+                                    MedicalDataSource, RuntimeException>)
+                            db ->
+                                    createMedicalDataSourceAndAppInfoAndCheckLimits(
+                                            db,
+                                            context,
+                                            request,
+                                            packageName,
+                                            mTimeSource.getInstantNow()));
+        } catch (SQLiteConstraintException e) {
+            String exceptionMessage = e.getMessage();
+            if (exceptionMessage != null && exceptionMessage.contains(DISPLAY_NAME_COLUMN_NAME)) {
+                throw new IllegalArgumentException("display name should be unique per calling app");
+            }
+            throw e;
+        }
     }
 
     private MedicalDataSource createMedicalDataSourceAndAppInfoAndCheckLimits(
@@ -632,14 +655,19 @@ public class MedicalDataSourceHelper {
     }
 
     /**
-     * Creates a UUID string to row ID map for all {@link MedicalDataSource}s stored in {@code
-     * MEDICAL_DATA_SOURCE_TABLE}.
+     * Creates a UUID string to row ID map for {@link MedicalDataSource}s stored in {@code
+     * MEDICAL_DATA_SOURCE_TABLE} that were created by the app matching the {@code
+     * appInfoIdRestriction}.
      */
     @NonNull
     public Map<String, Long> getUuidToRowIdMap(
-            @NonNull SQLiteDatabase db, @NonNull List<UUID> dataSourceUuids) {
+            @NonNull SQLiteDatabase db,
+            long appInfoIdRestriction,
+            @NonNull List<UUID> dataSourceUuids) {
         Map<String, Long> uuidToRowId = new HashMap<>();
-        try (Cursor cursor = mTransactionManager.read(db, getReadTableRequest(dataSourceUuids))) {
+        try (Cursor cursor =
+                mTransactionManager.read(
+                        db, getReadTableRequest(dataSourceUuids, appInfoIdRestriction))) {
             if (cursor.moveToFirst()) {
                 do {
                     long rowId = getCursorLong(cursor, MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME);
@@ -669,6 +697,27 @@ public class MedicalDataSourceHelper {
             }
         }
         return rowIdToDataSourceMap;
+    }
+
+    /**
+     * Gets all distinct app info ids from {@code APP_INFO_ID_COLUMN_NAME} for all {@link
+     * MedicalDataSource}s stored in {@code MEDICAL_DATA_SOURCE_TABLE}.
+     */
+    @NonNull
+    public Set<Long> getAllContributorAppInfoIds() {
+        ReadTableRequest readTableRequest =
+                new ReadTableRequest(getMainTableName())
+                        .setDistinctClause(true)
+                        .setColumnNames(List.of(APP_INFO_ID_COLUMN_NAME));
+        Set<Long> appInfoIds = new HashSet<>();
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+            if (cursor.moveToFirst()) {
+                do {
+                    appInfoIds.add(getCursorLong(cursor, APP_INFO_ID_COLUMN_NAME));
+                } while (cursor.moveToNext());
+            }
+        }
+        return appInfoIds;
     }
 
     @NonNull

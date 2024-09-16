@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"निवडलेला दिवस"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"मागील दिवस"</string>
     <string name="default_error" msgid="7966868260616403475">"काहीतरी चूक झाली. कृपया पुन्हा प्रयत्न करा."</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"तपशीलवार आरोग्यविषयक माहिती"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"ही परवानगी असलेली अ‍ॅप्स तुमचा आरोग्य आणि फिटनेस डेटा रीड अँड राइट करू शकतात."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"कोणती अ‍ॅप्स Health Connect मध्‍ये स्टोअर केलेला डेटा अ‍ॅक्सेस करू शकतात ते नियंत्रित करा. अ‍ॅप रीड किंवा राइट करू शकेल अशा डेटाचे पुनरावलोकन करण्यासाठी ॲपवर टॅप करा."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"अ‍ॅक्सेसला अनुमती दिलेली आहे"</string>

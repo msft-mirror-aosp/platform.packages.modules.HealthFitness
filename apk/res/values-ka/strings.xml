@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"შერჩეული დღე"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"წინა დღე"</string>
     <string name="default_error" msgid="7966868260616403475">"რაღაც შეცდომა მოხდა. გთხოვთ, სცადოთ ხელახლა."</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"დეტალური ჯანმრთელობის ჩანაწერები"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"ამ ნებართვის მქონე აპებს შეუძლიათ წაიკითხონ და დაწერონ მონაცემები თქვენი ჯანმრთელობის და ფიტნესის თაობაზე."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"თვითონ მართეთ, რომელ აპებს ჰქონდეთ Health Connect-ში შენახულ მონაცემებზე წვდომა. შეეხეთ აპს იმის სანახავად, თუ რომელი მონაცემების წაკითხვა ან დაწერა შეუძლია."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"ნებადართული წვდომა"</string>

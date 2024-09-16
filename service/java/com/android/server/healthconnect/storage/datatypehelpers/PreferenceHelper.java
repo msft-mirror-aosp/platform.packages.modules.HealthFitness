@@ -158,6 +158,12 @@ public class PreferenceHelper extends DatabaseHelper {
         return columnInfo;
     }
 
+    /** Used in testing to clear the instance to clear and re-reference the mocks. */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    public static synchronized void clearInstanceForTest() {
+        sPreferenceHelper = null;
+    }
+
     public static PreferenceHelper getInstance() {
         return getInstance(TransactionManager.getInitialisedInstance());
     }

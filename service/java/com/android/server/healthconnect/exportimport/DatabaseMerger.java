@@ -32,7 +32,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 
 import static java.util.Objects.requireNonNull;
 
-import android.annotation.NonNull;
 import android.content.Context;
 import android.database.Cursor;
 import android.health.connect.PageTokenWrapper;
@@ -48,6 +47,7 @@ import android.util.Slog;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -78,6 +78,7 @@ public final class DatabaseMerger {
     private final AppInfoHelper mAppInfoHelper;
     private final RecordMapper mRecordMapper;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private final DeviceInfoHelper mDeviceInfoHelper;
 
     /*
      * Record types in this list will always be migrated such that the ordering here is respected.
@@ -92,13 +93,18 @@ public final class DatabaseMerger {
                     // exist so that the foreign key constraints are not violated.
                     List.of(RECORD_TYPE_PLANNED_EXERCISE_SESSION, RECORD_TYPE_EXERCISE_SESSION));
 
-    public DatabaseMerger(@NonNull Context context) {
+    public DatabaseMerger(
+            Context context,
+            DeviceInfoHelper deviceInfoHelper,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            TransactionManager transactionManager) {
         requireNonNull(context);
         mContext = context;
-        mTransactionManager = TransactionManager.getInitialisedInstance();
+        mTransactionManager = transactionManager;
         mAppInfoHelper = AppInfoHelper.getInstance();
         mRecordMapper = RecordMapper.getInstance();
-        mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
+        mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
+        mDeviceInfoHelper = deviceInfoHelper;
     }
 
     /** Merge data */
@@ -261,6 +267,7 @@ public final class DatabaseMerger {
                     new UpsertTransactionRequest(
                             null /* packageName */,
                             records,
+                            mDeviceInfoHelper,
                             mContext,
                             true /* isInsertRequest */,
                             true /* useProvidedUuid */,
@@ -319,7 +326,8 @@ public final class DatabaseMerger {
                         /* enforceSelfRead= */ false,
                         grantedExtraReadPermissions,
                         // Make sure foreground only types get included in the response.
-                        /* isInForeground= */ true);
+                        /* isInForeground= */ true,
+                        mDeviceInfoHelper);
 
         List<RecordInternal<?>> recordInternalList;
         PageTokenWrapper token;
@@ -327,6 +335,7 @@ public final class DatabaseMerger {
         try (Cursor cursor = read(stagedDatabase, readTableRequest)) {
             Pair<List<RecordInternal<?>>, PageTokenWrapper> readResult =
                     recordHelper.getNextInternalRecordsPageAndToken(
+                            mDeviceInfoHelper,
                             cursor,
                             readTransactionRequest.getPageSize().orElse(MAXIMUM_PAGE_SIZE),
                             requireNonNull(readTransactionRequest.getPageToken()),

@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Odabrani dan"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Prethodni dan"</string>
     <string name="default_error" msgid="7966868260616403475">"Nešto nije u redu. Pokušajte ponovo."</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"Detaljni podaci o zdravstvenom stanju"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Aplikacije s tim dopuštenjem mogu čitati i bilježiti vaše podatke o zdravlju i fitnessu."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Odredite koje aplikacije mogu pristupati podacima pohranjenim u Health Connectu. Dodirnite aplikaciju da biste pregledali podatke koje može čitati ili bilježiti."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Dopušten pristup"</string>
@@ -357,8 +356,8 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Stvaranje sigurnosne kopije i vraćanje"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Datum posljednjeg izvoza: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="last_export_time_now" msgid="31498024135933750">"Posljednji izvoz: sada"</string>
-    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Posljednji izvoz: prije 1 minutu}one{Posljednji izvoz: prije # minutu}few{Posljednji izvoz: prije # minute}other{Posljednji izvoz: prije # minuta}}"</string>
-    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Posljednji izvoz: prije sat vremena}one{Posljednji izvoz: prije # sat}few{Posljednji izvoz: prije # sata}other{Posljednji izvoz: prije # sati}}"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Posljednji izvoz: prije 1 min}one{Posljednji izvoz: prije # min}few{Posljednji izvoz: prije # min}other{Posljednji izvoz: prije # min}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Posljednji izvoz: prije sat vremena}one{Posljednji izvoz: prije # h}few{Posljednji izvoz: prije # h}other{Posljednji izvoz: prije # h}}"</string>
     <string name="no_last_export_message" msgid="8138900854579872667">"Posljednji izvoz: nema"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Zakazani izvoz"</string>
@@ -407,8 +406,7 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Otvori"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Odaberite datoteku"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Oslobodi prostor"</string>
-    <!-- no translation found for scheduled_export_on_toast_text (945186472588537310) -->
-    <skip />
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"Zakazani izvoz je uključen"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect ne može izvesti podatke"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Potrebno je više prostora"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Došlo je do problema pri izvozu za <xliff:g id="DATE">%1$s</xliff:g>. Postavite novi zakazani izvoz i pokušajte ponovo."</string>

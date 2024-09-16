@@ -69,13 +69,15 @@ public class UpsertTransactionRequest {
 
     public UpsertTransactionRequest(
             @Nullable String packageName,
-            @NonNull List<RecordInternal<?>> recordInternals,
+            List<RecordInternal<?>> recordInternals,
+            DeviceInfoHelper deviceInfoHelper,
             Context context,
             boolean isInsertRequest,
             Map<String, Boolean> extraPermsStateMap) {
         this(
                 packageName,
                 recordInternals,
+                deviceInfoHelper,
                 context,
                 isInsertRequest,
                 false /* useProvidedUuid */,
@@ -85,7 +87,8 @@ public class UpsertTransactionRequest {
 
     public UpsertTransactionRequest(
             @Nullable String packageName,
-            @NonNull List<RecordInternal<?>> recordInternals,
+            List<RecordInternal<?>> recordInternals,
+            DeviceInfoHelper deviceInfoHelper,
             Context context,
             boolean isInsertRequest,
             boolean useProvidedUuid,
@@ -93,6 +96,7 @@ public class UpsertTransactionRequest {
         this(
                 packageName,
                 recordInternals,
+                deviceInfoHelper,
                 context,
                 isInsertRequest,
                 useProvidedUuid,
@@ -103,7 +107,8 @@ public class UpsertTransactionRequest {
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private UpsertTransactionRequest(
             @Nullable String packageName,
-            @NonNull List<RecordInternal<?>> recordInternals,
+            List<RecordInternal<?>> recordInternals,
+            DeviceInfoHelper deviceInfoHelper,
             Context context,
             boolean isInsertRequest,
             // TODO(b/329237732): Use builder pattern for this class.
@@ -122,7 +127,7 @@ public class UpsertTransactionRequest {
             }
             AppInfoHelper.getInstance()
                     .populateAppInfoId(recordInternal, context, /* requireAllFields= */ true);
-            DeviceInfoHelper.getInstance().populateDeviceInfoId(recordInternal);
+            deviceInfoHelper.populateDeviceInfoId(recordInternal);
 
             if (isInsertRequest) {
                 if (useProvidedUuid && recordInternal.getUuid() != null) {
