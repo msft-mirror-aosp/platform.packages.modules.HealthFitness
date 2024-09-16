@@ -243,4 +243,92 @@ public class AccessLogsHelperTest {
         assertThat(accessLog2.isMedicalDataSourceAccessed()).isFalse();
         assertThat(accessLog2.getAccessTime()).isNotNull();
     }
+
+    @Test
+    public void recordDeleteAccessLog_success() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_STEPS_CADENCE);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    recordDeleteAccessLog(db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
+                });
+
+        List<AccessLog> result = queryAccessLogs();
+        assertThat(result).hasSize(1);
+        AccessLog log = result.get(0);
+        assertThat(log.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+        assertThat(log.getRecordTypes()).containsExactly(StepsCadenceRecord.class);
+        assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_DELETE);
+    }
+
+    @Test
+    public void recordReadAccessLog_success() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_DISTANCE, RECORD_TYPE_SKIN_TEMPERATURE);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    recordReadAccessLog(db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
+                });
+
+        List<AccessLog> result = queryAccessLogs();
+        assertThat(result).hasSize(1);
+        AccessLog log = result.get(0);
+        assertThat(log.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+        assertThat(log.getRecordTypes())
+                .containsExactly(DistanceRecord.class, SkinTemperatureRecord.class);
+        assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
+    }
+
+    @Test
+    public void recordUpsertAccessLog_success() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_BODY_FAT, RECORD_TYPE_HEIGHT);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    recordUpsertAccessLog(db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
+                });
+
+        List<AccessLog> result = queryAccessLogs();
+        assertThat(result).hasSize(1);
+        AccessLog log = result.get(0);
+        assertThat(log.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+        assertThat(log.getRecordTypes()).containsExactly(BodyFatRecord.class, HeightRecord.class);
+        assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
+    }
+
+    @Test
+    public void testAddAccessLogsForDelete_getLatestAccessLogTimeStampForMAU_expectCorrectResult() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_DISTANCE, RECORD_TYPE_SKIN_TEMPERATURE);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    recordDeleteAccessLog(db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
+                });
+
+        long result = AccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp();
+
+        assertThat(result).isEqualTo(Long.MIN_VALUE);
+    }
+
+    @Test
+    public void testAddAccessLogsForUpsert_getLatestAccessLogTimeStampForMAU_expectCorrectResult() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_DISTANCE, RECORD_TYPE_SKIN_TEMPERATURE);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    recordUpsertAccessLog(db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
+                });
+
+        long result = AccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp();
+
+        assertThat(result).isNotEqualTo(Long.MIN_VALUE);
+    }
+
+    @Test
+    public void testAddAccessLogsForRead_getLatestAccessLogTimeStampForMAU_expectCorrectResult() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_DISTANCE, RECORD_TYPE_SKIN_TEMPERATURE);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    recordReadAccessLog(db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
+                });
+
+        long result = AccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp();
+
+        assertThat(result).isNotEqualTo(Long.MIN_VALUE);
+    }
 }

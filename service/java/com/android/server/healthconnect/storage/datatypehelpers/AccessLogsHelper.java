@@ -28,6 +28,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorIntegerList;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
 import android.content.ContentValues;
@@ -48,6 +49,7 @@ import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.OrderByClause;
+import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -134,10 +136,16 @@ public final class AccessLogsHelper extends DatabaseHelper {
      * Returns the timestamp of the latest access log and {@link Long#MIN_VALUE} if there is no
      * access log.
      */
-    public static long getLatestAccessLogTimeStamp() {
-
+    public static long getLatestUpsertOrReadOperationAccessLogTimeStamp() {
         final ReadTableRequest readTableRequest =
                 new ReadTableRequest(TABLE_NAME)
+                        .setWhereClause(
+                                new WhereClauses(AND)
+                                        .addWhereInIntsClause(
+                                                OPERATION_TYPE_COLUMN_NAME,
+                                                List.of(
+                                                        OPERATION_TYPE_READ,
+                                                        OPERATION_TYPE_UPSERT)))
                         .setOrderBy(
                                 new OrderByClause()
                                         .addOrderByClause(ACCESS_TIME_COLUMN_NAME, false))
