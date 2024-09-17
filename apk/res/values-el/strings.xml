@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Επιλεγμένη ημέρα"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Προηγούμενη ημέρα"</string>
     <string name="default_error" msgid="7966868260616403475">"Παρουσιάστηκε κάποιο πρόβλημα. Δοκιμάστε ξανά."</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"Λεπτομερής ιατρικός φάκελος"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Οι εφαρμογές με αυτή την άδεια μπορούν να διαβάζουν και να γράφουν δεδομένα υγείας και φυσικής κατάστασης."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Ελέγξτε ποιες εφαρμογές μπορούν να έχουν πρόσβαση στα δεδομένα που είναι αποθηκευμένα στο Health Connect. Πατήστε μια εφαρμογή για να ελέγξετε τα δεδομένα για τα οποία έχει πρόσβαση εγγραφής και ανάγνωσης."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Η πρόσβαση επιτρέπεται"</string>
@@ -407,8 +406,7 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Άνοιγμα"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Επιλογή αρχείου"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Ελευθερώστε χώρο"</string>
-    <!-- no translation found for scheduled_export_on_toast_text (945186472588537310) -->
-    <skip />
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"Η προγραμματισμένη εξαγωγή είναι ενεργή"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Καμία εξαγωγή δεδομένων Health Connect"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Απαιτείται περισσότερος χώρος"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Παρουσιάστηκε ένα πρόβλημα με την εξαγωγή για τις <xliff:g id="DATE">%1$s</xliff:g>. Ρυθμίστε μια νέα προγραμματισμένη εξαγωγή και δοκιμάστε ξανά."</string>

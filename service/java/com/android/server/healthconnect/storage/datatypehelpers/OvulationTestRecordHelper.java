@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -43,26 +42,23 @@ public final class OvulationTestRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return OVULATION_TEST_RECORD_TABLE_NAME;
     }
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull OvulationTestRecordInternal ovulationTestRecord) {
+            Cursor cursor, OvulationTestRecordInternal ovulationTestRecord) {
         ovulationTestRecord.setResult(getCursorInt(cursor, RESULT_COLUMN_NAME));
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull OvulationTestRecordInternal ovulationTestRecord) {
+            ContentValues contentValues, OvulationTestRecordInternal ovulationTestRecord) {
         contentValues.put(RESULT_COLUMN_NAME, ovulationTestRecord.getResult());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Collections.singletonList(new Pair<>(RESULT_COLUMN_NAME, INTEGER));
     }

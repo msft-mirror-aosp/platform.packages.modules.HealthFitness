@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"ມື້ທີ່ເລືອກ"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"ມື້ກ່ອນໜ້າ"</string>
     <string name="default_error" msgid="7966868260616403475">"ມີບາງຢ່າງຜິດພາດເກີດຂຶ້ນ. ກະລຸນາລອງໃໝ່."</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"ຂໍ້ມູນສຸຂະພາບໂດຍລະອຽດ"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"ແອັບທີ່ມີການອະນຸຍາດນີ້ສາມາດອ່ານ ແລະ ຂຽນຂໍ້ມູນສຸຂະພາບ ແລະ ການອອກກຳລັງກາຍຂອງທ່ານໄດ້."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"ຄວບຄຸມວ່າແອັບໃດສາມາດເຂົ້າເຖິງຂໍ້ມູນທີ່ຈັດເກັບໄວ້ໃນ Health Connect. ແຕະແອັບເພື່ອກວດສອບຂໍ້ມູນທີ່ມັນສາມາດອ່ານ ຫຼື ຂຽນໄດ້."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"ໄດ້ຮັບອະນຸຍາດສິດເຂົ້າເຖິງ"</string>

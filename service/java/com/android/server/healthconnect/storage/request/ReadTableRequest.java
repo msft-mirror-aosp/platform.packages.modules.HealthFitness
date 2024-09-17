@@ -24,7 +24,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.SELECT
 import static com.android.server.healthconnect.storage.utils.StorageUtils.SELECT_ALL;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.annotation.StringDef;
 import android.health.connect.Constants;
@@ -73,7 +72,7 @@ public class ReadTableRequest {
     private String mUnionType = UNION_ALL;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    public ReadTableRequest(@NonNull String tableName) {
+    public ReadTableRequest(String tableName) {
         Objects.requireNonNull(tableName);
 
         mTableName = tableName;
@@ -88,7 +87,7 @@ public class ReadTableRequest {
         return this;
     }
 
-    public ReadTableRequest setColumnNames(@NonNull List<String> columnNames) {
+    public ReadTableRequest setColumnNames(List<String> columnNames) {
         Objects.requireNonNull(columnNames);
 
         mColumnNames = columnNames;
@@ -101,7 +100,6 @@ public class ReadTableRequest {
     }
 
     /** Used to set Join Clause for the read query */
-    @NonNull
     public ReadTableRequest setJoinClause(SqlJoin joinClause) {
         mJoinClause = joinClause;
         return this;
@@ -113,7 +111,6 @@ public class ReadTableRequest {
      * <p><b>NOTE: make sure to use the {@link ReadTableRequest#setColumnNames(List)} to set the
      * column names to be used as the selection args.</b>
      */
-    @NonNull
     public ReadTableRequest setDistinctClause(boolean isDistinctValuesRequired) {
         mDistinct = isDistinctValuesRequired;
         return this;
@@ -123,15 +120,13 @@ public class ReadTableRequest {
      * Returns this {@link ReadTableRequest} with union type set. If not set, the default uses
      * {@link ReadTableRequest#UNION_ALL}.
      */
-    @NonNull
-    public ReadTableRequest setUnionType(@NonNull @UnionType String unionType) {
+    public ReadTableRequest setUnionType(@UnionType String unionType) {
         Objects.requireNonNull(unionType);
         mUnionType = unionType;
         return this;
     }
 
     /** Returns SQL statement to perform read operation. */
-    @NonNull
     public String getReadCommand() {
         String selectStatement = buildSelectStatement();
 
@@ -164,7 +159,6 @@ public class ReadTableRequest {
         return readQuery;
     }
 
-    @NonNull
     private String buildSelectStatement() {
         StringBuilder selectStatement = new StringBuilder(SELECT);
         if (mDistinct) {
@@ -175,8 +169,7 @@ public class ReadTableRequest {
         return selectStatement.toString();
     }
 
-    @NonNull
-    private String buildReadQuery(@NonNull String selectStatement) {
+    private String buildReadQuery(String selectStatement) {
         return selectStatement
                 + mTableName
                 + mWhereClauses.get(/* withWhereKeyword */ true)
@@ -202,14 +195,12 @@ public class ReadTableRequest {
     }
 
     /** Sets order by clause for the read query */
-    @NonNull
     public ReadTableRequest setOrderBy(OrderByClause orderBy) {
         mOrderByClause = orderBy;
         return this;
     }
 
     /** Sets LIMIT size for the read query */
-    @NonNull
     public ReadTableRequest setLimit(int limit) {
         mLimitClause = LIMIT_SIZE + limit;
         return this;

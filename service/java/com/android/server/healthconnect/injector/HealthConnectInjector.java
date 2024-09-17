@@ -26,6 +26,7 @@ import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
@@ -72,6 +73,9 @@ public abstract class HealthConnectInjector {
      * Injector.
      */
     public abstract HealthConnectDeviceConfigManager getHealthConnectDeviceConfigManager();
+
+    /** Getter for DeviceInfoHelper instance initialised by the Health Connect Injector. */
+    public abstract DeviceInfoHelper getDeviceInfoHelper();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {

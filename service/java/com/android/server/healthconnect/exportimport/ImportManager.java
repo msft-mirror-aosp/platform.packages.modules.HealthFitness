@@ -30,7 +30,6 @@ import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_
 
 import static java.util.Objects.requireNonNull;
 
-import android.annotation.NonNull;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -43,6 +42,8 @@ import com.android.server.healthconnect.notifications.HealthConnectNotificationS
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -68,24 +69,35 @@ public final class ImportManager {
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public ImportManager(
-            @NonNull Context context,
+            Context context,
             ExportImportSettingsStorage exportImportSettingsStorage,
-            TransactionManager transactionManager) {
+            TransactionManager transactionManager,
+            DeviceInfoHelper deviceInfoHelper,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
         this(
                 context,
                 ExportImportNotificationSender.createSender(context),
                 exportImportSettingsStorage,
-                transactionManager);
+                transactionManager,
+                deviceInfoHelper,
+                healthDataCategoryPriorityHelper);
     }
 
     public ImportManager(
-            @NonNull Context context,
+            Context context,
             HealthConnectNotificationSender notificationSender,
             ExportImportSettingsStorage exportImportSettingsStorage,
-            TransactionManager transactionManager) {
+            TransactionManager transactionManager,
+            DeviceInfoHelper deviceInfoHelper,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
         requireNonNull(context);
         mContext = context;
-        mDatabaseMerger = new DatabaseMerger(context);
+        mDatabaseMerger =
+                new DatabaseMerger(
+                        context,
+                        deviceInfoHelper,
+                        healthDataCategoryPriorityHelper,
+                        transactionManager);
         mTransactionManager = transactionManager;
         mNotificationSender = notificationSender;
         mExportImportSettingsStorage = exportImportSettingsStorage;

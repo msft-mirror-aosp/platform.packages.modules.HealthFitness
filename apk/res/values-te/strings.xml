@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"ఎంచుకున్న రోజు"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"మునుపటి రోజు"</string>
     <string name="default_error" msgid="7966868260616403475">"ఏదో తప్పు జరిగింది. దయచేసి మళ్లీ ట్రై చేయండి."</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"వివరణాత్మక ఆరోగ్య సమాచారం"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"ఈ అనుమతి ఉన్న యాప్‌లు మీ ఆరోగ్యానికి, ఫిట్‌నెస్‌కు చెందిన డేటాను రీడ్‌ చేసి, రైట్‌ చేయగలవు."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connectలో స్టోర్ చేయబడిన డేటాను ఏ యాప్‌లు యాక్సెస్ చేయవచ్చో కంట్రోల్ చేయండి. ఒక యాప్ చదవగలిగే లేదా రాయగల డేటాను రివ్యూ చేయడానికి సదరు యాప్‌ను ట్యాప్ చేయండి."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"యాక్సెస్ అనుమతించబడింది"</string>

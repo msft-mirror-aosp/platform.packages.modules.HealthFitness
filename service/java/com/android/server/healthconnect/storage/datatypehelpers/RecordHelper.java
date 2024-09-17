@@ -39,7 +39,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.suppor
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.OR;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -119,7 +118,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     }
 
     /** Database migration. Introduces automatic local time generation. */
-    public abstract void applyGeneratedLocalTimeUpgrade(@NonNull SQLiteDatabase db);
+    public abstract void applyGeneratedLocalTimeUpgrade(SQLiteDatabase db);
 
     @RecordTypeIdentifier.RecordType
     public int getRecordIdentifier() {
@@ -227,11 +226,10 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      * Returns a requests representing the tables that should be created corresponding to this
      * helper
      */
-    @NonNull
     public final CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(getMainTableName(), getColumnInfo())
                 .addForeignKey(
-                        DeviceInfoHelper.getInstance().getMainTableName(),
+                        DeviceInfoHelper.TABLE_NAME,
                         Collections.singletonList(DEVICE_INFO_ID_COLUMN_NAME),
                         Collections.singletonList(PRIMARY_COLUMN_NAME))
                 .addForeignKey(
@@ -248,7 +246,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         return getUpsertTableRequest(recordInternal, null);
     }
 
-    @NonNull
     @SuppressWarnings("unchecked")
     public UpsertTableRequest getUpsertTableRequest(
             RecordInternal<?> recordInternal,
@@ -302,7 +299,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
     /* Updates upsert content values based on extra permissions state. */
     protected void updateUpsertValuesIfRequired(
-            @NonNull ContentValues values,
+            ContentValues values,
             @Nullable ArrayMap<String, Boolean> extraWritePermissionToStateMap) {}
 
     /**
@@ -314,7 +311,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         return getAllChildTables().stream().map(it -> new TableColumnPair(it, PARENT_KEY)).toList();
     }
 
-    @NonNull
     public List<String> getAllChildTables() {
         List<String> childTables = new ArrayList<>();
         for (CreateTableRequest childTableCreateRequest : getChildTableCreateRequests()) {
@@ -324,7 +320,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         return childTables;
     }
 
-    @NonNull
     protected List<CreateTableRequest.GeneratedColumnInfo> getGeneratedColumnInfo() {
         return Collections.emptyList();
     }
@@ -372,8 +367,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      * @param recordInternals List of records being inserted/updated
      * @param packageName Caller package name
      */
-    public void logUpsertMetrics(
-            @NonNull List<RecordInternal<?>> recordInternals, @NonNull String packageName) {
+    public void logUpsertMetrics(List<RecordInternal<?>> recordInternals, String packageName) {
         // Do nothing, implement in record specific helpers
     }
 
@@ -383,8 +377,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      * @param recordInternals List of records being read
      * @param packageName Caller package name
      */
-    public void logReadMetrics(
-            @NonNull List<RecordInternal<?>> recordInternals, @NonNull String packageName) {
+    public void logReadMetrics(List<RecordInternal<?>> recordInternals, String packageName) {
         // Do nothing, implement in record specific helpers
     }
 
@@ -453,14 +446,16 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      * Returns List of Internal records from the cursor. If the cursor contains more than {@link
      * MAXIMUM_ALLOWED_CURSOR_COUNT} records, it throws {@link IllegalArgumentException}.
      */
-    public List<RecordInternal<?>> getInternalRecords(Cursor cursor) {
+    public List<RecordInternal<?>> getInternalRecords(
+            Cursor cursor, DeviceInfoHelper deviceInfoHelper) {
         if (cursor.getCount() > MAXIMUM_ALLOWED_CURSOR_COUNT) {
             throw new IllegalArgumentException(
                     "Too many records in the cursor. Max allowed: " + MAXIMUM_ALLOWED_CURSOR_COUNT);
         }
         List<RecordInternal<?>> recordInternalList = new ArrayList<>();
         while (cursor.moveToNext()) {
-            recordInternalList.add(getRecord(cursor, /* packageNamesByAppIds= */ null));
+            recordInternalList.add(
+                    getRecord(cursor, /* packageNamesByAppIds= */ null, deviceInfoHelper));
         }
         return recordInternalList;
     }
@@ -472,9 +467,12 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      * @see #getNextInternalRecordsPageAndToken(Cursor, int, PageTokenWrapper, Map)
      */
     public Pair<List<RecordInternal<?>>, PageTokenWrapper> getNextInternalRecordsPageAndToken(
-            Cursor cursor, int requestSize, PageTokenWrapper pageToken) {
+            DeviceInfoHelper deviceInfoHelper,
+            Cursor cursor,
+            int requestSize,
+            PageTokenWrapper pageToken) {
         return getNextInternalRecordsPageAndToken(
-                cursor, requestSize, pageToken, /* packageNamesByAppIds= */ null);
+                deviceInfoHelper, cursor, requestSize, pageToken, /* packageNamesByAppIds= */ null);
     }
 
     /**
@@ -500,6 +498,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      * @see #getLimitSize(ReadRecordsRequestParcel)
      */
     public Pair<List<RecordInternal<?>>, PageTokenWrapper> getNextInternalRecordsPageAndToken(
+            DeviceInfoHelper deviceInfoHelper,
             Cursor cursor,
             int requestSize,
             PageTokenWrapper prevPageToken,
@@ -539,7 +538,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                         PageTokenWrapper.of(prevPageToken.isAscending(), currentStartTime, offset);
                 break;
             } else {
-                T record = getRecord(cursor, packageNamesByAppIds);
+                T record = getRecord(cursor, packageNamesByAppIds, deviceInfoHelper);
                 recordInternalList.add(record);
                 offset++;
             }
@@ -548,7 +547,10 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     }
 
     @SuppressWarnings("unchecked") // uncheck cast to T
-    private T getRecord(Cursor cursor, @Nullable Map<Long, String> packageNamesByAppIds) {
+    private T getRecord(
+            Cursor cursor,
+            @Nullable Map<Long, String> packageNamesByAppIds,
+            DeviceInfoHelper deviceInfoHelper) {
         try {
             @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
             T record =
@@ -565,7 +567,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             record.setRecordingMethod(getCursorInt(cursor, RECORDING_METHOD_COLUMN_NAME));
             record.setRowId(getCursorInt(cursor, PRIMARY_COLUMN_NAME));
             long deviceInfoId = getCursorLong(cursor, DEVICE_INFO_ID_COLUMN_NAME);
-            DeviceInfoHelper.getInstance().populateRecordWithValue(deviceInfoId, record);
+            deviceInfoHelper.populateRecordWithValue(deviceInfoId, record);
             long appInfoId = getCursorLong(cursor, APP_INFO_ID_COLUMN_NAME);
             String packageName =
                     packageNamesByAppIds != null
@@ -638,13 +640,11 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      * Child classes should implement this if it wants to create additional tables, apart from the
      * main table.
      */
-    @NonNull
     List<CreateTableRequest> getChildTableCreateRequests() {
         return Collections.emptyList();
     }
 
     /** Returns the table name to be created corresponding to this helper */
-    @NonNull
     public abstract String getMainTableName();
 
     /** Returns the information required to perform aggregate operation. */
@@ -661,21 +661,19 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      *
      * <p>PLEASE DON'T USE THIS METHOD TO ADD NEW COLUMNS
      */
-    @NonNull
     abstract List<Pair<String, String>> getSpecificColumnInfo();
 
     /**
      * Child classes implementation should add the values of {@code recordInternal} that needs to be
      * populated in the DB to {@code contentValues}.
      */
-    abstract void populateContentValues(
-            @NonNull ContentValues contentValues, @NonNull T recordInternal);
+    abstract void populateContentValues(ContentValues contentValues, T recordInternal);
 
     /**
      * Child classes implementation should populate the values to the {@code record} using the
      * cursor {@code cursor} queried from the DB .
      */
-    abstract void populateRecordValue(@NonNull Cursor cursor, @NonNull T recordInternal);
+    abstract void populateRecordValue(Cursor cursor, T recordInternal);
 
     List<UpsertTableRequest> getChildTableUpsertRequests(T record) {
         return Collections.emptyList();
@@ -820,8 +818,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                 .addOrderByClause(PRIMARY_COLUMN_NAME, /* isAscending= */ true);
     }
 
-    @NonNull
-    private ContentValues getContentValues(@NonNull T recordInternal) {
+    private ContentValues getContentValues(T recordInternal) {
         ContentValues recordContentValues = new ContentValues();
 
         recordContentValues.put(
@@ -849,7 +846,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      *
      * <p>PLEASE DON'T USE THIS METHOD TO ADD NEW COLUMNS
      */
-    @NonNull
     private List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(PRIMARY_COLUMN_NAME, PRIMARY_AUTOINCREMENT));

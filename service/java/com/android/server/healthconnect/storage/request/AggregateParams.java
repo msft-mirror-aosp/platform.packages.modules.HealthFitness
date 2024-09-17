@@ -17,7 +17,6 @@
 package com.android.server.healthconnect.storage.request;
 
 import android.annotation.IntDef;
-import android.annotation.NonNull;
 
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 
@@ -125,7 +124,7 @@ public final class AggregateParams {
         return this;
     }
 
-    public AggregateParams setOffsetColumnToFetch(@NonNull String mainTimeColumnOffset) {
+    public AggregateParams setOffsetColumnToFetch(String mainTimeColumnOffset) {
         Objects.requireNonNull(mainTimeColumnOffset);
         mTimeOffsetColumnName = mainTimeColumnOffset;
         return this;

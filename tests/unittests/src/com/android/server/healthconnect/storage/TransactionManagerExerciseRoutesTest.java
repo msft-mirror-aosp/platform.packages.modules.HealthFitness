@@ -39,6 +39,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
@@ -80,6 +81,7 @@ public class TransactionManagerExerciseRoutesTest {
 
     private TransactionTestUtils mTransactionTestUtils;
     private TransactionManager mTransactionManager;
+    private DeviceInfoHelper mDeviceInfoHelper;
 
     @Before
     public void setup() {
@@ -93,6 +95,9 @@ public class TransactionManagerExerciseRoutesTest {
         mTransactionTestUtils.insertApp(FOO_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(BAR_PACKAGE_NAME);
         HealthConnectDeviceConfigManager.initializeInstance(context);
+
+        DeviceInfoHelper.resetInstanceForTest();
+        mDeviceInfoHelper = DeviceInfoHelper.getInstance(mTransactionManager);
     }
 
     @Test
@@ -114,7 +119,8 @@ public class TransactionManagerExerciseRoutesTest {
                                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION, allUuids),
                         /* startDateAccessMillis= */ 0,
                         WRITE_EXERCISE_ROUTE_EXTRA_PERM,
-                        /* isInForeground= */ true);
+                        /* isInForeground= */ true,
+                        mDeviceInfoHelper);
 
         List<RecordInternal<?>> returnedRecords = mTransactionManager.readRecordsByIds(request);
 
@@ -146,7 +152,8 @@ public class TransactionManagerExerciseRoutesTest {
                                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION, List.of(uuid)),
                         /* startDateAccessMillis= */ 0,
                         WRITE_EXERCISE_ROUTE_EXTRA_PERM,
-                        /* isInForeground= */ true);
+                        /* isInForeground= */ true,
+                        mDeviceInfoHelper);
 
         List<RecordInternal<?>> returnedRecords = mTransactionManager.readRecordsByIds(request);
 
@@ -171,7 +178,8 @@ public class TransactionManagerExerciseRoutesTest {
                                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION, List.of(uuid)),
                         /* startDateAccessMillis= */ 0,
                         WRITE_EXERCISE_ROUTE_EXTRA_PERM,
-                        /* isInForeground= */ true);
+                        /* isInForeground= */ true,
+                        mDeviceInfoHelper);
 
         List<RecordInternal<?>> returnedRecords = mTransactionManager.readRecordsByIds(request);
 
@@ -196,7 +204,8 @@ public class TransactionManagerExerciseRoutesTest {
                                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION, List.of(uuid)),
                         /* startDateAccessMillis= */ 0,
                         Set.of(HealthPermissions.READ_EXERCISE_ROUTE),
-                        /* isInForeground= */ true);
+                        /* isInForeground= */ true,
+                        mDeviceInfoHelper);
 
         List<RecordInternal<?>> returnedRecords = mTransactionManager.readRecordsByIds(request);
 
@@ -232,7 +241,8 @@ public class TransactionManagerExerciseRoutesTest {
                         /* startDateAccessMillis= */ 0,
                         /* enforceSelfRead= */ false,
                         WRITE_EXERCISE_ROUTE_EXTRA_PERM,
-                        /* isInForeground= */ true);
+                        /* isInForeground= */ true,
+                        mDeviceInfoHelper);
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsAndPageToken(request).first;
@@ -271,7 +281,8 @@ public class TransactionManagerExerciseRoutesTest {
                         /* startDateAccessMillis= */ 0,
                         /* enforceSelfRead= */ false,
                         WRITE_EXERCISE_ROUTE_EXTRA_PERM,
-                        /* isInForeground= */ true);
+                        /* isInForeground= */ true,
+                        mDeviceInfoHelper);
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsAndPageToken(request).first;
@@ -302,7 +313,8 @@ public class TransactionManagerExerciseRoutesTest {
                         /* startDateAccessMillis= */ 0,
                         /* enforceSelfRead= */ false,
                         WRITE_EXERCISE_ROUTE_EXTRA_PERM,
-                        /* isInForeground= */ true);
+                        /* isInForeground= */ true,
+                        mDeviceInfoHelper);
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsAndPageToken(request).first;
@@ -333,7 +345,8 @@ public class TransactionManagerExerciseRoutesTest {
                         /* startDateAccessMillis= */ 0,
                         /* enforceSelfRead= */ false,
                         Set.of(HealthPermissions.READ_EXERCISE_ROUTE),
-                        /* isInForeground= */ true);
+                        /* isInForeground= */ true,
+                        mDeviceInfoHelper);
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsAndPageToken(request).first;

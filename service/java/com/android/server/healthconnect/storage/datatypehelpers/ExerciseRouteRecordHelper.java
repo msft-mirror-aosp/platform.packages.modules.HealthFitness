@@ -22,7 +22,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL_N
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.internal.datatypes.ExerciseRouteInternal;
@@ -46,7 +45,7 @@ class ExerciseRouteRecordHelper {
     static final String ROUTE_LOCATION_HORIZONTAL_ACCURACY_COLUMN_NAME = "horizontal_accuracy";
     static final String ROUTE_LOCATION_ALTITUDE_COLUMN_NAME = "altitude";
 
-    static ExerciseRouteInternal.LocationInternal populateLocation(@NonNull Cursor cursor) {
+    static ExerciseRouteInternal.LocationInternal populateLocation(Cursor cursor) {
         return new ExerciseRouteInternal.LocationInternal()
                 .setTime(getCursorLong(cursor, ROUTE_LOCATION_TIME_IN_MILLIS_COLUMN_NAME))
                 .setLatitude(getCursorDouble(cursor, ROUTE_LOCATION_LATITUDE_COLUMN_NAME))
