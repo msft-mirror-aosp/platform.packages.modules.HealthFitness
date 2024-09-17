@@ -16,6 +16,9 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_DELETE;
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
+
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BOOLEAN_FALSE_VALUE;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BOOLEAN_TRUE_VALUE;
@@ -29,7 +32,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorIntegerList;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -78,7 +80,6 @@ public final class AccessLogsHelper extends DatabaseHelper {
     private static final int NUM_COLS = 5;
     private static final int DEFAULT_ACCESS_LOG_TIME_PERIOD_IN_DAYS = 7;
 
-    @NonNull
     public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
@@ -159,7 +160,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
      * request for record datatypes.
      */
     public static void addAccessLog(
-            @NonNull String packageName,
+            String packageName,
             @RecordTypeIdentifier.RecordType List<Integer> recordTypeList,
             @OperationType.OperationTypes int operationType) {
         UpsertTableRequest request =
@@ -172,9 +173,9 @@ public final class AccessLogsHelper extends DatabaseHelper {
      * operation request for medicalResourceTypes.
      */
     public static void addAccessLog(
-            @NonNull SQLiteDatabase db,
-            @NonNull String packageName,
-            @NonNull @MedicalResourceType Set<Integer> medicalResourceTypes,
+            SQLiteDatabase db,
+            String packageName,
+            @MedicalResourceType Set<Integer> medicalResourceTypes,
             @OperationType.OperationTypes int operationType,
             boolean accessedMedicalDataSource) {
         UpsertTableRequest request =
@@ -186,10 +187,9 @@ public final class AccessLogsHelper extends DatabaseHelper {
         TransactionManager.getInitialisedInstance().insert(db, request);
     }
 
-    @NonNull
     private static UpsertTableRequest getUpsertTableRequestForPhr(
-            @NonNull String packageName,
-            @NonNull Set<Integer> medicalResourceTypes,
+            String packageName,
+            Set<Integer> medicalResourceTypes,
             @OperationType.OperationTypes int operationType,
             boolean isMedicalDataSource) {
         // We need to populate RECORD_TYPE_COLUMN_NAME with an empty list, as the column is set
@@ -204,20 +204,41 @@ public final class AccessLogsHelper extends DatabaseHelper {
         return new UpsertTableRequest(TABLE_NAME, contentValues);
     }
 
-    @NonNull
     public static UpsertTableRequest getUpsertTableRequest(
-            @NonNull String packageName,
-            @NonNull List<Integer> recordTypeList,
+            String packageName,
+            List<Integer> recordTypeList,
             @OperationType.OperationTypes int operationType) {
         ContentValues contentValues =
                 populateCommonColumns(packageName, recordTypeList, operationType);
         return new UpsertTableRequest(TABLE_NAME, contentValues);
     }
 
-    @NonNull
+    /** Adds an entry of read type into the {@link AccessLogsHelper#TABLE_NAME} */
+    public static void recordReadAccessLog(
+            SQLiteDatabase db, String packageName, Set<Integer> recordTypeIds) {
+        recordAccessLog(db, packageName, recordTypeIds, OPERATION_TYPE_READ);
+    }
+
+    /** Adds an entry of delete type into the {@link AccessLogsHelper#TABLE_NAME} */
+    public static void recordDeleteAccessLog(
+            SQLiteDatabase db, String packageName, Set<Integer> recordTypeIds) {
+        recordAccessLog(db, packageName, recordTypeIds, OPERATION_TYPE_DELETE);
+    }
+
+    private static void recordAccessLog(
+            SQLiteDatabase db,
+            String packageName,
+            Set<Integer> recordTypeIds,
+            @OperationType.OperationTypes int operationType) {
+        ContentValues contentValues =
+                populateCommonColumns(packageName, recordTypeIds.stream().toList(), operationType);
+        UpsertTableRequest request = new UpsertTableRequest(TABLE_NAME, contentValues);
+        TransactionManager.getInitialisedInstance().insertRecord(db, request);
+    }
+
     private static ContentValues populateCommonColumns(
-            @NonNull String packageName,
-            @NonNull List<Integer> recordTypeList,
+            String packageName,
+            List<Integer> recordTypeList,
             @OperationType.OperationTypes int operationType) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(
@@ -229,8 +250,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
         return contentValues;
     }
 
-    @NonNull
-    private static String concatDataTypeIds(@NonNull Set<Integer> dataTypes) {
+    private static String concatDataTypeIds(Set<Integer> dataTypes) {
         return dataTypes.stream().map(String::valueOf).collect(Collectors.joining(","));
     }
 
@@ -253,12 +273,10 @@ public final class AccessLogsHelper extends DatabaseHelper {
      * AccessLogsHelper#MEDICAL_RESOURCE_TYPE_COLUMN_NAME} and {@link
      * AccessLogsHelper#MEDICAL_DATA_SOURCE_ACCESSED_COLUMN_NAME} to the access_logs_table.
      */
-    @NonNull
     public static AlterTableRequest getAlterTableRequestForPhrAccessLogs() {
         return new AlterTableRequest(TABLE_NAME, getPhrAccessLogsColumnInfo());
     }
 
-    @NonNull
     private static List<Pair<String, String>> getColumnInfo() {
         List<Pair<String, String>> columnInfo = new ArrayList<>(NUM_COLS);
         columnInfo.add(new Pair<>(PRIMARY_COLUMN_NAME, PRIMARY_AUTOINCREMENT));
@@ -270,7 +288,6 @@ public final class AccessLogsHelper extends DatabaseHelper {
     }
 
     /** Gets the columns to add for an {@link AlterTableRequest} for adding PHR specific columns, */
-    @NonNull
     public static List<Pair<String, String>> getPhrAccessLogsColumnInfo() {
         return List.of(
                 // This is list of comma separated integers that represent

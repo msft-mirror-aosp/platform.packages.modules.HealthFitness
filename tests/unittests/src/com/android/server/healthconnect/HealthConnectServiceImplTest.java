@@ -41,7 +41,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IM
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.PhrDataFactory.getGetMedicalDataSourceRequest;
-import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalDataSource;
+import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalDataSourceRequiredFieldsOnly;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
@@ -87,6 +87,7 @@ import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.aidl.HealthConnectExceptionParcel;
+import android.health.connect.aidl.IApplicationInfoResponseCallback;
 import android.health.connect.aidl.IDataStagingFinishedCallback;
 import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
@@ -1923,6 +1924,22 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetAllContributorAppInfoIds_noDataManagementPermission_throws()
+            throws Exception {
+        doThrow(SecurityException.class)
+                .when(mServiceContext)
+                .enforcePermission(eq(MANAGE_HEALTH_DATA_PERMISSION), anyInt(), anyInt(), isNull());
+        IApplicationInfoResponseCallback callback = mock(IApplicationInfoResponseCallback.class);
+
+        mHealthConnectService.getContributorApplicationsInfo(callback);
+
+        verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
+        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
     public void testUserSwitching() throws TimeoutException {
         doNothing()
                 .when(mHealthDataCategoryPriorityHelper)
@@ -1949,7 +1966,7 @@ public class HealthConnectServiceImplTest {
         ExtendedMockito.doNothing().when(() -> RateLimiter.checkMaxChunkMemoryUsage(anyLong()));
         when(mMedicalDataSourceHelper.createMedicalDataSource(
                         eq(mServiceContext), eq(getCreateMedicalDataSourceRequest()), any()))
-                .thenReturn(getMedicalDataSource());
+                .thenReturn(getMedicalDataSourceRequiredFieldsOnly());
     }
 
     private void setUpPhrMocksWithIrrelevantResponses() {

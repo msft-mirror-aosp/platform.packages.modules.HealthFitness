@@ -39,6 +39,10 @@ import com.android.healthconnect.controller.data.entries.EntriesViewModel.Entrie
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedDataEntry
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.EXERCISE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.HEART_RATE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.PLANNED_EXERCISE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.SLEEP
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.shared.DataType
@@ -61,15 +65,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
-import org.mockito.kotlin.atLeast
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.reset
-import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
-import org.junit.Ignore
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
@@ -97,20 +97,20 @@ class AllEntriesFragmentTest {
                     AppMetadata(
                         TEST_APP_PACKAGE_NAME,
                         TEST_APP_NAME,
-                        context.getDrawable(R.drawable.health_connect_logo))))
-        Mockito.`when`(viewModel.screenState).thenReturn(MutableLiveData(EntriesViewModel.EntriesDeletionScreenState.VIEW))
+                        context.getDrawable(R.drawable.health_connect_logo),
+                    )
+                )
+            )
+        Mockito.`when`(viewModel.screenState)
+            .thenReturn(MutableLiveData(EntriesViewModel.EntriesDeletionScreenState.VIEW))
         Mockito.`when`(viewModel.setOfEntriesToBeDeleted).thenReturn(MutableLiveData())
     }
 
     @Test
-    fun appEntriesInit_showsDateNavigationPreference() {
+    fun allEntriesInit_showsDateNavigationPreference() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(emptyList())))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.date_picker_spinner)).check(matches(isDisplayed()))
     }
@@ -119,50 +119,79 @@ class AllEntriesFragmentTest {
     fun allEntriesInit_noData_showsNoData() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Empty))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.no_data_view)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun appEntriesInit_error_showsErrorView() {
+    fun allEntriesInit_error_showsErrorView() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(LoadingFailed))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.error_view)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun appEntriesInit_loading_showsLoading() {
+    fun allEntriesInit_loading_showsLoading() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Loading))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.loading)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun appEntriesInit_withData_showsListOfEntries() {
+    fun allEntriesInit_withSleepData_showsListOfEntries() {
+        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_SLEEP_LIST)))
+
+        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to SLEEP.name))
+
+        onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
+        onView(withText("7 hours")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun allEntriesInit_withHeartRateData_showsListOfEntries() {
+        Mockito.`when`(viewModel.entries)
+            .thenReturn(MutableLiveData(With(FORMATTED_HEART_RATE_LIST)))
+
+        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to HEART_RATE.name))
+
+        onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
+        onView(withText("128 - 140 bpm")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun allEntriesInit_withExerciseData_showsListOfEntries() {
+        Mockito.`when`(viewModel.entries)
+            .thenReturn(MutableLiveData(With(FORMATTED_EXERCISE_SESSION_LIST)))
+
+        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to EXERCISE.name))
+
+        onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
+        onView(withText("Biking")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun allEntriesInit_withPlannedExerciseData_showsListOfEntries() {
+        Mockito.`when`(viewModel.entries)
+            .thenReturn(MutableLiveData(With(FORMATTED_PLANNED_EXERCISE_LIST)))
+
+        launchFragment<AllEntriesFragment>(
+            bundleOf(PERMISSION_TYPE_NAME_KEY to PLANNED_EXERCISE.name)
+        )
+
+        onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
+        onView(withText("Workout")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun allEntriesInit_withStepsData_showsListOfEntries() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("12 steps")).check(matches(isDisplayed()))
@@ -177,9 +206,6 @@ class AllEntriesFragmentTest {
 
         val scenario =
             launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("12 steps")).check(matches(isDisplayed()))
@@ -195,19 +221,19 @@ class AllEntriesFragmentTest {
         onView(withText("12 steps")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("8:06 - 8:06")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("15 steps")).perform(scrollTo()).check(matches(isDisplayed()))
+
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
     }
 
     @Test
     fun allEntriesInit_noMedicalData_showsNoData() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Empty))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(
-                bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name)
-            )
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(
+            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name)
+        )
 
         onView(withId(R.id.no_data_view)).check(matches(isDisplayed()))
     }
@@ -216,13 +242,9 @@ class AllEntriesFragmentTest {
     fun allEntriesInit_medicalError_showsErrorView() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(LoadingFailed))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(
-                bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name)
-            )
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(
+            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name)
+        )
 
         onView(withId(R.id.error_view)).check(matches(isDisplayed()))
     }
@@ -231,13 +253,9 @@ class AllEntriesFragmentTest {
     fun allEntriesInit_medicalLoading_showsLoading() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Loading))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(
-                bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name)
-            )
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(
+            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name)
+        )
 
         onView(withId(R.id.loading)).check(matches(isDisplayed()))
     }
@@ -247,13 +265,9 @@ class AllEntriesFragmentTest {
         Mockito.`when`(viewModel.entries)
             .thenReturn(MutableLiveData(With(FORMATTED_IMMUNIZATION_LIST)))
 
-        val scenario =
-            launchFragment<AllEntriesFragment>(
-                bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name)
-            )
-        scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        launchFragment<AllEntriesFragment>(
+            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name)
+        )
 
         onView(withText("02 May 2023 • Health Connect Toolbox")).check(matches(isDisplayed()))
         onView(withText("12 Aug 2022 • Health Connect Toolbox")).check(matches(isDisplayed()))
@@ -265,12 +279,12 @@ class AllEntriesFragmentTest {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
 
         val scenario =
-                launchFragment<AllEntriesFragment>(
-                        bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
         scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllEntriesFragment).triggerDeletionState(EntriesViewModel.EntriesDeletionScreenState.DELETE)
+            (fragment as AllEntriesFragment).triggerDeletionState(
+                EntriesViewModel.EntriesDeletionScreenState.DELETE
+            )
         }
 
         onView(withIndex(withId(R.id.item_checkbox_button), 0)).check(matches(isDisplayed()))
@@ -278,17 +292,18 @@ class AllEntriesFragmentTest {
 
     @Ignore("b/363994647")
     @Test
-    fun allEntries_triggerDeletion_checkboxesRemainOnOrientationChange() = runTest{
+    fun allEntries_triggerDeletion_checkboxesRemainOnOrientationChange() = runTest {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
-        Mockito.`when`(viewModel.screenState).thenReturn(MutableLiveData(EntriesViewModel.EntriesDeletionScreenState.DELETE))
+        Mockito.`when`(viewModel.screenState)
+            .thenReturn(MutableLiveData(EntriesViewModel.EntriesDeletionScreenState.DELETE))
 
         val scenario =
-                launchFragment<AllEntriesFragment>(
-                        bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
         scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllEntriesFragment).triggerDeletionState(EntriesViewModel.EntriesDeletionScreenState.DELETE)
+            (fragment as AllEntriesFragment).triggerDeletionState(
+                EntriesViewModel.EntriesDeletionScreenState.DELETE
+            )
         }
 
         onView(withIndex(withId(R.id.item_checkbox_button), 0)).check(matches(isDisplayed()))
@@ -311,14 +326,13 @@ class AllEntriesFragmentTest {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
 
         val scenario =
-                launchFragment<AllEntriesFragment>(
-                        bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
         scenario.onActivity { activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllEntriesFragment).triggerDeletionState(EntriesViewModel.EntriesDeletionScreenState.DELETE)
+            (fragment as AllEntriesFragment).triggerDeletionState(
+                EntriesViewModel.EntriesDeletionScreenState.DELETE
+            )
         }
-
 
         onView(withText("12 steps")).perform(click())
         onIdle()
@@ -344,6 +358,54 @@ private val FORMATTED_STEPS_LIST =
             titleA11y = "15 steps",
             dataType = DataType.STEPS,
         ),
+    )
+
+private val FORMATTED_SLEEP_LIST =
+    listOf(
+        FormattedEntry.SleepSessionEntry(
+            uuid = "test_id",
+            header = "7:06 - 7:06",
+            headerA11y = "from 7:06 to 7:06",
+            title = "7 hours",
+            titleA11y = "7 hours",
+            dataType = DataType.SLEEP,
+            notes = "",
+        )
+    )
+private val FORMATTED_HEART_RATE_LIST =
+    listOf(
+        FormattedEntry.SeriesDataEntry(
+            uuid = "test_id",
+            header = "7:06 - 7:06",
+            headerA11y = "from 7:06 to 7:06",
+            title = "128 - 140 bpm",
+            titleA11y = "128 - 140 bpm",
+            dataType = DataType.HEART_RATE,
+        )
+    )
+private val FORMATTED_PLANNED_EXERCISE_LIST =
+    listOf(
+        FormattedEntry.PlannedExerciseSessionEntry(
+            uuid = "test_id",
+            header = "7:06 - 7:06",
+            headerA11y = "from 7:06 to 7:06",
+            title = "Workout",
+            titleA11y = "Workout",
+            dataType = DataType.PLANNED_EXERCISE,
+            notes = "",
+        )
+    )
+private val FORMATTED_EXERCISE_SESSION_LIST =
+    listOf(
+        FormattedEntry.ExerciseSessionEntry(
+            uuid = "test_id",
+            header = "7:06 - 7:06",
+            headerA11y = "from 7:06 to 7:06",
+            title = "Biking",
+            titleA11y = "Biking",
+            dataType = DataType.EXERCISE,
+            notes = "",
+        )
     )
 
 private val FORMATTED_IMMUNIZATION_LIST =

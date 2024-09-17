@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"ရွေးထားသောနေ့"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"ယခင်ရက်"</string>
     <string name="default_error" msgid="7966868260616403475">"တစ်ခုခုမှားသွားသည်။ ထပ်စမ်းကြည့်ပါ။"</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"အသေးစိတ် ကျန်းမာရေး မှတ်တမ်း"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"ဤခွင့်ပြုချက်ရှိသောအက်ပ်များသည် သင်၏ကျန်းမာရေးနှင့် ကြံ့ခိုင်ရေးဒေတာကို ဖတ်ပြီး ရေးနိုင်သည်။"</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connect တွင် သိမ်းထားသောဒေတာကို မည်သည့်အက်ပ်က သုံးနိုင်ကြောင်း သတ်မှတ်နိုင်သည်။ အက်ပ်ကဖတ်နိုင် (သို့) ရေးနိုင်သော ဒေတာများ ပြန်ကြည့်ရန် ၎င်းကိုတို့ပါ။"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"ခွင့်ပြုထားသည်များ"</string>

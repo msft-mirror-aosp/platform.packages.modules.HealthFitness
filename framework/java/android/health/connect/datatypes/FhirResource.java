@@ -52,11 +52,18 @@ public final class FhirResource implements Parcelable {
     /** FHIR resource type for AllergyIntolerance. */
     public static final int FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE = 2;
 
+    /**
+     * FHIR resource type for a <a href="https://www.hl7.org/fhir/observation.html">FHIR
+     * Observation</a>.
+     */
+    public static final int FHIR_RESOURCE_TYPE_OBSERVATION = 3;
+
     /** @hide */
     @IntDef({
         FHIR_RESOURCE_TYPE_UNKNOWN,
         FHIR_RESOURCE_TYPE_IMMUNIZATION,
-        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE
+        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+        FHIR_RESOURCE_TYPE_OBSERVATION
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FhirResourceType {}
@@ -146,7 +153,8 @@ public final class FhirResource implements Parcelable {
             Set.of(
                     FHIR_RESOURCE_TYPE_UNKNOWN,
                     FHIR_RESOURCE_TYPE_IMMUNIZATION,
-                    FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
+                    FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                    FHIR_RESOURCE_TYPE_OBSERVATION);
 
     /**
      * Validates the provided {@code fhirResourceType} is in the {@link FhirResource#VALID_TYPES}

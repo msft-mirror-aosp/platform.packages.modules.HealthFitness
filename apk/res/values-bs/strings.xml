@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Odabrani dan"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Prethodni dan"</string>
     <string name="default_error" msgid="7966868260616403475">"Nešto nije uredu. Pokušajte ponovo."</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"Detaljna zdravstvena evidencija"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Aplikacije s ovim odobrenjem mogu čitati i zapisivati vaše podatke o zdravlju i fitnesu."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Kontrolirajte koje aplikacije mogu pristupiti podacima pohranjenim u Health Connectu. Dodirnite aplikaciju da pregledate podatke kojima ona ima pristup za čitanje ili pisanje."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Dozvoljen pristup"</string>
@@ -407,8 +406,7 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Otvori"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Odaberite fajl"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Oslobodite prostor"</string>
-    <!-- no translation found for scheduled_export_on_toast_text (945186472588537310) -->
-    <skip />
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"Zakazani izvoz je uključen"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect nije uspio izvesti podatke"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Potrebno je više prostora"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Došlo je do problema prilikom izvoza za dan <xliff:g id="DATE">%1$s</xliff:g>. Postavite novi zakazani izvoz i pokušajte ponovo."</string>

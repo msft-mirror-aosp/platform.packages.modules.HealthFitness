@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"ថ្ងៃដែលបានជ្រើសរើស"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"ថ្ងៃ​មុន"</string>
     <string name="default_error" msgid="7966868260616403475">"មានអ្វីមួយខុសប្រក្រតី។ សូមព្យាយាមម្ដងទៀត។"</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"កំណត់ត្រាសុខភាពលម្អិត"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"កម្មវិធីដែល​មានការអនុញ្ញាតនេះ​អាចអាន និងសរសេរទិន្នន័យសុខភាព និងសម្បទា​របស់អ្នកបាន។"</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"គ្រប់គ្រងថាតើកម្មវិធីណាខ្លះអាចចូលប្រើប្រាស់ទិន្នន័យដែលបានរក្សាទុកក្នុង Health Connect។ ចុចលើកម្មវិធីមួយ ដើម្បីពិនិត្យមើលទិន្នន័យដែលកម្មវិធីនោះអាចអាន ឬសរសេរបាន។"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"សិទ្ធិចូលប្រើដែលត្រូវបានអនុញ្ញាត"</string>
