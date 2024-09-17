@@ -132,13 +132,18 @@ public class MedicalDataSourceHelperTest {
                 new MedicalDataSourceHelper(mTransactionManager, mAppInfoHelper, mFakeTimeSource);
         // We set the context to null, because we only use insertApp in this set of tests and
         // we don't need context for that.
-        mTransactionTestUtils = new TransactionTestUtils(/* context= */ null, mTransactionManager);
+        mTransactionTestUtils =
+                new TransactionTestUtils(
+                        mHealthConnectDatabaseTestRule.getUserContext(), mTransactionManager);
         mUtil =
                 new PhrTestUtils(
                         mContext,
                         mTransactionManager,
                         new MedicalResourceHelper(
-                                mTransactionManager, mMedicalDataSourceHelper, mFakeTimeSource),
+                                mTransactionManager,
+                                mAppInfoHelper,
+                                mMedicalDataSourceHelper,
+                                mFakeTimeSource),
                         mMedicalDataSourceHelper);
         when(mContext.getPackageManager()).thenReturn(mPackageManager);
     }
@@ -445,6 +450,29 @@ public class MedicalDataSourceHelperTest {
                         List.of(UUID.fromString(dataSource1.getId())));
 
         assertThat(result).containsExactly(dataSource1);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void createMedicalDataSources_sameDisplayNamesFromSamePackage_throws() {
+        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
+        mMedicalDataSourceHelper.createMedicalDataSource(
+                mContext,
+                new CreateMedicalDataSourceRequest.Builder(
+                                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME)
+                        .build(),
+                DATA_SOURCE_PACKAGE_NAME);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mMedicalDataSourceHelper.createMedicalDataSource(
+                                mContext,
+                                new CreateMedicalDataSourceRequest.Builder(
+                                                DIFFERENT_DATA_SOURCE_BASE_URI,
+                                                DATA_SOURCE_DISPLAY_NAME)
+                                        .build(),
+                                DATA_SOURCE_PACKAGE_NAME));
     }
 
     @Test
@@ -1120,6 +1148,7 @@ public class MedicalDataSourceHelperTest {
         MedicalResourceHelper resourceHelper =
                 new MedicalResourceHelper(
                         mTransactionManager,
+                        mAppInfoHelper,
                         mMedicalDataSourceHelper,
                         new FakeTimeSource(INSTANT_NOW));
         MedicalResource medicalResource =
@@ -1148,6 +1177,29 @@ public class MedicalDataSourceHelperTest {
                 resourceHelper.readMedicalResourcesByIdsWithoutPermissionChecks(
                         List.of(resource.getId()));
         assertThat(resourceResult).isEmpty();
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void testGetAllContributorAppInfoIds_success() throws NameNotFoundException {
+        setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
+        setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        createDataSource(
+                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME, DATA_SOURCE_PACKAGE_NAME);
+        createDataSource(
+                DIFFERENT_DATA_SOURCE_BASE_URI,
+                DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                DATA_SOURCE_PACKAGE_NAME);
+        createDataSource(
+                DIFFERENT_DATA_SOURCE_BASE_URI,
+                DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        long appInfoId = mAppInfoHelper.getAppInfoId(DATA_SOURCE_PACKAGE_NAME);
+        long differentAppInfoId = mAppInfoHelper.getAppInfoId(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+
+        Set<Long> response = mMedicalDataSourceHelper.getAllContributorAppInfoIds();
+
+        assertThat(response).containsExactly(appInfoId, differentAppInfoId);
     }
 
     private void setUpMocksForAppInfo(String packageName) throws NameNotFoundException {

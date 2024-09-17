@@ -18,6 +18,7 @@ package android.healthconnect.cts.datatypes;
 
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_OBSERVATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_ALLERGY;
@@ -28,6 +29,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceBuil
 import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.datatypes.FhirResource;
+import android.healthconnect.cts.utils.ObservationBuilder;
 import android.os.Parcel;
 import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
@@ -62,7 +64,23 @@ public class FhirResourceTest {
     }
 
     @Test
-    public void testFhirResourceBuilder_setAllFields() {
+    public void testFhirResourceBuilder_setAllFieldsObservation() {
+        String id = "myId123";
+        String fhirData = new ObservationBuilder().setId(id).toJson();
+        FhirResource resource =
+                getFhirResourceBuilder()
+                        .setType(FHIR_RESOURCE_TYPE_OBSERVATION)
+                        .setId(id)
+                        .setData(fhirData)
+                        .build();
+
+        assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_OBSERVATION);
+        assertThat(resource.getId()).isEqualTo(id);
+        assertThat(resource.getData()).isEqualTo(fhirData);
+    }
+
+    @Test
+    public void testFhirResourceBuilder_setAllFields_allergy() {
         FhirResource resource =
                 getFhirResourceBuilder()
                         .setType(FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE)

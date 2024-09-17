@@ -101,7 +101,9 @@ public class AutoDeleteService {
                             });
             try {
                 TransactionManager.getInitialisedInstance()
-                        .deleteAll(new DeleteTransactionRequest(deleteTableRequests));
+                        .deleteAll(
+                                new DeleteTransactionRequest(deleteTableRequests),
+                                /* shouldRecordDeleteAccessLogs= */ false);
             } catch (Exception exception) {
                 Slog.e(TAG, "Auto delete for records failed", exception);
                 // Don't rethrow as that will crash system_server

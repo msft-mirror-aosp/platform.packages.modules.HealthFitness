@@ -25,7 +25,6 @@ import static com.android.server.healthconnect.storage.datatypehelpers.IntervalR
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.APP_INFO_ID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
 
-import android.annotation.NonNull;
 import android.database.Cursor;
 import android.util.Pair;
 
@@ -105,10 +104,10 @@ public final class MergeDataHelper {
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     public MergeDataHelper(
-            @NonNull Cursor cursor,
-            @NonNull List<Long> priorityList,
-            @NonNull String columnNameToMerge,
-            @NonNull Class<?> valueColumnType,
+            Cursor cursor,
+            List<Long> priorityList,
+            String columnNameToMerge,
+            Class<?> valueColumnType,
             boolean useLocalTime) {
         Objects.requireNonNull(cursor);
         Objects.requireNonNull(priorityList);
@@ -308,7 +307,7 @@ public final class MergeDataHelper {
      */
     @SuppressWarnings("ExtendsObject")
     private static <T extends Object> void addAll(
-            @NonNull Collection<T> addTo, @NonNull Iterator<? extends T> iterator) {
+            Collection<T> addTo, Iterator<? extends T> iterator) {
         Objects.requireNonNull(addTo);
         Objects.requireNonNull(iterator);
         while (iterator.hasNext()) {

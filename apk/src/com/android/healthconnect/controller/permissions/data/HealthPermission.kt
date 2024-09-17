@@ -25,14 +25,19 @@ sealed class HealthPermission {
             setOf(
                 HealthPermissions.READ_EXERCISE_ROUTES,
                 HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
-                HealthPermissions.READ_HEALTH_DATA_HISTORY)
+                HealthPermissions.READ_HEALTH_DATA_HISTORY
+            )
 
         /** Permissions that are grouped separately to general health data types */
         private val medicalPermissions =
             setOf(
                 HealthPermissions.WRITE_MEDICAL_DATA,
+                HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE,
                 HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION,
-                HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE)
+                HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS,
+                HealthPermissions.READ_MEDICAL_DATA_PREGNANCY,
+                HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS)
 
         fun fromPermissionString(permission: String): HealthPermission {
             return if (permission in additionalPermissions) {
@@ -62,7 +67,8 @@ sealed class HealthPermission {
                 } else if (permission.startsWith(WRITE_PERMISSION_PREFIX)) {
                     val type =
                         getHealthPermissionType(
-                            permission.substring(WRITE_PERMISSION_PREFIX.length))
+                            permission.substring(WRITE_PERMISSION_PREFIX.length)
+                        )
                     FitnessPermission(type, PermissionsAccessType.WRITE)
                 } else {
                     throw IllegalArgumentException("Fitness permission not supported! $permission")
@@ -125,7 +131,8 @@ sealed class HealthPermission {
                 } else if (permission.startsWith(READ_MEDICAL_DATA_PREFIX)) {
                     val medicalType =
                         getHealthPermissionType(
-                            permission.substring(READ_MEDICAL_DATA_PREFIX.length))
+                            permission.substring(READ_MEDICAL_DATA_PREFIX.length)
+                        )
                     MedicalPermission(medicalType)
                 } else {
                     throw IllegalArgumentException(" Medical permission not supported! $permission")

@@ -19,7 +19,6 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.HeartRateVariabilityRmssdRecord;
@@ -47,17 +46,14 @@ public final class HeartRateVariabilityRmssdHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return HEART_RATE_VARIABILITY_RMSSD_RECORD_TABLE_NAME;
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull
-                    HeartRateVariabilityRmssdRecordInternal
-                            heartRateVariabilityRmssdRecordInternal) {
+            ContentValues contentValues,
+            HeartRateVariabilityRmssdRecordInternal heartRateVariabilityRmssdRecordInternal) {
         contentValues.put(
                 HEART_RATE_VARIABILITY_RMSSD_RECORD_COLUMN_NAME,
                 heartRateVariabilityRmssdRecordInternal.getHeartRateVariabilityMillis());
@@ -65,14 +61,12 @@ public final class HeartRateVariabilityRmssdHelper
 
     @Override
     protected void populateSpecificRecordValue(
-            @NonNull Cursor cursor,
-            @NonNull HeartRateVariabilityRmssdRecordInternal recordInternal) {
+            Cursor cursor, HeartRateVariabilityRmssdRecordInternal recordInternal) {
         recordInternal.setHeartRateVariabilityMillis(
                 getCursorDouble(cursor, HEART_RATE_VARIABILITY_RMSSD_RECORD_COLUMN_NAME));
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Collections.singletonList(
                 new Pair<>(HEART_RATE_VARIABILITY_RMSSD_RECORD_COLUMN_NAME, REAL_NOT_NULL));

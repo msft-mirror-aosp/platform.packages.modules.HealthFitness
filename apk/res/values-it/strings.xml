@@ -273,12 +273,9 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Immunizzazione"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"immunizzazione"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Leggi immunizzazione"</string>
-    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
-    <skip />
+    <string name="allergy_intolerance_uppercase_label" msgid="726821034032305942">"Allergie e intolleranze"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="3259399258428458578">"Allergie e intolleranze"</string>
+    <string name="allergy_intolerance_content_description" msgid="450723157436883417">"Lettura di allergie e intolleranze"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Mindfulness"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"mindfulness"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Lettura dati di mindfulness"</string>
@@ -410,8 +407,7 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Apri"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Scegli file"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Libera spazio"</string>
-    <!-- no translation found for scheduled_export_on_toast_text (945186472588537310) -->
-    <skip />
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"L\'esportazione programmata è attiva"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Connessione Salute non ha potuto esportare i dati"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Più spazio richiesto"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Si è verificato un problema con l\'esportazione del giorno <xliff:g id="DATE">%1$s</xliff:g>. Configura una nuova esportazione pianificata e riprova."</string>

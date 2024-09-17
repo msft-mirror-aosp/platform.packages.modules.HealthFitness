@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Dia seleccionat"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Dia anterior"</string>
     <string name="default_error" msgid="7966868260616403475">"S\'ha produït un error. Torna-ho a provar."</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"Registre de salut detallat"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Les aplicacions amb aquest permís poden llegir i escriure les teves dades de salut i fitnes."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Controla quines aplicacions poden accedir a les dades emmagatzemades a Salut connectada. Toca una aplicació per consultar quines dades pot llegir o escriure."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Accés permès"</string>
@@ -407,8 +406,7 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Obre"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Tria un fitxer"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Allibera espai"</string>
-    <!-- no translation found for scheduled_export_on_toast_text (945186472588537310) -->
-    <skip />
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"L\'exportació programada està activada"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Salut connectada no ha pogut export. dades"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Es necessita més espai"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Hi ha hagut un problema amb l\'exportació del dia <xliff:g id="DATE">%1$s</xliff:g>. Configura una exportació programada nova i torna-ho a provar."</string>

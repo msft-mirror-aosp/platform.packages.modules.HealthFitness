@@ -25,12 +25,12 @@ import androidx.core.view.isVisible
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.shared.recyclerview.SimpleViewBinder
-import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 /** ViewBinder for PlannedExerciseSessionEntry. */
 class PlannedExerciseSessionItemViewBinder(
     private val showSecondAction: Boolean = true,
@@ -65,7 +65,9 @@ class PlannedExerciseSessionItemViewBinder(
 
         deleteButton.contentDescription =
             view.resources.getString(
-                R.string.data_point_action_content_description, data.headerA11y)
+                R.string.data_point_action_content_description,
+                data.headerA11y,
+            )
         deleteButton.setOnClickListener {
             logger.logInteraction(DataEntriesElement.DATA_ENTRY_DELETE_BUTTON)
             onDeleteEntryClicked?.onDeleteEntry(data.uuid, data.dataType, index)

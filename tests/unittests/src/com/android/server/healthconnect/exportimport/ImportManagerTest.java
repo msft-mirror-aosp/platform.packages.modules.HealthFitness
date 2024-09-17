@@ -129,14 +129,19 @@ public class ImportManagerTest {
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(new FakePreferenceHelper())
+                        .setTransactionManager(mTransactionManager)
                         .build();
+
         mExportImportSettingsStorage = healthConnectInjector.getExportImportSettingsStorage();
+
         mImportManager =
                 new ImportManager(
                         mContext,
                         mNotificationSender,
                         mExportImportSettingsStorage,
-                        mTransactionManager);
+                        mTransactionManager,
+                        healthConnectInjector.getDeviceInfoHelper(),
+                        healthConnectInjector.getHealthDataCategoryPriorityHelper());
         HealthConnectDeviceConfigManager.initializeInstance(mContext);
 
         mPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();

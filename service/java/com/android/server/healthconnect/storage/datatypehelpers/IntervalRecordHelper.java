@@ -20,7 +20,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGE
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -87,7 +86,7 @@ public abstract class IntervalRecordHelper<T extends IntervalRecordInternal<?>>
     }
 
     @Override
-    public final void applyGeneratedLocalTimeUpgrade(@NonNull SQLiteDatabase db) {
+    public final void applyGeneratedLocalTimeUpgrade(SQLiteDatabase db) {
         try {
             db.execSQL(
                     AlterTableRequest.getAlterTableCommandToAddGeneratedColumn(
@@ -109,9 +108,7 @@ public abstract class IntervalRecordHelper<T extends IntervalRecordInternal<?>>
         }
     }
 
-
     @Override
-    @NonNull
     protected List<CreateTableRequest.GeneratedColumnInfo> getGeneratedColumnInfo() {
         return List.of(
                 new CreateTableRequest.GeneratedColumnInfo(
@@ -155,7 +152,6 @@ public abstract class IntervalRecordHelper<T extends IntervalRecordInternal<?>>
      * <p>PLEASE DON'T USE THIS METHOD TO ADD NEW COLUMNS
      */
     @Override
-    @NonNull
     final List<Pair<String, String>> getSpecificColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(START_TIME_COLUMN_NAME, INTEGER));
@@ -170,8 +166,7 @@ public abstract class IntervalRecordHelper<T extends IntervalRecordInternal<?>>
     }
 
     @Override
-    final void populateContentValues(
-            @NonNull ContentValues contentValues, @NonNull T intervalRecord) {
+    final void populateContentValues(ContentValues contentValues, T intervalRecord) {
         contentValues.put(START_TIME_COLUMN_NAME, intervalRecord.getStartTimeInMillis());
         contentValues.put(
                 START_ZONE_OFFSET_COLUMN_NAME, intervalRecord.getStartZoneOffsetInSeconds());
@@ -190,7 +185,7 @@ public abstract class IntervalRecordHelper<T extends IntervalRecordInternal<?>>
     }
 
     @Override
-    final void populateRecordValue(@NonNull Cursor cursor, @NonNull T recordInternal) {
+    final void populateRecordValue(Cursor cursor, T recordInternal) {
         recordInternal.setStartTime(getCursorLong(cursor, START_TIME_COLUMN_NAME));
         recordInternal.setStartZoneOffset(getCursorInt(cursor, START_ZONE_OFFSET_COLUMN_NAME));
         recordInternal.setEndTime(getCursorLong(cursor, END_TIME_COLUMN_NAME));
@@ -199,7 +194,7 @@ public abstract class IntervalRecordHelper<T extends IntervalRecordInternal<?>>
     }
 
     /** This implementation should populate record with datatype specific values from the table. */
-    abstract void populateSpecificRecordValue(@NonNull Cursor cursor, @NonNull T recordInternal);
+    abstract void populateSpecificRecordValue(Cursor cursor, T recordInternal);
 
     @Override
     final String getZoneOffsetColumnName() {
@@ -207,7 +202,7 @@ public abstract class IntervalRecordHelper<T extends IntervalRecordInternal<?>>
     }
 
     abstract void populateSpecificContentValues(
-            @NonNull ContentValues contentValues, @NonNull T intervalRecordInternal);
+            ContentValues contentValues, T intervalRecordInternal);
 
     /**
      * This implementation should return the column names with which the table should be created.
@@ -217,7 +212,6 @@ public abstract class IntervalRecordHelper<T extends IntervalRecordInternal<?>>
      *
      * <p>PLEASE DON'T USE THIS METHOD TO ADD NEW COLUMNS
      */
-    @NonNull
     abstract List<Pair<String, String>> getIntervalRecordColumnInfo();
 
     /** Outputs list of columns needed for interval priority aggregations. */
