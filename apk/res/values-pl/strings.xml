@@ -141,10 +141,10 @@
     <string name="total_calories_burned_lowercase_label" msgid="3185370725975873922">"suma spalonych kalorii"</string>
     <string name="total_calories_burned_read_content_description" msgid="1569722345910293531">"Odczytuj dane o sumie spalonych kalorii"</string>
     <string name="total_calories_burned_write_content_description" msgid="2727752180681851608">"Zapisuj dane o sumie spalonych kalorii"</string>
-    <string name="vo2_max_uppercase_label" msgid="6614391499711390476">"Maksymalny pułap tlenowy VO2"</string>
-    <string name="vo2_max_lowercase_label" msgid="824972630000900033">"maksymalny pułap tlenowy VO2"</string>
-    <string name="vo2_max_read_content_description" msgid="8132626885797169882">"Odczytuj dane o maksymalnym pułapie tlenowym VO2"</string>
-    <string name="vo2_max_write_content_description" msgid="4783300275788728546">"Zapisuj dane o maksymalnym pułapie tlenowym VO2"</string>
+    <string name="vo2_max_uppercase_label" msgid="6614391499711390476">"Pułap tlenowy"</string>
+    <string name="vo2_max_lowercase_label" msgid="824972630000900033">"pułap tlenowy"</string>
+    <string name="vo2_max_read_content_description" msgid="8132626885797169882">"Odczytuj dane o pułapie tlenowym"</string>
+    <string name="vo2_max_write_content_description" msgid="4783300275788728546">"Zapisuj dane o pułapie tlenowym"</string>
     <string name="wheelchair_pushes_uppercase_label" msgid="5582991294340226965">"Pchnięcia wózka inwalidzkiego"</string>
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"pchnięcia wózka inwalidzkiego"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Odczytuj dane o pchnięciach wózka inwalidzkiego"</string>

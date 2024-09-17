@@ -874,7 +874,7 @@
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Ավելի շատ տարածք է պահանջվում"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Health Connect-ին անհրաժեշտ է <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> տարածք ձեր հեռախոսում, որպեսզի ինտեգրումը շարունակվի։.\n\nՄաքրեք որոշ տարածք հեռախոսում և նորից փորձեք։"</string>
     <string name="try_again_button" msgid="8745496819992160789">"Նորից փորձել"</string>
-    <string name="free_up_space_button" msgid="4141013808635654695">"Ազատել տարածք"</string>
+    <string name="free_up_space_button" msgid="4141013808635654695">"Տարածք ազատել"</string>
     <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Ավելի շատ տարածք է պահանջվում"</string>
     <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Health Connect-ին անհրաժեշտ է <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> տարածք ձեր հեռախոսում՝ ինտեգրումը շարունակելու համար։"</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Ինտեգրումը դադարեցվել է"</string>
