@@ -20,7 +20,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -51,14 +50,12 @@ public final class Vo2MaxRecordHelper extends InstantRecordHelper<Vo2MaxRecordIn
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return VO2_MAX_RECORD_TABLE_NAME;
     }
 
     @Override
-    void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull Vo2MaxRecordInternal vo2MaxRecord) {
+    void populateSpecificRecordValue(Cursor cursor, Vo2MaxRecordInternal vo2MaxRecord) {
         vo2MaxRecord.setMeasurementMethod(getCursorInt(cursor, MEASUREMENT_METHOD_COLUMN_NAME));
         vo2MaxRecord.setVo2MillilitersPerMinuteKilogram(
                 getCursorDouble(cursor, VO2_MILLILITERS_PER_MINUTE_KILOGRAM_COLUMN_NAME));
@@ -66,7 +63,7 @@ public final class Vo2MaxRecordHelper extends InstantRecordHelper<Vo2MaxRecordIn
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues, @NonNull Vo2MaxRecordInternal vo2MaxRecord) {
+            ContentValues contentValues, Vo2MaxRecordInternal vo2MaxRecord) {
         contentValues.put(MEASUREMENT_METHOD_COLUMN_NAME, vo2MaxRecord.getMeasurementMethod());
         contentValues.put(
                 VO2_MILLILITERS_PER_MINUTE_KILOGRAM_COLUMN_NAME,
@@ -74,7 +71,6 @@ public final class Vo2MaxRecordHelper extends InstantRecordHelper<Vo2MaxRecordIn
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Arrays.asList(
                 new Pair<>(MEASUREMENT_METHOD_COLUMN_NAME, INTEGER),

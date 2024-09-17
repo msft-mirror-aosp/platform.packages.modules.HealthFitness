@@ -24,7 +24,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.isNullValue;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.internal.datatypes.ExerciseLapInternal;
@@ -72,8 +71,7 @@ public class ExerciseLapRecordHelper {
         return requests;
     }
 
-    static void populateLapIfRecorded(
-            @NonNull Cursor cursor, ArraySet<ExerciseLapInternal> lapsSet) {
+    static void populateLapIfRecorded(Cursor cursor, ArraySet<ExerciseLapInternal> lapsSet) {
         if (isNullValue(cursor, EXERCISE_LAPS_START_TIME)) {
             return;
         }

@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"দিন বেছে নেওয়া হয়েছে"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"আগের দিন"</string>
     <string name="default_error" msgid="7966868260616403475">"কিছু সমস্যা হয়েছে। আবার চেষ্টা করুন।"</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"বিশদে স্বাস্থ্য বিষয়ক রেকর্ড"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"এই অনুমতি পাওয়া অ্যাপ আপনার স্বাস্থ্য ও ফিটনেস সম্পর্কিত ডেটা পড়তে এবং লিখতে পারবে।"</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connect-এ সেভ করা ডেটা কোন কোন অ্যাপ অ্যাক্সেস করতে পারবে তা নিয়ন্ত্রণ করুন। কোন কোন ডেটা অ্যাপ দেখতে ও এডিট করতে পারবে তা পর্যালোচনা করতে এটির উপরে ট্যাপ করুন।"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"অ্যাক্সেসের অনুমতি আছে"</string>
@@ -407,8 +406,7 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"খুলুন"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"ফাইল বেছে নিন"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"জায়গা খালি করুন"</string>
-    <!-- no translation found for scheduled_export_on_toast_text (945186472588537310) -->
-    <skip />
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"এক্সপোর্ট করার শিডিউল চালু করা আছে"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect ডেটা এক্সপোর্ট হয়নি"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"আরও স্টোরেজ প্রয়োজন"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"<xliff:g id="DATE">%1$s</xliff:g>-এর জন্য এক্সপোর্ট করার ক্ষেত্রে কোনও সমস্যা হয়েছে। একটি নতুন শিডিউল করা এক্সপোর্ট সেট-আপ করে আবার চেষ্টা করুন।"</string>

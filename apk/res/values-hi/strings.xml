@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"चुना गया दिन"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"पिछला दिन"</string>
     <string name="default_error" msgid="7966868260616403475">"कोई गड़बड़ी हुई. कृपया फिर से कोशिश करें."</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"सेहत से जुड़े डेटा की पूरी जानकारी"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"जिन ऐप्लिकेशन के पास यह अनुमति है वे स्वास्थ्य और फ़िटनेस से जुड़े डेटा को देख और उसमें बदलाव कर सकते हैं."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"कंट्रोल करें कि कौनसे ऐप्लिकेशन, Health Connect में सेव किए गए डेटा को ऐक्सेस कर सकते हैं. कोई ऐप्लिकेशन कौनसा डेटा पढ़ सकता है या बदलाव कर सकता है, यह देखने के लिए उस टैप करें."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"ऐक्सेस करने की अनुमति है"</string>

@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"منتخب کردہ یوم"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"پچھلا دن"</string>
     <string name="default_error" msgid="7966868260616403475">"کچھ غلط ہو گیا۔ براہ کرم دوبارہ کوشش کریں۔"</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"تفصیلی صحت کا ریکارڈ"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"اس اجازت کے ساتھ ایپس آپ کی صحت اور تندرستی سے متعلق تمام ڈیٹا کو پڑھ اور لکھ سکتی ہیں۔"</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"کنٹرول کریں کہ Health Connect میں اسٹور کردہ ڈیٹا تک کن ایپس کی رسائی ہے۔ وہ ڈیٹا جسے ایپ پڑھ یا لکھ سکتی ہے کا جائزہ لینے کے لیے ایپ پر تھپتھپائیں۔"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"اجازت یافتہ رسائی"</string>

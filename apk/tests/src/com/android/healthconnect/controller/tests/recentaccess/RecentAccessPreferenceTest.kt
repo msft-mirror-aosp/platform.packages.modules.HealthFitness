@@ -28,6 +28,7 @@ import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.recentaccess.RecentAccessEntry
 import com.android.healthconnect.controller.recentaccess.RecentAccessPreference
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.MEDICAL
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
 import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TestTimeSource
@@ -53,17 +54,19 @@ class RecentAccessPreferenceTest {
         context = ContextThemeWrapper(getApplicationContext(), R.style.Theme_HealthConnect)
         holder =
             PreferenceViewHolder.createInstanceForTests(
-                View.inflate(context, R.layout.widget_recent_access_timeline, /* parent= */ null))
+                View.inflate(context, R.layout.widget_recent_access_timeline, /* parent= */ null)
+            )
     }
 
     @Test
-    fun testRecentAccessPreference_showsWriteActivity() {
+    fun showsWriteActivity() {
         val recentAccessPreference =
             RecentAccessPreference(
                 context = context,
                 recentAccessEntry = recentAccessEntry,
                 timeSource = timeSource,
-                showCategories = true)
+                showCategories = true,
+            )
         recentAccessPreference.onBindViewHolder(holder)
 
         assertThat(holder.findViewById(R.id.data_types_written)?.isVisible).isTrue()
@@ -72,7 +75,7 @@ class RecentAccessPreferenceTest {
     }
 
     @Test
-    fun testRecentAccessPreference_noWrittenActivity_hidesWriteActivity() {
+    fun noWrittenActivity_hidesWriteActivity() {
         val recentAccessEntry =
             RecentAccessEntry(
                 metadata = TEST_APP,
@@ -80,13 +83,15 @@ class RecentAccessPreferenceTest {
                 isToday = true,
                 isInactive = false,
                 dataTypesWritten = mutableSetOf(),
-                dataTypesRead = mutableSetOf())
+                dataTypesRead = mutableSetOf(),
+            )
         val recentAccessPreference =
             RecentAccessPreference(
                 context = context,
                 recentAccessEntry = recentAccessEntry,
                 timeSource = timeSource,
-                showCategories = true)
+                showCategories = true,
+            )
 
         recentAccessPreference.onBindViewHolder(holder)
 
@@ -94,7 +99,7 @@ class RecentAccessPreferenceTest {
     }
 
     @Test
-    fun testRecentAccessPreference_noReadActivity_hidesReadActivity() {
+    fun noReadActivity_hidesReadActivity() {
         val recentAccessEntry =
             RecentAccessEntry(
                 metadata = TEST_APP,
@@ -102,13 +107,15 @@ class RecentAccessPreferenceTest {
                 isToday = true,
                 isInactive = false,
                 dataTypesWritten = mutableSetOf(),
-                dataTypesRead = mutableSetOf())
+                dataTypesRead = mutableSetOf(),
+            )
         val recentAccessPreference =
             RecentAccessPreference(
                 context = context,
                 recentAccessEntry = recentAccessEntry,
                 timeSource = timeSource,
-                showCategories = true)
+                showCategories = true,
+            )
 
         recentAccessPreference.onBindViewHolder(holder)
 
@@ -116,7 +123,7 @@ class RecentAccessPreferenceTest {
     }
 
     @Test
-    fun testRecentAccessPreference_onBindViewHolder_showsReadActivity() {
+    fun onBindViewHolder_showsReadActivity() {
         val noWriteEntry =
             RecentAccessEntry(
                 metadata = TEST_APP,
@@ -124,7 +131,8 @@ class RecentAccessPreferenceTest {
                 isToday = true,
                 isInactive = false,
                 dataTypesWritten = mutableSetOf(),
-                dataTypesRead = mutableSetOf())
+                dataTypesRead = mutableSetOf(),
+            )
 
         val withWriteEntry =
             RecentAccessEntry(
@@ -133,13 +141,15 @@ class RecentAccessPreferenceTest {
                 isToday = true,
                 isInactive = false,
                 dataTypesWritten = mutableSetOf(HealthDataCategory.ACTIVITY.uppercaseTitle()),
-                dataTypesRead = mutableSetOf())
+                dataTypesRead = mutableSetOf(),
+            )
         val recentAccessPreference =
             RecentAccessPreference(
                 context = context,
                 recentAccessEntry = noWriteEntry,
                 timeSource = timeSource,
-                showCategories = true)
+                showCategories = true,
+            )
 
         recentAccessPreference.onBindViewHolder(holder)
         assertThat(holder.findViewById(R.id.data_types_written)?.isVisible).isFalse()
@@ -149,7 +159,8 @@ class RecentAccessPreferenceTest {
                 context = context,
                 recentAccessEntry = withWriteEntry,
                 timeSource = timeSource,
-                showCategories = true)
+                showCategories = true,
+            )
 
         updatedRecentAccessPreference.onBindViewHolder(holder)
 
@@ -159,7 +170,7 @@ class RecentAccessPreferenceTest {
     }
 
     @Test
-    fun testRecentAccessPreference_onBindViewHolder_hidesReadActivity() {
+    fun onBindViewHolder_hidesReadActivity() {
         val noWriteEntry =
             RecentAccessEntry(
                 metadata = TEST_APP,
@@ -167,7 +178,8 @@ class RecentAccessPreferenceTest {
                 isToday = true,
                 isInactive = false,
                 dataTypesWritten = mutableSetOf(),
-                dataTypesRead = mutableSetOf())
+                dataTypesRead = mutableSetOf(),
+            )
 
         val withWriteEntry =
             RecentAccessEntry(
@@ -176,14 +188,16 @@ class RecentAccessPreferenceTest {
                 isToday = true,
                 isInactive = false,
                 dataTypesWritten = mutableSetOf(HealthDataCategory.ACTIVITY.uppercaseTitle()),
-                dataTypesRead = mutableSetOf())
+                dataTypesRead = mutableSetOf(),
+            )
 
         val recentAccessPreference =
             RecentAccessPreference(
                 context = context,
                 recentAccessEntry = withWriteEntry,
                 timeSource = timeSource,
-                showCategories = true)
+                showCategories = true,
+            )
         recentAccessPreference.onBindViewHolder(holder)
 
         assertThat(holder.findViewById(R.id.data_types_written)?.isVisible).isTrue()
@@ -195,20 +209,22 @@ class RecentAccessPreferenceTest {
                 context = context,
                 recentAccessEntry = noWriteEntry,
                 timeSource = timeSource,
-                showCategories = true)
+                showCategories = true,
+            )
 
         updatedRecentAccessPreference.onBindViewHolder(holder)
         assertThat(holder.findViewById(R.id.data_types_written)?.isVisible).isFalse()
     }
 
     @Test
-    fun testRecentAccessPreference_showsReadActivity() {
+    fun showsReadActivity() {
         val recentAccessPreference =
             RecentAccessPreference(
                 context = context,
                 recentAccessEntry = recentAccessEntry,
                 timeSource = timeSource,
-                showCategories = true)
+                showCategories = true,
+            )
         recentAccessPreference.onBindViewHolder(holder)
 
         assertThat(holder.findViewById(R.id.data_types_read)?.isVisible).isTrue()
@@ -217,13 +233,14 @@ class RecentAccessPreferenceTest {
     }
 
     @Test
-    fun testRecentAccessPreference_showsAppName() {
+    fun showsAppName() {
         val recentAccessPreference =
             RecentAccessPreference(
                 context = context,
                 recentAccessEntry = recentAccessEntry,
                 timeSource = timeSource,
-                showCategories = true)
+                showCategories = true,
+            )
         recentAccessPreference.onBindViewHolder(holder)
 
         assertThat(holder.findViewById(R.id.title)?.isVisible).isTrue()
@@ -232,17 +249,50 @@ class RecentAccessPreferenceTest {
     }
 
     @Test
-    fun testRecentAccessPreference_hideCategories() {
+    fun hideCategories() {
         val recentAccessPreference =
             RecentAccessPreference(
                 context = context,
                 recentAccessEntry = recentAccessEntry,
                 timeSource = timeSource,
-                showCategories = false)
+                showCategories = false,
+            )
         recentAccessPreference.onBindViewHolder(holder)
 
         assertThat(holder.findViewById(R.id.data_types_read)?.isVisible).isFalse()
         assertThat(holder.findViewById(R.id.data_types_written)?.isVisible).isFalse()
+    }
+
+    @Test
+    fun healthRecords_showsReadActivity_listStartsWithHealthRecords() {
+        val recentAccessPreference =
+            RecentAccessPreference(
+                context = context,
+                recentAccessEntry = recentAccessEntryWithHealthRecords,
+                timeSource = timeSource,
+                showCategories = true,
+            )
+        recentAccessPreference.onBindViewHolder(holder)
+
+        assertThat(holder.findViewById(R.id.data_types_read)?.isVisible).isTrue()
+        assertThat((holder.findViewById(R.id.data_types_read) as TextView).text)
+            .isEqualTo("Read: Health records, Nutrition, Sleep")
+    }
+
+    @Test
+    fun healthRecords_showsWriteActivity_listStartsWithHealthRecords() {
+        val recentAccessPreference =
+            RecentAccessPreference(
+                context = context,
+                recentAccessEntry = recentAccessEntryWithHealthRecords,
+                timeSource = timeSource,
+                showCategories = true,
+            )
+        recentAccessPreference.onBindViewHolder(holder)
+
+        assertThat(holder.findViewById(R.id.data_types_written)?.isVisible).isTrue()
+        assertThat((holder.findViewById(R.id.data_types_written) as TextView).text)
+            .isEqualTo("Write: Health records, Activity, Vitals")
     }
 
     companion object {
@@ -255,10 +305,33 @@ class RecentAccessPreferenceTest {
                 dataTypesWritten =
                     mutableSetOf(
                         HealthDataCategory.ACTIVITY.uppercaseTitle(),
-                        HealthDataCategory.VITALS.uppercaseTitle()),
+                        HealthDataCategory.VITALS.uppercaseTitle(),
+                    ),
                 dataTypesRead =
                     mutableSetOf(
                         HealthDataCategory.SLEEP.uppercaseTitle(),
-                        HealthDataCategory.NUTRITION.uppercaseTitle()))
+                        HealthDataCategory.NUTRITION.uppercaseTitle(),
+                    ),
+            )
+
+        val recentAccessEntryWithHealthRecords =
+            RecentAccessEntry(
+                metadata = TEST_APP,
+                instantTime = Instant.parse("2022-10-20T18:40:13.00Z"),
+                isToday = true,
+                isInactive = false,
+                dataTypesWritten =
+                    mutableSetOf(
+                        HealthDataCategory.ACTIVITY.uppercaseTitle(),
+                        HealthDataCategory.VITALS.uppercaseTitle(),
+                        MEDICAL.uppercaseTitle(),
+                    ),
+                dataTypesRead =
+                    mutableSetOf(
+                        HealthDataCategory.SLEEP.uppercaseTitle(),
+                        HealthDataCategory.NUTRITION.uppercaseTitle(),
+                        MEDICAL.uppercaseTitle(),
+                    ),
+            )
     }
 }

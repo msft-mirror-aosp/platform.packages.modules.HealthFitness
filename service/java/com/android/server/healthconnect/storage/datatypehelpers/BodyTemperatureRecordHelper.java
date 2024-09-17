@@ -20,7 +20,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -47,14 +46,13 @@ public final class BodyTemperatureRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return BODY_TEMPERATURE_RECORD_TABLE_NAME;
     }
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull BodyTemperatureRecordInternal bodyTemperatureRecord) {
+            Cursor cursor, BodyTemperatureRecordInternal bodyTemperatureRecord) {
         bodyTemperatureRecord.setMeasurementLocation(
                 getCursorInt(cursor, MEASUREMENT_LOCATION_COLUMN_NAME));
         bodyTemperatureRecord.setTemperature(getCursorDouble(cursor, TEMPERATURE_COLUMN_NAME));
@@ -62,15 +60,13 @@ public final class BodyTemperatureRecordHelper
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull BodyTemperatureRecordInternal bodyTemperatureRecord) {
+            ContentValues contentValues, BodyTemperatureRecordInternal bodyTemperatureRecord) {
         contentValues.put(
                 MEASUREMENT_LOCATION_COLUMN_NAME, bodyTemperatureRecord.getMeasurementLocation());
         contentValues.put(TEMPERATURE_COLUMN_NAME, bodyTemperatureRecord.getTemperature());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Arrays.asList(
                 new Pair<>(MEASUREMENT_LOCATION_COLUMN_NAME, INTEGER),

@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"วันที่เลือก"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"วันก่อน"</string>
     <string name="default_error" msgid="7966868260616403475">"เกิดข้อผิดพลาด โปรดลองอีกครั้ง"</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"บันทึกข้อมูลสุขภาพโดยละเอียด"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"แอปที่มีสิทธิ์นี้จะอ่านและเขียนข้อมูลสุขภาพและการออกกำลังกายของคุณได้"</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"ควบคุมว่าแอปใดบ้างสามารถเข้าถึงข้อมูลที่จัดเก็บไว้ใน Health Connect แตะแอปเพื่อตรวจสอบข้อมูลที่จะสามารถอ่านหรือเขียนได้"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"มีสิทธิ์เข้าถึง"</string>

@@ -39,7 +39,7 @@ constructor(
     context: Context,
     private val recentAccessEntry: RecentAccessEntry,
     private val timeSource: TimeSource,
-    private val showCategories: Boolean
+    private val showCategories: Boolean,
 ) : HealthPreference(context), ComparablePreference {
 
     private val separator: String by lazy { context.getString(R.string.data_type_separator) }
@@ -92,21 +92,31 @@ constructor(
     }
 
     private fun getWrittenText(): String {
+        val sortedDataTypes = sortWithHealthRecordsFirst(recentAccessEntry.dataTypesWritten)
         return context.getString(
             R.string.write_data_access_label,
-            recentAccessEntry.dataTypesWritten
-                .map { context.getString(it) }
-                .sorted()
-                .joinToString(separator))
+            sortedDataTypes.joinToString(separator),
+        )
     }
 
     private fun getReadText(): String {
+        val sortedDataTypes = sortWithHealthRecordsFirst(recentAccessEntry.dataTypesRead)
         return context.getString(
             R.string.read_data_access_label,
-            recentAccessEntry.dataTypesRead
-                .map { context.getString(it) }
-                .sorted()
-                .joinToString(separator))
+            sortedDataTypes.joinToString(separator),
+        )
+    }
+
+    private fun sortWithHealthRecordsFirst(dataTypes: MutableSet<Int>): List<String> {
+        val sortedList = dataTypes.map { context.getString(it) }.sorted().toMutableList()
+
+        val healthRecordsString = context.getString(R.string.medical_permissions)
+        if (sortedList.contains(healthRecordsString)) {
+            sortedList.remove(healthRecordsString)
+            sortedList.add(0, healthRecordsString)
+        }
+
+        return sortedList
     }
 
     private fun formatTime(instant: Instant): String {

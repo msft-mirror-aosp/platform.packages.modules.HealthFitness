@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -44,27 +43,23 @@ public final class OxygenSaturationRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return OXYGEN_SATURATION_RECORD_TABLE_NAME;
     }
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor,
-            @NonNull OxygenSaturationRecordInternal oxygenSaturationRecord) {
+            Cursor cursor, OxygenSaturationRecordInternal oxygenSaturationRecord) {
         oxygenSaturationRecord.setPercentage(getCursorDouble(cursor, PERCENTAGE_COLUMN_NAME));
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull OxygenSaturationRecordInternal oxygenSaturationRecord) {
+            ContentValues contentValues, OxygenSaturationRecordInternal oxygenSaturationRecord) {
         contentValues.put(PERCENTAGE_COLUMN_NAME, oxygenSaturationRecord.getPercentage());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Arrays.asList(new Pair<>(PERCENTAGE_COLUMN_NAME, REAL));
     }
