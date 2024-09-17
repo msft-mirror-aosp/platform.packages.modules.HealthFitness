@@ -16,12 +16,9 @@
 
 package com.android.server.healthconnect.storage.request;
 
-import static android.health.connect.Constants.UPSERT;
-
 import static com.android.server.healthconnect.storage.utils.StorageUtils.addNameBasedUUIDTo;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.Context;
 import android.health.connect.Constants;
@@ -31,7 +28,6 @@ import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Slog;
 
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
@@ -60,11 +56,10 @@ import java.util.stream.Collectors;
  */
 public class UpsertTransactionRequest {
     private static final String TAG = "HealthConnectUTR";
-    @NonNull private final List<UpsertTableRequest> mUpsertRequests = new ArrayList<>();
-    private final List<UpsertTableRequest> mAccessLogs = new ArrayList<>();
-    private final boolean mSkipPackageNameAndLogs;
-    @RecordTypeIdentifier.RecordType Set<Integer> mRecordTypes = new ArraySet<>();
+    private final List<UpsertTableRequest> mUpsertRequests = new ArrayList<>();
+    private final String mPackageName;
 
+    @RecordTypeIdentifier.RecordType Set<Integer> mRecordTypes = new ArraySet<>();
     @Nullable private ArrayMap<String, Boolean> mExtraWritePermissionsToState;
 
     public UpsertTransactionRequest(
@@ -92,7 +87,7 @@ public class UpsertTransactionRequest {
             Context context,
             boolean isInsertRequest,
             boolean useProvidedUuid,
-            boolean skipPackageNameAndLogs) {
+            boolean skipPackageName) {
         this(
                 packageName,
                 recordInternals,
@@ -100,7 +95,7 @@ public class UpsertTransactionRequest {
                 context,
                 isInsertRequest,
                 useProvidedUuid,
-                skipPackageNameAndLogs,
+                skipPackageName,
                 Collections.emptyMap());
     }
 
@@ -113,16 +108,16 @@ public class UpsertTransactionRequest {
             boolean isInsertRequest,
             // TODO(b/329237732): Use builder pattern for this class.
             boolean useProvidedUuid,
-            boolean skipPackageNameAndLogs,
+            boolean skipPackageName,
             Map<String, Boolean> extraPermsStateMap) {
-        mSkipPackageNameAndLogs = skipPackageNameAndLogs;
+        mPackageName = packageName;
         if (extraPermsStateMap != null && !extraPermsStateMap.isEmpty()) {
             mExtraWritePermissionsToState = new ArrayMap<>();
             mExtraWritePermissionsToState.putAll(extraPermsStateMap);
         }
 
         for (RecordInternal<?> recordInternal : recordInternals) {
-            if (!mSkipPackageNameAndLogs) {
+            if (!skipPackageName) {
                 StorageUtils.addPackageNameTo(recordInternal, packageName);
             }
             AppInfoHelper.getInstance()
@@ -147,41 +142,27 @@ public class UpsertTransactionRequest {
             addRequest(recordInternal, isInsertRequest);
         }
 
-        if (!mRecordTypes.isEmpty()) {
-            if (!mSkipPackageNameAndLogs) {
-                mAccessLogs.add(
-                        AccessLogsHelper.getUpsertTableRequest(
-                                packageName, new ArrayList<>(mRecordTypes), UPSERT));
-            }
-
-            if (Constants.DEBUG) {
-                Slog.d(
-                        TAG,
-                        "Upserting transaction for "
-                                + packageName
-                                + " with size "
-                                + recordInternals.size());
-            }
+        if (!mRecordTypes.isEmpty() && Constants.DEBUG) {
+            Slog.d(
+                    TAG,
+                    "Upserting transaction for "
+                            + packageName
+                            + " with size "
+                            + recordInternals.size());
         }
     }
 
-    public List<UpsertTableRequest> getAccessLogs() {
-        return mAccessLogs;
-    }
-
-    @NonNull
     public List<UpsertTableRequest> getUpsertRequests() {
         return mUpsertRequests;
     }
 
-    @NonNull
     public List<String> getUUIdsInOrder() {
         return mUpsertRequests.stream()
                 .map((request) -> request.getRecordInternal().getUuid().toString())
                 .collect(Collectors.toList());
     }
 
-    private WhereClauses generateWhereClausesForUpdate(@NonNull RecordInternal<?> recordInternal) {
+    private WhereClauses generateWhereClausesForUpdate(RecordInternal<?> recordInternal) {
         WhereClauses whereClauseForUpdateRequest = new WhereClauses(AND);
         whereClauseForUpdateRequest.addWhereEqualsClause(
                 RecordHelper.UUID_COLUMN_NAME, StorageUtils.getHexString(recordInternal.getUuid()));
@@ -191,7 +172,7 @@ public class UpsertTransactionRequest {
         return whereClauseForUpdateRequest;
     }
 
-    private void addRequest(@NonNull RecordInternal<?> recordInternal, boolean isInsertRequest) {
+    private void addRequest(RecordInternal<?> recordInternal, boolean isInsertRequest) {
         RecordHelper<?> recordHelper =
                 RecordHelperProvider.getRecordHelper(recordInternal.getRecordType());
         Objects.requireNonNull(recordHelper);
@@ -204,5 +185,13 @@ public class UpsertTransactionRequest {
         }
         request.setRecordInternal(recordInternal);
         mUpsertRequests.add(request);
+    }
+
+    public String getPackageName() {
+        return mPackageName;
+    }
+
+    public Set<Integer> getRecordTypeIds() {
+        return mRecordTypes;
     }
 }

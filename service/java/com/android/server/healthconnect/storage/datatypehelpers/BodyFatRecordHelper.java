@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -42,25 +41,22 @@ public final class BodyFatRecordHelper extends InstantRecordHelper<BodyFatRecord
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return BODY_FAT_RECORD_TABLE_NAME;
     }
 
     @Override
-    void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull BodyFatRecordInternal bodyFatRecord) {
+    void populateSpecificRecordValue(Cursor cursor, BodyFatRecordInternal bodyFatRecord) {
         bodyFatRecord.setPercentage(getCursorDouble(cursor, PERCENTAGE_COLUMN_NAME));
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues, @NonNull BodyFatRecordInternal bodyFatRecord) {
+            ContentValues contentValues, BodyFatRecordInternal bodyFatRecord) {
         contentValues.put(PERCENTAGE_COLUMN_NAME, bodyFatRecord.getPercentage());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Arrays.asList(new Pair<>(PERCENTAGE_COLUMN_NAME, REAL));
     }

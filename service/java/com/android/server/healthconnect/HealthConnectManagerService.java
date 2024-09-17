@@ -117,9 +117,11 @@ public class HealthConnectManagerService extends SystemService {
         FirstGrantTimeManager firstGrantTimeManager;
         HealthConnectPermissionHelper permissionHelper;
         MigrationCleaner migrationCleaner;
+        AppInfoHelper appInfoHelper;
 
         if (Flags.dependencyInjection()) {
             Objects.requireNonNull(mHealthConnectInjector);
+            appInfoHelper = mHealthConnectInjector.getAppInfoHelper();
             firstGrantTimeManager =
                     new FirstGrantTimeManager(
                             context,
@@ -135,7 +137,8 @@ public class HealthConnectManagerService extends SystemService {
                             HealthConnectManager.getHealthPermissions(context),
                             permissionIntentTracker,
                             firstGrantTimeManager,
-                            mHealthConnectInjector.getHealthDataCategoryPriorityHelper());
+                            mHealthConnectInjector.getHealthDataCategoryPriorityHelper(),
+                            appInfoHelper);
             mPermissionPackageChangesOrchestrator =
                     new PermissionPackageChangesOrchestrator(
                             permissionIntentTracker,
@@ -150,6 +153,7 @@ public class HealthConnectManagerService extends SystemService {
             mExportImportSettingsStorage = mHealthConnectInjector.getExportImportSettingsStorage();
             mExportManager = mHealthConnectInjector.getExportManager();
         } else {
+            appInfoHelper = AppInfoHelper.getInstance();
             firstGrantTimeManager =
                     new FirstGrantTimeManager(
                             context,
@@ -164,7 +168,8 @@ public class HealthConnectManagerService extends SystemService {
                             context.getPackageManager(),
                             HealthConnectManager.getHealthPermissions(context),
                             permissionIntentTracker,
-                            firstGrantTimeManager);
+                            firstGrantTimeManager,
+                            appInfoHelper);
             mPermissionPackageChangesOrchestrator =
                     new PermissionPackageChangesOrchestrator(
                             permissionIntentTracker,
@@ -199,7 +204,6 @@ public class HealthConnectManagerService extends SystemService {
                         mMigrationStateManager,
                         mMigrationNotificationSender);
         TimeSource timeSource = new TimeSourceImpl();
-        AppInfoHelper appInfoHelper = AppInfoHelper.getInstance();
         MedicalDataSourceHelper medicalDataSourceHelper =
                 new MedicalDataSourceHelper(mTransactionManager, appInfoHelper, timeSource);
         mHealthConnectService =

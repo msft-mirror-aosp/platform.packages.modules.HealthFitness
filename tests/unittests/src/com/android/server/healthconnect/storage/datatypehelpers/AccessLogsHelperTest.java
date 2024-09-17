@@ -21,7 +21,9 @@ import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BODY_FAT;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_DISTANCE;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEIGHT;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS_CADENCE;
@@ -35,6 +37,7 @@ import static com.android.server.healthconnect.storage.datatypehelpers.AccessLog
 import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.queryAccessLogs;
 import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.recordDeleteAccessLog;
 import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.recordReadAccessLog;
+import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.recordUpsertAccessLog;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NULL;
 
@@ -42,7 +45,9 @@ import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.HealthConnectManager;
 import android.health.connect.accesslog.AccessLog;
+import android.health.connect.datatypes.BodyFatRecord;
 import android.health.connect.datatypes.DistanceRecord;
+import android.health.connect.datatypes.HeightRecord;
 import android.health.connect.datatypes.SkinTemperatureRecord;
 import android.health.connect.datatypes.StepsCadenceRecord;
 import android.health.connect.datatypes.StepsRecord;
@@ -52,6 +57,7 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.AlterTableRequest;
 
@@ -82,6 +88,7 @@ public class AccessLogsHelperTest {
 
     private TransactionTestUtils mTransactionTestUtils;
     private TransactionManager mTransactionManager;
+    private AppInfoHelper mAppInfoHelper;
 
     @Before
     public void setup() {
@@ -90,6 +97,13 @@ public class AccessLogsHelperTest {
                         mHealthConnectDatabaseTestRule.getUserContext(),
                         mHealthConnectDatabaseTestRule.getTransactionManager());
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
+        mAppInfoHelper =
+                HealthConnectInjectorImpl.newBuilderForTest(
+                                mHealthConnectDatabaseTestRule.getUserContext())
+                        .setTransactionManager(mTransactionManager)
+                        .build()
+                        .getAppInfoHelper();
+
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
     }
 
@@ -121,7 +135,7 @@ public class AccessLogsHelperTest {
                                         OPERATION_TYPE_READ,
                                         /* accessedMedicalDataSource= */ false));
 
-        List<AccessLog> result = queryAccessLogs();
+        List<AccessLog> result = queryAccessLogs(mAppInfoHelper);
         AccessLog accessLog = result.get(0);
 
         assertThat(result).hasSize(1);
@@ -149,7 +163,7 @@ public class AccessLogsHelperTest {
                                         OPERATION_TYPE_READ,
                                         /* accessedMedicalDataSource= */ false));
 
-        List<AccessLog> result = queryAccessLogs();
+        List<AccessLog> result = queryAccessLogs(mAppInfoHelper);
         AccessLog accessLog = result.get(0);
 
         assertThat(result).hasSize(1);
@@ -176,7 +190,7 @@ public class AccessLogsHelperTest {
                                         OPERATION_TYPE_READ,
                                         /* accessedMedicalDataSource= */ true));
 
-        List<AccessLog> result = queryAccessLogs();
+        List<AccessLog> result = queryAccessLogs(mAppInfoHelper);
         AccessLog accessLog = result.get(0);
 
         assertThat(result).hasSize(1);
@@ -196,7 +210,7 @@ public class AccessLogsHelperTest {
                 /* recordTypeList= */ List.of(RECORD_TYPE_STEPS),
                 OPERATION_TYPE_READ);
 
-        List<AccessLog> result = queryAccessLogs();
+        List<AccessLog> result = queryAccessLogs(mAppInfoHelper);
         AccessLog accessLog = result.get(0);
 
         assertThat(result).hasSize(1);
@@ -227,7 +241,7 @@ public class AccessLogsHelperTest {
                             /* accessedMedicalDataSource= */ false);
                 });
 
-        List<AccessLog> result = queryAccessLogs();
+        List<AccessLog> result = queryAccessLogs(mAppInfoHelper);
         AccessLog accessLog1 = result.get(0);
         AccessLog accessLog2 = result.get(1);
 
@@ -257,7 +271,7 @@ public class AccessLogsHelperTest {
                     recordDeleteAccessLog(db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
                 });
 
-        List<AccessLog> result = queryAccessLogs();
+        List<AccessLog> result = queryAccessLogs(mAppInfoHelper);
         assertThat(result).hasSize(1);
         AccessLog log = result.get(0);
         assertThat(log.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
@@ -273,12 +287,67 @@ public class AccessLogsHelperTest {
                     recordReadAccessLog(db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
                 });
 
-        List<AccessLog> result = queryAccessLogs();
+        List<AccessLog> result = queryAccessLogs(mAppInfoHelper);
         assertThat(result).hasSize(1);
         AccessLog log = result.get(0);
         assertThat(log.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(log.getRecordTypes())
                 .containsExactly(DistanceRecord.class, SkinTemperatureRecord.class);
         assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
+    }
+
+    @Test
+    public void recordUpsertAccessLog_success() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_BODY_FAT, RECORD_TYPE_HEIGHT);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    recordUpsertAccessLog(db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
+                });
+
+        List<AccessLog> result = queryAccessLogs(mAppInfoHelper);
+        assertThat(result).hasSize(1);
+        AccessLog log = result.get(0);
+        assertThat(log.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+        assertThat(log.getRecordTypes()).containsExactly(BodyFatRecord.class, HeightRecord.class);
+        assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
+    }
+
+    @Test
+    public void testAddAccessLogsForDelete_getLatestAccessLogTimeStampForMAU_expectCorrectResult() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_DISTANCE, RECORD_TYPE_SKIN_TEMPERATURE);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    recordDeleteAccessLog(db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
+                });
+
+        long result = AccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp();
+
+        assertThat(result).isEqualTo(Long.MIN_VALUE);
+    }
+
+    @Test
+    public void testAddAccessLogsForUpsert_getLatestAccessLogTimeStampForMAU_expectCorrectResult() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_DISTANCE, RECORD_TYPE_SKIN_TEMPERATURE);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    recordUpsertAccessLog(db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
+                });
+
+        long result = AccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp();
+
+        assertThat(result).isNotEqualTo(Long.MIN_VALUE);
+    }
+
+    @Test
+    public void testAddAccessLogsForRead_getLatestAccessLogTimeStampForMAU_expectCorrectResult() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_DISTANCE, RECORD_TYPE_SKIN_TEMPERATURE);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    recordReadAccessLog(db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
+                });
+
+        long result = AccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp();
+
+        assertThat(result).isNotEqualTo(Long.MIN_VALUE);
     }
 }

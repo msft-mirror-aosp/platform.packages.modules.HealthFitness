@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -44,27 +43,23 @@ public final class MenstruationFlowRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return MENSTRUATION_FLOW_RECORD_TABLE_NAME;
     }
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor,
-            @NonNull MenstruationFlowRecordInternal menstruationFlowRecord) {
+            Cursor cursor, MenstruationFlowRecordInternal menstruationFlowRecord) {
         menstruationFlowRecord.setFlow(getCursorInt(cursor, FLOW_COLUMN_NAME));
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull MenstruationFlowRecordInternal menstruationFlowRecord) {
+            ContentValues contentValues, MenstruationFlowRecordInternal menstruationFlowRecord) {
         contentValues.put(FLOW_COLUMN_NAME, menstruationFlowRecord.getFlow());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Collections.singletonList(new Pair<>(FLOW_COLUMN_NAME, INTEGER));
     }

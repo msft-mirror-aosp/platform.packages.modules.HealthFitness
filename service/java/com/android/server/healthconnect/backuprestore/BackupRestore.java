@@ -73,6 +73,7 @@ import com.android.server.healthconnect.permission.GrantTimeXmlHelper;
 import com.android.server.healthconnect.permission.UserGrantTimeState;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -197,6 +198,7 @@ public final class BackupRestore {
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     public BackupRestore(
+            AppInfoHelper appInfoHelper,
             FirstGrantTimeManager firstGrantTimeManager,
             MigrationStateManager migrationStateManager,
             PreferenceHelper preferenceHelper,
@@ -210,6 +212,7 @@ public final class BackupRestore {
         mCurrentForegroundUser = mContext.getUser();
         mDatabaseMerger =
                 new DatabaseMerger(
+                        appInfoHelper,
                         context,
                         deviceInfoHelper,
                         healthDataCategoryPriorityHelper,

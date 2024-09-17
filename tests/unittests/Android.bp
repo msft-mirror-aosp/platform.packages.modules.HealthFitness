@@ -35,6 +35,7 @@ android_test {
         "modules-utils-testable-device-config-defaults",
     ],
     static_libs: [
+        "TestParameterInjector",
         "service-healthfitness.impl",
         "framework-healthfitness.impl",
         "healthfitness-aconfig-flags-lib",

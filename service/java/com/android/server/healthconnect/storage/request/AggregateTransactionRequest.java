@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.storage.request;
 
-import android.annotation.NonNull;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.AggregateResult;
 import android.health.connect.TimeRangeFilter;
@@ -27,6 +26,7 @@ import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
 import android.util.ArrayMap;
 
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
@@ -56,6 +56,7 @@ public final class AggregateTransactionRequest {
     private final Set<Integer> mRecordTypeIds = new HashSet<>();
 
     public AggregateTransactionRequest(
+            AppInfoHelper appInfoHelper,
             String packageName,
             AggregateDataRequestParcel request,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
@@ -78,6 +79,7 @@ public final class AggregateTransactionRequest {
                             packageName,
                             request.getPackageFilters(),
                             healthDataCategoryPriorityHelper,
+                            appInfoHelper,
                             request.getStartTime(),
                             request.getEndTime(),
                             startDateAccess,
@@ -94,7 +96,6 @@ public final class AggregateTransactionRequest {
         }
     }
 
-    @NonNull
     public String getPackageName() {
         return mPackageName;
     }

@@ -25,7 +25,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.Device.DeviceType;
@@ -78,13 +77,12 @@ public class DeviceInfoHelper extends DatabaseHelper {
      * Returns a requests representing the tables that should be created corresponding to this
      * helper
      */
-    @NonNull
     public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 
     /** Populates record with deviceInfoId */
-    public void populateDeviceInfoId(@NonNull RecordInternal<?> recordInternal) {
+    public void populateDeviceInfoId(RecordInternal<?> recordInternal) {
         String manufacturer = recordInternal.getManufacturer();
         String model = recordInternal.getModel();
         int deviceType = recordInternal.getDeviceType();
@@ -102,7 +100,7 @@ public class DeviceInfoHelper extends DatabaseHelper {
      * @param deviceInfoId rowId from {@code device_info_table }
      * @param record The record to be populated with values
      */
-    public void populateRecordWithValue(long deviceInfoId, @NonNull RecordInternal<?> record) {
+    public void populateRecordWithValue(long deviceInfoId, RecordInternal<?> record) {
         DeviceInfo deviceInfo = getIdDeviceInfoMap().get(deviceInfoId);
         if (deviceInfo != null) {
             record.setDeviceType(deviceInfo.mDeviceType);
@@ -180,7 +178,6 @@ public class DeviceInfoHelper extends DatabaseHelper {
         return rowId;
     }
 
-    @NonNull
     private ContentValues getContentValues(String manufacturer, String model, int deviceType) {
         ContentValues contentValues = new ContentValues();
 
@@ -199,7 +196,6 @@ public class DeviceInfoHelper extends DatabaseHelper {
      *
      * <p>PLEASE DON'T USE THIS METHOD TO ADD NEW COLUMNS
      */
-    @NonNull
     private static List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(RecordHelper.PRIMARY_COLUMN_NAME, PRIMARY));

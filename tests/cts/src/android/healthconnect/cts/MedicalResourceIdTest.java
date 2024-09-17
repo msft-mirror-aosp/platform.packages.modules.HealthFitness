@@ -23,6 +23,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOUR
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
+import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -165,5 +166,20 @@ public class MedicalResourceIdTest {
 
         assertThat(restored).isEqualTo(original);
         parcel.recycle();
+    }
+
+    @Test
+    public void testRestoreInvalidMedicalResourceTypeFromParcel_expectException()
+            throws NoSuchFieldException, IllegalAccessException {
+        MedicalResourceId original = getMedicalResourceId();
+        setFieldValueUsingReflection(original, "mFhirResourceType", -1);
+
+        Parcel parcel = Parcel.obtain();
+        original.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> MedicalResourceId.CREATOR.createFromParcel(parcel));
     }
 }

@@ -28,6 +28,7 @@ import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -53,6 +54,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
     private final MigrationStateManager mMigrationStateManager;
     private final DeviceInfoHelper mDeviceInfoHelper;
+    private final AppInfoHelper mAppInfoHelper;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -109,6 +111,10 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mDeviceInfoHelper == null
                         ? DeviceInfoHelper.getInstance(mTransactionManager)
                         : builder.mDeviceInfoHelper;
+        mAppInfoHelper =
+                builder.mAppInfoHelper == null
+                        ? AppInfoHelper.getInstance(mTransactionManager)
+                        : builder.mAppInfoHelper;
     }
 
     @Override
@@ -161,6 +167,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         return mDeviceInfoHelper;
     }
 
+    @Override
+    public AppInfoHelper getAppInfoHelper() {
+        return mAppInfoHelper;
+    }
+
     /**
      * Returns a new Builder of Health Connect Injector
      *
@@ -190,6 +201,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
         @Nullable private MigrationStateManager mMigrationStateManager;
         @Nullable private DeviceInfoHelper mDeviceInfoHelper;
+        @Nullable private AppInfoHelper mAppInfoHelper;
 
         private Builder(Context context) {
             mHealthConnectUserContext = new HealthConnectUserContext(context, context.getUser());
@@ -265,6 +277,13 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         public Builder setDeviceInfoHelper(DeviceInfoHelper deviceInfoHelper) {
             Objects.requireNonNull(deviceInfoHelper);
             mDeviceInfoHelper = deviceInfoHelper;
+            return this;
+        }
+
+        /** Set fake or custom AppInfoHelper */
+        public Builder setAppInfoHelper(AppInfoHelper appInfoHelper) {
+            Objects.requireNonNull(appInfoHelper);
+            mAppInfoHelper = appInfoHelper;
             return this;
         }
 

@@ -46,17 +46,36 @@ public final class FhirResource implements Parcelable {
     /** Unknown FHIR resource type. */
     public static final int FHIR_RESOURCE_TYPE_UNKNOWN = 0;
 
-    /** FHIR resource type for Immunization. */
+    /**
+     * FHIR resource type for <a href="https://www.hl7.org/fhir/immunization.html">Immunization</a>.
+     */
     public static final int FHIR_RESOURCE_TYPE_IMMUNIZATION = 1;
 
-    /** FHIR resource type for AllergyIntolerance. */
+    /**
+     * FHIR resource type for <a
+     * href="https://www.hl7.org/fhir/allergyintolerance.html">AllergyIntolerance</a>.
+     */
     public static final int FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE = 2;
+
+    /**
+     * FHIR resource type for a <a href="https://www.hl7.org/fhir/observation.html">FHIR
+     * Observation</a>.
+     */
+    public static final int FHIR_RESOURCE_TYPE_OBSERVATION = 3;
+
+    /**
+     * FHIR resource type for a <a href="https://www.hl7.org/fhir/condition.html">FHIR
+     * Condition</a>.
+     */
+    public static final int FHIR_RESOURCE_TYPE_CONDITION = 4;
 
     /** @hide */
     @IntDef({
         FHIR_RESOURCE_TYPE_UNKNOWN,
         FHIR_RESOURCE_TYPE_IMMUNIZATION,
-        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE
+        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+        FHIR_RESOURCE_TYPE_OBSERVATION,
+        FHIR_RESOURCE_TYPE_CONDITION
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FhirResourceType {}
@@ -82,6 +101,7 @@ public final class FhirResource implements Parcelable {
     private FhirResource(@NonNull Parcel in) {
         requireNonNull(in);
         mType = in.readInt();
+        validateFhirResourceType(mType);
         mId = requireNonNull(in.readString());
         mData = requireNonNull(in.readString());
     }
@@ -146,7 +166,9 @@ public final class FhirResource implements Parcelable {
             Set.of(
                     FHIR_RESOURCE_TYPE_UNKNOWN,
                     FHIR_RESOURCE_TYPE_IMMUNIZATION,
-                    FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
+                    FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                    FHIR_RESOURCE_TYPE_OBSERVATION,
+                    FHIR_RESOURCE_TYPE_CONDITION);
 
     /**
      * Validates the provided {@code fhirResourceType} is in the {@link FhirResource#VALID_TYPES}

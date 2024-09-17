@@ -17,17 +17,24 @@
 package android.healthconnect.cts.datatypes;
 
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_CONDITION;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_OBSERVATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResource;
 import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceBuilder;
+import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
 import android.health.connect.datatypes.FhirResource;
+import android.healthconnect.cts.utils.ConditionBuilder;
+import android.healthconnect.cts.utils.ObservationBuilder;
 import android.os.Parcel;
 import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
@@ -62,7 +69,39 @@ public class FhirResourceTest {
     }
 
     @Test
-    public void testFhirResourceBuilder_setAllFields() {
+    public void testFhirResourceBuilder_setAllFieldsObservation() {
+        String id = "myId123";
+        String fhirData = new ObservationBuilder().setId(id).toJson();
+        FhirResource resource =
+                getFhirResourceBuilder()
+                        .setType(FHIR_RESOURCE_TYPE_OBSERVATION)
+                        .setId(id)
+                        .setData(fhirData)
+                        .build();
+
+        assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_OBSERVATION);
+        assertThat(resource.getId()).isEqualTo(id);
+        assertThat(resource.getData()).isEqualTo(fhirData);
+    }
+
+    @Test
+    public void testFhirResourceBuilder_setAllFieldsCondition() {
+        String id = "myId123";
+        String fhirData = new ConditionBuilder().setId(id).toJson();
+        FhirResource resource =
+                getFhirResourceBuilder()
+                        .setType(FHIR_RESOURCE_TYPE_CONDITION)
+                        .setId(id)
+                        .setData(fhirData)
+                        .build();
+
+        assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_CONDITION);
+        assertThat(resource.getId()).isEqualTo(id);
+        assertThat(resource.getData()).isEqualTo(fhirData);
+    }
+
+    @Test
+    public void testFhirResourceBuilder_setAllFields_allergy() {
         FhirResource resource =
                 getFhirResourceBuilder()
                         .setType(FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE)
@@ -150,5 +189,20 @@ public class FhirResourceTest {
 
         assertThat(restored).isEqualTo(original);
         parcel.recycle();
+    }
+
+    @Test
+    public void testRestoreInvalidFhirResourceTypeFromParcel_expectException()
+            throws NoSuchFieldException, IllegalAccessException {
+        FhirResource original = getFhirResource();
+        setFieldValueUsingReflection(original, "mType", -1);
+
+        Parcel parcel = Parcel.obtain();
+        original.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> FhirResource.CREATOR.createFromParcel(parcel));
     }
 }

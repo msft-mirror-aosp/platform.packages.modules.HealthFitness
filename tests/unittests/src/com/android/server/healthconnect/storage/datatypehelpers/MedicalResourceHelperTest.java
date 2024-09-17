@@ -199,6 +199,7 @@ public class MedicalResourceHelperTest {
                                 Collections.singletonList(DATA_SOURCE_ID_COLUMN_NAME),
                                 Collections.singletonList(
                                         MedicalDataSourceHelper.getPrimaryColumnName()))
+                        .createIndexOn(LAST_MODIFIED_TIME_COLUMN_NAME)
                         .setChildTableRequests(List.of(childTableRequest));
 
         CreateTableRequest result = getCreateTableRequest();
@@ -813,7 +814,7 @@ public class MedicalResourceHelperTest {
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ true);
 
-        assertThat(AccessLogsHelper.queryAccessLogs()).isEmpty();
+        assertThat(AccessLogsHelper.queryAccessLogs(mAppInfoHelper)).isEmpty();
     }
 
     @Test
@@ -827,7 +828,7 @@ public class MedicalResourceHelperTest {
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ true);
 
-        assertThat(AccessLogsHelper.queryAccessLogs()).isEmpty();
+        assertThat(AccessLogsHelper.queryAccessLogs(mAppInfoHelper)).isEmpty();
     }
 
     @Test
@@ -841,7 +842,7 @@ public class MedicalResourceHelperTest {
                 /* hasWritePermission= */ false,
                 /* isCalledFromBgWithoutBgRead= */ true);
 
-        assertThat(AccessLogsHelper.queryAccessLogs()).isEmpty();
+        assertThat(AccessLogsHelper.queryAccessLogs(mAppInfoHelper)).isEmpty();
     }
 
     @Test
@@ -882,7 +883,8 @@ public class MedicalResourceHelperTest {
         // allergyResourcePackage2 (through read permission)
         // In this case, read access log is only created for non self read data:
         // MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE.
-        List<AccessLog> accessLogs = sortByAccessTime(AccessLogsHelper.queryAccessLogs());
+        List<AccessLog> accessLogs =
+                sortByAccessTime(AccessLogsHelper.queryAccessLogs(mAppInfoHelper));
         AccessLog accessLog1 = accessLogs.get(0);
         AccessLog accessLog2 = accessLogs.get(1);
         AccessLog accessLog3 = accessLogs.get(2);
@@ -946,7 +948,8 @@ public class MedicalResourceHelperTest {
         // The data that the calling app can read: immunizationPackage1 (through read permission)
         // In this case, read access log is created based on the intention of the app
         // even though the actual data accessed is self data: MEDICAL_RESOURCE_TYPE_IMMUNIZATION.
-        List<AccessLog> accessLogs = sortByAccessTime(AccessLogsHelper.queryAccessLogs());
+        List<AccessLog> accessLogs =
+                sortByAccessTime(AccessLogsHelper.queryAccessLogs(mAppInfoHelper));
         AccessLog accessLog1 = accessLogs.get(0);
         AccessLog accessLog2 = accessLogs.get(1);
         AccessLog accessLog3 = accessLogs.get(2);
@@ -1000,7 +1003,8 @@ public class MedicalResourceHelperTest {
         // no write permission.
         // The data that the calling app can read: immunization (through read permission)
         // In this case, read access log is created: MEDICAL_RESOURCE_TYPE_IMMUNIZATION.
-        List<AccessLog> accessLogs = sortByAccessTime(AccessLogsHelper.queryAccessLogs());
+        List<AccessLog> accessLogs =
+                sortByAccessTime(AccessLogsHelper.queryAccessLogs(mAppInfoHelper));
         AccessLog accessLog1 = accessLogs.get(0);
         AccessLog accessLog2 = accessLogs.get(1);
 
@@ -1033,7 +1037,7 @@ public class MedicalResourceHelperTest {
                 /* hasWritePermission= */ true,
                 /* isCalledFromBgWithoutBgRead= */ false);
 
-        assertThat(AccessLogsHelper.queryAccessLogs()).isEmpty();
+        assertThat(AccessLogsHelper.queryAccessLogs(mAppInfoHelper)).isEmpty();
     }
 
     @Test
@@ -1049,7 +1053,7 @@ public class MedicalResourceHelperTest {
 
         // No access log should be created since app is intending to access self data as it has
         // no read permissions.
-        assertThat(AccessLogsHelper.queryAccessLogs()).isEmpty();
+        assertThat(AccessLogsHelper.queryAccessLogs(mAppInfoHelper)).isEmpty();
     }
 
     @Test
@@ -1073,7 +1077,8 @@ public class MedicalResourceHelperTest {
         // The data that the calling app can read: immunization (through read permission)
         // In this case, read access log is created based on the intention of the app
         // even though the actual data accessed is self data: MEDICAL_RESOURCE_TYPE_IMMUNIZATION.
-        List<AccessLog> accessLogs = sortByAccessTime(AccessLogsHelper.queryAccessLogs());
+        List<AccessLog> accessLogs =
+                sortByAccessTime(AccessLogsHelper.queryAccessLogs(mAppInfoHelper));
         AccessLog accessLog1 = accessLogs.get(0);
         AccessLog accessLog2 = accessLogs.get(1);
 
@@ -1121,7 +1126,8 @@ public class MedicalResourceHelperTest {
         // Even though the app has read permission for MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
         // the app did
         // not read any data of that type, so no access logs added for that.
-        List<AccessLog> accessLogs = sortByAccessTime(AccessLogsHelper.queryAccessLogs());
+        List<AccessLog> accessLogs =
+                sortByAccessTime(AccessLogsHelper.queryAccessLogs(mAppInfoHelper));
         AccessLog accessLog1 = accessLogs.get(0);
         AccessLog accessLog2 = accessLogs.get(1);
 
@@ -1514,7 +1520,7 @@ public class MedicalResourceHelperTest {
         mMedicalResourceHelper.readMedicalResourcesByRequestWithPermissionChecks(
                 readRequest, DATA_SOURCE_PACKAGE_NAME, /* enforceSelfRead= */ false);
 
-        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs();
+        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs(mAppInfoHelper);
         AccessLog accessLog = accessLogs.get(0);
 
         assertThat(accessLogs).hasSize(1);
@@ -1535,7 +1541,7 @@ public class MedicalResourceHelperTest {
         mMedicalResourceHelper.readMedicalResourcesByRequestWithPermissionChecks(
                 readRequest, DATA_SOURCE_PACKAGE_NAME, /* enforceSelfRead= */ true);
 
-        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs();
+        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs(mAppInfoHelper);
 
         assertThat(accessLogs).hasSize(0);
     }
@@ -1715,7 +1721,7 @@ public class MedicalResourceHelperTest {
                 /* numOfResources= */ 6,
                 dataSource);
 
-        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs();
+        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs(mAppInfoHelper);
         AccessLog accessLog = accessLogs.get(0);
 
         assertThat(accessLogs).hasSize(1);
@@ -1738,7 +1744,7 @@ public class MedicalResourceHelperTest {
                 DATA_SOURCE_PACKAGE_NAME,
                 createUpsertMedicalResourceRequests(List.of(immunization, allergy), dataSource));
 
-        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs();
+        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs(mAppInfoHelper);
         AccessLog accessLog = accessLogs.get(0);
 
         assertThat(accessLogs).hasSize(1);
@@ -1770,7 +1776,7 @@ public class MedicalResourceHelperTest {
                 DATA_SOURCE_PACKAGE_NAME,
                 createUpsertMedicalResourceRequests(List.of(updatedImmunization), dataSource));
 
-        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs();
+        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs(mAppInfoHelper);
         AccessLog accessLog1 = accessLogs.get(0);
         AccessLog accessLog2 = accessLogs.get(1);
 
@@ -2131,7 +2137,7 @@ public class MedicalResourceHelperTest {
         mMedicalResourceHelper.deleteMedicalResourcesByIdsWithPermissionChecks(
                 List.of(getMedicalResourceId()), DATA_SOURCE_PACKAGE_NAME);
 
-        assertThat(AccessLogsHelper.queryAccessLogs()).isEmpty();
+        assertThat(AccessLogsHelper.queryAccessLogs(mAppInfoHelper)).isEmpty();
     }
 
     @Test
@@ -2145,7 +2151,7 @@ public class MedicalResourceHelperTest {
         mMedicalResourceHelper.deleteMedicalResourcesByIdsWithoutPermissionChecks(
                 List.of(resource1.getId()));
 
-        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs();
+        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs(mAppInfoHelper);
         AccessLog accessLog1 = accessLogs.get(0);
 
         assertThat(accessLogs).hasSize(1);
@@ -2178,7 +2184,8 @@ public class MedicalResourceHelperTest {
         // In this test, we have inserted two different resource types from different packages.
         // When the calling app, calls the delete API, we expect access log to be created only
         // for the deleted resource type. In this case it would be: immunizationPackage1
-        List<AccessLog> accessLogs = sortByAccessTime(AccessLogsHelper.queryAccessLogs());
+        List<AccessLog> accessLogs =
+                sortByAccessTime(AccessLogsHelper.queryAccessLogs(mAppInfoHelper));
         AccessLog accessLog1 = accessLogs.get(0);
         AccessLog accessLog2 = accessLogs.get(1);
         AccessLog accessLog3 = accessLogs.get(2);
@@ -2230,7 +2237,8 @@ public class MedicalResourceHelperTest {
         // When the calling app, calls the delete API, we expect access log to be created
         // for the deleted resource types. In this case it would be: immunizationPackage1,
         // allergyResourcePackage1
-        List<AccessLog> accessLogs = sortByAccessTime(AccessLogsHelper.queryAccessLogs());
+        List<AccessLog> accessLogs =
+                sortByAccessTime(AccessLogsHelper.queryAccessLogs(mAppInfoHelper));
         AccessLog accessLog1 = accessLogs.get(0);
         AccessLog accessLog2 = accessLogs.get(1);
         AccessLog accessLog3 = accessLogs.get(2);
@@ -2451,7 +2459,8 @@ public class MedicalResourceHelperTest {
                         .addDataSourceId(dataSource2.getId())
                         .build(),
                 /* callingPackageName= */ DATA_SOURCE_PACKAGE_NAME);
-        List<AccessLog> accessLogs = sortByAccessTime(AccessLogsHelper.queryAccessLogs());
+        List<AccessLog> accessLogs =
+                sortByAccessTime(AccessLogsHelper.queryAccessLogs(mAppInfoHelper));
         AccessLog accessLog1 = accessLogs.get(0);
         AccessLog accessLog2 = accessLogs.get(1);
         AccessLog accessLog3 = accessLogs.get(2);
@@ -2543,7 +2552,8 @@ public class MedicalResourceHelperTest {
                         .addDataSourceId(dataSource2.getId())
                         .build(),
                 /* callingPackageName= */ DATA_SOURCE_PACKAGE_NAME);
-        List<AccessLog> accessLogs = sortByAccessTime(AccessLogsHelper.queryAccessLogs());
+        List<AccessLog> accessLogs =
+                sortByAccessTime(AccessLogsHelper.queryAccessLogs(mAppInfoHelper));
         AccessLog accessLog1 = accessLogs.get(0);
         AccessLog accessLog2 = accessLogs.get(1);
         AccessLog accessLog3 = accessLogs.get(2);
@@ -2587,7 +2597,8 @@ public class MedicalResourceHelperTest {
                         .addDataSourceId(dataSource1.getId())
                         .build(),
                 /* callingPackageName= */ DATA_SOURCE_PACKAGE_NAME);
-        List<AccessLog> accessLogs = sortByAccessTime(AccessLogsHelper.queryAccessLogs());
+        List<AccessLog> accessLogs =
+                sortByAccessTime(AccessLogsHelper.queryAccessLogs(mAppInfoHelper));
         AccessLog accessLog1 = accessLogs.get(0);
 
         assertThat(accessLogs).hasSize(1);
@@ -2612,7 +2623,7 @@ public class MedicalResourceHelperTest {
                 new DeleteMedicalResourcesRequest.Builder()
                         .addDataSourceId(dataSource1.getId())
                         .build());
-        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs();
+        List<AccessLog> accessLogs = AccessLogsHelper.queryAccessLogs(mAppInfoHelper);
         AccessLog accessLog1 = accessLogs.get(0);
 
         assertThat(accessLogs).hasSize(1);
