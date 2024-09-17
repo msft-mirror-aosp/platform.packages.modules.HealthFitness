@@ -18,11 +18,11 @@ package com.android.server.healthconnect.storage.request;
 
 import static android.health.connect.Constants.DEFAULT_INT;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
@@ -49,6 +49,7 @@ public class ReadTransactionRequest {
     @Nullable // page token is null for read by id requests
     private final PageTokenWrapper mPageToken;
     private final int mPageSize;
+    private final DeviceInfoHelper mDeviceInfoHelper;
 
     public ReadTransactionRequest(
             String callingPackageName,
@@ -56,7 +57,8 @@ public class ReadTransactionRequest {
             long startDateAccessMillis,
             boolean enforceSelfRead,
             Set<String> grantedExtraReadPermissions,
-            boolean isInForeground) {
+            boolean isInForeground,
+            DeviceInfoHelper deviceInfoHelper) {
         RecordHelper<?> recordHelper =
                 RecordHelperProvider.getRecordHelper(request.getRecordType());
         mReadTableRequests =
@@ -75,6 +77,7 @@ public class ReadTransactionRequest {
             mPageSize = DEFAULT_INT;
             mPageToken = null;
         }
+        mDeviceInfoHelper = deviceInfoHelper;
     }
 
     public ReadTransactionRequest(
@@ -82,7 +85,8 @@ public class ReadTransactionRequest {
             Map<Integer, List<UUID>> recordTypeToUuids,
             long startDateAccessMillis,
             Set<String> grantedExtraReadPermissions,
-            boolean isInForeground) {
+            boolean isInForeground,
+            DeviceInfoHelper deviceInfoHelper) {
         mReadTableRequests = new ArrayList<>();
         recordTypeToUuids.forEach(
                 (recordType, uuids) ->
@@ -96,9 +100,9 @@ public class ReadTransactionRequest {
                                                 isInForeground)));
         mPageSize = DEFAULT_INT;
         mPageToken = null;
+        mDeviceInfoHelper = deviceInfoHelper;
     }
 
-    @NonNull
     public List<ReadTableRequest> getReadRequests() {
         return mReadTableRequests;
     }
@@ -106,6 +110,10 @@ public class ReadTransactionRequest {
     @Nullable
     public PageTokenWrapper getPageToken() {
         return mPageToken;
+    }
+
+    public DeviceInfoHelper getDeviceInfoHelper() {
+        return mDeviceInfoHelper;
     }
 
     /**

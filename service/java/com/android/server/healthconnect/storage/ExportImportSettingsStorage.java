@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage;
 
 import static android.health.connect.Constants.DEFAULT_INT;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.ContentProviderClient;
 import android.content.Context;
@@ -80,7 +79,7 @@ public final class ExportImportSettingsStorage {
     }
 
     /** Configures the settings for the scheduled export of Health Connect data. */
-    private void configureNonNull(@NonNull ScheduledExportSettings settings) {
+    private void configureNonNull(ScheduledExportSettings settings) {
         if (settings.getUri() != null) {
             Uri uri = settings.getUri();
             mPreferenceHelper.insertOrReplacePreference(EXPORT_URI_PREFERENCE_KEY, uri.toString());

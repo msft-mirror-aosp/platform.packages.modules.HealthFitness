@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage.request;
 
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
 
-import android.annotation.NonNull;
 import android.health.connect.Constants;
 import android.util.Pair;
 import android.util.Slog;
@@ -59,7 +58,6 @@ public final class CreateTableRequest {
         return mTableName;
     }
 
-    @NonNull
     public CreateTableRequest addForeignKey(
             String referencedTable, List<String> columnNames, List<String> referencedColumnNames) {
         mForeignKeys = mForeignKeys == null ? new ArrayList<>() : mForeignKeys;
@@ -68,29 +66,25 @@ public final class CreateTableRequest {
         return this;
     }
 
-    @NonNull
-    public CreateTableRequest createIndexOn(@NonNull String columnName) {
+    public CreateTableRequest createIndexOn(String columnName) {
         Objects.requireNonNull(columnName);
 
         mColumnsToIndex.add(columnName);
         return this;
     }
 
-    @NonNull
     public List<CreateTableRequest> getChildTableRequests() {
         return mChildTableRequests;
     }
 
-    @NonNull
     public CreateTableRequest setChildTableRequests(
-            @NonNull List<CreateTableRequest> childCreateTableRequests) {
+            List<CreateTableRequest> childCreateTableRequests) {
         Objects.requireNonNull(childCreateTableRequests);
 
         mChildTableRequests = childCreateTableRequests;
         return this;
     }
 
-    @NonNull
     public String getCreateCommand() {
         final StringBuilder builder = new StringBuilder(CREATE_TABLE_COMMAND);
         builder.append(mTableName);
@@ -143,7 +137,6 @@ public final class CreateTableRequest {
         return this;
     }
 
-    @NonNull
     public List<String> getCreateIndexStatements() {
         List<String> result = new ArrayList<>();
         if (mForeignKeys != null) {
@@ -163,7 +156,7 @@ public final class CreateTableRequest {
     }
 
     public CreateTableRequest setGeneratedColumnInfo(
-            @NonNull List<GeneratedColumnInfo> generatedColumnInfo) {
+            List<GeneratedColumnInfo> generatedColumnInfo) {
         Objects.requireNonNull(generatedColumnInfo);
 
         mGeneratedColumnInfo = generatedColumnInfo;

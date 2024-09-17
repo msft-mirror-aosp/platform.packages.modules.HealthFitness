@@ -407,8 +407,7 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Atvērt"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Izvēlēties failu"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Atbrīvot vietu"</string>
-    <!-- no translation found for scheduled_export_on_toast_text (945186472588537310) -->
-    <skip />
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"Ieplānotā eksportēšana ir ieslēgta."</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect nevarēja eksportēt datus"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Nepieciešams vairāk vietas"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Radās problēma ar eksportēšanu šajā datumā: <xliff:g id="DATE">%1$s</xliff:g>. Lūdzu, no jauna iestatiet ieplānoto eksportēšanu un mēģiniet vēlreiz."</string>

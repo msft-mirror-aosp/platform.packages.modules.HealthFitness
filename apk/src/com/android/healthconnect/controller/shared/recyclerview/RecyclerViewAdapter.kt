@@ -28,7 +28,7 @@ class RecyclerViewAdapter
 private constructor(
     private val itemClassToItemViewTypeMap: Map<Class<*>, Int>,
     private val itemViewTypeToViewBinderMap: Map<Int, ViewBinder<*, out View>>,
-        private val viewModel: ViewModel
+    private val viewModel: ViewModel,
 ) : RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
 
     class Builder {
@@ -41,7 +41,7 @@ private constructor(
         private val itemClassToItemViewTypeMap: MutableMap<Class<*>, Int> = mutableMapOf()
         private val itemViewTypeToViewBinderMap: MutableMap<Int, ViewBinder<*, out View>> =
             mutableMapOf()
-        private lateinit var viewModel : ViewModel
+        private lateinit var viewModel: ViewModel
 
         fun <T> setViewBinder(clazz: Class<T>, viewBinder: ViewBinder<T, out View>): Builder {
             itemClassToItemViewTypeMap[clazz] = nextItemType
@@ -50,12 +50,13 @@ private constructor(
             return this
         }
 
-        fun setViewModel(viewModel: ViewModel): Builder{
+        fun setViewModel(viewModel: ViewModel): Builder {
             this.viewModel = viewModel
             return this
         }
 
-        fun build() = RecyclerViewAdapter(itemClassToItemViewTypeMap, itemViewTypeToViewBinderMap, viewModel)
+        fun build() =
+            RecyclerViewAdapter(itemClassToItemViewTypeMap, itemViewTypeToViewBinderMap, viewModel)
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
@@ -70,7 +71,7 @@ private constructor(
         notifyDataSetChanged()
     }
 
-    fun showCheckBox(isDeletionState:Boolean){
+    fun showCheckBox(isDeletionState: Boolean) {
         this.isDeletionState = isDeletionState
         notifyDataSetChanged()
     }

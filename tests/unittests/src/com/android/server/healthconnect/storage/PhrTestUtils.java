@@ -19,7 +19,6 @@ package com.android.server.healthconnect.storage;
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
@@ -60,18 +59,6 @@ public class PhrTestUtils {
 
     /**
      * Upsert a {@link MedicalResource} using the given {@link MedicalResourceCreator} and the
-     * {@code dataSourceId}.
-     */
-    public MedicalResource upsertResource(MedicalResourceCreator creator, String dataSourceId) {
-        MedicalResource medicalResource = creator.create(dataSourceId);
-        return mMedicalResourceHelper
-                .upsertMedicalResources(
-                        DATA_SOURCE_PACKAGE_NAME, List.of(makeUpsertRequest(medicalResource)))
-                .get(0);
-    }
-
-    /**
-     * Upsert a {@link MedicalResource} using the given {@link MedicalResourceCreator} and the
      * {@link MedicalDataSource}.
      */
     public MedicalResource upsertResource(
@@ -85,13 +72,13 @@ public class PhrTestUtils {
 
     /**
      * Upsert {@link MedicalResource}s using the given {@link MedicalResourcesCreator}, the {@code
-     * numOfResources} and {@code dataSourceId}.
+     * numOfResources} and {@link MedicalDataSource}.
      */
     public List<MedicalResource> upsertResources(
-            MedicalResourcesCreator creator, int numOfResources, String dataSourceId) {
-        List<MedicalResource> medicalResources = creator.create(numOfResources, dataSourceId);
+            MedicalResourcesCreator creator, int numOfResources, MedicalDataSource dataSource) {
+        List<MedicalResource> medicalResources = creator.create(numOfResources, dataSource.getId());
         return mMedicalResourceHelper.upsertMedicalResources(
-                DATA_SOURCE_PACKAGE_NAME,
+                dataSource.getPackageName(),
                 medicalResources.stream().map(PhrTestUtils::makeUpsertRequest).toList());
     }
 

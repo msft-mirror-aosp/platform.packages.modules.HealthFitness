@@ -24,7 +24,6 @@ import static android.health.connect.datatypes.AggregationType.SUM;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.APP_INFO_ID_COLUMN_NAME;
 
-import android.annotation.NonNull;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
 import android.health.connect.Constants;
@@ -163,7 +162,6 @@ public class AggregateTableRequest {
     }
 
     /** Returns SQL statement to perform aggregation operation */
-    @NonNull
     public String getAggregationCommand() {
         final StringBuilder builder = new StringBuilder("SELECT ");
         String aggCommand;

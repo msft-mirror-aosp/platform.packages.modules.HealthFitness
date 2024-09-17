@@ -29,8 +29,11 @@ import static android.healthconnect.cts.testhelper.TestHelperUtils.getHeightReco
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getMetadata;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getStepsRecord;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.insertRecords;
+import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
 
 import static com.google.common.truth.Truth.assertThat;
+
+import static java.time.Instant.EPOCH;
 
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
@@ -85,6 +88,11 @@ public class HealthConnectServiceLogsTests {
 
     @Before
     public void before() throws InterruptedException {
+        // insert a record so the test app gets an app id in HC
+        Record record =
+                new StepsRecord.Builder(getEmptyMetadata(), EPOCH, Instant.now(), 123).build();
+        insertRecords(List.of(record), mHealthConnectManager);
+
         deleteAllRecordsAddedByTestApp(mHealthConnectManager);
     }
 

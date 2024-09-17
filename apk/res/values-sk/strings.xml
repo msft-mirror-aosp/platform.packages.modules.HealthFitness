@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Vybraný deň"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Predchádzajúci deň"</string>
     <string name="default_error" msgid="7966868260616403475">"Niečo sa pokazilo. Skúste to znova."</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"Podrobný zdravotný záznam"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Aplikácie s týmto povolením môžu čítať a zapisovať údaje o zdraví a kondícii."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Ovládajte, ktoré aplikácie majú mať prístup k údajom uloženým v Dátach o zdraví. Po klepnutí na ľubovoľnú aplikáciu môžete skontrolovať, aké údaje môže čítať a zapisovať."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Povolený prístup"</string>
