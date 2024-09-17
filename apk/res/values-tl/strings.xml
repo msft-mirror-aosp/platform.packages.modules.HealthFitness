@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Piniling araw"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Nakaraang araw"</string>
     <string name="default_error" msgid="7966868260616403475">"Nagkaproblema. Subukan ulit."</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"Detalyadong health record"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Magagawa ng mga app na mayroon ng pahintulot na ito na mag-read at mag-write ng iyong data ng kalusugan at fitness."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Kontrolin kung aling mga app ang makaka-access sa data na naka-store sa Health Connect. Mag-tap ng app para suriin ang data na puwede nitong i-read o i-write."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Pinapayagan ang access"</string>

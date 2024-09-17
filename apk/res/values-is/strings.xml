@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Valinn dagur"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Fyrri dagur"</string>
     <string name="default_error" msgid="7966868260616403475">"Eitthvað fór úrskeiðis. Reyndu aftur."</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"Upplýsingar um heilsufar"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Forrit með þessa heimild geta lesið og skrifað heilsu- og hreystigögn."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Stjórnaðu því hvaða forrit fá aðgang að gögnum sem eru vistuð í Heilsutengingu. Ýttu á forrit til að sjá gögnin sem það les eða skrifar."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Aðgangur leyfður"</string>

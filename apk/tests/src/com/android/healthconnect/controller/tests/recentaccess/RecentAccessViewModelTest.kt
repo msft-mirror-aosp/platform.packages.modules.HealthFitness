@@ -18,6 +18,8 @@ package com.android.healthconnect.controller.tests.recentaccess
 import android.health.connect.Constants
 import android.health.connect.accesslog.AccessLog
 import android.health.connect.datatypes.BasalMetabolicRateRecord
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
 import android.health.connect.datatypes.RecordTypeIdentifier
 import android.health.connect.datatypes.StepsRecord
 import android.health.connect.datatypes.WeightRecord
@@ -892,6 +894,88 @@ class RecentAccessViewModelTest {
                     isToday = true,
                     dataTypesWritten = mutableSetOf(R.string.activity_category_uppercase),
                     dataTypesRead = mutableSetOf(R.string.nutrition_category_uppercase),
+                )
+            )
+        assertRecentAccessEquality(actual, expected)
+    }
+
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @Test
+    fun loadRecentAccessApps_healthRecords_read() = runTest {
+        val packageName = TEST_APP_PACKAGE_NAME
+
+        val accessTime = Instant.ofEpochMilli(timeSource.currentTimeMillis()).minusSeconds(1)
+        val accessLogs =
+            listOf(
+                    AccessLog(
+                        packageName,
+                        accessTime.toEpochMilli(),
+                        Constants.READ,
+                        setOf(
+                            MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                            MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                        ),
+                        true,
+                    )
+                )
+                .sortedByDescending { it.accessTime }
+
+        fakeRecentAccessUseCase.updateList(accessLogs)
+        val testObserver = TestObserver<RecentAccessState>()
+        viewModel.recentAccessApps.observeForever(testObserver)
+        viewModel.loadRecentAccessApps()
+        advanceUntilIdle()
+
+        val actual = testObserver.getLastValue()
+        val expected =
+            listOf(
+                RecentAccessEntry(
+                    metadata = TEST_APP,
+                    instantTime = accessTime,
+                    isToday = true,
+                    dataTypesWritten = mutableSetOf(),
+                    dataTypesRead = mutableSetOf(R.string.medical_permissions),
+                )
+            )
+        assertRecentAccessEquality(actual, expected)
+    }
+
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @Test
+    fun loadRecentAccessApps_healthRecords_upsert() = runTest {
+        val packageName = TEST_APP_PACKAGE_NAME
+
+        val accessTime = Instant.ofEpochMilli(timeSource.currentTimeMillis()).minusSeconds(1)
+        val accessLogs =
+            listOf(
+                    AccessLog(
+                        packageName,
+                        accessTime.toEpochMilli(),
+                        Constants.UPSERT,
+                        setOf(
+                            MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                            MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                        ),
+                        true,
+                    )
+                )
+                .sortedByDescending { it.accessTime }
+
+        fakeRecentAccessUseCase.updateList(accessLogs)
+        val testObserver = TestObserver<RecentAccessState>()
+        viewModel.recentAccessApps.observeForever(testObserver)
+        viewModel.loadRecentAccessApps()
+        advanceUntilIdle()
+
+        val actual = testObserver.getLastValue()
+        val expected =
+            listOf(
+                RecentAccessEntry(
+                    metadata = TEST_APP,
+                    instantTime = accessTime,
+                    isToday = true,
+                    dataTypesWritten = mutableSetOf(R.string.medical_permissions),
+                    dataTypesRead = mutableSetOf(),
                 )
             )
         assertRecentAccessEquality(actual, expected)

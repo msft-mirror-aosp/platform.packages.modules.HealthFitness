@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Välj dag"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Föregående dag"</string>
     <string name="default_error" msgid="7966868260616403475">"Något gick fel. Försök igen."</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"Detaljerad hälsojournal"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Appar med den här behörigheten kan läsa och skriva hälso- och träningsdata."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Styr vilka appar som har åtkomst till data i Health Connect. Tryck på en app för att granska vilken data den kan läsa eller skriva."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Beviljade åtkomst"</string>
@@ -407,8 +406,7 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Öppna"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Välj fil"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Frigör utrymme"</string>
-    <!-- no translation found for scheduled_export_on_toast_text (945186472588537310) -->
-    <skip />
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"Schemalagd export är aktiverad"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect kunde inte exportera data"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Mer utrymme krävs"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Det uppstod ett problem med exporten den <xliff:g id="DATE">%1$s</xliff:g>. Ställ in en ny schemalagd export och försök igen."</string>

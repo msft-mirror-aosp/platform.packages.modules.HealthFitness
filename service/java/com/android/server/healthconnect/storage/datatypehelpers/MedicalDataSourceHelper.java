@@ -35,11 +35,11 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.health.connect.Constants;
@@ -50,6 +50,7 @@ import android.util.Pair;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.request.CreateIndexRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -62,6 +63,7 @@ import com.android.server.healthconnect.utils.TimeSource;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -93,35 +95,30 @@ public class MedicalDataSourceHelper {
     private final TimeSource mTimeSource;
 
     public MedicalDataSourceHelper(
-            @NonNull TransactionManager transactionManager,
-            @NonNull AppInfoHelper appInfoHelper,
-            @NonNull TimeSource timeSource) {
+            TransactionManager transactionManager,
+            AppInfoHelper appInfoHelper,
+            TimeSource timeSource) {
         mTransactionManager = transactionManager;
         mAppInfoHelper = appInfoHelper;
         mTimeSource = timeSource;
     }
 
-    @NonNull
     public static String getMainTableName() {
         return MEDICAL_DATA_SOURCE_TABLE_NAME;
     }
 
-    @NonNull
     public static String getPrimaryColumnName() {
         return MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME;
     }
 
-    @NonNull
     public static String getDataSourceUuidColumnName() {
         return DATA_SOURCE_UUID_COLUMN_NAME;
     }
 
-    @NonNull
     public static String getAppInfoIdColumnName() {
         return APP_INFO_ID_COLUMN_NAME;
     }
 
-    @NonNull
     private static List<Pair<String, String>> getColumnInfo() {
         return List.of(
                 Pair.create(MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME, PRIMARY),
@@ -132,7 +129,6 @@ public class MedicalDataSourceHelper {
                 Pair.create(LAST_MODIFIED_TIME_COLUMN_NAME, INTEGER_NOT_NULL));
     }
 
-    @NonNull
     public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(MEDICAL_DATA_SOURCE_TABLE_NAME, getColumnInfo())
                 .addForeignKey(
@@ -142,8 +138,18 @@ public class MedicalDataSourceHelper {
     }
 
     /** Creates the medical_data_source table. */
-    public static void onInitialUpgrade(@NonNull SQLiteDatabase db) {
+    public static void onInitialUpgrade(SQLiteDatabase db) {
         createTable(db, getCreateTableRequest());
+        // There's no significant difference between a unique constraint and unique index.
+        // The latter would allow us to drop or recreate it later.
+        // The combination of (display_name, app_info_id) should be unique.
+        db.execSQL(
+                new CreateIndexRequest(
+                                MEDICAL_DATA_SOURCE_TABLE_NAME,
+                                MEDICAL_DATA_SOURCE_TABLE_NAME + "_display_name_idx",
+                                /* isUnique= */ true,
+                                List.of(DISPLAY_NAME_COLUMN_NAME, APP_INFO_ID_COLUMN_NAME))
+                        .getCommand());
     }
 
     /**
@@ -153,9 +159,8 @@ public class MedicalDataSourceHelper {
      * @param ids the data source ids to restrict to, if empty allows all data sources
      * @param appInfoRestriction the apps to restrict to, if null allows all apps
      */
-    @NonNull
     public static ReadTableRequest getReadTableRequest(
-            @NonNull List<UUID> ids, @Nullable Long appInfoRestriction) {
+            List<UUID> ids, @Nullable Long appInfoRestriction) {
         ReadTableRequest readTableRequest = new ReadTableRequest(getMainTableName());
         WhereClauses whereClauses = getWhereClauses(ids, appInfoRestriction);
         return readTableRequest.setWhereClause(whereClauses);
@@ -168,8 +173,7 @@ public class MedicalDataSourceHelper {
      * @param appInfoRestriction the app info id to restrict to, or if null do not filter by app
      *     info
      */
-    public static @NonNull WhereClauses getWhereClauses(
-            @NonNull List<UUID> ids, @Nullable Long appInfoRestriction) {
+    public static WhereClauses getWhereClauses(List<UUID> ids, @Nullable Long appInfoRestriction) {
         WhereClauses whereClauses;
         if (ids.isEmpty()) {
             whereClauses = new WhereClauses(AND);
@@ -184,7 +188,6 @@ public class MedicalDataSourceHelper {
     }
 
     /** Creates {@link ReadTableRequest} that joins with {@link AppInfoHelper#TABLE_NAME}. */
-    @NonNull
     private static ReadTableRequest getReadTableRequestJoinWithAppInfo() {
         return new ReadTableRequest(getMainTableName())
                 .setJoinClause(getJoinClauseWithAppInfoTable());
@@ -194,19 +197,16 @@ public class MedicalDataSourceHelper {
      * Creates {@link ReadTableRequest} that joins with {@link AppInfoHelper#TABLE_NAME} and filters
      * for the given list of {@code ids}.
      */
-    @NonNull
-    public static ReadTableRequest getReadTableRequestJoinWithAppInfo(@NonNull List<UUID> ids) {
+    public static ReadTableRequest getReadTableRequestJoinWithAppInfo(List<UUID> ids) {
         return getReadTableRequest(ids).setJoinClause(getJoinClauseWithAppInfoTable());
     }
 
     /** Creates {@link ReadTableRequest} for the given list of {@code ids}. */
-    @NonNull
-    public static ReadTableRequest getReadTableRequest(@NonNull List<UUID> ids) {
+    public static ReadTableRequest getReadTableRequest(List<UUID> ids) {
         return new ReadTableRequest(getMainTableName())
                 .setWhereClause(getReadTableWhereClause(ids));
     }
 
-    @NonNull
     private static SqlJoin getJoinClauseWithAppInfoTable() {
         return new SqlJoin(
                         MEDICAL_DATA_SOURCE_TABLE_NAME,
@@ -221,8 +221,7 @@ public class MedicalDataSourceHelper {
      *
      * @param ids the ids to limit to.
      */
-    @NonNull
-    public static WhereClauses getReadTableWhereClause(@NonNull List<UUID> ids) {
+    public static WhereClauses getReadTableWhereClause(List<UUID> ids) {
         return new WhereClauses(AND)
                 .addWhereInClauseWithoutQuotes(
                         DATA_SOURCE_UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(ids));
@@ -233,8 +232,7 @@ public class MedicalDataSourceHelper {
      * {@link Constants#MAXIMUM_ALLOWED_CURSOR_COUNT} data sources, it throws {@link
      * IllegalArgumentException}.
      */
-    @NonNull
-    private static List<MedicalDataSource> getMedicalDataSources(@NonNull Cursor cursor) {
+    private static List<MedicalDataSource> getMedicalDataSources(Cursor cursor) {
         if (cursor.getCount() > MAXIMUM_ALLOWED_CURSOR_COUNT) {
             throw new IllegalArgumentException(
                     "Too many data sources in the cursor. Max allowed: "
@@ -249,8 +247,7 @@ public class MedicalDataSourceHelper {
         return medicalDataSources;
     }
 
-    @NonNull
-    private static MedicalDataSource getMedicalDataSource(@NonNull Cursor cursor) {
+    private static MedicalDataSource getMedicalDataSource(Cursor cursor) {
         return new MedicalDataSource.Builder(
                         /* id= */ getCursorUUID(cursor, DATA_SOURCE_UUID_COLUMN_NAME).toString(),
                         /* packageName= */ getCursorString(
@@ -258,6 +255,8 @@ public class MedicalDataSourceHelper {
                         /* fhirBaseUri= */ Uri.parse(
                                 getCursorString(cursor, FHIR_BASE_URI_COLUMN_NAME)),
                         /* displayName= */ getCursorString(cursor, DISPLAY_NAME_COLUMN_NAME))
+                // TODO(b/365756516) Populate this value from DB
+                .setLastDataUpdateTime(null)
                 .build();
     }
 
@@ -270,30 +269,35 @@ public class MedicalDataSourceHelper {
      *     MedicalDataSource}.
      * @return The {@link MedicalDataSource} created and inserted into the database.
      */
-    @NonNull
     public MedicalDataSource createMedicalDataSource(
-            @NonNull Context context,
-            @NonNull CreateMedicalDataSourceRequest request,
-            @NonNull String packageName) {
+            Context context, CreateMedicalDataSourceRequest request, String packageName) {
         // TODO(b/344781394): Add support for access logs.
-        return mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnableWithReturn<
-                                MedicalDataSource, RuntimeException>)
-                        db ->
-                                createMedicalDataSourceAndAppInfoAndCheckLimits(
-                                        db,
-                                        context,
-                                        request,
-                                        packageName,
-                                        mTimeSource.getInstantNow()));
+        try {
+            return mTransactionManager.runAsTransaction(
+                    (TransactionManager.TransactionRunnableWithReturn<
+                                    MedicalDataSource, RuntimeException>)
+                            db ->
+                                    createMedicalDataSourceAndAppInfoAndCheckLimits(
+                                            db,
+                                            context,
+                                            request,
+                                            packageName,
+                                            mTimeSource.getInstantNow()));
+        } catch (SQLiteConstraintException e) {
+            String exceptionMessage = e.getMessage();
+            if (exceptionMessage != null && exceptionMessage.contains(DISPLAY_NAME_COLUMN_NAME)) {
+                throw new IllegalArgumentException("display name should be unique per calling app");
+            }
+            throw e;
+        }
     }
 
     private MedicalDataSource createMedicalDataSourceAndAppInfoAndCheckLimits(
-            @NonNull SQLiteDatabase db,
-            @NonNull Context context,
-            @NonNull CreateMedicalDataSourceRequest request,
-            @NonNull String packageName,
-            @NonNull Instant instant) {
+            SQLiteDatabase db,
+            Context context,
+            CreateMedicalDataSourceRequest request,
+            String packageName,
+            Instant instant) {
         long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(db, packageName, context);
 
         if (getMedicalDataSourcesCount(appInfoId) >= MAX_ALLOWED_MEDICAL_DATA_SOURCES) {
@@ -332,9 +336,8 @@ public class MedicalDataSourceHelper {
      * @param ids a list of {@link MedicalDataSource} ids.
      * @return List of {@link MedicalDataSource}s read from medical_data_source table based on ids.
      */
-    @NonNull
-    public List<MedicalDataSource> getMedicalDataSourcesByIdsWithoutPermissionChecks(
-            @NonNull List<UUID> ids) throws SQLiteException {
+    public List<MedicalDataSource> getMedicalDataSourcesByIdsWithoutPermissionChecks(List<UUID> ids)
+            throws SQLiteException {
         ReadTableRequest readTableRequest = getReadTableRequestJoinWithAppInfo(ids);
         try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
             return getMedicalDataSources(cursor);
@@ -352,11 +355,10 @@ public class MedicalDataSourceHelper {
      *     sources so the appId does not exist in the {@link AppInfoHelper#TABLE_NAME} and the
      *     {@code callingPackageName} has no read permissions either.
      */
-    @NonNull
     public List<MedicalDataSource> getMedicalDataSourcesByIdsWithPermissionChecks(
-            @NonNull List<UUID> ids,
-            @NonNull Set<Integer> grantedReadMedicalResourceTypes,
-            @NonNull String callingPackageName,
+            List<UUID> ids,
+            Set<Integer> grantedReadMedicalResourceTypes,
+            String callingPackageName,
             boolean hasWritePermission,
             boolean isCalledFromBgWithoutBgRead)
             throws SQLiteException {
@@ -387,10 +389,9 @@ public class MedicalDataSourceHelper {
         }
     }
 
-    @NonNull
     private static ReadTableRequest getReadRequestBasedOnPermissionFilters(
-            @NonNull List<UUID> ids,
-            @NonNull Set<Integer> grantedReadMedicalResourceTypes,
+            List<UUID> ids,
+            Set<Integer> grantedReadMedicalResourceTypes,
             long appId,
             boolean hasWritePermission,
             boolean isCalledFromBgWithoutBgRead) {
@@ -445,9 +446,8 @@ public class MedicalDataSourceHelper {
     }
 
     @VisibleForTesting
-    @NonNull
     static ReadTableRequest getReadTableRequestForDataSourceWrittenByAppIdFilterOnResourceTypes(
-            @NonNull List<UUID> ids, @NonNull Set<Integer> medicalResourceTypes, long appId) {
+            List<UUID> ids, Set<Integer> medicalResourceTypes, long appId) {
         SqlJoin joinWithDataSource =
                 getJoinWithMedicalDataSourceFilterOnDataSourceIdsAndAppId(
                         ids, appId, getJoinClauseWithAppInfoTable());
@@ -457,9 +457,8 @@ public class MedicalDataSourceHelper {
     }
 
     @VisibleForTesting
-    @NonNull
     static ReadTableRequest getReadTableRequestForDataSourcesFilterOnResourceTypes(
-            @NonNull List<UUID> ids, @NonNull Set<Integer> medicalResourceTypes) {
+            List<UUID> ids, Set<Integer> medicalResourceTypes) {
         SqlJoin joinWithDataSource =
                 getJoinWithMedicalDataSourceFilterOnDataSourceIds(
                         ids, getJoinClauseWithAppInfoTable());
@@ -468,8 +467,7 @@ public class MedicalDataSourceHelper {
         return getReadTableRequestForDataSources(joinWithDataSource.attachJoin(joinWithIndices));
     }
 
-    @NonNull
-    private static ReadTableRequest getReadTableRequestForDataSources(@NonNull SqlJoin joinClause) {
+    private static ReadTableRequest getReadTableRequestForDataSources(SqlJoin joinClause) {
         return new ReadTableRequest(MedicalResourceHelper.getMainTableName())
                 .setDistinctClause(true)
                 .setColumnNames(
@@ -485,9 +483,8 @@ public class MedicalDataSourceHelper {
      * Creates {@link ReadTableRequest} that joins with {@link AppInfoHelper#TABLE_NAME} and filters
      * for the given list of {@code ids} and {@code appId}.
      */
-    @NonNull
     private static ReadTableRequest getReadTableRequestForAllDataSourcesWrittenByCallingApp(
-            @NonNull List<UUID> ids, long appId) {
+            List<UUID> ids, long appId) {
         return getReadTableRequest(ids, appId)
                 .setDistinctClause(true)
                 .setColumnNames(
@@ -508,9 +505,8 @@ public class MedicalDataSourceHelper {
      *
      * @param packageNames list of packageNames of apps to restrict to
      */
-    @NonNull
     public List<MedicalDataSource> getMedicalDataSourcesByPackageWithoutPermissionChecks(
-            @NonNull Set<String> packageNames) throws SQLiteException {
+            Set<String> packageNames) throws SQLiteException {
         ReadTableRequest readTableRequest = getReadTableRequestJoinWithAppInfo();
         if (!packageNames.isEmpty()) {
             List<Long> appInfoIds = mAppInfoHelper.getAppInfoIds(packageNames.stream().toList());
@@ -530,11 +526,10 @@ public class MedicalDataSourceHelper {
      * <p>If {@code packageNames} is empty, returns all dataSources, otherwise returns only
      * dataSources belonging to the given apps.
      */
-    @NonNull
     public List<MedicalDataSource> getMedicalDataSourcesByPackageWithPermissionChecks(
-            @NonNull Set<String> packageNames,
-            @NonNull Set<Integer> ignoredGrantedReadMedicalResourceTypes,
-            @NonNull String ignoredCallingPackageName,
+            Set<String> packageNames,
+            Set<Integer> ignoredGrantedReadMedicalResourceTypes,
+            String ignoredCallingPackageName,
             boolean ignoredHasWritePermission,
             boolean ignoredIsCalledFromBgWithoutBgRead)
             throws SQLiteException {
@@ -556,12 +551,11 @@ public class MedicalDataSourceHelper {
      * Creates {@link UpsertTableRequest} for the given {@link CreateMedicalDataSourceRequest} and
      * {@code appInfoId}.
      */
-    @NonNull
     public static UpsertTableRequest getUpsertTableRequest(
-            @NonNull UUID uuid,
-            @NonNull CreateMedicalDataSourceRequest createMedicalDataSourceRequest,
+            UUID uuid,
+            CreateMedicalDataSourceRequest createMedicalDataSourceRequest,
             long appInfoId,
-            @NonNull Instant instant) {
+            Instant instant) {
         ContentValues contentValues =
                 getContentValues(uuid, createMedicalDataSourceRequest, appInfoId, instant);
         return new UpsertTableRequest(getMainTableName(), contentValues, UNIQUE_COLUMNS_INFO);
@@ -579,7 +573,7 @@ public class MedicalDataSourceHelper {
      * @throws IllegalArgumentException if the id does not exist, or there is an
      *     appInfoIdRestriction and the data source is owned by a different app
      */
-    public void deleteMedicalDataSource(@NonNull UUID id, @Nullable Long appInfoIdRestriction)
+    public void deleteMedicalDataSource(UUID id, @Nullable Long appInfoIdRestriction)
             throws SQLiteException {
         DeleteTableRequest request =
                 new DeleteTableRequest(MEDICAL_DATA_SOURCE_TABLE_NAME)
@@ -618,11 +612,8 @@ public class MedicalDataSourceHelper {
      * Creates a {@link MedicalDataSource} for the given {@code uuid}, {@link
      * CreateMedicalDataSourceRequest} and the {@code packageName}.
      */
-    @NonNull
     public static MedicalDataSource buildMedicalDataSource(
-            @NonNull UUID uuid,
-            @NonNull CreateMedicalDataSourceRequest request,
-            @NonNull String packageName) {
+            UUID uuid, CreateMedicalDataSourceRequest request, String packageName) {
         return new MedicalDataSource.Builder(
                         uuid.toString(),
                         packageName,
@@ -632,14 +623,16 @@ public class MedicalDataSourceHelper {
     }
 
     /**
-     * Creates a UUID string to row ID map for all {@link MedicalDataSource}s stored in {@code
-     * MEDICAL_DATA_SOURCE_TABLE}.
+     * Creates a UUID string to row ID map for {@link MedicalDataSource}s stored in {@code
+     * MEDICAL_DATA_SOURCE_TABLE} that were created by the app matching the {@code
+     * appInfoIdRestriction}.
      */
-    @NonNull
     public Map<String, Long> getUuidToRowIdMap(
-            @NonNull SQLiteDatabase db, @NonNull List<UUID> dataSourceUuids) {
+            SQLiteDatabase db, long appInfoIdRestriction, List<UUID> dataSourceUuids) {
         Map<String, Long> uuidToRowId = new HashMap<>();
-        try (Cursor cursor = mTransactionManager.read(db, getReadTableRequest(dataSourceUuids))) {
+        try (Cursor cursor =
+                mTransactionManager.read(
+                        db, getReadTableRequest(dataSourceUuids, appInfoIdRestriction))) {
             if (cursor.moveToFirst()) {
                 do {
                     long rowId = getCursorLong(cursor, MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME);
@@ -655,8 +648,7 @@ public class MedicalDataSourceHelper {
      * Creates a row ID to {@link MedicalDataSource} map for all {@link MedicalDataSource}s stored
      * in {@code MEDICAL_DATA_SOURCE_TABLE}.
      */
-    @NonNull
-    public Map<Long, MedicalDataSource> getAllRowIdToDataSourceMap(@NonNull SQLiteDatabase db) {
+    public Map<Long, MedicalDataSource> getAllRowIdToDataSourceMap(SQLiteDatabase db) {
         ReadTableRequest readTableRequest = getReadTableRequestJoinWithAppInfo();
         Map<Long, MedicalDataSource> rowIdToDataSourceMap = new HashMap<>();
         try (Cursor cursor = mTransactionManager.read(db, readTableRequest)) {
@@ -671,12 +663,31 @@ public class MedicalDataSourceHelper {
         return rowIdToDataSourceMap;
     }
 
-    @NonNull
+    /**
+     * Gets all distinct app info ids from {@code APP_INFO_ID_COLUMN_NAME} for all {@link
+     * MedicalDataSource}s stored in {@code MEDICAL_DATA_SOURCE_TABLE}.
+     */
+    public Set<Long> getAllContributorAppInfoIds() {
+        ReadTableRequest readTableRequest =
+                new ReadTableRequest(getMainTableName())
+                        .setDistinctClause(true)
+                        .setColumnNames(List.of(APP_INFO_ID_COLUMN_NAME));
+        Set<Long> appInfoIds = new HashSet<>();
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+            if (cursor.moveToFirst()) {
+                do {
+                    appInfoIds.add(getCursorLong(cursor, APP_INFO_ID_COLUMN_NAME));
+                } while (cursor.moveToNext());
+            }
+        }
+        return appInfoIds;
+    }
+
     private static ContentValues getContentValues(
-            @NonNull UUID uuid,
-            @NonNull CreateMedicalDataSourceRequest createMedicalDataSourceRequest,
+            UUID uuid,
+            CreateMedicalDataSourceRequest createMedicalDataSourceRequest,
             long appInfoId,
-            @NonNull Instant instant) {
+            Instant instant) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DATA_SOURCE_UUID_COLUMN_NAME, StorageUtils.convertUUIDToBytes(uuid));
         contentValues.put(

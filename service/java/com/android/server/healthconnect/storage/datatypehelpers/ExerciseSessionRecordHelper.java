@@ -42,7 +42,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getInt
 import static com.android.server.healthconnect.storage.utils.StorageUtils.isNullValue;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
@@ -115,7 +114,7 @@ public final class ExerciseSessionRecordHelper
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull ExerciseSessionRecordInternal exerciseSessionRecord) {
+            Cursor cursor, ExerciseSessionRecordInternal exerciseSessionRecord) {
         UUID uuid = getCursorUUID(cursor, UUID_COLUMN_NAME);
         exerciseSessionRecord.setNotes(getCursorString(cursor, NOTES_COLUMN_NAME));
         exerciseSessionRecord.setExerciseType(getCursorInt(cursor, EXERCISE_TYPE_COLUMN_NAME));
@@ -169,8 +168,7 @@ public final class ExerciseSessionRecordHelper
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull ExerciseSessionRecordInternal exerciseSessionRecord) {
+            ContentValues contentValues, ExerciseSessionRecordInternal exerciseSessionRecord) {
         contentValues.put(NOTES_COLUMN_NAME, exerciseSessionRecord.getNotes());
         contentValues.put(EXERCISE_TYPE_COLUMN_NAME, exerciseSessionRecord.getExerciseType());
         contentValues.put(TITLE_COLUMN_NAME, exerciseSessionRecord.getTitle());
@@ -196,8 +194,7 @@ public final class ExerciseSessionRecordHelper
     }
 
     @Override
-    List<UpsertTableRequest> getChildTableUpsertRequests(
-            @NonNull ExerciseSessionRecordInternal record) {
+    List<UpsertTableRequest> getChildTableUpsertRequests(ExerciseSessionRecordInternal record) {
         List<UpsertTableRequest> childUpsertRequests = new ArrayList<>();
 
         if (record.getRoute() != null) {
@@ -236,7 +233,7 @@ public final class ExerciseSessionRecordHelper
 
     @Override
     protected void updateUpsertValuesIfRequired(
-            @NonNull ContentValues values,
+            ContentValues values,
             @Nullable ArrayMap<String, Boolean> extraWritePermissionToStateMap) {
         if (extraWritePermissionToStateMap == null || extraWritePermissionToStateMap.isEmpty()) {
             // Use default logic for internal apis flows (apk migration and b&r)
@@ -286,7 +283,6 @@ public final class ExerciseSessionRecordHelper
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getIntervalRecordColumnInfo() {
         return Arrays.asList(
                 new Pair<>(NOTES_COLUMN_NAME, TEXT_NULL),
@@ -412,8 +408,7 @@ public final class ExerciseSessionRecordHelper
     }
 
     @Override
-    public void logUpsertMetrics(
-            @NonNull List<RecordInternal<?>> recordInternals, @NonNull String packageName) {
+    public void logUpsertMetrics(List<RecordInternal<?>> recordInternals, String packageName) {
         Objects.requireNonNull(recordInternals);
 
         ExerciseRoutesLogger.log(
@@ -423,8 +418,7 @@ public final class ExerciseSessionRecordHelper
     }
 
     @Override
-    public void logReadMetrics(
-            @NonNull List<RecordInternal<?>> recordInternals, @NonNull String packageName) {
+    public void logReadMetrics(List<RecordInternal<?>> recordInternals, String packageName) {
         Objects.requireNonNull(recordInternals);
 
         ExerciseRoutesLogger.log(
@@ -449,7 +443,6 @@ public final class ExerciseSessionRecordHelper
             ReadTableRequest readRequest =
                     new ReadTableRequest(PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME) {
                         @Override
-                        @NonNull
                         public String getReadCommand() {
                             // Returns literal value without needing to query the DB.
                             return "SELECT column1 as "
@@ -515,8 +508,7 @@ public final class ExerciseSessionRecordHelper
                 && Boolean.TRUE.equals(extraWritePermissionToState.get(WRITE_EXERCISE_ROUTE));
     }
 
-    private int getNumberOfRecordsWithExerciseRoutes(
-            @NonNull List<RecordInternal<?>> recordInternals) {
+    private int getNumberOfRecordsWithExerciseRoutes(List<RecordInternal<?>> recordInternals) {
 
         int numberOfRecordsWithExerciseRoutes = 0;
         for (RecordInternal<?> recordInternal : recordInternals) {

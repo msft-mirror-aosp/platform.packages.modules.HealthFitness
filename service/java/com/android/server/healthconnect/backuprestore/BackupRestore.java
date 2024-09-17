@@ -73,6 +73,8 @@ import com.android.server.healthconnect.permission.GrantTimeXmlHelper;
 import com.android.server.healthconnect.permission.UserGrantTimeState;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.utils.FilesUtil;
 import com.android.server.healthconnect.utils.RunnableWithThrowable;
@@ -199,12 +201,19 @@ public final class BackupRestore {
             MigrationStateManager migrationStateManager,
             PreferenceHelper preferenceHelper,
             TransactionManager transactionManager,
-            Context context) {
+            Context context,
+            DeviceInfoHelper deviceInfoHelper,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
         mFirstGrantTimeManager = firstGrantTimeManager;
         mMigrationStateManager = migrationStateManager;
         mContext = context;
         mCurrentForegroundUser = mContext.getUser();
-        mDatabaseMerger = new DatabaseMerger(context);
+        mDatabaseMerger =
+                new DatabaseMerger(
+                        context,
+                        deviceInfoHelper,
+                        healthDataCategoryPriorityHelper,
+                        transactionManager);
         mPreferenceHelper = preferenceHelper;
         mTransactionManager = transactionManager;
     }

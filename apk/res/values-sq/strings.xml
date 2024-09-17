@@ -407,8 +407,7 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Hap"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Zgjidh skedarin"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Liro hapësirën"</string>
-    <!-- no translation found for scheduled_export_on_toast_text (945186472588537310) -->
-    <skip />
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"Eksportimi i planifikuar është aktiv"</string>
     <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect nuk mund t\'i eksportonte të dhënat"</string>
     <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Nevojitet më shumë hapësirë"</string>
     <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"Pati një problem me eksportimin për datën <xliff:g id="DATE">%1$s</xliff:g>. Konfiguro një eksportim të ri të planifikuar dhe provo përsëri."</string>

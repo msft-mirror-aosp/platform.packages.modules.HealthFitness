@@ -28,7 +28,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorStringList;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.changelog.ChangeLogTokenRequest;
@@ -70,14 +69,11 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
         return TABLE_NAME;
     }
 
-    @NonNull
     public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 
-    @NonNull
-    public static String getToken(
-            @NonNull String packageName, @NonNull ChangeLogTokenRequest request) {
+    public static String getToken(String packageName, ChangeLogTokenRequest request) {
         ContentValues contentValues = new ContentValues();
 
         /**
@@ -110,7 +106,6 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
                                 .toEpochMilli());
     }
 
-    @NonNull
     private static List<Pair<String, String>> getColumnInfo() {
         List<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(PRIMARY_COLUMN_NAME, PRIMARY));
@@ -123,8 +118,7 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
         return columnInfo;
     }
 
-    @NonNull
-    public static TokenRequest getRequest(@NonNull String packageName, @NonNull String token) {
+    public static TokenRequest getRequest(String packageName, String token) {
         ReadTableRequest readTableRequest =
                 new ReadTableRequest(TABLE_NAME)
                         .setWhereClause(
@@ -146,7 +140,6 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
         }
     }
 
-    @NonNull
     public static String getNextPageToken(TokenRequest changeLogTokenRequest, long nextRowId) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(
@@ -178,9 +171,9 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
          * @param rowIdChangeLogs row id of change log table after which the logs are to be fetched
          */
         public TokenRequest(
-                @NonNull List<String> packageNamesToFilter,
-                @NonNull List<Integer> recordTypes,
-                @NonNull String requestingPackageName,
+                List<String> packageNamesToFilter,
+                List<Integer> recordTypes,
+                String requestingPackageName,
                 long rowIdChangeLogs) {
             mPackageNamesToFilter = packageNamesToFilter;
             mRecordTypes = recordTypes;
@@ -192,17 +185,14 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
             return mRowIdChangeLogs;
         }
 
-        @NonNull
         public String getRequestingPackageName() {
             return mRequestingPackageName;
         }
 
-        @NonNull
         public List<String> getPackageNamesToFilter() {
             return mPackageNamesToFilter;
         }
 
-        @NonNull
         public List<Integer> getRecordTypes() {
             return mRecordTypes;
         }

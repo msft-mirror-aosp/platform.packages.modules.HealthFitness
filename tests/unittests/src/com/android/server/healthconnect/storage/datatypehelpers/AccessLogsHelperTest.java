@@ -16,11 +16,15 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_DELETE;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_DISTANCE;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS_CADENCE;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
 
 import static com.android.healthfitness.flags.Flags.FLAG_DEVELOPMENT_DATABASE;
@@ -29,6 +33,8 @@ import static com.android.server.healthconnect.storage.datatypehelpers.AccessLog
 import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.MEDICAL_RESOURCE_TYPE_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.getAlterTableRequestForPhrAccessLogs;
 import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.queryAccessLogs;
+import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.recordDeleteAccessLog;
+import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.recordReadAccessLog;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NULL;
 
@@ -36,6 +42,9 @@ import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.HealthConnectManager;
 import android.health.connect.accesslog.AccessLog;
+import android.health.connect.datatypes.DistanceRecord;
+import android.health.connect.datatypes.SkinTemperatureRecord;
+import android.health.connect.datatypes.StepsCadenceRecord;
 import android.health.connect.datatypes.StepsRecord;
 import android.os.Environment;
 import android.platform.test.annotations.EnableFlags;
@@ -78,9 +87,10 @@ public class AccessLogsHelperTest {
     public void setup() {
         mTransactionTestUtils =
                 new TransactionTestUtils(
-                        /* context= */ null,
+                        mHealthConnectDatabaseTestRule.getUserContext(),
                         mHealthConnectDatabaseTestRule.getTransactionManager());
         mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
+        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
     }
 
     @Test
@@ -101,7 +111,6 @@ public class AccessLogsHelperTest {
     @Test
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
     public void testAddAccessLogsPhr_accessedSingleMedicalResourceType_success() {
-        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
         mTransactionManager.runAsTransaction(
                 (TransactionManager.TransactionRunnable<RuntimeException>)
                         db ->
@@ -128,7 +137,6 @@ public class AccessLogsHelperTest {
     @Test
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
     public void testAddAccessLogsPhr_accessedMultipleMedicalResourceTypes_success() {
-        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
         mTransactionManager.runAsTransaction(
                 (TransactionManager.TransactionRunnable<RuntimeException>)
                         db ->
@@ -158,7 +166,6 @@ public class AccessLogsHelperTest {
     @Test
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
     public void testAddAccessLogsPhr_accessedMedicalDataSource_success() {
-        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
         mTransactionManager.runAsTransaction(
                 (TransactionManager.TransactionRunnable<RuntimeException>)
                         db ->
@@ -184,7 +191,6 @@ public class AccessLogsHelperTest {
     @Test
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
     public void testAddAccessLogsForHCRecordType_queryAccessLogs_expectCorrectResult() {
-        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
         AccessLogsHelper.addAccessLog(
                 DATA_SOURCE_PACKAGE_NAME,
                 /* recordTypeList= */ List.of(RECORD_TYPE_STEPS),
@@ -205,7 +211,6 @@ public class AccessLogsHelperTest {
     @Test
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
     public void testAddAccessLogsPhr_multipleAccessLogs_success() {
-        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
         mTransactionManager.runAsTransaction(
                 db -> {
                     AccessLogsHelper.addAccessLog(
@@ -242,5 +247,38 @@ public class AccessLogsHelperTest {
         assertThat(accessLog2.getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
         assertThat(accessLog2.isMedicalDataSourceAccessed()).isFalse();
         assertThat(accessLog2.getAccessTime()).isNotNull();
+    }
+
+    @Test
+    public void recordDeleteAccessLog_success() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_STEPS_CADENCE);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    recordDeleteAccessLog(db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
+                });
+
+        List<AccessLog> result = queryAccessLogs();
+        assertThat(result).hasSize(1);
+        AccessLog log = result.get(0);
+        assertThat(log.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+        assertThat(log.getRecordTypes()).containsExactly(StepsCadenceRecord.class);
+        assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_DELETE);
+    }
+
+    @Test
+    public void recordReadAccessLog_success() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_DISTANCE, RECORD_TYPE_SKIN_TEMPERATURE);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    recordReadAccessLog(db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
+                });
+
+        List<AccessLog> result = queryAccessLogs();
+        assertThat(result).hasSize(1);
+        AccessLog log = result.get(0);
+        assertThat(log.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+        assertThat(log.getRecordTypes())
+                .containsExactly(DistanceRecord.class, SkinTemperatureRecord.class);
+        assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
     }
 }

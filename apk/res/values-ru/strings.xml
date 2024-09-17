@@ -303,8 +303,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Выбранный день"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Предыдущий день"</string>
     <string name="default_error" msgid="7966868260616403475">"Произошла ошибка. Повторите попытку."</string>
-    <!-- no translation found for raw_fhir_content_description (4869120157736279594) -->
-    <skip />
+    <string name="raw_fhir_content_description" msgid="4869120157736279594">"Подробная информация о здоровье"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Приложения с этим разрешением могут читать и записывать данные о вашем здоровье и физической активности."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Выберите, какие приложения получат доступ к данным, хранящимся в сервисе \"Здоровье и спорт\". Нажмите на приложение, чтобы посмотреть, какие данные оно может читать и записывать."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Доступ разрешен"</string>

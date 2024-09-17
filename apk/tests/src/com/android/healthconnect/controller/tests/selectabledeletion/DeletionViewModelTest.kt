@@ -21,9 +21,12 @@ import com.android.healthconnect.controller.permissions.data.MedicalPermissionTy
 import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteEntriesUseCase
+import com.android.healthconnect.controller.selectabledeletion.api.DeleteFitnessPermissionTypesFromAppUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesUseCase
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
+import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
+import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -55,13 +58,16 @@ class DeletionViewModelTest {
         mock(DeletePermissionTypesUseCase::class.java)
     private val deleteEntriesUseCase: DeleteEntriesUseCase = mock(DeleteEntriesUseCase::class.java)
 
+    private val deletePermissionTypesFromAppUseCase: DeleteFitnessPermissionTypesFromAppUseCase =
+            mock(DeleteFitnessPermissionTypesFromAppUseCase::class.java)
+
     private lateinit var viewModel: DeletionViewModel
 
     @Before
     fun setup() {
         hiltRule.inject()
         Dispatchers.setMain(testDispatcher)
-        viewModel = DeletionViewModel(deletePermissionTypesUseCase, deleteEntriesUseCase)
+        viewModel = DeletionViewModel(deletePermissionTypesUseCase,deleteEntriesUseCase, deletePermissionTypesFromAppUseCase)
     }
 
     @After
@@ -168,6 +174,25 @@ class DeletionViewModelTest {
             DeletionType.DeletionTypeEntries(deleteSet.toList(), DataType.STEPS)
         verify(deleteEntriesUseCase).invoke(expectedDeletionType)
     }
+
+    @Test
+    fun appPermissionTypes_delete_deletionInvokesCorrectly() = runTest {
+        viewModel.setAppPermissionTypesDeleteSet(
+            setOf(FitnessPermissionType.DISTANCE),
+            TEST_APP_PACKAGE_NAME,
+            TEST_APP_NAME
+        )
+        viewModel.delete()
+        advanceUntilIdle()
+
+        val expectedDeletionType =
+            DeletionType.DeletionTypeHealthPermissionTypesFromApp(
+                listOf(FitnessPermissionType.DISTANCE),
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME)
+        verify(deletePermissionTypesFromAppUseCase).invoke(expectedDeletionType)
+    }
+
 }
 
 private val FORMATTED_STEPS =

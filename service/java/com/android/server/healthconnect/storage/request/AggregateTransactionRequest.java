@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.storage.request;
 
-import android.annotation.NonNull;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.AggregateResult;
 import android.health.connect.TimeRangeFilter;
@@ -34,9 +33,11 @@ import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import java.time.Duration;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Refines aggregate request from what the client sent to a format that makes the most sense for the
@@ -51,6 +52,7 @@ public final class AggregateTransactionRequest {
     private final Duration mDuration;
     private final TimeRangeFilter mTimeRangeFilter;
     private final AggregationTypeIdMapper mAggregationTypeIdMapper;
+    private final Set<Integer> mRecordTypeIds = new HashSet<>();
 
     public AggregateTransactionRequest(
             String packageName,
@@ -67,6 +69,7 @@ public final class AggregateTransactionRequest {
         for (int id : request.getAggregateIds()) {
             AggregationType<?> aggregationType = mAggregationTypeIdMapper.getAggregationTypeFor(id);
             int recordTypeId = aggregationType.getApplicableRecordTypeId();
+            mRecordTypeIds.add(recordTypeId);
             RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordTypeId);
             AggregateTableRequest aggregateTableRequest =
                     recordHelper.getAggregateTableRequest(
@@ -90,7 +93,6 @@ public final class AggregateTransactionRequest {
         }
     }
 
-    @NonNull
     public String getPackageName() {
         return mPackageName;
     }
@@ -101,9 +103,9 @@ public final class AggregateTransactionRequest {
     public AggregateDataResponseParcel getAggregateDataResponseParcel() {
         Map<AggregationType<?>, List<AggregateResult<?>>> results = new ArrayMap<>();
         for (AggregateTableRequest aggregateTableRequest : mAggregateTableRequests) {
-            // Compute aggregations
+            // Compute aggregations and record read access log
             TransactionManager.getInitialisedInstance()
-                    .populateWithAggregation(aggregateTableRequest);
+                    .populateWithAggregation(aggregateTableRequest, mPackageName, mRecordTypeIds);
             results.put(
                     aggregateTableRequest.getAggregationType(),
                     aggregateTableRequest.getAggregateResults());

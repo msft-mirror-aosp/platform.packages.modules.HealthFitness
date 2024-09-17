@@ -273,12 +273,9 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Inmunización"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"inmunización"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Leer inmunización"</string>
-    <!-- no translation found for allergy_intolerance_uppercase_label (726821034032305942) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_lowercase_label (3259399258428458578) -->
-    <skip />
-    <!-- no translation found for allergy_intolerance_content_description (450723157436883417) -->
-    <skip />
+    <string name="allergy_intolerance_uppercase_label" msgid="726821034032305942">"Alergias e intolerancias"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="3259399258428458578">"Alergias e intolerancias"</string>
+    <string name="allergy_intolerance_content_description" msgid="450723157436883417">"Leer alergias e intolerancias"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Mindfulness"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"mindfulness"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Leer mindfulness"</string>

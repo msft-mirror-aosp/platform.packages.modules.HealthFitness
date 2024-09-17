@@ -21,7 +21,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMAR
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.Record;
@@ -61,7 +60,6 @@ public final class ActivityDateHelper extends DatabaseHelper {
      * Returns a requests representing the tables that should be created corresponding to this
      * helper
      */
-    @NonNull
     public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo())
                 .addUniqueConstraints(List.of(EPOCH_DAYS_COLUMN_NAME, RECORD_TYPE_ID_COLUMN_NAME));
@@ -73,8 +71,7 @@ public final class ActivityDateHelper extends DatabaseHelper {
     }
 
     /** Insert a new activity dates for the given records */
-    @NonNull
-    public static void insertRecordDate(@NonNull List<RecordInternal<?>> recordInternals) {
+    public static void insertRecordDate(List<RecordInternal<?>> recordInternals) {
         Objects.requireNonNull(recordInternals);
 
         final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
@@ -87,9 +84,7 @@ public final class ActivityDateHelper extends DatabaseHelper {
     }
 
     /** Returns a list of all dates with database writes for the given record types */
-    @NonNull
-    public static List<LocalDate> getActivityDates(
-            @NonNull List<Class<? extends Record>> recordTypes) {
+    public static List<LocalDate> getActivityDates(List<Class<? extends Record>> recordTypes) {
         RecordMapper recordMapper = RecordMapper.getInstance();
         List<Integer> recordTypeIds =
                 recordTypes.stream().map(recordMapper::getRecordType).collect(Collectors.toList());
@@ -144,7 +139,6 @@ public final class ActivityDateHelper extends DatabaseHelper {
                 });
     }
 
-    @NonNull
     private static List<Pair<String, String>> getColumnInfo() {
         return Arrays.asList(
                 new Pair<>(RecordHelper.PRIMARY_COLUMN_NAME, PRIMARY_AUTOINCREMENT),
@@ -177,7 +171,6 @@ public final class ActivityDateHelper extends DatabaseHelper {
         return recordTypeIdToEpochDays;
     }
 
-    @NonNull
     private static ContentValues getContentValues(int recordTypeId, long epochDays) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(EPOCH_DAYS_COLUMN_NAME, epochDays);
@@ -192,7 +185,7 @@ public final class ActivityDateHelper extends DatabaseHelper {
      * @param request a read request.
      * @return Cursor from table based on ids.
      */
-    private static List<LocalDate> readDates(@NonNull ReadTableRequest request) {
+    private static List<LocalDate> readDates(ReadTableRequest request) {
         final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
         try (Cursor cursor = transactionManager.read(request)) {
             List<LocalDate> dates = new ArrayList<>();
