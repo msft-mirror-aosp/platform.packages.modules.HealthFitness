@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.migration.notification;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.Context;
 import android.content.Intent;
@@ -37,8 +36,7 @@ final class IntentsUtil {
      * given packageName, if one is available.
      */
     @Nullable
-    private static String getInstallerPackageName(
-            @NonNull Context context, @NonNull String packageName) {
+    private static String getInstallerPackageName(Context context, String packageName) {
         String installerPackageName;
         try {
             InstallSourceInfo source =
@@ -67,9 +65,7 @@ final class IntentsUtil {
     /** Returns a link to the installer app store for a given package name. */
     @Nullable
     private static Intent createAppStoreIntent(
-            @NonNull Context context,
-            @NonNull String installerPackageName,
-            @NonNull String packageName) {
+            Context context, String installerPackageName, String packageName) {
         Intent intent = new Intent(Intent.ACTION_SHOW_APP_INFO).setPackage(installerPackageName);
         ResolveInfo result = context.getPackageManager().resolveActivity(intent, 0);
         if (result != null) {
@@ -82,8 +78,7 @@ final class IntentsUtil {
     /** Convenience method that looks up the installerPackageName for you. */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Nullable
-    public static Intent createAppStoreIntent(
-            @NonNull Context context, @NonNull String packageName) {
+    public static Intent createAppStoreIntent(Context context, String packageName) {
         String installerPackageName = getInstallerPackageName(context, packageName);
         return createAppStoreIntent(context, installerPackageName, packageName);
     }

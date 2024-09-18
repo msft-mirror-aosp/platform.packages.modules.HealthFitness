@@ -21,7 +21,6 @@ import static android.health.HealthFitnessStatsLog.EXERCISE_ROUTE_API_CALLED__OP
 import static android.health.HealthFitnessStatsLog.EXERCISE_ROUTE_API_CALLED__OPERATION__OPERATION_UPSERT;
 
 import android.annotation.IntDef;
-import android.annotation.NonNull;
 import android.health.HealthFitnessStatsLog;
 
 import java.lang.annotation.Retention;
@@ -58,7 +57,7 @@ public class ExerciseRoutesLogger {
      */
     public static void log(
             @Operations.Operation int operation,
-            @NonNull String packageName,
+            String packageName,
             int numberOfRecordsWithExerciseRoutes) {
         Objects.requireNonNull(packageName);
 

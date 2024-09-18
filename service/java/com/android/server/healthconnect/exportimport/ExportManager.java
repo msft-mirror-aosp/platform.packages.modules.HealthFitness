@@ -28,7 +28,6 @@ import static com.android.server.healthconnect.logging.ExportImportLogger.NO_VAL
 
 import static java.util.Objects.requireNonNull;
 
-import android.annotation.NonNull;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -91,7 +90,7 @@ public class ExportManager {
     private final HealthConnectNotificationSender mNotificationSender;
 
     public ExportManager(
-            @NonNull Context context,
+            Context context,
             Clock clock,
             ExportImportSettingsStorage exportImportSettingsStorage,
             TransactionManager transactionManager) {
@@ -104,7 +103,7 @@ public class ExportManager {
     }
 
     public ExportManager(
-            @NonNull Context context,
+            Context context,
             Clock clock,
             HealthConnectNotificationSender notificationSender,
             ExportImportSettingsStorage exportImportSettingsStorage,

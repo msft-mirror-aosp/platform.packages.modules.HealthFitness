@@ -41,8 +41,9 @@ class DisconnectAllAppPermissionsDialogFragment() :
     Hilt_DisconnectAllAppPermissionsDialogFragment() {
     private val viewModel: AdditionalAccessViewModel by activityViewModels()
 
-    constructor(appName: String) : this() {
+    constructor(appName: String, showCheckbox: Boolean = true) : this() {
         this.appName = appName
+        this.showCheckbox = showCheckbox
     }
 
     companion object {
@@ -53,9 +54,11 @@ class DisconnectAllAppPermissionsDialogFragment() :
         const val KEY_APP_NAME = "KEY_APP_NAME"
         const val KEY_INCLUDE_BACKGROUND_READ = "KEY_INCLUDE_BACKGROUND_READ"
         const val KEY_INCLUDE_HISTORY_READ = "KEY_INCLUDE_HISTORY_READ"
+        const val KEY_SHOW_CHECKBOX = "KEY_SHOW_CHECKBOX"
     }
 
     lateinit var appName: String
+    private var showCheckbox: Boolean = true
     private var includeBackgroundRead: Boolean = false
     private var includeHistoryRead: Boolean = false
     @Inject lateinit var logger: HealthConnectLogger
@@ -70,6 +73,7 @@ class DisconnectAllAppPermissionsDialogFragment() :
             includeBackgroundRead =
                 savedInstanceState.getBoolean(KEY_INCLUDE_BACKGROUND_READ, false)
             includeHistoryRead = savedInstanceState.getBoolean(KEY_INCLUDE_HISTORY_READ, false)
+            showCheckbox = savedInstanceState.getBoolean(KEY_SHOW_CHECKBOX, false)
         }
         val additionalPermissionsState =
             viewModel.additionalAccessState.value ?: AdditionalAccessViewModel.State()
@@ -113,6 +117,10 @@ class DisconnectAllAppPermissionsDialogFragment() :
         }
         val checkBox =
             body.findViewById<CheckBox>(R.id.dialog_checkbox).apply {
+                if (!showCheckbox) {
+                    visibility = View.GONE
+                    return@apply
+                }
                 text =
                     getString(R.string.disconnect_all_health_permissions_dialog_checkbox, appName)
             }
@@ -153,5 +161,6 @@ class DisconnectAllAppPermissionsDialogFragment() :
         outState.putString(KEY_APP_NAME, appName)
         outState.putBoolean(KEY_INCLUDE_BACKGROUND_READ, includeBackgroundRead)
         outState.putBoolean(KEY_INCLUDE_HISTORY_READ, includeHistoryRead)
+        outState.putBoolean(KEY_SHOW_CHECKBOX, showCheckbox)
     }
 }

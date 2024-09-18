@@ -87,6 +87,17 @@ public class FhirResourceTypeStringToIntMapperTest {
 
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testFhirResourceTypeInt_procedureType() {
+        assertThat(getFhirResourceTypeInt("procedure"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_PROCEDURE);
+        assertThat(getFhirResourceTypeInt("Procedure"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_PROCEDURE);
+        assertThat(getFhirResourceTypeInt("PROCEDURE"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_PROCEDURE);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testFhirResourceTypeInt_unknownType() {
         int fhirResourceTypeInt = getFhirResourceTypeInt("patient");
 

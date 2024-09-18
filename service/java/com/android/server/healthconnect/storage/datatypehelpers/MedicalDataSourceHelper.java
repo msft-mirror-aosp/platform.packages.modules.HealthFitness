@@ -360,14 +360,15 @@ public class MedicalDataSourceHelper {
             Set<Integer> grantedReadMedicalResourceTypes,
             String callingPackageName,
             boolean hasWritePermission,
-            boolean isCalledFromBgWithoutBgRead)
+            boolean isCalledFromBgWithoutBgRead,
+            AppInfoHelper appInfoHelper)
             throws SQLiteException {
         // TODO(b/359892459): Add CTS tests once it is properly implemented.
         if (!hasWritePermission && grantedReadMedicalResourceTypes.isEmpty()) {
             throw new IllegalStateException("no read or write permission");
         }
 
-        long appId = AppInfoHelper.getInstance().getAppInfoId(callingPackageName);
+        long appId = appInfoHelper.getAppInfoId(callingPackageName);
         // This is an optimization to not hit the db, when we know that the app has not
         // created any dataSources hence appId does not exist (so no self data to read)
         // and has no read permission, so won't be able to read dataSources written by

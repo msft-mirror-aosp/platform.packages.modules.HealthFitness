@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.permission;
 
-import android.annotation.NonNull;
 import android.util.ArrayMap;
 import android.util.AtomicFile;
 import android.util.Log;
@@ -58,8 +57,7 @@ public final class GrantTimeXmlHelper {
      * @param userGrantTimeState the grant times to be serialized.
      * @param file the file into which the serialized data should be written.
      */
-    public static void serializeGrantTimes(
-            @NonNull File file, @NonNull UserGrantTimeState userGrantTimeState) {
+    public static void serializeGrantTimes(File file, UserGrantTimeState userGrantTimeState) {
         AtomicFile atomicFile = new AtomicFile(file);
         FileOutputStream outputStream = null;
         try {
@@ -100,8 +98,7 @@ public final class GrantTimeXmlHelper {
         }
     }
 
-    @NonNull
-    private static UserGrantTimeState parseXml(@NonNull XmlPullParser parser)
+    private static UserGrantTimeState parseXml(XmlPullParser parser)
             throws IOException, XmlPullParserException {
         int targetDepth = parser.getDepth() + 1;
         int type = parser.next();
@@ -125,8 +122,7 @@ public final class GrantTimeXmlHelper {
     }
 
     private static void writeGrantTimes(
-            @NonNull XmlSerializer serializer, @NonNull UserGrantTimeState userGrantTimeState)
-            throws IOException {
+            XmlSerializer serializer, UserGrantTimeState userGrantTimeState) throws IOException {
         serializer.startTag(/* namespace= */ null, TAG_FIRST_GRANT_TIMES);
         serializer.attribute(
                 /* namespace= */ null,
@@ -160,8 +156,7 @@ public final class GrantTimeXmlHelper {
         serializer.endTag(/* namespace= */ null, TAG_FIRST_GRANT_TIMES);
     }
 
-    @NonNull
-    private static UserGrantTimeState parseFirstGrantTimes(@NonNull XmlPullParser parser)
+    private static UserGrantTimeState parseFirstGrantTimes(XmlPullParser parser)
             throws IOException, XmlPullParserException {
         String versionValue = parser.getAttributeValue(/* namespace= */ null, ATTRIBUTE_VERSION);
         int version =

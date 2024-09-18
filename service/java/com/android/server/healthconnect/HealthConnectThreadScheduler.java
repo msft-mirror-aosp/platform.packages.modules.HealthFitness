@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect;
 
-import android.annotation.NonNull;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.util.Slog;
@@ -146,7 +145,7 @@ public final class HealthConnectThreadScheduler {
     }
 
     /** Schedules the task on the best possible executor based on the parameters */
-    static void schedule(Context context, @NonNull Runnable task, int uid, boolean isController) {
+    static void schedule(Context context, Runnable task, int uid, boolean isController) {
         if (isController) {
             safeExecute(sControllerExecutor, getSafeRunnable(task));
             return;
