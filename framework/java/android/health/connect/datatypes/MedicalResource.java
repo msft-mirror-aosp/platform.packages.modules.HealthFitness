@@ -64,12 +64,19 @@ public final class MedicalResource implements Parcelable {
     /** Medical resource type labelling data as results (Laboratory or pathology). */
     public static final int MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS = 6;
 
+    /**
+     * Medical resource type labelling data as problems (clinical condition, problem, diagnosis
+     * etc).
+     */
+    public static final int MEDICAL_RESOURCE_TYPE_PROBLEMS = 7;
+
     /** @hide */
     @IntDef({
         MEDICAL_RESOURCE_TYPE_UNKNOWN,
         MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
         MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
         MEDICAL_RESOURCE_TYPE_PREGNANCY,
+        MEDICAL_RESOURCE_TYPE_PROBLEMS,
         MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
         MEDICAL_RESOURCE_TYPE_VITAL_SIGNS,
         MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS
@@ -114,6 +121,7 @@ public final class MedicalResource implements Parcelable {
     private MedicalResource(@NonNull Parcel in) {
         requireNonNull(in);
         mType = in.readInt();
+        validateMedicalResourceType(mType);
         mDataSourceId = requireNonNull(in.readString());
         mFhirVersion =
                 requireNonNull(
@@ -199,6 +207,7 @@ public final class MedicalResource implements Parcelable {
                     MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                     MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
                     MEDICAL_RESOURCE_TYPE_PREGNANCY,
+                    MEDICAL_RESOURCE_TYPE_PROBLEMS,
                     MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
                     MEDICAL_RESOURCE_TYPE_VITAL_SIGNS,
                     MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS);

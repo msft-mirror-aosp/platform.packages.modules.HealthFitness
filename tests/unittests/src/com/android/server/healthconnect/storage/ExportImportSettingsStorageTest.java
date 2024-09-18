@@ -33,9 +33,13 @@ import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
 import android.net.Uri;
 import android.os.RemoteException;
+import android.platform.test.annotations.DisableFlags;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.FakePreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -57,11 +61,15 @@ public final class ExportImportSettingsStorageTest {
     private static final String LAST_IMPORT_ERROR_PREFERENCE_KEY = "last_import_error_key";
     private static final String LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY =
             "last_successful_export_uri_key";
+    private static final String NEXT_EXPORT_SEQUENTIAL_NUMBER_PREFERENCE_KEY =
+            "next_export_sequential_number_key";
     private static final String TEST_URI = "content://com.android.server.healthconnect/testuri";
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this).mockStatic(PreferenceHelper.class).build();
+
+    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Mock Context mContext;
     @Mock ContentResolver mContentResolver;
@@ -129,6 +137,45 @@ public final class ExportImportSettingsStorageTest {
 
         assertThat(mFakePreferenceHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY))
                 .isEqualTo(null);
+    }
+
+    @Test
+    @DisableFlags({Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW})
+    public void testConfigure_uri_flagDisabled_setsSequentialNumberToZero() {
+        mExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setUri(Uri.parse(TEST_URI)).build());
+
+        assertThat(
+                        mExportImportSettingsStorage
+                                .getScheduledExportStatus(mContext)
+                                .getNextExportSequentialNumber())
+                .isEqualTo(0);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW})
+    public void testConfigure_uri_noExportSequentialNumberExists_setsSequentialNumberToOne() {
+        mExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setUri(Uri.parse(TEST_URI)).build());
+
+        assertThat(
+                        mFakePreferenceHelper.getPreference(
+                                NEXT_EXPORT_SEQUENTIAL_NUMBER_PREFERENCE_KEY))
+                .isEqualTo(String.valueOf(1));
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW})
+    public void testConfigure_uri_sequentialNumberExists_plusOne() {
+        mFakePreferenceHelper.insertOrReplacePreference(
+                NEXT_EXPORT_SEQUENTIAL_NUMBER_PREFERENCE_KEY, String.valueOf(23));
+        mExportImportSettingsStorage.configure(
+                new ScheduledExportSettings.Builder().setUri(Uri.parse(TEST_URI)).build());
+
+        assertThat(
+                        mFakePreferenceHelper.getPreference(
+                                NEXT_EXPORT_SEQUENTIAL_NUMBER_PREFERENCE_KEY))
+                .isEqualTo(String.valueOf(24));
     }
 
     @Test

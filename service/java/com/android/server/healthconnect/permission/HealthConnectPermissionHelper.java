@@ -33,6 +33,7 @@ import android.os.UserHandle;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
 import java.time.Instant;
@@ -63,6 +64,7 @@ public final class HealthConnectPermissionHelper {
     private final HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
     private final FirstGrantTimeManager mFirstGrantTimeManager;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private final AppInfoHelper mAppInfoHelper;
 
     /**
      * Constructs a {@link HealthConnectPermissionHelper}.
@@ -80,14 +82,16 @@ public final class HealthConnectPermissionHelper {
             PackageManager packageManager,
             Set<String> healthPermissions,
             HealthPermissionIntentAppsTracker permissionIntentTracker,
-            FirstGrantTimeManager firstGrantTimeManager) {
+            FirstGrantTimeManager firstGrantTimeManager,
+            AppInfoHelper appInfoHelper) {
         this(
                 context,
                 packageManager,
                 healthPermissions,
                 permissionIntentTracker,
                 firstGrantTimeManager,
-                HealthDataCategoryPriorityHelper.getInstance());
+                HealthDataCategoryPriorityHelper.getInstance(),
+                appInfoHelper);
     }
 
     public HealthConnectPermissionHelper(
@@ -96,13 +100,15 @@ public final class HealthConnectPermissionHelper {
             Set<String> healthPermissions,
             HealthPermissionIntentAppsTracker permissionIntentTracker,
             FirstGrantTimeManager firstGrantTimeManager,
-            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            AppInfoHelper appInfoHelper) {
         mContext = context;
         mPackageManager = packageManager;
         mHealthPermissions = healthPermissions;
         mPermissionIntentAppsTracker = permissionIntentTracker;
         mFirstGrantTimeManager = firstGrantTimeManager;
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
+        mAppInfoHelper = appInfoHelper;
     }
 
     /**
@@ -130,6 +136,7 @@ public final class HealthConnectPermissionHelper {
                     MASK_PERMISSION_FLAGS,
                     PackageManager.FLAG_PERMISSION_USER_SET,
                     checkedUser);
+            mAppInfoHelper.getOrInsertAppInfoId(packageName, mContext);
             addToPriorityListIfRequired(packageName, permissionName);
 
         } finally {

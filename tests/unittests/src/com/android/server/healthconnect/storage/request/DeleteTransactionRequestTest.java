@@ -39,9 +39,12 @@ import android.health.connect.datatypes.StepsRecord;
 import android.os.Environment;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.quality.Strictness;
@@ -50,6 +53,8 @@ import java.util.List;
 
 public class DeleteTransactionRequestTest {
     private static final String TEST_PACKAGE_NAME = "package.name";
+
+    private AppInfoHelper mAppInfoHelper;
 
     @Rule(order = 1)
     public final ExtendedMockitoRule mExtendedMockitoRule =
@@ -63,12 +68,24 @@ public class DeleteTransactionRequestTest {
     public final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
             new HealthConnectDatabaseTestRule();
 
+    @Before
+    public void setup() {
+        mAppInfoHelper =
+                HealthConnectInjectorImpl.newBuilderForTest(
+                                mHealthConnectDatabaseTestRule.getUserContext())
+                        .setTransactionManager(
+                                mHealthConnectDatabaseTestRule.getTransactionManager())
+                        .build()
+                        .getAppInfoHelper();
+    }
+
     @Test
     public void getPackageName_fromConstructor_nameSetCorrectly() {
         DeleteUsingFiltersRequest deleteRequest = new DeleteUsingFiltersRequest.Builder().build();
         DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
 
-        DeleteTransactionRequest request = new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel);
+        DeleteTransactionRequest request =
+                new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper);
         assertThat(request.getPackageName()).isEqualTo(TEST_PACKAGE_NAME);
     }
 
@@ -91,7 +108,8 @@ public class DeleteTransactionRequestTest {
                 new DeleteUsingFiltersRequestParcel(
                         new RecordIdFiltersParcel(recordIdFilters), TEST_PACKAGE_NAME);
 
-        DeleteTransactionRequest request = new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel);
+        DeleteTransactionRequest request =
+                new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper);
         assertThat(request.getRecordTypeIds())
                 .containsExactly(RECORD_TYPE_STEPS, RECORD_TYPE_HEART_RATE);
     }
@@ -105,7 +123,8 @@ public class DeleteTransactionRequestTest {
                         .build();
         DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
 
-        DeleteTransactionRequest request = new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel);
+        DeleteTransactionRequest request =
+                new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper);
         assertThat(request.getRecordTypeIds())
                 .containsExactly(RECORD_TYPE_SPEED, RECORD_TYPE_BLOOD_GLUCOSE);
     }
