@@ -34,6 +34,7 @@ public class ScheduledExportStatusTest {
     private static final String TEST_LAST_EXPORT_FILE_NAME = "healthconnect.zip";
     private static final String TEST_NEXT_EXPORT_APP_NAME = "Drive";
     private static final String TEST_NEXT_EXPORT_FILE_NAME = "exportimport.zip";
+    private static final int TEST_NEXT_EXPORT_SEQUENTIAL_NUMBER = 42;
 
     @Test
     public void testDeserialize() {
@@ -47,6 +48,7 @@ public class ScheduledExportStatusTest {
                         .setLastExportAppName(TEST_LAST_EXPORT_APP_NAME)
                         .setNextExportFileName(TEST_NEXT_EXPORT_FILE_NAME)
                         .setNextExportAppName(TEST_NEXT_EXPORT_APP_NAME)
+                        .setNextExportSequentialNumber(TEST_NEXT_EXPORT_SEQUENTIAL_NUMBER)
                         .build();
 
         Parcel statusParcel = writeToParcel(scheduledExportStatus);
@@ -67,6 +69,8 @@ public class ScheduledExportStatusTest {
         assertThat(deserializedStatus.getNextExportFileName())
                 .isEqualTo(TEST_NEXT_EXPORT_FILE_NAME);
         assertThat(deserializedStatus.getNextExportAppName()).isEqualTo(TEST_NEXT_EXPORT_APP_NAME);
+        assertThat(deserializedStatus.getNextExportSequentialNumber())
+                .isEqualTo(TEST_NEXT_EXPORT_SEQUENTIAL_NUMBER);
     }
 
     @Test
@@ -75,6 +79,7 @@ public class ScheduledExportStatusTest {
                 new ScheduledExportStatus.Builder()
                         .setPeriodInDays(7)
                         .setDataExportError(ScheduledExportStatus.DATA_EXPORT_LOST_FILE_ACCESS)
+                        .setNextExportSequentialNumber(8)
                         .build();
 
         Parcel statusParcel = writeToParcel(scheduledExportStatus);
@@ -91,6 +96,7 @@ public class ScheduledExportStatusTest {
         assertThat(deserializedStatus.getLastExportFileName()).isNull();
         assertThat(deserializedStatus.getNextExportAppName()).isNull();
         assertThat(deserializedStatus.getNextExportFileName()).isNull();
+        assertThat(deserializedStatus.getNextExportSequentialNumber()).isEqualTo(8);
     }
 
     private static Parcel writeToParcel(ScheduledExportStatus scheduledExportStatus) {

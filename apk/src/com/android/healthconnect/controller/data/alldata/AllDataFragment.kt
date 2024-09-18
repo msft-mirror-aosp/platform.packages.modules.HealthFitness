@@ -383,6 +383,8 @@ open class AllDataFragment : Hilt_AllDataFragment() {
                     entriesViewModel.setScreenState(
                         EntriesViewModel.EntriesDeletionScreenState.VIEW
                     )
+                    entriesViewModel.setAllEntriesSelectedValue(false)
+                    entriesViewModel.setDataType(null)
                     entriesViewModel.currentSelectedDate.value = null
                     findNavController()
                         .navigate(

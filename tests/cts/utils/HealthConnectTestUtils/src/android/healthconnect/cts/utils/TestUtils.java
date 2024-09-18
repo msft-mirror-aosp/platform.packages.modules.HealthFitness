@@ -1281,6 +1281,16 @@ public final class TestUtils {
         }
     }
 
+    /**
+     * Sets value for a field using reflection. This can be used to set fields for immutable class.
+     */
+    public static void setFieldValueUsingReflection(Object object, String fieldName, Object value)
+            throws NoSuchFieldException, IllegalAccessException {
+        Field field = object.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(object, value);
+    }
+
     // TODO(b/328228842): Avoid using reflection once we have Builder(Record) constructors
     private static void copyRecordIdViaReflection(Record from, Record to) {
         setRecordIdViaReflection(to.getMetadata(), from.getMetadata().getId());

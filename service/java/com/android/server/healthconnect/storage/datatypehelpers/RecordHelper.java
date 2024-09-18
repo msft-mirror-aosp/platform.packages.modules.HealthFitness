@@ -133,11 +133,11 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             String callingPackage,
             List<String> packageFilters,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            AppInfoHelper appInfoHelper,
             long startTime,
             long endTime,
             long startDateAccess,
             boolean useLocalTime) {
-        AppInfoHelper appInfoHelper = AppInfoHelper.getInstance();
         AggregateParams params = getAggregateParams(aggregationType);
         String physicalTimeColumnName = getStartTimeColumnName();
         String startTimeColumnName =
@@ -340,7 +340,8 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             boolean enforceSelfRead,
             long startDateAccessMillis,
             Set<String> grantedExtraReadPermissions,
-            boolean isInForeground) {
+            boolean isInForeground,
+            AppInfoHelper appInfoHelper) {
         return new ReadTableRequest(getMainTableName())
                 .setJoinClause(getJoinForReadRequest())
                 .setWhereClause(
@@ -348,7 +349,8 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                                 request,
                                 callingPackageName,
                                 enforceSelfRead,
-                                startDateAccessMillis))
+                                startDateAccessMillis,
+                                appInfoHelper))
                 .setOrderBy(getOrderByClause(request))
                 .setLimit(getLimitSize(request))
                 .setRecordHelper(this)
@@ -358,7 +360,8 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                                 callingPackageName,
                                 startDateAccessMillis,
                                 grantedExtraReadPermissions,
-                                isInForeground));
+                                isInForeground,
+                                appInfoHelper));
     }
 
     /**
@@ -387,7 +390,8 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             List<UUID> uuids,
             long startDateAccess,
             Set<String> grantedExtraReadPermissions,
-            boolean isInForeground) {
+            boolean isInForeground,
+            AppInfoHelper appInfoHelper) {
         return new ReadTableRequest(getMainTableName())
                 .setJoinClause(getJoinForReadRequest())
                 .setWhereClause(
@@ -403,7 +407,8 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                                 uuids,
                                 startDateAccess,
                                 grantedExtraReadPermissions,
-                                isInForeground));
+                                isInForeground,
+                                appInfoHelper));
     }
 
     /**
@@ -415,7 +420,8 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             String packageName,
             long startDateAccess,
             Set<String> grantedExtraReadPermissions,
-            boolean isInForeground) {
+            boolean isInForeground,
+            AppInfoHelper appInfoHelper) {
         return Collections.emptyList();
     }
 
@@ -428,7 +434,8 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             List<UUID> uuids,
             long startDateAccess,
             Set<String> grantedExtraReadPermissions,
-            boolean isInForeground) {
+            boolean isInForeground,
+            AppInfoHelper appInfoHelper) {
         return Collections.emptyList();
     }
 
@@ -597,14 +604,14 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             List<String> packageFilters,
             long startTime,
             long endTime,
-            boolean usesLocalTimeFilter) {
+            boolean usesLocalTimeFilter,
+            AppInfoHelper appInfoHelper) {
         final String timeColumnName =
                 usesLocalTimeFilter ? getLocalStartTimeColumnName() : getStartTimeColumnName();
         return new DeleteTableRequest(getMainTableName(), getRecordIdentifier())
                 .setTimeFilter(timeColumnName, startTime, endTime)
                 .setPackageFilter(
-                        APP_INFO_ID_COLUMN_NAME,
-                        AppInfoHelper.getInstance().getAppInfoIds(packageFilters))
+                        APP_INFO_ID_COLUMN_NAME, appInfoHelper.getAppInfoIds(packageFilters))
                 .setRequiresUuId(UUID_COLUMN_NAME);
     }
 
@@ -703,8 +710,8 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             ReadRecordsRequestParcel request,
             String callingPackageName,
             boolean enforceSelfRead,
-            long startDateAccessMillis) {
-        AppInfoHelper appInfoHelper = AppInfoHelper.getInstance();
+            long startDateAccessMillis,
+            AppInfoHelper appInfoHelper) {
         long callingAppInfoId = appInfoHelper.getAppInfoId(callingPackageName);
         RecordIdFiltersParcel recordIdFiltersParcel = request.getRecordIdFiltersParcel();
         if (recordIdFiltersParcel == null) {
@@ -910,7 +917,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      * referenced it.
      */
     public List<ReadTableRequest> getReadRequestsForRecordsModifiedByUpsertion(
-            UUID upsertedRecordId, UpsertTableRequest upsertTableRequest) {
+            UUID upsertedRecordId, UpsertTableRequest upsertTableRequest, long appId) {
         return Collections.emptyList();
     }
 }

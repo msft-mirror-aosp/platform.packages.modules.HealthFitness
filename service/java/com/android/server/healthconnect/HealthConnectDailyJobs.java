@@ -33,6 +33,7 @@ import android.os.UserHandle;
 
 import com.android.server.healthconnect.logging.DailyLoggingService;
 import com.android.server.healthconnect.storage.AutoDeleteService;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
@@ -73,14 +74,15 @@ public class HealthConnectDailyJobs {
 
     /** Auto deletes the data and uploads critical daily metrics. */
     public static void execute(
-            @NonNull Context context,
+            Context context,
             JobParameters params,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
-            PreferenceHelper preferenceHelper) {
+            PreferenceHelper preferenceHelper,
+            AppInfoHelper appInfoHelper) {
         int userId = params.getExtras().getInt(EXTRA_USER_ID, /* defaultValue= */ DEFAULT_INT);
 
         AutoDeleteService.startAutoDelete(
-                context, healthDataCategoryPriorityHelper, preferenceHelper);
+                context, healthDataCategoryPriorityHelper, preferenceHelper, appInfoHelper);
         DailyLoggingService.logDailyMetrics(
                 context, UserHandle.getUserHandleForUid(userId), preferenceHelper);
     }

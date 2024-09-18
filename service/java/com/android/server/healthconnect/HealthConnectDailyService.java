@@ -40,6 +40,7 @@ import com.android.server.healthconnect.migration.MigrationStateChangeJob;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
@@ -83,6 +84,7 @@ public class HealthConnectDailyService extends JobService {
         ExportManager exportManager;
         HealthConnectDeviceConfigManager healthConnectDeviceConfigManager;
         MigrationStateManager migrationStateManager;
+        AppInfoHelper appInfoHelper;
 
         if (Flags.dependencyInjection()) {
             HealthConnectInjector healthConnectInjector = HealthConnectInjector.getInstance();
@@ -94,6 +96,7 @@ public class HealthConnectDailyService extends JobService {
             healthConnectDeviceConfigManager =
                     healthConnectInjector.getHealthConnectDeviceConfigManager();
             migrationStateManager = healthConnectInjector.getMigrationStateManager();
+            appInfoHelper = healthConnectInjector.getAppInfoHelper();
         } else {
             healthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
             preferenceHelper = PreferenceHelper.getInstance();
@@ -107,6 +110,7 @@ public class HealthConnectDailyService extends JobService {
                             exportImportSettingsStorage,
                             TransactionManager.getInitialisedInstance());
             migrationStateManager = MigrationStateManager.getInitialisedInstance();
+            appInfoHelper = AppInfoHelper.getInstance();
         }
 
         // This service executes each incoming job on a Handler running on the application's
@@ -119,7 +123,8 @@ public class HealthConnectDailyService extends JobService {
                                     getApplicationContext(),
                                     params,
                                     healthDataCategoryPriorityHelper,
-                                    preferenceHelper);
+                                    preferenceHelper,
+                                    appInfoHelper);
                             jobFinished(params, false);
                         });
                 return true;

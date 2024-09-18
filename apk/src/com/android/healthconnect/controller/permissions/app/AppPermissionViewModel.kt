@@ -130,6 +130,16 @@ constructor(
             }
         }
 
+    val atLeastOneHealthPermissionGranted =
+        MediatorLiveData(false).apply {
+            addSource(atLeastOneFitnessPermissionGranted) { value ->
+                this.value = value || atLeastOneMedicalPermissionGranted.value ?: false
+            }
+            addSource(atLeastOneMedicalPermissionGranted) { value ->
+                this.value = value || atLeastOneFitnessPermissionGranted.value ?: false
+            }
+        }
+
     private val _appInfo = MutableLiveData<AppMetadata>()
     val appInfo: LiveData<AppMetadata>
         get() = _appInfo

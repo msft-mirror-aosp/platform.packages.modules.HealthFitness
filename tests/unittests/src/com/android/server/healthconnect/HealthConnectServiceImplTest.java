@@ -152,6 +152,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -1189,6 +1190,27 @@ public class HealthConnectServiceImplTest {
                         eq(mTestPackageName),
                         /* hasWritePermission= */ eq(true),
                         anyBoolean());
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testReadMedicalResources_byIds_numberOfIdsTooLarge_expectException()
+            throws RemoteException {
+        setDataManagementPermission(PERMISSION_DENIED);
+        setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
+        setUpPhrMocksWithIrrelevantResponses();
+        List<MedicalResourceId> ids = new ArrayList<>();
+        for (int i = 0; i <= 5000; i++) {
+            ids.add(getMedicalResourceId());
+        }
+
+        mHealthConnectService.readMedicalResourcesByIds(
+                mAttributionSource, ids, mReadMedicalResourcesResponseCallback);
+
+        verify(mReadMedicalResourcesResponseCallback, timeout(5000).times(1))
+                .onError(mErrorCaptor.capture());
+        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
     }
 
     @Test

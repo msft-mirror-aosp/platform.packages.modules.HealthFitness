@@ -2176,8 +2176,9 @@ public class HealthConnectManager {
             return;
         }
 
-        if (ids.size() >= MAXIMUM_PAGE_SIZE) {
-            throw new IllegalArgumentException("Maximum allowed pageSize is " + MAXIMUM_PAGE_SIZE);
+        if (ids.size() > MAXIMUM_PAGE_SIZE) {
+            throw new IllegalArgumentException(
+                    "The number of requested IDs must be <= " + MAXIMUM_PAGE_SIZE);
         }
 
         try {
@@ -2186,8 +2187,8 @@ public class HealthConnectManager {
                     ids,
                     new IReadMedicalResourcesResponseCallback.Stub() {
                         @Override
-                        public void onResult(ReadMedicalResourcesResponse parcel) {
-                            returnResult(executor, parcel.getMedicalResources(), callback);
+                        public void onResult(ReadMedicalResourcesResponse response) {
+                            returnResult(executor, response.getMedicalResources(), callback);
                         }
 
                         @Override
@@ -2553,7 +2554,7 @@ public class HealthConnectManager {
      * <p>Number of data sources returned by this API will depend based on below factors:
      *
      * <ul>
-     *   <li>If an empty {@link GetMedicalDataSourcesRequest} is passed all data sources for all
+     *   <li>If an empty {@link GetMedicalDataSourcesRequest} is passed, all data sources for all
      *       apps are requested, and all which the caller is permitted to get will be returned. See
      *       below.
      *   <li>If a list of packages is specified in the request, then only the data sources created
