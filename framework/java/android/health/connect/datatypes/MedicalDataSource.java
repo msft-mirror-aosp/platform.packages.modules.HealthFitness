@@ -130,7 +130,10 @@ public final class MedicalDataSource implements Parcelable {
 
     /**
      * Returns the time {@link MedicalResource}s linked to this data source were last updated, or
-     * {@code null} if no data has been written yet to this data source.
+     * {@code null} if the data source has no linked resources.
+     *
+     * <p>This time is based on resources that currently exist in HealthConnect, so does not reflect
+     * data deletion.
      */
     @Nullable
     public Instant getLastDataUpdateTime() {
