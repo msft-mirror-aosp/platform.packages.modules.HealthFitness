@@ -24,6 +24,7 @@ import static android.healthconnect.cts.utils.DataFactory.MINIMUM_PAGE_SIZE;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.PAGE_TOKEN;
+import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -235,5 +236,47 @@ public class ReadMedicalResourcesRequestTest {
 
         assertThat(restored).isEqualTo(original);
         parcel.recycle();
+    }
+
+    @Test
+    public void testRestoreInvalidMedicalResourceTypeFromParcel_expectException()
+            throws NoSuchFieldException, IllegalAccessException {
+        ReadMedicalResourcesRequest original =
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addDataSourceId(DATA_SOURCE_ID)
+                        .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
+                        .setPageSize(100)
+                        .setPageToken(PAGE_TOKEN)
+                        .build();
+        setFieldValueUsingReflection(original, "mMedicalResourceType", -1);
+
+        Parcel parcel = Parcel.obtain();
+        original.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> ReadMedicalResourcesRequest.CREATOR.createFromParcel(parcel));
+    }
+
+    @Test
+    public void testRestoreTooLargePageSizeFromParcel_expectException()
+            throws NoSuchFieldException, IllegalAccessException {
+        ReadMedicalResourcesRequest original =
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addDataSourceId(DATA_SOURCE_ID)
+                        .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
+                        .setPageSize(100)
+                        .setPageToken(PAGE_TOKEN)
+                        .build();
+        setFieldValueUsingReflection(original, "mPageSize", 5001);
+
+        Parcel parcel = Parcel.obtain();
+        original.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> ReadMedicalResourcesRequest.CREATOR.createFromParcel(parcel));
     }
 }

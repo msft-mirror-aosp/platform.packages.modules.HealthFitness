@@ -294,6 +294,11 @@
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
     <permission
+        android:name="android.permission.health.READ_MEDICAL_DATA_PROBLEMS"
+        android:label="@string/pregnancy_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+    <permission
         android:name="android.permission.health.READ_MEDICAL_DATA_SOCIAL_HISTORY"
         android:label="@string/social_history_content_description"
         android:protectionLevel="dangerous"

@@ -205,7 +205,8 @@ public final class CreateTableRequest {
                 && Objects.equals(mUniqueColumns, that.mUniqueColumns)
                 && Objects.equals(mForeignKeys, that.mForeignKeys)
                 && Objects.equals(mChildTableRequests, that.mChildTableRequests)
-                && Objects.equals(mGeneratedColumnInfo, that.mGeneratedColumnInfo);
+                && Objects.equals(mGeneratedColumnInfo, that.mGeneratedColumnInfo)
+                && Objects.equals(mColumnsToIndex, that.mColumnsToIndex);
     }
 
     /** Returns a hash code value for the object. */

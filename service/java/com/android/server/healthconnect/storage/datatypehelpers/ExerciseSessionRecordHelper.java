@@ -303,10 +303,11 @@ public final class ExerciseSessionRecordHelper
             String packageName,
             long startDateAccessMillis,
             Set<String> grantedExtraReadPermissions,
-            boolean isInForeground) {
+            boolean isInForeground,
+            AppInfoHelper appInfoHelper) {
         int routeAccessType =
                 getExerciseRouteReadAccessType(
-                        packageName, grantedExtraReadPermissions, isInForeground);
+                        packageName, grantedExtraReadPermissions, isInForeground, appInfoHelper);
 
         if (routeAccessType == ROUTE_READ_ACCESS_TYPE_NONE) {
             return Collections.emptyList();
@@ -316,7 +317,11 @@ public final class ExerciseSessionRecordHelper
 
         WhereClauses sessionsWithAccessibleRouteClause =
                 getReadTableWhereClause(
-                        request, packageName, enforceSelfRead, startDateAccessMillis);
+                        request,
+                        packageName,
+                        enforceSelfRead,
+                        startDateAccessMillis,
+                        appInfoHelper);
         return List.of(getRouteReadRequest(sessionsWithAccessibleRouteClause));
     }
 
@@ -350,10 +355,11 @@ public final class ExerciseSessionRecordHelper
             List<UUID> uuids,
             long startDateAccess,
             Set<String> grantedExtraReadPermissions,
-            boolean isInForeground) {
+            boolean isInForeground,
+            AppInfoHelper appInfoHelper) {
         int routeAccessType =
                 getExerciseRouteReadAccessType(
-                        packageName, grantedExtraReadPermissions, isInForeground);
+                        packageName, grantedExtraReadPermissions, isInForeground, appInfoHelper);
 
         if (routeAccessType == ROUTE_READ_ACCESS_TYPE_NONE) {
             return Collections.emptyList();
@@ -366,7 +372,7 @@ public final class ExerciseSessionRecordHelper
                         .addWhereLaterThanTimeClause(getStartTimeColumnName(), startDateAccess);
 
         if (routeAccessType == ROUTE_READ_ACCESS_TYPE_OWN) {
-            long appId = AppInfoHelper.getInstance().getAppInfoId(packageName);
+            long appId = appInfoHelper.getAppInfoId(packageName);
             sessionsWithAccessibleRouteClause.addWhereInLongsClause(
                     APP_INFO_ID_COLUMN_NAME, List.of(appId));
         }
@@ -429,7 +435,7 @@ public final class ExerciseSessionRecordHelper
 
     @Override
     public List<ReadTableRequest> getReadRequestsForRecordsModifiedByUpsertion(
-            UUID upsertedRecordId, UpsertTableRequest upsertTableRequest) {
+            UUID upsertedRecordId, UpsertTableRequest upsertTableRequest, long appId) {
         List<ReadTableRequest> result = new ArrayList<>();
         ExerciseSessionRecordInternal session =
                 (ExerciseSessionRecordInternal) upsertTableRequest.getRecordInternal();
@@ -454,8 +460,7 @@ public final class ExerciseSessionRecordHelper
                                     + StorageUtils.getHexString(
                                             session.getPlannedExerciseSessionId())
                                     + ","
-                                    + AppInfoHelper.getInstance()
-                                            .getAppInfoId(session.getPackageName())
+                                    + appId
                                     + "))";
                         }
                     };
@@ -537,7 +542,10 @@ public final class ExerciseSessionRecordHelper
     }
 
     private int getExerciseRouteReadAccessType(
-            String packageName, Set<String> grantedExtraReadPermissions, boolean isInForeground) {
+            String packageName,
+            Set<String> grantedExtraReadPermissions,
+            boolean isInForeground,
+            AppInfoHelper appInfoHelper) {
         if (grantedExtraReadPermissions.isEmpty()) {
             return ROUTE_READ_ACCESS_TYPE_NONE;
         }
@@ -549,7 +557,7 @@ public final class ExerciseSessionRecordHelper
             return ROUTE_READ_ACCESS_TYPE_ALL;
         }
 
-        long appId = AppInfoHelper.getInstance().getAppInfoId(packageName);
+        long appId = appInfoHelper.getAppInfoId(packageName);
 
         if (appId == DEFAULT_LONG) {
             return ROUTE_READ_ACCESS_TYPE_NONE;

@@ -85,6 +85,14 @@ constructor(
 
     private var dateNavigationText: String? = null
 
+    private val _allEntriesSelected = MutableLiveData<Boolean>()
+    val allEntriesSelected : LiveData<Boolean>
+        get() = _allEntriesSelected
+
+    private var numOfEntries : Int = 0
+
+    private var entriesList : MutableList<FormattedEntry> = mutableListOf()
+
     fun loadEntries(
         permissionType: HealthPermissionType,
         selectedDate: Instant,
@@ -140,12 +148,14 @@ constructor(
             when (entriesResults) {
                 is UseCaseResults.Success -> {
                     list.addAll(entriesResults.data)
+                    numOfEntries = list.size
                     if (list.isEmpty()) {
                         _entries.postValue(EntriesFragmentState.Empty)
                     } else {
                         addAggregation(
                             permissionType, packageName, selectedDate, period, list, showDataOrigin)
                         _entries.postValue(EntriesFragmentState.With(list))
+                        entriesList = list.toMutableList()
                     }
                 }
                 is UseCaseResults.Failed -> {
@@ -256,12 +266,18 @@ constructor(
         val deleteSet = _setOfEntriesToBeDeleted.value.orEmpty().toMutableSet()
         deleteSet.add(entryID)
         _setOfEntriesToBeDeleted.value = deleteSet.toSet()
+        if (numOfEntries == deleteSet.size) {
+            _allEntriesSelected.postValue(true)
+        }
     }
 
     fun removeFromDeleteSet(entryID: String){
         val deleteSet = _setOfEntriesToBeDeleted.value.orEmpty().toMutableSet()
         deleteSet.remove(entryID)
         _setOfEntriesToBeDeleted.value = deleteSet.toSet()
+        if (numOfEntries != deleteSet.size) {
+            _allEntriesSelected.postValue(false)
+        }
     }
 
     private fun resetDeleteSet() {
@@ -275,7 +291,7 @@ constructor(
         }
     }
 
-    fun setDataType(dataType: DataType){
+    fun setDataType(dataType: DataType?){
         this.dataType = dataType
     }
 
@@ -289,6 +305,14 @@ constructor(
 
     fun getDateNavigationText(): String? {
         return dateNavigationText
+    }
+
+    fun setAllEntriesSelectedValue(boolean: Boolean){
+        _allEntriesSelected.postValue(boolean)
+    }
+
+    fun getEntriesList():MutableList<FormattedEntry>{
+        return this.entriesList
     }
 
     sealed class EntriesFragmentState {

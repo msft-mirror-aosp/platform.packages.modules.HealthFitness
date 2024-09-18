@@ -18,16 +18,18 @@ package com.android.server.healthconnect.storage.request;
 
 import static android.health.connect.Constants.DEFAULT_INT;
 
+import static java.util.Collections.singletonList;
+
 import android.annotation.Nullable;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -50,8 +52,12 @@ public class ReadTransactionRequest {
     private final PageTokenWrapper mPageToken;
     private final int mPageSize;
     private final DeviceInfoHelper mDeviceInfoHelper;
+    private final String mPackageName;
+    private final Set<Integer> mRecordTypeIds;
+    private final boolean mIsReadingSelfData;
 
     public ReadTransactionRequest(
+            AppInfoHelper appInfoHelper,
             String callingPackageName,
             ReadRecordsRequestParcel request,
             long startDateAccessMillis,
@@ -59,34 +65,47 @@ public class ReadTransactionRequest {
             Set<String> grantedExtraReadPermissions,
             boolean isInForeground,
             DeviceInfoHelper deviceInfoHelper) {
-        RecordHelper<?> recordHelper =
-                RecordHelperProvider.getRecordHelper(request.getRecordType());
+        mPackageName = callingPackageName;
+        int recordTypeId = request.getRecordType();
+        mRecordTypeIds = Set.of(recordTypeId);
+        RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordTypeId);
         mReadTableRequests =
-                Collections.singletonList(
+                singletonList(
                         recordHelper.getReadTableRequest(
                                 request,
                                 callingPackageName,
                                 enforceSelfRead,
                                 startDateAccessMillis,
                                 grantedExtraReadPermissions,
-                                isInForeground));
-        if (request.getRecordIdFiltersParcel() == null) {
+                                isInForeground,
+                                appInfoHelper));
+        if (request.getRecordIdFiltersParcel() == null) { // read by filter
             mPageToken = PageTokenWrapper.from(request.getPageToken(), request.isAscending());
             mPageSize = request.getPageSize();
-        } else {
+            mIsReadingSelfData =
+                    request.getPackageFilters().equals(singletonList(callingPackageName));
+        } else { // read by id
             mPageSize = DEFAULT_INT;
             mPageToken = null;
+            // TODO(b/366149374): Consider the case of read by id from other apps
+            mIsReadingSelfData = true;
         }
         mDeviceInfoHelper = deviceInfoHelper;
     }
 
+    // read for changelogs
     public ReadTransactionRequest(
+            AppInfoHelper appInfoHelper,
             String packageName,
             Map<Integer, List<UUID>> recordTypeToUuids,
             long startDateAccessMillis,
             Set<String> grantedExtraReadPermissions,
             boolean isInForeground,
-            DeviceInfoHelper deviceInfoHelper) {
+            DeviceInfoHelper deviceInfoHelper,
+            boolean isReadingSelfData) {
+        mPackageName = packageName;
+        mRecordTypeIds = recordTypeToUuids.keySet();
+        mIsReadingSelfData = isReadingSelfData;
         mReadTableRequests = new ArrayList<>();
         recordTypeToUuids.forEach(
                 (recordType, uuids) ->
@@ -97,7 +116,8 @@ public class ReadTransactionRequest {
                                                 uuids,
                                                 startDateAccessMillis,
                                                 grantedExtraReadPermissions,
-                                                isInForeground)));
+                                                isInForeground,
+                                                appInfoHelper)));
         mPageSize = DEFAULT_INT;
         mPageToken = null;
         mDeviceInfoHelper = deviceInfoHelper;
@@ -125,5 +145,17 @@ public class ReadTransactionRequest {
      */
     public Optional<Integer> getPageSize() {
         return mPageSize == DEFAULT_INT ? Optional.empty() : Optional.of(mPageSize);
+    }
+
+    public String getPackageName() {
+        return mPackageName;
+    }
+
+    public Set<Integer> getRecordTypeIds() {
+        return mRecordTypeIds;
+    }
+
+    public boolean isReadingSelfData() {
+        return mIsReadingSelfData;
     }
 }

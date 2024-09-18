@@ -96,7 +96,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         view.requireViewById<Button>(R.id.phr_create_data_source_button).setOnClickListener {
             executeAndShowMessage {
                 createMedicalDataSource(view, Uri.parse("example.fhir.com/R4/123"),
-                    "Hospital X")
+                    "Hospital" + (0..1000).random())
             }
         }
 
@@ -113,7 +113,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         }
 
         view.requireViewById<Button>(R.id.phr_seed_fhir_jsons_button).setOnClickListener {
-            loadAllFhirJSONs()
+            executeAndShowMessage { insertAllFhirResources(view) }
         }
 
         view.requireViewById<Button>(R.id.phr_request_read_immunization_button).setOnClickListener {
@@ -184,6 +184,24 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         )
     }
 
+    private suspend fun insertAllFhirResources(view: View): String {
+        val allResources = loadAllFhirJSONs()
+        Log.d("INSERT_ALL", "Writing all FHIR resources")
+        val insertedDataSourceId =
+            view.findViewById<EditText>(R.id.phr_data_source_id_text).getText().toString()
+        val insertedResources = upsertMedicalResources(
+            allResources.map { UpsertMedicalResourceRequest.Builder(
+                insertedDataSourceId,
+                FhirVersion.parseFhirVersion("4.0.1"),
+                it
+            ).build() }
+        )
+        return insertedResources.joinToString(
+            separator = "\n",
+            transform = MedicalResource::toString
+        )
+    }
+
     private suspend fun upsertMedicalResources(requests: List<UpsertMedicalResourceRequest>): List<MedicalResource> {
         Log.d("UPSERT_RESOURCES", "Writing ${requests.size} resources")
         val resources =
@@ -242,24 +260,21 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         return resources
     }
 
-    private fun loadAllFhirJSONs() {
+    private fun loadAllFhirJSONs() : List<String> {
         val jsonFiles = listFhirJSONFiles(requireContext())
         if (jsonFiles == null) {
             Log.e("loadAllFhirJSONs", "No JSON files were found.")
             Toast.makeText(context, "No JSON files were found.", Toast.LENGTH_SHORT).show()
-            return
+            return emptyList()
         }
 
-        for (jsonFile in jsonFiles) {
-            if (!jsonFile.endsWith(".json")) {
-                continue
+        return jsonFiles
+            .filter { it.endsWith(".json") }
+            .mapNotNull {
+                val jsonString = loadJSONFromAsset(requireContext(), it)
+                Log.i("loadAllFhirJSONs", "$it: $jsonString")
+                jsonString
             }
-            val jsonString = loadJSONFromAsset(requireContext(), jsonFile)
-            if (jsonString != null) {
-                Log.i("loadAllFhirJSONs", "$jsonFile: $jsonString")
-            }
-        }
-        showLoadJSONDataDialog()
     }
 
     private fun listFhirJSONFiles(context: Context, path: String = ""): List<String>? {

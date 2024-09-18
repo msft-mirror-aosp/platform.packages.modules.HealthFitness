@@ -126,7 +126,8 @@ final class UsageStatsCollector {
 
     void upsertLastAccessLogTimeStamp() {
 
-        long latestAccessLogTimeStamp = AccessLogsHelper.getLatestAccessLogTimeStamp();
+        long latestAccessLogTimeStamp =
+                AccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp();
 
         // Access logs are only stored for 7 days, therefore only update this value if there is an
         // access log. Last access timestamp can be before 7 days and might already exist in

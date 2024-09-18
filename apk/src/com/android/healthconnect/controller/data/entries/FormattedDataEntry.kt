@@ -84,6 +84,8 @@ sealed class FormattedEntry(open val uuid: String) {
 
     data class ItemDataEntrySeparator(val title: String = "") : FormattedEntry(uuid = "")
 
+    data class SelectAllHeader(val title: String = "Select all") : FormattedEntry(uuid = "")
+
     data class ReverseSessionDetail(
         override val uuid: String,
         val header: String,
