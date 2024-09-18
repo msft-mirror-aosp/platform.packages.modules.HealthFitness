@@ -97,6 +97,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
 
     /** Returns change logs post the time when {@code changeLogTokenRequest} was generated */
     public static ChangeLogsResponse getChangeLogs(
+            AppInfoHelper appInfoHelper,
             ChangeLogsRequestHelper.TokenRequest changeLogTokenRequest,
             ChangeLogsRequest changeLogsRequest) {
         long token = changeLogTokenRequest.getRowIdChangeLogs();
@@ -111,8 +112,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         if (!changeLogTokenRequest.getPackageNamesToFilter().isEmpty()) {
             whereClause.addWhereInLongsClause(
                     APP_ID_COLUMN_NAME,
-                    AppInfoHelper.getInstance()
-                            .getAppInfoIds(changeLogTokenRequest.getPackageNamesToFilter()));
+                    appInfoHelper.getAppInfoIds(changeLogTokenRequest.getPackageNamesToFilter()));
         }
 
         // We set limit size to requested pageSize plus extra 1 record so that if number of records

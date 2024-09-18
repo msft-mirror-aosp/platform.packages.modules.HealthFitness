@@ -260,6 +260,7 @@ public final class MedicalResourceHelper {
                         MedicalDataSourceHelper.getMainTableName(),
                         Collections.singletonList(DATA_SOURCE_ID_COLUMN_NAME),
                         Collections.singletonList(MedicalDataSourceHelper.getPrimaryColumnName()))
+                .createIndexOn(LAST_MODIFIED_TIME_COLUMN_NAME)
                 .setChildTableRequests(
                         Collections.singletonList(getCreateMedicalResourceIndicesTableRequest()));
     }

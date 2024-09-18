@@ -18,6 +18,7 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 import android.content.Intent
 import android.content.Intent.*
 import androidx.core.os.bundleOf
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
@@ -29,13 +30,17 @@ import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.isNotEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
+import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState.NotStarted
 import com.android.healthconnect.controller.permissions.app.CombinedPermissionsFragment
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -89,11 +94,15 @@ class CombinedPermissionsFragmentTest {
                 AppMetadata(
                     TEST_APP_PACKAGE_NAME,
                     TEST_APP_NAME,
-                    context.getDrawable(R.drawable.health_connect_logo)))
+                    context.getDrawable(R.drawable.health_connect_logo),
+                )
+            )
         }
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(AdditionalAccessViewModel.State())
         }
+        whenever(viewModel.atLeastOneHealthPermissionGranted).then { MediatorLiveData(true) }
+        whenever(viewModel.revokeAllHealthPermissionsState).then { MutableLiveData(NotStarted) }
         // disable animations
         toggleAnimation(false)
         Intents.init()
@@ -112,20 +121,22 @@ class CombinedPermissionsFragmentTest {
         val scenario =
             launchFragment<CombinedPermissionsFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
             val fragment =
                 activity.supportFragmentManager.findFragmentById(android.R.id.content)
-                        as CombinedPermissionsFragment
+                    as CombinedPermissionsFragment
             val managePermissions =
                 fragment.preferenceScreen.findPreference("manage_permissions")
-                        as PreferenceCategory?
+                    as PreferenceCategory?
             val manageApp =
-                fragment.preferenceScreen.findPreference("manage_app")
-                        as PreferenceCategory?
+                fragment.preferenceScreen.findPreference("manage_app") as PreferenceCategory?
             assertThat(managePermissions?.preferenceCount).isEqualTo(2)
-            assertThat(manageApp?.preferenceCount).isEqualTo(1)
+            assertThat(manageApp?.preferenceCount).isEqualTo(2)
         }
     }
 
@@ -134,44 +145,58 @@ class CombinedPermissionsFragmentTest {
         val validState =
             AdditionalAccessViewModel.State(
                 exerciseRoutePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
-                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME)
+                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
         val scenario =
             launchFragment<CombinedPermissionsFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
             val fragment =
                 activity.supportFragmentManager.findFragmentById(android.R.id.content)
-                        as CombinedPermissionsFragment
+                    as CombinedPermissionsFragment
             val managePermissions =
                 fragment.preferenceScreen.findPreference("manage_permissions")
-                        as PreferenceCategory?
+                    as PreferenceCategory?
             val manageApp =
-                fragment.preferenceScreen.findPreference("manage_app")
-                        as PreferenceCategory?
+                fragment.preferenceScreen.findPreference("manage_app") as PreferenceCategory?
             assertThat(managePermissions?.preferenceCount).isEqualTo(3)
-            assertThat(manageApp?.preferenceCount).isEqualTo(1)
+            assertThat(manageApp?.preferenceCount).isEqualTo(2)
         }
     }
 
     @Test
     fun correctStringsDisplayed_withoutAdditionalAccess() {
         launchFragment<CombinedPermissionsFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onView(withText("Health Connect test app")).check(matches(isDisplayed()))
         onView(withText("Permissions")).check(matches(isDisplayed()))
         onView(withText("Fitness and wellness")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Exercise, sleep, nutrition and others")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Exercise, sleep, nutrition and others"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
         onView(withText("Health records")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Lab results, medications, immunizations and others")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Lab results, medications, immunizations and others"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
         onView(withText("Additional access")).check(doesNotExist())
         onView(withText("Manage app")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Remove access for this app"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Remove access for this app"))
+            .perform(scrollTo())
+            .check(matches(isEnabled()))
     }
 
     @Test
@@ -182,15 +207,18 @@ class CombinedPermissionsFragmentTest {
             .thenReturn(Intent())
 
         launchFragment<CombinedPermissionsFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onIdle()
         onView(
-            withText(
-                "To manage other Android permissions this app can " +
+                withText(
+                    "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -204,7 +232,8 @@ class CombinedPermissionsFragmentTest {
         }
 
         launchFragment<CombinedPermissionsFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onView(withText("Additional access")).check(doesNotExist())
     }
@@ -214,17 +243,17 @@ class CombinedPermissionsFragmentTest {
         val validState =
             AdditionalAccessViewModel.State(
                 exerciseRoutePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
-                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME)
+                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
 
         launchFragment<CombinedPermissionsFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
-        onView(withText("Additional access"))
-            .perform(scrollTo())
-            .check(matches(isDisplayed()))
+        onView(withText("Additional access")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
     @Test
@@ -232,18 +261,21 @@ class CombinedPermissionsFragmentTest {
         val validState =
             AdditionalAccessViewModel.State(
                 backgroundReadUIState =
-                AdditionalAccessViewModel.AdditionalPermissionState(
-                    isDeclared = true, isEnabled = false, isGranted = false))
+                    AdditionalAccessViewModel.AdditionalPermissionState(
+                        isDeclared = true,
+                        isEnabled = false,
+                        isGranted = false,
+                    )
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
 
         launchFragment<CombinedPermissionsFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
-        onView(withText("Additional access"))
-            .perform(scrollTo())
-            .check(matches(isDisplayed()))
+        onView(withText("Additional access")).perform(scrollTo()).check(matches(isDisplayed()))
         verify(healthConnectLogger).logImpression(AppAccessElement.ADDITIONAL_ACCESS_BUTTON)
     }
 
@@ -252,14 +284,15 @@ class CombinedPermissionsFragmentTest {
         val validState =
             AdditionalAccessViewModel.State(
                 exerciseRoutePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
-                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME)
+                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
 
         launchFragment<CombinedPermissionsFragment>(
-            bundleOf(
-                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)) {
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        ) {
             navHostController.setGraph(R.navigation.nav_graph)
             navHostController.setCurrentDestination(R.id.combinedPermissionsFragment)
             Navigation.setViewNavController(requireView(), navHostController)
@@ -275,23 +308,22 @@ class CombinedPermissionsFragmentTest {
     @Test
     fun fitnessPermissions_navigatesToFitnessAppFragment() {
         launchFragment<CombinedPermissionsFragment>(
-            bundleOf(
-                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)) {
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        ) {
             navHostController.setGraph(R.navigation.nav_graph)
             navHostController.setCurrentDestination(R.id.combinedPermissionsFragment)
             Navigation.setViewNavController(requireView(), navHostController)
         }
         onView(withText("Fitness and wellness")).perform(scrollTo()).perform(click())
 
-        assertThat(navHostController.currentDestination?.id)
-            .isEqualTo(R.id.fitnessAppFragment)
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.fitnessAppFragment)
     }
 
     @Test
     fun medicalPermissions_navigatesToMedicalAppFragment() {
         launchFragment<CombinedPermissionsFragment>(
-            bundleOf(
-                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)) {
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        ) {
             navHostController.setGraph(R.navigation.nav_graph)
             navHostController.setCurrentDestination(R.id.combinedPermissionsFragment)
             Navigation.setViewNavController(requireView(), navHostController)
@@ -299,5 +331,195 @@ class CombinedPermissionsFragmentTest {
         onView(withText("Health records")).perform(scrollTo()).perform(click())
 
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.medicalAppFragment)
+    }
+
+    @Test
+    fun noHealthPermissionsGranted_removeAccessButtonDisabled() {
+        whenever(viewModel.atLeastOneHealthPermissionGranted).then { MediatorLiveData(false) }
+
+        launchFragment<CombinedPermissionsFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
+        onView(withText("Remove access for this app"))
+            .perform(scrollTo())
+            .check(matches(isNotEnabled()))
+    }
+
+    @Test
+    fun removeAccessButton_withAdditionalPermissions_showsConfirmationDialog() {
+        whenever(additionalAccessViewModel.additionalAccessState).then {
+            MutableLiveData(
+                AdditionalAccessViewModel.State(
+                    backgroundReadUIState =
+                        AdditionalAccessViewModel.AdditionalPermissionState(
+                            isDeclared = true,
+                            isEnabled = true,
+                            isGranted = true,
+                        ),
+                    historyReadUIState =
+                        AdditionalAccessViewModel.AdditionalPermissionState(
+                            isDeclared = true,
+                            isEnabled = true,
+                            isGranted = true,
+                        ),
+                )
+            )
+        }
+        launchFragment<CombinedPermissionsFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
+        onView(withText("Remove access for this app"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Remove access for this app")).perform(scrollTo()).perform(click())
+
+        onView(withText("Remove all permissions?")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "$TEST_APP_NAME will no longer be able to read or write" +
+                        " data from Health Connect, including background and past data." +
+                        "\n\nThis doesn't affect other permissions this app may have, like camera, " +
+                        "microphone or location."
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Also delete fitness data and health records from " +
+                        "$TEST_APP_NAME from Health Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun removeAccessButton_withBackgroundPermission_showsConfirmationDialog() {
+        whenever(additionalAccessViewModel.additionalAccessState).then {
+            MutableLiveData(
+                AdditionalAccessViewModel.State(
+                    backgroundReadUIState =
+                        AdditionalAccessViewModel.AdditionalPermissionState(
+                            isDeclared = true,
+                            isEnabled = true,
+                            isGranted = true,
+                        ),
+                    historyReadUIState =
+                        AdditionalAccessViewModel.AdditionalPermissionState(
+                            isDeclared = false,
+                            isEnabled = false,
+                            isGranted = false,
+                        ),
+                )
+            )
+        }
+        launchFragment<CombinedPermissionsFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
+        onView(withText("Remove access for this app"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Remove access for this app")).perform(scrollTo()).perform(click())
+
+        onView(withText("Remove all permissions?")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "$TEST_APP_NAME will no longer be able to read or write" +
+                        " data from Health Connect, including background data." +
+                        "\n\nThis doesn't affect other permissions this app may have, like camera, " +
+                        "microphone or location."
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Also delete fitness data and health records from " +
+                        "$TEST_APP_NAME from Health Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun removeAccessButton_withHistoricReadPermission_showsConfirmationDialog() {
+        whenever(additionalAccessViewModel.additionalAccessState).then {
+            MutableLiveData(
+                AdditionalAccessViewModel.State(
+                    backgroundReadUIState =
+                        AdditionalAccessViewModel.AdditionalPermissionState(
+                            isDeclared = false,
+                            isEnabled = false,
+                            isGranted = false,
+                        ),
+                    historyReadUIState =
+                        AdditionalAccessViewModel.AdditionalPermissionState(
+                            isDeclared = true,
+                            isEnabled = true,
+                            isGranted = true,
+                        ),
+                )
+            )
+        }
+        launchFragment<CombinedPermissionsFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
+        onView(withText("Remove access for this app"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Remove access for this app")).perform(scrollTo()).perform(click())
+
+        onView(withText("Remove all permissions?")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "$TEST_APP_NAME will no longer be able to read or write" +
+                        " data from Health Connect, including past data." +
+                        "\n\nThis doesn't affect other permissions this app may have, like camera, " +
+                        "microphone or location."
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Also delete fitness data and health records from " +
+                        "$TEST_APP_NAME from Health Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun removeAccessButton_noAdditionalPermissions_showsConfirmationDialog() {
+        launchFragment<CombinedPermissionsFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
+        onView(withText("Remove access for this app"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Remove access for this app")).perform(scrollTo()).perform(click())
+
+        onView(withText("Remove all permissions?")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "$TEST_APP_NAME will no longer be able to read or write" +
+                        " data from Health Connect." +
+                        "\n\nThis doesn't affect other permissions this app may have, like camera, " +
+                        "microphone or location."
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Also delete fitness data and health records from " +
+                        "$TEST_APP_NAME from Health Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
     }
 }

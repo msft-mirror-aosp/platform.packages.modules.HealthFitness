@@ -153,7 +153,6 @@ public class BackupRestoreTest {
         mMockStagedDataDirectory = mContext.getDir("mock_staged_data", Context.MODE_PRIVATE);
         when(Environment.getDataDirectory()).thenReturn(mMockDataDirectory);
 
-        when(AppInfoHelper.getInstance()).thenReturn(mAppInfoHelper);
         when(mJobScheduler.forNamespace(BACKUP_RESTORE_JOBS_NAMESPACE)).thenReturn(mJobScheduler);
         when(mServiceContext.getUser()).thenReturn(mUserHandle);
         when(mServiceContext.getSystemService(JobScheduler.class)).thenReturn(mJobScheduler);
@@ -164,10 +163,12 @@ public class BackupRestoreTest {
                         .setPreferenceHelper(mFakePreferenceHelper)
                         .setMigrationStateManager(mMockMigrationStateManager)
                         .setTransactionManager(mTransactionManager)
+                        .setAppInfoHelper(mAppInfoHelper)
                         .build();
 
         mBackupRestore =
                 new BackupRestore(
+                        healthConnectInjector.getAppInfoHelper(),
                         mFirstGrantTimeManager,
                         healthConnectInjector.getMigrationStateManager(),
                         healthConnectInjector.getPreferenceHelper(),

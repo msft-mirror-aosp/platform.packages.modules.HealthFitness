@@ -16,19 +16,22 @@
 
 package android.health.connect;
 
+import static android.health.connect.datatypes.MedicalResource.validateMedicalResourceType;
+
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import static java.util.Objects.hash;
+import static java.util.Objects.requireNonNull;
 
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -55,6 +58,7 @@ public final class DeleteMedicalResourcesRequest implements Parcelable {
                     "No restrictions specified for delete. The request must restrict by data source"
                             + " or resource type");
         }
+        medicalResourceTypes.forEach(MedicalResource::validateMedicalResourceType);
         mDataSourceIds = dataSourceIds;
         mMedicalResourceTypes = medicalResourceTypes;
     }
@@ -64,18 +68,16 @@ public final class DeleteMedicalResourcesRequest implements Parcelable {
      * order as {@link DeleteMedicalResourcesRequest#writeToParcel}.
      */
     private DeleteMedicalResourcesRequest(@NonNull Parcel in) {
-        Objects.requireNonNull(in);
-        ArrayList<String> dataSourceIdList = in.createStringArrayList();
-        int[] resourceTypes = in.createIntArray();
-        if (resourceTypes == null || dataSourceIdList == null) {
-            throw new IllegalArgumentException("Invalid parcel");
-        }
+        requireNonNull(in);
+        ArrayList<String> dataSourceIdList = requireNonNull(in.createStringArrayList());
+        int[] resourceTypes = requireNonNull(in.createIntArray());
         if (dataSourceIdList.isEmpty() && resourceTypes.length == 0) {
             throw new IllegalArgumentException("Empty data sources and resource types in parcel");
         }
         mDataSourceIds = new HashSet<>(dataSourceIdList);
         mMedicalResourceTypes = new HashSet<>();
         for (int resourceType : resourceTypes) {
+            validateMedicalResourceType(resourceType);
             mMedicalResourceTypes.add(resourceType);
         }
     }
@@ -169,13 +171,14 @@ public final class DeleteMedicalResourcesRequest implements Parcelable {
         /** Add the data source ID to request to delete. */
         @NonNull
         public Builder addDataSourceId(@NonNull String dataSourceId) {
-            mDataSourceIds.add(Objects.requireNonNull(dataSourceId));
+            mDataSourceIds.add(requireNonNull(dataSourceId));
             return this;
         }
 
         /** Add the medical resource type to request to delete. */
         @NonNull
         public Builder addMedicalResourceType(@MedicalResourceType int resourceType) {
+            validateMedicalResourceType(resourceType);
             mMedicalResourceTypes.add(resourceType);
             return this;
         }

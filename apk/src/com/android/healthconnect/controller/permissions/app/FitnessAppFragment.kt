@@ -40,10 +40,10 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
-import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment
-import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment.Companion.DISCONNECT_ALL_EVENT
-import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment.Companion.DISCONNECT_CANCELED_EVENT
-import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment.Companion.KEY_DELETE_DATA
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment.Companion.DISCONNECT_ALL_EVENT
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment.Companion.DISCONNECT_CANCELED_EVENT
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment.Companion.KEY_DELETE_DATA
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromFitnessPermissionType
@@ -320,7 +320,8 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
     }
 
     private fun showRevokeAllPermissions() {
-        DisconnectDialogFragment(appName).show(childFragmentManager, DisconnectDialogFragment.TAG)
+        DisconnectHealthPermissionsDialogFragment(appName)
+            .show(childFragmentManager, DisconnectHealthPermissionsDialogFragment.TAG)
     }
 
     private fun updatePermissions(permissions: List<FitnessPermission>) {
