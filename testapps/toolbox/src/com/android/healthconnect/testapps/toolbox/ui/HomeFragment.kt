@@ -44,6 +44,7 @@ import com.android.healthconnect.testapps.toolbox.Constants.READ_HEALTH_DATA_IN_
 import com.android.healthconnect.testapps.toolbox.PerformanceTestingFragment
 import com.android.healthconnect.testapps.toolbox.R
 import com.android.healthconnect.testapps.toolbox.seed.SeedData
+import com.android.healthconnect.testapps.toolbox.viewmodels.HomeFragmentViewModel
 import com.android.healthconnect.testapps.toolbox.viewmodels.PerformanceTestingViewModel
 import kotlin.system.exitProcess
 
@@ -61,6 +62,7 @@ class HomeFragment : Fragment() {
     private lateinit var mRequestPermissionLauncher: ActivityResultLauncher<Array<String>>
     private lateinit var mNavigationController: NavController
     private val performanceTestingViewModel: PerformanceTestingViewModel by viewModels()
+    private val homeFragmentViewModel : HomeFragmentViewModel by viewModels()
 
     private val manager by lazy {
         requireContext().getSystemService(HealthConnectManager::class.java)
@@ -122,6 +124,9 @@ class HomeFragment : Fragment() {
         view.requireViewById<Button>(R.id.seed_random_data_button).setOnClickListener {
             seedDataButtonPressed()
         }
+        view.requireViewById<Button>(R.id.seed_all_data_button).setOnClickListener {
+            seedAllDataButtonPressed()
+        }
         view.requireViewById<Button>(R.id.seed_performance_read_data_button).setOnClickListener {
             performanceTestingViewModel.beginReadingData()
         }
@@ -162,6 +167,22 @@ class HomeFragment : Fragment() {
         //     .findViewById<Button>(R.id.seed_performance_insert_data_button_in_parallel)
         //     .setOnClickListener { performanceTestingViewModel.beginInsertingData(true) }
         mNavigationController = findNavController()
+
+        homeFragmentViewModel.seedAllDataState.observe(viewLifecycleOwner) { state ->
+            if(state is HomeFragmentViewModel.SeedAllDataState.Error){
+                Toast.makeText(
+                    context,
+                    state.errorMessage,
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(
+                    context,
+                    R.string.toast_seed_data_success,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 
     private fun launchHealthConnect() {
@@ -179,6 +200,10 @@ class HomeFragment : Fragment() {
         } catch (ex: Exception) {
             Toast.makeText(this.requireContext(), ex.localizedMessage, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun seedAllDataButtonPressed(){
+        homeFragmentViewModel.seedAllDataViewModel(requireContext(), manager)
     }
 
     private fun isPermissionGranted(permission: String): Boolean {
