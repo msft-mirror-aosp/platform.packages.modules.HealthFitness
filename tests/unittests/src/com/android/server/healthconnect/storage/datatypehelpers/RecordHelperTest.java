@@ -79,6 +79,7 @@ public class RecordHelperTest {
 
     private TransactionManager mTransactionManager;
     private DeviceInfoHelper mDeviceInfoHelper;
+    private AppInfoHelper mAppInfoHelper;
 
     @Before
     public void setup() throws Exception {
@@ -89,7 +90,9 @@ public class RecordHelperTest {
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
 
         DeviceInfoHelper.resetInstanceForTest();
+        AppInfoHelper.clearInstanceForTest();
         mDeviceInfoHelper = DeviceInfoHelper.getInstance(mTransactionManager);
+        mAppInfoHelper = AppInfoHelper.getInstance(mTransactionManager);
     }
 
     @Test
@@ -319,7 +322,7 @@ public class RecordHelperTest {
         }
     }
 
-    private static ReadTableRequest getReadTableRequest(
+    private ReadTableRequest getReadTableRequest(
             RecordHelper<?> helper, ReadRecordsRequestParcel request) {
         return helper.getReadTableRequest(
                 request,
@@ -327,6 +330,7 @@ public class RecordHelperTest {
                 /* enforceSelfRead= */ false,
                 /* startDateAccess= */ 0,
                 /* grantedExtraReadPermissions= */ Set.of(),
-                /* isInForeground= */ true);
+                /* isInForeground= */ true,
+                mAppInfoHelper);
     }
 }

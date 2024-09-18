@@ -18,6 +18,7 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_DELETE;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BOOLEAN_FALSE_VALUE;
@@ -31,6 +32,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorIntegerList;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -50,6 +52,7 @@ import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.OrderByClause;
+import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -87,11 +90,10 @@ public final class AccessLogsHelper extends DatabaseHelper {
     /**
      * @return AccessLog list
      */
-    public static List<AccessLog> queryAccessLogs() {
+    public static List<AccessLog> queryAccessLogs(AppInfoHelper appInfoHelper) {
         final ReadTableRequest readTableRequest = new ReadTableRequest(TABLE_NAME);
 
         List<AccessLog> accessLogsList = new ArrayList<>();
-        final AppInfoHelper appInfoHelper = AppInfoHelper.getInstance();
         final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
         try (Cursor cursor = transactionManager.read(readTableRequest)) {
             while (cursor.moveToNext()) {
@@ -135,10 +137,16 @@ public final class AccessLogsHelper extends DatabaseHelper {
      * Returns the timestamp of the latest access log and {@link Long#MIN_VALUE} if there is no
      * access log.
      */
-    public static long getLatestAccessLogTimeStamp() {
-
+    public static long getLatestUpsertOrReadOperationAccessLogTimeStamp() {
         final ReadTableRequest readTableRequest =
                 new ReadTableRequest(TABLE_NAME)
+                        .setWhereClause(
+                                new WhereClauses(AND)
+                                        .addWhereInIntsClause(
+                                                OPERATION_TYPE_COLUMN_NAME,
+                                                List.of(
+                                                        OPERATION_TYPE_READ,
+                                                        OPERATION_TYPE_UPSERT)))
                         .setOrderBy(
                                 new OrderByClause()
                                         .addOrderByClause(ACCESS_TIME_COLUMN_NAME, false))
@@ -158,6 +166,8 @@ public final class AccessLogsHelper extends DatabaseHelper {
     /**
      * Adds an entry into the {@link AccessLogsHelper#TABLE_NAME} for every insert or read operation
      * request for record datatypes.
+     *
+     * @deprecated Use {@link #recordReadAccessLog} instead
      */
     public static void addAccessLog(
             String packageName,
@@ -217,6 +227,12 @@ public final class AccessLogsHelper extends DatabaseHelper {
     public static void recordReadAccessLog(
             SQLiteDatabase db, String packageName, Set<Integer> recordTypeIds) {
         recordAccessLog(db, packageName, recordTypeIds, OPERATION_TYPE_READ);
+    }
+
+    /** Adds an entry of upsert type into the {@link AccessLogsHelper#TABLE_NAME} */
+    public static void recordUpsertAccessLog(
+            SQLiteDatabase db, String packageName, Set<Integer> recordTypeIds) {
+        recordAccessLog(db, packageName, recordTypeIds, OPERATION_TYPE_UPSERT);
     }
 
     /** Adds an entry of delete type into the {@link AccessLogsHelper#TABLE_NAME} */

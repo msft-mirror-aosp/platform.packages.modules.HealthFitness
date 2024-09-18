@@ -42,6 +42,7 @@ import com.android.server.healthconnect.notifications.HealthConnectNotificationS
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
@@ -69,12 +70,14 @@ public final class ImportManager {
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public ImportManager(
+            AppInfoHelper appInfoHelper,
             Context context,
             ExportImportSettingsStorage exportImportSettingsStorage,
             TransactionManager transactionManager,
             DeviceInfoHelper deviceInfoHelper,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
         this(
+                appInfoHelper,
                 context,
                 ExportImportNotificationSender.createSender(context),
                 exportImportSettingsStorage,
@@ -84,6 +87,7 @@ public final class ImportManager {
     }
 
     public ImportManager(
+            AppInfoHelper appInfoHelper,
             Context context,
             HealthConnectNotificationSender notificationSender,
             ExportImportSettingsStorage exportImportSettingsStorage,
@@ -94,6 +98,7 @@ public final class ImportManager {
         mContext = context;
         mDatabaseMerger =
                 new DatabaseMerger(
+                        appInfoHelper,
                         context,
                         deviceInfoHelper,
                         healthDataCategoryPriorityHelper,

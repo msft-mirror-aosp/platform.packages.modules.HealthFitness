@@ -19,6 +19,7 @@ package com.android.server.healthconnect;
 import static android.Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.health.connect.Constants.DEFAULT_LONG;
+import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
 import static android.health.connect.Constants.READ;
 import static android.health.connect.HealthConnectException.ERROR_INTERNAL;
 import static android.health.connect.HealthConnectException.ERROR_INVALID_ARGUMENT;
@@ -37,7 +38,9 @@ import static com.android.server.healthconnect.logging.HealthConnectServiceLogge
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.READ_AGGREGATED_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.READ_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.UPDATE_DATA;
+import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.addAccessLog;
 
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -315,8 +318,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 new DataPermissionEnforcer(mPermissionManager, mContext, deviceConfigManager);
         mMedicalDataPermissionEnforcer = new MedicalDataPermissionEnforcer(mPermissionManager);
         mAppOpsManagerLocal = LocalManagerRegistry.getManager(AppOpsManagerLocal.class);
+        mAppInfoHelper = AppInfoHelper.getInstance();
         mBackupRestore =
                 new BackupRestore(
+                        mAppInfoHelper,
                         mFirstGrantTimeManager,
                         mMigrationStateManager,
                         mPreferenceHelper,
@@ -329,6 +334,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mImportManager =
                 Flags.exportImport()
                         ? new ImportManager(
+                                mAppInfoHelper,
                                 mContext,
                                 mExportImportSettingsStorage,
                                 mTransactionManager,
@@ -338,7 +344,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mExportManager = exportManager;
         migrationCleaner.attachTo(migrationStateManager);
         mMigrationUiStateManager.attachTo(migrationStateManager);
-        mAppInfoHelper = AppInfoHelper.getInstance();
         mPriorityMigrationHelper = PriorityMigrationHelper.getInstance();
         mRecordMapper = RecordMapper.getInstance();
         mAggregationTypeIdMapper = AggregationTypeIdMapper.getInstance();
@@ -489,7 +494,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     /* isInsertRequest */ true,
                                     mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
                                             recordInternals, attributionSource));
-                    List<String> uuids = mTransactionManager.insertAll(insertRequest);
+                    List<String> uuids =
+                            mTransactionManager.insertAll(mAppInfoHelper, insertRequest);
                     tryAndReturnResult(callback, uuids, logger);
 
                     HealthConnectThreadScheduler.scheduleInternalTask(
@@ -596,6 +602,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     }
                     callback.onResult(
                             new AggregateTransactionRequest(
+                                            mAppInfoHelper,
                                             attributionSource.getPackageName(),
                                             request,
                                             mHealthDataCategoryPriorityHelper,
@@ -714,6 +721,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                         ReadTransactionRequest readTransactionRequest =
                                 new ReadTransactionRequest(
+                                        mAppInfoHelper,
                                         callingPackageName,
                                         request,
                                         startDateAccessEpochMilli,
@@ -746,16 +754,17 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             Slog.d(TAG, "pageToken: " + pageToken);
                         }
 
-                        final List<Integer> recordTypes =
-                                Collections.singletonList(request.getRecordType());
-                        // Calls from controller APK should not be recorded in access logs
-                        // If an app is reading only its own data then it is not recorded in
-                        // access logs.
-                        boolean requiresLogging =
-                                !holdsDataManagementPermission && !enforceSelfRead;
-                        if (requiresLogging) {
-                            AccessLogsHelper.addAccessLog(callingPackageName, recordTypes, READ);
+                        if (!Flags.addMissingAccessLogs()) {
+                            // Calls from controller APK should not be recorded in access logs
+                            // If an app is reading only its own data then it is not recorded in
+                            // access logs.
+                            if (!holdsDataManagementPermission && !enforceSelfRead) {
+                                final List<Integer> recordTypes =
+                                        singletonList(request.getRecordType());
+                                addAccessLog(callingPackageName, recordTypes, READ);
+                            }
                         }
+
                         callback.onResult(
                                 new ReadRecordsResponseParcel(
                                         new RecordsParcel(records), pageToken));
@@ -856,7 +865,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     /* isInsertRequest */ false,
                                     mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
                                             recordInternals, attributionSource));
-                    mTransactionManager.updateAll(request);
+                    mTransactionManager.updateAll(mAppInfoHelper, request);
                     tryAndReturnResult(callback, logger);
                     logRecordTypeSpecificUpsertMetrics(
                             recordInternals, attributionSource.getPackageName());
@@ -978,7 +987,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                         .toEpochMilli();
                     }
                     final ChangeLogsHelper.ChangeLogsResponse changeLogsResponse =
-                            ChangeLogsHelper.getChangeLogs(changeLogsTokenRequest, request);
+                            ChangeLogsHelper.getChangeLogs(
+                                    mAppInfoHelper, changeLogsTokenRequest, request);
 
                     Map<Integer, List<UUID>> recordTypeToInsertedUuids =
                             ChangeLogsHelper.getRecordTypeToInsertedUuids(
@@ -988,15 +998,21 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             mDataPermissionEnforcer.collectGrantedExtraReadPermissions(
                                     recordTypeToInsertedUuids.keySet(), attributionSource);
 
+                    boolean isReadingSelfData =
+                            changeLogsTokenRequest
+                                    .getPackageNamesToFilter()
+                                    .equals(singletonList(callerPackageName));
                     List<RecordInternal<?>> recordInternals =
                             mTransactionManager.readRecordsByIds(
                                     new ReadTransactionRequest(
+                                            mAppInfoHelper,
                                             callerPackageName,
                                             recordTypeToInsertedUuids,
                                             startDateAccessEpochMilli,
                                             grantedExtraReadPermissions,
                                             isInForeground,
-                                            mDeviceInfoHelper));
+                                            mDeviceInfoHelper,
+                                            isReadingSelfData));
 
                     List<DeletedLog> deletedLogs =
                             ChangeLogsHelper.getDeletedLogs(changeLogsResponse.getChangeLogsMap());
@@ -1056,7 +1072,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     // Requests from non controller apps are not allowed to use non-id
                     // filters
                     request.setPackageNameFilters(
-                            Collections.singletonList(attributionSource.getPackageName()));
+                            singletonList(attributionSource.getPackageName()));
 
                     if (!holdsDataManagementPermission) {
                         tryAcquireApiCallQuota(
@@ -1152,7 +1168,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     "Requests with both id and non-id filters are not" + " supported");
         }
         DeleteTransactionRequest deleteTransactionRequest =
-                new DeleteTransactionRequest(attributionSource.getPackageName(), request)
+                new DeleteTransactionRequest(
+                                attributionSource.getPackageName(), request, mAppInfoHelper)
                         .setHasManageHealthDataPermission(hasDataManagementPermission(uid, pid));
         int numberOfRecordsDeleted =
                 mTransactionManager.deleteAll(
@@ -1424,7 +1441,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         enforceIsForegroundUser(userHandle);
                         mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
                         throwExceptionIfDataSyncInProgress();
-                        final List<AccessLog> accessLogsList = AccessLogsHelper.queryAccessLogs();
+                        final List<AccessLog> accessLogsList =
+                                AccessLogsHelper.queryAccessLogs(mAppInfoHelper);
                         callback.onResult(new AccessLogsResponseParcel(accessLogsList));
                     } catch (SecurityException securityException) {
                         Slog.e(TAG, "SecurityException: ", securityException);
@@ -2480,6 +2498,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         return;
                     }
 
+                    if (requests.isEmpty()) {
+                        tryAndReturnResult(callback, List.of(), logger);
+                    }
+
                     enforceIsForegroundUser(userHandle);
                     verifyPackageNameFromUid(uid, attributionSource);
                     if (holdsDataManagementPermission) {
@@ -2555,6 +2577,24 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 errorCallback,
                                 unsupportedException,
                                 unsupportedException.getErrorCode());
+                        return;
+                    }
+
+                    if (medicalResourceIds.isEmpty()) {
+                        callback.onResult(new ReadMedicalResourcesResponse(List.of(), null));
+                        return;
+                    }
+
+                    if (medicalResourceIds.size() > MAXIMUM_PAGE_SIZE) {
+                        HealthConnectException invalidSizeException =
+                                new HealthConnectException(
+                                        ERROR_INVALID_ARGUMENT,
+                                        "The number of requested IDs must be <= "
+                                                + MAXIMUM_PAGE_SIZE);
+                        tryAndThrowException(
+                                errorCallback,
+                                invalidSizeException,
+                                invalidSizeException.getErrorCode());
                         return;
                     }
 
