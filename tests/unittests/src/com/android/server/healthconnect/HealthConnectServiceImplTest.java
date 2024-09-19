@@ -46,6 +46,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceI
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 import static com.android.server.healthconnect.TestUtils.waitForAllScheduledTasksToComplete;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_DOWNLOAD_STATE_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_RESTORE_STATE_KEY;
@@ -662,7 +663,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byIds_hasDataManagementPermission_callsHelper()
             throws RemoteException {
         setUpPhrMocksWithIrrelevantResponses();
@@ -678,7 +679,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byIds_noReadWritePermissions_throws() throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
 
@@ -692,7 +693,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byIds_onlyWritePermission_callsHelper()
             throws RemoteException {
         setUpPhrMocksWithIrrelevantResponses();
@@ -715,7 +716,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byIds_bothReadWritePermissions_callsHelper()
             throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
@@ -740,7 +741,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byIds_onlyReadPermissions_callsHelper() throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_DENIED);
@@ -763,7 +764,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byIds_fromForeground_callsHelper() throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_DENIED);
@@ -787,7 +788,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byIds_fromBgNoBgRead_callsHelper() throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_DENIED);
@@ -812,7 +813,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byIds_fromBgNoBgReadPerm_callsHelper() throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_DENIED);
@@ -838,7 +839,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byIds_fromBgWithBgReadPerm_callsHelper()
             throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
@@ -879,7 +880,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byRequest_hasDataManagementPermission_callsHelper()
             throws RemoteException {
         setUpPhrMocksWithIrrelevantResponses();
@@ -898,7 +899,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byRequest_noReadWritePermissions_throws()
             throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
@@ -915,7 +916,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byRequest_onlyWritePermission_callsHelper()
             throws RemoteException {
         setUpPhrMocksWithIrrelevantResponses();
@@ -940,7 +941,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byRequest_bothReadWritePermissions_callsHelper()
             throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
@@ -967,7 +968,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byRequest_onlyReadPermissions_callsHelper()
             throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
@@ -993,7 +994,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byRequest_fromForeground_callsHelper() throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_DENIED);
@@ -1019,7 +1020,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byRequest_fromBgNoBgRead_callsHelper() throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_DENIED);
@@ -1046,7 +1047,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byRequest_fromBgNoBgReadPerm_callsHelper()
             throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
@@ -1075,7 +1076,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byRequest_fromBgWithBgReadPerm_callsHelper()
             throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
@@ -1147,7 +1148,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_hasDataManagementPermission_callsHelper()
             throws RemoteException {
         setDataManagementPermission(PERMISSION_GRANTED);
@@ -1164,7 +1165,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_noReadWritePermissions_throws() throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
 
@@ -1180,7 +1181,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_onlyWritePermission_callsHelper()
             throws RemoteException {
         setDataManagementPermission(PERMISSION_DENIED);
@@ -1203,7 +1204,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_numberOfIdsTooLarge_expectException()
             throws RemoteException {
         setDataManagementPermission(PERMISSION_DENIED);
@@ -1224,7 +1225,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_bothReadWritePermissions_callsHelper()
             throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
@@ -1249,7 +1250,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_onlyReadPermissions_callsHelper() throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
         setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
@@ -1272,7 +1273,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_fromForeground_callsHelper() throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
         setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
@@ -1296,7 +1297,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_fromBgNoBgRead_callsHelper() throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
         setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
@@ -1321,7 +1322,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_fromBgNoBgReadPerm_callsHelper() throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
         setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
@@ -1347,7 +1348,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_fromBgWithBgReadPerm_callsHelper() throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
         setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
@@ -1389,7 +1390,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_hasDataManagementPermission_callsHelper()
             throws RemoteException {
         setDataManagementPermission(PERMISSION_GRANTED);
@@ -1410,7 +1411,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_noReadWritePermissions_throws()
             throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
@@ -1429,7 +1430,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_onlyWritePermission_selfReads()
             throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
@@ -1453,7 +1454,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_bothReadWritePermissions_selfReads()
             throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
@@ -1478,7 +1479,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_onlyReadPermission_foreground_noSelfReads()
             throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
@@ -1503,7 +1504,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_onlyReadPermission_bgNoReadFeature_selfReads()
             throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
@@ -1530,7 +1531,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_onlyReadPermission_bgNoReadPerm_selfReads()
             throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
@@ -1557,7 +1558,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_onlyReadPermission_withBgRead_noSelfReads()
             throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
@@ -1584,7 +1585,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testUpsertMedicalResources_hasDataManagementPermission_throws()
             throws RemoteException {
         setDataManagementPermission(PERMISSION_GRANTED);
@@ -1605,7 +1606,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testUpsertMedicalResources_noWriteMedicalDataPermission_throws() throws Exception {
         IMedicalResourcesResponseCallback callback = mock(IMedicalResourcesResponseCallback.class);
 
@@ -1623,7 +1624,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testCreateMedicalDataSource_hasDataManagementPermission_throws()
             throws RemoteException {
         setUpCreateMedicalDataSourceDefaultMocks();
@@ -1640,7 +1641,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testCreateMedicalDataSource_transactionManagerSqlLiteException_throws()
             throws RemoteException {
         setUpCreateMedicalDataSourceDefaultMocks();
@@ -1660,7 +1661,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testCreateMedicalDataSource_noWriteMedicalDataPermission_throws()
             throws RemoteException {
         setUpCreateMedicalDataSourceDefaultMocks();
@@ -1676,7 +1677,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalDataSourceWithData_badId_fails() throws RemoteException {
         setDataManagementPermission(PERMISSION_GRANTED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
@@ -1694,7 +1695,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalDataSourceWithData_noPermission_fails() throws RemoteException {
         setDataManagementPermission(PERMISSION_DENIED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
@@ -1720,7 +1721,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalDataSourceWithData_wrongPackage_fails() throws RemoteException {
         setDataManagementPermission(PERMISSION_DENIED);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
@@ -1751,7 +1752,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalDataSourceWithData_existingId_succeeds() throws RemoteException {
         setDataManagementPermission(PERMISSION_GRANTED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
@@ -1794,7 +1795,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResources_noIds_returns() throws RemoteException {
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
 
@@ -1805,7 +1806,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResources_someIds_success() throws RemoteException {
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
 
@@ -1823,7 +1824,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResources_noWriteMedicalDataPermission_throws() throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
@@ -1843,7 +1844,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResources_dataManagementPermissionNothingThere_success()
             throws Exception {
         setDataManagementPermission(PERMISSION_GRANTED);
@@ -1880,7 +1881,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByRequest_noPermission_securityError()
             throws RemoteException {
         setDataManagementPermission(PERMISSION_DENIED);
@@ -1900,7 +1901,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByRequest_nonExistentRequest_success()
             throws RemoteException {
         when(mAppInfoHelper.getAppInfoId(any())).thenReturn(DEFAULT_PACKAGE_APP_INFO);
@@ -1923,7 +1924,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByRequest_nonExistentRequestHasManagement_success()
             throws RemoteException {
         setDataManagementPermission(PERMISSION_GRANTED);
@@ -1941,7 +1942,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByRequest_requestWithFhirType_success()
             throws RemoteException {
         setDataManagementPermission(PERMISSION_GRANTED);
@@ -1971,7 +1972,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testQueryAllMedicalResourceTypeInfos_noDataManagementPermission_throws()
             throws Exception {
         doThrow(SecurityException.class)
@@ -1987,7 +1988,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetAllContributorAppInfoIds_noDataManagementPermission_throws()
             throws Exception {
         doThrow(SecurityException.class)

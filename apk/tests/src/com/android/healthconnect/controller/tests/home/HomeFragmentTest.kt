@@ -206,7 +206,7 @@ class HomeFragmentTest {
 
     @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun browseMedicalData_navigatesToBrowseMedicalData() {
         whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(true) }
         setupFragmentForNavigation()
@@ -746,7 +746,7 @@ class HomeFragmentTest {
 
     @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun browseMedicalData_errorFetchingMedicalData_notDisplayed() {
         whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(false) }
 
@@ -757,7 +757,7 @@ class HomeFragmentTest {
 
     @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun browseMedicalData_emptyMedicalData_notDisplayed() {
         whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(false) }
 
@@ -768,7 +768,7 @@ class HomeFragmentTest {
 
     @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun browseMedicalData_medicalDataExists_isDisplayed() {
         whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(true) }
 

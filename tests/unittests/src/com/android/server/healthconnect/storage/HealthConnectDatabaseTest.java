@@ -69,7 +69,7 @@ public class HealthConnectDatabaseTest {
     }
 
     @Test
-    @DisableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @DisableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void onCreate_dbWithLatestSchemaCreated() {
         assertThat(mHealthConnectDatabase).isNotNull();
         assertThat(mSQLiteDatabase).isNotNull();
