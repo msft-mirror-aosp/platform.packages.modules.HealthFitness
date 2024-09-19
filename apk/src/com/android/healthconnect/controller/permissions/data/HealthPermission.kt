@@ -37,6 +37,7 @@ sealed class HealthPermission {
                 HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS,
                 HealthPermissions.READ_MEDICAL_DATA_PREGNANCY,
                 HealthPermissions.READ_MEDICAL_DATA_PROBLEMS,
+                HealthPermissions.READ_MEDICAL_DATA_PROCEDURES,
                 HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY,
                 HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS
             )

@@ -23,6 +23,8 @@ import static com.android.healthfitness.flags.DatabaseVersions.LAST_ROLLED_OUT_D
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertTrue;
+
 import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -32,6 +34,8 @@ import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+
+import java.util.Map;
 
 public class AconfigFlagHelperTest {
     @ClassRule public static final SetFlagsRule.ClassRule mClassRule = new SetFlagsRule.ClassRule();
@@ -108,6 +112,37 @@ public class AconfigFlagHelperTest {
         DB_VERSION_TO_DB_FLAG_MAP.put(3, false);
 
         assertThat(getDbVersion()).isEqualTo(1);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_INFRA_TO_GUARD_DB_CHANGES})
+    public void testToEnsureLastRolledOutDbVersionIsSetCorrectly() {
+        // This test is to prevent the case where the instructions in
+        // go/hc-mainline-dev/trunk_stable/add-db-changes aren't followed correctly.
+        // Specifically, it prevents the case in which a DB version is set to
+        // LAST_ROLLED_OUT_DB_VERSION without being guarded with an aconfig flag while there are
+        // DB versions being rolled out.
+        // For example, if:
+        // - LAST_ROLLED_OUT_DB_VERSION is currently 14
+        // - DB_VERSION_TO_DB_FLAG_MAP contains a single entry of 15 => false
+        // Now, if a version X = 16 is added to DatabaseVersions.java, and X is assigned to
+        // LAST_ROLLED_OUT_DB_VERSION, then this test would fail.
+        for (Map.Entry<Integer, Boolean> entry : DB_VERSION_TO_DB_FLAG_MAP.entrySet()) {
+            int dbVersion = entry.getKey();
+            boolean flagValue = entry.getValue();
+            if (!flagValue) { // flagValue being `false` means the feature hasn't been rolled out
+                // If a feature hasn't been rolled out, then its DB version must be greater than
+                // the last rolled out DB version.
+                assertTrue(
+                        String.format(
+                                "DB version %d hasn't been rolled out yet, it's likely a mistake to"
+                                    + " set DatabaseVersions#LAST_ROLLED_OUT_DB_VERSION to a number"
+                                    + " greater than %d. Make sure you follow the instructions in"
+                                    + " go/hc-mainline-dev/trunk_stable/add-db-changes.",
+                                dbVersion, dbVersion),
+                        dbVersion > LAST_ROLLED_OUT_DB_VERSION);
+            }
+        }
     }
 
     @Test

@@ -61,7 +61,7 @@ public final class DeleteTransactionRequest {
         Objects.requireNonNull(packageName);
         mPackageName = packageName;
         mDeleteTableRequests = new ArrayList<>(request.getRecordTypeFilters().size());
-        mRequestingPackageNameId = AppInfoHelper.getInstance().getAppInfoId(packageName);
+        mRequestingPackageNameId = appInfoHelper.getAppInfoId(packageName);
         if (request.usesIdFilters()) {
             List<RecordIdFilter> recordIds =
                     request.getRecordIdFiltersParcel().getRecordIdFilters();

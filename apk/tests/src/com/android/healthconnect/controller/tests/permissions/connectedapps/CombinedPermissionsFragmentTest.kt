@@ -522,4 +522,60 @@ class CombinedPermissionsFragmentTest {
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
+
+    @Test
+    fun removeAccessButton_confirmationDialogWithCheckbox_remainsAfterRotation() {
+        val scenario =
+            launchFragment<CombinedPermissionsFragment>(
+                bundleOf(
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
+        onView(withText("Remove access for this app"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Remove access for this app")).perform(scrollTo()).perform(click())
+
+        onView(withText("Remove all permissions?")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "$TEST_APP_NAME will no longer be able to read or write" +
+                        " data from Health Connect." +
+                        "\n\nThis doesn't affect other permissions this app may have, like camera, " +
+                        "microphone or location."
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Also delete fitness data and health records from " +
+                        "$TEST_APP_NAME from Health Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        scenario.recreate()
+        onView(withText("Remove all permissions?")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "$TEST_APP_NAME will no longer be able to read or write" +
+                        " data from Health Connect." +
+                        "\n\nThis doesn't affect other permissions this app may have, like camera, " +
+                        "microphone or location."
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Also delete fitness data and health records from " +
+                        "$TEST_APP_NAME from Health Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+    }
 }

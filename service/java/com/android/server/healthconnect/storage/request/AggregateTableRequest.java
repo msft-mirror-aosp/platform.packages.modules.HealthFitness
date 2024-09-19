@@ -87,6 +87,7 @@ public class AggregateTableRequest {
     private final AggregateParams.PriorityAggregationExtraParams mPriorityParams;
     private final boolean mUseLocalTime;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private final AppInfoHelper mAppInfoHelper;
     private List<Long> mTimeSplits;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
@@ -96,6 +97,7 @@ public class AggregateTableRequest {
             RecordHelper<?> recordHelper,
             WhereClauses whereClauses,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            AppInfoHelper appInfoHelper,
             boolean useLocalTime) {
         mTableName = params.getTableName();
         mColumnNamesToAggregate = params.getColumnsToFetch();
@@ -114,6 +116,7 @@ public class AggregateTableRequest {
         }
         mUseLocalTime = useLocalTime;
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
+        mAppInfoHelper = appInfoHelper;
     }
 
     /**
@@ -355,7 +358,7 @@ public class AggregateTableRequest {
         while (metaDataCursor.moveToNext()) {
             packageIds.add(StorageUtils.getCursorLong(metaDataCursor, APP_INFO_ID_COLUMN_NAME));
         }
-        List<String> packageNames = AppInfoHelper.getInstance().getPackageNames(packageIds);
+        List<String> packageNames = mAppInfoHelper.getPackageNames(packageIds);
 
         mAggregateResults.replaceAll(
                 (n, v) -> mAggregateResults.get(n).setDataOrigins(packageNames));

@@ -69,13 +69,20 @@ public final class FhirResource implements Parcelable {
      */
     public static final int FHIR_RESOURCE_TYPE_CONDITION = 4;
 
+    /**
+     * FHIR resource type for a <a href="https://www.hl7.org/fhir/procedure.html">FHIR
+     * Procedure</a>.
+     */
+    public static final int FHIR_RESOURCE_TYPE_PROCEDURE = 5;
+
     /** @hide */
     @IntDef({
         FHIR_RESOURCE_TYPE_UNKNOWN,
         FHIR_RESOURCE_TYPE_IMMUNIZATION,
         FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
         FHIR_RESOURCE_TYPE_OBSERVATION,
-        FHIR_RESOURCE_TYPE_CONDITION
+        FHIR_RESOURCE_TYPE_CONDITION,
+        FHIR_RESOURCE_TYPE_PROCEDURE
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FhirResourceType {}
@@ -168,7 +175,8 @@ public final class FhirResource implements Parcelable {
                     FHIR_RESOURCE_TYPE_IMMUNIZATION,
                     FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
                     FHIR_RESOURCE_TYPE_OBSERVATION,
-                    FHIR_RESOURCE_TYPE_CONDITION);
+                    FHIR_RESOURCE_TYPE_CONDITION,
+                    FHIR_RESOURCE_TYPE_PROCEDURE);
 
     /**
      * Validates the provided {@code fhirResourceType} is in the {@link FhirResource#VALID_TYPES}

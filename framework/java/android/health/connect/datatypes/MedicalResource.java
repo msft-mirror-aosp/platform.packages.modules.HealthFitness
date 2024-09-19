@@ -70,6 +70,9 @@ public final class MedicalResource implements Parcelable {
      */
     public static final int MEDICAL_RESOURCE_TYPE_PROBLEMS = 7;
 
+    /** Medical resource type labelling data as procedures (actions taken on or for a patient). */
+    public static final int MEDICAL_RESOURCE_TYPE_PROCEDURES = 8;
+
     /** @hide */
     @IntDef({
         MEDICAL_RESOURCE_TYPE_UNKNOWN,
@@ -77,6 +80,7 @@ public final class MedicalResource implements Parcelable {
         MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
         MEDICAL_RESOURCE_TYPE_PREGNANCY,
         MEDICAL_RESOURCE_TYPE_PROBLEMS,
+        MEDICAL_RESOURCE_TYPE_PROCEDURES,
         MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
         MEDICAL_RESOURCE_TYPE_VITAL_SIGNS,
         MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS
@@ -208,6 +212,7 @@ public final class MedicalResource implements Parcelable {
                     MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
                     MEDICAL_RESOURCE_TYPE_PREGNANCY,
                     MEDICAL_RESOURCE_TYPE_PROBLEMS,
+                    MEDICAL_RESOURCE_TYPE_PROCEDURES,
                     MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
                     MEDICAL_RESOURCE_TYPE_VITAL_SIGNS,
                     MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS);
