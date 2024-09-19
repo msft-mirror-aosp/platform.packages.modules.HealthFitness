@@ -186,6 +186,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                         this,
                         whereClauses,
                         healthDataCategoryPriorityHelper,
+                        appInfoHelper,
                         useLocalTime)
                 .setTimeFilter(startTime, endTime);
     }
@@ -454,7 +455,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      * MAXIMUM_ALLOWED_CURSOR_COUNT} records, it throws {@link IllegalArgumentException}.
      */
     public List<RecordInternal<?>> getInternalRecords(
-            Cursor cursor, DeviceInfoHelper deviceInfoHelper) {
+            Cursor cursor, DeviceInfoHelper deviceInfoHelper, AppInfoHelper appInfoHelper) {
         if (cursor.getCount() > MAXIMUM_ALLOWED_CURSOR_COUNT) {
             throw new IllegalArgumentException(
                     "Too many records in the cursor. Max allowed: " + MAXIMUM_ALLOWED_CURSOR_COUNT);
@@ -462,7 +463,11 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         List<RecordInternal<?>> recordInternalList = new ArrayList<>();
         while (cursor.moveToNext()) {
             recordInternalList.add(
-                    getRecord(cursor, /* packageNamesByAppIds= */ null, deviceInfoHelper));
+                    getRecord(
+                            cursor,
+                            /* packageNamesByAppIds= */ null,
+                            deviceInfoHelper,
+                            appInfoHelper));
         }
         return recordInternalList;
     }
@@ -477,9 +482,15 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             DeviceInfoHelper deviceInfoHelper,
             Cursor cursor,
             int requestSize,
-            PageTokenWrapper pageToken) {
+            PageTokenWrapper pageToken,
+            AppInfoHelper appInfoHelper) {
         return getNextInternalRecordsPageAndToken(
-                deviceInfoHelper, cursor, requestSize, pageToken, /* packageNamesByAppIds= */ null);
+                deviceInfoHelper,
+                cursor,
+                requestSize,
+                pageToken,
+                /* packageNamesByAppIds= */ null,
+                appInfoHelper);
     }
 
     /**
@@ -509,7 +520,8 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             Cursor cursor,
             int requestSize,
             PageTokenWrapper prevPageToken,
-            @Nullable Map<Long, String> packageNamesByAppIds) {
+            @Nullable Map<Long, String> packageNamesByAppIds,
+            AppInfoHelper appInfoHelper) {
         // Ignore <offset> records of the same start time, because it was returned in previous
         // page(s).
         // If the offset is greater than number of records in the cursor, it'll move to the last
@@ -545,7 +557,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                         PageTokenWrapper.of(prevPageToken.isAscending(), currentStartTime, offset);
                 break;
             } else {
-                T record = getRecord(cursor, packageNamesByAppIds, deviceInfoHelper);
+                T record = getRecord(cursor, packageNamesByAppIds, deviceInfoHelper, appInfoHelper);
                 recordInternalList.add(record);
                 offset++;
             }
@@ -557,7 +569,8 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     private T getRecord(
             Cursor cursor,
             @Nullable Map<Long, String> packageNamesByAppIds,
-            DeviceInfoHelper deviceInfoHelper) {
+            DeviceInfoHelper deviceInfoHelper,
+            AppInfoHelper appInfoHelper) {
         try {
             @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
             T record =
@@ -579,7 +592,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             String packageName =
                     packageNamesByAppIds != null
                             ? packageNamesByAppIds.get(appInfoId)
-                            : AppInfoHelper.getInstance().getPackageName(appInfoId);
+                            : appInfoHelper.getPackageName(appInfoId);
             record.setPackageName(packageName);
             populateRecordValue(cursor, record);
 

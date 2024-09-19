@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.exportimport;
 
-import android.annotation.NonNull;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
@@ -36,8 +35,7 @@ class Compressor {
     private static final String TAG = "HealthConnectCompressor";
 
     /** Compresses the source file */
-    static void compress(@NonNull File source, @NonNull String entryName, @NonNull File zip)
-            throws IOException {
+    static void compress(File source, String entryName, File zip) throws IOException {
         try {
             zip.mkdirs();
             zip.delete();
@@ -62,11 +60,7 @@ class Compressor {
     }
 
     /** Decompresses the zip file */
-    static void decompress(
-            @NonNull Uri zip,
-            @NonNull String entryName,
-            @NonNull File destination,
-            @NonNull Context userContext)
+    static void decompress(Uri zip, String entryName, File destination, Context userContext)
             throws IOException {
         try {
             destination.mkdirs();

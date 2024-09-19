@@ -20,7 +20,6 @@ import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
 
 import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
-import android.annotation.NonNull;
 import android.content.Context;
 
 import com.android.server.healthconnect.notifications.HealthConnectNotificationSender;
@@ -44,7 +43,7 @@ public class ExportImportNotificationSender {
     private static final String CHANNEL_NAME_RESOURCE = "app_label";
 
     /** Create an instance of HealthConnectNotificationSender, setup for export-import. */
-    public static HealthConnectNotificationSender createSender(@NonNull Context context) {
+    public static HealthConnectNotificationSender createSender(Context context) {
         return new HealthConnectNotificationSender.Builder()
                 .setContext(context)
                 .setNotificationFactory(new ExportImportNotificationFactory(context, CHANNEL_ID))

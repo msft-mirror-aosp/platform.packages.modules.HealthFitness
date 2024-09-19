@@ -29,7 +29,6 @@ public class DatabaseHelperTest {
     private final Set<Class<?>> mNonSingletonClasses =
             Set.of(
                     ActivityDateHelper.class,
-                    AccessLogsHelper.class,
                     MigrationEntityHelper.class,
                     ChangeLogsHelper.class,
                     ChangeLogsRequestHelper.class);

@@ -81,7 +81,7 @@ public class AppInfoHelperTest {
         when(mDrawable.getIntrinsicHeight()).thenReturn(200);
         when(mDrawable.getIntrinsicWidth()).thenReturn(200);
 
-        AppInfoHelper.clearInstanceForTest();
+        AppInfoHelper.resetInstanceForTest();
         mAppInfoHelper =
                 AppInfoHelper.getInstance(mHealthConnectDatabaseTestRule.getTransactionManager());
     }
@@ -89,7 +89,7 @@ public class AppInfoHelperTest {
     @After
     public void tearDown() throws Exception {
         reset(mDrawable, mContext, mPackageManager);
-        AppInfoHelper.clearInstanceForTest();
+        AppInfoHelper.resetInstanceForTest();
     }
 
     @Test

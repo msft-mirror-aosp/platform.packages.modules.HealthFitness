@@ -21,7 +21,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMI
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_UNIQUE;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -139,7 +138,6 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
     }
 
     /** Returns a requests for creating pre-migration priority table. */
-    @NonNull
     public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(PRE_MIGRATION_TABLE_NAME, getColumnInfo());
     }
@@ -190,7 +188,6 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
     /**
      * This implementation should return the column names with which the table should be created.
      */
-    @NonNull
     private static List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(CATEGORY_COLUMN_NAME, INTEGER_UNIQUE));
@@ -210,7 +207,6 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
     }
 
     /** Creates(if it was not already created) and returns instance of PriorityMigrationHelper. */
-    @NonNull
     public static PriorityMigrationHelper getInstance() {
         return getInstance(
                 HealthDataCategoryPriorityHelper.getInstance(),

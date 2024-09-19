@@ -18,7 +18,6 @@ package com.android.server.healthconnect.logging;
 
 import static android.content.pm.PackageManager.GET_PERMISSIONS;
 
-import android.annotation.NonNull;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -48,8 +47,13 @@ final class UsageStatsCollector {
     private final List<PackageInfo> mAllPackagesInstalledForUser;
 
     private final PreferenceHelper mPreferenceHelper;
+    private final AccessLogsHelper mAccessLogsHelper;
 
-    UsageStatsCollector(Context context, UserHandle userHandle, PreferenceHelper preferenceHelper) {
+    UsageStatsCollector(
+            Context context,
+            UserHandle userHandle,
+            PreferenceHelper preferenceHelper,
+            AccessLogsHelper accessLogsHelper) {
         Objects.requireNonNull(userHandle);
         Objects.requireNonNull(context);
 
@@ -59,6 +63,7 @@ final class UsageStatsCollector {
                         .getPackageManager()
                         .getInstalledPackages(PackageManager.PackageInfoFlags.of(GET_PERMISSIONS));
         mPreferenceHelper = preferenceHelper;
+        mAccessLogsHelper = accessLogsHelper;
     }
 
     /**
@@ -127,7 +132,7 @@ final class UsageStatsCollector {
     void upsertLastAccessLogTimeStamp() {
 
         long latestAccessLogTimeStamp =
-                AccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp();
+                mAccessLogsHelper.getLatestUpsertOrReadOperationAccessLogTimeStamp();
 
         // Access logs are only stored for 7 days, therefore only update this value if there is an
         // access log. Last access timestamp can be before 7 days and might already exist in
@@ -138,7 +143,7 @@ final class UsageStatsCollector {
         }
     }
 
-    private boolean hasRequestedHealthPermission(@NonNull PackageInfo packageInfo) {
+    private boolean hasRequestedHealthPermission(PackageInfo packageInfo) {
         if (packageInfo == null || packageInfo.requestedPermissions == null) {
             return false;
         }

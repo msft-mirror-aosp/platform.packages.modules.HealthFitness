@@ -26,6 +26,7 @@ import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
 import android.util.ArrayMap;
 
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
@@ -103,12 +104,14 @@ public final class AggregateTransactionRequest {
     /**
      * @return Compute and return aggregations
      */
-    public AggregateDataResponseParcel getAggregateDataResponseParcel() {
+    public AggregateDataResponseParcel getAggregateDataResponseParcel(
+            AccessLogsHelper accessLogsHelper) {
         Map<AggregationType<?>, List<AggregateResult<?>>> results = new ArrayMap<>();
         for (AggregateTableRequest aggregateTableRequest : mAggregateTableRequests) {
             // Compute aggregations and record read access log
             TransactionManager.getInitialisedInstance()
-                    .populateWithAggregation(aggregateTableRequest, mPackageName, mRecordTypeIds);
+                    .populateWithAggregation(
+                            aggregateTableRequest, mPackageName, mRecordTypeIds, accessLogsHelper);
             results.put(
                     aggregateTableRequest.getAggregationType(),
                     aggregateTableRequest.getAggregateResults());
