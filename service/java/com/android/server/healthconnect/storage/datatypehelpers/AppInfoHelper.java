@@ -836,7 +836,7 @@ public final class AppInfoHelper extends DatabaseHelper {
     /** Used in testing to clear the instance to clear and re-reference the mocks. */
     @VisibleForTesting
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public static synchronized void clearInstanceForTest() {
+    public static synchronized void resetInstanceForTest() {
         sAppInfoHelper = null;
     }
 }

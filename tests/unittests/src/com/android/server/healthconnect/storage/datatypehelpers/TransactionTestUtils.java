@@ -72,6 +72,7 @@ public final class TransactionTestUtils {
 
     public TransactionTestUtils(Context context, TransactionManager transactionManager) {
         DeviceInfoHelper.resetInstanceForTest();
+        AppInfoHelper.resetInstanceForTest();
 
         mContext = context;
         mTransactionManager = transactionManager;
@@ -85,7 +86,7 @@ public final class TransactionTestUtils {
         mTransactionManager.insert(
                 new UpsertTableRequest(
                         AppInfoHelper.TABLE_NAME, contentValues, UNIQUE_COLUMN_INFO));
-        AppInfoHelper.clearInstanceForTest();
+        AppInfoHelper.resetInstanceForTest();
         assertThat(AppInfoHelper.getInstance().getAppInfoId(packageName))
                 .isNotEqualTo(DEFAULT_LONG);
     }
@@ -100,13 +101,15 @@ public final class TransactionTestUtils {
         HealthConnectInjector healthConnectInjector = mHealthConnectInjectorBuilder.build();
         return mTransactionManager.insertAll(
                 healthConnectInjector.getAppInfoHelper(),
+                healthConnectInjector.getAccessLogsHelper(),
                 new UpsertTransactionRequest(
                         packageName,
                         records,
                         healthConnectInjector.getDeviceInfoHelper(),
                         mContext,
                         /* isInsertRequest= */ true,
-                        /* extraPermsStateMap= */ Collections.emptyMap()));
+                        /* extraPermsStateMap= */ Collections.emptyMap(),
+                        healthConnectInjector.getAppInfoHelper()));
     }
 
     /** Creates a {@link ReadTransactionRequest} from the given record to id map. */

@@ -38,14 +38,12 @@ import static com.android.server.healthconnect.logging.HealthConnectServiceLogge
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.READ_AGGREGATED_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.READ_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.UPDATE_DATA;
-import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.addAccessLog;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 import android.Manifest;
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.AttributionSource;
 import android.content.Context;
@@ -258,6 +256,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private MedicalResourceHelper mMedicalResourceHelper;
     private MedicalDataSourceHelper mMedicalDataSourceHelper;
     private final ExportManager mExportManager;
+    private final AccessLogsHelper mAccessLogsHelper;
 
     private volatile UserHandle mCurrentForegroundUser;
 
@@ -273,7 +272,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             MedicalDataSourceHelper medicalDataSourceHelper,
             Context context,
             ExportManager exportManager,
-            ExportImportSettingsStorage exportImportSettingsStorage) {
+            ExportImportSettingsStorage exportImportSettingsStorage,
+            AccessLogsHelper accessLogsHelper) {
         this(
                 transactionManager,
                 deviceConfigManager,
@@ -286,7 +286,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 medicalResourceHelper,
                 medicalDataSourceHelper,
                 exportManager,
-                exportImportSettingsStorage);
+                exportImportSettingsStorage,
+                accessLogsHelper);
     }
 
     @VisibleForTesting
@@ -302,7 +303,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             MedicalResourceHelper medicalResourceHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
             ExportManager exportManager,
-            ExportImportSettingsStorage exportImportSettingsStorage) {
+            ExportImportSettingsStorage exportImportSettingsStorage,
+            AccessLogsHelper accessLogsHelper) {
+        mAccessLogsHelper = accessLogsHelper;
         mTransactionManager = transactionManager;
         mPreferenceHelper = PreferenceHelper.getInstance();
         mDeviceConfigManager = deviceConfigManager;
@@ -361,8 +364,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     @Override
-    public void grantHealthPermission(
-            @NonNull String packageName, @NonNull String permissionName, @NonNull UserHandle user) {
+    public void grantHealthPermission(String packageName, String permissionName, UserHandle user) {
         checkParamsNonNull(packageName, permissionName, user);
 
         throwIllegalStateExceptionIfDataSyncInProgress();
@@ -371,10 +373,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     public void revokeHealthPermission(
-            @NonNull String packageName,
-            @NonNull String permissionName,
-            @Nullable String reason,
-            @NonNull UserHandle user) {
+            String packageName, String permissionName, @Nullable String reason, UserHandle user) {
         checkParamsNonNull(packageName, permissionName, user);
 
         throwIllegalStateExceptionIfDataSyncInProgress();
@@ -383,7 +382,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     public void revokeAllHealthPermissions(
-            @NonNull String packageName, @Nullable String reason, @NonNull UserHandle user) {
+            String packageName, @Nullable String reason, UserHandle user) {
         checkParamsNonNull(packageName, user);
 
         throwIllegalStateExceptionIfDataSyncInProgress();
@@ -391,8 +390,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     @Override
-    public List<String> getGrantedHealthPermissions(
-            @NonNull String packageName, @NonNull UserHandle user) {
+    public List<String> getGrantedHealthPermissions(String packageName, UserHandle user) {
         checkParamsNonNull(packageName, user);
 
         throwIllegalStateExceptionIfDataSyncInProgress();
@@ -403,7 +401,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     public Map<String, Integer> getHealthPermissionsFlags(
-            @NonNull String packageName, @NonNull UserHandle user, List<String> permissions) {
+            String packageName, UserHandle user, List<String> permissions) {
         checkParamsNonNull(packageName, user);
         throwIllegalStateExceptionIfDataSyncInProgress();
 
@@ -414,10 +412,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     public void setHealthPermissionsUserFixedFlagValue(
-            @NonNull String packageName,
-            @NonNull UserHandle user,
-            List<String> permissions,
-            boolean value) {
+            String packageName, UserHandle user, List<String> permissions, boolean value) {
         checkParamsNonNull(packageName, user);
         throwIllegalStateExceptionIfDataSyncInProgress();
 
@@ -427,7 +422,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     public long getHistoricalAccessStartDateInMilliseconds(
-            @NonNull String packageName, @NonNull UserHandle userHandle) {
+            String packageName, UserHandle userHandle) {
         checkParamsNonNull(packageName, userHandle);
 
         throwIllegalStateExceptionIfDataSyncInProgress();
@@ -448,9 +443,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      */
     @Override
     public void insertRecords(
-            @NonNull AttributionSource attributionSource,
-            @NonNull RecordsParcel recordsParcel,
-            @NonNull IInsertRecordsResponseCallback callback) {
+            AttributionSource attributionSource,
+            RecordsParcel recordsParcel,
+            IInsertRecordsResponseCallback callback) {
         checkParamsNonNull(attributionSource, recordsParcel, callback);
 
         final int uid = Binder.getCallingUid();
@@ -493,9 +488,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     mContext,
                                     /* isInsertRequest */ true,
                                     mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
-                                            recordInternals, attributionSource));
+                                            recordInternals, attributionSource),
+                                    mAppInfoHelper);
                     List<String> uuids =
-                            mTransactionManager.insertAll(mAppInfoHelper, insertRequest);
+                            mTransactionManager.insertAll(
+                                    mAppInfoHelper, mAccessLogsHelper, insertRequest);
                     tryAndReturnResult(callback, uuids, logger);
 
                     HealthConnectThreadScheduler.scheduleInternalTask(
@@ -511,8 +508,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 /* isController= */ false);
     }
 
-    private void postInsertTasks(
-            @NonNull AttributionSource attributionSource, @NonNull RecordsParcel recordsParcel) {
+    private void postInsertTasks(AttributionSource attributionSource, RecordsParcel recordsParcel) {
         ActivityDateHelper.insertRecordDate(recordsParcel.getRecords());
         Set<Integer> recordsTypesInsertedSet =
                 recordsParcel.getRecords().stream()
@@ -531,9 +527,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      * @param callback Callback to receive result of performing this operation.
      */
     public void aggregateRecords(
-            @NonNull AttributionSource attributionSource,
-            @NonNull AggregateDataRequestParcel request,
-            @NonNull IAggregateRecordsResponseCallback callback) {
+            AttributionSource attributionSource,
+            AggregateDataRequestParcel request,
+            IAggregateRecordsResponseCallback callback) {
         checkParamsNonNull(attributionSource, request, callback);
 
         final int uid = Binder.getCallingUid();
@@ -607,7 +603,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             request,
                                             mHealthDataCategoryPriorityHelper,
                                             startDateAccess)
-                                    .getAggregateDataResponseParcel());
+                                    .getAggregateDataResponseParcel(mAccessLogsHelper));
                     logger.setDataTypesFromRecordTypes(recordTypesToTest)
                             .setHealthDataServiceApiStatusSuccess();
                 },
@@ -629,9 +625,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      */
     @Override
     public void readRecords(
-            @NonNull AttributionSource attributionSource,
-            @NonNull ReadRecordsRequestParcel request,
-            @NonNull IReadRecordsResponseCallback callback) {
+            AttributionSource attributionSource,
+            ReadRecordsRequestParcel request,
+            IReadRecordsResponseCallback callback) {
         checkParamsNonNull(attributionSource, request, callback);
 
         ErrorCallback errorCallback = error -> callback.onError(error);
@@ -739,12 +735,18 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         List<RecordInternal<?>> records;
                         long pageToken;
                         if (request.getRecordIdFiltersParcel() != null) {
-                            records = mTransactionManager.readRecordsByIds(readTransactionRequest);
+                            records =
+                                    mTransactionManager.readRecordsByIds(
+                                            readTransactionRequest,
+                                            mAppInfoHelper,
+                                            mAccessLogsHelper);
                             pageToken = DEFAULT_LONG;
                         } else {
                             Pair<List<RecordInternal<?>>, PageTokenWrapper> readRecordsResponse =
                                     mTransactionManager.readRecordsAndPageToken(
-                                            readTransactionRequest);
+                                            readTransactionRequest,
+                                            mAppInfoHelper,
+                                            mAccessLogsHelper);
                             records = readRecordsResponse.first;
                             pageToken = readRecordsResponse.second.encode();
                         }
@@ -761,7 +763,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             if (!holdsDataManagementPermission && !enforceSelfRead) {
                                 final List<Integer> recordTypes =
                                         singletonList(request.getRecordType());
-                                addAccessLog(callingPackageName, recordTypes, READ);
+                                mAccessLogsHelper.addAccessLog(
+                                        callingPackageName, recordTypes, READ);
                             }
                         }
 
@@ -821,9 +824,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      */
     @Override
     public void updateRecords(
-            @NonNull AttributionSource attributionSource,
-            @NonNull RecordsParcel recordsParcel,
-            @NonNull IEmptyResponseCallback callback) {
+            AttributionSource attributionSource,
+            RecordsParcel recordsParcel,
+            IEmptyResponseCallback callback) {
         checkParamsNonNull(attributionSource, recordsParcel, callback);
         ErrorCallback errorCallback = callback::onError;
 
@@ -864,8 +867,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     mContext,
                                     /* isInsertRequest */ false,
                                     mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
-                                            recordInternals, attributionSource));
-                    mTransactionManager.updateAll(mAppInfoHelper, request);
+                                            recordInternals, attributionSource),
+                                    mAppInfoHelper);
+                    mTransactionManager.updateAll(mAppInfoHelper, mAccessLogsHelper, request);
                     tryAndReturnResult(callback, logger);
                     logRecordTypeSpecificUpsertMetrics(
                             recordInternals, attributionSource.getPackageName());
@@ -889,9 +893,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      */
     @Override
     public void getChangeLogToken(
-            @NonNull AttributionSource attributionSource,
-            @NonNull ChangeLogTokenRequest request,
-            @NonNull IGetChangeLogTokenCallback callback) {
+            AttributionSource attributionSource,
+            ChangeLogTokenRequest request,
+            IGetChangeLogTokenCallback callback) {
         checkParamsNonNull(attributionSource, request, callback);
 
         ErrorCallback errorCallback = callback::onError;
@@ -935,9 +939,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      */
     @Override
     public void getChangeLogs(
-            @NonNull AttributionSource attributionSource,
-            @NonNull ChangeLogsRequest request,
-            @NonNull IChangeLogsResponseCallback callback) {
+            AttributionSource attributionSource,
+            ChangeLogsRequest request,
+            IChangeLogsResponseCallback callback) {
         checkParamsNonNull(attributionSource, request, callback);
 
         ErrorCallback errorCallback = callback::onError;
@@ -1012,7 +1016,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             grantedExtraReadPermissions,
                                             isInForeground,
                                             mDeviceInfoHelper,
-                                            isReadingSelfData));
+                                            isReadingSelfData),
+                                    mAppInfoHelper,
+                                    mAccessLogsHelper);
 
                     List<DeletedLog> deletedLogs =
                             ChangeLogsHelper.getDeletedLogs(changeLogsResponse.getChangeLogsMap());
@@ -1043,9 +1049,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      */
     @Override
     public void deleteUsingFiltersForSelf(
-            @NonNull AttributionSource attributionSource,
-            @NonNull DeleteUsingFiltersRequestParcel request,
-            @NonNull IEmptyResponseCallback callback) {
+            AttributionSource attributionSource,
+            DeleteUsingFiltersRequestParcel request,
+            IEmptyResponseCallback callback) {
         checkParamsNonNull(attributionSource, request, callback);
         ErrorCallback wrappedCallback = callback::onError;
 
@@ -1109,9 +1115,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      */
     @Override
     public void deleteUsingFilters(
-            @NonNull AttributionSource attributionSource,
-            @NonNull DeleteUsingFiltersRequestParcel request,
-            @NonNull IEmptyResponseCallback callback) {
+            AttributionSource attributionSource,
+            DeleteUsingFiltersRequestParcel request,
+            IEmptyResponseCallback callback) {
         checkParamsNonNull(attributionSource, request, callback);
 
         ErrorCallback errorCallback = callback::onError;
@@ -1155,10 +1161,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     private void deleteUsingFiltersInternal(
-            @NonNull AttributionSource attributionSource,
-            @NonNull DeleteUsingFiltersRequestParcel request,
-            @NonNull IEmptyResponseCallback callback,
-            @NonNull HealthConnectServiceLogger.Builder logger,
+            AttributionSource attributionSource,
+            DeleteUsingFiltersRequestParcel request,
+            IEmptyResponseCallback callback,
+            HealthConnectServiceLogger.Builder logger,
             List<Integer> recordTypeIdsToDelete,
             boolean shouldRecordDeleteAccessLogs,
             int uid,
@@ -1173,7 +1179,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         .setHasManageHealthDataPermission(hasDataManagementPermission(uid, pid));
         int numberOfRecordsDeleted =
                 mTransactionManager.deleteAll(
-                        deleteTransactionRequest, shouldRecordDeleteAccessLogs);
+                        deleteTransactionRequest, shouldRecordDeleteAccessLogs, mAccessLogsHelper);
         tryAndReturnResult(callback, logger);
         HealthConnectThreadScheduler.scheduleInternalTask(
                 () -> postDeleteTasks(recordTypeIdsToDelete));
@@ -1185,9 +1191,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     /** API to get Priority for {@code dataCategory} */
     @Override
     public void getCurrentPriority(
-            @NonNull String packageName,
+            String packageName,
             @HealthDataCategory.Type int dataCategory,
-            @NonNull IGetPriorityResponseCallback callback) {
+            IGetPriorityResponseCallback callback) {
         checkParamsNonNull(packageName, callback);
         ErrorCallback errorCallback = callback::onError;
 
@@ -1237,9 +1243,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     /** API to update priority for permission category(ies) */
     @Override
     public void updatePriority(
-            @NonNull String packageName,
-            @NonNull UpdatePriorityRequestParcel updatePriorityRequest,
-            @NonNull IEmptyResponseCallback callback) {
+            String packageName,
+            UpdatePriorityRequestParcel updatePriorityRequest,
+            IEmptyResponseCallback callback) {
         checkParamsNonNull(packageName, updatePriorityRequest, callback);
         ErrorCallback errorCallback = callback::onError;
 
@@ -1278,7 +1284,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     public void setRecordRetentionPeriodInDays(
-            int days, @NonNull UserHandle user, @NonNull IEmptyResponseCallback callback) {
+            int days, UserHandle user, IEmptyResponseCallback callback) {
         checkParamsNonNull(user, callback);
         ErrorCallback wrappedCallback = callback::onError;
 
@@ -1314,7 +1320,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     @Override
-    public int getRecordRetentionPeriodInDays(@NonNull UserHandle user) {
+    public int getRecordRetentionPeriodInDays(UserHandle user) {
         checkParamsNonNull(user);
 
         enforceIsForegroundUser(getCallingUserHandle());
@@ -1341,7 +1347,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      *     will be invoked with a {@link HealthConnectException}.
      */
     @Override
-    public void getContributorApplicationsInfo(@NonNull IApplicationInfoResponseCallback callback) {
+    public void getContributorApplicationsInfo(IApplicationInfoResponseCallback callback) {
         checkParamsNonNull(callback);
         ErrorCallback errorCallback = callback::onError;
 
@@ -1388,7 +1394,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     /** Retrieves {@link RecordTypeInfoResponse} for each RecordType. */
     @Override
-    public void queryAllRecordTypesInfo(@NonNull IRecordTypeInfoResponseCallback callback) {
+    public void queryAllRecordTypesInfo(IRecordTypeInfoResponseCallback callback) {
         checkParamsNonNull(callback);
         ErrorCallback errorCallback = callback::onError;
 
@@ -1426,8 +1432,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      * @see HealthConnectManager#queryAccessLogs
      */
     @Override
-    public void queryAccessLogs(
-            @NonNull String packageName, @NonNull IAccessLogsResponseCallback callback) {
+    public void queryAccessLogs(String packageName, IAccessLogsResponseCallback callback) {
         checkParamsNonNull(packageName, callback);
         ErrorCallback errorCallback = callback::onError;
 
@@ -1441,8 +1446,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         enforceIsForegroundUser(userHandle);
                         mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
                         throwExceptionIfDataSyncInProgress();
-                        final List<AccessLog> accessLogsList =
-                                AccessLogsHelper.queryAccessLogs(mAppInfoHelper);
+                        final List<AccessLog> accessLogsList = mAccessLogsHelper.queryAccessLogs();
                         callback.onResult(new AccessLogsResponseParcel(accessLogsList));
                     } catch (SecurityException securityException) {
                         Slog.e(TAG, "SecurityException: ", securityException);
@@ -1471,8 +1475,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      */
     @Override
     public void getActivityDates(
-            @NonNull ActivityDatesRequestParcel activityDatesRequestParcel,
-            @NonNull IActivityDatesResponseCallback callback) {
+            ActivityDatesRequestParcel activityDatesRequestParcel,
+            IActivityDatesResponseCallback callback) {
         checkParamsNonNull(activityDatesRequestParcel, callback);
         ErrorCallback errorCallback = callback::onError;
 
@@ -1520,7 +1524,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      *     operation.
      */
     @Override
-    public void startMigration(@NonNull String packageName, @NonNull IMigrationCallback callback) {
+    public void startMigration(String packageName, IMigrationCallback callback) {
         checkParamsNonNull(packageName, callback);
 
         int uid = Binder.getCallingUid();
@@ -1566,7 +1570,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      *     operation.
      */
     @Override
-    public void finishMigration(@NonNull String packageName, @NonNull IMigrationCallback callback) {
+    public void finishMigration(String packageName, IMigrationCallback callback) {
         checkParamsNonNull(packageName, callback);
 
         int uid = Binder.getCallingUid();
@@ -1604,9 +1608,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      */
     @Override
     public void writeMigrationData(
-            @NonNull String packageName,
-            @NonNull MigrationEntityParcel parcel,
-            @NonNull IMigrationCallback callback) {
+            String packageName, MigrationEntityParcel parcel, IMigrationCallback callback) {
         checkParamsNonNull(packageName, parcel, callback);
 
         int uid = Binder.getCallingUid();
@@ -1649,9 +1651,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      *     operation.
      */
     public void insertMinDataMigrationSdkExtensionVersion(
-            @NonNull String packageName,
-            int requiredSdkExtension,
-            @NonNull IMigrationCallback callback) {
+            String packageName, int requiredSdkExtension, IMigrationCallback callback) {
         checkParamsNonNull(packageName, callback);
 
         int uid = Binder.getCallingUid();
@@ -1685,9 +1685,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      */
     @Override
     public void stageAllHealthConnectRemoteData(
-            @NonNull StageRemoteDataRequest stageRemoteDataRequest,
-            @NonNull UserHandle userHandle,
-            @NonNull IDataStagingFinishedCallback callback) {
+            StageRemoteDataRequest stageRemoteDataRequest,
+            UserHandle userHandle,
+            IDataStagingFinishedCallback callback) {
         checkParamsNonNull(stageRemoteDataRequest, userHandle, callback);
 
         Map<String, ParcelFileDescriptor> origPfdsByFileName =
@@ -1748,8 +1748,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      */
     @Override
     public void getAllDataForBackup(
-            @NonNull StageRemoteDataRequest stageRemoteDataRequest,
-            @NonNull UserHandle userHandle) {
+            StageRemoteDataRequest stageRemoteDataRequest, UserHandle userHandle) {
         checkParamsNonNull(stageRemoteDataRequest, userHandle);
 
         mContext.enforceCallingPermission(HEALTH_CONNECT_BACKUP_INTER_AGENT_PERMISSION, null);
@@ -1774,7 +1773,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      * @see HealthConnectManager#deleteAllStagedRemoteData
      */
     @Override
-    public void deleteAllStagedRemoteData(@NonNull UserHandle userHandle) {
+    public void deleteAllStagedRemoteData(UserHandle userHandle) {
         checkParamsNonNull(userHandle);
 
         mContext.enforceCallingPermission(
@@ -1816,7 +1815,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      * @see HealthConnectManager#getHealthConnectDataState
      */
     @Override
-    public void getHealthConnectDataState(@NonNull IGetHealthConnectDataStateCallback callback) {
+    public void getHealthConnectDataState(IGetHealthConnectDataStateCallback callback) {
         checkParamsNonNull(callback);
 
         try {
@@ -1880,7 +1879,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      */
     @Override
     public void getHealthConnectMigrationUiState(
-            @NonNull IGetHealthConnectMigrationUiStateCallback callback) {
+            IGetHealthConnectMigrationUiStateCallback callback) {
         checkParamsNonNull(callback);
 
         final int uid = Binder.getCallingUid();
@@ -1939,7 +1938,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     public void configureScheduledExport(
-            @Nullable ScheduledExportSettings settings, @NonNull UserHandle user) {
+            @Nullable ScheduledExportSettings settings, UserHandle user) {
         checkParamsNonNull(user);
 
         UserHandle userHandle = Binder.getCallingUserHandle();
@@ -1982,8 +1981,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     /** Queries status for a scheduled export */
     @Override
-    public void getScheduledExportStatus(
-            @NonNull UserHandle user, @NonNull IScheduledExportStatusCallback callback) {
+    public void getScheduledExportStatus(UserHandle user, IScheduledExportStatusCallback callback) {
         checkParamsNonNull(user, callback);
         ErrorCallback errorCallback = callback::onError;
         final int uid = Binder.getCallingUid();
@@ -2012,7 +2010,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     @Override
-    public int getScheduledExportPeriodInDays(@NonNull UserHandle user) {
+    public int getScheduledExportPeriodInDays(UserHandle user) {
         checkParamsNonNull(user);
 
         enforceIsForegroundUser(getCallingUserHandle());
@@ -2032,7 +2030,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     /** Queries the status for a data import */
     @Override
-    public void getImportStatus(@NonNull UserHandle user, @NonNull IImportStatusCallback callback) {
+    public void getImportStatus(UserHandle user, IImportStatusCallback callback) {
         checkParamsNonNull(user, callback);
         ErrorCallback errorCallback = callback::onError;
 
@@ -2060,8 +2058,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     @Override
-    public void runImport(
-            @NonNull UserHandle user, @NonNull Uri file, @NonNull IEmptyResponseCallback callback) {
+    public void runImport(UserHandle user, Uri file, IEmptyResponseCallback callback) {
         if (mImportManager == null) return;
         checkParamsNonNull(file);
 
@@ -2084,8 +2081,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     /** Queries the document providers available to be used for export/import. */
     @Override
-    public void queryDocumentProviders(
-            @NonNull UserHandle user, @NonNull IQueryDocumentProvidersCallback callback) {
+    public void queryDocumentProviders(UserHandle user, IQueryDocumentProvidersCallback callback) {
         checkParamsNonNull(user, callback);
         ErrorCallback errorCallback = callback::onError;
 
@@ -2123,9 +2119,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     /** Service implementation of {@link HealthConnectManager#createMedicalDataSource} */
     @Override
     public void createMedicalDataSource(
-            @NonNull AttributionSource attributionSource,
-            @NonNull CreateMedicalDataSourceRequest request,
-            @NonNull IMedicalDataSourceResponseCallback callback) {
+            AttributionSource attributionSource,
+            CreateMedicalDataSourceRequest request,
+            IMedicalDataSourceResponseCallback callback) {
         checkParamsNonNull(attributionSource, request, callback);
         ErrorCallback errorCallback = callback::onError;
         int uid = Binder.getCallingUid();
@@ -2191,9 +2187,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      */
     @Override
     public void getMedicalDataSourcesByIds(
-            @NonNull AttributionSource attributionSource,
-            @NonNull List<String> ids,
-            @NonNull IMedicalDataSourcesResponseCallback callback) {
+            AttributionSource attributionSource,
+            List<String> ids,
+            IMedicalDataSourcesResponseCallback callback) {
         checkParamsNonNull(attributionSource, ids, callback);
         final ErrorCallback errorCallback = callback::onError;
         final int uid = Binder.getCallingUid();
@@ -2279,7 +2275,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                 callingPackageName,
                                                 grantedMedicalPermissions.contains(
                                                         WRITE_MEDICAL_DATA),
-                                                isCalledFromBgWithoutBgRead);
+                                                isCalledFromBgWithoutBgRead,
+                                                mAppInfoHelper);
                         // TODO(b/343921816): Creates access logs if necessary.
                     }
                     logger.setNumberOfRecords(medicalDataSources.size());
@@ -2298,9 +2295,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      */
     @Override
     public void getMedicalDataSourcesByRequest(
-            @NonNull AttributionSource attributionSource,
-            @NonNull GetMedicalDataSourcesRequest request,
-            @NonNull IMedicalDataSourcesResponseCallback callback) {
+            AttributionSource attributionSource,
+            GetMedicalDataSourcesRequest request,
+            IMedicalDataSourcesResponseCallback callback) {
         checkParamsNonNull(attributionSource, request, callback);
         ErrorCallback errorCallback = callback::onError;
         final int uid = Binder.getCallingUid();
@@ -2396,9 +2393,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     /** Service implementation of {@link HealthConnectManager#deleteMedicalDataSourceWithData} */
     @Override
     public void deleteMedicalDataSourceWithData(
-            @NonNull AttributionSource attributionSource,
-            @NonNull String id,
-            @NonNull IEmptyResponseCallback callback) {
+            AttributionSource attributionSource, String id, IEmptyResponseCallback callback) {
         checkParamsNonNull(attributionSource, id, callback);
         final ErrorCallback errorCallback = callback::onError;
         final int uid = Binder.getCallingUid();
@@ -2468,9 +2463,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     public void upsertMedicalResources(
-            @NonNull AttributionSource attributionSource,
-            @NonNull List<UpsertMedicalResourceRequest> requests,
-            @NonNull IMedicalResourcesResponseCallback callback) {
+            AttributionSource attributionSource,
+            List<UpsertMedicalResourceRequest> requests,
+            IMedicalResourcesResponseCallback callback) {
         checkParamsNonNull(attributionSource, requests, callback);
         final ErrorCallback errorCallback = callback::onError;
         final int uid = Binder.getCallingUid();
@@ -2550,9 +2545,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     public void readMedicalResourcesByIds(
-            @NonNull AttributionSource attributionSource,
-            @NonNull List<MedicalResourceId> medicalResourceIds,
-            @NonNull IReadMedicalResourcesResponseCallback callback) {
+            AttributionSource attributionSource,
+            List<MedicalResourceId> medicalResourceIds,
+            IReadMedicalResourcesResponseCallback callback) {
         checkParamsNonNull(attributionSource, medicalResourceIds, callback);
         final ErrorCallback errorCallback = callback::onError;
         final int uid = Binder.getCallingUid();
@@ -2672,9 +2667,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     public void readMedicalResourcesByRequest(
-            @NonNull AttributionSource attributionSource,
-            @NonNull ReadMedicalResourcesRequest request,
-            @NonNull IReadMedicalResourcesResponseCallback callback) {
+            AttributionSource attributionSource,
+            ReadMedicalResourcesRequest request,
+            IReadMedicalResourcesResponseCallback callback) {
         checkParamsNonNull(attributionSource, request, callback);
         final ErrorCallback errorCallback = callback::onError;
         final int uid = Binder.getCallingUid();
@@ -2970,8 +2965,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      * MedicalResource.MedicalResourceType}.
      */
     @Override
-    public void queryAllMedicalResourceTypeInfos(
-            @NonNull IMedicalResourceTypeInfosCallback callback) {
+    public void queryAllMedicalResourceTypeInfos(IMedicalResourceTypeInfosCallback callback) {
         checkParamsNonNull(callback);
         final ErrorCallback errorCallback = callback::onError;
         final int uid = Binder.getCallingUid();
@@ -3080,12 +3074,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     @VisibleForTesting
-    Set<String> getStagedRemoteFileNames(@NonNull UserHandle userHandle) {
+    Set<String> getStagedRemoteFileNames(UserHandle userHandle) {
         return mBackupRestore.getStagedRemoteFileNames(userHandle);
     }
 
-    @NonNull
-    private DataMigrationManager getDataMigrationManager(@NonNull UserHandle userHandle) {
+    private DataMigrationManager getDataMigrationManager(UserHandle userHandle) {
         final Context userContext = mContext.createContextAsUser(userHandle, 0);
 
         return new DataMigrationManager(
@@ -3122,7 +3115,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      * @param callerAttributionSource The permission identity of the caller
      */
     private void verifyPackageNameFromUid(
-            int callingUid, @NonNull AttributionSource callerAttributionSource) {
+            int callingUid, AttributionSource callerAttributionSource) {
         // Check does the attribution source is one for the calling app.
         callerAttributionSource.enforceCallingUid();
         // Obtain the user where the client is running in.
@@ -3139,9 +3132,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      * @throws SecurityException if the package name and uid don't match.
      */
     private void verifyCallingPackage(
-            @NonNull Context actualCallingUserContext,
-            int actualCallingUid,
-            @NonNull String claimedCallingPackage) {
+            Context actualCallingUserContext, int actualCallingUid, String claimedCallingPackage) {
         int claimedCallingUid = getPackageUid(actualCallingUserContext, claimedCallingPackage);
         if (claimedCallingUid != actualCallingUid) {
             throw new SecurityException(
@@ -3150,7 +3141,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     /** Finds the UID of the {@code packageName} in the given {@code context}. */
-    private int getPackageUid(@NonNull Context context, @NonNull String packageName) {
+    private int getPackageUid(Context context, String packageName) {
         try {
             return context.getPackageManager().getPackageUid(packageName, /* flags= */ 0);
         } catch (PackageManager.NameNotFoundException e) {
@@ -3252,7 +3243,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     private void logRecordTypeSpecificUpsertMetrics(
-            @NonNull List<RecordInternal<?>> recordInternals, @NonNull String packageName) {
+            List<RecordInternal<?>> recordInternals, String packageName) {
         checkParamsNonNull(recordInternals, packageName);
 
         Map<Integer, List<RecordInternal<?>>> recordTypeToRecordInternals =
@@ -3266,7 +3257,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     private void logRecordTypeSpecificReadMetrics(
-            @NonNull List<RecordInternal<?>> recordInternals, @NonNull String packageName) {
+            List<RecordInternal<?>> recordInternals, String packageName) {
         checkParamsNonNull(recordInternals, packageName);
 
         Map<Integer, List<RecordInternal<?>>> recordTypeToRecordInternals =
@@ -3377,8 +3368,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     private static void tryAndThrowException(
-            @NonNull IMigrationCallback callback,
-            @NonNull Exception exception,
+            IMigrationCallback callback,
+            Exception exception,
             @MigrationException.ErrorCode int errorCode,
             @Nullable String failedEntityId) {
         try {
@@ -3391,7 +3382,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     private static void tryAndThrowException(
             ErrorCallback callback,
-            @NonNull Exception exception,
+            Exception exception,
             @HealthConnectException.ErrorCode int errorCode) {
         try {
             callback.onError(

@@ -68,7 +68,8 @@ public class UpsertTransactionRequest {
             DeviceInfoHelper deviceInfoHelper,
             Context context,
             boolean isInsertRequest,
-            Map<String, Boolean> extraPermsStateMap) {
+            Map<String, Boolean> extraPermsStateMap,
+            AppInfoHelper appInfoHelper) {
         this(
                 packageName,
                 recordInternals,
@@ -77,7 +78,8 @@ public class UpsertTransactionRequest {
                 isInsertRequest,
                 false /* useProvidedUuid */,
                 false /* skipPackageNameAndLogs */,
-                extraPermsStateMap);
+                extraPermsStateMap,
+                appInfoHelper);
     }
 
     public UpsertTransactionRequest(
@@ -87,7 +89,8 @@ public class UpsertTransactionRequest {
             Context context,
             boolean isInsertRequest,
             boolean useProvidedUuid,
-            boolean skipPackageName) {
+            boolean skipPackageName,
+            AppInfoHelper appInfoHelper) {
         this(
                 packageName,
                 recordInternals,
@@ -96,7 +99,8 @@ public class UpsertTransactionRequest {
                 isInsertRequest,
                 useProvidedUuid,
                 skipPackageName,
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                appInfoHelper);
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
@@ -109,7 +113,8 @@ public class UpsertTransactionRequest {
             // TODO(b/329237732): Use builder pattern for this class.
             boolean useProvidedUuid,
             boolean skipPackageName,
-            Map<String, Boolean> extraPermsStateMap) {
+            Map<String, Boolean> extraPermsStateMap,
+            AppInfoHelper appInfoHelper) {
         mPackageName = packageName;
         if (extraPermsStateMap != null && !extraPermsStateMap.isEmpty()) {
             mExtraWritePermissionsToState = new ArrayMap<>();
@@ -120,8 +125,7 @@ public class UpsertTransactionRequest {
             if (!skipPackageName) {
                 StorageUtils.addPackageNameTo(recordInternal, packageName);
             }
-            AppInfoHelper.getInstance()
-                    .populateAppInfoId(recordInternal, context, /* requireAllFields= */ true);
+            appInfoHelper.populateAppInfoId(recordInternal, context, /* requireAllFields= */ true);
             deviceInfoHelper.populateDeviceInfoId(recordInternal);
 
             if (isInsertRequest) {

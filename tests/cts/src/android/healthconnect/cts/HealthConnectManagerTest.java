@@ -32,6 +32,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE;
@@ -126,6 +127,7 @@ import android.healthconnect.cts.utils.ConditionBuilder;
 import android.healthconnect.cts.utils.DataFactory;
 import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.ObservationBuilder;
+import android.healthconnect.cts.utils.ProcedureBuilder;
 import android.healthconnect.cts.utils.TestUtils;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
@@ -2840,6 +2842,7 @@ public class HealthConnectManagerTest {
                                 MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PREGNANCY, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROBLEMS, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROCEDURES, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_VITAL_SIGNS, Set.of()));
     }
@@ -2865,6 +2868,7 @@ public class HealthConnectManagerTest {
                                 MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PREGNANCY, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROBLEMS, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROCEDURES, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_VITAL_SIGNS, Set.of()));
     }
@@ -2892,6 +2896,7 @@ public class HealthConnectManagerTest {
                                 MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PREGNANCY, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROBLEMS, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROCEDURES, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_VITAL_SIGNS, Set.of()));
     }
@@ -2994,6 +2999,22 @@ public class HealthConnectManagerTest {
         mManager.readMedicalResources(allProblems, Executors.newSingleThreadExecutor(), receiver);
 
         assertThat(receiver.getResponse().getMedicalResources()).containsExactly(condition);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testProcedureInsertAndRead() throws Exception {
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalResource procedure =
+                upsertMedicalData(dataSource1.getId(), new ProcedureBuilder().toJson());
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesRequest allProblems =
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_PROCEDURES).build();
+
+        mManager.readMedicalResources(allProblems, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(procedure);
     }
 
     @Test

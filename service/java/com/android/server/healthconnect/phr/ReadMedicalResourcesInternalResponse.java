@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.phr;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.datatypes.MedicalResource;
@@ -31,10 +30,10 @@ import java.util.Objects;
  */
 public final class ReadMedicalResourcesInternalResponse {
     @Nullable String mPageToken;
-    @NonNull List<MedicalResource> mMedicalResources;
+    List<MedicalResource> mMedicalResources;
 
     public ReadMedicalResourcesInternalResponse(
-            @NonNull List<MedicalResource> medicalResources, @Nullable String pageToken) {
+            List<MedicalResource> medicalResources, @Nullable String pageToken) {
         this.mMedicalResources = medicalResources;
         this.mPageToken = pageToken;
     }
@@ -46,7 +45,6 @@ public final class ReadMedicalResourcesInternalResponse {
     }
 
     /** Returns the list of {@link MedicalResource}s. */
-    @NonNull
     public List<MedicalResource> getMedicalResources() {
         return mMedicalResources;
     }

@@ -20,6 +20,7 @@ import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_A
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_CONDITION;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_OBSERVATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PROCEDURE;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_ALLERGY;
@@ -35,6 +36,7 @@ import static org.junit.Assert.assertThrows;
 import android.health.connect.datatypes.FhirResource;
 import android.healthconnect.cts.utils.ConditionBuilder;
 import android.healthconnect.cts.utils.ObservationBuilder;
+import android.healthconnect.cts.utils.ProcedureBuilder;
 import android.os.Parcel;
 import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
@@ -96,6 +98,22 @@ public class FhirResourceTest {
                         .build();
 
         assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_CONDITION);
+        assertThat(resource.getId()).isEqualTo(id);
+        assertThat(resource.getData()).isEqualTo(fhirData);
+    }
+
+    @Test
+    public void testFhirResourceBuilder_setAllFieldsProcedure() {
+        String id = "myId123";
+        String fhirData = new ProcedureBuilder().setId(id).toJson();
+        FhirResource resource =
+                getFhirResourceBuilder()
+                        .setType(FHIR_RESOURCE_TYPE_PROCEDURE)
+                        .setId(id)
+                        .setData(fhirData)
+                        .build();
+
+        assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_PROCEDURE);
         assertThat(resource.getId()).isEqualTo(id);
         assertThat(resource.getData()).isEqualTo(fhirData);
     }
