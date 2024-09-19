@@ -284,7 +284,7 @@ public class MedicalDataSourceHelperTest {
                         "data_source_uuid",
                         "fhir_base_uri",
                         "display_name",
-                        "data_source_fhir_version");
+                        "fhir_version");
         assertThat(readRequest.getReadCommand())
                 .isEqualTo(
                         "SELECT DISTINCT "
@@ -322,7 +322,7 @@ public class MedicalDataSourceHelperTest {
                         "data_source_uuid",
                         "fhir_base_uri",
                         "display_name",
-                        "data_source_fhir_version");
+                        "fhir_version");
         assertThat(readRequest.getReadCommand())
                 .isEqualTo(
                         "SELECT DISTINCT "

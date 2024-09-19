@@ -29,7 +29,6 @@ import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOUR
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_PACKAGE_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
-import static android.healthconnect.cts.utils.PhrDataFactory.R4_VERSION_STRING;
 import static android.healthconnect.cts.utils.PhrDataFactory.addCompletedStatus;
 import static android.healthconnect.cts.utils.PhrDataFactory.createAllergyMedicalResource;
 import static android.healthconnect.cts.utils.PhrDataFactory.createImmunizationMedicalResource;
@@ -49,7 +48,6 @@ import static com.android.server.healthconnect.storage.datatypehelpers.MedicalRe
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.FHIR_DATA_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.FHIR_RESOURCE_ID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.FHIR_RESOURCE_TYPE_COLUMN_NAME;
-import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.FHIR_VERSION_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.MEDICAL_RESOURCE_TABLE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getCreateTableRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getPrimaryColumn;
@@ -187,7 +185,6 @@ public class MedicalResourceHelperTest {
                         Pair.create(FHIR_RESOURCE_TYPE_COLUMN_NAME, INTEGER_NOT_NULL),
                         Pair.create(FHIR_RESOURCE_ID_COLUMN_NAME, TEXT_NOT_NULL),
                         Pair.create(FHIR_DATA_COLUMN_NAME, TEXT_NOT_NULL),
-                        Pair.create(FHIR_VERSION_COLUMN_NAME, TEXT_NOT_NULL),
                         Pair.create(DATA_SOURCE_ID_COLUMN_NAME, INTEGER_NOT_NULL),
                         Pair.create(LAST_MODIFIED_TIME_COLUMN_NAME, INTEGER_NOT_NULL));
         List<Pair<String, String>> columnInfoMedicalResourceIndices =
@@ -228,11 +225,10 @@ public class MedicalResourceHelperTest {
                 MedicalResourceHelper.getContentValues(
                         DATA_SOURCE_ROW_ID, upsertMedicalResourceInternalRequest, INSTANT_NOW);
 
-        assertThat(contentValues.size()).isEqualTo(6);
+        assertThat(contentValues.size()).isEqualTo(5);
         assertThat(contentValues.get(FHIR_RESOURCE_TYPE_COLUMN_NAME))
                 .isEqualTo(fhirResource.getType());
         assertThat(contentValues.get(DATA_SOURCE_ID_COLUMN_NAME)).isEqualTo(DATA_SOURCE_ROW_ID);
-        assertThat(contentValues.get(FHIR_VERSION_COLUMN_NAME)).isEqualTo(R4_VERSION_STRING);
         assertThat(contentValues.get(FHIR_DATA_COLUMN_NAME)).isEqualTo(fhirResource.getData());
         assertThat(contentValues.get(LAST_MODIFIED_TIME_COLUMN_NAME))
                 .isEqualTo(INSTANT_NOW.toEpochMilli());

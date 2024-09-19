@@ -25,6 +25,7 @@ import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 
 import static com.android.server.healthconnect.storage.HealthConnectDatabase.createTable;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getDataSourceUuidColumnName;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getFhirVersionColumnName;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getReadTableWhereClause;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getCreateMedicalResourceIndicesTableRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName;
@@ -104,9 +105,6 @@ public final class MedicalResourceHelper {
     @VisibleForTesting static final String FHIR_RESOURCE_TYPE_COLUMN_NAME = "fhir_resource_type";
     @VisibleForTesting static final String FHIR_DATA_COLUMN_NAME = "fhir_data";
 
-    @VisibleForTesting
-    static final String FHIR_VERSION_COLUMN_NAME = "medical_resource_fhir_version";
-
     @VisibleForTesting static final String DATA_SOURCE_ID_COLUMN_NAME = "data_source_id";
     @VisibleForTesting static final String FHIR_RESOURCE_ID_COLUMN_NAME = "fhir_resource_id";
     private static final String MEDICAL_RESOURCE_COLUMNS =
@@ -116,7 +114,7 @@ public final class MedicalResourceHelper {
                     + ","
                     + FHIR_DATA_COLUMN_NAME
                     + ","
-                    + FHIR_VERSION_COLUMN_NAME
+                    + MedicalDataSourceHelper.getFhirVersionColumnName()
                     + ","
                     + MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName()
                     + ","
@@ -252,7 +250,6 @@ public final class MedicalResourceHelper {
                 Pair.create(FHIR_RESOURCE_TYPE_COLUMN_NAME, INTEGER_NOT_NULL),
                 Pair.create(FHIR_RESOURCE_ID_COLUMN_NAME, TEXT_NOT_NULL),
                 Pair.create(FHIR_DATA_COLUMN_NAME, TEXT_NOT_NULL),
-                Pair.create(FHIR_VERSION_COLUMN_NAME, TEXT_NOT_NULL),
                 Pair.create(DATA_SOURCE_ID_COLUMN_NAME, INTEGER_NOT_NULL),
                 Pair.create(LAST_MODIFIED_TIME_COLUMN_NAME, INTEGER_NOT_NULL));
     }
@@ -997,8 +994,6 @@ public final class MedicalResourceHelper {
         resourceContentValues.put(
                 FHIR_DATA_COLUMN_NAME, upsertMedicalResourceInternalRequest.getData());
         resourceContentValues.put(
-                FHIR_VERSION_COLUMN_NAME, upsertMedicalResourceInternalRequest.getFhirVersion());
-        resourceContentValues.put(
                 FHIR_RESOURCE_TYPE_COLUMN_NAME,
                 upsertMedicalResourceInternalRequest.getFhirResourceType());
         resourceContentValues.put(
@@ -1302,7 +1297,7 @@ public final class MedicalResourceHelper {
                                 getCursorString(cursor, FHIR_DATA_COLUMN_NAME))
                         .build();
         FhirVersion fhirVersion =
-                parseFhirVersion(getCursorString(cursor, FHIR_VERSION_COLUMN_NAME));
+                parseFhirVersion(getCursorString(cursor, getFhirVersionColumnName()));
         return new MedicalResource.Builder(
                         getCursorInt(cursor, getMedicalResourceTypeColumnName()),
                         getCursorUUID(cursor, getDataSourceUuidColumnName()).toString(),
