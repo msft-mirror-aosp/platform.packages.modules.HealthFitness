@@ -35,11 +35,13 @@ import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_
 import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.MEDICAL_DATA_SOURCE_ACCESSED_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.MEDICAL_RESOURCE_TYPE_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.getAlterTableRequestForPhrAccessLogs;
+import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.populateCommonColumns;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NULL;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.content.ContentValues;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.datatypes.BloodPressureRecord;
@@ -59,6 +61,7 @@ import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.AlterTableRequest;
+import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -283,6 +286,18 @@ public class AccessLogsHelperTest {
     }
 
     @Test
+    public void queryAccessLogs_invalidAppId_excluded() {
+        ContentValues contentValues =
+                populateCommonColumns(-2, List.of(RECORD_TYPE_BLOOD_PRESSURE), OPERATION_TYPE_READ);
+        UpsertTableRequest request =
+                new UpsertTableRequest(AccessLogsHelper.TABLE_NAME, contentValues);
+        mTransactionManager.insert(request);
+
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        assertThat(result).isEmpty();
+    }
+
+    @Test
     public void recordDeleteAccessLog_success() {
         Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_STEPS_CADENCE);
         mTransactionManager.runAsTransaction(
@@ -297,6 +312,18 @@ public class AccessLogsHelperTest {
         assertThat(log.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(log.getRecordTypes()).containsExactly(StepsCadenceRecord.class);
         assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_DELETE);
+    }
+
+    @Test
+    public void recordDeleteAccessLog_packageNameNotFound_noOp() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_STEPS_CADENCE);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    mAccessLogsHelper.recordDeleteAccessLog(db, "unknown.app", recordTypeIds);
+                });
+
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -318,6 +345,18 @@ public class AccessLogsHelperTest {
     }
 
     @Test
+    public void recordReadAccessLog_packageNameNotFound_noOp() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_DISTANCE, RECORD_TYPE_SKIN_TEMPERATURE);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    mAccessLogsHelper.recordReadAccessLog(db, "unknown.app", recordTypeIds);
+                });
+
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        assertThat(result).isEmpty();
+    }
+
+    @Test
     public void recordUpsertAccessLog_success() {
         Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_BODY_FAT, RECORD_TYPE_HEIGHT);
         mTransactionManager.runAsTransaction(
@@ -332,6 +371,18 @@ public class AccessLogsHelperTest {
         assertThat(log.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(log.getRecordTypes()).containsExactly(BodyFatRecord.class, HeightRecord.class);
         assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
+    }
+
+    @Test
+    public void recordUpsertAccessLog_packageNameNotFound_noOp() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_BODY_FAT, RECORD_TYPE_HEIGHT);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    mAccessLogsHelper.recordUpsertAccessLog(db, "unknown.app", recordTypeIds);
+                });
+
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        assertThat(result).isEmpty();
     }
 
     @Test
