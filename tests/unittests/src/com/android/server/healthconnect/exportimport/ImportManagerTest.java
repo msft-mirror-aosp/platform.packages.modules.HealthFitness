@@ -59,6 +59,7 @@ import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -119,6 +120,7 @@ public class ImportManagerTest {
     private ExportImportSettingsStorage mExportImportSettingsStorage;
     private AppInfoHelper mAppInfoHelper;
     private AccessLogsHelper mAccessLogsHelper;
+    private DeviceInfoHelper mDeviceInfoHelper;
 
     @Before
     public void setUp() throws Exception {
@@ -144,6 +146,7 @@ public class ImportManagerTest {
         mExportImportSettingsStorage = healthConnectInjector.getExportImportSettingsStorage();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
+        mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
 
         mImportManager =
                 new ImportManager(
@@ -208,7 +211,8 @@ public class ImportManagerTest {
                                 bloodPressureUuids));
 
         List<RecordInternal<?>> records =
-                mTransactionManager.readRecordsByIds(request, mAppInfoHelper, mAccessLogsHelper);
+                mTransactionManager.readRecordsByIds(
+                        request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
         assertThat(records).hasSize(2);
         assertThat(records.get(0).getUuid()).isEqualTo(stepsUuids.get(0));
         assertThat(records.get(1).getUuid()).isEqualTo(bloodPressureUuids.get(0));
@@ -336,7 +340,8 @@ public class ImportManagerTest {
                                 bloodPressureUuids));
 
         List<RecordInternal<?>> records =
-                mTransactionManager.readRecordsByIds(request, mAppInfoHelper, mAccessLogsHelper);
+                mTransactionManager.readRecordsByIds(
+                        request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
         assertThat(records).hasSize(1);
         assertThat(records.get(0).getUuid()).isEqualTo(bloodPressureUuids.get(0));
     }

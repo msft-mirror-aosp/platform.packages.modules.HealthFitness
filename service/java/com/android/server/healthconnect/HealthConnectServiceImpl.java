@@ -273,7 +273,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             Context context,
             ExportManager exportManager,
             ExportImportSettingsStorage exportImportSettingsStorage,
-            AccessLogsHelper accessLogsHelper) {
+            AccessLogsHelper accessLogsHelper,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
         this(
                 transactionManager,
                 deviceConfigManager,
@@ -287,7 +288,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 medicalDataSourceHelper,
                 exportManager,
                 exportImportSettingsStorage,
-                accessLogsHelper);
+                accessLogsHelper,
+                healthDataCategoryPriorityHelper);
     }
 
     @VisibleForTesting
@@ -304,7 +306,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             MedicalDataSourceHelper medicalDataSourceHelper,
             ExportManager exportManager,
             ExportImportSettingsStorage exportImportSettingsStorage,
-            AccessLogsHelper accessLogsHelper) {
+            AccessLogsHelper accessLogsHelper,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
         mAccessLogsHelper = accessLogsHelper;
         mTransactionManager = transactionManager;
         mPreferenceHelper = PreferenceHelper.getInstance();
@@ -316,7 +319,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mPermissionManager = mContext.getSystemService(PermissionManager.class);
         mMigrationStateManager = migrationStateManager;
         mDeviceInfoHelper = DeviceInfoHelper.getInstance();
-        mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
+        mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
         mDataPermissionEnforcer =
                 new DataPermissionEnforcer(mPermissionManager, mContext, deviceConfigManager);
         mMedicalDataPermissionEnforcer = new MedicalDataPermissionEnforcer(mPermissionManager);
@@ -723,8 +726,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                         startDateAccessEpochMilli,
                                         enforceSelfRead,
                                         grantedExtraReadPermissions,
-                                        isInForeground,
-                                        mDeviceInfoHelper);
+                                        isInForeground);
                         // throw an exception if read requested is not for a single record type
                         // i.e. size of read table request is not equal to 1.
                         if (readTransactionRequest.getReadRequests().size() != 1) {
@@ -739,14 +741,16 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     mTransactionManager.readRecordsByIds(
                                             readTransactionRequest,
                                             mAppInfoHelper,
-                                            mAccessLogsHelper);
+                                            mAccessLogsHelper,
+                                            mDeviceInfoHelper);
                             pageToken = DEFAULT_LONG;
                         } else {
                             Pair<List<RecordInternal<?>>, PageTokenWrapper> readRecordsResponse =
                                     mTransactionManager.readRecordsAndPageToken(
                                             readTransactionRequest,
                                             mAppInfoHelper,
-                                            mAccessLogsHelper);
+                                            mAccessLogsHelper,
+                                            mDeviceInfoHelper);
                             records = readRecordsResponse.first;
                             pageToken = readRecordsResponse.second.encode();
                         }
@@ -1015,10 +1019,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             startDateAccessEpochMilli,
                                             grantedExtraReadPermissions,
                                             isInForeground,
-                                            mDeviceInfoHelper,
                                             isReadingSelfData),
                                     mAppInfoHelper,
-                                    mAccessLogsHelper);
+                                    mAccessLogsHelper,
+                                    mDeviceInfoHelper);
 
                     List<DeletedLog> deletedLogs =
                             ChangeLogsHelper.getDeletedLogs(changeLogsResponse.getChangeLogsMap());

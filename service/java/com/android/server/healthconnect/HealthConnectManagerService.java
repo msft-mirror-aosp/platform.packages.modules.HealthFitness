@@ -119,18 +119,21 @@ public class HealthConnectManagerService extends SystemService {
         MigrationCleaner migrationCleaner;
         AppInfoHelper appInfoHelper;
         AccessLogsHelper accessLogsHelper;
+        HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper;
 
         if (Flags.dependencyInjection()) {
             Objects.requireNonNull(mHealthConnectInjector);
             appInfoHelper = mHealthConnectInjector.getAppInfoHelper();
             accessLogsHelper = mHealthConnectInjector.getAccessLogsHelper();
+            healthDataCategoryPriorityHelper =
+                    mHealthConnectInjector.getHealthDataCategoryPriorityHelper();
             firstGrantTimeManager =
                     new FirstGrantTimeManager(
                             context,
                             permissionIntentTracker,
                             FirstGrantTimeDatastore.createInstance(),
                             mHealthConnectInjector.getPackageInfoUtils(),
-                            mHealthConnectInjector.getHealthDataCategoryPriorityHelper(),
+                            healthDataCategoryPriorityHelper,
                             mMigrationStateManager);
             permissionHelper =
                     new HealthConnectPermissionHelper(
@@ -139,7 +142,7 @@ public class HealthConnectManagerService extends SystemService {
                             HealthConnectManager.getHealthPermissions(context),
                             permissionIntentTracker,
                             firstGrantTimeManager,
-                            mHealthConnectInjector.getHealthDataCategoryPriorityHelper(),
+                            healthDataCategoryPriorityHelper,
                             appInfoHelper);
             mPermissionPackageChangesOrchestrator =
                     new PermissionPackageChangesOrchestrator(
@@ -147,7 +150,7 @@ public class HealthConnectManagerService extends SystemService {
                             firstGrantTimeManager,
                             permissionHelper,
                             mCurrentForegroundUser,
-                            mHealthConnectInjector.getHealthDataCategoryPriorityHelper());
+                            healthDataCategoryPriorityHelper);
             migrationCleaner =
                     new MigrationCleaner(
                             mHealthConnectInjector.getTransactionManager(),
@@ -157,13 +160,14 @@ public class HealthConnectManagerService extends SystemService {
         } else {
             appInfoHelper = AppInfoHelper.getInstance(mTransactionManager);
             accessLogsHelper = AccessLogsHelper.getInstance(mTransactionManager, appInfoHelper);
+            healthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
             firstGrantTimeManager =
                     new FirstGrantTimeManager(
                             context,
                             permissionIntentTracker,
                             FirstGrantTimeDatastore.createInstance(),
                             PackageInfoUtils.getInstance(),
-                            HealthDataCategoryPriorityHelper.getInstance(),
+                            healthDataCategoryPriorityHelper,
                             mMigrationStateManager);
             permissionHelper =
                     new HealthConnectPermissionHelper(
@@ -178,7 +182,8 @@ public class HealthConnectManagerService extends SystemService {
                             permissionIntentTracker,
                             firstGrantTimeManager,
                             permissionHelper,
-                            mCurrentForegroundUser);
+                            mCurrentForegroundUser,
+                            healthDataCategoryPriorityHelper);
             migrationCleaner =
                     new MigrationCleaner(
                             mTransactionManager, PriorityMigrationHelper.getInstance());
@@ -228,7 +233,8 @@ public class HealthConnectManagerService extends SystemService {
                         mContext,
                         mExportManager,
                         mExportImportSettingsStorage,
-                        accessLogsHelper);
+                        accessLogsHelper,
+                        healthDataCategoryPriorityHelper);
     }
 
     @Override

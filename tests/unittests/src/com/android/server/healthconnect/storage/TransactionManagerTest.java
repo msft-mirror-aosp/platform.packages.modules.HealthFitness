@@ -58,8 +58,11 @@ import android.util.Pair;
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
@@ -112,6 +115,7 @@ public class TransactionManagerTest {
     private TransactionManager mTransactionManager;
     private AppInfoHelper mAppInfoHelper;
     private AccessLogsHelper mAccessLogsHelper;
+    private DeviceInfoHelper mDeviceInfoHelper;
 
     @Before
     public void setup() {
@@ -122,8 +126,14 @@ public class TransactionManagerTest {
 
         AppInfoHelper.resetInstanceForTest();
         AccessLogsHelper.resetInstanceForTest();
-        mAppInfoHelper = AppInfoHelper.getInstance(mTransactionManager);
-        mAccessLogsHelper = AccessLogsHelper.getInstance(mTransactionManager, mAppInfoHelper);
+        DeviceInfoHelper.resetInstanceForTest();
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(context)
+                        .setTransactionManager(mTransactionManager)
+                        .build();
+        mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
+        mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
+        mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
     }
 
     @Test
@@ -145,7 +155,10 @@ public class TransactionManagerTest {
 
         List<RecordInternal<?>> records =
                 mTransactionManager.readRecordsByIds(
-                        readTransactionRequest, mAppInfoHelper, mAccessLogsHelper);
+                        readTransactionRequest,
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper);
         assertThat(records).hasSize(1);
         assertThat(records.get(0).getUuid()).isEqualTo(UUID.fromString(uuid));
     }
@@ -171,7 +184,8 @@ public class TransactionManagerTest {
                                 bloodPressureUuids));
 
         List<RecordInternal<?>> records =
-                mTransactionManager.readRecordsByIds(request, mAppInfoHelper, mAccessLogsHelper);
+                mTransactionManager.readRecordsByIds(
+                        request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
         assertThat(records).hasSize(2);
         assertThat(records.get(0).getUuid()).isEqualTo(UUID.fromString(uuids.get(0)));
         assertThat(records.get(1).getUuid()).isEqualTo(UUID.fromString(uuids.get(1)));
@@ -190,7 +204,7 @@ public class TransactionManagerTest {
         ReadTransactionRequest readTransactionRequest =
                 getReadTransactionRequest(request.toReadRecordsRequestParcel());
         mTransactionManager.readRecordsByIds(
-                readTransactionRequest, mAppInfoHelper, mAccessLogsHelper);
+                readTransactionRequest, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
 
         List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
         assertThat(result).isEmpty();
@@ -214,7 +228,10 @@ public class TransactionManagerTest {
                         IllegalArgumentException.class,
                         () ->
                                 mTransactionManager.readRecordsByIds(
-                                        readTransactionRequest, mAppInfoHelper, mAccessLogsHelper));
+                                        readTransactionRequest,
+                                        mAppInfoHelper,
+                                        mAccessLogsHelper,
+                                        mDeviceInfoHelper));
         assertThat(thrown).hasMessageThat().contains("Expect read by id request");
     }
 
@@ -243,7 +260,10 @@ public class TransactionManagerTest {
                 getReadTransactionRequest(request.toReadRecordsRequestParcel());
         Pair<List<RecordInternal<?>>, PageTokenWrapper> result =
                 mTransactionManager.readRecordsAndPageToken(
-                        readTransactionRequest, mAppInfoHelper, mAccessLogsHelper);
+                        readTransactionRequest,
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper);
         List<RecordInternal<?>> records = result.first;
         assertThat(records).hasSize(1);
         assertThat(result.first.get(0).getUuid()).isEqualTo(UUID.fromString(uuids.get(0)));
@@ -259,7 +279,7 @@ public class TransactionManagerTest {
         ReadTransactionRequest readTransactionRequest =
                 getReadTransactionRequest(request.toReadRecordsRequestParcel());
         mTransactionManager.readRecordsAndPageToken(
-                readTransactionRequest, mAppInfoHelper, mAccessLogsHelper);
+                readTransactionRequest, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
 
         List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
         assertThat(result).hasSize(1);
@@ -280,7 +300,7 @@ public class TransactionManagerTest {
         ReadTransactionRequest readTransactionRequest =
                 getReadTransactionRequest(request.toReadRecordsRequestParcel());
         mTransactionManager.readRecordsAndPageToken(
-                readTransactionRequest, mAppInfoHelper, mAccessLogsHelper);
+                readTransactionRequest, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
 
         List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
         assertThat(result).isEmpty();
@@ -300,7 +320,10 @@ public class TransactionManagerTest {
                         IllegalArgumentException.class,
                         () ->
                                 mTransactionManager.readRecordsAndPageToken(
-                                        readTransactionRequest, mAppInfoHelper, mAccessLogsHelper));
+                                        readTransactionRequest,
+                                        mAppInfoHelper,
+                                        mAccessLogsHelper,
+                                        mDeviceInfoHelper));
         assertThat(thrown).hasMessageThat().contains("Expect read by filter request");
     }
 

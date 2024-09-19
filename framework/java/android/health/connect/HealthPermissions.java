@@ -800,6 +800,15 @@ public final class HealthPermissions {
             "android.permission.health.READ_MEDICAL_DATA_LABORATORY_RESULTS";
 
     /**
+     * Allows an application to read the user's medication data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_MEDICATIONS =
+            "android.permission.health.READ_MEDICAL_DATA_MEDICATIONS";
+
+    /**
      * Allows an application to read the user's pregnancy data.
      *
      * <p>Protection level: dangerous.
@@ -985,6 +994,7 @@ public final class HealthPermissions {
         permissions.add(READ_MEDICAL_DATA_ALLERGY_INTOLERANCE);
         permissions.add(READ_MEDICAL_DATA_IMMUNIZATION);
         permissions.add(READ_MEDICAL_DATA_LABORATORY_RESULTS);
+        permissions.add(READ_MEDICAL_DATA_MEDICATIONS);
         permissions.add(READ_MEDICAL_DATA_PREGNANCY);
         permissions.add(READ_MEDICAL_DATA_PROBLEMS);
         permissions.add(READ_MEDICAL_DATA_PROCEDURES);
