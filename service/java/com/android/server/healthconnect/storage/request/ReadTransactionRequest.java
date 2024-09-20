@@ -25,7 +25,6 @@ import android.health.connect.PageTokenWrapper;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
@@ -51,7 +50,6 @@ public class ReadTransactionRequest {
     @Nullable // page token is null for read by id requests
     private final PageTokenWrapper mPageToken;
     private final int mPageSize;
-    private final DeviceInfoHelper mDeviceInfoHelper;
     private final String mPackageName;
     private final Set<Integer> mRecordTypeIds;
     private final boolean mIsReadingSelfData;
@@ -63,8 +61,7 @@ public class ReadTransactionRequest {
             long startDateAccessMillis,
             boolean enforceSelfRead,
             Set<String> grantedExtraReadPermissions,
-            boolean isInForeground,
-            DeviceInfoHelper deviceInfoHelper) {
+            boolean isInForeground) {
         mPackageName = callingPackageName;
         int recordTypeId = request.getRecordType();
         mRecordTypeIds = Set.of(recordTypeId);
@@ -90,7 +87,6 @@ public class ReadTransactionRequest {
             // TODO(b/366149374): Consider the case of read by id from other apps
             mIsReadingSelfData = true;
         }
-        mDeviceInfoHelper = deviceInfoHelper;
     }
 
     // read for changelogs
@@ -101,7 +97,6 @@ public class ReadTransactionRequest {
             long startDateAccessMillis,
             Set<String> grantedExtraReadPermissions,
             boolean isInForeground,
-            DeviceInfoHelper deviceInfoHelper,
             boolean isReadingSelfData) {
         mPackageName = packageName;
         mRecordTypeIds = recordTypeToUuids.keySet();
@@ -120,7 +115,6 @@ public class ReadTransactionRequest {
                                                 appInfoHelper)));
         mPageSize = DEFAULT_INT;
         mPageToken = null;
-        mDeviceInfoHelper = deviceInfoHelper;
     }
 
     public List<ReadTableRequest> getReadRequests() {
@@ -130,10 +124,6 @@ public class ReadTransactionRequest {
     @Nullable
     public PageTokenWrapper getPageToken() {
         return mPageToken;
-    }
-
-    public DeviceInfoHelper getDeviceInfoHelper() {
-        return mDeviceInfoHelper;
     }
 
     /**

@@ -776,6 +776,12 @@ public final class MedicalResourceHelper {
                 .setJoinType(SQL_JOIN_INNER);
     }
 
+    static SqlJoin getJoinWithMedicalDataSourceFilterOnAppIds(Set<Long> appIds, SqlJoin extraJoin) {
+        return joinWithMedicalDataSourceTable()
+                .setSecondTableWhereClause(getAppIdsWhereClause(appIds))
+                .attachJoin(extraJoin);
+    }
+
     private static SqlJoin joinWithMedicalDataSourceTable() {
         return new SqlJoin(
                         MEDICAL_RESOURCE_TABLE_NAME,
@@ -827,6 +833,12 @@ public final class MedicalResourceHelper {
         return new WhereClauses(AND)
                 .addWhereInClauseWithoutQuotes(
                         getDataSourceUuidColumnName(), getListOfHexStrings(dataSourceIds));
+    }
+
+    static WhereClauses getAppIdsWhereClause(Set<Long> appIds) {
+        return new WhereClauses(AND)
+                .addWhereInLongsClause(
+                        MedicalDataSourceHelper.getAppInfoIdColumnName(), appIds.stream().toList());
     }
 
     private static OrderByClause getOrderByClause() {

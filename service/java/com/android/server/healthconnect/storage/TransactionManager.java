@@ -51,6 +51,7 @@ import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -353,7 +354,8 @@ public final class TransactionManager {
     public List<RecordInternal<?>> readRecordsByIds(
             ReadTransactionRequest request,
             AppInfoHelper appInfoHelper,
-            AccessLogsHelper accessLogsHelper)
+            AccessLogsHelper accessLogsHelper,
+            DeviceInfoHelper deviceInfoHelper)
             throws SQLiteException {
         // TODO(b/308158714): Make this build time check once we have different classes.
         checkArgument(
@@ -365,8 +367,7 @@ public final class TransactionManager {
             requireNonNull(helper);
             try (Cursor cursor = read(readTableRequest)) {
                 List<RecordInternal<?>> internalRecords =
-                        helper.getInternalRecords(
-                                cursor, request.getDeviceInfoHelper(), appInfoHelper);
+                        helper.getInternalRecords(cursor, deviceInfoHelper, appInfoHelper);
                 populateInternalRecordsWithExtraData(internalRecords, readTableRequest);
                 recordInternals.addAll(internalRecords);
             }
@@ -394,7 +395,8 @@ public final class TransactionManager {
     public Pair<List<RecordInternal<?>>, PageTokenWrapper> readRecordsAndPageToken(
             ReadTransactionRequest request,
             AppInfoHelper appInfoHelper,
-            AccessLogsHelper accessLogsHelper)
+            AccessLogsHelper accessLogsHelper,
+            DeviceInfoHelper deviceInfoHelper)
             throws SQLiteException {
         // TODO(b/308158714): Make these build time checks once we have different classes.
         checkArgument(
@@ -412,7 +414,7 @@ public final class TransactionManager {
         try (Cursor cursor = read(readTableRequest)) {
             Pair<List<RecordInternal<?>>, PageTokenWrapper> readResult =
                     helper.getNextInternalRecordsPageAndToken(
-                            request.getDeviceInfoHelper(),
+                            deviceInfoHelper,
                             cursor,
                             request.getPageSize().orElse(DEFAULT_PAGE_SIZE),
                             // pageToken is never null for read by filter requests
