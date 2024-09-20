@@ -333,8 +333,7 @@ public final class DatabaseMerger {
                         /* enforceSelfRead= */ false,
                         grantedExtraReadPermissions,
                         // Make sure foreground only types get included in the response.
-                        /* isInForeground= */ true,
-                        mDeviceInfoHelper);
+                        /* isInForeground= */ true);
 
         List<RecordInternal<?>> recordInternalList;
         PageTokenWrapper token;

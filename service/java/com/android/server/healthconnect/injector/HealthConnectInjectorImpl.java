@@ -73,23 +73,32 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mTransactionManager == null
                         ? TransactionManager.initializeInstance(healthConnectUserContext)
                         : builder.mTransactionManager;
+        mAppInfoHelper =
+                builder.mAppInfoHelper == null
+                        ? AppInfoHelper.getInstance(mTransactionManager)
+                        : builder.mAppInfoHelper;
         mPackageInfoUtils =
                 builder.mPackageInfoUtils == null
                         ? PackageInfoUtils.getInstance()
                         : builder.mPackageInfoUtils;
+        mPreferenceHelper =
+                builder.mPreferenceHelper == null
+                        ? PreferenceHelper.getInstance(mTransactionManager)
+                        : builder.mPreferenceHelper;
         mHealthDataCategoryPriorityHelper =
                 builder.mHealthDataCategoryPriorityHelper == null
-                        ? HealthDataCategoryPriorityHelper.getInstance()
+                        ? HealthDataCategoryPriorityHelper.getInstance(
+                                mAppInfoHelper,
+                                mTransactionManager,
+                                mHealthConnectDeviceConfigManager,
+                                mPreferenceHelper,
+                                mPackageInfoUtils)
                         : builder.mHealthDataCategoryPriorityHelper;
         mPriorityMigrationHelper =
                 builder.mPriorityMigrationHelper == null
                         ? PriorityMigrationHelper.getInstance(
                                 mHealthDataCategoryPriorityHelper, mTransactionManager)
                         : builder.mPriorityMigrationHelper;
-        mPreferenceHelper =
-                builder.mPreferenceHelper == null
-                        ? PreferenceHelper.getInstance(mTransactionManager)
-                        : builder.mPreferenceHelper;
         mExportImportSettingsStorage =
                 builder.mExportImportSettingsStorage == null
                         ? new ExportImportSettingsStorage(mPreferenceHelper)
@@ -113,10 +122,6 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mDeviceInfoHelper == null
                         ? DeviceInfoHelper.getInstance(mTransactionManager)
                         : builder.mDeviceInfoHelper;
-        mAppInfoHelper =
-                builder.mAppInfoHelper == null
-                        ? AppInfoHelper.getInstance(mTransactionManager)
-                        : builder.mAppInfoHelper;
         mAccessLogsHelper =
                 builder.mAccessLogsHelper == null
                         ? AccessLogsHelper.getInstance(mTransactionManager, mAppInfoHelper)

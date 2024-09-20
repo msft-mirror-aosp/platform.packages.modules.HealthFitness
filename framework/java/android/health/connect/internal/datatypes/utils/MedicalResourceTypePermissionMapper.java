@@ -19,6 +19,7 @@ package android.health.connect.internal.datatypes.utils;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
@@ -66,6 +67,8 @@ public final class MedicalResourceTypePermissionMapper {
                 HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS);
         sMedicalResourceTypeToReadPermissionMap.put(
                 MEDICAL_RESOURCE_TYPE_PREGNANCY, HealthPermissions.READ_MEDICAL_DATA_PREGNANCY);
+        sMedicalResourceTypeToReadPermissionMap.put(
+                MEDICAL_RESOURCE_TYPE_MEDICATIONS, HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS);
         sMedicalResourceTypeToReadPermissionMap.put(
                 MEDICAL_RESOURCE_TYPE_PROBLEMS, HealthPermissions.READ_MEDICAL_DATA_PROBLEMS);
         sMedicalResourceTypeToReadPermissionMap.put(

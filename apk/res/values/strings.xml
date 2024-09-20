@@ -376,6 +376,10 @@
     <string name="laboratory_results_lowercase_label" description="Lowercase label used to show the user's laboratory results data [CHAR_LIMIT=50]">laboratory results</string>
     <string name="laboratory_results_content_description" description="Content description for switch that enables permissions for reading the user's laboratory results data [CHAR_LIMIT=NONE]">Read laboratory results</string>
 
+    <string name="medications_uppercase_label" description="Uppercase label used to show the user's medications data [CHAR_LIMIT=50]">Medications</string>
+    <string name="medications_lowercase_label" description="Lowercase label used to show the user's medications data [CHAR_LIMIT=50]">medications</string>
+    <string name="medications_content_description" description="Content description for switch that enables permissions for reading the user's medications data [CHAR_LIMIT=NONE]">Read medications</string>
+
     <string name="pregnancy_uppercase_label" description="Uppercase label used to show the user's pregnancy data [CHAR_LIMIT=50]">Pregnancy</string>
     <string name="pregnancy_lowercase_label" description="Lowercase label used to show the user's pregnancy data [CHAR_LIMIT=50]">pregnancy</string>
     <string name="pregnancy_content_description" description="Content description for switch that enables permissions for reading the user's pregnancy data [CHAR_LIMIT=NONE]">Read pregnancy</string>

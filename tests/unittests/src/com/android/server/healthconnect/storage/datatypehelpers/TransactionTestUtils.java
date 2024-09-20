@@ -139,7 +139,6 @@ public final class TransactionTestUtils {
                 /* startDateAccessMillis= */ 0,
                 NO_EXTRA_PERMS,
                 /* isInForeground= */ true,
-                DeviceInfoHelper.getInstance(),
                 isReadingSelfData);
     }
 
@@ -165,8 +164,7 @@ public final class TransactionTestUtils {
                 /* startDateAccessMillis= */ 0,
                 /* enforceSelfRead= */ false,
                 NO_EXTRA_PERMS,
-                /* isInForeground= */ true,
-                DeviceInfoHelper.getInstance());
+                /* isInForeground= */ true);
     }
 
     public static RecordInternal<StepsRecord> createStepsRecord(
