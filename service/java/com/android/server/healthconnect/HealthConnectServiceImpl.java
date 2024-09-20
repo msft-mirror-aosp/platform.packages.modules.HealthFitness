@@ -2436,9 +2436,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     enforceIsForegroundUser(userHandle);
                     verifyPackageNameFromUid(uid, attributionSource);
                     throwExceptionIfDataSyncInProgress();
-                    Long appInfoIdRestriction;
                     if (holdsDataManagementPermission) {
-                        appInfoIdRestriction = null;
+                        mMedicalDataSourceHelper.deleteMedicalDataSourceWithoutPermissionChecks(
+                                uuid);
                     } else {
                         boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
                         logger.setCallerForegroundState(isInForeground);
@@ -2446,17 +2446,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 uid, QuotaCategory.QUOTA_CATEGORY_WRITE, isInForeground, logger);
                         mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
                                 attributionSource);
-                        appInfoIdRestriction =
-                                mAppInfoHelper.getAppInfoId(attributionSource.getPackageName());
-                        if (appInfoIdRestriction == Constants.DEFAULT_LONG) {
-                            throw new IllegalArgumentException(
-                                    "Deletion not permitted as app has inserted no data.");
-                        }
+                        // This also deletes the contained data, because they are referenced
+                        // by foreign key, and so are handled by ON DELETE CASCADE in the db.
+                        mMedicalDataSourceHelper.deleteMedicalDataSourceWithPermissionChecks(
+                                uuid, attributionSource.getPackageName());
                     }
-
-                    // This also deletes the contained data, because they are referenced
-                    // by foreign key, and so are handled by ON DELETE CASCADE in the db.
-                    mMedicalDataSourceHelper.deleteMedicalDataSource(uuid, appInfoIdRestriction);
                     tryAndReturnResult(callback, logger);
                 },
                 logger,

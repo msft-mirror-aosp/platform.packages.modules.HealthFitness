@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_DELETE;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
@@ -2183,19 +2184,196 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteMedicalResourcesByIdsWithoutPermCheck_appIdDoesNotExist_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mMedicalDataSourceHelper.deleteMedicalDataSourceWithoutPermissionChecks(
+                                UUID.randomUUID()));
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteByIdsWithoutPermCheck_deleteDataSourceThatDoesNotExist_throws() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mMedicalDataSourceHelper.deleteMedicalDataSourceWithoutPermissionChecks(
+                                UUID.randomUUID()));
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteMedicalResourcesByIdsWithPermCheck_appIdDoesNotExist_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mMedicalDataSourceHelper.deleteMedicalDataSourceWithPermissionChecks(
+                                UUID.randomUUID(), DATA_SOURCE_PACKAGE_NAME));
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteByIdsWithPermCheck_deleteDataSourceBelongingToAnotherApp_throws() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1 =
+                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2 =
+                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mMedicalDataSourceHelper.deleteMedicalDataSourceWithPermissionChecks(
+                                UUID.fromString(dataSource2.getId()), DATA_SOURCE_PACKAGE_NAME));
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteByIdsWithPermCheck_deleteDataSourceThatDoesNotExist_throws() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mMedicalDataSourceHelper.deleteMedicalDataSourceWithPermissionChecks(
+                                UUID.randomUUID(), DATA_SOURCE_PACKAGE_NAME));
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteDataSourcesByIdsWithoutPermissionChecks_noDeleteAccessLogs() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1 =
+                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+        mMedicalDataSourceHelper.deleteMedicalDataSourceWithoutPermissionChecks(
+                UUID.fromString(dataSource1.getId()));
+
+        AccessLog deleteAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_DELETE,
+                        /* medicalResourceTypes= */ Set.of(),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .doesNotContain(deleteAccessLog);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteByIdsWithPermCheck_expectAccessLogForDeletedDataSourceAndResources() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1 =
+                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2 =
+                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
+        mMedicalDataSourceHelper.deleteMedicalDataSourceWithPermissionChecks(
+                UUID.fromString(dataSource1.getId()), /* packageName= */ DATA_SOURCE_PACKAGE_NAME);
+
+        // In this test, we have inserted two different resource types from different packages.
+        // When the calling app, calls the delete API, we expect access log to be created only
+        // for the deleted dataSource belonging to the app and the medical resources associated
+        // with that dataSource.
+        AccessLog deleteAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_DELETE,
+                        /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .contains(deleteAccessLog);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteByIdsWithPermCheck_dataSourceHasMultipleResources_correctAccessLogs() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1 =
+                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2 =
+                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
+        mMedicalDataSourceHelper.deleteMedicalDataSourceWithPermissionChecks(
+                UUID.fromString(dataSource1.getId()), DATA_SOURCE_PACKAGE_NAME);
+
+        // We have inserted two different resource types from one package and one overlapping
+        // resource type from another package.
+        // When the calling app, calls the delete API, we expect access log to be created for
+        // the deleted dataSource belonging to the app and the medical resources associated
+        // with that dataSource which in this case would be immunization and allergy.
+        AccessLog deleteAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_DELETE,
+                        /* medicalResourceTypes= */ Set.of(
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                                MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .contains(deleteAccessLog);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void deleteByIdsWithPermCheck_dataSourceHasNoResources_correctAccessLogs() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1 =
+                mUtil.insertMedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2 =
+                mUtil.insertMedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
+        mMedicalDataSourceHelper.deleteMedicalDataSourceWithPermissionChecks(
+                UUID.fromString(dataSource1.getId()), DATA_SOURCE_PACKAGE_NAME);
+
+        // We have two dataSources but there's no data associated with the dataSource created
+        // by the calling package. When the calling app, calls the delete API, we expect access log
+        // to be created for the deleted dataSource belonging to the app and the
+        // medicalResourceTypes to be empty since the dataSource had no resources associated
+        // with it.
+        AccessLog deleteAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_DELETE,
+                        /* medicalResourceTypes= */ Set.of(),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .contains(deleteAccessLog);
+    }
+
+    @Test
     @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
-    public void delete_badId_throws() {
+    public void deleteByIdsWithoutPermCheck_badId_throws() {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> {
-                    mMedicalDataSourceHelper.deleteMedicalDataSource(
-                            UUID.randomUUID(), /* appInfoIdRestriction= */ null);
+                    mMedicalDataSourceHelper.deleteMedicalDataSourceWithoutPermissionChecks(
+                            UUID.randomUUID());
                 });
     }
 
     @Test
     @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
-    public void delete_badId_leavesRecordsUnchanged() throws NameNotFoundException {
+    public void deleteByIdsWithoutPermCheck__badId_leavesRecordsUnchanged()
+            throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource existing =
                 createDataSource(
@@ -2206,8 +2384,8 @@ public class MedicalDataSourceHelperTest {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> {
-                    mMedicalDataSourceHelper.deleteMedicalDataSource(
-                            UUID.randomUUID(), /* appInfoIdRestriction= */ null);
+                    mMedicalDataSourceHelper.deleteMedicalDataSourceWithoutPermissionChecks(
+                            UUID.randomUUID());
                 });
 
         List<MedicalDataSource> result =
@@ -2218,7 +2396,8 @@ public class MedicalDataSourceHelperTest {
 
     @Test
     @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
-    public void delete_oneIdWrongPackage_existingDataUnchanged() throws NameNotFoundException {
+    public void deleteByIdsWithPermCheck_oneIdWrongPackage_existingDataUnchanged()
+            throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
         setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource existing =
@@ -2232,13 +2411,12 @@ public class MedicalDataSourceHelperTest {
                         DATA_SOURCE_DISPLAY_NAME,
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
-        long differentAppInfoId = mAppInfoHelper.getAppInfoId(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-
         assertThrows(
                 IllegalArgumentException.class,
                 () ->
-                        mMedicalDataSourceHelper.deleteMedicalDataSource(
-                                UUID.fromString(existing.getId()), differentAppInfoId));
+                        mMedicalDataSourceHelper.deleteMedicalDataSourceWithPermissionChecks(
+                                UUID.fromString(existing.getId()),
+                                DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
@@ -2248,7 +2426,8 @@ public class MedicalDataSourceHelperTest {
 
     @Test
     @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
-    public void delete_oneId_existingDataDeleted() throws NameNotFoundException {
+    public void deleteByIdsWithoutPermCheck_oneId_existingDataDeleted()
+            throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
         setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource existing =
@@ -2258,8 +2437,7 @@ public class MedicalDataSourceHelperTest {
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
         UUID existingUuid = UUID.fromString(existing.getId());
 
-        mMedicalDataSourceHelper.deleteMedicalDataSource(
-                existingUuid, /* appInfoIdRestriction= */ null);
+        mMedicalDataSourceHelper.deleteMedicalDataSourceWithoutPermissionChecks(existingUuid);
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
@@ -2269,7 +2447,7 @@ public class MedicalDataSourceHelperTest {
 
     @Test
     @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
-    public void delete_multiplePresentOneIdRequestedNoAppRestriction_onlyRequestedDeleted()
+    public void deleteByIdsWithoutPermCheck_multiplePresentOneIdRequested_onlyRequestedDeleted()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
         setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
@@ -2284,8 +2462,8 @@ public class MedicalDataSourceHelperTest {
                         DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
-        mMedicalDataSourceHelper.deleteMedicalDataSource(
-                UUID.fromString(dataSource1.getId()), /* appInfoIdRestriction= */ null);
+        mMedicalDataSourceHelper.deleteMedicalDataSourceWithoutPermissionChecks(
+                UUID.fromString(dataSource1.getId()));
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
@@ -2295,7 +2473,7 @@ public class MedicalDataSourceHelperTest {
 
     @Test
     @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
-    public void delete_multiplePresentOneIdRequestedMatchingAppId_onlyRequestedDeleted()
+    public void deleteWithPermCheck_multiplePresentOneIdRequested_onlyRequestedDeleted()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
         setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
@@ -2310,9 +2488,8 @@ public class MedicalDataSourceHelperTest {
                         DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
                         DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
 
-        mMedicalDataSourceHelper.deleteMedicalDataSource(
-                UUID.fromString(dataSource1.getId()),
-                mAppInfoHelper.getAppInfoId(DATA_SOURCE_PACKAGE_NAME));
+        mMedicalDataSourceHelper.deleteMedicalDataSourceWithPermissionChecks(
+                UUID.fromString(dataSource1.getId()), DATA_SOURCE_PACKAGE_NAME);
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
@@ -2322,7 +2499,7 @@ public class MedicalDataSourceHelperTest {
 
     @Test
     @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
-    public void delete_multiplePresentOneIdRequestedDifferentAppId_onlyRequestedDeleted()
+    public void deleteWithPermCheck_multiplePresentOneIdRequestedDifferentAppId_throws()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
         setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
@@ -2340,9 +2517,9 @@ public class MedicalDataSourceHelperTest {
         assertThrows(
                 IllegalArgumentException.class,
                 () ->
-                        mMedicalDataSourceHelper.deleteMedicalDataSource(
+                        mMedicalDataSourceHelper.deleteMedicalDataSourceWithPermissionChecks(
                                 UUID.fromString(dataSource1.getId()),
-                                mAppInfoHelper.getAppInfoId(DIFFERENT_DATA_SOURCE_PACKAGE_NAME)));
+                                DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
@@ -2352,7 +2529,8 @@ public class MedicalDataSourceHelperTest {
 
     @Test
     @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
-    public void delete_removesAssociatedResource() throws NameNotFoundException {
+    public void deleteByIdsWithoutPermCheck_removesAssociatedResource()
+            throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource =
                 createDataSource(
@@ -2380,8 +2558,8 @@ public class MedicalDataSourceHelperTest {
                         .upsertMedicalResources(DATA_SOURCE_PACKAGE_NAME, List.of(upsertRequest))
                         .get(0);
 
-        mMedicalDataSourceHelper.deleteMedicalDataSource(
-                UUID.fromString(dataSource.getId()), /* appInfoIdRestriction= */ null);
+        mMedicalDataSourceHelper.deleteMedicalDataSourceWithoutPermissionChecks(
+                UUID.fromString(dataSource.getId()));
 
         List<MedicalDataSource> result =
                 mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(

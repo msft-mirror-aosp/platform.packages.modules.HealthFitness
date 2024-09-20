@@ -1649,7 +1649,7 @@ public class HealthConnectServiceImplTest {
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
         doThrow(new IllegalArgumentException())
                 .when(mMedicalDataSourceHelper)
-                .deleteMedicalDataSource(any(), any());
+                .deleteMedicalDataSourceWithoutPermissionChecks(any());
 
         mHealthConnectService.deleteMedicalDataSourceWithData(mAttributionSource, "foo", callback);
 
@@ -1705,7 +1705,7 @@ public class HealthConnectServiceImplTest {
                 .thenReturn(List.of(datasource));
         doThrow(new IllegalArgumentException())
                 .when(mMedicalDataSourceHelper)
-                .deleteMedicalDataSource(any(), any());
+                .deleteMedicalDataSourceWithPermissionChecks(any(), any());
 
         mHealthConnectService.deleteMedicalDataSourceWithData(
                 mAttributionSource, id.toString(), callback);
