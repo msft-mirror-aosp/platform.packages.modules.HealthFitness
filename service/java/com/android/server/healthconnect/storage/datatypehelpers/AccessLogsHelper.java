@@ -42,6 +42,7 @@ import android.health.connect.accesslog.AccessLog.OperationType;
 import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.util.Pair;
+import android.util.Slog;
 
 import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.internal.annotations.VisibleForTesting;
@@ -73,6 +74,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
     private static final String APP_ID_COLUMN_NAME = "app_id";
     private static final String ACCESS_TIME_COLUMN_NAME = "access_time";
     private static final String OPERATION_TYPE_COLUMN_NAME = "operation_type";
+    private static final String TAG = "AccessLogHelper";
 
     @VisibleForTesting
     static final String MEDICAL_RESOURCE_TYPE_COLUMN_NAME = "medical_resource_type";
@@ -110,6 +112,10 @@ public final class AccessLogsHelper extends DatabaseHelper {
             while (cursor.moveToNext()) {
                 String packageName =
                         mAppInfoHelper.getPackageName(getCursorLong(cursor, APP_ID_COLUMN_NAME));
+                if (packageName == null) {
+                    Slog.w(TAG, "encounter null package name while query access logs");
+                    continue;
+                }
                 @RecordTypeIdentifier.RecordType
                 List<Integer> recordTypes =
                         getCursorIntegerList(cursor, RECORD_TYPE_COLUMN_NAME, DELIMITER);

@@ -52,7 +52,7 @@ class AllEntriesFragmentTest : HealthConnectBaseTest() {
 
     companion object {
         private val TODAY =
-            LocalDate.now(ZoneId.systemDefault()).atTime(10, 0).atZone(ZoneId.systemDefault())
+            LocalDate.now(ZoneId.systemDefault()).atTime(0, 0).atZone(ZoneId.systemDefault())
     }
 
     @Test
