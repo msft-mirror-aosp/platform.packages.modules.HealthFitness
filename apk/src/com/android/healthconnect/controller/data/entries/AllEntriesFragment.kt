@@ -34,12 +34,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.VERTICAL
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
+import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesDeletionScreenState.DELETE
+import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesDeletionScreenState.VIEW
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.Empty
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.Loading
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.LoadingFailed
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.With
-import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesDeletionScreenState.VIEW
-import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesDeletionScreenState.DELETE
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationView
 import com.android.healthconnect.controller.data.rawfhir.RawFhirFragment.Companion.MEDICAL_RESOURCE_ID_KEY
@@ -56,8 +56,8 @@ import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdap
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.setTitle
-import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.healthconnect.controller.utils.setupMenu
+import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.settingslib.widget.AppHeaderPreference
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
@@ -76,7 +76,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
 
     private lateinit var permissionType: HealthPermissionType
     private val entriesViewModel: EntriesViewModel by activityViewModels()
-    private val deletionViewModel : DeletionViewModel by activityViewModels()
+    private val deletionViewModel: DeletionViewModel by activityViewModels()
     private lateinit var header: AppHeaderPreference
     private lateinit var dateNavigationView: DateNavigationView
     private lateinit var entriesRecyclerView: RecyclerView
@@ -84,10 +84,17 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     private lateinit var loadingView: View
     private lateinit var errorView: View
     private lateinit var adapter: RecyclerViewAdapter
+    private var aggregation: FormattedEntry.FormattedAggregation? = null
 
     private val onDeleteEntryListener by lazy {
-        object: OnDeleteEntryListener{
-            override fun onDeleteEntry(id: String, dataType: DataType, index: Int, startTime: Instant?, endTime: Instant?) {
+        object : OnDeleteEntryListener {
+            override fun onDeleteEntry(
+                id: String,
+                dataType: DataType,
+                index: Int,
+                startTime: Instant?,
+                endTime: Instant?,
+            ) {
                 val entriesToDelete = entriesViewModel.setOfEntriesToBeDeleted.value.orEmpty()
 
                 if (id in entriesToDelete) {
@@ -128,19 +135,79 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             }
         }
     }
+    private val onClickSelectAllListener by lazy {
+        object : OnClickSelectAllListener {
+            override fun onClicked(isChecked: Boolean) {
+                entriesViewModel.setAllEntriesSelectedValue(isChecked)
+                entriesViewModel.getEntriesList().forEach { entry ->
+                    if (entry !is FormattedEntry.SelectAllHeader && entry !is FormattedEntry.FormattedAggregation ) {
+                        if (isChecked) {
+                            entriesViewModel.addToDeleteSet(entry.uuid)
+                        } else {
+                            entriesViewModel.removeFromDeleteSet(entry.uuid)
+                        }
+
+                        if (entriesViewModel.getDataType() == null) {
+                            when (entry) {
+                                is FormattedEntry.FormattedDataEntry -> {
+                                    entriesViewModel.setDataType(entry.dataType)
+                                }
+                                is FormattedEntry.SleepSessionEntry -> {
+                                    entriesViewModel.setDataType(entry.dataType)
+                                }
+                                is FormattedEntry.ExerciseSessionEntry -> {
+                                    entriesViewModel.setDataType(entry.dataType)
+                                }
+                                is FormattedEntry.SeriesDataEntry -> {
+                                    entriesViewModel.setDataType(entry.dataType)
+                                }
+                                else -> {
+                                    //do nothing
+                                }
+                            }
+                        }
+                    }
+                }
+                updateMenu(screenState = DELETE)
+
+            }
+        }
+    }
+
     private val aggregationViewBinder by lazy { AggregationViewBinder() }
-    private val entryViewBinder by lazy { EntryItemViewBinder(onDeleteEntryListener = onDeleteEntryListener) }
-    private val medicalEntryViewBinder by lazy { MedicalEntryItemViewBinder(onClickMedicalEntryListener = onClickMedicalEntryListener) }
+    private val entryViewBinder by lazy {
+        EntryItemViewBinder(onDeleteEntryListener = onDeleteEntryListener)
+    }
+    private val medicalEntryViewBinder by lazy {
+        MedicalEntryItemViewBinder(onClickMedicalEntryListener = onClickMedicalEntryListener)
+    }
     private val sectionTitleViewBinder by lazy { SectionTitleViewBinder() }
     private val sleepSessionViewBinder by lazy {
-        SleepSessionItemViewBinder(onItemClickedListener = onClickEntryListener, onDeleteEntryListener = onDeleteEntryListener)
+        SleepSessionItemViewBinder(
+            onItemClickedListener = onClickEntryListener,
+            onDeleteEntryListener = onDeleteEntryListener,
+        )
     }
     private val exerciseSessionItemViewBinder by lazy {
-        ExerciseSessionItemViewBinder(onItemClickedListener = onClickEntryListener, onDeleteEntryListener = onDeleteEntryListener)
+        ExerciseSessionItemViewBinder(
+            onItemClickedListener = onClickEntryListener,
+            onDeleteEntryListener = onDeleteEntryListener,
+        )
     }
     private val seriesDataItemViewBinder by lazy {
-        SeriesDataItemViewBinder(onItemClickedListener = onClickEntryListener, onDeleteEntryListener = onDeleteEntryListener)
+        SeriesDataItemViewBinder(
+            onItemClickedListener = onClickEntryListener,
+            onDeleteEntryListener = onDeleteEntryListener,
+        )
     }
+    private val plannedExerciseSessionItemViewBinder by lazy {
+        PlannedExerciseSessionItemViewBinder(
+            onDeleteEntryListener = onDeleteEntryListener,
+            onItemClickedListener = onClickEntryListener,
+        )
+    }
+
+    private val selectAllViewBinder by lazy { SelectAllViewBinder(onClickSelectAllListener)}
 
     // Not in deletion state
     private val onMenuSetup: (MenuItem) -> Boolean = { menuItem ->
@@ -202,6 +269,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         loadingView = view.findViewById(R.id.loading)
         adapter =
             RecyclerViewAdapter.Builder()
+                .setViewBinder(FormattedEntry.SelectAllHeader::class.java, selectAllViewBinder)
                 .setViewBinder(FormattedEntry.FormattedDataEntry::class.java, entryViewBinder)
                 .setViewBinder(
                     FormattedEntry.FormattedMedicalDataEntry::class.java,
@@ -218,7 +286,13 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                     aggregationViewBinder,
                 )
                 .setViewBinder(
-                    FormattedEntry.EntryDateSectionHeader::class.java, sectionTitleViewBinder)
+                    FormattedEntry.EntryDateSectionHeader::class.java,
+                    sectionTitleViewBinder,
+                )
+                .setViewBinder(
+                    FormattedEntry.PlannedExerciseSessionEntry::class.java,
+                    plannedExerciseSessionItemViewBinder,
+                )
                 .setViewModel(entriesViewModel)
                 .build()
         entriesRecyclerView =
@@ -227,7 +301,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                 it.layoutManager = LinearLayoutManager(context, VERTICAL, false)
             }
 
-        if(childFragmentManager.findFragmentByTag(DELETION_TAG) == null){
+        if (childFragmentManager.findFragmentByTag(DELETION_TAG) == null) {
             childFragmentManager.commitNow { add(DeletionFragment(), DELETION_TAG) }
         }
         return view
@@ -247,14 +321,20 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             }
         )
 
-        deletionViewModel.entriesReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded
-            ->
+        deletionViewModel.entriesReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded ->
             if (isReloadNeeded) {
                 entriesViewModel.setScreenState(VIEW)
                 entriesViewModel.loadEntries(
-                        permissionType, dateNavigationView.getDate(), dateNavigationView.getPeriod())
+                    permissionType,
+                    dateNavigationView.getDate(),
+                    dateNavigationView.getPeriod(),
+                )
                 deletionViewModel.resetEntriesReloadNeeded()
             }
+        }
+
+        entriesViewModel.allEntriesSelected.observe(viewLifecycleOwner) { allEntriesSelected ->
+            adapter.checkSelectAll(allEntriesSelected)
         }
 
         header = AppHeaderPreference(requireContext())
@@ -284,7 +364,11 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         //        logger.setPageId(pageName)
         //        logger.logPageImpression()
     }
-    private fun updateMenu(screenState: EntriesViewModel.EntriesDeletionScreenState, hasData: Boolean = true) {
+
+    private fun updateMenu(
+        screenState: EntriesViewModel.EntriesDeletionScreenState,
+        hasData: Boolean = true,
+    ) {
         if (!hasData) {
             setupSharedMenu(viewLifecycleOwner, logger)
             return
@@ -297,7 +381,11 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
 
         if (entriesViewModel.setOfEntriesToBeDeleted.value.orEmpty().isEmpty()) {
             setupMenu(
-                    R.menu.all_data_delete_menu, viewLifecycleOwner, logger, onEmptyDeleteSetSetup)
+                R.menu.all_data_delete_menu,
+                viewLifecycleOwner,
+                logger,
+                onEmptyDeleteSetSetup,
+            )
             return
         }
 
@@ -305,21 +393,57 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     }
 
     @VisibleForTesting
-    fun triggerDeletionState(screenState: EntriesViewModel.EntriesDeletionScreenState){
+    fun triggerDeletionState(screenState: EntriesViewModel.EntriesDeletionScreenState) {
         updateMenu(screenState)
+        if(screenState == VIEW){
+            removeSelectAll()
+        } else {
+            insertSelectAll()
+        }
         adapter.showCheckBox(screenState == DELETE)
         entriesViewModel.setScreenState(screenState)
-        if(entriesViewModel.getDateNavigationText()== null){
-            dateNavigationView.getDateNavigationText()?.let { entriesViewModel.setDateNavigationText(it) }
+        if (entriesViewModel.getDateNavigationText() == null) {
+            dateNavigationView.getDateNavigationText()?.let {
+                entriesViewModel.setDateNavigationText(it)
+            }
         }
-        entriesViewModel.getDateNavigationText()?.let { dateSpinnerText -> dateNavigationView.disableDateNavigationView(isEnabled = screenState == VIEW, dateSpinnerText) }
-
+        entriesViewModel.getDateNavigationText()?.let { dateSpinnerText ->
+            dateNavigationView.disableDateNavigationView(
+                isEnabled = screenState == VIEW,
+                dateSpinnerText,
+            )
+        }
     }
 
-    private fun deleteData(){
-        entriesViewModel.getDataType()?.let { deletionViewModel.setEntriesDeleteSet(entriesViewModel.setOfEntriesToBeDeleted.value.orEmpty(), it) }
+    private fun removeSelectAll(){
+        if(entriesViewModel.getEntriesList().first() is FormattedEntry.SelectAllHeader) {
+            if (aggregation == null) {
+                adapter.updateSelectAllState(FormattedEntry.SelectAllHeader(), inDeletion = false)
+            } else {
+                adapter.insertAggregationAndRemoveSelectAll(aggregation!!)
+            }
+        }
+    }
+
+    private fun insertSelectAll(){
+        if(aggregation == null) {
+            adapter.updateSelectAllState(FormattedEntry.SelectAllHeader(), inDeletion = true)
+        } else {
+            adapter.insertSelectAllAndRemoveAggregation(FormattedEntry.SelectAllHeader())
+        }
+    }
+
+    private fun deleteData() {
+        entriesViewModel.getDataType()?.let {
+            deletionViewModel.setEntriesDeleteSet(
+                entriesViewModel.setOfEntriesToBeDeleted.value.orEmpty(),
+                it,
+            )
+        }
         childFragmentManager.setFragmentResult(DeletionConstants.START_DELETION_KEY, bundleOf())
     }
+
+
 
     private fun observeEntriesUpdates() {
         entriesViewModel.entries.observe(viewLifecycleOwner) { state ->
@@ -336,16 +460,28 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                     errorView.isVisible = false
                     entriesRecyclerView.isVisible = false
                     updateMenu(screenState = VIEW, hasData = false)
-                    entriesViewModel.getDateNavigationText()?.let { dateSpinnerText -> dateNavigationView.disableDateNavigationView(isEnabled = true, dateSpinnerText) }
+                    entriesViewModel.getDateNavigationText()?.let { dateSpinnerText ->
+                        dateNavigationView.disableDateNavigationView(
+                            isEnabled = true,
+                            dateSpinnerText,
+                        )
+                    }
                 }
                 is With -> {
                     entriesRecyclerView.isVisible = true
                     adapter.updateData(state.entries)
+                    if(state.entries[0] is FormattedEntry.FormattedAggregation){
+                        aggregation = state.entries[0] as FormattedEntry.FormattedAggregation
+                    } else {
+                        aggregation = null
+                    }
                     entriesRecyclerView.scrollToPosition(0)
                     errorView.isVisible = false
                     noDataView.isVisible = false
                     loadingView.isVisible = false
-                    entriesViewModel.screenState.value?.let { triggerDeletionState(screenState = it) }
+                    entriesViewModel.screenState.value?.let {
+                        triggerDeletionState(screenState = it)
+                    }
                 }
                 is LoadingFailed -> {
                     errorView.isVisible = true

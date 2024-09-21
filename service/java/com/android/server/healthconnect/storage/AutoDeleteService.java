@@ -38,6 +38,7 @@ import java.util.List;
  *
  * @hide
  */
+// TODO(b/368073286): Add a constructor here (and remove service from the name).
 public class AutoDeleteService {
     private static final String AUTO_DELETE_DURATION_RECORDS_KEY =
             "auto_delete_duration_records_key";
@@ -61,15 +62,18 @@ public class AutoDeleteService {
     public static void startAutoDelete(
             Context context,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
-            PreferenceHelper preferenceHelper) {
+            PreferenceHelper preferenceHelper,
+            AppInfoHelper appInfoHelper,
+            TransactionManager transactionManager,
+            AccessLogsHelper accessLogsHelper) {
         try {
             // Only do transactional operations here - as this job might get cancelled for several
             // reasons, such as: User switch, low battery etc.
-            deleteStaleRecordEntries(preferenceHelper);
-            deleteStaleChangeLogEntries();
-            deleteStaleAccessLogEntries();
+            deleteStaleRecordEntries(preferenceHelper, transactionManager, accessLogsHelper);
+            deleteStaleChangeLogEntries(transactionManager);
+            deleteStaleAccessLogEntries(transactionManager);
             // Update the recordTypesUsed by packages if required after the deletion of records.
-            AppInfoHelper.getInstance().syncAppInfoRecordTypesUsed();
+            appInfoHelper.syncAppInfoRecordTypesUsed();
             // Re-sync activity dates table
             ActivityDateHelper.reSyncForAllRecords();
             // Sync health data priority list table
@@ -80,7 +84,10 @@ public class AutoDeleteService {
         }
     }
 
-    private static void deleteStaleRecordEntries(PreferenceHelper preferenceHelper) {
+    private static void deleteStaleRecordEntries(
+            PreferenceHelper preferenceHelper,
+            TransactionManager transactionManager,
+            AccessLogsHelper accessLogsHelper) {
         String recordAutoDeletePeriodString =
                 preferenceHelper.getPreference(AUTO_DELETE_DURATION_RECORDS_KEY);
         int recordAutoDeletePeriod =
@@ -100,8 +107,10 @@ public class AutoDeleteService {
                                 deleteTableRequests.add(request);
                             });
             try {
-                TransactionManager.getInitialisedInstance()
-                        .deleteAll(new DeleteTransactionRequest(deleteTableRequests));
+                transactionManager.deleteAll(
+                        new DeleteTransactionRequest(deleteTableRequests),
+                        /* shouldRecordDeleteAccessLogs= */ false,
+                        accessLogsHelper);
             } catch (Exception exception) {
                 Slog.e(TAG, "Auto delete for records failed", exception);
                 // Don't rethrow as that will crash system_server
@@ -109,24 +118,22 @@ public class AutoDeleteService {
         }
     }
 
-    private static void deleteStaleChangeLogEntries() {
+    private static void deleteStaleChangeLogEntries(TransactionManager transactionManager) {
         try {
-            TransactionManager.getInitialisedInstance()
-                    .deleteWithoutChangeLogs(
-                            List.of(
-                                    ChangeLogsHelper.getDeleteRequestForAutoDelete(),
-                                    ChangeLogsRequestHelper.getDeleteRequestForAutoDelete()));
+            transactionManager.deleteWithoutChangeLogs(
+                    List.of(
+                            ChangeLogsHelper.getDeleteRequestForAutoDelete(),
+                            ChangeLogsRequestHelper.getDeleteRequestForAutoDelete()));
         } catch (Exception exception) {
             Slog.e(TAG, "Auto delete for Change logs failed", exception);
             // Don't rethrow as that will crash system_server
         }
     }
 
-    private static void deleteStaleAccessLogEntries() {
+    private static void deleteStaleAccessLogEntries(TransactionManager transactionManager) {
         try {
-            TransactionManager.getInitialisedInstance()
-                    .deleteWithoutChangeLogs(
-                            List.of(AccessLogsHelper.getDeleteRequestForAutoDelete()));
+            transactionManager.deleteWithoutChangeLogs(
+                    List.of(AccessLogsHelper.getDeleteRequestForAutoDelete()));
         } catch (Exception exception) {
             Slog.e(TAG, "Auto delete for Access logs failed", exception);
             // Don't rethrow as that will crash system_server

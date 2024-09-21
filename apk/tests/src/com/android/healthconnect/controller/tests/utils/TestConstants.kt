@@ -52,7 +52,7 @@ import android.health.connect.datatypes.units.Power
 import android.health.connect.datatypes.units.Temperature
 import android.health.connect.datatypes.units.Velocity
 import android.health.connect.datatypes.units.Volume
-import android.net.Uri;
+import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.android.healthconnect.controller.dataentries.units.PowerConverter

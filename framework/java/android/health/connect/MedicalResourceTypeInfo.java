@@ -68,6 +68,7 @@ public final class MedicalResourceTypeInfo implements Parcelable {
         requireNonNull(in);
         in = ParcelUtils.getParcelForSharedMemoryIfRequired(in);
         mMedicalResourceType = in.readInt();
+        validateMedicalResourceType(mMedicalResourceType);
         List<MedicalDataSource> contributingDataSources = new ArrayList<>();
         in.readParcelableList(
                 contributingDataSources,

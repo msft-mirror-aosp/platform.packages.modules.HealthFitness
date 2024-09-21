@@ -42,7 +42,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getInt
 import static com.android.server.healthconnect.storage.utils.StorageUtils.isNullValue;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
@@ -115,7 +114,7 @@ public final class ExerciseSessionRecordHelper
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull ExerciseSessionRecordInternal exerciseSessionRecord) {
+            Cursor cursor, ExerciseSessionRecordInternal exerciseSessionRecord) {
         UUID uuid = getCursorUUID(cursor, UUID_COLUMN_NAME);
         exerciseSessionRecord.setNotes(getCursorString(cursor, NOTES_COLUMN_NAME));
         exerciseSessionRecord.setExerciseType(getCursorInt(cursor, EXERCISE_TYPE_COLUMN_NAME));
@@ -169,8 +168,7 @@ public final class ExerciseSessionRecordHelper
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull ExerciseSessionRecordInternal exerciseSessionRecord) {
+            ContentValues contentValues, ExerciseSessionRecordInternal exerciseSessionRecord) {
         contentValues.put(NOTES_COLUMN_NAME, exerciseSessionRecord.getNotes());
         contentValues.put(EXERCISE_TYPE_COLUMN_NAME, exerciseSessionRecord.getExerciseType());
         contentValues.put(TITLE_COLUMN_NAME, exerciseSessionRecord.getTitle());
@@ -196,8 +194,7 @@ public final class ExerciseSessionRecordHelper
     }
 
     @Override
-    List<UpsertTableRequest> getChildTableUpsertRequests(
-            @NonNull ExerciseSessionRecordInternal record) {
+    List<UpsertTableRequest> getChildTableUpsertRequests(ExerciseSessionRecordInternal record) {
         List<UpsertTableRequest> childUpsertRequests = new ArrayList<>();
 
         if (record.getRoute() != null) {
@@ -236,7 +233,7 @@ public final class ExerciseSessionRecordHelper
 
     @Override
     protected void updateUpsertValuesIfRequired(
-            @NonNull ContentValues values,
+            ContentValues values,
             @Nullable ArrayMap<String, Boolean> extraWritePermissionToStateMap) {
         if (extraWritePermissionToStateMap == null || extraWritePermissionToStateMap.isEmpty()) {
             // Use default logic for internal apis flows (apk migration and b&r)
@@ -286,7 +283,6 @@ public final class ExerciseSessionRecordHelper
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getIntervalRecordColumnInfo() {
         return Arrays.asList(
                 new Pair<>(NOTES_COLUMN_NAME, TEXT_NULL),
@@ -307,10 +303,11 @@ public final class ExerciseSessionRecordHelper
             String packageName,
             long startDateAccessMillis,
             Set<String> grantedExtraReadPermissions,
-            boolean isInForeground) {
+            boolean isInForeground,
+            AppInfoHelper appInfoHelper) {
         int routeAccessType =
                 getExerciseRouteReadAccessType(
-                        packageName, grantedExtraReadPermissions, isInForeground);
+                        packageName, grantedExtraReadPermissions, isInForeground, appInfoHelper);
 
         if (routeAccessType == ROUTE_READ_ACCESS_TYPE_NONE) {
             return Collections.emptyList();
@@ -320,7 +317,11 @@ public final class ExerciseSessionRecordHelper
 
         WhereClauses sessionsWithAccessibleRouteClause =
                 getReadTableWhereClause(
-                        request, packageName, enforceSelfRead, startDateAccessMillis);
+                        request,
+                        packageName,
+                        enforceSelfRead,
+                        startDateAccessMillis,
+                        appInfoHelper);
         return List.of(getRouteReadRequest(sessionsWithAccessibleRouteClause));
     }
 
@@ -354,10 +355,11 @@ public final class ExerciseSessionRecordHelper
             List<UUID> uuids,
             long startDateAccess,
             Set<String> grantedExtraReadPermissions,
-            boolean isInForeground) {
+            boolean isInForeground,
+            AppInfoHelper appInfoHelper) {
         int routeAccessType =
                 getExerciseRouteReadAccessType(
-                        packageName, grantedExtraReadPermissions, isInForeground);
+                        packageName, grantedExtraReadPermissions, isInForeground, appInfoHelper);
 
         if (routeAccessType == ROUTE_READ_ACCESS_TYPE_NONE) {
             return Collections.emptyList();
@@ -370,7 +372,7 @@ public final class ExerciseSessionRecordHelper
                         .addWhereLaterThanTimeClause(getStartTimeColumnName(), startDateAccess);
 
         if (routeAccessType == ROUTE_READ_ACCESS_TYPE_OWN) {
-            long appId = AppInfoHelper.getInstance().getAppInfoId(packageName);
+            long appId = appInfoHelper.getAppInfoId(packageName);
             sessionsWithAccessibleRouteClause.addWhereInLongsClause(
                     APP_INFO_ID_COLUMN_NAME, List.of(appId));
         }
@@ -412,8 +414,7 @@ public final class ExerciseSessionRecordHelper
     }
 
     @Override
-    public void logUpsertMetrics(
-            @NonNull List<RecordInternal<?>> recordInternals, @NonNull String packageName) {
+    public void logUpsertMetrics(List<RecordInternal<?>> recordInternals, String packageName) {
         Objects.requireNonNull(recordInternals);
 
         ExerciseRoutesLogger.log(
@@ -423,8 +424,7 @@ public final class ExerciseSessionRecordHelper
     }
 
     @Override
-    public void logReadMetrics(
-            @NonNull List<RecordInternal<?>> recordInternals, @NonNull String packageName) {
+    public void logReadMetrics(List<RecordInternal<?>> recordInternals, String packageName) {
         Objects.requireNonNull(recordInternals);
 
         ExerciseRoutesLogger.log(
@@ -435,7 +435,7 @@ public final class ExerciseSessionRecordHelper
 
     @Override
     public List<ReadTableRequest> getReadRequestsForRecordsModifiedByUpsertion(
-            UUID upsertedRecordId, UpsertTableRequest upsertTableRequest) {
+            UUID upsertedRecordId, UpsertTableRequest upsertTableRequest, long appId) {
         List<ReadTableRequest> result = new ArrayList<>();
         ExerciseSessionRecordInternal session =
                 (ExerciseSessionRecordInternal) upsertTableRequest.getRecordInternal();
@@ -449,7 +449,6 @@ public final class ExerciseSessionRecordHelper
             ReadTableRequest readRequest =
                     new ReadTableRequest(PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME) {
                         @Override
-                        @NonNull
                         public String getReadCommand() {
                             // Returns literal value without needing to query the DB.
                             return "SELECT column1 as "
@@ -461,8 +460,7 @@ public final class ExerciseSessionRecordHelper
                                     + StorageUtils.getHexString(
                                             session.getPlannedExerciseSessionId())
                                     + ","
-                                    + AppInfoHelper.getInstance()
-                                            .getAppInfoId(session.getPackageName())
+                                    + appId
                                     + "))";
                         }
                     };
@@ -515,8 +513,7 @@ public final class ExerciseSessionRecordHelper
                 && Boolean.TRUE.equals(extraWritePermissionToState.get(WRITE_EXERCISE_ROUTE));
     }
 
-    private int getNumberOfRecordsWithExerciseRoutes(
-            @NonNull List<RecordInternal<?>> recordInternals) {
+    private int getNumberOfRecordsWithExerciseRoutes(List<RecordInternal<?>> recordInternals) {
 
         int numberOfRecordsWithExerciseRoutes = 0;
         for (RecordInternal<?> recordInternal : recordInternals) {
@@ -545,7 +542,10 @@ public final class ExerciseSessionRecordHelper
     }
 
     private int getExerciseRouteReadAccessType(
-            String packageName, Set<String> grantedExtraReadPermissions, boolean isInForeground) {
+            String packageName,
+            Set<String> grantedExtraReadPermissions,
+            boolean isInForeground,
+            AppInfoHelper appInfoHelper) {
         if (grantedExtraReadPermissions.isEmpty()) {
             return ROUTE_READ_ACCESS_TYPE_NONE;
         }
@@ -557,7 +557,7 @@ public final class ExerciseSessionRecordHelper
             return ROUTE_READ_ACCESS_TYPE_ALL;
         }
 
-        long appId = AppInfoHelper.getInstance().getAppInfoId(packageName);
+        long appId = appInfoHelper.getAppInfoId(packageName);
 
         if (appId == DEFAULT_LONG) {
             return ROUTE_READ_ACCESS_TYPE_NONE;

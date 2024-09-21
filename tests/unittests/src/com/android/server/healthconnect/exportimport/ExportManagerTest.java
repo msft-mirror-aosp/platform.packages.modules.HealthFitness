@@ -45,11 +45,14 @@ import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.Slog;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.modules.utils.testing.ExtendedMockitoRule.MockStatic;
+import com.android.modules.utils.testing.ExtendedMockitoRule.MockStaticClasses;
 import com.android.server.healthconnect.FakePreferenceHelper;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
@@ -71,6 +74,8 @@ import org.mockito.quality.Strictness;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -220,6 +225,52 @@ public class ExportManagerTest {
     }
 
     @Test
+    @MockStaticClasses({@MockStatic(Files.class), @MockStatic(Slog.class)})
+    public void runExport_localExportFails_logsWithGenericError() throws IOException {
+        when(Files.copy((Path) any(), any(), any())).thenThrow(new IOException("Copy failed"));
+
+        assertThat(mExportManager.runExport()).isFalse();
+
+        // Time not recorded due to fake clock.
+        assertErrorStatusStored(DATA_EXPORT_ERROR_UNKNOWN, mTimeStamp);
+        ExtendedMockito.verify(
+                () ->
+                        ExportImportLogger.logExportStatus(
+                                eq(ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN),
+                                eq(/* timeToError= */ 0),
+                                /* originalFileSizeKb= */ anyInt(),
+                                /* compressedFileSizeKb= */ anyInt()),
+                times(1));
+        ExtendedMockito.verify(
+                () ->
+                        Slog.e(
+                                eq("HealthConnectExportImport"),
+                                eq("Failed to create local file for export"),
+                                any()),
+                times(1));
+    }
+
+    @Test
+    // Compressor is mocked so no zip file will be exported.
+    @MockStaticClasses({@MockStatic(Compressor.class), @MockStatic(Slog.class)})
+    public void runExport_noCompressedFile_logsWithGenericError() {
+        assertThat(mExportManager.runExport()).isFalse();
+        // Time not recorded due to fake clock.
+        assertErrorStatusStored(DATA_EXPORT_ERROR_UNKNOWN, mTimeStamp);
+        ExtendedMockito.verify(
+                () ->
+                        ExportImportLogger.logExportStatus(
+                                eq(ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN),
+                                eq(/* timeToError= */ 0),
+                                /* originalFileSizeKb= */ anyInt(),
+                                /* compressedFileSizeKb= */ anyInt()),
+                times(1));
+        ExtendedMockito.verify(
+                () -> Slog.e(eq("HealthConnectExportImport"), eq("Failed to export to URI"), any()),
+                times(1));
+    }
+
+    @Test
     public void deleteLocalExportFiles_deletesLocalCopies() {
         DatabaseContext databaseContext =
                 DatabaseContext.create(mContext, LOCAL_EXPORT_DIR_NAME, mContext.getUser());
@@ -250,7 +301,8 @@ public class ExportManagerTest {
     }
 
     @Test
-    public void destinationUriDoesNotExist_exportFails() {
+    @MockStatic(Slog.class)
+    public void destinationUriDoesNotExist_exportFailsWithLostFileAccessError() {
         // Inserting multiple rows to vary the size for testing of size logging
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(124, 457, 7));
@@ -279,6 +331,13 @@ public class ExportManagerTest {
                                 eq(/* timeToError= */ 0),
                                 /* originalFileSizeKb= */ anyInt(),
                                 /* compressedFileSizeKb= */ anyInt()),
+                times(1));
+        ExtendedMockito.verify(
+                () ->
+                        Slog.e(
+                                eq("HealthConnectExportImport"),
+                                eq("Lost access to export location"),
+                                any()),
                 times(1));
     }
 

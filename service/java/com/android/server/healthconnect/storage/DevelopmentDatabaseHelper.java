@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.storage;
 
-import android.annotation.NonNull;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -50,7 +49,7 @@ public final class DevelopmentDatabaseHelper {
      * The current version number for the development database features. Increment this whenever you
      * make a breaking schema change to a development feature.
      */
-    @VisibleForTesting static final int CURRENT_VERSION = 6;
+    @VisibleForTesting static final int CURRENT_VERSION = 8;
 
     /** The name of the table to store development specific key value pairs. */
     private static final String SETTINGS_TABLE_NAME = "development_database_settings";
@@ -72,7 +71,7 @@ public final class DevelopmentDatabaseHelper {
      * android.database.sqlite.SQLiteOpenHelper#onDowngrade} but uses different versioning which
      * only depends on features still in development.
      */
-    public static void onOpen(@NonNull SQLiteDatabase db) {
+    public static void onOpen(SQLiteDatabase db) {
         if (db.isReadOnly()) {
             return;
         }
@@ -100,7 +99,7 @@ public final class DevelopmentDatabaseHelper {
     }
 
     @VisibleForTesting
-    static void dropAndCreateDevelopmentSettingsTable(@NonNull SQLiteDatabase db, int version) {
+    static void dropAndCreateDevelopmentSettingsTable(SQLiteDatabase db, int version) {
         // We are now on a development device moving either from a prod version to a development
         // version, or between two development versions. Drop and recreate the relevant tables.
         dropDevelopmentSettingsTable(db);
@@ -114,11 +113,11 @@ public final class DevelopmentDatabaseHelper {
     }
 
     @VisibleForTesting
-    static void dropDevelopmentSettingsTable(@NonNull SQLiteDatabase db) {
+    static void dropDevelopmentSettingsTable(SQLiteDatabase db) {
         dropTableIfExists(db, SETTINGS_TABLE_NAME);
     }
 
-    private static void phrForceUpdate(@NonNull SQLiteDatabase db) {
+    private static void phrForceUpdate(SQLiteDatabase db) {
         dropTableIfExists(db, MedicalResourceIndicesHelper.getTableName());
         dropTableIfExists(db, MedicalResourceHelper.getMainTableName());
         dropTableIfExists(db, MedicalDataSourceHelper.getMainTableName());
@@ -127,7 +126,7 @@ public final class DevelopmentDatabaseHelper {
         addPhrColumnsToAccessLogsTable(db);
     }
 
-    private static void addPhrColumnsToAccessLogsTable(@NonNull SQLiteDatabase db) {
+    private static void addPhrColumnsToAccessLogsTable(SQLiteDatabase db) {
         // Alter the table to add new columns.
         // Adding columns is not idempotent. When this is moved to production, this code
         // should be guarded by checking the existence of a PHR table.
@@ -151,18 +150,18 @@ public final class DevelopmentDatabaseHelper {
     }
 
     @VisibleForTesting
-    static int getOldVersionIfExists(@NonNull SQLiteDatabase db) {
+    static int getOldVersionIfExists(SQLiteDatabase db) {
         if (!settingsTableExists(db)) {
             return NO_DEV_VERSION;
         }
         return readIntSetting(db, NO_DEV_VERSION);
     }
 
-    private static void dropTableIfExists(@NonNull SQLiteDatabase db, String table) {
+    private static void dropTableIfExists(SQLiteDatabase db, String table) {
         db.execSQL("DROP TABLE IF EXISTS " + table);
     }
 
-    private static int readIntSetting(@NonNull SQLiteDatabase db, int defaultValue) {
+    private static int readIntSetting(SQLiteDatabase db, int defaultValue) {
         try (Cursor cursor =
                 db.rawQuery(
                         "SELECT value FROM " + SETTINGS_TABLE_NAME + " WHERE name=?",
@@ -179,7 +178,7 @@ public final class DevelopmentDatabaseHelper {
         }
     }
 
-    private static boolean settingsTableExists(@NonNull SQLiteDatabase db) {
+    private static boolean settingsTableExists(SQLiteDatabase db) {
         try (Cursor cursor =
                 db.rawQuery(
                         "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",

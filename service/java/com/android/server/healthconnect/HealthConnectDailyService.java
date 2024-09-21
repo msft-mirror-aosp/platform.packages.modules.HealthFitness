@@ -23,7 +23,6 @@ import static com.android.server.healthconnect.exportimport.ExportImportJobs.PER
 import static com.android.server.healthconnect.migration.MigrationConstants.MIGRATION_COMPLETE_JOB_NAME;
 import static com.android.server.healthconnect.migration.MigrationConstants.MIGRATION_PAUSE_JOB_NAME;
 
-import android.annotation.NonNull;
 import android.annotation.UserIdInt;
 import android.app.job.JobInfo;
 import android.app.job.JobParameters;
@@ -40,6 +39,8 @@ import com.android.server.healthconnect.migration.MigrationStateChangeJob;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
@@ -64,7 +65,7 @@ public class HealthConnectDailyService extends JobService {
      * result in failure of other tasks being triggered from the job.
      */
     @Override
-    public boolean onStartJob(@NonNull JobParameters params) {
+    public boolean onStartJob(JobParameters params) {
         int userId = params.getExtras().getInt(EXTRA_USER_ID, /* defaultValue= */ DEFAULT_INT);
         String jobName = params.getExtras().getString(EXTRA_JOB_NAME_KEY);
         if (userId == DEFAULT_INT || userId != sCurrentUserId) {
@@ -83,6 +84,9 @@ public class HealthConnectDailyService extends JobService {
         ExportManager exportManager;
         HealthConnectDeviceConfigManager healthConnectDeviceConfigManager;
         MigrationStateManager migrationStateManager;
+        AppInfoHelper appInfoHelper;
+        AccessLogsHelper accessLogsHelper;
+        TransactionManager transactionManager;
 
         if (Flags.dependencyInjection()) {
             HealthConnectInjector healthConnectInjector = HealthConnectInjector.getInstance();
@@ -94,7 +98,11 @@ public class HealthConnectDailyService extends JobService {
             healthConnectDeviceConfigManager =
                     healthConnectInjector.getHealthConnectDeviceConfigManager();
             migrationStateManager = healthConnectInjector.getMigrationStateManager();
+            appInfoHelper = healthConnectInjector.getAppInfoHelper();
+            accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
+            transactionManager = healthConnectInjector.getTransactionManager();
         } else {
+            transactionManager = TransactionManager.getInitialisedInstance();
             healthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
             preferenceHelper = PreferenceHelper.getInstance();
             exportImportSettingsStorage = new ExportImportSettingsStorage(preferenceHelper);
@@ -105,8 +113,10 @@ public class HealthConnectDailyService extends JobService {
                             getApplicationContext(),
                             Clock.systemUTC(),
                             exportImportSettingsStorage,
-                            TransactionManager.getInitialisedInstance());
+                            transactionManager);
             migrationStateManager = MigrationStateManager.getInitialisedInstance();
+            appInfoHelper = AppInfoHelper.getInstance();
+            accessLogsHelper = AccessLogsHelper.getInstance();
         }
 
         // This service executes each incoming job on a Handler running on the application's
@@ -119,7 +129,10 @@ public class HealthConnectDailyService extends JobService {
                                     getApplicationContext(),
                                     params,
                                     healthDataCategoryPriorityHelper,
-                                    preferenceHelper);
+                                    preferenceHelper,
+                                    appInfoHelper,
+                                    accessLogsHelper,
+                                    transactionManager);
                             jobFinished(params, false);
                         });
                 return true;
@@ -168,13 +181,12 @@ public class HealthConnectDailyService extends JobService {
 
     /** Called when job needs to be stopped. Don't do anything here and let the job be killed. */
     @Override
-    public boolean onStopJob(@NonNull JobParameters params) {
+    public boolean onStopJob(JobParameters params) {
         return false;
     }
 
     /** Start periodically scheduling this service for {@code userId}. */
-    public static void schedule(
-            @NonNull JobScheduler jobScheduler, @UserIdInt int userId, @NonNull JobInfo jobInfo) {
+    public static void schedule(JobScheduler jobScheduler, @UserIdInt int userId, JobInfo jobInfo) {
         Objects.requireNonNull(jobScheduler);
         sCurrentUserId = userId;
 
