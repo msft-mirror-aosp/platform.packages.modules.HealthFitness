@@ -150,3 +150,15 @@ flag {
     is_fixed_read_only: true
     is_exported: true
 }
+
+flag {
+   name: "add_missing_access_logs"
+   namespace: "health_fitness_aconfig"
+   description: "Adds missing access logs"
+   bug: "359582925"
+   is_fixed_read_only: true
+   is_exported: true
+   metadata {
+       purpose: PURPOSE_BUGFIX
+   }
+}

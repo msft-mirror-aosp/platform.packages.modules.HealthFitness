@@ -17,6 +17,13 @@ package com.android.healthconnect.controller.tests.permissions.request
 
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PREGNANCY
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROBLEMS
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROCEDURES
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS
 import android.health.connect.HealthPermissions.READ_STEPS
 import android.health.connect.HealthPermissions.WRITE_DISTANCE
 import android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA
@@ -118,6 +125,13 @@ class MedicalPermissionsFragmentTest {
                 listOf(
                     fromPermissionString(READ_MEDICAL_DATA_ALLERGY_INTOLERANCE),
                     fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION),
+                    fromPermissionString(READ_MEDICAL_DATA_LABORATORY_RESULTS),
+                    fromPermissionString(READ_MEDICAL_DATA_MEDICATIONS),
+                    fromPermissionString(READ_MEDICAL_DATA_PREGNANCY),
+                    fromPermissionString(READ_MEDICAL_DATA_PROBLEMS),
+                    fromPermissionString(READ_MEDICAL_DATA_PROCEDURES),
+                    fromPermissionString(READ_MEDICAL_DATA_SOCIAL_HISTORY),
+                    fromPermissionString(READ_MEDICAL_DATA_VITAL_SIGNS),
                     fromPermissionString(WRITE_MEDICAL_DATA),
                 )
             MutableLiveData(permissions)

@@ -150,6 +150,13 @@ package android.health.connect {
     field public static final String READ_LEAN_BODY_MASS = "android.permission.health.READ_LEAN_BODY_MASS";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_ALLERGY_INTOLERANCE = "android.permission.health.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_IMMUNIZATION = "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_LABORATORY_RESULTS = "android.permission.health.READ_MEDICAL_DATA_LABORATORY_RESULTS";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_MEDICATIONS = "android.permission.health.READ_MEDICAL_DATA_MEDICATIONS";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_PREGNANCY = "android.permission.health.READ_MEDICAL_DATA_PREGNANCY";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_PROBLEMS = "android.permission.health.READ_MEDICAL_DATA_PROBLEMS";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_PROCEDURES = "android.permission.health.READ_MEDICAL_DATA_PROCEDURES";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_SOCIAL_HISTORY = "android.permission.health.READ_MEDICAL_DATA_SOCIAL_HISTORY";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_VITAL_SIGNS = "android.permission.health.READ_MEDICAL_DATA_VITAL_SIGNS";
     field public static final String READ_MENSTRUATION = "android.permission.health.READ_MENSTRUATION";
     field @FlaggedApi("com.android.healthfitness.flags.mindfulness") public static final String READ_MINDFULNESS = "android.permission.health.READ_MINDFULNESS";
     field public static final String READ_NUTRITION = "android.permission.health.READ_NUTRITION";
@@ -1012,7 +1019,13 @@ package android.health.connect.datatypes {
     method public void writeToParcel(@NonNull android.os.Parcel, int);
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.datatypes.FhirResource> CREATOR;
     field public static final int FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE = 2; // 0x2
+    field public static final int FHIR_RESOURCE_TYPE_CONDITION = 4; // 0x4
     field public static final int FHIR_RESOURCE_TYPE_IMMUNIZATION = 1; // 0x1
+    field public static final int FHIR_RESOURCE_TYPE_MEDICATION = 6; // 0x6
+    field public static final int FHIR_RESOURCE_TYPE_MEDICATION_REQUEST = 7; // 0x7
+    field public static final int FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT = 8; // 0x8
+    field public static final int FHIR_RESOURCE_TYPE_OBSERVATION = 3; // 0x3
+    field public static final int FHIR_RESOURCE_TYPE_PROCEDURE = 5; // 0x5
     field public static final int FHIR_RESOURCE_TYPE_UNKNOWN = 0; // 0x0
   }
 
@@ -1158,6 +1171,7 @@ package android.health.connect.datatypes {
     method @NonNull public String getDisplayName();
     method @NonNull public android.net.Uri getFhirBaseUri();
     method @NonNull public String getId();
+    method @Nullable public java.time.Instant getLastDataUpdateTime();
     method @NonNull public String getPackageName();
     method public void writeToParcel(@NonNull android.os.Parcel, int);
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.datatypes.MedicalDataSource> CREATOR;
@@ -1171,6 +1185,7 @@ package android.health.connect.datatypes {
     method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setDisplayName(@NonNull String);
     method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setFhirBaseUri(@NonNull android.net.Uri);
     method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setId(@NonNull String);
+    method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setLastDataUpdateTime(@Nullable java.time.Instant);
     method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setPackageName(@NonNull String);
   }
 
@@ -1185,7 +1200,14 @@ package android.health.connect.datatypes {
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.datatypes.MedicalResource> CREATOR;
     field public static final int MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE = 2; // 0x2
     field public static final int MEDICAL_RESOURCE_TYPE_IMMUNIZATION = 1; // 0x1
+    field public static final int MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS = 6; // 0x6
+    field public static final int MEDICAL_RESOURCE_TYPE_MEDICATIONS = 9; // 0x9
+    field public static final int MEDICAL_RESOURCE_TYPE_PREGNANCY = 3; // 0x3
+    field public static final int MEDICAL_RESOURCE_TYPE_PROBLEMS = 7; // 0x7
+    field public static final int MEDICAL_RESOURCE_TYPE_PROCEDURES = 8; // 0x8
+    field public static final int MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY = 4; // 0x4
     field public static final int MEDICAL_RESOURCE_TYPE_UNKNOWN = 0; // 0x0
+    field public static final int MEDICAL_RESOURCE_TYPE_VITAL_SIGNS = 5; // 0x5
   }
 
   public static final class MedicalResource.Builder {

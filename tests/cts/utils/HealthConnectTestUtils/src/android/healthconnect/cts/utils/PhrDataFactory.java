@@ -35,6 +35,7 @@ import android.net.Uri;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -59,12 +60,16 @@ public class PhrDataFactory {
             "d".repeat(MEDICAL_DATA_SOURCE_DISPLAY_NAME_CHARACTER_LIMIT);
     public static final String DATA_SOURCE_DISPLAY_NAME_EXCEEDED_CHARS =
             "d".repeat(MEDICAL_DATA_SOURCE_DISPLAY_NAME_CHARACTER_LIMIT + 1);
+    public static final Instant DATA_SOURCE_LAST_DATA_UPDATE_TIME =
+            Instant.parse("2024-09-10T00:02:00Z");
     public static final UUID DIFFERENT_DATA_SOURCE_UUID = UUID.randomUUID();
     public static final String DIFFERENT_DATA_SOURCE_ID = DIFFERENT_DATA_SOURCE_UUID.toString();
     public static final String DIFFERENT_DATA_SOURCE_PACKAGE_NAME = "com.other.app";
     public static final Uri DIFFERENT_DATA_SOURCE_BASE_URI =
             Uri.parse("https://fhir.com/oauth/api/FHIR/R5/");
     public static final String DIFFERENT_DATA_SOURCE_DISPLAY_NAME = "Doctor Y";
+    public static final Instant DIFFERENT_DATA_SOURCE_LAST_DATA_UPDATE_TIME =
+            Instant.parse("2023-01-01T00:02:00Z");
 
     public static final String FHIR_DATA_IMMUNIZATION =
             "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization1\"}";
@@ -113,7 +118,7 @@ public class PhrDataFactory {
     public static final String PAGE_TOKEN = "111";
 
     /** Creates and returns a {@link MedicalDataSource.Builder} with default arguments. */
-    public static MedicalDataSource.Builder getMedicalDataSourceBuilder() {
+    public static MedicalDataSource.Builder getMedicalDataSourceBuilderRequiredFieldsOnly() {
         return new MedicalDataSource.Builder(
                 DATA_SOURCE_ID,
                 DATA_SOURCE_PACKAGE_NAME,
@@ -121,9 +126,26 @@ public class PhrDataFactory {
                 DATA_SOURCE_DISPLAY_NAME);
     }
 
+    /** Creates and returns a {@link MedicalDataSource.Builder} with default arguments. */
+    public static MedicalDataSource.Builder getMedicalDataSourceBuilderWithLastDataUpdateTime() {
+        return new MedicalDataSource.Builder(
+                        DATA_SOURCE_ID,
+                        DATA_SOURCE_PACKAGE_NAME,
+                        DATA_SOURCE_FHIR_BASE_URI,
+                        DATA_SOURCE_DISPLAY_NAME)
+                .setLastDataUpdateTime(DATA_SOURCE_LAST_DATA_UPDATE_TIME);
+    }
+
+    /**
+     * Creates and returns a {@link MedicalDataSource} with default arguments for required fields.
+     */
+    public static MedicalDataSource getMedicalDataSourceRequiredFieldsOnly() {
+        return getMedicalDataSourceBuilderRequiredFieldsOnly().build();
+    }
+
     /** Creates and returns a {@link MedicalDataSource} with default arguments. */
-    public static MedicalDataSource getMedicalDataSource() {
-        return getMedicalDataSourceBuilder().build();
+    public static MedicalDataSource getMedicalDataSourceWithLastDataUpdateTime() {
+        return getMedicalDataSourceBuilderWithLastDataUpdateTime().build();
     }
 
     /**
@@ -139,7 +161,8 @@ public class PhrDataFactory {
     }
 
     /**
-     * Creates and returns a {@link CreateMedicalDataSourceRequest.Builder} with default arguments.
+     * Creates and returns a {@link CreateMedicalDataSourceRequest.Builder} with default arguments
+     * for required fields.
      */
     public static CreateMedicalDataSourceRequest.Builder
             getCreateMedicalDataSourceRequestBuilder() {

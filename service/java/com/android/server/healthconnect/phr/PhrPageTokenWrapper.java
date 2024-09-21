@@ -18,7 +18,6 @@ package com.android.server.healthconnect.phr;
 
 import static java.util.Objects.hash;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.health.connect.ReadMedicalResourcesRequest;
 
@@ -47,8 +46,7 @@ public class PhrPageTokenWrapper {
      * Creates a {@link PhrPageTokenWrapper} from the given {@link ReadMedicalResourcesRequest} and
      * {@code lastRowId}.
      */
-    public static PhrPageTokenWrapper of(
-            @NonNull ReadMedicalResourcesRequest request, long lastRowId) {
+    public static PhrPageTokenWrapper of(ReadMedicalResourcesRequest request, long lastRowId) {
         if (lastRowId < 0) {
             throw new IllegalArgumentException("lastRowId can not be negative");
         }
@@ -67,7 +65,7 @@ public class PhrPageTokenWrapper {
      * @throws NumberFormatException if the decoded {@code pageToken} does not contain a parsable
      *     integer.
      */
-    public static PhrPageTokenWrapper from(@NonNull String pageToken) {
+    public static PhrPageTokenWrapper from(String pageToken) {
         if (pageToken == null || pageToken.isEmpty()) {
             throw new IllegalArgumentException("pageToken can not be null or empty");
         }
@@ -96,7 +94,6 @@ public class PhrPageTokenWrapper {
      * Converts this token to a readable string which will be used in {@link
      * PhrPageTokenWrapper#encode()}.
      */
-    @NonNull
     private String toReadableTokenString() {
         return String.join(
                 DELIMITER,
@@ -105,7 +102,6 @@ public class PhrPageTokenWrapper {
     }
 
     /** Creates a String representation of this {@link PhrPageTokenWrapper}. */
-    @NonNull
     public String toString() {
         return toReadableTokenString();
     }
@@ -134,7 +130,7 @@ public class PhrPageTokenWrapper {
         return hash(getLastRowId(), getRequest());
     }
 
-    private PhrPageTokenWrapper(@NonNull ReadMedicalResourcesRequest request, long lastRowId) {
+    private PhrPageTokenWrapper(ReadMedicalResourcesRequest request, long lastRowId) {
         this.mLastRowId = lastRowId;
         this.mRequest = request;
     }

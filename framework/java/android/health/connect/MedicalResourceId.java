@@ -107,6 +107,7 @@ public final class MedicalResourceId implements Parcelable {
         requireNonNull(in);
         mDataSourceId = requireNonNull(in.readString());
         mFhirResourceType = in.readInt();
+        validateFhirResourceType(mFhirResourceType);
         mFhirResourceId = requireNonNull(in.readString());
     }
 

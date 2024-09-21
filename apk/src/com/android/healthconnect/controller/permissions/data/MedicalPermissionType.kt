@@ -15,20 +15,48 @@
  */
 package com.android.healthconnect.controller.permissions.data
 
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN
+import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.utils.AttributeResolver
 
 enum class MedicalPermissionType : HealthPermissionType {
     ALL_MEDICAL_DATA,
+    ALLERGY_INTOLERANCE,
     IMMUNIZATION,
-    ALLERGY_INTOLERANCE;
+    LABORATORY_RESULTS,
+    MEDICATIONS,
+    PREGNANCY,
+    PROBLEMS,
+    PROCEDURES,
+    SOCIAL_HISTORY,
+    VITAL_SIGNS;
 
     override fun lowerCaseLabel(): Int =
         MedicalPermissionStrings.fromPermissionType(this).lowercaseLabel
 
     override fun upperCaseLabel(): Int =
         MedicalPermissionStrings.fromPermissionType(this).uppercaseLabel
+
+    override fun icon(context: Context): Drawable? {
+        val attrRes: Int =
+            when (this) {
+                ALLERGY_INTOLERANCE -> R.attr.allergiesIcon
+                IMMUNIZATION -> R.attr.immunizationIcon
+                else -> throw IllegalArgumentException("PermissionType $this is not supported.")
+            }
+        return AttributeResolver.getDrawable(context, attrRes)
+    }
 }
 
 fun isValidMedicalPermissionType(permissionTypeString: String): Boolean {
@@ -44,16 +72,30 @@ fun fromMedicalResourceType(medicalResourceType: Int): MedicalPermissionType {
     return when (medicalResourceType) {
         MEDICAL_RESOURCE_TYPE_UNKNOWN ->
             throw IllegalArgumentException("MedicalResourceType is UNKNOWN.")
-        MEDICAL_RESOURCE_TYPE_IMMUNIZATION -> MedicalPermissionType.IMMUNIZATION
         MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE -> MedicalPermissionType.ALLERGY_INTOLERANCE
+        MEDICAL_RESOURCE_TYPE_IMMUNIZATION -> MedicalPermissionType.IMMUNIZATION
+        MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS -> MedicalPermissionType.LABORATORY_RESULTS
+        MEDICAL_RESOURCE_TYPE_MEDICATIONS -> MedicalPermissionType.MEDICATIONS
+        MEDICAL_RESOURCE_TYPE_PREGNANCY -> MedicalPermissionType.PREGNANCY
+        MEDICAL_RESOURCE_TYPE_PROBLEMS -> MedicalPermissionType.PROBLEMS
+        MEDICAL_RESOURCE_TYPE_PROCEDURES -> MedicalPermissionType.PROCEDURES
+        MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY -> MedicalPermissionType.SOCIAL_HISTORY
+        MEDICAL_RESOURCE_TYPE_VITAL_SIGNS -> MedicalPermissionType.VITAL_SIGNS
         else -> throw IllegalArgumentException("MedicalResourceType is not supported.")
     }
 }
 
 fun toMedicalResourceType(medicalPermissionType: MedicalPermissionType): Int {
     return when (medicalPermissionType) {
-        MedicalPermissionType.IMMUNIZATION -> MEDICAL_RESOURCE_TYPE_IMMUNIZATION
         MedicalPermissionType.ALLERGY_INTOLERANCE -> MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
+        MedicalPermissionType.IMMUNIZATION -> MEDICAL_RESOURCE_TYPE_IMMUNIZATION
+        MedicalPermissionType.LABORATORY_RESULTS -> MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS
+        MedicalPermissionType.MEDICATIONS -> MEDICAL_RESOURCE_TYPE_MEDICATIONS
+        MedicalPermissionType.PREGNANCY -> MEDICAL_RESOURCE_TYPE_PREGNANCY
+        MedicalPermissionType.PROBLEMS -> MEDICAL_RESOURCE_TYPE_PROBLEMS
+        MedicalPermissionType.PROCEDURES -> MEDICAL_RESOURCE_TYPE_PROCEDURES
+        MedicalPermissionType.SOCIAL_HISTORY -> MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY
+        MedicalPermissionType.VITAL_SIGNS -> MEDICAL_RESOURCE_TYPE_VITAL_SIGNS
         else -> MEDICAL_RESOURCE_TYPE_UNKNOWN
     }
 }

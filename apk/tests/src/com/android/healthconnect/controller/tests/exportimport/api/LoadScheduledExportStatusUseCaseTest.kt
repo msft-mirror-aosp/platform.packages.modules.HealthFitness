@@ -65,6 +65,7 @@ class LoadScheduledExportStatusUseCaseTest {
                 .setLastExportAppName("Drive")
                 .setNextExportFileName("hc.zip")
                 .setNextExportAppName("Dropbox")
+                .setNextExportSequentialNumber(5)
                 .build()
         fakeHealthDataExportManager.setScheduledExportStatus(scheduledExportStatus)
         val result = useCase.invoke()
@@ -79,6 +80,7 @@ class LoadScheduledExportStatusUseCaseTest {
         assertThat(exportStatus.lastExportAppName).isEqualTo("Drive")
         assertThat(exportStatus.nextExportFileName).isEqualTo("hc.zip")
         assertThat(exportStatus.nextExportAppName).isEqualTo("Dropbox")
+        assertThat(exportStatus.nextExportSequentialNumber).isEqualTo(5)
         assertThat(exportStatus.lastFailedExportTime).isEqualTo(Instant.ofEpochMilli(1000))
     }
 

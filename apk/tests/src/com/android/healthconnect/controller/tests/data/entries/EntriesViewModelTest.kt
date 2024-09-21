@@ -231,4 +231,28 @@ class EntriesViewModelTest {
 
         assertThat(viewModel.screenState.value).isEqualTo(EntriesViewModel.EntriesDeletionScreenState.DELETE)
     }
+
+    @Test
+    fun setAllEntriesSelectedValue_setCorrectValue(){
+        viewModel.setAllEntriesSelectedValue(true)
+
+        assertThat(viewModel.allEntriesSelected.value).isTrue()
+    }
+
+    @Test
+    fun getEntriesList_getsCorrectValue() = runTest{
+        fakeLoadDataEntriesUseCase.updateList(listOf(FORMATTED_STEPS))
+        fakeLoadDataAggregationsUseCase.updateAggregation(formattedAggregation("12 steps"))
+        val testObserver = TestObserver<EntriesViewModel.EntriesFragmentState>()
+        viewModel.entries.observeForever(testObserver)
+        viewModel.loadEntries(
+            FitnessPermissionType.STEPS,
+            Instant.ofEpochMilli(timeSource.currentTimeMillis()),
+            DateNavigationPeriod.PERIOD_WEEK,
+        )
+
+        advanceUntilIdle()
+
+        assertThat(viewModel.getEntriesList()).isEqualTo(mutableListOf(formattedAggregation("12 steps"), FORMATTED_STEPS))
+    }
 }

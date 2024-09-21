@@ -16,6 +16,9 @@
 
 package android.healthconnect.cts;
 
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
@@ -36,6 +39,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Collections;
+import java.util.Set;
 
 @RunWith(AndroidJUnit4.class)
 @RequiresFlagsEnabled(Flags.FLAG_PERSONAL_HEALTH_RECORD)
@@ -49,6 +53,13 @@ public class DeleteMedicalResourcesRequestTest {
         DeleteMedicalResourcesRequest.Builder request = new DeleteMedicalResourcesRequest.Builder();
 
         assertThrows(IllegalArgumentException.class, request::build);
+    }
+
+    @Test
+    public void testRequestBuilder_invalidMedicalResourceType_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new DeleteMedicalResourcesRequest.Builder().addMedicalResourceType(-1));
     }
 
     @Test
@@ -75,24 +86,24 @@ public class DeleteMedicalResourcesRequestTest {
     public void testRequestBuilder_oneFhirTypeOk_ok() {
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .build();
 
         assertThat(request.getMedicalResourceTypes())
-                .containsExactly(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+                .containsExactly(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
     }
 
     @Test
     public void testRequestBuilder_multipleResourceTypes_ok() {
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN)
                         .build();
 
         assertThat(request.getMedicalResourceTypes())
                 .containsExactly(
-                        MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                         MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN);
     }
 
@@ -100,7 +111,7 @@ public class DeleteMedicalResourcesRequestTest {
     public void testRequestBuilder_multipleResourceTypesAndDataSources_ok() {
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN)
                         .addDataSourceId("foo")
                         .addDataSourceId("bar")
@@ -110,7 +121,7 @@ public class DeleteMedicalResourcesRequestTest {
 
         assertThat(request.getMedicalResourceTypes())
                 .containsExactly(
-                        MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                         MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN);
     }
 
@@ -141,7 +152,7 @@ public class DeleteMedicalResourcesRequestTest {
         DeleteMedicalResourcesRequest.Builder original =
                 new DeleteMedicalResourcesRequest.Builder()
                         .addDataSourceId("foo")
-                        .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder(original).build();
 
@@ -153,7 +164,7 @@ public class DeleteMedicalResourcesRequestTest {
         DeleteMedicalResourcesRequest.Builder original =
                 new DeleteMedicalResourcesRequest.Builder()
                         .addDataSourceId("foo")
-                        .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
         DeleteMedicalResourcesRequest.Builder copy =
                 new DeleteMedicalResourcesRequest.Builder(original);
         original.addDataSourceId("bar");
@@ -169,7 +180,7 @@ public class DeleteMedicalResourcesRequestTest {
         DeleteMedicalResourcesRequest.Builder original =
                 new DeleteMedicalResourcesRequest.Builder()
                         .addDataSourceId("foo")
-                        .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
         DeleteMedicalResourcesRequest.Builder copy =
                 new DeleteMedicalResourcesRequest.Builder(original);
         original.addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN);
@@ -178,7 +189,7 @@ public class DeleteMedicalResourcesRequestTest {
 
         assertThat(original.build().getMedicalResourceTypes())
                 .containsExactly(
-                        MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                         MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN);
         assertThat(copy.build().getMedicalResourceTypes()).isEmpty();
     }
@@ -198,11 +209,11 @@ public class DeleteMedicalResourcesRequestTest {
     public void testRequest_equalsSameResourceOnly() {
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .build();
         DeleteMedicalResourcesRequest same =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .build();
 
         assertThat(request.equals(same)).isTrue();
@@ -213,12 +224,12 @@ public class DeleteMedicalResourcesRequestTest {
     public void testRequest_equalsSameResourceAndId() {
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .addDataSourceId("foo")
                         .build();
         DeleteMedicalResourcesRequest same =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .addDataSourceId("foo")
                         .build();
 
@@ -260,7 +271,7 @@ public class DeleteMedicalResourcesRequestTest {
         DeleteMedicalResourcesRequest different =
                 new DeleteMedicalResourcesRequest.Builder()
                         .addDataSourceId("foo")
-                        .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .build();
 
         assertThat(request.equals(different)).isFalse();
@@ -270,12 +281,12 @@ public class DeleteMedicalResourcesRequestTest {
     public void testRequest_equalsDifferById() {
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .build();
         DeleteMedicalResourcesRequest different =
                 new DeleteMedicalResourcesRequest.Builder()
                         .addDataSourceId("foo")
-                        .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .build();
 
         assertThat(request.equals(different)).isFalse();
@@ -298,7 +309,7 @@ public class DeleteMedicalResourcesRequestTest {
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
                         .addDataSourceId("foo")
-                        .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .build();
         String expectedPropertiesString = "dataSourceIds=[foo],medicalResourceTypes=[1]";
 
@@ -330,7 +341,7 @@ public class DeleteMedicalResourcesRequestTest {
                         .addDataSourceId("foo")
                         .addDataSourceId("bar")
                         .addDataSourceId("baz")
-                        .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN)
                         .build();
 
@@ -367,7 +378,7 @@ public class DeleteMedicalResourcesRequestTest {
     public void testWriteToParcelThenRestore_justResources_objectsAreIdentical() {
         DeleteMedicalResourcesRequest original =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .addMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN)
                         .build();
 
@@ -406,5 +417,23 @@ public class DeleteMedicalResourcesRequestTest {
         DeleteMedicalResourcesRequest original =
                 new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
         assertThat(original.describeContents()).isEqualTo(0);
+    }
+
+    @Test
+    public void testRestoreInvalidMedicalResourceTypesFromParcel_expectException()
+            throws NoSuchFieldException, IllegalAccessException {
+        DeleteMedicalResourcesRequest original =
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .build();
+        setFieldValueUsingReflection(original, "mMedicalResourceTypes", Set.of(-1));
+
+        Parcel parcel = Parcel.obtain();
+        original.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> DeleteMedicalResourcesRequest.CREATOR.createFromParcel(parcel));
     }
 }

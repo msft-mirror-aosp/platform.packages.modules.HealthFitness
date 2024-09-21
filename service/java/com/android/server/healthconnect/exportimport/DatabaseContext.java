@@ -18,7 +18,6 @@ package com.android.server.healthconnect.exportimport;
 
 import static java.util.Objects.requireNonNull;
 
-import android.annotation.NonNull;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.database.sqlite.SQLiteDatabase;
@@ -44,8 +43,7 @@ public final class DatabaseContext extends ContextWrapper {
     private File mDatabaseDir;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private DatabaseContext(
-            @NonNull Context context, String databaseDirName, UserHandle userHandle) {
+    private DatabaseContext(Context context, String databaseDirName, UserHandle userHandle) {
         super(context);
         requireNonNull(context);
         mDatabaseDirName = databaseDirName;
@@ -87,7 +85,7 @@ public final class DatabaseContext extends ContextWrapper {
 
     /** Factory method */
     public static DatabaseContext create(
-            @NonNull Context context, String databaseDirName, UserHandle userHandle) {
+            Context context, String databaseDirName, UserHandle userHandle) {
         return new DatabaseContext(context, databaseDirName, userHandle);
     }
 }
