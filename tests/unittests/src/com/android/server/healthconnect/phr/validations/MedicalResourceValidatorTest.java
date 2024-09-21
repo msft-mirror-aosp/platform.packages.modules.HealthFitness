@@ -56,8 +56,10 @@ import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.utils.ConditionBuilder;
+import android.healthconnect.cts.utils.MedicationsBuilder;
 import android.healthconnect.cts.utils.ObservationBuilder;
 import android.healthconnect.cts.utils.ObservationBuilder.QuantityUnits;
+import android.healthconnect.cts.utils.ProcedureBuilder;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
@@ -232,6 +234,46 @@ public class MedicalResourceValidatorTest {
         int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
 
         assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS);
+    }
+
+    @Test
+    public void testCalculateMedicalResourceType_procedure() throws JSONException {
+        String fhirData = new ProcedureBuilder().toJson();
+        MedicalResourceValidator validator = makeValidator(fhirData);
+
+        int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
+
+        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES);
+    }
+
+    @Test
+    public void testCalculateMedicalResourceType_medication() {
+        String fhirData = MedicationsBuilder.medication().toJson();
+        MedicalResourceValidator validator = makeValidator(fhirData);
+
+        int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
+
+        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS);
+    }
+
+    @Test
+    public void testCalculateMedicalResourceType_medicationStatement() {
+        String fhirData = MedicationsBuilder.statementR4().toJson();
+        MedicalResourceValidator validator = makeValidator(fhirData);
+
+        int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
+
+        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS);
+    }
+
+    @Test
+    public void testCalculateMedicalResourceType_medicationRequest() {
+        String fhirData = MedicationsBuilder.request().toJson();
+        MedicalResourceValidator validator = makeValidator(fhirData);
+
+        int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
+
+        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS);
     }
 
     // IPS artifacts: https://build.fhir.org/ig/HL7/fhir-ips/artifacts.html

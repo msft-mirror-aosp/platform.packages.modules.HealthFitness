@@ -153,7 +153,6 @@ import static android.health.connect.ratelimiter.RateLimiter.QuotaBucket.QUOTA_B
 import static android.health.connect.ratelimiter.RateLimiter.QuotaBucket.QUOTA_BUCKET_WRITES_PER_24H_FOREGROUND;
 
 import android.annotation.IntDef;
-import android.annotation.NonNull;
 import android.health.HealthFitnessStatsLog;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.ratelimiter.RateLimiter;
@@ -439,8 +438,7 @@ public class HealthConnectServiceLogger {
          *
          * @param recordInternals List of records.
          */
-        public Builder setDataTypesFromRecordInternals(
-                @NonNull List<RecordInternal<?>> recordInternals) {
+        public Builder setDataTypesFromRecordInternals(List<RecordInternal<?>> recordInternals) {
             Objects.requireNonNull(recordInternals);
             Map<Integer, Integer> recordTypeToNumberOfRecords = new HashMap<>();
             for (RecordInternal<?> recordInternal : recordInternals) {
@@ -468,7 +466,7 @@ public class HealthConnectServiceLogger {
          *
          * @param recordTypesList List of record types.
          */
-        public Builder setDataTypesFromRecordTypes(@NonNull List<Integer> recordTypesList) {
+        public Builder setDataTypesFromRecordTypes(List<Integer> recordTypesList) {
             if (recordTypesList == null || recordTypesList.size() == 0) {
                 return this;
             }
@@ -492,7 +490,7 @@ public class HealthConnectServiceLogger {
          *
          * @param packageName Package name of the caller.
          */
-        public Builder setPackageName(@NonNull String packageName) {
+        public Builder setPackageName(String packageName) {
             if (packageName == null || packageName.isBlank()) {
                 return this;
             }
@@ -505,7 +503,6 @@ public class HealthConnectServiceLogger {
          *
          * @param isCallerInForeground whether the caller is in foreground or background.
          */
-        @NonNull
         public Builder setCallerForegroundState(boolean isCallerInForeground) {
             mCallerForegroundState =
                     isCallerInForeground
@@ -639,7 +636,7 @@ public class HealthConnectServiceLogger {
         }
     }
 
-    private HealthConnectServiceLogger(@NonNull HealthConnectServiceLogger.Builder builder) {
+    private HealthConnectServiceLogger(HealthConnectServiceLogger.Builder builder) {
         Objects.requireNonNull(builder);
 
         mHealthDataServiceApiMethod = builder.mHealthDataServiceApiMethod;

@@ -73,8 +73,6 @@ public class PermissionPackageChangesOrchestratorTest {
 
     @Before
     public void setUp() throws PackageManager.NameNotFoundException {
-        when(HealthDataCategoryPriorityHelper.getInstance())
-                .thenReturn(mHealthDataCategoryPriorityHelper);
         when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
         when(HealthConnectDeviceConfigManager.getInitialisedInstance())
                 .thenReturn(mHealthConnectDeviceConfigManager);
@@ -82,7 +80,11 @@ public class PermissionPackageChangesOrchestratorTest {
         mCurrentUid = mContext.getPackageManager().getPackageUid(SELF_PACKAGE_NAME, 0);
         mOrchestrator =
                 new PermissionPackageChangesOrchestrator(
-                        mTracker, mFirstGrantTimeManager, mHelper, mUserHandle);
+                        mTracker,
+                        mFirstGrantTimeManager,
+                        mHelper,
+                        mUserHandle,
+                        mHealthDataCategoryPriorityHelper);
         setIntentWasRemoved(/* isIntentRemoved= */ false);
     }
 

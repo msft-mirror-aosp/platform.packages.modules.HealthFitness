@@ -19,20 +19,25 @@ package com.android.server.healthconnect.phr.validations;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_CONDITION;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_REQUEST;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_OBSERVATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PROCEDURE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.FhirResource.FhirResourceType;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import static android.health.connect.internal.datatypes.utils.FhirResourceTypeStringToIntMapper.getFhirResourceTypeInt;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.FhirVersion;
@@ -78,10 +83,15 @@ public class MedicalResourceValidator {
     private static final String OBSERVATION_CATEGORY_SOCIAL_HISTORY = "social-history";
     private static final String OBSERVATION_CATEGORY_VITAL_SIGNS = "vital-signs";
     private static final String OBSERVATION_CATEGORY_LABORATORY = "laboratory";
+    private static final Set<Integer> MEDICATION_FHIR_RESOURCE_TYPES =
+            Set.of(
+                    FHIR_RESOURCE_TYPE_MEDICATION,
+                    FHIR_RESOURCE_TYPE_MEDICATION_REQUEST,
+                    FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT);
 
-    @NonNull private final String mFhirData;
-    @NonNull private final FhirVersion mFhirVersion;
-    @NonNull private final String mDataSourceId;
+    private final String mFhirData;
+    private final FhirVersion mFhirVersion;
+    private final String mDataSourceId;
 
     /** Returns a validator for the provided {@link UpsertMedicalResourceRequest}. */
     public MedicalResourceValidator(UpsertMedicalResourceRequest request) {
@@ -108,7 +118,6 @@ public class MedicalResourceValidator {
      *     json, if the id field or resourceType field cannot be found or if any of the above checks
      *     fail.
      */
-    @NonNull
     public UpsertMedicalResourceInternalRequest validateAndCreateInternalRequest()
             throws IllegalArgumentException {
         JSONObject parsedFhirJsonObj = parseJsonResource(mFhirData);
@@ -226,6 +235,12 @@ public class MedicalResourceValidator {
         if (fhirResourceType == FHIR_RESOURCE_TYPE_CONDITION) {
             return MEDICAL_RESOURCE_TYPE_PROBLEMS;
         }
+        if (fhirResourceType == FHIR_RESOURCE_TYPE_PROCEDURE) {
+            return MEDICAL_RESOURCE_TYPE_PROCEDURES;
+        }
+        if (MEDICATION_FHIR_RESOURCE_TYPES.contains(fhirResourceType)) {
+            return MEDICAL_RESOURCE_TYPE_MEDICATIONS;
+        }
         if (fhirResourceType == FHIR_RESOURCE_TYPE_OBSERVATION) {
             Integer classification = classifyObservation(json);
             if (classification != null) {
@@ -293,8 +308,7 @@ public class MedicalResourceValidator {
         return null;
     }
 
-    private static Set<String> getCodesOfType(
-            @NonNull JSONObject codeableConcept, @NonNull String codingSystem) {
+    private static Set<String> getCodesOfType(JSONObject codeableConcept, String codingSystem) {
         Set<String> codes = new HashSet<>();
         try {
             JSONArray codings = codeableConcept.getJSONArray("coding");

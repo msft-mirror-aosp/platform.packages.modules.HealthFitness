@@ -275,7 +275,8 @@ public final class DatabaseMerger {
                             mContext,
                             true /* isInsertRequest */,
                             true /* useProvidedUuid */,
-                            true /* skipPackageName */);
+                            true /* skipPackageName */,
+                            mAppInfoHelper);
             mTransactionManager.insertAll(upsertTransactionRequest.getUpsertRequests());
 
             currentToken = token;
@@ -332,8 +333,7 @@ public final class DatabaseMerger {
                         /* enforceSelfRead= */ false,
                         grantedExtraReadPermissions,
                         // Make sure foreground only types get included in the response.
-                        /* isInForeground= */ true,
-                        mDeviceInfoHelper);
+                        /* isInForeground= */ true);
 
         List<RecordInternal<?>> recordInternalList;
         PageTokenWrapper token;
@@ -345,7 +345,8 @@ public final class DatabaseMerger {
                             cursor,
                             readTransactionRequest.getPageSize().orElse(MAXIMUM_PAGE_SIZE),
                             requireNonNull(readTransactionRequest.getPageToken()),
-                            stagedPackageNamesByAppIds);
+                            stagedPackageNamesByAppIds,
+                            mAppInfoHelper);
             recordInternalList = readResult.first;
             token = readResult.second;
             if (readTableRequest.getExtraReadRequests() != null) {
