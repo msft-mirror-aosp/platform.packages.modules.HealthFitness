@@ -20,8 +20,10 @@ import android.graphics.drawable.Drawable
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN
@@ -33,8 +35,10 @@ enum class MedicalPermissionType : HealthPermissionType {
     ALLERGY_INTOLERANCE,
     IMMUNIZATION,
     LABORATORY_RESULTS,
+    MEDICATIONS,
     PREGNANCY,
     PROBLEMS,
+    PROCEDURES,
     SOCIAL_HISTORY,
     VITAL_SIGNS;
 
@@ -71,8 +75,10 @@ fun fromMedicalResourceType(medicalResourceType: Int): MedicalPermissionType {
         MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE -> MedicalPermissionType.ALLERGY_INTOLERANCE
         MEDICAL_RESOURCE_TYPE_IMMUNIZATION -> MedicalPermissionType.IMMUNIZATION
         MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS -> MedicalPermissionType.LABORATORY_RESULTS
+        MEDICAL_RESOURCE_TYPE_MEDICATIONS -> MedicalPermissionType.MEDICATIONS
         MEDICAL_RESOURCE_TYPE_PREGNANCY -> MedicalPermissionType.PREGNANCY
         MEDICAL_RESOURCE_TYPE_PROBLEMS -> MedicalPermissionType.PROBLEMS
+        MEDICAL_RESOURCE_TYPE_PROCEDURES -> MedicalPermissionType.PROCEDURES
         MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY -> MedicalPermissionType.SOCIAL_HISTORY
         MEDICAL_RESOURCE_TYPE_VITAL_SIGNS -> MedicalPermissionType.VITAL_SIGNS
         else -> throw IllegalArgumentException("MedicalResourceType is not supported.")
@@ -84,8 +90,10 @@ fun toMedicalResourceType(medicalPermissionType: MedicalPermissionType): Int {
         MedicalPermissionType.ALLERGY_INTOLERANCE -> MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
         MedicalPermissionType.IMMUNIZATION -> MEDICAL_RESOURCE_TYPE_IMMUNIZATION
         MedicalPermissionType.LABORATORY_RESULTS -> MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS
+        MedicalPermissionType.MEDICATIONS -> MEDICAL_RESOURCE_TYPE_MEDICATIONS
         MedicalPermissionType.PREGNANCY -> MEDICAL_RESOURCE_TYPE_PREGNANCY
         MedicalPermissionType.PROBLEMS -> MEDICAL_RESOURCE_TYPE_PROBLEMS
+        MedicalPermissionType.PROCEDURES -> MEDICAL_RESOURCE_TYPE_PROCEDURES
         MedicalPermissionType.SOCIAL_HISTORY -> MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY
         MedicalPermissionType.VITAL_SIGNS -> MEDICAL_RESOURCE_TYPE_VITAL_SIGNS
         else -> MEDICAL_RESOURCE_TYPE_UNKNOWN

@@ -220,16 +220,19 @@ public final class MedicalResourceHelper {
     private final AppInfoHelper mAppInfoHelper;
     private final MedicalDataSourceHelper mMedicalDataSourceHelper;
     private final TimeSource mTimeSource;
+    private final AccessLogsHelper mAccessLogsHelper;
 
     public MedicalResourceHelper(
             TransactionManager transactionManager,
             AppInfoHelper appInfoHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
-            TimeSource timeSource) {
+            TimeSource timeSource,
+            AccessLogsHelper accessLogsHelper) {
         mTransactionManager = transactionManager;
         mAppInfoHelper = appInfoHelper;
         mMedicalDataSourceHelper = medicalDataSourceHelper;
         mTimeSource = timeSource;
+        mAccessLogsHelper = accessLogsHelper;
     }
 
     public static String getMainTableName() {
@@ -368,7 +371,7 @@ public final class MedicalResourceHelper {
                                         getResourceTypesRead(medicalResources),
                                         grantedReadMedicalResourceTypes);
                         if (!resourceTypes.isEmpty()) {
-                            AccessLogsHelper.addAccessLog(
+                            mAccessLogsHelper.addAccessLog(
                                     db,
                                     callingPackageName,
                                     resourceTypes,
@@ -447,7 +450,7 @@ public final class MedicalResourceHelper {
      * @throws IllegalArgumentException if any of the ids has a data source id which is not valid
      *     (not a String form of a UUID)
      */
-    private static Pair<String, String[]> getSqlAndArgsBasedOnPermissionFilters(
+    private Pair<String, String[]> getSqlAndArgsBasedOnPermissionFilters(
             List<MedicalResourceId> medicalResourceIds,
             Set<Integer> grantedReadMedicalResourceTypes,
             String callingPackageName,
@@ -456,7 +459,7 @@ public final class MedicalResourceHelper {
         if (!hasWritePermission && grantedReadMedicalResourceTypes.isEmpty()) {
             throw new IllegalStateException("no read or write permission");
         }
-        long appId = AppInfoHelper.getInstance().getAppInfoId(callingPackageName);
+        long appId = mAppInfoHelper.getAppInfoId(callingPackageName);
         // App is calling the API from background without backgroundReadPermission.
         if (isCalledFromBgWithoutBgRead) {
             // App has writePermission.
@@ -557,7 +560,7 @@ public final class MedicalResourceHelper {
                         response = getMedicalResources(cursor, request);
                     }
                     if (!enforceSelfRead) {
-                        AccessLogsHelper.addAccessLog(
+                        mAccessLogsHelper.addAccessLog(
                                 db,
                                 callingPackageName,
                                 Set.of(request.getMedicalResourceType()),
@@ -773,6 +776,12 @@ public final class MedicalResourceHelper {
                 .setJoinType(SQL_JOIN_INNER);
     }
 
+    static SqlJoin getJoinWithMedicalDataSourceFilterOnAppIds(Set<Long> appIds, SqlJoin extraJoin) {
+        return joinWithMedicalDataSourceTable()
+                .setSecondTableWhereClause(getAppIdsWhereClause(appIds))
+                .attachJoin(extraJoin);
+    }
+
     private static SqlJoin joinWithMedicalDataSourceTable() {
         return new SqlJoin(
                         MEDICAL_RESOURCE_TABLE_NAME,
@@ -824,6 +833,12 @@ public final class MedicalResourceHelper {
         return new WhereClauses(AND)
                 .addWhereInClauseWithoutQuotes(
                         getDataSourceUuidColumnName(), getListOfHexStrings(dataSourceIds));
+    }
+
+    static WhereClauses getAppIdsWhereClause(Set<Long> appIds) {
+        return new WhereClauses(AND)
+                .addWhereInLongsClause(
+                        MedicalDataSourceHelper.getAppInfoIdColumnName(), appIds.stream().toList());
     }
 
     private static OrderByClause getOrderByClause() {
@@ -895,7 +910,7 @@ public final class MedicalResourceHelper {
                 upsertRequests.stream()
                         .map(UpsertMedicalResourceInternalRequest::getDataSourceId)
                         .toList();
-        long appInfoIdRestriction = AppInfoHelper.getInstance().getAppInfoId(callingPackageName);
+        long appInfoIdRestriction = mAppInfoHelper.getAppInfoId(callingPackageName);
         Map<String, Long> dataSourceUuidToRowId =
                 mMedicalDataSourceHelper.getUuidToRowIdMap(
                         db, appInfoIdRestriction, StorageUtils.toUuids(dataSourceUuids));
@@ -940,7 +955,7 @@ public final class MedicalResourceHelper {
             upsertedMedicalResources.add(medicalResource);
         }
 
-        AccessLogsHelper.addAccessLog(
+        mAccessLogsHelper.addAccessLog(
                 db,
                 callingPackageName,
                 resourceTypes,
@@ -1096,7 +1111,7 @@ public final class MedicalResourceHelper {
                     db.delete(MEDICAL_RESOURCE_TABLE_NAME, whereClause, args);
 
                     if (!resourcesTypes.isEmpty()) {
-                        AccessLogsHelper.addAccessLog(
+                        mAccessLogsHelper.addAccessLog(
                                 db,
                                 callingPackageName,
                                 resourcesTypes,
@@ -1193,7 +1208,7 @@ public final class MedicalResourceHelper {
                             getFilteredDeleteRequest(dataSourceUuids, medicalResourceTypes, appId));
 
                     if (!resourceTypes.isEmpty()) {
-                        AccessLogsHelper.addAccessLog(
+                        mAccessLogsHelper.addAccessLog(
                                 db,
                                 callingPackageName,
                                 resourceTypes,

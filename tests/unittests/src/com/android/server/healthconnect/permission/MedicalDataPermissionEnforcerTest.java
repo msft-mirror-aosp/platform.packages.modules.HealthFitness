@@ -19,8 +19,10 @@ package com.android.server.healthconnect.permission;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PREGNANCY;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROBLEMS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROCEDURES;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
@@ -136,8 +138,10 @@ public class MedicalDataPermissionEnforcerTest {
                         READ_MEDICAL_DATA_ALLERGY_INTOLERANCE,
                         READ_MEDICAL_DATA_IMMUNIZATION,
                         READ_MEDICAL_DATA_LABORATORY_RESULTS,
+                        READ_MEDICAL_DATA_MEDICATIONS,
                         READ_MEDICAL_DATA_PREGNANCY,
                         READ_MEDICAL_DATA_PROBLEMS,
+                        READ_MEDICAL_DATA_PROCEDURES,
                         READ_MEDICAL_DATA_SOCIAL_HISTORY,
                         READ_MEDICAL_DATA_VITAL_SIGNS,
                         WRITE_MEDICAL_DATA);

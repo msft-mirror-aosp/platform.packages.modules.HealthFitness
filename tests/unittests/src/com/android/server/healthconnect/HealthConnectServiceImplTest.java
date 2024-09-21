@@ -319,13 +319,12 @@ public class HealthConnectServiceImplTest {
                 .thenReturn(mAppOpsManagerLocal);
         when(mServiceContext.getSystemService(PermissionManager.class))
                 .thenReturn(mPermissionManager);
-        when(HealthDataCategoryPriorityHelper.getInstance())
-                .thenReturn(mHealthDataCategoryPriorityHelper);
         setUpAllMedicalPermissionChecksHardDenied();
 
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(mPreferenceHelper)
+                        .setHealthDataCategoryPriorityHelper(mHealthDataCategoryPriorityHelper)
                         .build();
 
         mHealthConnectService =
@@ -341,7 +340,9 @@ public class HealthConnectServiceImplTest {
                         mMedicalResourceHelper,
                         mMedicalDataSourceHelper,
                         healthConnectInjector.getExportManager(),
-                        healthConnectInjector.getExportImportSettingsStorage());
+                        healthConnectInjector.getExportImportSettingsStorage(),
+                        healthConnectInjector.getAccessLogsHelper(),
+                        healthConnectInjector.getHealthDataCategoryPriorityHelper());
     }
 
     @After
@@ -707,7 +708,8 @@ public class HealthConnectServiceImplTest {
                         /* GrantedReadMedicalResourceTypes= */ eq(Set.of()),
                         eq(mTestPackageName),
                         /* hasWritePermission= */ eq(true),
-                        anyBoolean());
+                        anyBoolean(),
+                        eq(mAppInfoHelper));
     }
 
     @Test
@@ -731,7 +733,8 @@ public class HealthConnectServiceImplTest {
                                 Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)),
                         eq(mTestPackageName),
                         /* hasWritePermission= */ eq(true),
-                        anyBoolean());
+                        anyBoolean(),
+                        eq(mAppInfoHelper));
     }
 
     @Test
@@ -753,7 +756,8 @@ public class HealthConnectServiceImplTest {
                                 Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)),
                         eq(mTestPackageName),
                         /* hasWritePermission= */ eq(false),
-                        anyBoolean());
+                        anyBoolean(),
+                        eq(mAppInfoHelper));
     }
 
     @Test
@@ -776,7 +780,8 @@ public class HealthConnectServiceImplTest {
                         any(),
                         eq(mTestPackageName),
                         anyBoolean(),
-                        /* isCalledFromBgWithoutBgRead= */ eq(false));
+                        /* isCalledFromBgWithoutBgRead= */ eq(false),
+                        eq(mAppInfoHelper));
     }
 
     @Test
@@ -800,7 +805,8 @@ public class HealthConnectServiceImplTest {
                         any(),
                         eq(mTestPackageName),
                         anyBoolean(),
-                        /* isCalledFromBgWithoutBgRead= */ eq(true));
+                        /* isCalledFromBgWithoutBgRead= */ eq(true),
+                        eq(mAppInfoHelper));
     }
 
     @Test
@@ -825,7 +831,8 @@ public class HealthConnectServiceImplTest {
                         any(),
                         eq(mTestPackageName),
                         anyBoolean(),
-                        /* isCalledFromBgWithoutBgRead= */ eq(true));
+                        /* isCalledFromBgWithoutBgRead= */ eq(true),
+                        eq(mAppInfoHelper));
     }
 
     @Test
@@ -851,7 +858,8 @@ public class HealthConnectServiceImplTest {
                         any(),
                         eq(mTestPackageName),
                         anyBoolean(),
-                        /* isCalledFromBgWithoutBgRead= */ eq(false));
+                        /* isCalledFromBgWithoutBgRead= */ eq(false),
+                        eq(mAppInfoHelper));
     }
 
     @Test
@@ -2005,7 +2013,7 @@ public class HealthConnectServiceImplTest {
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(any()))
                 .thenReturn(List.of());
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
-                        any(), any(), anyString(), anyBoolean(), anyBoolean()))
+                        any(), any(), anyString(), anyBoolean(), anyBoolean(), any()))
                 .thenReturn(List.of());
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithoutPermissionChecks(any()))
                 .thenReturn(List.of());

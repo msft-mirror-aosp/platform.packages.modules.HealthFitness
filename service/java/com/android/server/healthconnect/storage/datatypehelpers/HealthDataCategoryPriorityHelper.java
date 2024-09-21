@@ -91,13 +91,17 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     private volatile ConcurrentHashMap<Integer, List<Long>> mHealthDataCategoryToAppIdPriorityMap;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private HealthDataCategoryPriorityHelper() {
-        mAppInfoHelper = AppInfoHelper.getInstance();
-        mPackageInfoUtils = PackageInfoUtils.getInstance();
-        mHealthConnectDeviceConfigManager =
-                HealthConnectDeviceConfigManager.getInitialisedInstance();
-        mTransactionManager = TransactionManager.getInitialisedInstance();
-        mPreferenceHelper = PreferenceHelper.getInstance();
+    private HealthDataCategoryPriorityHelper(
+            AppInfoHelper appInfoHelper,
+            TransactionManager transactionManager,
+            HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
+            PreferenceHelper preferenceHelper,
+            PackageInfoUtils packageInfoUtils) {
+        mAppInfoHelper = appInfoHelper;
+        mPackageInfoUtils = packageInfoUtils;
+        mHealthConnectDeviceConfigManager = healthConnectDeviceConfigManager;
+        mTransactionManager = transactionManager;
+        mPreferenceHelper = preferenceHelper;
     }
 
     /**
@@ -385,9 +389,29 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         return columnInfo;
     }
 
-    public static synchronized HealthDataCategoryPriorityHelper getInstance() {
+    public static HealthDataCategoryPriorityHelper getInstance() {
+        return getInstance(
+                AppInfoHelper.getInstance(),
+                TransactionManager.getInitialisedInstance(),
+                HealthConnectDeviceConfigManager.getInitialisedInstance(),
+                PreferenceHelper.getInstance(),
+                PackageInfoUtils.getInstance());
+    }
+
+    public static synchronized HealthDataCategoryPriorityHelper getInstance(
+            AppInfoHelper appInfoHelper,
+            TransactionManager transactionManager,
+            HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
+            PreferenceHelper preferenceHelper,
+            PackageInfoUtils packageInfoUtils) {
         if (sHealthDataCategoryPriorityHelper == null) {
-            sHealthDataCategoryPriorityHelper = new HealthDataCategoryPriorityHelper();
+            sHealthDataCategoryPriorityHelper =
+                    new HealthDataCategoryPriorityHelper(
+                            appInfoHelper,
+                            transactionManager,
+                            healthConnectDeviceConfigManager,
+                            preferenceHelper,
+                            packageInfoUtils);
         }
 
         return sHealthDataCategoryPriorityHelper;

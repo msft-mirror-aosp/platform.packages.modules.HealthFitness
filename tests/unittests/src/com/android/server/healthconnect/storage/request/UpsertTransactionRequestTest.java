@@ -31,6 +31,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -59,6 +60,7 @@ public class UpsertTransactionRequestTest {
             new HealthConnectDatabaseTestRule();
 
     private HealthConnectUserContext mContext;
+    private AppInfoHelper mAppInfoHelper;
 
     @Before
     public void setup() {
@@ -67,6 +69,10 @@ public class UpsertTransactionRequestTest {
                 new TransactionTestUtils(
                         mContext, mHealthConnectDatabaseTestRule.getTransactionManager());
         transactionTestUtils.insertApp("package.name");
+
+        AppInfoHelper.resetInstanceForTest();
+        mAppInfoHelper =
+                AppInfoHelper.getInstance(mHealthConnectDatabaseTestRule.getTransactionManager());
     }
 
     @Test
@@ -78,7 +84,8 @@ public class UpsertTransactionRequestTest {
                         DeviceInfoHelper.getInstance(),
                         mContext,
                         /* isInsertRequest= */ false,
-                        /* extraPermsStateMap= */ Collections.emptyMap());
+                        /* extraPermsStateMap= */ Collections.emptyMap(),
+                        mAppInfoHelper);
         assertThat(request1.getPackageName()).isEqualTo("package.name.1");
 
         UpsertTransactionRequest request2 =
@@ -89,7 +96,8 @@ public class UpsertTransactionRequestTest {
                         mContext,
                         /* isInsertRequest= */ false,
                         /* useProvidedUuid= */ false,
-                        /* skipPackageNameAndLogs= */ false);
+                        /* skipPackageNameAndLogs= */ false,
+                        mAppInfoHelper);
         assertThat(request2.getPackageName()).isEqualTo("package.name.2");
     }
 
@@ -106,7 +114,8 @@ public class UpsertTransactionRequestTest {
                         DeviceInfoHelper.getInstance(),
                         mContext,
                         /* isInsertRequest= */ false,
-                        /* extraPermsStateMap= */ Collections.emptyMap());
+                        /* extraPermsStateMap= */ Collections.emptyMap(),
+                        mAppInfoHelper);
 
         assertThat(request.getRecordTypeIds())
                 .containsExactly(RECORD_TYPE_STEPS, RECORD_TYPE_BASAL_METABOLIC_RATE);

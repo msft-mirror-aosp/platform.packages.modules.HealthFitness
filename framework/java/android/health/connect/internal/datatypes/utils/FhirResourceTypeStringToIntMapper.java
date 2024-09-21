@@ -33,6 +33,10 @@ public final class FhirResourceTypeStringToIntMapper {
     private static final String FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE_STR = "ALLERGYINTOLERANCE";
     private static final String FHIR_RESOURCE_TYPE_OBSERVATION_STR = "OBSERVATION";
     private static final String FHIR_RESOURCE_TYPE_CONDITION_STR = "CONDITION";
+    private static final String FHIR_RESOURCE_TYPE_PROCEDURE_STR = "PROCEDURE";
+    private static final String FHIR_RESOURCE_TYPE_MEDICATION_STR = "MEDICATION";
+    private static final String FHIR_RESOURCE_TYPE_MEDICATION_REQUEST_STR = "MEDICATIONREQUEST";
+    private static final String FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT_STR = "MEDICATIONSTATEMENT";
 
     /**
      * Returns the corresponding {@code IntDef} {@link FhirResourceType} from a {@code String}
@@ -70,5 +74,15 @@ public final class FhirResourceTypeStringToIntMapper {
                 FHIR_RESOURCE_TYPE_OBSERVATION_STR, FhirResource.FHIR_RESOURCE_TYPE_OBSERVATION);
         sFhirResourceTypeStringToIntMap.put(
                 FHIR_RESOURCE_TYPE_CONDITION_STR, FhirResource.FHIR_RESOURCE_TYPE_CONDITION);
+        sFhirResourceTypeStringToIntMap.put(
+                FHIR_RESOURCE_TYPE_PROCEDURE_STR, FhirResource.FHIR_RESOURCE_TYPE_PROCEDURE);
+        sFhirResourceTypeStringToIntMap.put(
+                FHIR_RESOURCE_TYPE_MEDICATION_STR, FhirResource.FHIR_RESOURCE_TYPE_MEDICATION);
+        sFhirResourceTypeStringToIntMap.put(
+                FHIR_RESOURCE_TYPE_MEDICATION_REQUEST_STR,
+                FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_REQUEST);
+        sFhirResourceTypeStringToIntMap.put(
+                FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT_STR,
+                FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT);
     }
 }
