@@ -76,6 +76,61 @@ public class FhirResourceTypeStringToIntMapperTest {
 
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testFhirResourceTypeInt_conditionType() {
+        assertThat(getFhirResourceTypeInt("condition"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_CONDITION);
+        assertThat(getFhirResourceTypeInt("Condition"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_CONDITION);
+        assertThat(getFhirResourceTypeInt("CONDITION"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_CONDITION);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testFhirResourceTypeInt_procedureType() {
+        assertThat(getFhirResourceTypeInt("procedure"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_PROCEDURE);
+        assertThat(getFhirResourceTypeInt("Procedure"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_PROCEDURE);
+        assertThat(getFhirResourceTypeInt("PROCEDURE"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_PROCEDURE);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testFhirResourceTypeInt_medicationType() {
+        assertThat(getFhirResourceTypeInt("medication"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_MEDICATION);
+        assertThat(getFhirResourceTypeInt("Medication"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_MEDICATION);
+        assertThat(getFhirResourceTypeInt("MEDICATION"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_MEDICATION);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testFhirResourceTypeInt_medicationStatementType() {
+        assertThat(getFhirResourceTypeInt("medicationstatement"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT);
+        assertThat(getFhirResourceTypeInt("MedicationStatement"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT);
+        assertThat(getFhirResourceTypeInt("MEDICATIONSTATEMENT"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testFhirResourceTypeInt_medicationRequestType() {
+        assertThat(getFhirResourceTypeInt("medicationrequest"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_REQUEST);
+        assertThat(getFhirResourceTypeInt("MedicationRequest"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_REQUEST);
+        assertThat(getFhirResourceTypeInt("MEDICATIONREQUEST"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_REQUEST);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testFhirResourceTypeInt_unknownType() {
         int fhirResourceTypeInt = getFhirResourceTypeInt("patient");
 

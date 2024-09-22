@@ -289,7 +289,22 @@
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
     <permission
+        android:name="android.permission.health.READ_MEDICAL_DATA_MEDICATIONS"
+        android:label="@string/laboratory_results_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+    <permission
         android:name="android.permission.health.READ_MEDICAL_DATA_PREGNANCY"
+        android:label="@string/pregnancy_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+    <permission
+        android:name="android.permission.health.READ_MEDICAL_DATA_PROBLEMS"
+        android:label="@string/pregnancy_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+    <permission
+        android:name="android.permission.health.READ_MEDICAL_DATA_PROCEDURES"
         android:label="@string/pregnancy_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />

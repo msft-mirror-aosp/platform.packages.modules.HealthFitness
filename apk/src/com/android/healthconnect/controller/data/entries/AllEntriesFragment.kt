@@ -84,6 +84,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     private lateinit var loadingView: View
     private lateinit var errorView: View
     private lateinit var adapter: RecyclerViewAdapter
+    private var aggregation: FormattedEntry.FormattedAggregation? = null
 
     private val onDeleteEntryListener by lazy {
         object : OnDeleteEntryListener {
@@ -134,6 +135,45 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             }
         }
     }
+    private val onClickSelectAllListener by lazy {
+        object : OnClickSelectAllListener {
+            override fun onClicked(isChecked: Boolean) {
+                entriesViewModel.setAllEntriesSelectedValue(isChecked)
+                entriesViewModel.getEntriesList().forEach { entry ->
+                    if (entry !is FormattedEntry.SelectAllHeader && entry !is FormattedEntry.FormattedAggregation ) {
+                        if (isChecked) {
+                            entriesViewModel.addToDeleteSet(entry.uuid)
+                        } else {
+                            entriesViewModel.removeFromDeleteSet(entry.uuid)
+                        }
+
+                        if (entriesViewModel.getDataType() == null) {
+                            when (entry) {
+                                is FormattedEntry.FormattedDataEntry -> {
+                                    entriesViewModel.setDataType(entry.dataType)
+                                }
+                                is FormattedEntry.SleepSessionEntry -> {
+                                    entriesViewModel.setDataType(entry.dataType)
+                                }
+                                is FormattedEntry.ExerciseSessionEntry -> {
+                                    entriesViewModel.setDataType(entry.dataType)
+                                }
+                                is FormattedEntry.SeriesDataEntry -> {
+                                    entriesViewModel.setDataType(entry.dataType)
+                                }
+                                else -> {
+                                    //do nothing
+                                }
+                            }
+                        }
+                    }
+                }
+                updateMenu(screenState = DELETE)
+
+            }
+        }
+    }
+
     private val aggregationViewBinder by lazy { AggregationViewBinder() }
     private val entryViewBinder by lazy {
         EntryItemViewBinder(onDeleteEntryListener = onDeleteEntryListener)
@@ -166,6 +206,8 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             onItemClickedListener = onClickEntryListener,
         )
     }
+
+    private val selectAllViewBinder by lazy { SelectAllViewBinder(onClickSelectAllListener)}
 
     // Not in deletion state
     private val onMenuSetup: (MenuItem) -> Boolean = { menuItem ->
@@ -227,6 +269,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         loadingView = view.findViewById(R.id.loading)
         adapter =
             RecyclerViewAdapter.Builder()
+                .setViewBinder(FormattedEntry.SelectAllHeader::class.java, selectAllViewBinder)
                 .setViewBinder(FormattedEntry.FormattedDataEntry::class.java, entryViewBinder)
                 .setViewBinder(
                     FormattedEntry.FormattedMedicalDataEntry::class.java,
@@ -290,6 +333,10 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             }
         }
 
+        entriesViewModel.allEntriesSelected.observe(viewLifecycleOwner) { allEntriesSelected ->
+            adapter.checkSelectAll(allEntriesSelected)
+        }
+
         header = AppHeaderPreference(requireContext())
         observeEntriesUpdates()
     }
@@ -348,6 +395,11 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     @VisibleForTesting
     fun triggerDeletionState(screenState: EntriesViewModel.EntriesDeletionScreenState) {
         updateMenu(screenState)
+        if(screenState == VIEW){
+            removeSelectAll()
+        } else {
+            insertSelectAll()
+        }
         adapter.showCheckBox(screenState == DELETE)
         entriesViewModel.setScreenState(screenState)
         if (entriesViewModel.getDateNavigationText() == null) {
@@ -363,6 +415,24 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         }
     }
 
+    private fun removeSelectAll(){
+        if(entriesViewModel.getEntriesList().first() is FormattedEntry.SelectAllHeader) {
+            if (aggregation == null) {
+                adapter.updateSelectAllState(FormattedEntry.SelectAllHeader(), inDeletion = false)
+            } else {
+                adapter.insertAggregationAndRemoveSelectAll(aggregation!!)
+            }
+        }
+    }
+
+    private fun insertSelectAll(){
+        if(aggregation == null) {
+            adapter.updateSelectAllState(FormattedEntry.SelectAllHeader(), inDeletion = true)
+        } else {
+            adapter.insertSelectAllAndRemoveAggregation(FormattedEntry.SelectAllHeader())
+        }
+    }
+
     private fun deleteData() {
         entriesViewModel.getDataType()?.let {
             deletionViewModel.setEntriesDeleteSet(
@@ -372,6 +442,8 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         }
         childFragmentManager.setFragmentResult(DeletionConstants.START_DELETION_KEY, bundleOf())
     }
+
+
 
     private fun observeEntriesUpdates() {
         entriesViewModel.entries.observe(viewLifecycleOwner) { state ->
@@ -398,6 +470,11 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                 is With -> {
                     entriesRecyclerView.isVisible = true
                     adapter.updateData(state.entries)
+                    if(state.entries[0] is FormattedEntry.FormattedAggregation){
+                        aggregation = state.entries[0] as FormattedEntry.FormattedAggregation
+                    } else {
+                        aggregation = null
+                    }
                     entriesRecyclerView.scrollToPosition(0)
                     errorView.isVisible = false
                     noDataView.isVisible = false

@@ -63,6 +63,7 @@ public final class ReadMedicalResourcesRequest implements Parcelable {
      * @throws IllegalArgumentException if the provided {@code medicalResourceType} is not a
      *     supported type, or any IDs in {@code dataSourceIds} are invalid, or {@code pageSize} is
      *     less than 1 or more than 5000.
+     * @throws NullPointerException if {@code dataSourceIds} is null.
      */
     private ReadMedicalResourcesRequest(
             @MedicalResourceType int medicalResourceType,
@@ -87,10 +88,12 @@ public final class ReadMedicalResourcesRequest implements Parcelable {
     private ReadMedicalResourcesRequest(@NonNull Parcel in) {
         requireNonNull(in);
         mMedicalResourceType = in.readInt();
+        validateMedicalResourceType(mMedicalResourceType);
         mDataSourceIds = new HashSet<>(requireNonNull(in.createStringArrayList()));
         validateMedicalDataSourceIds(mDataSourceIds);
         mPageSize = in.readInt();
         mPageToken = in.readString();
+        requireInRange(mPageSize, MINIMUM_PAGE_SIZE, MAXIMUM_PAGE_SIZE, "pageSize");
     }
 
     @NonNull

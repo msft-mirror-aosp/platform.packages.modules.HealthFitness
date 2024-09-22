@@ -152,6 +152,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -318,13 +319,12 @@ public class HealthConnectServiceImplTest {
                 .thenReturn(mAppOpsManagerLocal);
         when(mServiceContext.getSystemService(PermissionManager.class))
                 .thenReturn(mPermissionManager);
-        when(HealthDataCategoryPriorityHelper.getInstance())
-                .thenReturn(mHealthDataCategoryPriorityHelper);
         setUpAllMedicalPermissionChecksHardDenied();
 
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(mPreferenceHelper)
+                        .setHealthDataCategoryPriorityHelper(mHealthDataCategoryPriorityHelper)
                         .build();
 
         mHealthConnectService =
@@ -340,7 +340,9 @@ public class HealthConnectServiceImplTest {
                         mMedicalResourceHelper,
                         mMedicalDataSourceHelper,
                         healthConnectInjector.getExportManager(),
-                        healthConnectInjector.getExportImportSettingsStorage());
+                        healthConnectInjector.getExportImportSettingsStorage(),
+                        healthConnectInjector.getAccessLogsHelper(),
+                        healthConnectInjector.getHealthDataCategoryPriorityHelper());
     }
 
     @After
@@ -706,7 +708,8 @@ public class HealthConnectServiceImplTest {
                         /* GrantedReadMedicalResourceTypes= */ eq(Set.of()),
                         eq(mTestPackageName),
                         /* hasWritePermission= */ eq(true),
-                        anyBoolean());
+                        anyBoolean(),
+                        eq(mAppInfoHelper));
     }
 
     @Test
@@ -730,7 +733,8 @@ public class HealthConnectServiceImplTest {
                                 Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)),
                         eq(mTestPackageName),
                         /* hasWritePermission= */ eq(true),
-                        anyBoolean());
+                        anyBoolean(),
+                        eq(mAppInfoHelper));
     }
 
     @Test
@@ -752,7 +756,8 @@ public class HealthConnectServiceImplTest {
                                 Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)),
                         eq(mTestPackageName),
                         /* hasWritePermission= */ eq(false),
-                        anyBoolean());
+                        anyBoolean(),
+                        eq(mAppInfoHelper));
     }
 
     @Test
@@ -775,7 +780,8 @@ public class HealthConnectServiceImplTest {
                         any(),
                         eq(mTestPackageName),
                         anyBoolean(),
-                        /* isCalledFromBgWithoutBgRead= */ eq(false));
+                        /* isCalledFromBgWithoutBgRead= */ eq(false),
+                        eq(mAppInfoHelper));
     }
 
     @Test
@@ -799,7 +805,8 @@ public class HealthConnectServiceImplTest {
                         any(),
                         eq(mTestPackageName),
                         anyBoolean(),
-                        /* isCalledFromBgWithoutBgRead= */ eq(true));
+                        /* isCalledFromBgWithoutBgRead= */ eq(true),
+                        eq(mAppInfoHelper));
     }
 
     @Test
@@ -824,7 +831,8 @@ public class HealthConnectServiceImplTest {
                         any(),
                         eq(mTestPackageName),
                         anyBoolean(),
-                        /* isCalledFromBgWithoutBgRead= */ eq(true));
+                        /* isCalledFromBgWithoutBgRead= */ eq(true),
+                        eq(mAppInfoHelper));
     }
 
     @Test
@@ -850,7 +858,8 @@ public class HealthConnectServiceImplTest {
                         any(),
                         eq(mTestPackageName),
                         anyBoolean(),
-                        /* isCalledFromBgWithoutBgRead= */ eq(false));
+                        /* isCalledFromBgWithoutBgRead= */ eq(false),
+                        eq(mAppInfoHelper));
     }
 
     @Test
@@ -1189,6 +1198,27 @@ public class HealthConnectServiceImplTest {
                         eq(mTestPackageName),
                         /* hasWritePermission= */ eq(true),
                         anyBoolean());
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testReadMedicalResources_byIds_numberOfIdsTooLarge_expectException()
+            throws RemoteException {
+        setDataManagementPermission(PERMISSION_DENIED);
+        setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
+        setUpPhrMocksWithIrrelevantResponses();
+        List<MedicalResourceId> ids = new ArrayList<>();
+        for (int i = 0; i <= 5000; i++) {
+            ids.add(getMedicalResourceId());
+        }
+
+        mHealthConnectService.readMedicalResourcesByIds(
+                mAttributionSource, ids, mReadMedicalResourcesResponseCallback);
+
+        verify(mReadMedicalResourcesResponseCallback, timeout(5000).times(1))
+                .onError(mErrorCaptor.capture());
+        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
     }
 
     @Test
@@ -1983,7 +2013,7 @@ public class HealthConnectServiceImplTest {
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(any()))
                 .thenReturn(List.of());
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
-                        any(), any(), anyString(), anyBoolean(), anyBoolean()))
+                        any(), any(), anyString(), anyBoolean(), anyBoolean(), any()))
                 .thenReturn(List.of());
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithoutPermissionChecks(any()))
                 .thenReturn(List.of());

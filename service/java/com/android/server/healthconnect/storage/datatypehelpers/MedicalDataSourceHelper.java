@@ -20,7 +20,9 @@ import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
 
 import static com.android.server.healthconnect.storage.HealthConnectDatabase.createTable;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getAppIdsWhereClause;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getJoinWithIndicesTableFilterOnMedicalResourceTypes;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getJoinWithMedicalDataSourceFilterOnAppIds;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getJoinWithMedicalDataSourceFilterOnDataSourceIds;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getJoinWithMedicalDataSourceFilterOnDataSourceIdsAndAppId;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
@@ -360,14 +362,15 @@ public class MedicalDataSourceHelper {
             Set<Integer> grantedReadMedicalResourceTypes,
             String callingPackageName,
             boolean hasWritePermission,
-            boolean isCalledFromBgWithoutBgRead)
+            boolean isCalledFromBgWithoutBgRead,
+            AppInfoHelper appInfoHelper)
             throws SQLiteException {
         // TODO(b/359892459): Add CTS tests once it is properly implemented.
         if (!hasWritePermission && grantedReadMedicalResourceTypes.isEmpty()) {
             throw new IllegalStateException("no read or write permission");
         }
 
-        long appId = AppInfoHelper.getInstance().getAppInfoId(callingPackageName);
+        long appId = appInfoHelper.getAppInfoId(callingPackageName);
         // This is an optimization to not hit the db, when we know that the app has not
         // created any dataSources hence appId does not exist (so no self data to read)
         // and has no read permission, so won't be able to read dataSources written by
@@ -467,6 +470,20 @@ public class MedicalDataSourceHelper {
         return getReadTableRequestForDataSources(joinWithDataSource.attachJoin(joinWithIndices));
     }
 
+    /**
+     * Creates a {@link ReadTableRequest} filtering on the given {@code appIds} and {@code
+     * medicalResourceTypes}. If either sets are empty, they won't be taken into account when
+     * filtering.
+     */
+    private static ReadTableRequest getReadTableRequestFilterOnAppIdAndResourceTypes(
+            Set<Long> appIds, Set<Integer> medicalResourceTypes) {
+        SqlJoin joinWithDataSource =
+                getJoinWithMedicalDataSourceFilterOnAppIds(appIds, getJoinClauseWithAppInfoTable());
+        SqlJoin joinWithIndices =
+                getJoinWithIndicesTableFilterOnMedicalResourceTypes(medicalResourceTypes);
+        return getReadTableRequestForDataSources(joinWithDataSource.attachJoin(joinWithIndices));
+    }
+
     private static ReadTableRequest getReadTableRequestForDataSources(SqlJoin joinClause) {
         return new ReadTableRequest(MedicalResourceHelper.getMainTableName())
                 .setDistinctClause(true)
@@ -487,6 +504,22 @@ public class MedicalDataSourceHelper {
             List<UUID> ids, long appId) {
         return getReadTableRequest(ids, appId)
                 .setDistinctClause(true)
+                .setColumnNames(
+                        List.of(
+                                AppInfoHelper.PACKAGE_COLUMN_NAME,
+                                DATA_SOURCE_UUID_COLUMN_NAME,
+                                FHIR_BASE_URI_COLUMN_NAME,
+                                DISPLAY_NAME_COLUMN_NAME))
+                .setJoinClause(getJoinClauseWithAppInfoTable());
+    }
+
+    /**
+     * Creates {@link ReadTableRequest} that joins with {@link AppInfoHelper#TABLE_NAME} and filters
+     * for the given {@code appId}.
+     */
+    private static ReadTableRequest getReadRequestForDataSourcesWrittenByCallingApp(long appId) {
+        return new ReadTableRequest(getMainTableName())
+                .setWhereClause(getAppIdsWhereClause(Set.of(appId)))
                 .setColumnNames(
                         List.of(
                                 AppInfoHelper.PACKAGE_COLUMN_NAME,
@@ -520,31 +553,136 @@ public class MedicalDataSourceHelper {
     }
 
     /**
-     * Returns the {@link MedicalDataSource}s stored in the HealthConnect database, optionally
-     * restricted by package name.
+     * Returns the {@link MedicalDataSource}s stored in the HealthConnect database filtering on the
+     * given {@code packageNames} if not empty and based on the {@code callingPackageName}'s
+     * permissions.
      *
      * <p>If {@code packageNames} is empty, returns all dataSources, otherwise returns only
      * dataSources belonging to the given apps.
+     *
+     * @throws IllegalArgumentException if {@code callingPackageName} has not written any data
+     *     sources so the appId does not exist in the {@link AppInfoHelper#TABLE_NAME} and the
+     *     {@code callingPackageName} has no read permissions either. Or if the app can only read
+     *     self data and the app is filtering using {@code packageNames} but the app itself is not
+     *     included in it.
      */
+    // TODO(b/359892459): Add CTS tests once it is properly implemented.
     public List<MedicalDataSource> getMedicalDataSourcesByPackageWithPermissionChecks(
             Set<String> packageNames,
-            Set<Integer> ignoredGrantedReadMedicalResourceTypes,
-            String ignoredCallingPackageName,
-            boolean ignoredHasWritePermission,
-            boolean ignoredIsCalledFromBgWithoutBgRead)
+            Set<Integer> grantedReadMedicalResourceTypes,
+            String callingPackageName,
+            boolean hasWritePermission,
+            boolean isCalledFromBgWithoutBgRead)
             throws SQLiteException {
-        // TODO(b/361540290): Use ignored fields for permission checks in read table request.
-        // TODO(b/359892459): Add CTS tests once it is properly implemented.
-        ReadTableRequest readTableRequest = getReadTableRequestJoinWithAppInfo();
-        if (!packageNames.isEmpty()) {
-            List<Long> appInfoIds = mAppInfoHelper.getAppInfoIds(packageNames.stream().toList());
-            readTableRequest.setWhereClause(
-                    new WhereClauses(AND)
-                            .addWhereInLongsClause(APP_INFO_ID_COLUMN_NAME, appInfoIds));
+        long callingAppId = mAppInfoHelper.getAppInfoId(callingPackageName);
+        // This is an optimization to not hit the db, when we know that the app has not
+        // created any dataSources hence appId does not exist (so no self data to read)
+        // and has no read permission, so won't be able to read dataSources written by
+        // other apps either.
+        if (callingAppId == DEFAULT_LONG && grantedReadMedicalResourceTypes.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "app has not written any data and does not have any read permission");
         }
+
+        List<Long> appIds = mAppInfoHelper.getAppInfoIds(packageNames.stream().toList());
+
+        // App is in bg without bg read permission so the app can only read dataSources written by
+        // itself, but if the request is filtering on a set of packageNames (packageNames not empty)
+        // and the app itself is not in the packageNames, there is nothing to be read.
+        boolean intendsToReadOnlyOtherAppsData =
+                !packageNames.isEmpty() && !packageNames.contains(callingPackageName);
+        if (isCalledFromBgWithoutBgRead && intendsToReadOnlyOtherAppsData) {
+            throw new IllegalArgumentException(
+                    "app doesn't have permission to read based on the given packages");
+        }
+
+        // Same with if app in foreground or app in bg with bg read perm, app has write permission
+        // but no read permission, app can only read dataSource it has written itself.
+        // However, if the request is filtering on a set of packageNames (packageNames not empty)
+        // and the app itself is not in the packageNames, there is nothing to be read.
+        boolean canReadSelfDataOnly =
+                !isCalledFromBgWithoutBgRead
+                        && hasWritePermission
+                        && grantedReadMedicalResourceTypes.isEmpty();
+        if (canReadSelfDataOnly && intendsToReadOnlyOtherAppsData) {
+            throw new IllegalArgumentException(
+                    "app doesn't have permission to read based on the given packages");
+        }
+
+        ReadTableRequest readTableRequest =
+                getReadRequestByPackagesWithPermissionChecks(
+                        new HashSet<>(appIds),
+                        grantedReadMedicalResourceTypes,
+                        callingAppId,
+                        hasWritePermission,
+                        isCalledFromBgWithoutBgRead);
+
         try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
             return getMedicalDataSources(cursor);
         }
+    }
+
+    private static ReadTableRequest getReadRequestByPackagesWithPermissionChecks(
+            Set<Long> appIds,
+            Set<Integer> grantedReadMedicalResourceTypes,
+            long callingAppId,
+            boolean hasWritePermission,
+            boolean isCalledFromBgWithoutBgRead) {
+        // Reading all dataSources written by the calling app.
+        ReadTableRequest readAllDataSourcesWrittenByCallingPackage =
+                getReadRequestForDataSourcesWrittenByCallingApp(callingAppId);
+
+        // App is calling the API from background without background read permission.
+        if (isCalledFromBgWithoutBgRead) {
+            // App has writePermission.
+            // App can read all dataSources they wrote themselves.
+            if (hasWritePermission) {
+                return readAllDataSourcesWrittenByCallingPackage;
+            }
+            // App does not have writePermission.
+            // App has normal read permission for some medicalResourceTypes.
+            // App can read the dataSources that belong to those medicalResourceTypes
+            // and were written by the app itself.
+            return getReadTableRequestFilterOnAppIdAndResourceTypes(
+                    Set.of(callingAppId), grantedReadMedicalResourceTypes);
+        }
+
+        // The request to read out all dataSources belonging to the medicalResourceTypes of
+        // the grantedReadMedicalResourceTypes and written by the given packageNames.
+        ReadTableRequest readDataSourcesOfTheGrantedMedicalResourceTypes =
+                getReadTableRequestFilterOnAppIdAndResourceTypes(
+                        appIds, grantedReadMedicalResourceTypes);
+
+        // App is in background with backgroundReadPermission or in foreground.
+        // App has writePermission.
+        if (hasWritePermission) {
+            // App does not have any read permissions for any medicalResourceTypes.
+            // App can read all dataSources they wrote themselves.
+            if (grantedReadMedicalResourceTypes.isEmpty()) {
+                return readAllDataSourcesWrittenByCallingPackage;
+            }
+            // If our set of appIds is not empty, means the request is filtering based on
+            // packageNames. So we don't include self data, if request is filtering based on
+            // packageNames but the callingAppId is not in the set of the given packageNames's
+            // appIds.
+            if (!appIds.isEmpty() && !appIds.contains(callingAppId)) {
+                return readDataSourcesOfTheGrantedMedicalResourceTypes;
+            }
+            // App has some read permissions for medicalResourceTypes.
+            // App can read all dataSources they wrote themselves and the dataSources belonging to
+            // the medicalResourceTypes they have read permission for.
+            // UNION ALL allows for duplicate values, but we want the rows to be distinct.
+            // Hence why we use normal UNION.
+            return readDataSourcesOfTheGrantedMedicalResourceTypes
+                    .setUnionReadRequests(List.of(readAllDataSourcesWrittenByCallingPackage))
+                    .setUnionType(UNION);
+        }
+        // App is in background with background read permission or in foreground.
+        // App has some read permissions for medicalResourceTypes.
+        // App does not have write permission.
+        // App can read all dataSources belonging to the granted medicalResourceType read
+        // permissions.
+        return readDataSourcesOfTheGrantedMedicalResourceTypes;
     }
 
     /**

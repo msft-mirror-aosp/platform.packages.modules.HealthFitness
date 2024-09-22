@@ -28,7 +28,6 @@ import static com.android.server.healthconnect.migration.MigrationConstants.MIGR
 import static com.android.server.healthconnect.migration.MigrationConstants.MIGRATION_PAUSE_JOB_NAME;
 import static com.android.server.healthconnect.migration.MigrationConstants.MIGRATION_STATE_CHANGE_NAMESPACE;
 
-import android.annotation.NonNull;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -179,7 +178,7 @@ public final class MigrationStateChangeJob {
         }
     }
 
-    public static boolean existsAStateChangeJob(@NonNull Context context, @NonNull String jobName) {
+    public static boolean existsAStateChangeJob(Context context, String jobName) {
         JobScheduler jobScheduler =
                 Objects.requireNonNull(context.getSystemService(JobScheduler.class))
                         .forNamespace(MIGRATION_STATE_CHANGE_NAMESPACE);
@@ -192,7 +191,7 @@ public final class MigrationStateChangeJob {
         return false;
     }
 
-    public static void cancelAllJobs(@NonNull Context context) {
+    public static void cancelAllJobs(Context context) {
         JobScheduler jobScheduler =
                 Objects.requireNonNull(context.getSystemService(JobScheduler.class))
                         .forNamespace(MIGRATION_STATE_CHANGE_NAMESPACE);

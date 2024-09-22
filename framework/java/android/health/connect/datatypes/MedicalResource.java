@@ -64,15 +64,30 @@ public final class MedicalResource implements Parcelable {
     /** Medical resource type labelling data as results (Laboratory or pathology). */
     public static final int MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS = 6;
 
+    /**
+     * Medical resource type labelling data as problems (clinical condition, problem, diagnosis
+     * etc).
+     */
+    public static final int MEDICAL_RESOURCE_TYPE_PROBLEMS = 7;
+
+    /** Medical resource type labelling data as procedures (actions taken on or for a patient). */
+    public static final int MEDICAL_RESOURCE_TYPE_PROCEDURES = 8;
+
+    /** Medical resource type labelling data as medication related. */
+    public static final int MEDICAL_RESOURCE_TYPE_MEDICATIONS = 9;
+
     /** @hide */
     @IntDef({
         MEDICAL_RESOURCE_TYPE_UNKNOWN,
-        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
         MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+        MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
+        MEDICAL_RESOURCE_TYPE_MEDICATIONS,
         MEDICAL_RESOURCE_TYPE_PREGNANCY,
+        MEDICAL_RESOURCE_TYPE_PROBLEMS,
+        MEDICAL_RESOURCE_TYPE_PROCEDURES,
         MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
         MEDICAL_RESOURCE_TYPE_VITAL_SIGNS,
-        MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface MedicalResourceType {}
@@ -114,6 +129,7 @@ public final class MedicalResource implements Parcelable {
     private MedicalResource(@NonNull Parcel in) {
         requireNonNull(in);
         mType = in.readInt();
+        validateMedicalResourceType(mType);
         mDataSourceId = requireNonNull(in.readString());
         mFhirVersion =
                 requireNonNull(
@@ -196,12 +212,15 @@ public final class MedicalResource implements Parcelable {
     public static final Set<Integer> VALID_TYPES =
             Set.of(
                     MEDICAL_RESOURCE_TYPE_UNKNOWN,
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                     MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                    MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
+                    MEDICAL_RESOURCE_TYPE_MEDICATIONS,
                     MEDICAL_RESOURCE_TYPE_PREGNANCY,
+                    MEDICAL_RESOURCE_TYPE_PROBLEMS,
+                    MEDICAL_RESOURCE_TYPE_PROCEDURES,
                     MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
-                    MEDICAL_RESOURCE_TYPE_VITAL_SIGNS,
-                    MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS);
+                    MEDICAL_RESOURCE_TYPE_VITAL_SIGNS);
 
     /**
      * Validates the provided {@code medicalResourceType} is in the {@link

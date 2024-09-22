@@ -18,6 +18,7 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_DELETE;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BOOLEAN_FALSE_VALUE;
@@ -31,6 +32,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorIntegerList;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -40,6 +42,7 @@ import android.health.connect.accesslog.AccessLog.OperationType;
 import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.util.Pair;
+import android.util.Slog;
 
 import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.internal.annotations.VisibleForTesting;
@@ -50,6 +53,7 @@ import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.OrderByClause;
+import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -70,6 +74,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
     private static final String APP_ID_COLUMN_NAME = "app_id";
     private static final String ACCESS_TIME_COLUMN_NAME = "access_time";
     private static final String OPERATION_TYPE_COLUMN_NAME = "operation_type";
+    private static final String TAG = "AccessLogHelper";
 
     @VisibleForTesting
     static final String MEDICAL_RESOURCE_TYPE_COLUMN_NAME = "medical_resource_type";
@@ -80,6 +85,17 @@ public final class AccessLogsHelper extends DatabaseHelper {
     private static final int NUM_COLS = 5;
     private static final int DEFAULT_ACCESS_LOG_TIME_PERIOD_IN_DAYS = 7;
 
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
+    private static volatile AccessLogsHelper sAccessLogsHelper;
+
+    private final TransactionManager mTransactionManager;
+    private final AppInfoHelper mAppInfoHelper;
+
+    private AccessLogsHelper(TransactionManager transactionManager, AppInfoHelper appInfoHelper) {
+        mTransactionManager = transactionManager;
+        mAppInfoHelper = appInfoHelper;
+    }
+
     public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
@@ -87,16 +103,19 @@ public final class AccessLogsHelper extends DatabaseHelper {
     /**
      * @return AccessLog list
      */
-    public static List<AccessLog> queryAccessLogs() {
+    public List<AccessLog> queryAccessLogs() {
         final ReadTableRequest readTableRequest = new ReadTableRequest(TABLE_NAME);
 
         List<AccessLog> accessLogsList = new ArrayList<>();
-        final AppInfoHelper appInfoHelper = AppInfoHelper.getInstance();
         final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
         try (Cursor cursor = transactionManager.read(readTableRequest)) {
             while (cursor.moveToNext()) {
                 String packageName =
-                        appInfoHelper.getPackageName(getCursorLong(cursor, APP_ID_COLUMN_NAME));
+                        mAppInfoHelper.getPackageName(getCursorLong(cursor, APP_ID_COLUMN_NAME));
+                if (packageName == null) {
+                    Slog.w(TAG, "encounter null package name while query access logs");
+                    continue;
+                }
                 @RecordTypeIdentifier.RecordType
                 List<Integer> recordTypes =
                         getCursorIntegerList(cursor, RECORD_TYPE_COLUMN_NAME, DELIMITER);
@@ -135,18 +154,23 @@ public final class AccessLogsHelper extends DatabaseHelper {
      * Returns the timestamp of the latest access log and {@link Long#MIN_VALUE} if there is no
      * access log.
      */
-    public static long getLatestAccessLogTimeStamp() {
-
+    public long getLatestUpsertOrReadOperationAccessLogTimeStamp() {
         final ReadTableRequest readTableRequest =
                 new ReadTableRequest(TABLE_NAME)
+                        .setWhereClause(
+                                new WhereClauses(AND)
+                                        .addWhereInIntsClause(
+                                                OPERATION_TYPE_COLUMN_NAME,
+                                                List.of(
+                                                        OPERATION_TYPE_READ,
+                                                        OPERATION_TYPE_UPSERT)))
                         .setOrderBy(
                                 new OrderByClause()
                                         .addOrderByClause(ACCESS_TIME_COLUMN_NAME, false))
                         .setLimit(1);
 
         long mostRecentAccessTime = Long.MIN_VALUE;
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        try (Cursor cursor = transactionManager.read(readTableRequest)) {
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
             while (cursor.moveToNext()) {
                 long accessTime = getCursorLong(cursor, ACCESS_TIME_COLUMN_NAME);
                 mostRecentAccessTime = Math.max(mostRecentAccessTime, accessTime);
@@ -158,21 +182,24 @@ public final class AccessLogsHelper extends DatabaseHelper {
     /**
      * Adds an entry into the {@link AccessLogsHelper#TABLE_NAME} for every insert or read operation
      * request for record datatypes.
+     *
+     * @deprecated Use {@link #recordReadAccessLog} instead
      */
-    public static void addAccessLog(
+    @Deprecated
+    public void addAccessLog(
             String packageName,
             @RecordTypeIdentifier.RecordType List<Integer> recordTypeList,
             @OperationType.OperationTypes int operationType) {
         UpsertTableRequest request =
                 getUpsertTableRequest(packageName, recordTypeList, operationType);
-        TransactionManager.getInitialisedInstance().insert(request);
+        mTransactionManager.insert(request);
     }
 
     /**
      * Adds an entry into the {@link AccessLogsHelper#TABLE_NAME} for every upsert/read/delete
      * operation request for medicalResourceTypes.
      */
-    public static void addAccessLog(
+    public void addAccessLog(
             SQLiteDatabase db,
             String packageName,
             @MedicalResourceType Set<Integer> medicalResourceTypes,
@@ -184,10 +211,10 @@ public final class AccessLogsHelper extends DatabaseHelper {
                         medicalResourceTypes,
                         operationType,
                         accessedMedicalDataSource);
-        TransactionManager.getInitialisedInstance().insert(db, request);
+        mTransactionManager.insert(db, request);
     }
 
-    private static UpsertTableRequest getUpsertTableRequestForPhr(
+    private UpsertTableRequest getUpsertTableRequestForPhr(
             String packageName,
             Set<Integer> medicalResourceTypes,
             @OperationType.OperationTypes int operationType,
@@ -204,7 +231,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
         return new UpsertTableRequest(TABLE_NAME, contentValues);
     }
 
-    public static UpsertTableRequest getUpsertTableRequest(
+    private UpsertTableRequest getUpsertTableRequest(
             String packageName,
             List<Integer> recordTypeList,
             @OperationType.OperationTypes int operationType) {
@@ -214,18 +241,24 @@ public final class AccessLogsHelper extends DatabaseHelper {
     }
 
     /** Adds an entry of read type into the {@link AccessLogsHelper#TABLE_NAME} */
-    public static void recordReadAccessLog(
+    public void recordReadAccessLog(
             SQLiteDatabase db, String packageName, Set<Integer> recordTypeIds) {
         recordAccessLog(db, packageName, recordTypeIds, OPERATION_TYPE_READ);
     }
 
+    /** Adds an entry of upsert type into the {@link AccessLogsHelper#TABLE_NAME} */
+    public void recordUpsertAccessLog(
+            SQLiteDatabase db, String packageName, Set<Integer> recordTypeIds) {
+        recordAccessLog(db, packageName, recordTypeIds, OPERATION_TYPE_UPSERT);
+    }
+
     /** Adds an entry of delete type into the {@link AccessLogsHelper#TABLE_NAME} */
-    public static void recordDeleteAccessLog(
+    public void recordDeleteAccessLog(
             SQLiteDatabase db, String packageName, Set<Integer> recordTypeIds) {
         recordAccessLog(db, packageName, recordTypeIds, OPERATION_TYPE_DELETE);
     }
 
-    private static void recordAccessLog(
+    private void recordAccessLog(
             SQLiteDatabase db,
             String packageName,
             Set<Integer> recordTypeIds,
@@ -233,16 +266,15 @@ public final class AccessLogsHelper extends DatabaseHelper {
         ContentValues contentValues =
                 populateCommonColumns(packageName, recordTypeIds.stream().toList(), operationType);
         UpsertTableRequest request = new UpsertTableRequest(TABLE_NAME, contentValues);
-        TransactionManager.getInitialisedInstance().insertRecord(db, request);
+        mTransactionManager.insertRecord(db, request);
     }
 
-    private static ContentValues populateCommonColumns(
+    private ContentValues populateCommonColumns(
             String packageName,
             List<Integer> recordTypeList,
             @OperationType.OperationTypes int operationType) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(
-                APP_ID_COLUMN_NAME, AppInfoHelper.getInstance().getAppInfoId(packageName));
+        contentValues.put(APP_ID_COLUMN_NAME, mAppInfoHelper.getAppInfoId(packageName));
         contentValues.put(ACCESS_TIME_COLUMN_NAME, Instant.now().toEpochMilli());
         contentValues.put(OPERATION_TYPE_COLUMN_NAME, operationType);
         contentValues.put(
@@ -301,5 +333,25 @@ public final class AccessLogsHelper extends DatabaseHelper {
     @Override
     protected String getMainTableName() {
         return TABLE_NAME;
+    }
+
+    public static AccessLogsHelper getInstance() {
+        return getInstance(
+                TransactionManager.getInitialisedInstance(), AppInfoHelper.getInstance());
+    }
+
+    /** Returns an instance of AccessLogsHelper initialised using the given dependencies. */
+    public static synchronized AccessLogsHelper getInstance(
+            TransactionManager transactionManager, AppInfoHelper appInfoHelper) {
+        if (sAccessLogsHelper == null) {
+            sAccessLogsHelper = new AccessLogsHelper(transactionManager, appInfoHelper);
+        }
+        return sAccessLogsHelper;
+    }
+
+    /** Used in testing to clear the instance to clear and re-reference the mocks. */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    public static synchronized void resetInstanceForTest() {
+        sAccessLogsHelper = null;
     }
 }

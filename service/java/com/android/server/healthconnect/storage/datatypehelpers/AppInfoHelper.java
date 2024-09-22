@@ -116,8 +116,8 @@ public final class AppInfoHelper extends DatabaseHelper {
     private final RecordMapper mRecordMapper;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private AppInfoHelper() {
-        mTransactionManager = TransactionManager.getInitialisedInstance();
+    private AppInfoHelper(TransactionManager transactionManager) {
+        mTransactionManager = transactionManager;
         mRecordMapper = RecordMapper.getInstance();
     }
 
@@ -169,19 +169,6 @@ public final class AppInfoHelper extends DatabaseHelper {
 
     /**
      * Inserts or replaces (based on the passed param onlyUpdate) the application info of the
-     * specified {@code packageName} with the specified {@code name}, only if the corresponding
-     * application is not currently installed.
-     *
-     * <p>{@code icon} is retrieved from the package
-     */
-    public void addOrUpdateAppInfoIfNotInstalled(
-            Context context, String packageName, @Nullable String name, boolean onlyUpdate) {
-        byte[] icon = getIconFromPackageName(context, packageName);
-        addOrUpdateAppInfoIfNotInstalled(context, packageName, name, icon, onlyUpdate);
-    }
-
-    /**
-     * Inserts or replaces (based on the passed param onlyUpdate) the application info of the
      * specified {@code packageName} with the specified {@code name} and {@code icon}, only if the
      * corresponding application is not currently installed.
      *
@@ -192,9 +179,11 @@ public final class AppInfoHelper extends DatabaseHelper {
             Context context,
             String packageName,
             @Nullable String name,
-            @Nullable byte[] icon,
+            @Nullable byte[] maybeIcon,
             boolean onlyUpdate) {
         if (!isAppInstalled(context, packageName)) {
+            byte[] icon =
+                    maybeIcon == null ? getIconFromPackageName(context, packageName) : maybeIcon;
             // using pre-existing value of recordTypesUsed.
             @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
             var recordTypesUsed =
@@ -209,6 +198,26 @@ public final class AppInfoHelper extends DatabaseHelper {
             } else {
                 insertIfNotPresent(packageName, appInfoInternal);
             }
+        }
+    }
+
+    /**
+     * Inserts the application info of the specified {@code packageName} with the specified {@code
+     * name} and {@code icon}, only if no AppInfo entry already exists.
+     */
+    public void addOrUpdateAppInfoIfNoAppInfoEntryExists(
+            Context context, String packageName, @Nullable String name) {
+        if (!containsAppInfo(packageName)) {
+            byte[] icon = getIconFromPackageName(context, packageName);
+            @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+            var recordTypesUsed =
+                    containsAppInfo(packageName)
+                            ? mAppInfoMap.get(packageName).getRecordTypesUsed()
+                            : null;
+            AppInfoInternal appInfoInternal =
+                    new AppInfoInternal(
+                            DEFAULT_LONG, packageName, name, decodeBitmap(icon), recordTypesUsed);
+            insertIfNotPresent(packageName, appInfoInternal);
         }
     }
 
@@ -237,6 +246,10 @@ public final class AppInfoHelper extends DatabaseHelper {
         return appInfo.getId();
     }
 
+    /**
+     * @param packageName Name of package being checked.
+     * @return Boolean stating whether a record for the package being queried exists already.
+     */
     private boolean containsAppInfo(String packageName) {
         return getAppInfoMap().containsKey(packageName);
     }
@@ -668,7 +681,8 @@ public final class AppInfoHelper extends DatabaseHelper {
         return new AppInfoInternal(DEFAULT_LONG, packageName, appName, bitmap, null);
     }
 
-    private @Nullable byte[] getIconFromPackageName(Context context, String packageName) {
+    @Nullable
+    private byte[] getIconFromPackageName(Context context, String packageName) {
         PackageManager packageManager = context.getPackageManager();
         try {
             Drawable drawable = packageManager.getApplicationIcon(packageName);
@@ -764,9 +778,14 @@ public final class AppInfoHelper extends DatabaseHelper {
         return columnInfo;
     }
 
-    public static synchronized AppInfoHelper getInstance() {
+    public static AppInfoHelper getInstance() {
+        return getInstance(TransactionManager.getInitialisedInstance());
+    }
+
+    /** Returns an instance of AppInfoHelper by passing in the dependency. */
+    public static synchronized AppInfoHelper getInstance(TransactionManager transactionManager) {
         if (sAppInfoHelper == null) {
-            sAppInfoHelper = new AppInfoHelper();
+            sAppInfoHelper = new AppInfoHelper(transactionManager);
         }
 
         return sAppInfoHelper;
@@ -817,7 +836,7 @@ public final class AppInfoHelper extends DatabaseHelper {
     /** Used in testing to clear the instance to clear and re-reference the mocks. */
     @VisibleForTesting
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public static synchronized void clearInstanceForTest() {
+    public static synchronized void resetInstanceForTest() {
         sAppInfoHelper = null;
     }
 }

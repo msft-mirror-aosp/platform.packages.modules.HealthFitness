@@ -79,6 +79,7 @@ public class RecordHelperTest {
 
     private TransactionManager mTransactionManager;
     private DeviceInfoHelper mDeviceInfoHelper;
+    private AppInfoHelper mAppInfoHelper;
 
     @Before
     public void setup() throws Exception {
@@ -89,7 +90,10 @@ public class RecordHelperTest {
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
 
         DeviceInfoHelper.resetInstanceForTest();
+        AppInfoHelper.resetInstanceForTest();
+        AccessLogsHelper.resetInstanceForTest();
         mDeviceInfoHelper = DeviceInfoHelper.getInstance(mTransactionManager);
+        mAppInfoHelper = AppInfoHelper.getInstance(mTransactionManager);
     }
 
     @Test
@@ -101,7 +105,8 @@ public class RecordHelperTest {
                         .get(0);
         ReadTableRequest request = new ReadTableRequest(STEPS_TABLE_NAME);
         try (Cursor cursor = mTransactionManager.read(request)) {
-            List<RecordInternal<?>> records = helper.getInternalRecords(cursor, mDeviceInfoHelper);
+            List<RecordInternal<?>> records =
+                    helper.getInternalRecords(cursor, mDeviceInfoHelper, mAppInfoHelper);
             assertThat(records).hasSize(1);
 
             StepsRecordInternal record = (StepsRecordInternal) records.get(0);
@@ -122,7 +127,8 @@ public class RecordHelperTest {
         ReadTableRequest request = new ReadTableRequest(STEPS_TABLE_NAME);
         try (Cursor cursor = mTransactionManager.read(request)) {
             assertThat(cursor.getCount()).isEqualTo(1);
-            List<RecordInternal<?>> records = helper.getInternalRecords(cursor, mDeviceInfoHelper);
+            List<RecordInternal<?>> records =
+                    helper.getInternalRecords(cursor, mDeviceInfoHelper, mAppInfoHelper);
             assertThat(records).hasSize(1);
             assertThat(records.get(0).getUuid()).isEqualTo(UUID.fromString(uid));
         }
@@ -143,7 +149,9 @@ public class RecordHelperTest {
             Throwable thrown =
                     assertThrows(
                             IllegalArgumentException.class,
-                            () -> helper.getInternalRecords(cursor, mDeviceInfoHelper));
+                            () ->
+                                    helper.getInternalRecords(
+                                            cursor, mDeviceInfoHelper, mAppInfoHelper));
             assertThat(thrown.getMessage()).contains("Too many records in the cursor.");
         }
     }
@@ -183,7 +191,8 @@ public class RecordHelperTest {
                             mDeviceInfoHelper,
                             cursor,
                             pageSize,
-                            PageTokenWrapper.ofAscending(isAscending));
+                            PageTokenWrapper.ofAscending(isAscending),
+                            mAppInfoHelper);
             assertThat(page1.first).hasSize(pageSize);
             assertThat(page1.first.get(0).getClientRecordId()).isEqualTo("client.id2");
             assertThat(page1.second).isEqualTo(expectedPageToken);
@@ -201,7 +210,7 @@ public class RecordHelperTest {
         try (Cursor cursor = mTransactionManager.read(request2)) {
             Pair<List<RecordInternal<?>>, PageTokenWrapper> page2 =
                     helper.getNextInternalRecordsPageAndToken(
-                            mDeviceInfoHelper, cursor, pageSize, expectedPageToken);
+                            mDeviceInfoHelper, cursor, pageSize, expectedPageToken, mAppInfoHelper);
             assertThat(page2.first).hasSize(pageSize);
             assertThat(page2.first.get(0).getClientRecordId()).isEqualTo("client.id1");
             assertThat(page2.second).isEqualTo(EMPTY_PAGE_TOKEN);
@@ -271,7 +280,8 @@ public class RecordHelperTest {
                             mDeviceInfoHelper,
                             cursor,
                             pageSize,
-                            PageTokenWrapper.ofAscending(isAscending));
+                            PageTokenWrapper.ofAscending(isAscending),
+                            mAppInfoHelper);
             assertThat(page1.first).hasSize(3);
             assertThat(page1.first.get(0).getClientRecordId()).isEqualTo("id1");
             assertThat(page1.first.get(1).getClientRecordId()).isEqualTo("id2");
@@ -290,7 +300,7 @@ public class RecordHelperTest {
         try (Cursor cursor = mTransactionManager.read(request2)) {
             Pair<List<RecordInternal<?>>, PageTokenWrapper> page2 =
                     helper.getNextInternalRecordsPageAndToken(
-                            mDeviceInfoHelper, cursor, pageSize, expectedPageToken);
+                            mDeviceInfoHelper, cursor, pageSize, expectedPageToken, mAppInfoHelper);
             assertThat(page2.first).hasSize(pageSize);
             assertThat(page2.first.get(0).getClientRecordId()).isEqualTo("id4");
             assertThat(page2.first.get(1).getClientRecordId()).isEqualTo("id5");
@@ -311,7 +321,11 @@ public class RecordHelperTest {
         try (Cursor cursor = mTransactionManager.read(request)) {
             Pair<List<RecordInternal<?>>, PageTokenWrapper> result =
                     helper.getNextInternalRecordsPageAndToken(
-                            mDeviceInfoHelper, cursor, /* requestSize= */ 2, incorrectToken);
+                            mDeviceInfoHelper,
+                            cursor,
+                            /* requestSize= */ 2,
+                            incorrectToken,
+                            mAppInfoHelper);
             // skip the first record, but preserve the second because start time is different
             assertThat(result.first).hasSize(1);
             assertThat(result.first.get(0).getClientRecordId()).isEqualTo("id2");
@@ -319,7 +333,7 @@ public class RecordHelperTest {
         }
     }
 
-    private static ReadTableRequest getReadTableRequest(
+    private ReadTableRequest getReadTableRequest(
             RecordHelper<?> helper, ReadRecordsRequestParcel request) {
         return helper.getReadTableRequest(
                 request,
@@ -327,6 +341,7 @@ public class RecordHelperTest {
                 /* enforceSelfRead= */ false,
                 /* startDateAccess= */ 0,
                 /* grantedExtraReadPermissions= */ Set.of(),
-                /* isInForeground= */ true);
+                /* isInForeground= */ true,
+                mAppInfoHelper);
     }
 }

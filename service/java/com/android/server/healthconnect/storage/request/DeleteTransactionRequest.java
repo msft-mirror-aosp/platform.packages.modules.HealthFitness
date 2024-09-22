@@ -54,11 +54,14 @@ public final class DeleteTransactionRequest {
     private boolean mHasHealthDataManagementPermission;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    public DeleteTransactionRequest(String packageName, DeleteUsingFiltersRequestParcel request) {
+    public DeleteTransactionRequest(
+            String packageName,
+            DeleteUsingFiltersRequestParcel request,
+            AppInfoHelper appInfoHelper) {
         Objects.requireNonNull(packageName);
         mPackageName = packageName;
         mDeleteTableRequests = new ArrayList<>(request.getRecordTypeFilters().size());
-        mRequestingPackageNameId = AppInfoHelper.getInstance().getAppInfoId(packageName);
+        mRequestingPackageNameId = appInfoHelper.getAppInfoId(packageName);
         if (request.usesIdFilters()) {
             List<RecordIdFilter> recordIds =
                     request.getRecordIdFiltersParcel().getRecordIdFilters();
@@ -109,7 +112,8 @@ public final class DeleteTransactionRequest {
                                     request.getPackageNameFilters(),
                                     request.getStartTime(),
                                     request.getEndTime(),
-                                    request.isLocalTimeFilter()));
+                                    request.isLocalTimeFilter(),
+                                    appInfoHelper));
                     mRecordTypeIds.add(recordHelper.getRecordIdentifier());
                 });
     }

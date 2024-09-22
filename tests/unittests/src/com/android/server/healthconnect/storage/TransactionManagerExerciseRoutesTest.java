@@ -39,6 +39,10 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -81,6 +85,8 @@ public class TransactionManagerExerciseRoutesTest {
 
     private TransactionTestUtils mTransactionTestUtils;
     private TransactionManager mTransactionManager;
+    private AppInfoHelper mAppInfoHelper;
+    private AccessLogsHelper mAccessLogsHelper;
     private DeviceInfoHelper mDeviceInfoHelper;
 
     @Before
@@ -97,7 +103,15 @@ public class TransactionManagerExerciseRoutesTest {
         HealthConnectDeviceConfigManager.initializeInstance(context);
 
         DeviceInfoHelper.resetInstanceForTest();
-        mDeviceInfoHelper = DeviceInfoHelper.getInstance(mTransactionManager);
+        AppInfoHelper.resetInstanceForTest();
+        AccessLogsHelper.resetInstanceForTest();
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(context)
+                        .setTransactionManager(mTransactionManager)
+                        .build();
+        mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
+        mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
+        mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
     }
 
     @Test
@@ -114,15 +128,18 @@ public class TransactionManagerExerciseRoutesTest {
         List<UUID> allUuids = Stream.of(fooUuid, barUuid, ownUuid).map(UUID::fromString).toList();
         ReadTransactionRequest request =
                 new ReadTransactionRequest(
+                        mAppInfoHelper,
                         TEST_PACKAGE_NAME,
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION, allUuids),
                         /* startDateAccessMillis= */ 0,
                         WRITE_EXERCISE_ROUTE_EXTRA_PERM,
                         /* isInForeground= */ true,
-                        mDeviceInfoHelper);
+                        /* isReadingSelfData= */ false);
 
-        List<RecordInternal<?>> returnedRecords = mTransactionManager.readRecordsByIds(request);
+        List<RecordInternal<?>> returnedRecords =
+                mTransactionManager.readRecordsByIds(
+                        request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
 
         Map<String, ExerciseSessionRecordInternal> idToSessionMap =
                 returnedRecords.stream()
@@ -147,15 +164,18 @@ public class TransactionManagerExerciseRoutesTest {
                         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, session).get(0));
         ReadTransactionRequest request =
                 new ReadTransactionRequest(
+                        mAppInfoHelper,
                         UNKNOWN_PACKAGE_NAME,
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION, List.of(uuid)),
                         /* startDateAccessMillis= */ 0,
                         WRITE_EXERCISE_ROUTE_EXTRA_PERM,
                         /* isInForeground= */ true,
-                        mDeviceInfoHelper);
+                        /* isReadingSelfData= */ false);
 
-        List<RecordInternal<?>> returnedRecords = mTransactionManager.readRecordsByIds(request);
+        List<RecordInternal<?>> returnedRecords =
+                mTransactionManager.readRecordsByIds(
+                        request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
 
         assertThat(returnedRecords).hasSize(1);
         ExerciseSessionRecordInternal returnedRecord =
@@ -173,15 +193,18 @@ public class TransactionManagerExerciseRoutesTest {
                         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, session).get(0));
         ReadTransactionRequest request =
                 new ReadTransactionRequest(
+                        mAppInfoHelper,
                         null,
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION, List.of(uuid)),
                         /* startDateAccessMillis= */ 0,
                         WRITE_EXERCISE_ROUTE_EXTRA_PERM,
                         /* isInForeground= */ true,
-                        mDeviceInfoHelper);
+                        /* isReadingSelfData= */ false);
 
-        List<RecordInternal<?>> returnedRecords = mTransactionManager.readRecordsByIds(request);
+        List<RecordInternal<?>> returnedRecords =
+                mTransactionManager.readRecordsByIds(
+                        request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
 
         assertThat(returnedRecords).hasSize(1);
         ExerciseSessionRecordInternal returnedRecord =
@@ -199,15 +222,18 @@ public class TransactionManagerExerciseRoutesTest {
                         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, session).get(0));
         ReadTransactionRequest request =
                 new ReadTransactionRequest(
+                        mAppInfoHelper,
                         UNKNOWN_PACKAGE_NAME,
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION, List.of(uuid)),
                         /* startDateAccessMillis= */ 0,
                         Set.of(HealthPermissions.READ_EXERCISE_ROUTE),
                         /* isInForeground= */ true,
-                        mDeviceInfoHelper);
+                        /* isReadingSelfData= */ false);
 
-        List<RecordInternal<?>> returnedRecords = mTransactionManager.readRecordsByIds(request);
+        List<RecordInternal<?>> returnedRecords =
+                mTransactionManager.readRecordsByIds(
+                        request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
 
         assertThat(returnedRecords).hasSize(1);
         ExerciseSessionRecordInternal returnedRecord =
@@ -229,6 +255,7 @@ public class TransactionManagerExerciseRoutesTest {
         String ownUuid = mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, ownSession).get(0);
         ReadTransactionRequest request =
                 new ReadTransactionRequest(
+                        mAppInfoHelper,
                         TEST_PACKAGE_NAME,
                         new ReadRecordsRequestUsingFilters.Builder<>(ExerciseSessionRecord.class)
                                 .setTimeRangeFilter(
@@ -241,11 +268,12 @@ public class TransactionManagerExerciseRoutesTest {
                         /* startDateAccessMillis= */ 0,
                         /* enforceSelfRead= */ false,
                         WRITE_EXERCISE_ROUTE_EXTRA_PERM,
-                        /* isInForeground= */ true,
-                        mDeviceInfoHelper);
+                        /* isInForeground= */ true);
 
         List<RecordInternal<?>> returnedRecords =
-                mTransactionManager.readRecordsAndPageToken(request).first;
+                mTransactionManager.readRecordsAndPageToken(
+                                request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper)
+                        .first;
 
         Map<String, ExerciseSessionRecordInternal> idToSessionMap =
                 returnedRecords.stream()
@@ -269,6 +297,7 @@ public class TransactionManagerExerciseRoutesTest {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, session);
         ReadTransactionRequest request =
                 new ReadTransactionRequest(
+                        mAppInfoHelper,
                         UNKNOWN_PACKAGE_NAME,
                         new ReadRecordsRequestUsingFilters.Builder<>(ExerciseSessionRecord.class)
                                 .setTimeRangeFilter(
@@ -281,11 +310,12 @@ public class TransactionManagerExerciseRoutesTest {
                         /* startDateAccessMillis= */ 0,
                         /* enforceSelfRead= */ false,
                         WRITE_EXERCISE_ROUTE_EXTRA_PERM,
-                        /* isInForeground= */ true,
-                        mDeviceInfoHelper);
+                        /* isInForeground= */ true);
 
         List<RecordInternal<?>> returnedRecords =
-                mTransactionManager.readRecordsAndPageToken(request).first;
+                mTransactionManager.readRecordsAndPageToken(
+                                request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper)
+                        .first;
 
         assertThat(returnedRecords).hasSize(1);
         ExerciseSessionRecordInternal returnedRecord =
@@ -301,6 +331,7 @@ public class TransactionManagerExerciseRoutesTest {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, session);
         ReadTransactionRequest request =
                 new ReadTransactionRequest(
+                        mAppInfoHelper,
                         null,
                         new ReadRecordsRequestUsingFilters.Builder<>(ExerciseSessionRecord.class)
                                 .setTimeRangeFilter(
@@ -313,11 +344,12 @@ public class TransactionManagerExerciseRoutesTest {
                         /* startDateAccessMillis= */ 0,
                         /* enforceSelfRead= */ false,
                         WRITE_EXERCISE_ROUTE_EXTRA_PERM,
-                        /* isInForeground= */ true,
-                        mDeviceInfoHelper);
+                        /* isInForeground= */ true);
 
         List<RecordInternal<?>> returnedRecords =
-                mTransactionManager.readRecordsAndPageToken(request).first;
+                mTransactionManager.readRecordsAndPageToken(
+                                request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper)
+                        .first;
 
         assertThat(returnedRecords).hasSize(1);
         ExerciseSessionRecordInternal returnedRecord =
@@ -333,6 +365,7 @@ public class TransactionManagerExerciseRoutesTest {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, session);
         ReadTransactionRequest request =
                 new ReadTransactionRequest(
+                        mAppInfoHelper,
                         UNKNOWN_PACKAGE_NAME,
                         new ReadRecordsRequestUsingFilters.Builder<>(ExerciseSessionRecord.class)
                                 .setTimeRangeFilter(
@@ -345,11 +378,12 @@ public class TransactionManagerExerciseRoutesTest {
                         /* startDateAccessMillis= */ 0,
                         /* enforceSelfRead= */ false,
                         Set.of(HealthPermissions.READ_EXERCISE_ROUTE),
-                        /* isInForeground= */ true,
-                        mDeviceInfoHelper);
+                        /* isInForeground= */ true);
 
         List<RecordInternal<?>> returnedRecords =
-                mTransactionManager.readRecordsAndPageToken(request).first;
+                mTransactionManager.readRecordsAndPageToken(
+                                request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper)
+                        .first;
 
         assertThat(returnedRecords).hasSize(1);
         ExerciseSessionRecordInternal returnedRecord =

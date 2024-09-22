@@ -18,6 +18,8 @@ package com.android.server.healthconnect.storage;
 
 import static android.health.connect.Constants.DEFAULT_INT;
 
+import static com.android.healthfitness.flags.Flags.exportImportFastFollow;
+
 import android.annotation.Nullable;
 import android.content.ContentProviderClient;
 import android.content.Context;
@@ -52,6 +54,8 @@ public final class ExportImportSettingsStorage {
     private static final String LAST_EXPORT_ERROR_PREFERENCE_KEY = "last_export_error_key";
     private static final String LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY =
             "last_successful_export_uri_key";
+    private static final String NEXT_EXPORT_SEQUENTIAL_NUMBER_PREFERENCE_KEY =
+            "next_export_sequential_number_key";
 
     // Import State
     private static final String IMPORT_ONGOING_PREFERENCE_KEY = "import_ongoing_key";
@@ -87,6 +91,20 @@ public final class ExportImportSettingsStorage {
                     mPreferenceHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY);
             if (lastExportError != null) {
                 mPreferenceHelper.removeKey(LAST_EXPORT_ERROR_PREFERENCE_KEY);
+            }
+            if (exportImportFastFollow()) {
+                String previousExportSequentialNumber =
+                        mPreferenceHelper.getPreference(
+                                NEXT_EXPORT_SEQUENTIAL_NUMBER_PREFERENCE_KEY);
+                if (previousExportSequentialNumber == null) {
+                    mPreferenceHelper.insertOrReplacePreference(
+                            NEXT_EXPORT_SEQUENTIAL_NUMBER_PREFERENCE_KEY, String.valueOf(1));
+                } else {
+                    int nextSequentialNumber = Integer.parseInt(previousExportSequentialNumber) + 1;
+                    mPreferenceHelper.insertOrReplacePreference(
+                            NEXT_EXPORT_SEQUENTIAL_NUMBER_PREFERENCE_KEY,
+                            String.valueOf(nextSequentialNumber));
+                }
             }
         }
 
@@ -155,6 +173,11 @@ public final class ExportImportSettingsStorage {
                 mPreferenceHelper.getPreference(LAST_FAILED_EXPORT_PREFERENCE_KEY);
         String lastExportError = mPreferenceHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY);
         String periodInDays = mPreferenceHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY);
+        String nextExportSequentialNumber =
+                exportImportFastFollow()
+                        ? mPreferenceHelper.getPreference(
+                                NEXT_EXPORT_SEQUENTIAL_NUMBER_PREFERENCE_KEY)
+                        : String.valueOf(0);
 
         String lastExportFileName = null;
         String lastExportAppName = null;
@@ -189,6 +212,10 @@ public final class ExportImportSettingsStorage {
                         lastExportError == null
                                 ? ScheduledExportStatus.DATA_EXPORT_ERROR_NONE
                                 : Integer.parseInt(lastExportError))
+                .setNextExportSequentialNumber(
+                        nextExportSequentialNumber == null
+                                ? 0
+                                : Integer.parseInt(nextExportSequentialNumber))
                 .setPeriodInDays(periodInDays == null ? 0 : Integer.parseInt(periodInDays))
                 .setLastExportFileName(lastExportFileName)
                 .setLastExportAppName(lastExportAppName)

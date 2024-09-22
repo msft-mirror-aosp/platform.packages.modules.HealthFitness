@@ -49,7 +49,5 @@ class AggregationViewBinder : DeletionViewBinder<FormattedAggregation, View> {
         aggregation.text = data.aggregation
         aggregation.contentDescription = data.aggregationA11y
         apps.text = data.contributingApps
-
-        view.visibility = if(isDeletionState) GONE else VISIBLE
     }
 }

@@ -800,6 +800,15 @@ public final class HealthPermissions {
             "android.permission.health.READ_MEDICAL_DATA_LABORATORY_RESULTS";
 
     /**
+     * Allows an application to read the user's medication data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_MEDICATIONS =
+            "android.permission.health.READ_MEDICAL_DATA_MEDICATIONS";
+
+    /**
      * Allows an application to read the user's pregnancy data.
      *
      * <p>Protection level: dangerous.
@@ -807,6 +816,24 @@ public final class HealthPermissions {
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public static final String READ_MEDICAL_DATA_PREGNANCY =
             "android.permission.health.READ_MEDICAL_DATA_PREGNANCY";
+
+    /**
+     * Allows an application to read the user's data about medical problems.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_PROBLEMS =
+            "android.permission.health.READ_MEDICAL_DATA_PROBLEMS";
+
+    /**
+     * Allows an application to read the user's data about medical procedures.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_PROCEDURES =
+            "android.permission.health.READ_MEDICAL_DATA_PROCEDURES";
 
     /**
      * Allows an application to read the user's social history data.
@@ -967,7 +994,10 @@ public final class HealthPermissions {
         permissions.add(READ_MEDICAL_DATA_ALLERGY_INTOLERANCE);
         permissions.add(READ_MEDICAL_DATA_IMMUNIZATION);
         permissions.add(READ_MEDICAL_DATA_LABORATORY_RESULTS);
+        permissions.add(READ_MEDICAL_DATA_MEDICATIONS);
         permissions.add(READ_MEDICAL_DATA_PREGNANCY);
+        permissions.add(READ_MEDICAL_DATA_PROBLEMS);
+        permissions.add(READ_MEDICAL_DATA_PROCEDURES);
         permissions.add(READ_MEDICAL_DATA_SOCIAL_HISTORY);
         permissions.add(READ_MEDICAL_DATA_VITAL_SIGNS);
         return permissions;

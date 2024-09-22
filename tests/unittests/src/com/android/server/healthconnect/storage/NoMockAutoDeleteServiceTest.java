@@ -30,6 +30,7 @@ import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
@@ -75,6 +76,8 @@ public class NoMockAutoDeleteServiceTest {
         mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         DeviceInfoHelper.resetInstanceForTest();
+        AppInfoHelper.resetInstanceForTest();
+
         mHealthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setTransactionManager(mTransactionManager)
@@ -90,7 +93,10 @@ public class NoMockAutoDeleteServiceTest {
         RecordHelper<?> helper = new StepsRecordHelper();
         try (Cursor cursor = mTransactionManager.read(new ReadTableRequest(STEPS_TABLE_NAME))) {
             List<RecordInternal<?>> records =
-                    helper.getInternalRecords(cursor, mHealthConnectInjector.getDeviceInfoHelper());
+                    helper.getInternalRecords(
+                            cursor,
+                            mHealthConnectInjector.getDeviceInfoHelper(),
+                            mHealthConnectInjector.getAppInfoHelper());
             assertThat(records).hasSize(1);
             assertThat(records.get(0).getUuid()).isEqualTo(UUID.fromString(uuid));
         }
@@ -104,11 +110,17 @@ public class NoMockAutoDeleteServiceTest {
         AutoDeleteService.startAutoDelete(
                 testRule.getUserContext(),
                 mHealthConnectInjector.getHealthDataCategoryPriorityHelper(),
-                mHealthConnectInjector.getPreferenceHelper());
+                mHealthConnectInjector.getPreferenceHelper(),
+                mHealthConnectInjector.getAppInfoHelper(),
+                mHealthConnectInjector.getTransactionManager(),
+                mHealthConnectInjector.getAccessLogsHelper());
 
         try (Cursor cursor = mTransactionManager.read(new ReadTableRequest(STEPS_TABLE_NAME))) {
             List<RecordInternal<?>> records =
-                    helper.getInternalRecords(cursor, mHealthConnectInjector.getDeviceInfoHelper());
+                    helper.getInternalRecords(
+                            cursor,
+                            mHealthConnectInjector.getDeviceInfoHelper(),
+                            mHealthConnectInjector.getAppInfoHelper());
             assertThat(records).isEmpty();
         }
 
