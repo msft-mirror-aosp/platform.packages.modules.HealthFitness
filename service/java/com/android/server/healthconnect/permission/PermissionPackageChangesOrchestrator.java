@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.permission;
 
-import android.annotation.NonNull;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -46,19 +45,6 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
     private final HealthConnectPermissionHelper mPermissionHelper;
     private UserHandle mCurrentForegroundUser;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
-
-    public PermissionPackageChangesOrchestrator(
-            HealthPermissionIntentAppsTracker permissionIntentTracker,
-            FirstGrantTimeManager grantTimeManager,
-            HealthConnectPermissionHelper permissionHelper,
-            UserHandle userHandle) {
-        this(
-                permissionIntentTracker,
-                grantTimeManager,
-                permissionHelper,
-                userHandle,
-                HealthDataCategoryPriorityHelper.getInstance());
-    }
 
     public PermissionPackageChangesOrchestrator(
             HealthPermissionIntentAppsTracker permissionIntentTracker,
@@ -153,7 +139,7 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
     }
 
     /** Sets the current foreground user handle. */
-    public void setUserHandle(@NonNull UserHandle userHandle) {
+    public void setUserHandle(UserHandle userHandle) {
         mCurrentForegroundUser = userHandle;
     }
 

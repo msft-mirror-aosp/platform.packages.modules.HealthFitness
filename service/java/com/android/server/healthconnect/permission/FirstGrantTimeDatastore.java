@@ -17,7 +17,6 @@
 package com.android.server.healthconnect.permission;
 
 import android.annotation.IntDef;
-import android.annotation.NonNull;
 import android.os.UserHandle;
 
 import java.io.File;
@@ -46,32 +45,27 @@ public interface FirstGrantTimeDatastore {
      *
      * @hide
      */
-    @NonNull
-    UserGrantTimeState readForUser(@NonNull UserHandle user, @DataType int dataType);
+    UserGrantTimeState readForUser(UserHandle user, @DataType int dataType);
 
     /**
      * Write {@link UserGrantTimeState for given user}.
      *
      * @hide
      */
-    void writeForUser(
-            @NonNull UserGrantTimeState grantTimesState,
-            @NonNull UserHandle user,
-            @DataType int dataType);
+    void writeForUser(UserGrantTimeState grantTimesState, UserHandle user, @DataType int dataType);
 
     /**
      * Returns the name of the files used by the store for the given user.
      *
      * @hide
      */
-    File getFile(@NonNull UserHandle user, @DataType int dataType);
+    File getFile(UserHandle user, @DataType int dataType);
 
     /**
      * Create instance of the datastore class.
      *
      * @hide
      */
-    @NonNull
     static FirstGrantTimeDatastore createInstance() {
         return new FirstGrantTimeDatastoreXmlPersistence();
     }

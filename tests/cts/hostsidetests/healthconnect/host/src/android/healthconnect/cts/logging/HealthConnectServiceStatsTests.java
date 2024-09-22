@@ -366,11 +366,17 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
 
     private StatsLog.EventMetricData getEventForApiMethod(
             List<StatsLog.EventMetricData> data, ApiMethod apiMethod) {
+        boolean isFirstCall = true;
         for (StatsLog.EventMetricData datum : data) {
             HealthConnectApiCalled atom =
                     datum.getAtom().getExtension(ApiExtensionAtoms.healthConnectApiCalled);
 
             if (atom.getApiMethod().equals(apiMethod)) {
+                if (ApiMethod.INSERT_DATA.equals(apiMethod) && isFirstCall) {
+                    // skip the insert api call in setup
+                    isFirstCall = false;
+                    continue;
+                }
                 return datum;
             }
         }

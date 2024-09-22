@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.permission;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.util.ArrayMap;
 
@@ -35,10 +34,10 @@ public class UserGrantTimeState {
     public static final int NO_VERSION = -1;
 
     /** The first grant times by packages. */
-    @NonNull private final Map<String, Instant> mPackagePermissions;
+    private final Map<String, Instant> mPackagePermissions;
 
     /** The first grant time of shared users. */
-    @NonNull private final Map<String, Instant> mSharedUserPermissions;
+    private final Map<String, Instant> mSharedUserPermissions;
 
     /** The version of the grant times state. */
     private final int mVersion;
@@ -49,37 +48,35 @@ public class UserGrantTimeState {
 
     @VisibleForTesting
     public UserGrantTimeState(
-            @NonNull Map<String, Instant> packagePermissions,
-            @NonNull Map<String, Instant> sharedUserPermissions,
+            Map<String, Instant> packagePermissions,
+            Map<String, Instant> sharedUserPermissions,
             int version) {
         mPackagePermissions = packagePermissions;
         mSharedUserPermissions = sharedUserPermissions;
         mVersion = version;
     }
 
-    @NonNull
     Map<String, Instant> getPackageGrantTimes() {
         return mPackagePermissions;
     }
 
-    @NonNull
     Map<String, Instant> getSharedUserGrantTimes() {
         return mSharedUserPermissions;
     }
 
-    void setPackageGrantTime(@NonNull String packageName, @Nullable Instant time) {
+    void setPackageGrantTime(String packageName, @Nullable Instant time) {
         mPackagePermissions.put(packageName, time);
     }
 
-    void setSharedUserGrantTime(@NonNull String sharedUserId, @Nullable Instant time) {
+    void setSharedUserGrantTime(String sharedUserId, @Nullable Instant time) {
         mSharedUserPermissions.put(sharedUserId, time);
     }
 
-    boolean containsPackageGrantTime(@NonNull String packageName) {
+    boolean containsPackageGrantTime(String packageName) {
         return mPackagePermissions.containsKey(packageName);
     }
 
-    boolean containsSharedUserGrantTime(@NonNull String sharedUserId) {
+    boolean containsSharedUserGrantTime(String sharedUserId) {
         return mSharedUserPermissions.containsKey(sharedUserId);
     }
 

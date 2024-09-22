@@ -29,7 +29,9 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.time.Instant;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -46,6 +48,7 @@ public final class MedicalDataSource implements Parcelable {
     @NonNull private final String mPackageName;
     @NonNull private final Uri mFhirBaseUri;
     @NonNull private final String mDisplayName;
+    @Nullable private final Instant mLastDataUpdateTime;
 
     @NonNull
     public static final Creator<MedicalDataSource> CREATOR =
@@ -70,12 +73,15 @@ public final class MedicalDataSource implements Parcelable {
      *     platform at source creation time.
      * @param fhirBaseUri The fhir base URI of this data source.
      * @param displayName The display name that describes this data source.
+     * @param lastDataUpdateTime The time {@link MedicalResource}s linked to this data source were
+     *     last updated in Health Connect.
      */
     private MedicalDataSource(
             @NonNull String id,
             @NonNull String packageName,
             @NonNull Uri fhirBaseUri,
-            @NonNull String displayName) {
+            @NonNull String displayName,
+            @Nullable Instant lastDataUpdateTime) {
         requireNonNull(id);
         requireNonNull(packageName);
         requireNonNull(fhirBaseUri);
@@ -85,6 +91,7 @@ public final class MedicalDataSource implements Parcelable {
         mPackageName = packageName;
         mFhirBaseUri = fhirBaseUri;
         mDisplayName = displayName;
+        mLastDataUpdateTime = lastDataUpdateTime;
     }
 
     private MedicalDataSource(@NonNull Parcel in) {
@@ -93,6 +100,11 @@ public final class MedicalDataSource implements Parcelable {
         mPackageName = requireNonNull(in.readString());
         mFhirBaseUri = requireNonNull(in.readParcelable(Uri.class.getClassLoader(), Uri.class));
         mDisplayName = requireNonNull(in.readString());
+        long lastDataUpdateTimeMillis = in.readLong();
+        mLastDataUpdateTime =
+                lastDataUpdateTimeMillis == 0
+                        ? null
+                        : Instant.ofEpochMilli(lastDataUpdateTimeMillis);
     }
 
     /** Returns the identifier. */
@@ -113,6 +125,15 @@ public final class MedicalDataSource implements Parcelable {
         return mDisplayName;
     }
 
+    /**
+     * Returns the time {@link MedicalResource}s linked to this data source were last updated, or
+     * null if no data has been written yet.
+     */
+    @Nullable
+    public Instant getLastDataUpdateTime() {
+        return mLastDataUpdateTime;
+    }
+
     /** Returns the FHIR base URI, where data written for this data source came from. */
     @NonNull
     public Uri getFhirBaseUri() {
@@ -130,6 +151,7 @@ public final class MedicalDataSource implements Parcelable {
         dest.writeString(mPackageName);
         dest.writeParcelable(mFhirBaseUri, 0);
         dest.writeString(mDisplayName);
+        dest.writeLong(mLastDataUpdateTime == null ? 0 : mLastDataUpdateTime.toEpochMilli());
     }
 
     /**
@@ -161,13 +183,19 @@ public final class MedicalDataSource implements Parcelable {
         return getId().equals(that.getId())
                 && getPackageName().equals(that.getPackageName())
                 && getFhirBaseUri().equals(that.getFhirBaseUri())
-                && getDisplayName().equals(that.getDisplayName());
+                && getDisplayName().equals(that.getDisplayName())
+                && Objects.equals(getLastDataUpdateTime(), that.getLastDataUpdateTime());
     }
 
     /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
-        return hash(getId(), getPackageName(), getFhirBaseUri(), getDisplayName());
+        return hash(
+                getId(),
+                getPackageName(),
+                getFhirBaseUri(),
+                getDisplayName(),
+                getLastDataUpdateTime());
     }
 
     /** Returns a string representation of this {@link MedicalDataSource}. */
@@ -179,6 +207,7 @@ public final class MedicalDataSource implements Parcelable {
         sb.append(",packageName=").append(getPackageName());
         sb.append(",fhirBaseUri=").append(getFhirBaseUri());
         sb.append(",displayName=").append(getDisplayName());
+        sb.append(",lastDataUpdateTime=").append(getLastDataUpdateTime());
         sb.append("}");
         return sb.toString();
     }
@@ -189,6 +218,7 @@ public final class MedicalDataSource implements Parcelable {
         @NonNull private String mPackageName;
         @NonNull private Uri mFhirBaseUri;
         @NonNull private String mDisplayName;
+        @Nullable private Instant mLastDataUpdateTime;
 
         /**
          * @param id The unique identifier of this data source, assigned by the Android Health
@@ -220,6 +250,7 @@ public final class MedicalDataSource implements Parcelable {
             mPackageName = original.mPackageName;
             mFhirBaseUri = original.mFhirBaseUri;
             mDisplayName = original.mDisplayName;
+            mLastDataUpdateTime = original.mLastDataUpdateTime;
         }
 
         public Builder(@NonNull MedicalDataSource original) {
@@ -228,6 +259,7 @@ public final class MedicalDataSource implements Parcelable {
             mPackageName = original.getPackageName();
             mFhirBaseUri = original.getFhirBaseUri();
             mDisplayName = original.getDisplayName();
+            mLastDataUpdateTime = original.getLastDataUpdateTime();
         }
 
         /**
@@ -268,10 +300,18 @@ public final class MedicalDataSource implements Parcelable {
             return this;
         }
 
+        /** Sets the time {@link MedicalResource}s linked to this data source were last updated. */
+        @NonNull
+        public Builder setLastDataUpdateTime(@Nullable Instant lastDataUpdateTime) {
+            mLastDataUpdateTime = lastDataUpdateTime;
+            return this;
+        }
+
         /** Returns a new instance of {@link MedicalDataSource} with the specified parameters. */
         @NonNull
         public MedicalDataSource build() {
-            return new MedicalDataSource(mId, mPackageName, mFhirBaseUri, mDisplayName);
+            return new MedicalDataSource(
+                    mId, mPackageName, mFhirBaseUri, mDisplayName, mLastDataUpdateTime);
         }
     }
 }

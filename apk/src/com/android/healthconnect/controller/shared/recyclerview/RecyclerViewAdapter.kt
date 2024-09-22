@@ -28,7 +28,7 @@ class RecyclerViewAdapter
 private constructor(
     private val itemClassToItemViewTypeMap: Map<Class<*>, Int>,
     private val itemViewTypeToViewBinderMap: Map<Int, ViewBinder<*, out View>>,
-        private val viewModel: ViewModel
+    private val viewModel: ViewModel,
 ) : RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
 
     class Builder {
@@ -41,7 +41,7 @@ private constructor(
         private val itemClassToItemViewTypeMap: MutableMap<Class<*>, Int> = mutableMapOf()
         private val itemViewTypeToViewBinderMap: MutableMap<Int, ViewBinder<*, out View>> =
             mutableMapOf()
-        private lateinit var viewModel : ViewModel
+        private lateinit var viewModel: ViewModel
 
         fun <T> setViewBinder(clazz: Class<T>, viewBinder: ViewBinder<T, out View>): Builder {
             itemClassToItemViewTypeMap[clazz] = nextItemType
@@ -50,28 +50,60 @@ private constructor(
             return this
         }
 
-        fun setViewModel(viewModel: ViewModel): Builder{
+        fun setViewModel(viewModel: ViewModel): Builder {
             this.viewModel = viewModel
             return this
         }
 
-        fun build() = RecyclerViewAdapter(itemClassToItemViewTypeMap, itemViewTypeToViewBinderMap, viewModel)
+        fun build() =
+            RecyclerViewAdapter(itemClassToItemViewTypeMap, itemViewTypeToViewBinderMap, viewModel)
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
-    private var data: List<Any> = emptyList()
+    private var data: MutableList<Any> = mutableListOf()
     private var isDeletionState = false
     private var isChecked = false
     private var deleteSet: Set<String> = emptySet()
+    private var isSelectAllChecked : Boolean = false
 
     fun updateData(entries: List<Any>) {
-        this.data = entries
+        this.data = entries.toMutableList()
         notifyDataSetChanged()
     }
 
-    fun showCheckBox(isDeletionState:Boolean){
+    fun insertSelectAllAndRemoveAggregation(selectAll: FormattedEntry.SelectAllHeader){
+        (viewModel as EntriesViewModel).getEntriesList().add(0, selectAll)
+        viewModel.getEntriesList().removeAt(1)
+        this.data = viewModel.getEntriesList().toMutableList()
+        notifyDataSetChanged()
+
+    }
+
+    fun updateSelectAllState(selectAll:FormattedEntry.SelectAllHeader, inDeletion: Boolean){
+        if(inDeletion) {
+            (viewModel as EntriesViewModel).getEntriesList().add(0, selectAll)
+        } else {
+            (viewModel as EntriesViewModel).getEntriesList().removeAt(0)
+        }
+        this.data = viewModel.getEntriesList().toMutableList()
+        notifyDataSetChanged()
+    }
+
+    fun insertAggregationAndRemoveSelectAll(aggregation: FormattedEntry.FormattedAggregation){
+        (viewModel as EntriesViewModel).getEntriesList().add(0, aggregation)
+        viewModel.getEntriesList().removeAt(1)
+        this.data = viewModel.getEntriesList().toMutableList()
+        notifyDataSetChanged()
+    }
+
+    fun showCheckBox(isDeletionState: Boolean) {
         this.isDeletionState = isDeletionState
+        notifyDataSetChanged()
+    }
+
+    fun checkSelectAll (isChecked: Boolean) {
+        this.isSelectAllChecked = isChecked
         notifyDataSetChanged()
     }
 
@@ -85,8 +117,11 @@ private constructor(
             checkNotNull(itemViewTypeToViewBinderMap[getItemViewType(position)])
                 as ViewBinder<Any, View>
         val item = data[position]
+
         if (viewBinder is SimpleViewBinder) {
             viewBinder.bind(holder.itemView, item, position)
+        } else if (item is FormattedEntry.SelectAllHeader){
+            (viewBinder as DeletionViewBinder).bind(holder.itemView, item, position, isDeletionState, isSelectAllChecked)
         } else if (viewBinder is DeletionViewBinder && viewModel is EntriesViewModel) {
             this.deleteSet = viewModel.setOfEntriesToBeDeleted.value.orEmpty()
             isChecked = (item as FormattedEntry).uuid in deleteSet

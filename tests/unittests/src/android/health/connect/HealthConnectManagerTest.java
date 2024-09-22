@@ -143,7 +143,8 @@ public class HealthConnectManagerTest {
         HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
         TestOutcomeReceiver<List<MedicalDataSource>> receiver = new TestOutcomeReceiver<>();
         String id = "id";
-        List<MedicalDataSource> response = List.of(PhrDataFactory.getMedicalDataSource());
+        List<MedicalDataSource> response =
+                List.of(PhrDataFactory.getMedicalDataSourceRequiredFieldsOnly());
         doAnswer(
                         (Answer<Void>)
                                 invocation -> {
@@ -197,7 +198,8 @@ public class HealthConnectManagerTest {
         HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
         TestOutcomeReceiver<List<MedicalDataSource>> receiver = new TestOutcomeReceiver<>();
         GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
-        List<MedicalDataSource> response = List.of(PhrDataFactory.getMedicalDataSource());
+        List<MedicalDataSource> response =
+                List.of(PhrDataFactory.getMedicalDataSourceRequiredFieldsOnly());
         doAnswer(
                         (Answer<Void>)
                                 invocation -> {

@@ -26,7 +26,6 @@ import static com.android.server.healthconnect.storage.datatypehelpers.WeightRec
 import static com.android.server.healthconnect.storage.datatypehelpers.WeightRecordHelper.WEIGHT_RECORD_TABLE_NAME;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
-import android.annotation.NonNull;
 import android.database.Cursor;
 import android.health.connect.Constants;
 import android.health.connect.datatypes.BasalMetabolicRateRecord;
@@ -66,7 +65,7 @@ public final class DeriveBasalCaloriesBurnedHelper {
     private static final int DEFAULT_AGE = 30;
 
     public DeriveBasalCaloriesBurnedHelper(
-            @NonNull Cursor cursor, @NonNull String columnName, @NonNull String timeColumnName) {
+            Cursor cursor, String columnName, String timeColumnName) {
         Objects.requireNonNull(cursor);
         Objects.requireNonNull(columnName);
         Objects.requireNonNull(timeColumnName);
@@ -79,7 +78,6 @@ public final class DeriveBasalCaloriesBurnedHelper {
      * Calculates and returns aggregate of total basal calories burned from table {@link
      * BasalMetabolicRateRecord} for the interval.
      */
-    @NonNull
     public double getBasalCaloriesBurned(long intervalStartTime, long intervalEndTime) {
         if (intervalStartTime >= intervalEndTime) {
             return 0;
@@ -346,7 +344,7 @@ public final class DeriveBasalCaloriesBurnedHelper {
      * Calculates and returns an array of aggregate of total basal calories burned from table {@link
      * BasalMetabolicRateRecord} for group of intervals.
      */
-    public double[] getBasalCaloriesBurned(@NonNull List<Pair<Long, Long>> groupIntervalList) {
+    public double[] getBasalCaloriesBurned(List<Pair<Long, Long>> groupIntervalList) {
         double[] basalCaloriesBurned = new double[groupIntervalList.size()];
         for (int group = 0; group < groupIntervalList.size(); group++) {
             basalCaloriesBurned[group] =

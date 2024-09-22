@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -39,7 +38,7 @@ public abstract class DatabaseHelper {
                 new ChangeLogsRequestHelper(),
                 HealthDataCategoryPriorityHelper.getInstance(),
                 PreferenceHelper.getInstance(),
-                new AccessLogsHelper(),
+                AccessLogsHelper.getInstance(),
                 new MigrationEntityHelper(),
                 PriorityMigrationHelper.getInstance());
     }

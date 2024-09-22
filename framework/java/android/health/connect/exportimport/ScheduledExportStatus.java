@@ -16,11 +16,9 @@
 
 package android.health.connect.exportimport;
 
-
 import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
-import android.health.connect.HealthConnectManager;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -105,6 +103,7 @@ public final class ScheduledExportStatus implements Parcelable {
     @Nullable private final String mLastExportAppName;
     @Nullable private final String mNextExportFileName;
     @Nullable private final String mNextExportAppName;
+    private final int mNextExportSequentialNumber;
 
     private ScheduledExportStatus(
             @Nullable Instant lastSuccessfulExportTime,
@@ -114,7 +113,8 @@ public final class ScheduledExportStatus implements Parcelable {
             @Nullable String lastExportFileName,
             @Nullable String lastExportAppName,
             @Nullable String nextExportFileName,
-            @Nullable String nextExportAppName) {
+            @Nullable String nextExportAppName,
+            int nextExportSequentialNumber) {
         mLastSuccessfulExportTime = lastSuccessfulExportTime;
         mLastFailedExportTime = lastFailedExportTime;
         mDataExportError = dataExportError;
@@ -123,6 +123,7 @@ public final class ScheduledExportStatus implements Parcelable {
         mLastExportAppName = lastExportAppName;
         mNextExportFileName = nextExportFileName;
         mNextExportAppName = nextExportAppName;
+        mNextExportSequentialNumber = nextExportSequentialNumber;
     }
 
     /**
@@ -182,6 +183,11 @@ public final class ScheduledExportStatus implements Parcelable {
         return mNextExportAppName;
     }
 
+    /** Returns the next export sequential number. */
+    public int getNextExportSequentialNumber() {
+        return mNextExportSequentialNumber;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -199,6 +205,7 @@ public final class ScheduledExportStatus implements Parcelable {
         mLastExportAppName = in.readString();
         mNextExportFileName = in.readString();
         mNextExportAppName = in.readString();
+        mNextExportSequentialNumber = in.readInt();
     }
 
     @Override
@@ -212,6 +219,7 @@ public final class ScheduledExportStatus implements Parcelable {
         dest.writeString(mLastExportAppName);
         dest.writeString(mNextExportFileName);
         dest.writeString(mNextExportAppName);
+        dest.writeInt(mNextExportSequentialNumber);
     }
 
     /** Builder for {@link ScheduledExportStatus}. */
@@ -224,6 +232,7 @@ public final class ScheduledExportStatus implements Parcelable {
         @Nullable private String mLastExportAppName;
         @Nullable private String mNextExportFileName;
         @Nullable private String mNextExportAppName;
+        private int mNextExportSequentialNumber;
 
         public Builder() {}
 
@@ -248,7 +257,7 @@ public final class ScheduledExportStatus implements Parcelable {
         /**
          * Sets the error status of the last export attempt.
          *
-         * <p>Defaults to {@link HealthConnectManager#DATA_EXPORT_ERROR_NONE}.
+         * <p>Defaults to {@link ScheduledExportStatus#DATA_EXPORT_ERROR_NONE}.
          */
         public Builder setDataExportError(@DataExportError int dataExportError) {
             mDataExportError = dataExportError;
@@ -305,6 +314,12 @@ public final class ScheduledExportStatus implements Parcelable {
             return this;
         }
 
+        /** Sets the next export sequential number. */
+        public Builder setNextExportSequentialNumber(int nextExportSequentialNumber) {
+            mNextExportSequentialNumber = nextExportSequentialNumber;
+            return this;
+        }
+
         /** Builds a {@link ScheduledExportStatus} object. */
         public ScheduledExportStatus build() {
             return new ScheduledExportStatus(
@@ -315,7 +330,8 @@ public final class ScheduledExportStatus implements Parcelable {
                     mLastExportFileName,
                     mLastExportAppName,
                     mNextExportFileName,
-                    mNextExportAppName);
+                    mNextExportAppName,
+                    mNextExportSequentialNumber);
         }
     }
 }

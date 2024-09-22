@@ -168,6 +168,19 @@ class AppPermissionViewModelTest {
             grantedMedicalPermissionsObserver
         )
 
+        val atLeastOneFitnessPermissionGrantedObserver = TestObserver<Boolean>()
+        val atLeastOneMedicalPermissionGrantedObserver = TestObserver<Boolean>()
+        val atLeastOneHealthPermissionGrantedObserver = TestObserver<Boolean>()
+        appPermissionViewModel.atLeastOneFitnessPermissionGranted.observeForever(
+            atLeastOneFitnessPermissionGrantedObserver
+        )
+        appPermissionViewModel.atLeastOneMedicalPermissionGranted.observeForever(
+            atLeastOneMedicalPermissionGrantedObserver
+        )
+        appPermissionViewModel.atLeastOneHealthPermissionGranted.observeForever(
+            atLeastOneHealthPermissionGrantedObserver
+        )
+
         appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
 
@@ -175,6 +188,13 @@ class AppPermissionViewModelTest {
         val grantedFitnessPermissionsResult = grantedFitnessPermissionsObserver.getLastValue()
         val medicalPermissionsResult = medicalPermissionsObserver.getLastValue()
         val grantedMedicalPermissionsResult = grantedMedicalPermissionsObserver.getLastValue()
+
+        val atLeastOneFitnessPermissionGrantedResult =
+            atLeastOneFitnessPermissionGrantedObserver.getLastValue()
+        val atLeastOneMedicalPermissionGrantedResult =
+            atLeastOneMedicalPermissionGrantedObserver.getLastValue()
+        val atLeastOneHealthPermissionGrantedResult =
+            atLeastOneHealthPermissionGrantedObserver.getLastValue()
 
         assertThat(fitnessPermissionsResult)
             .containsExactlyElementsIn(
@@ -190,6 +210,10 @@ class AppPermissionViewModelTest {
         assertThat(medicalPermissionsResult).containsExactlyElementsIn(listOf<MedicalPermission>())
         assertThat(grantedMedicalPermissionsResult)
             .containsExactlyElementsIn(setOf<MedicalPermission>())
+
+        assertThat(atLeastOneFitnessPermissionGrantedResult).isTrue()
+        assertThat(atLeastOneMedicalPermissionGrantedResult).isFalse()
+        assertThat(atLeastOneHealthPermissionGrantedResult).isTrue()
     }
 
     @Test
@@ -208,6 +232,19 @@ class AppPermissionViewModelTest {
             grantedMedicalPermissionsObserver
         )
 
+        val atLeastOneFitnessPermissionGrantedObserver = TestObserver<Boolean>()
+        val atLeastOneMedicalPermissionGrantedObserver = TestObserver<Boolean>()
+        val atLeastOneHealthPermissionGrantedObserver = TestObserver<Boolean>()
+        appPermissionViewModel.atLeastOneFitnessPermissionGranted.observeForever(
+            atLeastOneFitnessPermissionGrantedObserver
+        )
+        appPermissionViewModel.atLeastOneMedicalPermissionGranted.observeForever(
+            atLeastOneMedicalPermissionGrantedObserver
+        )
+        appPermissionViewModel.atLeastOneHealthPermissionGranted.observeForever(
+            atLeastOneHealthPermissionGrantedObserver
+        )
+
         appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
 
@@ -215,6 +252,14 @@ class AppPermissionViewModelTest {
         val grantedFitnessPermissionsResult = grantedFitnessPermissionsObserver.getLastValue()
         val medicalPermissionsResult = medicalPermissionsObserver.getLastValue()
         val grantedMedicalPermissionsResult = grantedMedicalPermissionsObserver.getLastValue()
+
+        val atLeastOneFitnessPermissionGrantedResult =
+            atLeastOneFitnessPermissionGrantedObserver.getLastValue()
+        val atLeastOneMedicalPermissionGrantedResult =
+            atLeastOneMedicalPermissionGrantedObserver.getLastValue()
+        val atLeastOneHealthPermissionGrantedResult =
+            atLeastOneHealthPermissionGrantedObserver.getLastValue()
+
         assertThat(fitnessPermissionsResult)
             .containsExactlyElementsIn(
                 listOf(
@@ -230,6 +275,10 @@ class AppPermissionViewModelTest {
             .containsExactlyElementsIn(listOf(readImmunization, writeMedicalData))
         assertThat(grantedMedicalPermissionsResult)
             .containsExactlyElementsIn(setOf(readImmunization))
+
+        assertThat(atLeastOneFitnessPermissionGrantedResult).isTrue()
+        assertThat(atLeastOneMedicalPermissionGrantedResult).isTrue()
+        assertThat(atLeastOneHealthPermissionGrantedResult).isTrue()
     }
 
     @Test
@@ -254,6 +303,19 @@ class AppPermissionViewModelTest {
             grantedMedicalPermissionsObserver
         )
 
+        val atLeastOneFitnessPermissionGrantedObserver = TestObserver<Boolean>()
+        val atLeastOneMedicalPermissionGrantedObserver = TestObserver<Boolean>()
+        val atLeastOneHealthPermissionGrantedObserver = TestObserver<Boolean>()
+        appPermissionViewModel.atLeastOneFitnessPermissionGranted.observeForever(
+            atLeastOneFitnessPermissionGrantedObserver
+        )
+        appPermissionViewModel.atLeastOneMedicalPermissionGranted.observeForever(
+            atLeastOneMedicalPermissionGrantedObserver
+        )
+        appPermissionViewModel.atLeastOneHealthPermissionGranted.observeForever(
+            atLeastOneHealthPermissionGrantedObserver
+        )
+
         appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
 
@@ -261,6 +323,14 @@ class AppPermissionViewModelTest {
         val grantedFitnessPermissionsResult = grantedFitnessPermissionsObserver.getLastValue()
         val medicalPermissionsResult = medicalPermissionsObserver.getLastValue()
         val grantedMedicalPermissionsResult = grantedMedicalPermissionsObserver.getLastValue()
+
+        val atLeastOneFitnessPermissionGrantedResult =
+            atLeastOneFitnessPermissionGrantedObserver.getLastValue()
+        val atLeastOneMedicalPermissionGrantedResult =
+            atLeastOneMedicalPermissionGrantedObserver.getLastValue()
+        val atLeastOneHealthPermissionGrantedResult =
+            atLeastOneHealthPermissionGrantedObserver.getLastValue()
+
         assertThat(fitnessPermissionsResult).containsExactlyElementsIn(listOf<FitnessPermission>())
         assertThat(grantedFitnessPermissionsResult)
             .containsExactlyElementsIn(setOf<FitnessPermission>())
@@ -268,6 +338,10 @@ class AppPermissionViewModelTest {
             .containsExactlyElementsIn(listOf(readImmunization, writeMedicalData))
         assertThat(grantedMedicalPermissionsResult)
             .containsExactlyElementsIn(setOf(writeMedicalData))
+
+        assertThat(atLeastOneFitnessPermissionGrantedResult).isFalse()
+        assertThat(atLeastOneMedicalPermissionGrantedResult).isTrue()
+        assertThat(atLeastOneHealthPermissionGrantedResult).isTrue()
     }
 
     @Test
@@ -941,6 +1015,19 @@ class AppPermissionViewModelTest {
             grantedMedicalPermissionsObserver
         )
 
+        val atLeastOneFitnessPermissionGrantedObserver = TestObserver<Boolean>()
+        val atLeastOneMedicalPermissionGrantedObserver = TestObserver<Boolean>()
+        val atLeastOneHealthPermissionGrantedObserver = TestObserver<Boolean>()
+        appPermissionViewModel.atLeastOneFitnessPermissionGranted.observeForever(
+            atLeastOneFitnessPermissionGrantedObserver
+        )
+        appPermissionViewModel.atLeastOneMedicalPermissionGranted.observeForever(
+            atLeastOneMedicalPermissionGrantedObserver
+        )
+        appPermissionViewModel.atLeastOneHealthPermissionGranted.observeForever(
+            atLeastOneHealthPermissionGrantedObserver
+        )
+
         appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
 
@@ -966,9 +1053,21 @@ class AppPermissionViewModelTest {
 
         val result = appPermissionViewModel.revokeAllHealthPermissions(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
+
+        val atLeastOneFitnessPermissionGrantedResult =
+            atLeastOneFitnessPermissionGrantedObserver.getLastValue()
+        val atLeastOneMedicalPermissionGrantedResult =
+            atLeastOneMedicalPermissionGrantedObserver.getLastValue()
+        val atLeastOneHealthPermissionGrantedResult =
+            atLeastOneHealthPermissionGrantedObserver.getLastValue()
+
         assertThat(grantedFitnessPermissionsObserver.getLastValue()).isEmpty()
         assertThat(grantedMedicalPermissionsObserver.getLastValue()).isEmpty()
         assertThat(result).isTrue()
+
+        assertThat(atLeastOneFitnessPermissionGrantedResult).isFalse()
+        assertThat(atLeastOneMedicalPermissionGrantedResult).isFalse()
+        assertThat(atLeastOneHealthPermissionGrantedResult).isFalse()
     }
 
     @Test

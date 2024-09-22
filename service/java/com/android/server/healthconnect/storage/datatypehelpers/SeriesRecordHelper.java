@@ -20,7 +20,6 @@ import static android.health.connect.Constants.PARENT_KEY;
 
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -57,7 +56,7 @@ abstract class SeriesRecordHelper<
 
     @Override
     @SuppressWarnings("unchecked")
-    final List<UpsertTableRequest> getChildTableUpsertRequests(@NonNull T record) {
+    final List<UpsertTableRequest> getChildTableUpsertRequests(T record) {
         List<? extends SeriesRecordInternal.Sample> samples = record.getSamples().stream().toList();
         List<UpsertTableRequest> requests = new ArrayList<>(samples.size());
         samples.forEach(
@@ -83,14 +82,13 @@ abstract class SeriesRecordHelper<
     }
 
     @Override
-    final void populateSpecificContentValues(
-            @NonNull ContentValues contentValues, @NonNull T record) {
+    final void populateSpecificContentValues(ContentValues contentValues, T record) {
         // Empty as we don't want to populate any additional in the main table.
     }
 
     /** Populates record with datatype specific details */
     @Override
-    final void populateSpecificRecordValue(@NonNull Cursor cursor, @NonNull T record) {
+    final void populateSpecificRecordValue(Cursor cursor, T record) {
         populateSpecificValues(cursor, record);
     }
 
@@ -98,7 +96,6 @@ abstract class SeriesRecordHelper<
      * A typical series data type should not use the main table to store any of its data, and should
      * instead implement get addition table related functions. Hence, an empty final function
      */
-    @NonNull
     final List<Pair<String, String>> getIntervalRecordColumnInfo() {
         // We don't want to populate anything additional in the main table. Series data types use
         // additional table to store all the data.
@@ -108,20 +105,17 @@ abstract class SeriesRecordHelper<
     /**
      * Returns the column names required to store the series data, excluding the parent key field
      */
-    @NonNull
     abstract List<Pair<String, String>> getSeriesRecordColumnInfo();
 
     /** Returns the table name required to store the series data */
-    @NonNull
     abstract String getSeriesDataTableName();
 
     /** Populates the {@code record} with values specific to dataytpe */
-    abstract void populateSpecificValues(@NonNull Cursor cursor, T record);
+    abstract void populateSpecificValues(Cursor cursor, T record);
 
     /** Puts the {@code sample} to the {@code contentValues} */
-    abstract void populateSampleTo(@NonNull ContentValues contentValues, @NonNull U sample);
+    abstract void populateSampleTo(ContentValues contentValues, U sample);
 
-    @NonNull
     private List<Pair<String, String>> getSeriesTableColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(PARENT_KEY_COLUMN_NAME, INTEGER));

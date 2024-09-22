@@ -28,7 +28,6 @@ import static com.android.server.healthconnect.logging.ExportImportLogger.NO_VAL
 
 import static java.util.Objects.requireNonNull;
 
-import android.annotation.NonNull;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -91,7 +90,7 @@ public class ExportManager {
     private final HealthConnectNotificationSender mNotificationSender;
 
     public ExportManager(
-            @NonNull Context context,
+            Context context,
             Clock clock,
             ExportImportSettingsStorage exportImportSettingsStorage,
             TransactionManager transactionManager) {
@@ -104,7 +103,7 @@ public class ExportManager {
     }
 
     public ExportManager(
-            @NonNull Context context,
+            Context context,
             Clock clock,
             HealthConnectNotificationSender notificationSender,
             ExportImportSettingsStorage exportImportSettingsStorage,
@@ -157,7 +156,7 @@ public class ExportManager {
                 deleteLogTablesContent();
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to clear log tables in preparation for export", e);
-                Slog.d(TAG, "original file size: " + intSizeInKb(mLocalExportDbFile));
+                Slog.d(TAG, "Original file size: " + intSizeInKb(mLocalExportDbFile));
                 recordError(
                         DATA_EXPORT_ERROR_CLEARING_LOG_TABLES,
                         startTimeMillis,
@@ -173,7 +172,7 @@ public class ExportManager {
                         mLocalExportDbFile, LOCAL_EXPORT_DATABASE_FILE_NAME, mLocalExportZipFile);
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to compress local file for export", e);
-                Slog.d(TAG, "original file size: " + intSizeInKb(mLocalExportDbFile));
+                Slog.d(TAG, "Original file size: " + intSizeInKb(mLocalExportDbFile));
                 recordError(
                         DATA_EXPORT_ERROR_UNKNOWN,
                         startTimeMillis,
@@ -189,7 +188,7 @@ public class ExportManager {
                 exportToUri(mLocalExportZipFile, destinationUri);
             } catch (FileNotFoundException e) {
                 Slog.e(TAG, "Lost access to export location", e);
-                Slog.d(TAG, "original file size: " + intSizeInKb(mLocalExportDbFile));
+                Slog.d(TAG, "Original file size: " + intSizeInKb(mLocalExportDbFile));
                 recordError(
                         DATA_EXPORT_LOST_FILE_ACCESS,
                         startTimeMillis,
@@ -199,7 +198,7 @@ public class ExportManager {
                 return false;
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to export to URI", e);
-                Slog.d(TAG, "original file size: " + intSizeInKb(mLocalExportDbFile));
+                Slog.d(TAG, "Original file size: " + intSizeInKb(mLocalExportDbFile));
                 recordError(
                         DATA_EXPORT_ERROR_UNKNOWN,
                         startTimeMillis,
@@ -209,7 +208,7 @@ public class ExportManager {
                 return false;
             }
             Slog.i(TAG, "Export completed.");
-            Slog.d(TAG, "original file size: " + intSizeInKb(mLocalExportDbFile));
+            Slog.d(TAG, "Original file size: " + intSizeInKb(mLocalExportDbFile));
             recordSuccess(
                     startTimeMillis,
                     intSizeInKb(mLocalExportDbFile),
