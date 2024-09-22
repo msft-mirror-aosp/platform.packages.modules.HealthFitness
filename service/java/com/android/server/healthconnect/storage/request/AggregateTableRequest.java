@@ -24,7 +24,6 @@ import static android.health.connect.datatypes.AggregationType.SUM;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.APP_INFO_ID_COLUMN_NAME;
 
-import android.annotation.NonNull;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
 import android.health.connect.Constants;
@@ -88,6 +87,7 @@ public class AggregateTableRequest {
     private final AggregateParams.PriorityAggregationExtraParams mPriorityParams;
     private final boolean mUseLocalTime;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private final AppInfoHelper mAppInfoHelper;
     private List<Long> mTimeSplits;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
@@ -97,6 +97,7 @@ public class AggregateTableRequest {
             RecordHelper<?> recordHelper,
             WhereClauses whereClauses,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            AppInfoHelper appInfoHelper,
             boolean useLocalTime) {
         mTableName = params.getTableName();
         mColumnNamesToAggregate = params.getColumnsToFetch();
@@ -115,6 +116,7 @@ public class AggregateTableRequest {
         }
         mUseLocalTime = useLocalTime;
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
+        mAppInfoHelper = appInfoHelper;
     }
 
     /**
@@ -163,7 +165,6 @@ public class AggregateTableRequest {
     }
 
     /** Returns SQL statement to perform aggregation operation */
-    @NonNull
     public String getAggregationCommand() {
         final StringBuilder builder = new StringBuilder("SELECT ");
         String aggCommand;
@@ -357,7 +358,7 @@ public class AggregateTableRequest {
         while (metaDataCursor.moveToNext()) {
             packageIds.add(StorageUtils.getCursorLong(metaDataCursor, APP_INFO_ID_COLUMN_NAME));
         }
-        List<String> packageNames = AppInfoHelper.getInstance().getPackageNames(packageIds);
+        List<String> packageNames = mAppInfoHelper.getPackageNames(packageIds);
 
         mAggregateResults.replaceAll(
                 (n, v) -> mAggregateResults.get(n).setDataOrigins(packageNames));

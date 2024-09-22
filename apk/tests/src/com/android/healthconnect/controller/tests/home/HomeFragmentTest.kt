@@ -95,7 +95,6 @@ import org.mockito.Mockito
 import org.mockito.kotlin.any
 import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.never
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
 
@@ -197,21 +196,11 @@ class HomeFragmentTest {
     }
 
     @Test
-    @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE, Flags.FLAG_ONBOARDING)
+    @DisableFlags(Flags.FLAG_ONBOARDING)
     fun dataAndAccess_navigatesToDataAndAccess() {
         setupFragmentForNavigation()
         onView(withText("Data and access")).check(matches(isDisplayed()))
         onView(withText("Data and access")).perform(click())
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.data_activity)
-    }
-
-    @Test
-    @DisableFlags(Flags.FLAG_ONBOARDING)
-    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
-    fun browseData_navigatesToBrowseData() {
-        setupFragmentForNavigation()
-        onView(withText("Browse data")).check(matches(isDisplayed()))
-        onView(withText("Browse data")).perform(click())
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.data_activity)
     }
 
@@ -505,7 +494,7 @@ class HomeFragmentTest {
             .check(doesNotExist())
         onView(withText("App permissions")).check(matches(isDisplayed()))
         onView(withText("1 app has access")).check(matches(isDisplayed()))
-        onView(withText("Browse data")).check(matches(isDisplayed()))
+        onView(withText("Data and access")).check(matches(isDisplayed()))
         onView(withText("See data and which apps can access it")).check(matches(isDisplayed()))
         onView(withText("Manage data")).check(matches(isDisplayed()))
     }
@@ -1124,7 +1113,6 @@ class HomeFragmentTest {
         verify(healthConnectLogger).logPageImpression()
         verify(healthConnectLogger).logImpression(HomePageElement.APP_PERMISSIONS_BUTTON)
         verify(healthConnectLogger).logImpression(HomePageElement.DATA_AND_ACCESS_BUTTON)
-        verify(healthConnectLogger, never()).logImpression(HomePageElement.BROWSE_DATA_BUTTON)
         verify(healthConnectLogger).logImpression(HomePageElement.SEE_ALL_RECENT_ACCESS_BUTTON)
         verify(healthConnectLogger).logImpression(RecentAccessElement.RECENT_ACCESS_ENTRY_BUTTON)
     }
@@ -1164,8 +1152,7 @@ class HomeFragmentTest {
         verify(healthConnectLogger, atLeast(1)).setPageId(PageName.HOME_PAGE)
         verify(healthConnectLogger).logPageImpression()
         verify(healthConnectLogger).logImpression(HomePageElement.APP_PERMISSIONS_BUTTON)
-        verify(healthConnectLogger, never()).logImpression(HomePageElement.DATA_AND_ACCESS_BUTTON)
-        verify(healthConnectLogger).logImpression(HomePageElement.BROWSE_DATA_BUTTON)
+        verify(healthConnectLogger).logImpression(HomePageElement.DATA_AND_ACCESS_BUTTON)
         verify(healthConnectLogger).logImpression(HomePageElement.MANAGE_DATA_BUTTON)
         verify(healthConnectLogger).logImpression(HomePageElement.SEE_ALL_RECENT_ACCESS_BUTTON)
         verify(healthConnectLogger).logImpression(RecentAccessElement.RECENT_ACCESS_ENTRY_BUTTON)

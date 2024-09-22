@@ -141,14 +141,12 @@ class HomeFragment : Hilt_HomeFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.home_preference_screen, rootKey)
+        mDataAndAccessPreference?.logName = HomePageElement.DATA_AND_ACCESS_BUTTON
+
         if (newInformationArchitecture()) {
-            mDataAndAccessPreference?.logName = HomePageElement.BROWSE_DATA_BUTTON
-            mDataAndAccessPreference?.title = getString(R.string.browse_data_title)
             mDataAndAccessPreference?.summary = getString(R.string.browse_data_subtitle)
             mTopIntroPreference?.isVisible = false
         } else {
-            mDataAndAccessPreference?.logName = HomePageElement.DATA_AND_ACCESS_BUTTON
-            mDataAndAccessPreference?.title = getString(R.string.data_title)
             mTopIntroPreference?.isVisible = true
         }
         mDataAndAccessPreference?.setOnPreferenceClickListener {

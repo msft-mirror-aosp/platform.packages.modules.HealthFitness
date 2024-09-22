@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect;
 
-import android.annotation.NonNull;
 import android.util.Log;
 
 import com.android.internal.annotations.GuardedBy;
@@ -66,7 +65,6 @@ public final class HealthConnectRoundRobinScheduler {
         }
     }
 
-    @NonNull
     Runnable getNextTask() {
         synchronized (mLock) {
             if (mLastKeyUsed == null) {

@@ -17,24 +17,41 @@
 package com.android.server.healthconnect.phr.validations;
 
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_CONDITION;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_REQUEST;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_OBSERVATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PROCEDURE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.FhirResource.FhirResourceType;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import static android.health.connect.internal.datatypes.utils.FhirResourceTypeStringToIntMapper.getFhirResourceTypeInt;
 
-import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.FhirVersion;
 
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Performs MedicalResource validation and extractions on an {@link UpsertMedicalResourceRequest}.
@@ -46,10 +63,35 @@ public class MedicalResourceValidator {
     private static final FhirVersion R4B_FHIR_VERSION = FhirVersion.parseFhirVersion("4.3.0");
     private static final List<FhirVersion> SUPPORTED_FHIR_VERSIONS =
             List.of(R4_FHIR_VERSION, R4B_FHIR_VERSION);
+    // For the values in these codes see
+    // https://build.fhir.org/ig/HL7/fhir-ips/StructureDefinition-Observation-pregnancy-status-uv-ips.html
+    private static final Set<String> PREGNANCY_LOINC_CODES =
+            Set.of(
+                    "82810-3", "11636-8", "11637-6", "11638-4", "11639-2", "11640-0", "11612-9",
+                    "11613-7", "11614-5", "33065-4", "11778-8", "11779-6", "11780-4");
+    // Defined from IPS Artifacts (Alcohol and Tobacco):
+    // https://build.fhir.org/ig/HL7/fhir-ips/artifacts.html
+    // https://build.fhir.org/ig/HL7/fhir-ips/StructureDefinition-Observation-alcoholuse-uv-ips.html
+    // https://build.fhir.org/ig/HL7/fhir-ips/StructureDefinition-Observation-tobaccouse-uv-ips.html
+    private static final Set<String> SOCIAL_HISTORY_LOINC_CODES = Set.of("74013-4", "72166-2");
+    // Defined from https://hl7.org/fhir/R5/observation-vitalsigns.html
+    private static final Set<String> VITAL_SIGNS_LOINC_CODES =
+            Set.of(
+                    "85353-1", "9279-1", "8867-4", "2708-6", "8310-5", "8302-2", "9843-4",
+                    "29463-7", "39156-5", "85354-9", "8480-6", "8462-4");
+    // From http://terminology.hl7.org/CodeSystem/observation-category
+    private static final String OBSERVATION_CATEGORY_SOCIAL_HISTORY = "social-history";
+    private static final String OBSERVATION_CATEGORY_VITAL_SIGNS = "vital-signs";
+    private static final String OBSERVATION_CATEGORY_LABORATORY = "laboratory";
+    private static final Set<Integer> MEDICATION_FHIR_RESOURCE_TYPES =
+            Set.of(
+                    FHIR_RESOURCE_TYPE_MEDICATION,
+                    FHIR_RESOURCE_TYPE_MEDICATION_REQUEST,
+                    FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT);
 
-    @NonNull private final String mFhirData;
-    @NonNull private final FhirVersion mFhirVersion;
-    @NonNull private final String mDataSourceId;
+    private final String mFhirData;
+    private final FhirVersion mFhirVersion;
+    private final String mDataSourceId;
 
     /** Returns a validator for the provided {@link UpsertMedicalResourceRequest}. */
     public MedicalResourceValidator(UpsertMedicalResourceRequest request) {
@@ -76,7 +118,6 @@ public class MedicalResourceValidator {
      *     json, if the id field or resourceType field cannot be found or if any of the above checks
      *     fail.
      */
-    @NonNull
     public UpsertMedicalResourceInternalRequest validateAndCreateInternalRequest()
             throws IllegalArgumentException {
         JSONObject parsedFhirJsonObj = parseJsonResource(mFhirData);
@@ -97,10 +138,11 @@ public class MedicalResourceValidator {
 
         @MedicalResourceType
         int medicalResourceTypeInt =
-                calculateMedicalResourceTypeInt(
+                calculateMedicalResourceType(
                         fhirResourceTypeInt,
                         extractedFhirResourceTypeString,
-                        extractedFhirResourceId);
+                        extractedFhirResourceId,
+                        parsedFhirJsonObj);
 
         return new UpsertMedicalResourceInternalRequest()
                 .setMedicalResourceType(medicalResourceTypeInt)
@@ -177,8 +219,11 @@ public class MedicalResourceValidator {
      * @throws IllegalArgumentException if the type can not be mapped.
      */
     @MedicalResourceType
-    private static int calculateMedicalResourceTypeInt(
-            int fhirResourceType, String fhirResourceTypeString, String fhirResourceId) {
+    private static int calculateMedicalResourceType(
+            int fhirResourceType,
+            String fhirResourceTypeString,
+            String fhirResourceId,
+            JSONObject json) {
         // TODO(b/342574702): add mapping logic for more FHIR resource types and improve error
         // message.
         if (fhirResourceType == FHIR_RESOURCE_TYPE_IMMUNIZATION) {
@@ -186,13 +231,102 @@ public class MedicalResourceValidator {
         }
         if (fhirResourceType == FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE) {
             return MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
-        } else {
-            throw new IllegalArgumentException(
-                    "Resource with type "
-                            + fhirResourceTypeString
-                            + " and id "
-                            + fhirResourceId
-                            + " could not be mapped to a permissions category.");
         }
+        if (fhirResourceType == FHIR_RESOURCE_TYPE_CONDITION) {
+            return MEDICAL_RESOURCE_TYPE_PROBLEMS;
+        }
+        if (fhirResourceType == FHIR_RESOURCE_TYPE_PROCEDURE) {
+            return MEDICAL_RESOURCE_TYPE_PROCEDURES;
+        }
+        if (MEDICATION_FHIR_RESOURCE_TYPES.contains(fhirResourceType)) {
+            return MEDICAL_RESOURCE_TYPE_MEDICATIONS;
+        }
+        if (fhirResourceType == FHIR_RESOURCE_TYPE_OBSERVATION) {
+            Integer classification = classifyObservation(json);
+            if (classification != null) {
+                return classification;
+            }
+        }
+        throw new IllegalArgumentException(
+                "Resource with type "
+                        + fhirResourceTypeString
+                        + " and id "
+                        + fhirResourceId
+                        + " could not be mapped to a permissions category.");
+    }
+
+    @Nullable
+    @MedicalResourceType
+    private static Integer classifyObservation(JSONObject json) {
+        /*
+        The priority order of categories to check is
+         - Pregnancy
+         - Social History
+         - Vital Signs
+         - Imaging
+         - Labs
+
+         Pregnancy is based on code alone.
+         Social History is based on code or category
+         Vital signs is based on code or category
+         Labs are based on category alone.
+         For now we only consider LOINC codes nad default FHIR categories.
+         */
+        Set<String> loincCodes;
+        try {
+            JSONObject codeEntry = json.getJSONObject("code");
+            loincCodes = getCodesOfType(codeEntry, "http://loinc.org");
+        } catch (JSONException ex) {
+            loincCodes = Set.of();
+        }
+        Set<String> categories = new HashSet<>();
+        try {
+            JSONArray categoryList = json.getJSONArray("category");
+            for (int i = 0; i < categoryList.length(); i++) {
+                categories.addAll(
+                        getCodesOfType(
+                                categoryList.getJSONObject(i),
+                                "http://terminology.hl7.org/CodeSystem/observation-category"));
+            }
+        } catch (JSONException ex) {
+            // If an error is hit fetching category, assume no categories.
+        }
+        if (!Collections.disjoint(PREGNANCY_LOINC_CODES, loincCodes)) {
+            return MEDICAL_RESOURCE_TYPE_PREGNANCY;
+        }
+        if (!Collections.disjoint(SOCIAL_HISTORY_LOINC_CODES, loincCodes)
+                || categories.contains(OBSERVATION_CATEGORY_SOCIAL_HISTORY)) { //
+            return MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+        }
+        if (!Collections.disjoint(VITAL_SIGNS_LOINC_CODES, loincCodes)
+                || categories.contains(OBSERVATION_CATEGORY_VITAL_SIGNS)) { //
+            return MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
+        }
+        if (categories.contains(OBSERVATION_CATEGORY_LABORATORY)) { //
+            return MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
+        }
+        return null;
+    }
+
+    private static Set<String> getCodesOfType(JSONObject codeableConcept, String codingSystem) {
+        Set<String> codes = new HashSet<>();
+        try {
+            JSONArray codings = codeableConcept.getJSONArray("coding");
+            for (int i = 0; i < codings.length(); i++) {
+                JSONObject coding = codings.getJSONObject(i);
+                try {
+                    String system = coding.getString("system");
+                    String code = coding.getString("code");
+                    if (codingSystem.equals(system)) {
+                        codes.add(code);
+                    }
+                } catch (JSONException ex) {
+                    // On exception, carry on to try the next coding
+                }
+            }
+        } catch (JSONException ex) {
+            // Swallow any missing value issue
+        }
+        return codes;
     }
 }

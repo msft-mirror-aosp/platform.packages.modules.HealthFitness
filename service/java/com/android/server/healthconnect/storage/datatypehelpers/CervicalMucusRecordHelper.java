@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -44,28 +43,25 @@ public final class CervicalMucusRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return CERVICAL_MUCUS_RECORD_TABLE_NAME;
     }
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull CervicalMucusRecordInternal cervicalMucusRecord) {
+            Cursor cursor, CervicalMucusRecordInternal cervicalMucusRecord) {
         cervicalMucusRecord.setSensation(getCursorInt(cursor, SENSATION_COLUMN_NAME));
         cervicalMucusRecord.setAppearance(getCursorInt(cursor, APPEARANCE_COLUMN_NAME));
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull CervicalMucusRecordInternal cervicalMucusRecord) {
+            ContentValues contentValues, CervicalMucusRecordInternal cervicalMucusRecord) {
         contentValues.put(SENSATION_COLUMN_NAME, cervicalMucusRecord.getSensation());
         contentValues.put(APPEARANCE_COLUMN_NAME, cervicalMucusRecord.getAppearance());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getInstantRecordColumnInfo() {
         return Arrays.asList(
                 new Pair<>(SENSATION_COLUMN_NAME, INTEGER),

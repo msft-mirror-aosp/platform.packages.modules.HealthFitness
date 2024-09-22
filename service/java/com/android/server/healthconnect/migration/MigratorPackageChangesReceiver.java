@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.migration;
 
-import android.annotation.NonNull;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -48,7 +47,7 @@ public class MigratorPackageChangesReceiver extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
+    public void onReceive(Context context, Intent intent) {
         String packageName = getPackageName(intent);
         UserHandle userHandle = getUserHandle(intent);
         if (packageName == null || userHandle == null) {
@@ -84,12 +83,11 @@ public class MigratorPackageChangesReceiver extends BroadcastReceiver {
      *
      * @hide
      */
-    public void registerBroadcastReceiver(@NonNull Context context) {
+    public void registerBroadcastReceiver(Context context) {
         context.registerReceiverForAllUsers(
                 this, sPackageFilter, null, BackgroundThread.getHandler());
     }
 
-    @NonNull
     private static IntentFilter buildPackageChangeFilter() {
         IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_REPLACED);
         filter.addAction(Intent.ACTION_PACKAGE_ADDED);
@@ -100,15 +98,13 @@ public class MigratorPackageChangesReceiver extends BroadcastReceiver {
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    @NonNull
-    private String getPackageName(@NonNull Intent intent) {
+    private String getPackageName(Intent intent) {
         Uri uri = intent.getData();
         return uri != null ? uri.getSchemeSpecificPart() : null;
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    @NonNull
-    private UserHandle getUserHandle(@NonNull Intent intent) {
+    private UserHandle getUserHandle(Intent intent) {
         final int uid = intent.getIntExtra(Intent.EXTRA_UID, -1);
         if (uid >= 0) {
             return UserHandle.getUserHandleForUid(uid);

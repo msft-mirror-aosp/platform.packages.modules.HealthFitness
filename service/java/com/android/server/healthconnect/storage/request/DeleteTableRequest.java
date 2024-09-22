@@ -21,7 +21,6 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.health.connect.Constants;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -58,8 +57,7 @@ public class DeleteTableRequest {
     private boolean mEnforcePackageCheck;
     private final WhereClauses mExtraWhereClauses = new WhereClauses(AND);
 
-    public DeleteTableRequest(
-            @NonNull String tableName, @RecordTypeIdentifier.RecordType int recordType) {
+    public DeleteTableRequest(String tableName, @RecordTypeIdentifier.RecordType int recordType) {
         Objects.requireNonNull(tableName);
 
         mTableName = tableName;
@@ -67,7 +65,7 @@ public class DeleteTableRequest {
     }
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    public DeleteTableRequest(@NonNull String tableName) {
+    public DeleteTableRequest(String tableName) {
         Objects.requireNonNull(tableName);
 
         mTableName = tableName;
@@ -91,7 +89,7 @@ public class DeleteTableRequest {
         return this;
     }
 
-    public DeleteTableRequest setIds(@NonNull String idColumnName, @NonNull List<String> ids) {
+    public DeleteTableRequest setIds(String idColumnName, List<String> ids) {
         Objects.requireNonNull(ids);
         Objects.requireNonNull(idColumnName);
 
@@ -100,7 +98,7 @@ public class DeleteTableRequest {
         return this;
     }
 
-    public DeleteTableRequest setId(@NonNull String idColumnName, @NonNull String id) {
+    public DeleteTableRequest setId(String idColumnName, String id) {
         Objects.requireNonNull(id);
         Objects.requireNonNull(idColumnName);
 
@@ -113,7 +111,7 @@ public class DeleteTableRequest {
         return mRequiresUuId || mEnforcePackageCheck;
     }
 
-    public DeleteTableRequest setRequiresUuId(@NonNull String idColumnName) {
+    public DeleteTableRequest setRequiresUuId(String idColumnName) {
         Objects.requireNonNull(idColumnName);
 
         mRequiresUuId = true;
@@ -136,12 +134,10 @@ public class DeleteTableRequest {
         return mIds;
     }
 
-    @NonNull
     public String getTableName() {
         return mTableName;
     }
 
-    @NonNull
     public DeleteTableRequest setPackageFilter(
             String packageColumnName, List<Long> packageFilters) {
         mPackageFilters = packageFilters;
@@ -156,7 +152,6 @@ public class DeleteTableRequest {
         return this;
     }
 
-    @NonNull
     public String getDeleteCommand() {
         return "DELETE FROM " + mTableName + getWhereCommand();
     }
@@ -190,9 +185,7 @@ public class DeleteTableRequest {
         return whereClauses.get(true);
     }
 
-    @NonNull
-    public DeleteTableRequest setTimeFilter(
-            @NonNull String timeColumnName, long startTime, long endTime) {
+    public DeleteTableRequest setTimeFilter(String timeColumnName, long startTime, long endTime) {
         Objects.requireNonNull(timeColumnName);
 
         // Return if the params will result in no impact on the query

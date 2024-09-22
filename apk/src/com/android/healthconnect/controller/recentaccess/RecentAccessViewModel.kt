@@ -21,6 +21,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.RecentAccessState.Loading
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
@@ -30,6 +31,7 @@ import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
 import com.android.healthconnect.controller.shared.safelyDataTypeToCategory
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.postValueIfUpdated
+import com.android.healthfitness.flags.Flags.personalHealthRecord
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Duration
 import java.time.Instant
@@ -216,16 +218,20 @@ constructor(
         cluster.recentDataAccessEntry.instantTime = accessLog.accessTime
         cluster.recentDataAccessEntry.isToday = (!accessLog.accessTime.isBefore(midnight))
 
-        val dataTypes =
+        val accessedData =
             if (accessLog.operationType == AccessLog.OperationType.OPERATION_TYPE_READ) {
                 cluster.recentDataAccessEntry.dataTypesRead
             } else {
                 cluster.recentDataAccessEntry.dataTypesWritten
             }
 
-        dataTypes.addAll(
+        accessedData.addAll(
             accessLog.recordTypes.mapNotNull { safelyDataTypeToCategory(it)?.uppercaseTitle() }
         )
+
+        if (personalHealthRecord() && accessLog.medicalResourceTypes.isNotEmpty()) {
+            accessedData.add(R.string.medical_permissions)
+        }
     }
 
     sealed class RecentAccessState {
