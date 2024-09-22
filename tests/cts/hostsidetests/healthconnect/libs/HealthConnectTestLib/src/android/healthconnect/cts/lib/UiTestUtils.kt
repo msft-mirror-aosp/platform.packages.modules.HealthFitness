@@ -86,7 +86,10 @@ object UiTestUtils {
      *
      * This method does _not_ scroll in an attempt to find the object.
      */
-    private fun findObjectOrNull(selector: BySelector, timeout: Duration = FIND_OBJECT_TIMEOUT): UiObject2? {
+    private fun findObjectOrNull(
+        selector: BySelector,
+        timeout: Duration = FIND_OBJECT_TIMEOUT,
+    ): UiObject2? {
         return getUiDevice().wait(Until.findObject(selector), timeout.toMillis())
     }
 
@@ -163,8 +166,12 @@ object UiTestUtils {
         waitFindObject(By.scrollable(true)).scrollUntil(Direction.DOWN, Until.findObject(selector))
     }
 
+    fun scrollUpTo(selector: BySelector) {
+        waitFindObject(By.scrollable(true)).scrollUntil(Direction.UP, Until.findObject(selector))
+    }
+
     fun scrollDownToAndClick(selector: BySelector) {
-           try {
+        try {
             waitDisplayed(selector) { it.click() }
         } catch (e: Exception) {
             getUiDevice()

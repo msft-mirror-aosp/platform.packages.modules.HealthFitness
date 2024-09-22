@@ -17,7 +17,6 @@
 package com.android.server.healthconnect.migration;
 
 import android.Manifest;
-import android.annotation.NonNull;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -45,8 +44,7 @@ public class MigrationUtils {
      *
      * @return List of filtered app package names which hold the specified permission
      */
-    @NonNull
-    public static List<String> filterPermissions(@NonNull Context context) {
+    public static List<String> filterPermissions(Context context) {
         if (android.health.connect.Constants.DEBUG) {
             Slog.d(TAG, "Calling filterPermissions()");
         }
@@ -75,9 +73,8 @@ public class MigrationUtils {
      *     android.Manifest.permission#MIGRATE_HEALTH_CONNECT_DATA}
      * @return List of filtered app package names which handle the specified intent action
      */
-    @NonNull
     public static List<String> filterIntent(
-            @NonNull Context context, @NonNull List<String> permissionFilteredPackages) {
+            Context context, List<String> permissionFilteredPackages) {
         return filterIntent(context, permissionFilteredPackages, PackageManager.MATCH_ALL);
     }
 
@@ -90,9 +87,8 @@ public class MigrationUtils {
      * @param flags Additional option flags to modify the data returned.
      * @return List of filtered app package names which handle the specified intent action
      */
-    @NonNull
     public static List<String> filterIntent(
-            @NonNull Context context, @NonNull List<String> permissionFilteredPackages, int flags) {
+            Context context, List<String> permissionFilteredPackages, int flags) {
         if (android.health.connect.Constants.DEBUG) {
             Slog.d(TAG, "Calling filterIntents()");
         }
@@ -126,7 +122,7 @@ public class MigrationUtils {
 
     /** Computes the SHA256 digest of the input data. */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public static String computeSha256DigestBytes(@NonNull byte[] data) {
+    public static String computeSha256DigestBytes(byte[] data) {
         MessageDigest messageDigest;
         try {
             messageDigest = MessageDigest.getInstance("SHA256");

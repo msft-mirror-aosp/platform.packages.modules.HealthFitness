@@ -28,6 +28,9 @@ import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
@@ -51,6 +54,9 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final ExportManager mExportManager;
     private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
     private final MigrationStateManager mMigrationStateManager;
+    private final DeviceInfoHelper mDeviceInfoHelper;
+    private final AppInfoHelper mAppInfoHelper;
+    private final AccessLogsHelper mAccessLogsHelper;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -67,23 +73,32 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mTransactionManager == null
                         ? TransactionManager.initializeInstance(healthConnectUserContext)
                         : builder.mTransactionManager;
+        mAppInfoHelper =
+                builder.mAppInfoHelper == null
+                        ? AppInfoHelper.getInstance(mTransactionManager)
+                        : builder.mAppInfoHelper;
         mPackageInfoUtils =
                 builder.mPackageInfoUtils == null
                         ? PackageInfoUtils.getInstance()
                         : builder.mPackageInfoUtils;
+        mPreferenceHelper =
+                builder.mPreferenceHelper == null
+                        ? PreferenceHelper.getInstance(mTransactionManager)
+                        : builder.mPreferenceHelper;
         mHealthDataCategoryPriorityHelper =
                 builder.mHealthDataCategoryPriorityHelper == null
-                        ? HealthDataCategoryPriorityHelper.getInstance()
+                        ? HealthDataCategoryPriorityHelper.getInstance(
+                                mAppInfoHelper,
+                                mTransactionManager,
+                                mHealthConnectDeviceConfigManager,
+                                mPreferenceHelper,
+                                mPackageInfoUtils)
                         : builder.mHealthDataCategoryPriorityHelper;
         mPriorityMigrationHelper =
                 builder.mPriorityMigrationHelper == null
                         ? PriorityMigrationHelper.getInstance(
                                 mHealthDataCategoryPriorityHelper, mTransactionManager)
                         : builder.mPriorityMigrationHelper;
-        mPreferenceHelper =
-                builder.mPreferenceHelper == null
-                        ? PreferenceHelper.getInstance(mTransactionManager)
-                        : builder.mPreferenceHelper;
         mExportImportSettingsStorage =
                 builder.mExportImportSettingsStorage == null
                         ? new ExportImportSettingsStorage(mPreferenceHelper)
@@ -103,6 +118,14 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 mHealthConnectDeviceConfigManager,
                                 mPreferenceHelper)
                         : builder.mMigrationStateManager;
+        mDeviceInfoHelper =
+                builder.mDeviceInfoHelper == null
+                        ? DeviceInfoHelper.getInstance(mTransactionManager)
+                        : builder.mDeviceInfoHelper;
+        mAccessLogsHelper =
+                builder.mAccessLogsHelper == null
+                        ? AccessLogsHelper.getInstance(mTransactionManager, mAppInfoHelper)
+                        : builder.mAccessLogsHelper;
     }
 
     @Override
@@ -150,6 +173,21 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         return mMigrationStateManager;
     }
 
+    @Override
+    public DeviceInfoHelper getDeviceInfoHelper() {
+        return mDeviceInfoHelper;
+    }
+
+    @Override
+    public AppInfoHelper getAppInfoHelper() {
+        return mAppInfoHelper;
+    }
+
+    @Override
+    public AccessLogsHelper getAccessLogsHelper() {
+        return mAccessLogsHelper;
+    }
+
     /**
      * Returns a new Builder of Health Connect Injector
      *
@@ -178,6 +216,9 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private ExportManager mExportManager;
         @Nullable private HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
         @Nullable private MigrationStateManager mMigrationStateManager;
+        @Nullable private DeviceInfoHelper mDeviceInfoHelper;
+        @Nullable private AppInfoHelper mAppInfoHelper;
+        @Nullable private AccessLogsHelper mAccessLogsHelper;
 
         private Builder(Context context) {
             mHealthConnectUserContext = new HealthConnectUserContext(context, context.getUser());
@@ -246,6 +287,27 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         public Builder setMigrationStateManager(MigrationStateManager migrationStateManager) {
             Objects.requireNonNull(migrationStateManager);
             mMigrationStateManager = migrationStateManager;
+            return this;
+        }
+
+        /** Set fake or custom DeviceInfoHelper */
+        public Builder setDeviceInfoHelper(DeviceInfoHelper deviceInfoHelper) {
+            Objects.requireNonNull(deviceInfoHelper);
+            mDeviceInfoHelper = deviceInfoHelper;
+            return this;
+        }
+
+        /** Set fake or custom AppInfoHelper */
+        public Builder setAppInfoHelper(AppInfoHelper appInfoHelper) {
+            Objects.requireNonNull(appInfoHelper);
+            mAppInfoHelper = appInfoHelper;
+            return this;
+        }
+
+        /** Set fake or custom AccessLogsHelper */
+        public Builder setAccessLogsHelper(AccessLogsHelper accessLogsHelper) {
+            Objects.requireNonNull(accessLogsHelper);
+            mAccessLogsHelper = accessLogsHelper;
             return this;
         }
 

@@ -20,7 +20,6 @@ import static com.android.server.healthconnect.storage.request.UpsertTableReques
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL_UNIQUE;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NULL;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -93,7 +92,6 @@ public class PreferenceHelper extends DatabaseHelper {
         getPreferences().putAll(keyValues);
     }
 
-    @NonNull
     public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
@@ -126,7 +124,6 @@ public class PreferenceHelper extends DatabaseHelper {
         return mPreferences;
     }
 
-    @NonNull
     private ContentValues getContentValues(String key, String value) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(KEY_COLUMN_NAME, key);
@@ -149,13 +146,18 @@ public class PreferenceHelper extends DatabaseHelper {
         }
     }
 
-    @NonNull
     private static List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(KEY_COLUMN_NAME, TEXT_NOT_NULL_UNIQUE));
         columnInfo.add(new Pair<>(VALUE_COLUMN_NAME, TEXT_NULL));
 
         return columnInfo;
+    }
+
+    /** Used in testing to clear the instance to clear and re-reference the mocks. */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    public static synchronized void clearInstanceForTest() {
+        sPreferenceHelper = null;
     }
 
     public static PreferenceHelper getInstance() {

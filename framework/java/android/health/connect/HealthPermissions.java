@@ -770,10 +770,19 @@ public final class HealthPermissions {
     @FlaggedApi(FLAG_MINDFULNESS)
     public static final String WRITE_MINDFULNESS = "android.permission.health.WRITE_MINDFULNESS";
 
-    /** Personal Health Record permissions */
+    /* Personal Health Record permissions */
 
     /**
-     * Allows an application to read the user's Immunization data.
+     * Allows an application to read the user's data about allergies and intolerances.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_ALLERGY_INTOLERANCE =
+            "android.permission.health.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE";
+
+    /**
+     * Allows an application to read the user's data about immunizations and vaccinations.
      *
      * <p>Protection level: dangerous.
      */
@@ -782,13 +791,67 @@ public final class HealthPermissions {
             "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION";
 
     /**
-     * Allows an application to read the user's AllergyIntolerance data.
+     * Allows an application to read the user's laboratory result data.
      *
      * <p>Protection level: dangerous.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
-    public static final String READ_MEDICAL_DATA_ALLERGY_INTOLERANCE =
-            "android.permission.health.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE";
+    public static final String READ_MEDICAL_DATA_LABORATORY_RESULTS =
+            "android.permission.health.READ_MEDICAL_DATA_LABORATORY_RESULTS";
+
+    /**
+     * Allows an application to read the user's medication data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_MEDICATIONS =
+            "android.permission.health.READ_MEDICAL_DATA_MEDICATIONS";
+
+    /**
+     * Allows an application to read the user's pregnancy data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_PREGNANCY =
+            "android.permission.health.READ_MEDICAL_DATA_PREGNANCY";
+
+    /**
+     * Allows an application to read the user's data about medical problems.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_PROBLEMS =
+            "android.permission.health.READ_MEDICAL_DATA_PROBLEMS";
+
+    /**
+     * Allows an application to read the user's data about medical procedures.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_PROCEDURES =
+            "android.permission.health.READ_MEDICAL_DATA_PROCEDURES";
+
+    /**
+     * Allows an application to read the user's social history data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_SOCIAL_HISTORY =
+            "android.permission.health.READ_MEDICAL_DATA_SOCIAL_HISTORY";
+
+    /**
+     * Allows an application to read the user's vital signs data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_VITAL_SIGNS =
+            "android.permission.health.READ_MEDICAL_DATA_VITAL_SIGNS";
 
     /**
      * Allows an application to write the user's medical data.
@@ -928,8 +991,15 @@ public final class HealthPermissions {
 
         Set<String> permissions = new ArraySet<>();
         permissions.add(WRITE_MEDICAL_DATA);
-        permissions.add(READ_MEDICAL_DATA_IMMUNIZATION);
         permissions.add(READ_MEDICAL_DATA_ALLERGY_INTOLERANCE);
+        permissions.add(READ_MEDICAL_DATA_IMMUNIZATION);
+        permissions.add(READ_MEDICAL_DATA_LABORATORY_RESULTS);
+        permissions.add(READ_MEDICAL_DATA_MEDICATIONS);
+        permissions.add(READ_MEDICAL_DATA_PREGNANCY);
+        permissions.add(READ_MEDICAL_DATA_PROBLEMS);
+        permissions.add(READ_MEDICAL_DATA_PROCEDURES);
+        permissions.add(READ_MEDICAL_DATA_SOCIAL_HISTORY);
+        permissions.add(READ_MEDICAL_DATA_VITAL_SIGNS);
         return permissions;
     }
 

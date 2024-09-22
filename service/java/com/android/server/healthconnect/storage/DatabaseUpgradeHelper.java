@@ -30,7 +30,6 @@ import static com.android.healthfitness.flags.DatabaseVersions.MIN_SUPPORTED_DB_
 import static com.android.server.healthconnect.storage.TransactionManager.runAsTransaction;
 import static com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper.PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME;
 
-import android.annotation.NonNull;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -108,7 +107,7 @@ final class DatabaseUpgradeHelper {
      *
      * <p>See go/hc-handling-database-upgrades for things to be taken care of when upgrading.
      */
-    static void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
+    static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (isUnsupported(oldVersion)) {
             dropInitialSetOfTables(db);
         }
@@ -144,7 +143,7 @@ final class DatabaseUpgradeHelper {
         return oldVersion < upgradeVersion && upgradeVersion <= newVersion;
     }
 
-    private static void createTablesForMinSupportedVersion(@NonNull SQLiteDatabase db) {
+    private static void createTablesForMinSupportedVersion(SQLiteDatabase db) {
         for (CreateTableRequest createTableRequest : getInitialCreateTableRequests()) {
             HealthConnectDatabase.createTable(db, createTableRequest);
         }

@@ -20,22 +20,29 @@ package com.android.healthconnect.controller.permissions.app
 import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
+import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
+import com.android.healthconnect.controller.permissions.shared.DisconnectAllAppPermissionsDialogFragment
+import com.android.healthconnect.controller.permissions.shared.DisconnectAllAppPermissionsDialogFragment.Companion.DISCONNECT_EVENT
+import com.android.healthconnect.controller.permissions.shared.DisconnectAllAppPermissionsDialogFragment.Companion.KEY_DELETE_DATA
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
+import com.android.healthconnect.controller.utils.showLoadingDialog
 import com.android.settingslib.widget.AppHeaderPreference
 import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
@@ -80,20 +87,54 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (requireArguments().containsKey(EXTRA_PACKAGE_NAME) &&
-            requireArguments().getString(EXTRA_PACKAGE_NAME) != null) {
+        if (
+            requireArguments().containsKey(EXTRA_PACKAGE_NAME) &&
+                requireArguments().getString(EXTRA_PACKAGE_NAME) != null
+        ) {
             packageName = requireArguments().getString(EXTRA_PACKAGE_NAME)!!
         }
-        if (requireArguments().containsKey(EXTRA_APP_NAME) &&
-            requireArguments().getString(EXTRA_APP_NAME) != null) {
+        if (
+            requireArguments().containsKey(EXTRA_APP_NAME) &&
+                requireArguments().getString(EXTRA_APP_NAME) != null
+        ) {
             appName = requireArguments().getString(EXTRA_APP_NAME)!!
         }
 
         appPermissionViewModel.loadPermissionsForPackage(packageName)
 
+        appPermissionViewModel.revokeAllHealthPermissionsState.observe(viewLifecycleOwner) { state
+            ->
+            when (state) {
+                is RevokeAllState.Loading -> {
+                    showLoadingDialog()
+                }
+                else -> {
+                    dismissLoadingDialog()
+                }
+            }
+        }
+
+        appPermissionViewModel.atLeastOneHealthPermissionGranted.observe(viewLifecycleOwner) {
+            granted ->
+            setupManageAppPreferenceCategory(granted)
+        }
+
+        childFragmentManager.setFragmentResultListener(DISCONNECT_EVENT, this) { _, bundle ->
+            val permissionsUpdated = revokeAllPermissions()
+            val toastString =
+                if (!permissionsUpdated) {
+                    R.string.default_error
+                } else {
+                    R.string.disconnect_all_health_permissions_success_toast
+                }
+            Toast.makeText(requireContext(), toastString, Toast.LENGTH_SHORT).show()
+            if (bundle.containsKey(KEY_DELETE_DATA) && bundle.getBoolean(KEY_DELETE_DATA)) {
+                appPermissionViewModel.deleteAppData(packageName, appName)
+            }
+        }
+
         setupHeader()
         setupManagePermissionsPreferenceCategory()
-        setupManageAppPreferenceCategory()
         setupFooter()
     }
 
@@ -120,10 +161,13 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
                             bundleOf(
                                 EXTRA_PACKAGE_NAME to packageName,
                                 EXTRA_APP_NAME to appName,
-                                SHOW_MANAGE_APP_SECTION to false))
+                                SHOW_MANAGE_APP_SECTION to false,
+                            ),
+                        )
                     true
                 }
-            })
+            }
+        )
 
         managePermissionsCategory.addPreference(
             HealthPreference(requireContext()).also {
@@ -136,10 +180,13 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
                             bundleOf(
                                 EXTRA_PACKAGE_NAME to packageName,
                                 EXTRA_APP_NAME to appName,
-                                SHOW_MANAGE_APP_SECTION to false))
+                                SHOW_MANAGE_APP_SECTION to false,
+                            ),
+                        )
                     true
                 }
-            })
+            }
+        )
 
         additionalAccessViewModel.loadAdditionalAccessPreferences(packageName)
         additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
@@ -153,7 +200,9 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
                             val extras = bundleOf(EXTRA_PACKAGE_NAME to packageName)
                             findNavController()
                                 .navigate(
-                                    R.id.action_combinedPermissions_to_additionalAccess, extras)
+                                    R.id.action_combinedPermissions_to_additionalAccess,
+                                    extras,
+                                )
                             true
                         }
                     }
@@ -168,7 +217,7 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
         return managePermissionsCategory.children.none { it.key == KEY_ADDITIONAL_ACCESS }
     }
 
-    private fun setupManageAppPreferenceCategory() {
+    private fun setupManageAppPreferenceCategory(enableRemoveAllAccess: Boolean) {
         manageAppCategory.removeAll()
         manageAppCategory.addPreference(
             HealthPreference(requireContext()).also {
@@ -177,10 +226,22 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
                     findNavController()
                         .navigate(
                             R.id.action_combinedPermissions_to_appData,
-                            bundleOf(EXTRA_PACKAGE_NAME to packageName, EXTRA_APP_NAME to appName))
+                            bundleOf(EXTRA_PACKAGE_NAME to packageName, EXTRA_APP_NAME to appName),
+                        )
                     true
                 }
-            })
+            }
+        )
+        manageAppCategory.addPreference(
+            HealthPreference(requireContext()).also {
+                it.title = getString(R.string.remove_access_for_this_app)
+                it.setOnPreferenceClickListener {
+                    showRevokeAllPermissions()
+                    true
+                }
+                it.isEnabled = enableRemoveAllAccess
+            }
+        )
     }
 
     private fun setupFooter() {
@@ -193,7 +254,7 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
                 PARAGRAPH_SEPARATOR +
                 getString(R.string.manage_permissions_rationale, appName)
         connectedAppFooter.title = title
-        connectedAppFooter.setContentDescription(contentDescription)
+        connectedAppFooter.contentDescription = contentDescription
         if (healthPermissionReader.isRationaleIntentDeclared(packageName)) {
             connectedAppFooter.setLearnMoreText(getString(R.string.manage_permissions_learn_more))
             logger.logImpression(AppAccessElement.PRIVACY_POLICY_LINK)
@@ -204,5 +265,14 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
                 startActivity(startRationaleIntent)
             }
         }
+    }
+
+    private fun showRevokeAllPermissions() {
+        DisconnectAllAppPermissionsDialogFragment(appName)
+            .show(childFragmentManager, DisconnectAllAppPermissionsDialogFragment.TAG)
+    }
+
+    private fun revokeAllPermissions(): Boolean {
+        return appPermissionViewModel.revokeAllHealthPermissions(packageName)
     }
 }

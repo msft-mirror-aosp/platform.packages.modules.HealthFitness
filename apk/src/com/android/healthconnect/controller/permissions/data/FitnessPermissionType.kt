@@ -15,7 +15,11 @@
  */
 package com.android.healthconnect.controller.permissions.data
 
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.health.connect.HealthPermissionCategory
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromFitnessPermissionType
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 
 // TODO (b/299880830) possibly rename "category" to something else
 enum class FitnessPermissionType(val category: Int) : HealthPermissionType {
@@ -72,14 +76,16 @@ enum class FitnessPermissionType(val category: Int) : HealthPermissionType {
     // WELLNESS
     MINDFULNESS(HealthPermissionCategory.MINDFULNESS);
 
-    override fun lowerCaseLabel() : Int =
+    override fun lowerCaseLabel(): Int =
         FitnessPermissionStrings.fromPermissionType(this).lowercaseLabel
 
-    override fun upperCaseLabel() : Int =
+    override fun upperCaseLabel(): Int =
         FitnessPermissionStrings.fromPermissionType(this).uppercaseLabel
+
+    override fun icon(context: Context): Drawable? = fromFitnessPermissionType(this).icon(context)
 }
 
-fun isValidFitnessPermissionType(permissionTypeString: String) : Boolean {
+fun isValidFitnessPermissionType(permissionTypeString: String): Boolean {
     try {
         FitnessPermissionType.valueOf(permissionTypeString)
     } catch (e: IllegalArgumentException) {
@@ -101,7 +107,8 @@ fun fromHealthPermissionCategory(healthPermissionCategory: Int): HealthPermissio
         HealthPermissionCategory.PLANNED_EXERCISE -> FitnessPermissionType.PLANNED_EXERCISE
         HealthPermissionCategory.FLOORS_CLIMBED -> FitnessPermissionType.FLOORS_CLIMBED
         HealthPermissionCategory.STEPS -> FitnessPermissionType.STEPS
-        HealthPermissionCategory.TOTAL_CALORIES_BURNED -> FitnessPermissionType.TOTAL_CALORIES_BURNED
+        HealthPermissionCategory.TOTAL_CALORIES_BURNED ->
+            FitnessPermissionType.TOTAL_CALORIES_BURNED
         HealthPermissionCategory.VO2_MAX -> FitnessPermissionType.VO2_MAX
         HealthPermissionCategory.WHEELCHAIR_PUSHES -> FitnessPermissionType.WHEELCHAIR_PUSHES
         HealthPermissionCategory.POWER -> FitnessPermissionType.POWER

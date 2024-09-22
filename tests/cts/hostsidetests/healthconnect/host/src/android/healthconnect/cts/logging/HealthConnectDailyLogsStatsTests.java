@@ -283,6 +283,30 @@ public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements 
         assertThat(atom.getIsMonthlyActiveUser()).isFalse();
     }
 
+    public void testIsUserActive_deleteRecord_userNotMonthlyActive() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+
+        ConfigUtils.uploadConfigForPushedAtoms(
+                getDevice(),
+                TEST_APP_PKG_NAME,
+                new int[] {ApiExtensionAtoms.HEALTH_CONNECT_USAGE_STATS_FIELD_NUMBER});
+        triggerTestInTestApp(
+                HEALTH_CONNECT_SERVICE_LOG_TESTS_ACTIVITY, "testHealthConnectDeleteRecords");
+        increaseDeviceTimeByDays(/* numberOfDays= */ 35);
+
+        List<StatsLog.EventMetricData> data =
+                getEventMetricDataList(/* testName= */ null, NUMBER_OF_RETRIES);
+        assertThat(data.size()).isAtLeast(1);
+        HealthConnectUsageStats atom =
+                data.get(data.size() - 1)
+                        .getAtom()
+                        .getExtension(ApiExtensionAtoms.healthConnectUsageStats);
+
+        assertThat(atom.getIsMonthlyActiveUser()).isFalse();
+    }
+
     private List<StatsLog.EventMetricData> getEventMetricDataList(String testName, int retryCount)
             throws Exception {
         if (retryCount == 0) {

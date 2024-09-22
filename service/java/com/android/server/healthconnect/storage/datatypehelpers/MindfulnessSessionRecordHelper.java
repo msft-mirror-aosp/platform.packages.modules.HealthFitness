@@ -32,8 +32,6 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.MindfulnessSessionRecordInternal;
 import android.util.Pair;
 
-import androidx.annotation.NonNull;
-
 import com.android.server.healthconnect.storage.request.AggregateParams;
 
 import java.util.List;
@@ -57,7 +55,7 @@ public class MindfulnessSessionRecordHelper
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull MindfulnessSessionRecordInternal recordInternal) {
+            Cursor cursor, MindfulnessSessionRecordInternal recordInternal) {
         recordInternal.setMindfulnessSessionType(getCursorInt(cursor, TYPE_COLUMN_NAME));
         recordInternal.setTitle(getCursorString(cursor, TITLE_COLUMN_NAME));
         recordInternal.setNotes(getCursorString(cursor, NOTES_COLUMN_NAME));
@@ -65,14 +63,12 @@ public class MindfulnessSessionRecordHelper
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull MindfulnessSessionRecordInternal recordInternal) {
+            ContentValues contentValues, MindfulnessSessionRecordInternal recordInternal) {
         contentValues.put(TYPE_COLUMN_NAME, recordInternal.getMindfulnessSessionType());
         contentValues.put(TITLE_COLUMN_NAME, recordInternal.getTitle());
         contentValues.put(NOTES_COLUMN_NAME, recordInternal.getNotes());
     }
 
-    @NonNull
     @Override
     List<Pair<String, String>> getIntervalRecordColumnInfo() {
         return List.of(
@@ -81,7 +77,6 @@ public class MindfulnessSessionRecordHelper
                 Pair.create(NOTES_COLUMN_NAME, TEXT_NULL));
     }
 
-    @NonNull
     @Override
     public String getMainTableName() {
         return TABLE_NAME;
@@ -99,7 +94,7 @@ public class MindfulnessSessionRecordHelper
     }
 
     /** Creates the mindfulness session table. */
-    public void applyMindfulnessSessionUpgrade(@NonNull SQLiteDatabase db) {
+    public void applyMindfulnessSessionUpgrade(SQLiteDatabase db) {
         createTable(db, getCreateTableRequest());
     }
 }

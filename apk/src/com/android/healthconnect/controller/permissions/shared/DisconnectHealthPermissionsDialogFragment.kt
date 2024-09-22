@@ -33,9 +33,13 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-/** A Dialog Fragment to get confirmation from user for disconnecting from Health Connect. */
+/**
+ * A Dialog Fragment to get confirmation from user for revoking all fitness or medical permissions
+ * of an app.
+ */
 @AndroidEntryPoint(DialogFragment::class)
-class DisconnectDialogFragment constructor() : Hilt_DisconnectDialogFragment() {
+class DisconnectHealthPermissionsDialogFragment() :
+    Hilt_DisconnectHealthPermissionsDialogFragment() {
 
     private val viewModel: AdditionalAccessViewModel by activityViewModels()
 
@@ -45,7 +49,7 @@ class DisconnectDialogFragment constructor() : Hilt_DisconnectDialogFragment() {
     }
 
     companion object {
-        const val TAG = "DisconnectDialogFragment"
+        const val TAG = "DisconnectHealthPermissionsDialogFragment"
         const val DISCONNECT_CANCELED_EVENT = "DISCONNECT_CANCELED_EVENT"
         const val DISCONNECT_ALL_EVENT = "DISCONNECT_ALL_EVENT"
         const val KEY_DELETE_DATA = "KEY_DELETE_DATA"
@@ -66,6 +70,7 @@ class DisconnectDialogFragment constructor() : Hilt_DisconnectDialogFragment() {
         if (savedInstanceState != null) {
             appName = savedInstanceState.getString(KEY_APP_NAME, "")
             enableDeleteData = savedInstanceState.getBoolean(KEY_ENABLE_DELETE_DATA, true)
+
             includeBackgroundRead =
                 savedInstanceState.getBoolean(KEY_INCLUDE_BACKGROUND_READ, false)
             includeHistoryRead = savedInstanceState.getBoolean(KEY_INCLUDE_HISTORY_READ, false)
@@ -113,18 +118,23 @@ class DisconnectDialogFragment constructor() : Hilt_DisconnectDialogFragment() {
                 .setView(body)
                 .setNeutralButton(
                     android.R.string.cancel,
-                    DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CANCEL_BUTTON) { _, _ ->
-                        setFragmentResult(DISCONNECT_CANCELED_EVENT, bundleOf())
-                    }
+                    DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CANCEL_BUTTON,
+                ) { _, _ ->
+                    setFragmentResult(DISCONNECT_CANCELED_EVENT, bundleOf())
+                }
                 .setPositiveButton(
                     R.string.permissions_disconnect_dialog_disconnect,
-                    DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON) { _, _ ->
-                        setFragmentResult(
-                            DISCONNECT_ALL_EVENT, bundleOf(KEY_DELETE_DATA to checkBox.isChecked))
-                    }
+                    DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON,
+                ) { _, _ ->
+                    setFragmentResult(
+                        DISCONNECT_ALL_EVENT,
+                        bundleOf(KEY_DELETE_DATA to checkBox.isChecked),
+                    )
+                }
                 .setAdditionalLogging {
                     logger.logImpression(
-                        DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
+                        DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX
+                    )
                 }
                 .create()
         dialog.setCanceledOnTouchOutside(false)

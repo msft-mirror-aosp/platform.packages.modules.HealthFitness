@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect;
 
-import android.annotation.NonNull;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.health.connect.ratelimiter.RateLimiter;
@@ -236,7 +235,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
     }
 
     /** Returns initialised instance of this class. */
-    @NonNull
     public static HealthConnectDeviceConfigManager getInitialisedInstance() {
         Objects.requireNonNull(sDeviceConfigManager);
 

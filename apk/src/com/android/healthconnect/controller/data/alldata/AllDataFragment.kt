@@ -28,10 +28,11 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment.Companion.CATEGORY_KEY
+import com.android.healthconnect.controller.data.alldata.AllDataViewModel.AllDataDeletionScreenState.DELETE
+import com.android.healthconnect.controller.data.alldata.AllDataViewModel.AllDataDeletionScreenState.VIEW
 import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.data.entries.EntriesViewModel
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.START_DELETION_KEY
@@ -39,7 +40,6 @@ import com.android.healthconnect.controller.selectabledeletion.DeletionFragment
 import com.android.healthconnect.controller.selectabledeletion.DeletionPermissionTypesPreference
 import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.selectabledeletion.SelectAllCheckboxPreference
-import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
 import com.android.healthconnect.controller.shared.HealthDataCategoryInt
 import com.android.healthconnect.controller.shared.children
@@ -51,14 +51,11 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.pref
-import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.healthconnect.controller.utils.setupMenu
+import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import com.android.healthconnect.controller.data.alldata.AllDataViewModel.AllDataDeletionScreenState.VIEW
-import com.android.healthconnect.controller.data.alldata.AllDataViewModel.AllDataDeletionScreenState.DELETE
-
 
 /** Fragment for fitness permission types. */
 @AndroidEntryPoint(HealthPreferenceFragment::class)
@@ -242,13 +239,12 @@ open class AllDataFragment : Hilt_AllDataFragment() {
             return
         }
 
-        setupSelectAllPreference(screenState = viewModel.getScreenState() )
+        setupSelectAllPreference(screenState = viewModel.getScreenState())
 
         setupMenu()
 
         populatedCategories.forEach { permissionTypesPerCategory ->
             val category = permissionTypesPerCategory.category
-            val categoryIcon = category.icon(requireContext())
 
             val preferenceCategory =
                 if (showMedicalData) {
@@ -263,16 +259,20 @@ open class AllDataFragment : Hilt_AllDataFragment() {
             permissionTypesPerCategory.data
                 .sortedBy { getString(it.upperCaseLabel()) }
                 .forEach { permissionType ->
+                    val icon = permissionType.icon(requireContext())
                     preferenceCategory.addPreference(
-                        getPermissionTypePreference(permissionType, categoryIcon))
+                        getPermissionTypePreference(permissionType, icon)
+                    )
                 }
         }
     }
 
     private fun onDeletionMethod(preference: DeletionPermissionTypesPreference): () -> Unit {
         return {
-            if (preference.getHealthPermissionType() !in
-                viewModel.setOfPermissionTypesToBeDeleted.value.orEmpty()) {
+            if (
+                preference.getHealthPermissionType() !in
+                    viewModel.setOfPermissionTypesToBeDeleted.value.orEmpty()
+            ) {
                 viewModel.addToDeleteSet(preference.getHealthPermissionType())
             } else {
                 viewModel.removeFromDeleteSet(preference.getHealthPermissionType())
@@ -281,7 +281,10 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         }
     }
 
-    private fun updateMenu(screenState: AllDataViewModel.AllDataDeletionScreenState, hasData: Boolean = true) {
+    private fun updateMenu(
+        screenState: AllDataViewModel.AllDataDeletionScreenState,
+        hasData: Boolean = true,
+    ) {
         if (!hasData && showMedicalData) {
             setupSharedMenu(viewLifecycleOwner, logger)
             return
@@ -334,6 +337,11 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         iterateThroughPreferenceGroup { permissionTypePreference ->
             permissionTypePreference.showCheckbox(screenState == DELETE)
         }
+
+        // scroll to top
+        if (screenState == DELETE) {
+            scrollToPreference(KEY_SELECT_ALL)
+        }
     }
 
     private fun setupMenu() {
@@ -369,11 +377,14 @@ open class AllDataFragment : Hilt_AllDataFragment() {
 
                 preference.icon = categoryIcon
                 preference.setTitle(permissionType.upperCaseLabel())
-
                 preference.setHealthPermissionType(permissionType)
 
                 preference.setOnPreferenceClickListener(onDeletionMethod(preference)) {
-                    entriesViewModel.setScreenState(EntriesViewModel.EntriesDeletionScreenState.VIEW)
+                    entriesViewModel.setScreenState(
+                        EntriesViewModel.EntriesDeletionScreenState.VIEW
+                    )
+                    entriesViewModel.setAllEntriesSelectedValue(false)
+                    entriesViewModel.setDataType(null)
                     entriesViewModel.currentSelectedDate.value = null
                     findNavController()
                         .navigate(

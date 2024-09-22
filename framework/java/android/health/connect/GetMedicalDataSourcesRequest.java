@@ -19,6 +19,7 @@ package android.health.connect;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import static java.util.Objects.hash;
+import static java.util.Objects.requireNonNull;
 
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
@@ -57,11 +58,11 @@ public final class GetMedicalDataSourcesRequest implements Parcelable {
                 }
             };
 
-    @NonNull private final Set<String> mPackageNames = new ArraySet<>();
+    @NonNull private final Set<String> mPackageNames;
 
     private GetMedicalDataSourcesRequest(@NonNull Set<String> packageNames) {
         Objects.requireNonNull(packageNames);
-        mPackageNames.addAll(packageNames);
+        mPackageNames = packageNames;
     }
 
     /**
@@ -70,7 +71,7 @@ public final class GetMedicalDataSourcesRequest implements Parcelable {
      */
     private GetMedicalDataSourcesRequest(@NonNull Parcel in) {
         Objects.requireNonNull(in);
-        mPackageNames.addAll(in.createStringArrayList());
+        mPackageNames = new ArraySet<>(requireNonNull(in.createStringArrayList()));
     }
 
     /**
