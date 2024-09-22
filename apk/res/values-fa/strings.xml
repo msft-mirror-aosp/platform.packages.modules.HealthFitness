@@ -907,7 +907,7 @@
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"هروقت دوباره دردسترس قرار بگیرد اعلان دریافت خواهید کرد."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"متوجه‌ام"</string>
     <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"یکپارچه‌سازی Health Connect تکمیل نشد"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"بیشتر بخوانید"</string>
+    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"جزئیات بیشتر"</string>
     <string name="migration_complete_notification_title" msgid="4988631739109332404">"یکپارچه‌سازی Health Connect تکمیل شد"</string>
     <string name="migration_complete_notification_action" msgid="5350322865206331186">"باز کردن"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"ویژگی‌های جدید"</string>

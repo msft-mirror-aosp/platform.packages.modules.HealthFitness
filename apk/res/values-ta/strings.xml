@@ -409,7 +409,7 @@
     <string name="confirming_question_category_one_week" msgid="1790565625674277693">"கடந்த 7 நாட்களுக்கான <xliff:g id="CATEGORY">%s</xliff:g> தரவை நிரந்தரமாக நீக்க வேண்டுமா?"</string>
     <string name="confirming_question_category_one_month" msgid="9181788460112796273">"கடந்த 30 நாட்களுக்கான <xliff:g id="CATEGORY">%s</xliff:g> தரவை நிரந்தரமாக நீக்க வேண்டுமா?"</string>
     <string name="confirming_question_app_data_all" msgid="4818571921949673097">"இதுவரையிலான <xliff:g id="APP_DATA">%s</xliff:g> தரவை நிரந்தரமாக நீக்க வேண்டுமா?"</string>
-    <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"கடந்த 24 மணிநேரத்திற்கான <xliff:g id="APP_DATA">%s</xliff:g> தரவை நிரந்தரமாக நீக்க வேண்டுமா?"</string>
+    <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"கடந்த 24 மணிநேர <xliff:g id="APP_DATA">%s</xliff:g> தரவை நிரந்தரமாக நீக்கவா?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"கடந்த 7 நாட்களுக்கான <xliff:g id="APP_DATA">%s</xliff:g> தரவை நிரந்தரமாக நீக்க வேண்டுமா?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"கடந்த 30 நாட்களுக்கான <xliff:g id="APP_DATA">%s</xliff:g> தரவை நிரந்தரமாக நீக்க வேண்டுமா?"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Health Connectடில் இருந்து <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> அனுமதிகள் அனைத்தையும் அகற்று"</string>

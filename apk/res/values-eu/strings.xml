@@ -625,7 +625,7 @@
     <string name="vo2_metabolic_cart" msgid="4724757223373717896">"Metabolismoa neurtzeko tresna"</string>
     <string name="vo2_heart_rate_ratio" msgid="8707274294125886148">"Bihotz-maiztasuna"</string>
     <string name="vo2_cooper_test" msgid="4713211595719031518">"Cooper proba"</string>
-    <string name="vo2_multistage_fitness_test" msgid="908967547838751749">"Hainbat faseko ongizate-proba"</string>
+    <string name="vo2_multistage_fitness_test" msgid="908967547838751749">"Fase bat baino gehiagoko ongizate-proba"</string>
     <string name="vo2_rockport_fitness_test" msgid="2951465532122577281">"Rockport ongizate-proba"</string>
     <string name="vo2_other" msgid="5359013487285233550">"Bestelakoak"</string>
     <string name="mucus_dry" msgid="1065582777971603874">"Lehorra"</string>
