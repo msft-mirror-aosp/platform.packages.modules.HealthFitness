@@ -204,6 +204,7 @@ import com.android.server.healthconnect.storage.utils.StorageUtils;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -369,16 +370,20 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         mHealthDataCategoryPriorityHelper);
         mMigrationUiStateManager = migrationUiStateManager;
         mExportImportSettingsStorage = exportImportSettingsStorage;
-        mImportManager =
-                Flags.exportImport()
-                        ? new ImportManager(
-                                mAppInfoHelper,
-                                mContext,
-                                mExportImportSettingsStorage,
-                                mTransactionManager,
-                                mDeviceInfoHelper,
-                                mHealthDataCategoryPriorityHelper)
-                        : null;
+        if (Flags.exportImport()) {
+            Clock clockForLogging = Flags.exportImportFastFollow() ? Clock.systemUTC() : null;
+            mImportManager =
+                    new ImportManager(
+                            mAppInfoHelper,
+                            mContext,
+                            mExportImportSettingsStorage,
+                            mTransactionManager,
+                            mDeviceInfoHelper,
+                            mHealthDataCategoryPriorityHelper,
+                            clockForLogging);
+        } else {
+            mImportManager = null;
+        }
         mExportManager = exportManager;
         migrationCleaner.attachTo(migrationStateManager);
         mMigrationUiStateManager.attachTo(migrationStateManager);
