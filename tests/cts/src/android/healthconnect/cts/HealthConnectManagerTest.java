@@ -70,6 +70,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.getUpsertMedicalRes
 import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
 import static android.healthconnect.cts.utils.TestUtils.getRecordById;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
+import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
 import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
@@ -2466,7 +2467,7 @@ public class HealthConnectManagerTest {
         for (int i = 0; i < MAXIMUM_PAGE_SIZE + 1; i++) {
             ids.add(
                     new MedicalResourceId(
-                            Integer.toString(i),
+                            UUID.randomUUID().toString(),
                             FHIR_RESOURCE_TYPE_IMMUNIZATION,
                             FHIR_RESOURCE_ID_IMMUNIZATION));
         }
@@ -2812,32 +2813,35 @@ public class HealthConnectManagerTest {
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByRequest_badDataSourceId_doesntDeleteAll()
-            throws InterruptedException {
+            throws InterruptedException, NoSuchFieldException, IllegalAccessException {
         // Create the datasource
         MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
         // Insert some data
         MedicalResource resource1 = upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        HealthConnectReceiver<Void> deleteCallback = new HealthConnectReceiver<>();
+        HealthConnectReceiver<List<MedicalResource>> readReceiver = new HealthConnectReceiver<>();
+        DeleteMedicalResourcesRequest deleteRequest =
+                new DeleteMedicalResourcesRequest.Builder().addDataSourceId(DATA_SOURCE_ID).build();
+        // Change the delete request to use an illegal id for this test.
+        setFieldValueUsingReflection(deleteRequest, "mDataSourceIds", Set.of("illegal id"));
+        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
 
-        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
-        DeleteMedicalResourcesRequest request =
-                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("illegal id").build();
-        SystemUtil.runWithShellPermissionIdentity(
-                () ->
-                        mManager.deleteMedicalResources(
-                                request, Executors.newSingleThreadExecutor(), callback),
-                MANAGE_HEALTH_DATA);
-
-        assertThat(callback.assertAndGetException().getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
-        // Test resource is still present
-        HealthConnectReceiver<List<MedicalResource>> readReceiver2 = new HealthConnectReceiver<>();
-        SystemUtil.runWithShellPermissionIdentity(
-                () ->
-                        mManager.readMedicalResources(
-                                List.of(resource1.getId()),
-                                Executors.newSingleThreadExecutor(),
-                                readReceiver2));
-        assertThat(readReceiver2.getResponse()).containsExactly(resource1);
+        try {
+            assertThrows(
+                    IllegalArgumentException.class,
+                    () ->
+                            mManager.deleteMedicalResources(
+                                    deleteRequest,
+                                    Executors.newSingleThreadExecutor(),
+                                    deleteCallback));
+            // Test resource is still present.
+            mManager.readMedicalResources(
+                    List.of(resource1.getId()), Executors.newSingleThreadExecutor(), readReceiver);
+            assertThat(readReceiver.getResponse()).containsExactly(resource1);
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
     }
 
     @Test

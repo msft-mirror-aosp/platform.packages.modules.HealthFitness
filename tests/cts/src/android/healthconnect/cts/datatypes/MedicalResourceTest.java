@@ -117,6 +117,53 @@ public class MedicalResourceTest {
     }
 
     @Test
+    public void testMedicalResourceBuilder_constructWithInvalidMedicalResourceType_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        new MedicalResource.Builder(
+                                -1, DATA_SOURCE_ID, FHIR_VERSION_R4, getFhirResource()));
+    }
+
+    @Test
+    public void testMedicalResourceBuilder_setInvalidMedicalResourceType_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        new MedicalResource.Builder(
+                                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                                        DATA_SOURCE_ID,
+                                        FHIR_VERSION_R4,
+                                        getFhirResource())
+                                .setType(-1));
+    }
+
+    @Test
+    public void testMedicalResourceBuilder_constructWithInvalidDataSourceId_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        new MedicalResource.Builder(
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                                "1",
+                                FHIR_VERSION_R4,
+                                getFhirResource()));
+    }
+
+    @Test
+    public void testMedicalResourceBuilder_setInvalidDataSourceId_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        new MedicalResource.Builder(
+                                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                                        DATA_SOURCE_ID,
+                                        FHIR_VERSION_R4,
+                                        getFhirResource())
+                                .setDataSourceId("1"));
+    }
+
+    @Test
     public void testMedicalResource_toString() {
         FhirResource fhirResource = getFhirResource();
         MedicalResource resource =
@@ -193,6 +240,21 @@ public class MedicalResourceTest {
             throws NoSuchFieldException, IllegalAccessException {
         MedicalResource original = getMedicalResource();
         setFieldValueUsingReflection(original, "mType", -1);
+
+        Parcel parcel = Parcel.obtain();
+        original.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> MedicalResource.CREATOR.createFromParcel(parcel));
+    }
+
+    @Test
+    public void testRestoreInvalidDataSourceIdFromParcel_expectException()
+            throws NoSuchFieldException, IllegalAccessException {
+        MedicalResource original = getMedicalResource();
+        setFieldValueUsingReflection(original, "mDataSourceId", "1");
 
         Parcel parcel = Parcel.obtain();
         original.writeToParcel(parcel, 0);

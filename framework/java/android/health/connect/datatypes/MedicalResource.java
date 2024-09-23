@@ -16,6 +16,7 @@
 
 package android.health.connect.datatypes;
 
+import static android.health.connect.datatypes.MedicalDataSource.validateMedicalDataSourceIds;
 import static android.health.connect.datatypes.validation.ValidationUtils.validateIntDefValue;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
@@ -125,7 +126,8 @@ public final class MedicalResource implements Parcelable {
     /**
      * @param type The medical resource type assigned by the Android Health Platform at insertion
      *     time.
-     * @param dataSourceId Where the data comes from.
+     * @param dataSourceId The unique identifier of the existing {@link MedicalDataSource},
+     *     representing where the data comes from.
      * @param fhirVersion The {@link FhirVersion} object that represents the FHIR version.
      * @param fhirResource The enclosed {@link FhirResource} object.
      */
@@ -138,6 +140,7 @@ public final class MedicalResource implements Parcelable {
         requireNonNull(fhirVersion);
         requireNonNull(fhirResource);
         validateMedicalResourceType(type);
+        validateMedicalDataSourceIds(Set.of(dataSourceId));
 
         mType = type;
         mDataSourceId = dataSourceId;
@@ -155,6 +158,7 @@ public final class MedicalResource implements Parcelable {
         mType = in.readInt();
         validateMedicalResourceType(mType);
         mDataSourceId = requireNonNull(in.readString());
+        validateMedicalDataSourceIds(Set.of(mDataSourceId));
         mFhirVersion =
                 requireNonNull(
                         in.readParcelable(FhirVersion.class.getClassLoader(), FhirVersion.class));
@@ -302,9 +306,12 @@ public final class MedicalResource implements Parcelable {
         /**
          * @param type The medical resource type assigned by the Android Health Platform at
          *     insertion time.
-         * @param dataSourceId Where the data comes from.
+         * @param dataSourceId The unique identifier of the existing {@link MedicalDataSource},
+         *     representing where the data comes from.
          * @param fhirVersion The enclosed {@link FhirVersion} object.
          * @param fhirResource The enclosed {@link FhirResource} object.
+         * @throws IllegalArgumentException if the provided {@code type} is not supported, or {@code
+         *     dataSourceId} is not a valid ID.
          */
         public Builder(
                 @MedicalResourceType int type,
@@ -315,6 +322,7 @@ public final class MedicalResource implements Parcelable {
             requireNonNull(fhirVersion);
             requireNonNull(fhirResource);
             validateMedicalResourceType(type);
+            validateMedicalDataSourceIds(Set.of(dataSourceId));
 
             mType = type;
             mDataSourceId = dataSourceId;
@@ -349,6 +357,8 @@ public final class MedicalResource implements Parcelable {
         /**
          * Sets the medical resource type, assigned by the Android Health Platform at insertion
          * time.
+         *
+         * @throws IllegalArgumentException if the provided {@code type} is not supported.
          */
         @NonNull
         public Builder setType(@MedicalResourceType int type) {
@@ -357,10 +367,16 @@ public final class MedicalResource implements Parcelable {
             return this;
         }
 
-        /** Sets the data source ID where the data comes from. */
+        /**
+         * Sets the data source ID where the data comes from. This should be an ID of the existing
+         * {@link MedicalDataSource}.
+         *
+         * @throws IllegalArgumentException if the provided {@code dataSourceId} is not a valid ID.
+         */
         @NonNull
         public Builder setDataSourceId(@NonNull String dataSourceId) {
             requireNonNull(dataSourceId);
+            validateMedicalDataSourceIds(Set.of(dataSourceId));
             mDataSourceId = dataSourceId;
             return this;
         }
@@ -373,7 +389,7 @@ public final class MedicalResource implements Parcelable {
             return this;
         }
 
-        /** Sets the enclosed {@link FhirResource} object */
+        /** Sets the enclosed {@link FhirResource} object. */
         @NonNull
         public Builder setFhirResource(@NonNull FhirResource fhirResource) {
             requireNonNull(fhirResource);
