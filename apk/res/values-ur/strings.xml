@@ -267,9 +267,12 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"جلد کا درجہ حرارت"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"جلد کا درجہ حرارت پڑھیں"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"جلد کا درجہ حرارت لکھیں"</string>
-    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"تمام طبی ڈیٹا"</string>
-    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"تمام طبی ڈیٹا"</string>
-    <string name="all_medical_data_content_description" msgid="6103488863059447886">"تمام طبی ڈیٹا لکھیں"</string>
+    <!-- no translation found for all_medical_data_uppercase_label (2380759160541898783) -->
+    <skip />
+    <!-- no translation found for all_medical_data_lowercase_label (6293814928992081842) -->
+    <skip />
+    <!-- no translation found for all_medical_data_content_description (4846586780533295022) -->
+    <skip />
     <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"الرجیز"</string>
     <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"الرجیز"</string>
     <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"الرجیز پڑھیں"</string>
@@ -282,6 +285,9 @@
     <skip />
     <!-- no translation found for laboratory_results_content_description (5882338877203692484) -->
     <skip />
+    <string name="medications_uppercase_label" msgid="4783281053427990225">"ادویات"</string>
+    <string name="medications_lowercase_label" msgid="7808038774503092207">"ادویات"</string>
+    <string name="medications_content_description" msgid="6165382876281780190">"ادویات کے ڈیٹا کو پڑھیں"</string>
     <!-- no translation found for pregnancy_uppercase_label (5979925175194337864) -->
     <skip />
     <!-- no translation found for pregnancy_lowercase_label (810439290131044517) -->
@@ -357,7 +363,18 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"منتخب کردہ یوم"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"پچھلا دن"</string>
     <string name="default_error" msgid="7966868260616403475">"کچھ غلط ہو گیا۔ براہ کرم دوبارہ کوشش کریں۔"</string>
-    <string name="raw_fhir_content_description" msgid="4869120157736279594">"تفصیلی صحت کا ریکارڈ"</string>
+    <!-- no translation found for unkwown_resource (7932225227431922125) -->
+    <skip />
+    <!-- no translation found for raw_fhir_open_bracket (7974657451368655325) -->
+    <skip />
+    <!-- no translation found for raw_fhir_closed_bracket (9084379463440675078) -->
+    <skip />
+    <!-- no translation found for raw_fhir_field_value (369633095565031835) -->
+    <skip />
+    <!-- no translation found for raw_fhir_value (8627152854130338531) -->
+    <skip />
+    <!-- no translation found for raw_fhir_content_description (1491420802097635439) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"اس اجازت کے ساتھ ایپس آپ کی صحت اور تندرستی سے متعلق تمام ڈیٹا کو پڑھ اور لکھ سکتی ہیں۔"</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"کنٹرول کریں کہ Health Connect میں اسٹور کردہ ڈیٹا تک کن ایپس کی رسائی ہے۔ وہ ڈیٹا جسے ایپ پڑھ یا لکھ سکتی ہے کا جائزہ لینے کے لیے ایپ پر تھپتھپائیں۔"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"اجازت یافتہ رسائی"</string>
@@ -1072,12 +1089,6 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"اس ایپ کے لیے پس منظر یا ماضی کے ڈیٹا تک رسائی کو آن کرنے کے لیے کم از کم ایک پڑھنے کی اجازت کو فعال کریں"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"اس ایپ کے لیے پس منظر میں ہونے پر رسائی کو آن کرنے کی خاطر کم از کم ایک پڑھنے کی اجازت کو فعال کریں"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"اس ایپ کے لیے ماضی کے ڈیٹا تک رسائی کو آن کرنے کے لیے کم از کم ایک پڑھنے کی اجازت کو فعال کریں"</string>
-    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"‫Health Connect سے تمام ڈیٹا کو مستقل طور پر حذف کریں؟"</string>
-    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"‫Health Connect سے منتخب کردہ ڈیٹا کو مستقل طور پر حذف کریں؟"</string>
-    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"تمام ڈیٹا حذف کر دیا گیا"</string>
-    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ڈیٹا حذف ہو گیا"</string>
-    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> آئٹمز حذف ہو گئے"</string>
-    <string name="select_all" msgid="837499881590001166">"سبھی کو منتخب کریں"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"‫Health Connect کو استعمال کرنا شروع کریں"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"اپنی پہلی ایپس کو ان کے درمیان صحت اور تندرستی کے ڈیٹا کا اشتراک کرنے کیلئے مطابقت پذیر بنائیں"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"سیٹ اپ کریں"</string>
@@ -1087,4 +1098,43 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"موافق ایپس دیکھیں"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"‫Health Connect کے ذریعے <xliff:g id="APP_NAME">%s</xliff:g> کے ساتھ مطابقت پذیری کرنے کیلئے مزید ایپس تلاش کریں"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"‫App اسٹور پر دیکھیں"</string>
+    <string name="select_all" msgid="837499881590001166">"سبھی کو منتخب کریں"</string>
+    <!-- no translation found for deletion_confirmation_dialog_body (7643182907084645805) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (2103387413531373305) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (2466281529240054537) -->
+    <skip />
+    <!-- no translation found for all_app_data_selected_deletion_confirmation_dialog (1077157006579195958) -->
+    <skip />
+    <!-- no translation found for some_app_data_selected_deletion_confirmation_dialog (5378172524112070270) -->
+    <skip />
+    <!-- no translation found for all_entries_selected_day_deletion_confirmation_dialog (2887646600541520444) -->
+    <skip />
+    <!-- no translation found for all_entries_selected_week_deletion_confirmation_dialog (6759608395185369048) -->
+    <skip />
+    <!-- no translation found for all_entries_selected_month_deletion_confirmation_dialog (6030161837387559132) -->
+    <skip />
+    <!-- no translation found for some_entries_selected_day_deletion_confirmation_dialog (3481363886097542565) -->
+    <skip />
+    <!-- no translation found for some_entries_selected_week_deletion_confirmation_dialog (7150217982297131340) -->
+    <skip />
+    <!-- no translation found for some_entries_selected_month_deletion_confirmation_dialog (3712014725077445591) -->
+    <skip />
+    <!-- no translation found for one_entry_selected_deletion_confirmation_dialog (4642573082594021789) -->
+    <skip />
+    <!-- no translation found for all_app_entries_selected_day_deletion_confirmation_dialog (2342034541791960151) -->
+    <skip />
+    <!-- no translation found for all_app_entries_selected_week_deletion_confirmation_dialog (24289763841770386) -->
+    <skip />
+    <!-- no translation found for all_app_entries_selected_month_deletion_confirmation_dialog (3240581815583269052) -->
+    <skip />
+    <!-- no translation found for some_app_entries_selected_day_deletion_confirmation_dialog (1030347169774815676) -->
+    <skip />
+    <!-- no translation found for some_app_entries_selected_week_deletion_confirmation_dialog (8009352719322914060) -->
+    <skip />
+    <!-- no translation found for some_app_entries_selected_month_deletion_confirmation_dialog (6617805533334875710) -->
+    <skip />
+    <!-- no translation found for one_app_entry_selected_deletion_confirmation_dialog (7101939753210640660) -->
+    <skip />
 </resources>
