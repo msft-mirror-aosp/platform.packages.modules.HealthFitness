@@ -610,6 +610,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             attributionSource.getPackageName(),
                                             request,
                                             mHealthDataCategoryPriorityHelper,
+                                            mTransactionManager,
                                             startDateAccess)
                                     .getAggregateDataResponseParcel(mAccessLogsHelper));
                     logger.setDataTypesFromRecordTypes(recordTypesToTest)
@@ -933,7 +934,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     callback.onResult(
                             new ChangeLogTokenResponse(
                                     ChangeLogsRequestHelper.getToken(
-                                            attributionSource.getPackageName(), request)));
+                                            attributionSource.getPackageName(),
+                                            request,
+                                            mTransactionManager)));
                     logger.setHealthDataServiceApiStatusSuccess();
                 },
                 logger,
@@ -982,7 +985,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                     ChangeLogsRequestHelper.TokenRequest changeLogsTokenRequest =
                             ChangeLogsRequestHelper.getRequest(
-                                    callerPackageName, request.getToken());
+                                    callerPackageName, request.getToken(), mTransactionManager);
                     tryAcquireApiCallQuota(
                             uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, logger);
                     if (changeLogsTokenRequest.getRecordTypes().isEmpty()) {
@@ -1001,7 +1004,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     }
                     final ChangeLogsHelper.ChangeLogsResponse changeLogsResponse =
                             ChangeLogsHelper.getChangeLogs(
-                                    mAppInfoHelper, changeLogsTokenRequest, request);
+                                    mAppInfoHelper,
+                                    mTransactionManager,
+                                    changeLogsTokenRequest,
+                                    request);
 
                     Map<Integer, List<UUID>> recordTypeToInsertedUuids =
                             ChangeLogsHelper.getRecordTypeToInsertedUuids(

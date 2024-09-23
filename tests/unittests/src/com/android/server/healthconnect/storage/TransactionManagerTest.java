@@ -458,6 +458,7 @@ public class TransactionManagerTest {
                         /* packageFilters= */ List.of(),
                         HealthDataCategoryPriorityHelper.getInstance(),
                         mAppInfoHelper,
+                        mTransactionManager,
                         /* startTime= */ 123,
                         /* endTime= */ 456,
                         /* startDateAccess= */ 0,
