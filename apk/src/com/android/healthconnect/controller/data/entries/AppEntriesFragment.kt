@@ -114,7 +114,7 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
             override fun onItemClicked(id: MedicalResourceId, index: Int) {
                 findNavController()
                     .navigate(
-                        R.id.action_entriesAndAccessFragment_to_rawFhirFragment,
+                        R.id.action_appEntriesFragment_to_rawFhirFragment,
                         bundleOf(RawFhirFragment.MEDICAL_RESOURCE_ID_KEY to id),
                     )
             }

@@ -19,6 +19,8 @@ import android.content.Context
 import android.content.Intent.EXTRA_PACKAGE_NAME
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.Navigation
+import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -45,14 +47,19 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionTy
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.PLANNED_EXERCISE
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.SLEEP
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
+import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION
+import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION_2
+import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION_3
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.withIndex
+import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -74,6 +81,7 @@ class AppEntriesFragmentTest {
     @BindValue val viewModel: EntriesViewModel = Mockito.mock(EntriesViewModel::class.java)
 
     private lateinit var context: Context
+    private lateinit var navHostController: TestNavHostController
 
     @Before
     fun setup() {
@@ -81,6 +89,7 @@ class AppEntriesFragmentTest {
         context = InstrumentationRegistry.getInstrumentation().context
         context.setLocale(Locale.UK)
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+        navHostController = TestNavHostController(context)
 
         Mockito.`when`(viewModel.currentSelectedDate).thenReturn(MutableLiveData())
         Mockito.`when`(viewModel.period)
@@ -257,6 +266,26 @@ class AppEntriesFragmentTest {
     }
 
     @Test
+    fun withMedicalData_showsListOfEntries() {
+        Mockito.`when`(viewModel.entries)
+            .thenReturn(MutableLiveData(With(FORMATTED_IMMUNIZATION_LIST)))
+        Mockito.`when`(viewModel.getEntriesList())
+            .thenReturn(FORMATTED_IMMUNIZATION_LIST.toMutableList())
+
+        launchFragment<AppEntriesFragment>(
+            bundleOf(
+                PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name,
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
+
+        onView(withText("Covid vaccine 1")).check(matches(isDisplayed()))
+        onView(withText("Covid vaccine 2")).check(matches(isDisplayed()))
+        onView(withText("Covid vaccine 3")).check(matches(isDisplayed()))
+    }
+
+    @Test
     fun showsData_onOrientationChange() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
         Mockito.`when`(viewModel.getEntriesList()).thenReturn(FORMATTED_STEPS_LIST.toMutableList())
@@ -285,7 +314,7 @@ class AppEntriesFragmentTest {
     }
 
     @Test
-    fun triggerDeletion_showsCheckboxes() {
+    fun inDeletion_showsCheckboxes() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
         Mockito.`when`(viewModel.getEntriesList()).thenReturn(FORMATTED_STEPS_LIST.toMutableList())
 
@@ -450,6 +479,73 @@ class AppEntriesFragmentTest {
         verify(viewModel).removeFromDeleteMap("test_id")
         verify(viewModel).removeFromDeleteMap("test_id_2")
     }
+
+    @Test
+    fun clickOnFitnessPermission_notClickable() {
+        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+        Mockito.`when`(viewModel.getEntriesList())
+            .thenReturn(FORMATTED_PLANNED_EXERCISE_LIST.toMutableList())
+
+        launchFragment<AppEntriesFragment>(
+            bundleOf(
+                PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        ) {
+            navHostController.setGraph(R.navigation.app_data_nav_graph)
+            navHostController.setCurrentDestination(R.id.appEntriesFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+        onView(withText("12 steps")).perform(click())
+
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.appEntriesFragment)
+    }
+
+    @Test
+    fun clickOnFitnessPermission_navigateToEntryDetailsFragment() {
+        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_SLEEP_LIST)))
+        Mockito.`when`(viewModel.getEntriesList()).thenReturn(FORMATTED_SLEEP_LIST.toMutableList())
+
+        launchFragment<AppEntriesFragment>(
+            bundleOf(
+                PERMISSION_TYPE_NAME_KEY to SLEEP.name,
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        ) {
+            navHostController.setGraph(R.navigation.app_data_nav_graph)
+            navHostController.setCurrentDestination(R.id.appEntriesFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+        onView(withText("7 hours")).perform(click())
+
+        assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.dataEntryDetailsFragment)
+    }
+
+    @Test
+    fun clickOnMedicalPermission_navigateToRawFhir() {
+        Mockito.`when`(viewModel.entries)
+            .thenReturn(MutableLiveData(With(FORMATTED_IMMUNIZATION_LIST)))
+        Mockito.`when`(viewModel.getEntriesList())
+            .thenReturn(FORMATTED_IMMUNIZATION_LIST.toMutableList())
+
+        launchFragment<AppEntriesFragment>(
+            bundleOf(
+                PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name,
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        ) {
+            navHostController.setGraph(R.navigation.app_data_nav_graph)
+            navHostController.setCurrentDestination(R.id.appEntriesFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+        onView(withText("Covid vaccine 2")).perform(click())
+
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.rawFhirFragment)
+    }
 }
 
 private val FORMATTED_STEPS_LIST =
@@ -542,5 +638,30 @@ private val FORMATTED_STEPS_LIST_WITH_AGGREGATION =
             title = "15 steps",
             titleA11y = "15 steps",
             dataType = DataType.STEPS,
+        ),
+    )
+
+private val FORMATTED_IMMUNIZATION_LIST =
+    listOf(
+        FormattedEntry.FormattedMedicalDataEntry(
+            header = "My Hospital",
+            headerA11y = "My Hospital",
+            title = "Covid vaccine 1",
+            titleA11y = "important vaccination",
+            medicalResourceId = TEST_MEDICAL_RESOURCE_IMMUNIZATION.id,
+        ),
+        FormattedEntry.FormattedMedicalDataEntry(
+            header = "My Hospital",
+            headerA11y = "My Hospital",
+            title = "Covid vaccine 2",
+            titleA11y = "important vaccination",
+            medicalResourceId = TEST_MEDICAL_RESOURCE_IMMUNIZATION_2.id,
+        ),
+        FormattedEntry.FormattedMedicalDataEntry(
+            header = "My Hospital 2",
+            headerA11y = "My Hospital 2",
+            title = "Covid vaccine 3",
+            titleA11y = "important vaccination",
+            medicalResourceId = TEST_MEDICAL_RESOURCE_IMMUNIZATION_3.id,
         ),
     )
