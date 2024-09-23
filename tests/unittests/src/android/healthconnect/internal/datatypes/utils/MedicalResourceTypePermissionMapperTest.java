@@ -27,6 +27,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
@@ -154,6 +155,16 @@ public class MedicalResourceTypePermissionMapperTest {
 
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalReadPermissionForResourceType_visitsType_returns() {
+        String readPermission =
+                MedicalResourceTypePermissionMapper.getMedicalReadPermission(
+                        MEDICAL_RESOURCE_TYPE_VISITS);
+
+        assertThat(readPermission).isEqualTo(HealthPermissions.READ_MEDICAL_DATA_VISITS);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_vitalSignsType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -198,7 +209,7 @@ public class MedicalResourceTypePermissionMapperTest {
                         .collect(Collectors.toSet());
 
         assertThat(medicalResourceTypes.size()).isEqualTo(medicalReadPermissions.size());
-        assertThat(medicalResourceTypes.size()).isEqualTo(11);
+        assertThat(medicalResourceTypes.size()).isEqualTo(12);
     }
 
     @Test

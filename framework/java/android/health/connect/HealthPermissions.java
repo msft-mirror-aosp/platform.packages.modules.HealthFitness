@@ -870,6 +870,18 @@ public final class HealthPermissions {
             "android.permission.health.READ_MEDICAL_DATA_SOCIAL_HISTORY";
 
     /**
+     * Allows an application to read the user's information about their encounters with health care
+     * practitioners, including things like location, time of appointment, and name of organization
+     * the visit was with. Despite the name visit it covers remote encounters such as telephone or
+     * videoconference appointments.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_VISITS =
+            "android.permission.health.READ_MEDICAL_DATA_VISITS";
+
+    /**
      * Allows an application to read the user's vital signs data.
      *
      * <p>Protection level: dangerous.
@@ -1026,6 +1038,7 @@ public final class HealthPermissions {
         permissions.add(READ_MEDICAL_DATA_PROBLEMS);
         permissions.add(READ_MEDICAL_DATA_PROCEDURES);
         permissions.add(READ_MEDICAL_DATA_SOCIAL_HISTORY);
+        permissions.add(READ_MEDICAL_DATA_VISITS);
         permissions.add(READ_MEDICAL_DATA_VITAL_SIGNS);
         return permissions;
     }

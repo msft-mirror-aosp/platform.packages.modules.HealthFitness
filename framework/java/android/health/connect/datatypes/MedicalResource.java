@@ -89,6 +89,14 @@ public final class MedicalResource implements Parcelable {
      */
     public static final int MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS = 11;
 
+    /**
+     * Medical resource type labelling data as related to an encounter with a practitioner. This
+     * includes visits to healthcare providers and remote encounters such as telephone and
+     * videoconference appointments, and information about the time, location and organization who
+     * is being met.
+     */
+    public static final int MEDICAL_RESOURCE_TYPE_VISITS = 12;
+
     /** @hide */
     @IntDef({
         MEDICAL_RESOURCE_TYPE_UNKNOWN,
@@ -102,6 +110,7 @@ public final class MedicalResource implements Parcelable {
         MEDICAL_RESOURCE_TYPE_PROBLEMS,
         MEDICAL_RESOURCE_TYPE_PROCEDURES,
         MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
+        MEDICAL_RESOURCE_TYPE_VISITS,
         MEDICAL_RESOURCE_TYPE_VITAL_SIGNS,
     })
     @Retention(RetentionPolicy.SOURCE)
@@ -237,6 +246,7 @@ public final class MedicalResource implements Parcelable {
                     MEDICAL_RESOURCE_TYPE_PROBLEMS,
                     MEDICAL_RESOURCE_TYPE_PROCEDURES,
                     MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
+                    MEDICAL_RESOURCE_TYPE_VISITS,
                     MEDICAL_RESOURCE_TYPE_VITAL_SIGNS);
 
     /**

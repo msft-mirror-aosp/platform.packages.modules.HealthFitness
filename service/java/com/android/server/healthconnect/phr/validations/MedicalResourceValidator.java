@@ -18,11 +18,14 @@ package com.android.server.healthconnect.phr.validations;
 
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_CONDITION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ENCOUNTER;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_LOCATION;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_REQUEST;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_OBSERVATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ORGANIZATION;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PATIENT;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE;
@@ -39,6 +42,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import static android.health.connect.internal.datatypes.utils.FhirResourceTypeStringToIntMapper.getFhirResourceTypeInt;
@@ -231,6 +235,10 @@ public class MedicalResourceValidator {
                 return MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
             case FHIR_RESOURCE_TYPE_CONDITION:
                 return MEDICAL_RESOURCE_TYPE_PROBLEMS;
+            case FHIR_RESOURCE_TYPE_ENCOUNTER,
+                    FHIR_RESOURCE_TYPE_LOCATION,
+                    FHIR_RESOURCE_TYPE_ORGANIZATION:
+                return MEDICAL_RESOURCE_TYPE_VISITS;
             case FHIR_RESOURCE_TYPE_IMMUNIZATION:
                 return MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
             case FHIR_RESOURCE_TYPE_OBSERVATION:

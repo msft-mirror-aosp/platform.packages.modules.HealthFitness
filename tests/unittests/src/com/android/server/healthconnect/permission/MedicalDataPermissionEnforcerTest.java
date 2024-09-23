@@ -26,6 +26,7 @@ import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PREGNAN
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROBLEMS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROCEDURES;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VISITS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
@@ -147,6 +148,7 @@ public class MedicalDataPermissionEnforcerTest {
                         READ_MEDICAL_DATA_PROBLEMS,
                         READ_MEDICAL_DATA_PROCEDURES,
                         READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                        READ_MEDICAL_DATA_VISITS,
                         READ_MEDICAL_DATA_VITAL_SIGNS,
                         WRITE_MEDICAL_DATA);
     }

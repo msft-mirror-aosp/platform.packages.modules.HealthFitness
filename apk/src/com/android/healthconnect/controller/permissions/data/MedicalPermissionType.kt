@@ -28,6 +28,7 @@ import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PR
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.utils.AttributeResolver
@@ -44,6 +45,7 @@ enum class MedicalPermissionType : HealthPermissionType {
     PROBLEMS,
     PROCEDURES,
     SOCIAL_HISTORY,
+    VISITS,
     VITAL_SIGNS;
 
     override fun lowerCaseLabel(): Int =
@@ -94,6 +96,7 @@ fun fromMedicalResourceType(medicalResourceType: Int): MedicalPermissionType {
         MEDICAL_RESOURCE_TYPE_PROBLEMS -> MedicalPermissionType.PROBLEMS
         MEDICAL_RESOURCE_TYPE_PROCEDURES -> MedicalPermissionType.PROCEDURES
         MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY -> MedicalPermissionType.SOCIAL_HISTORY
+        MEDICAL_RESOURCE_TYPE_VISITS -> MedicalPermissionType.VISITS
         MEDICAL_RESOURCE_TYPE_VITAL_SIGNS -> MedicalPermissionType.VITAL_SIGNS
         else -> throw IllegalArgumentException("MedicalResourceType is not supported.")
     }
@@ -111,6 +114,7 @@ fun toMedicalResourceType(medicalPermissionType: MedicalPermissionType): Int {
         MedicalPermissionType.PROBLEMS -> MEDICAL_RESOURCE_TYPE_PROBLEMS
         MedicalPermissionType.PROCEDURES -> MEDICAL_RESOURCE_TYPE_PROCEDURES
         MedicalPermissionType.SOCIAL_HISTORY -> MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY
+        MedicalPermissionType.VISITS -> MEDICAL_RESOURCE_TYPE_VISITS
         MedicalPermissionType.VITAL_SIGNS -> MEDICAL_RESOURCE_TYPE_VITAL_SIGNS
         else -> MEDICAL_RESOURCE_TYPE_UNKNOWN
     }
