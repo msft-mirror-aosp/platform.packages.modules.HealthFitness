@@ -152,6 +152,7 @@ package android.health.connect {
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_IMMUNIZATION = "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_LABORATORY_RESULTS = "android.permission.health.READ_MEDICAL_DATA_LABORATORY_RESULTS";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_MEDICATIONS = "android.permission.health.READ_MEDICAL_DATA_MEDICATIONS";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_PERSONAL_DETAILS = "android.permission.health.READ_MEDICAL_DATA_PERSONAL_DETAILS";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_PREGNANCY = "android.permission.health.READ_MEDICAL_DATA_PREGNANCY";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_PROBLEMS = "android.permission.health.READ_MEDICAL_DATA_PROBLEMS";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_PROCEDURES = "android.permission.health.READ_MEDICAL_DATA_PROCEDURES";
@@ -1037,6 +1038,7 @@ package android.health.connect.datatypes {
     field public static final int FHIR_RESOURCE_TYPE_MEDICATION_REQUEST = 7; // 0x7
     field public static final int FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT = 8; // 0x8
     field public static final int FHIR_RESOURCE_TYPE_OBSERVATION = 3; // 0x3
+    field public static final int FHIR_RESOURCE_TYPE_PATIENT = 9; // 0x9
     field public static final int FHIR_RESOURCE_TYPE_PROCEDURE = 5; // 0x5
     field public static final int FHIR_RESOURCE_TYPE_UNKNOWN = 0; // 0x0
   }
@@ -1214,6 +1216,7 @@ package android.health.connect.datatypes {
     field public static final int MEDICAL_RESOURCE_TYPE_IMMUNIZATION = 1; // 0x1
     field public static final int MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS = 6; // 0x6
     field public static final int MEDICAL_RESOURCE_TYPE_MEDICATIONS = 9; // 0x9
+    field public static final int MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS = 10; // 0xa
     field public static final int MEDICAL_RESOURCE_TYPE_PREGNANCY = 3; // 0x3
     field public static final int MEDICAL_RESOURCE_TYPE_PROBLEMS = 7; // 0x7
     field public static final int MEDICAL_RESOURCE_TYPE_PROCEDURES = 8; // 0x8

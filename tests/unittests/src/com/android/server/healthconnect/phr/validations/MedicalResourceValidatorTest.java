@@ -59,6 +59,7 @@ import android.healthconnect.cts.utils.ConditionBuilder;
 import android.healthconnect.cts.utils.MedicationsBuilder;
 import android.healthconnect.cts.utils.ObservationBuilder;
 import android.healthconnect.cts.utils.ObservationBuilder.QuantityUnits;
+import android.healthconnect.cts.utils.PatientBuilder;
 import android.healthconnect.cts.utils.ProcedureBuilder;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -274,6 +275,16 @@ public class MedicalResourceValidatorTest {
         int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
 
         assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS);
+    }
+
+    @Test
+    public void testCalculateMedicalResourceType_patient() {
+        String fhirData = new PatientBuilder().toJson();
+        MedicalResourceValidator validator = makeValidator(fhirData);
+
+        int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
+
+        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS);
     }
 
     // IPS artifacts: https://build.fhir.org/ig/HL7/fhir-ips/artifacts.html

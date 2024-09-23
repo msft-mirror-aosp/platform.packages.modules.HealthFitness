@@ -22,6 +22,7 @@ import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGY
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PREGNANCY;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROBLEMS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROCEDURES;
@@ -119,6 +120,7 @@ public class HealthPermissionsTest {
                     HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION,
                     HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS,
                     HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS,
+                    HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS,
                     HealthPermissions.READ_MEDICAL_DATA_PREGNANCY,
                     HealthPermissions.READ_MEDICAL_DATA_PROBLEMS,
                     HealthPermissions.READ_MEDICAL_DATA_PROCEDURES,
@@ -302,6 +304,7 @@ public class HealthPermissionsTest {
                         READ_MEDICAL_DATA_IMMUNIZATION,
                         READ_MEDICAL_DATA_LABORATORY_RESULTS,
                         READ_MEDICAL_DATA_MEDICATIONS,
+                        READ_MEDICAL_DATA_PERSONAL_DETAILS,
                         READ_MEDICAL_DATA_PREGNANCY,
                         READ_MEDICAL_DATA_PROBLEMS,
                         READ_MEDICAL_DATA_PROCEDURES,

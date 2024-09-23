@@ -119,6 +119,11 @@ class HealthPermissionTest {
 
         assertThat(
             fromPermissionString(
+                "android.permission.health.READ_MEDICAL_DATA_PERSONAL_DETAILS"))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.PERSONAL_DETAILS))
+
+        assertThat(
+            fromPermissionString(
                 "android.permission.health.READ_MEDICAL_DATA_PREGNANCY"))
             .isEqualTo(MedicalPermission(MedicalPermissionType.PREGNANCY))
 
