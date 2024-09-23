@@ -83,6 +83,12 @@ public final class MedicalResource implements Parcelable {
      */
     public static final int MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS = 10;
 
+    /**
+     * Medical resource type labelling data as related to practitioners. This is information about
+     * the doctors, nurses, masseurs, physios, etc who have been involved with the user.
+     */
+    public static final int MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS = 11;
+
     /** @hide */
     @IntDef({
         MEDICAL_RESOURCE_TYPE_UNKNOWN,
@@ -91,6 +97,7 @@ public final class MedicalResource implements Parcelable {
         MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
         MEDICAL_RESOURCE_TYPE_MEDICATIONS,
         MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS,
+        MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS,
         MEDICAL_RESOURCE_TYPE_PREGNANCY,
         MEDICAL_RESOURCE_TYPE_PROBLEMS,
         MEDICAL_RESOURCE_TYPE_PROCEDURES,
@@ -225,6 +232,7 @@ public final class MedicalResource implements Parcelable {
                     MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
                     MEDICAL_RESOURCE_TYPE_MEDICATIONS,
                     MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS,
+                    MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS,
                     MEDICAL_RESOURCE_TYPE_PREGNANCY,
                     MEDICAL_RESOURCE_TYPE_PROBLEMS,
                     MEDICAL_RESOURCE_TYPE_PROCEDURES,

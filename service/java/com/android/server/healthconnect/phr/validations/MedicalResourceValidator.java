@@ -24,6 +24,8 @@ import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_M
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_OBSERVATION;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PATIENT;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PROCEDURE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.FhirResource.FhirResourceType;
@@ -32,6 +34,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
@@ -239,13 +242,15 @@ public class MedicalResourceValidator {
                 }
             case FHIR_RESOURCE_TYPE_PATIENT:
                 return MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
+            case FHIR_RESOURCE_TYPE_PRACTITIONER, FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE:
+                return MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS;
             case FHIR_RESOURCE_TYPE_PROCEDURE:
                 return MEDICAL_RESOURCE_TYPE_PROCEDURES;
             case FHIR_RESOURCE_TYPE_MEDICATION,
                     FHIR_RESOURCE_TYPE_MEDICATION_REQUEST,
                     FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT:
                 return MEDICAL_RESOURCE_TYPE_MEDICATIONS;
-            default: // Fall through to special classification logic where FHIR type is not enough
+            default:
                 break;
         }
         throw new IllegalArgumentException(

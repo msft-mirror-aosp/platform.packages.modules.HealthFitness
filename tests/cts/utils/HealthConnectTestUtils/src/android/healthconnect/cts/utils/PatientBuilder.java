@@ -16,9 +16,6 @@
 
 package android.healthconnect.cts.utils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 /**
  * A helper class that supports making <a href="https://www.hl7.org/fhir/patient.html">FHIR
  * Patient</a> data for tests.
@@ -26,7 +23,7 @@ import org.json.JSONObject;
  * <p>The Default result will be a valid FHIR Patient, but that is all that should be relied upon.
  * Anything else that is relied upon by a test should be set by one of the methods.
  */
-public class PatientBuilder {
+public final class PatientBuilder extends FhirResourceBuilder<PatientBuilder> {
     private static final String DEFAULT_JSON =
             "{"
                     + "  \"resourceType\" : \"Patient\","
@@ -156,55 +153,18 @@ public class PatientBuilder {
                     + "  }"
                     + "}";
 
-    private final JSONObject mFhir;
-
     /**
      * Creates a default valid FHIR Patient.
      *
-     * <p>All that should be relied on is that the Observation is valid. To rely on anything else
-     * set it with the other methods.
+     * <p>All that should be relied on is that the Patient is valid. To rely on anything else set it
+     * with the other methods.
      */
     public PatientBuilder() {
-        try {
-            this.mFhir = new JSONObject(DEFAULT_JSON);
-        } catch (JSONException e) {
-            // Should never happen, but JSONException is declared, and is a checked exception.
-            throw new IllegalStateException(e);
-        }
+        super(DEFAULT_JSON);
     }
 
-    /**
-     * Set the FHIR id for the Observation.
-     *
-     * @return this Builder.
-     */
-    public PatientBuilder setId(String id) {
-        return set("id", id);
-    }
-
-    /**
-     * Sets an arbitrary String or JSON Object element in the FHIR.
-     *
-     * @param field the element to set.
-     * @param value the value to set
-     * @return this builder
-     */
-    public PatientBuilder set(String field, Object value) {
-        try {
-            mFhir.put(field, value);
-        } catch (JSONException e) {
-            throw new IllegalArgumentException(e);
-        }
+    @Override
+    protected PatientBuilder returnThis() {
         return this;
-    }
-
-    /** Returns the current state of this builder as a JSON FHIR string. */
-    public String toJson() {
-        try {
-            return mFhir.toString(/* indentSpaces= */ 2);
-        } catch (JSONException e) {
-            // Should never happen, but JSONException is declared, and is a checked exception.
-            throw new IllegalStateException(e);
-        }
     }
 }

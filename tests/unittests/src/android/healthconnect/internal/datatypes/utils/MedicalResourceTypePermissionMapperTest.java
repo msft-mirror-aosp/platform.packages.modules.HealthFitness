@@ -21,6 +21,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
@@ -98,6 +99,17 @@ public class MedicalResourceTypePermissionMapperTest {
                         MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS);
 
         assertThat(readPermission).isEqualTo(HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalReadPermissionForResourceType_practitionerDetailsType_returns() {
+        String readPermission =
+                MedicalResourceTypePermissionMapper.getMedicalReadPermission(
+                        MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS);
+
+        assertThat(readPermission)
+                .isEqualTo(HealthPermissions.READ_MEDICAL_DATA_PRACTITIONER_DETAILS);
     }
 
     @Test
@@ -186,7 +198,7 @@ public class MedicalResourceTypePermissionMapperTest {
                         .collect(Collectors.toSet());
 
         assertThat(medicalResourceTypes.size()).isEqualTo(medicalReadPermissions.size());
-        assertThat(medicalResourceTypes.size()).isEqualTo(10);
+        assertThat(medicalResourceTypes.size()).isEqualTo(11);
     }
 
     @Test

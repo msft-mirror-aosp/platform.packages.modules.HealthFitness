@@ -32,6 +32,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
@@ -132,6 +133,7 @@ import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.MedicationsBuilder;
 import android.healthconnect.cts.utils.ObservationBuilder;
 import android.healthconnect.cts.utils.PatientBuilder;
+import android.healthconnect.cts.utils.PractitionerBuilder;
 import android.healthconnect.cts.utils.ProcedureBuilder;
 import android.healthconnect.cts.utils.TestUtils;
 import android.os.OutcomeReceiver;
@@ -2903,6 +2905,8 @@ public class HealthConnectManagerTest {
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_MEDICATIONS, Set.of()),
                         new MedicalResourceTypeInfo(
                                 MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS, Set.of()),
+                        new MedicalResourceTypeInfo(
+                                MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PREGNANCY, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROBLEMS, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROCEDURES, Set.of()),
@@ -2932,6 +2936,8 @@ public class HealthConnectManagerTest {
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_MEDICATIONS, Set.of()),
                         new MedicalResourceTypeInfo(
                                 MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS, Set.of()),
+                        new MedicalResourceTypeInfo(
+                                MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PREGNANCY, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROBLEMS, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROCEDURES, Set.of()),
@@ -2963,6 +2969,8 @@ public class HealthConnectManagerTest {
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_MEDICATIONS, Set.of()),
                         new MedicalResourceTypeInfo(
                                 MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS, Set.of()),
+                        new MedicalResourceTypeInfo(
+                                MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PREGNANCY, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROBLEMS, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROCEDURES, Set.of()),
@@ -3094,17 +3102,53 @@ public class HealthConnectManagerTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testPractitionerInsertAndRead() throws Exception {
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalResource practitioner =
+                upsertMedicalData(dataSource1.getId(), new PractitionerBuilder().toJson());
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(
+                                MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS)
+                        .build();
+
+        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(practitioner);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testPractitionerRoleInsertAndRead() throws Exception {
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalResource practitioner =
+                upsertMedicalData(dataSource1.getId(), PractitionerBuilder.role().toJson());
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(
+                                MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS)
+                        .build();
+
+        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(practitioner);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
     public void testProcedureInsertAndRead() throws Exception {
         MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
         MedicalResource procedure =
                 upsertMedicalData(dataSource1.getId(), new ProcedureBuilder().toJson());
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest allProblems =
+        ReadMedicalResourcesInitialRequest request =
                 new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_PROCEDURES)
                         .build();
 
-        mManager.readMedicalResources(allProblems, Executors.newSingleThreadExecutor(), receiver);
+        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
 
         assertThat(receiver.getResponse().getMedicalResources()).containsExactly(procedure);
     }
@@ -3117,11 +3161,11 @@ public class HealthConnectManagerTest {
                 upsertMedicalData(dataSource1.getId(), MedicationsBuilder.medication().toJson());
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest allProblems =
+        ReadMedicalResourcesInitialRequest request =
                 new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_MEDICATIONS)
                         .build();
 
-        mManager.readMedicalResources(allProblems, Executors.newSingleThreadExecutor(), receiver);
+        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
 
         assertThat(receiver.getResponse().getMedicalResources()).containsExactly(medication);
     }
@@ -3134,11 +3178,11 @@ public class HealthConnectManagerTest {
                 upsertMedicalData(dataSource1.getId(), MedicationsBuilder.statementR4().toJson());
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest allProblems =
+        ReadMedicalResourcesInitialRequest request =
                 new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_MEDICATIONS)
                         .build();
 
-        mManager.readMedicalResources(allProblems, Executors.newSingleThreadExecutor(), receiver);
+        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
 
         assertThat(receiver.getResponse().getMedicalResources()).containsExactly(statement);
     }
@@ -3147,17 +3191,17 @@ public class HealthConnectManagerTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
     public void testMedicationRequestInsertAndRead() throws Exception {
         MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest());
-        MedicalResource request =
+        MedicalResource medicationRequest =
                 upsertMedicalData(dataSource1.getId(), MedicationsBuilder.request().toJson());
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest allProblems =
+        ReadMedicalResourcesInitialRequest request =
                 new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_MEDICATIONS)
                         .build();
 
-        mManager.readMedicalResources(allProblems, Executors.newSingleThreadExecutor(), receiver);
+        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
 
-        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(request);
+        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(medicationRequest);
     }
 
     @Test

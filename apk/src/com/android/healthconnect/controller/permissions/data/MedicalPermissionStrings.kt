@@ -87,6 +87,14 @@ private val PERMISSION_TYPE_STRINGS: ImmutableMap<MedicalPermissionType, Medical
             )
         )
         .put(
+            MedicalPermissionType.PRACTITIONER_DETAILS,
+            MedicalPermissionStrings(
+                R.string.practitioner_details_uppercase_label,
+                R.string.practitioner_details_lowercase_label,
+                R.string.practitioner_details_content_description
+            )
+        )
+        .put(
             MedicalPermissionType.PREGNANCY,
             MedicalPermissionStrings(
                 R.string.pregnancy_uppercase_label,
