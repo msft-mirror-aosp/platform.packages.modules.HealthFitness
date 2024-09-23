@@ -221,7 +221,7 @@ public class MedicalResourceValidatorTest {
     }
 
     @Test
-    public void testCalculateMedicalResourceType_allergy() throws JSONException {
+    public void testCalculateMedicalResourceType_allergy() {
         MedicalResourceValidator validator = makeValidator(FHIR_DATA_ALLERGY);
 
         int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
@@ -230,17 +230,17 @@ public class MedicalResourceValidatorTest {
     }
 
     @Test
-    public void testCalculateMedicalResourceType_condition() throws JSONException {
+    public void testCalculateMedicalResourceType_condition() {
         String fhirData = new ConditionBuilder().toJson();
         MedicalResourceValidator validator = makeValidator(fhirData);
 
         int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
 
-        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS);
+        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS);
     }
 
     @Test
-    public void testCalculateMedicalResourceType_procedure() throws JSONException {
+    public void testCalculateMedicalResourceType_procedure() {
         String fhirData = new ProcedureBuilder().toJson();
         MedicalResourceValidator validator = makeValidator(fhirData);
 
@@ -444,7 +444,7 @@ public class MedicalResourceValidatorTest {
 
     @Test
     public void testCalculateMedicalResourceType_pregnancyStatus_pregnancy(
-            @TestParameter PregnancyStatusTestValue testValue) throws JSONException {
+            @TestParameter PregnancyStatusTestValue testValue) {
         String fhirData =
                 new ObservationBuilder()
                         .setCode(LOINC, testValue.mCode)
@@ -474,7 +474,7 @@ public class MedicalResourceValidatorTest {
 
     @Test
     public void testCalculateMedicalResourceType_expectedDeliveryDate_pregnancy(
-            @TestParameter({"11778-8", "11779-6", "11780-4"}) String code) throws JSONException {
+            @TestParameter({"11778-8", "11779-6", "11780-4"}) String code) {
         // https://build.fhir.org/ig/HL7/fhir-ips/ValueSet-edd-method-uv-ips.html
         String fhirData =
                 new ObservationBuilder()
@@ -501,7 +501,7 @@ public class MedicalResourceValidatorTest {
 
     @Test
     public void testCalculateMedicalResourceType_smoking_socialHistory(
-            @TestParameter SmokingTestValue value) throws JSONException {
+            @TestParameter SmokingTestValue value) {
         // https://build.fhir.org/ig/HL7/fhir-ips/StructureDefinition-Observation-tobaccouse-uv-ips.html
         String fhirData =
                 new ObservationBuilder()
@@ -542,7 +542,7 @@ public class MedicalResourceValidatorTest {
 
     @Test
     public void testCalculateMedicalResourceType_vitalSigns_vitalSigns(
-            @TestParameter VitalSignsTestValue value) throws JSONException {
+            @TestParameter VitalSignsTestValue value) {
         // From https://hl7.org/fhir/R5/observation-vitalsigns.html
         String fhirData =
                 new ObservationBuilder()
