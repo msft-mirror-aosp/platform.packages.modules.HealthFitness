@@ -55,6 +55,9 @@ public final class PackageInfoUtils {
     private PackageInfoUtils() {}
 
     /** Returns singleton instance of PackageInfoUtils */
+    /**
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static synchronized PackageInfoUtils getInstance() {
         if (sPackageInfoUtils == null) {
             sPackageInfoUtils = new PackageInfoUtils();
