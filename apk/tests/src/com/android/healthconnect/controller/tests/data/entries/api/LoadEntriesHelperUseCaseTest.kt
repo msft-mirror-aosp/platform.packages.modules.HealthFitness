@@ -15,7 +15,7 @@ package com.android.healthconnect.controller.tests.data.entries.api
 
 import android.content.Context
 import android.health.connect.HealthConnectManager
-import android.health.connect.ReadMedicalResourcesRequest
+import android.health.connect.ReadMedicalResourcesInitialRequest
 import android.health.connect.ReadMedicalResourcesResponse
 import android.health.connect.ReadRecordsRequestUsingFilters
 import android.health.connect.ReadRecordsResponse
@@ -143,7 +143,7 @@ class LoadEntriesHelperUseCaseTest {
     @Captor
     lateinit var bodyWaterMassRequestCaptor:
         ArgumentCaptor<ReadRecordsRequestUsingFilters<BodyWaterMassRecord>>
-    @Captor lateinit var immunizationCaptor: ArgumentCaptor<ReadMedicalResourcesRequest>
+    @Captor lateinit var immunizationCaptor: ArgumentCaptor<ReadMedicalResourcesInitialRequest>
 
     @Before
     fun setup() {
@@ -827,7 +827,7 @@ class LoadEntriesHelperUseCaseTest {
         mockitoStubber
             .`when`(healthConnectManager)
             .readMedicalResources(
-                ArgumentMatchers.any(ReadMedicalResourcesRequest::class.java),
+                ArgumentMatchers.any(ReadMedicalResourcesInitialRequest::class.java),
                 ArgumentMatchers.any(),
                 ArgumentMatchers.any(),
             )
@@ -836,7 +836,7 @@ class LoadEntriesHelperUseCaseTest {
     }
 
     private fun assertArgumentRequestCaptorValidity(
-        requestCaptor: ArgumentCaptor<out ReadMedicalResourcesRequest>,
+        requestCaptor: ArgumentCaptor<out ReadMedicalResourcesInitialRequest>,
         wantedInvocationCount: Int = 1,
     ) {
         Mockito.verify(healthConnectManager, Mockito.times(wantedInvocationCount))

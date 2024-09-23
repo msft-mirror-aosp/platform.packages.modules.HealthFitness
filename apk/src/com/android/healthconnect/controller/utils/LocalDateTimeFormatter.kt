@@ -81,7 +81,7 @@ class LocalDateTimeFormatter @Inject constructor(@ApplicationContext private val
         return timeFormat.format(instant.toEpochMilli())
     }
 
-    /** Returns localized long versions of date. */
+    /** Returns localized long versions of date, such as "15 August 2022". */
     fun formatLongDate(instant: Instant): String {
         return longDateFormat.format(instant.toEpochMilli())
     }
@@ -89,6 +89,24 @@ class LocalDateTimeFormatter @Inject constructor(@ApplicationContext private val
     /** Returns localized short versions of date, such as "15 August" */
     fun formatShortDate(instant: Instant): String {
         return instant.atZone(ZoneId.systemDefault()).format(shortDateFormat)
+    }
+
+    /** Returns localized short versions of date, such as "15 Aug" */
+    fun formatShortDateWithoutYear(startTime: Instant): String {
+        return DateUtils.formatDateTime(
+            context,
+            startTime.toEpochMilli(),
+            DATE_FORMAT_FLAGS_WITHOUT_YEAR,
+        )
+    }
+
+    /** Returns localized short versions of date, such as "15 Aug, 2022" */
+    fun formatShortDateWithYear(startTime: Instant): String {
+        return DateUtils.formatDateTime(
+            context,
+            startTime.toEpochMilli(),
+            DATE_FORMAT_FLAGS_WITH_YEAR,
+        )
     }
 
     /** Returns localized short versions of date and time, such as "15 Aug, 14:06" */
@@ -117,7 +135,8 @@ class LocalDateTimeFormatter @Inject constructor(@ApplicationContext private val
         return DateUtils.formatDateTime(
             context,
             time.toEpochMilli(),
-            WEEKDAY_DATE_FORMAT_FLAGS_WITH_YEAR or DateUtils.FORMAT_ABBREV_ALL)
+            WEEKDAY_DATE_FORMAT_FLAGS_WITH_YEAR or DateUtils.FORMAT_ABBREV_ALL,
+        )
     }
 
     /** Formats date with weekday (e.g. "Sun, Aug 20"). */
@@ -125,13 +144,18 @@ class LocalDateTimeFormatter @Inject constructor(@ApplicationContext private val
         return DateUtils.formatDateTime(
             context,
             time.toEpochMilli(),
-            WEEKDAY_DATE_FORMAT_FLAGS_WITHOUT_YEAR or DateUtils.FORMAT_ABBREV_ALL)
+            WEEKDAY_DATE_FORMAT_FLAGS_WITHOUT_YEAR or DateUtils.FORMAT_ABBREV_ALL,
+        )
     }
 
     /** Formats date range with year(e.g. "Aug 21 - 27, 2023", "Aug 28 - Sept 3, 2023"). */
     fun formatDateRangeWithYear(startTime: Instant, endTime: Instant): String {
         return DateUtils.formatDateRange(
-            context, startTime.toEpochMilli(), endTime.toEpochMilli(), DATE_FORMAT_FLAGS_WITH_YEAR)
+            context,
+            startTime.toEpochMilli(),
+            endTime.toEpochMilli(),
+            DATE_FORMAT_FLAGS_WITH_YEAR,
+        )
     }
 
     /** Formats date range (e.g. "Aug 21 - 27", "Aug 28 - Sept 3"). */
@@ -140,7 +164,8 @@ class LocalDateTimeFormatter @Inject constructor(@ApplicationContext private val
             context,
             startTime.toEpochMilli(),
             endTime.toEpochMilli(),
-            DATE_FORMAT_FLAGS_WITHOUT_YEAR)
+            DATE_FORMAT_FLAGS_WITHOUT_YEAR,
+        )
     }
 
     /** Formats month and year (e.g. "August 2023"). */
@@ -151,6 +176,9 @@ class LocalDateTimeFormatter @Inject constructor(@ApplicationContext private val
     /** Formats month (e.g. "August"). */
     fun formatMonthWithoutYear(time: Instant): String {
         return DateUtils.formatDateTime(
-            context, time.toEpochMilli(), MONTH_FORMAT_FLAGS_WITHOUT_YEAR)
+            context,
+            time.toEpochMilli(),
+            MONTH_FORMAT_FLAGS_WITHOUT_YEAR,
+        )
     }
 }

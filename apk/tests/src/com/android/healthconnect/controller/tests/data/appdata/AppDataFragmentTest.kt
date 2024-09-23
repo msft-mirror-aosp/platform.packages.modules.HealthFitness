@@ -15,13 +15,15 @@
  */
 package com.android.healthconnect.controller.tests.data.appdata
 
-import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
-import android.health.connect.HealthDataCategory
+import android.health.connect.HealthConnectManager
+import android.health.connect.MedicalResourceTypeInfo
+import android.health.connect.RecordTypeInfoResponse
+import android.health.connect.datatypes.Record
+import android.os.OutcomeReceiver
+import android.platform.test.annotations.DisableFlags
 import androidx.core.os.bundleOf
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.preference.PreferenceCategory
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -31,73 +33,84 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.platform.app.InstrumentationRegistry
-import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.appdata.AppDataFragment
+import com.android.healthconnect.controller.data.appdata.AppDataUseCase
 import com.android.healthconnect.controller.data.appdata.AppDataViewModel
-import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
+import com.android.healthconnect.controller.data.appdata.AppDataViewModel.AppDataDeletionScreenState.DELETE
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.permissions.data.toMedicalResourceType
+import com.android.healthconnect.controller.selectabledeletion.DeletionPermissionTypesPreference
 import com.android.healthconnect.controller.selectabledeletion.SelectAllCheckboxPreference
 import com.android.healthconnect.controller.shared.Constants
-import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.MEDICAL
-import com.android.healthconnect.controller.shared.app.AppMetadata
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromFitnessPermissionType
+import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
+import com.android.healthconnect.controller.shared.app.AppInfoReader
+import com.android.healthconnect.controller.shared.children
+import com.android.healthconnect.controller.shared.preference.EmptyPreferenceCategory
+import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
+import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_DATA_SOURCE
+import com.android.healthconnect.controller.tests.utils.getDataOrigin
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.tests.utils.whenever
+import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
-import org.mockito.kotlin.verify
-import com.android.healthfitness.flags.Flags
-import android.platform.test.annotations.DisableFlags
-import org.junit.Ignore
-import com.android.healthconnect.controller.data.appdata.AppDataViewModel.AppDataDeletionScreenState.VIEW
-import com.android.healthconnect.controller.data.appdata.AppDataViewModel.AppDataDeletionScreenState.DELETE
+import org.mockito.invocation.InvocationOnMock
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doAnswer
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
 class AppDataFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
-    @BindValue val appDataViewModel: AppDataViewModel = Mockito.mock(AppDataViewModel::class.java)
+    @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
+    private val testDispatcher = TestCoroutineDispatcher()
+
+    var manager: HealthConnectManager = Mockito.mock(HealthConnectManager::class.java)
+    @Inject lateinit var appInfoReader: AppInfoReader
+    @BindValue lateinit var appDataViewModel: AppDataViewModel
 
     @Before
     fun setup() {
         hiltRule.inject()
+        Dispatchers.setMain(testDispatcher)
+        val appDataUseCase = AppDataUseCase(manager, Dispatchers.Main)
+        appDataViewModel = AppDataViewModel(appInfoReader, appDataUseCase)
         toggleAnimation(false)
-        val context = InstrumentationRegistry.getInstrumentation().context
-        whenever(appDataViewModel.appInfo).then {
-            MediatorLiveData(
-                AppMetadata(
-                    TEST_APP_PACKAGE_NAME,
-                    TEST_APP_NAME,
-                    context.getDrawable(R.drawable.health_connect_logo),
-                )
-            )
-        }
-        whenever(appDataViewModel.setOfPermissionTypesToBeDeleted).thenReturn(MutableLiveData())
-        whenever(appDataViewModel.allPermissionTypesSelected).thenReturn(MutableLiveData(false))
     }
 
     @After
-    fun tearDown(){
+    fun tearDown() {
         toggleAnimation(true)
+        Dispatchers.resetMain()
+        testDispatcher.cleanupTestCoroutines()
     }
 
     @Test
-    fun noData_noDataMessageDisplayed() {
-        whenever(appDataViewModel.fitnessAndMedicalData).then {
-            MediatorLiveData(AppDataViewModel.AppDataState.WithData(listOf()))
-        }
+    fun whenNoData_noDataMessageDisplayed() = runTest {
+        mockData(emptyList())
+
         launchFragment<AppDataFragment>(
             bundleOf(
                 Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
@@ -111,36 +124,16 @@ class AppDataFragmentTest {
     }
 
     @Test
-    fun fitnessDataPresent_populatedDataTypesDisplayed() {
-        whenever(appDataViewModel.fitnessAndMedicalData).then {
-            MediatorLiveData(
-                AppDataViewModel.AppDataState.WithData(
-                    listOf(
-                        PermissionTypesPerCategory(
-                            HealthDataCategory.ACTIVITY,
-                            listOf(
-                                FitnessPermissionType.DISTANCE,
-                                FitnessPermissionType.EXERCISE,
-                                FitnessPermissionType.EXERCISE_ROUTE,
-                                FitnessPermissionType.STEPS,
-                            ),
-                        ),
-                        PermissionTypesPerCategory(HealthDataCategory.BODY_MEASUREMENTS, listOf()),
-                        PermissionTypesPerCategory(
-                            HealthDataCategory.CYCLE_TRACKING,
-                            listOf(
-                                FitnessPermissionType.MENSTRUATION,
-                                FitnessPermissionType.SEXUAL_ACTIVITY,
-                            ),
-                        ),
-                        PermissionTypesPerCategory(HealthDataCategory.NUTRITION, listOf()),
-                        PermissionTypesPerCategory(HealthDataCategory.SLEEP, listOf()),
-                        PermissionTypesPerCategory(HealthDataCategory.VITALS, listOf()),
-                        PermissionTypesPerCategory(MEDICAL, listOf()),
-                    )
-                )
+    fun fitnessDataPresent_populatedDataTypesDisplayed() = runTest {
+        mockData(
+            listOf(
+                FitnessPermissionType.DISTANCE,
+                FitnessPermissionType.EXERCISE,
+                FitnessPermissionType.STEPS,
+                FitnessPermissionType.MENSTRUATION,
+                FitnessPermissionType.SEXUAL_ACTIVITY,
             )
-        }
+        )
         launchFragment<AppDataFragment>(
             bundleOf(
                 Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
@@ -164,24 +157,17 @@ class AppDataFragmentTest {
         onView(withText("Health records")).check(doesNotExist())
         onView(withText("Immunizations")).check(doesNotExist())
     }
+
     @Test
-    fun fitnessAndMedicalData_fitnessAndMedicalDataShown() {
-        whenever(appDataViewModel.fitnessAndMedicalData).then {
-            MediatorLiveData(
-                AppDataViewModel.AppDataState.WithData(
-                    listOf(
-                        PermissionTypesPerCategory(
-                            HealthDataCategory.ACTIVITY,
-                            listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.EXERCISE),
-                        ),
-                        PermissionTypesPerCategory(
-                            MEDICAL,
-                            listOf(MedicalPermissionType.IMMUNIZATION),
-                        ),
-                    )
-                )
+    fun fitnessAndMedicalData_fitnessAndMedicalDataShown() = runTest {
+        mockData(
+            listOf(
+                FitnessPermissionType.DISTANCE,
+                FitnessPermissionType.EXERCISE,
+                MedicalPermissionType.IMMUNIZATION,
             )
-        }
+        )
+
         launchFragment<AppDataFragment>(
             bundleOf(
                 Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
@@ -202,19 +188,8 @@ class AppDataFragmentTest {
     }
 
     @Test
-    fun medicalDataOnly_populatedDataTypesDisplayed() {
-        whenever(appDataViewModel.fitnessAndMedicalData).then {
-            MediatorLiveData(
-                AppDataViewModel.AppDataState.WithData(
-                    listOf(
-                        PermissionTypesPerCategory(
-                            MEDICAL,
-                            listOf(MedicalPermissionType.IMMUNIZATION),
-                        )
-                    )
-                )
-            )
-        }
+    fun medicalDataOnly_populatedDataTypesDisplayed() = runTest {
+        mockData(listOf(MedicalPermissionType.IMMUNIZATION))
         launchFragment<AppDataFragment>(
             bundleOf(
                 Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
@@ -233,24 +208,16 @@ class AppDataFragmentTest {
 
     @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     @Test
-    fun triggerDeletionState_showsCheckboxes(){
-        whenever(appDataViewModel.fitnessAndMedicalData).then {
-            MediatorLiveData(
-                    AppDataViewModel.AppDataState.WithData(
-                            listOf(
-                                    PermissionTypesPerCategory(
-                                            HealthDataCategory.ACTIVITY,
-                                            listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.STEPS)
-                                            )
-                            )
-                    )
-            )
-        }
+    fun triggerDeletionState_showsCheckboxes() = runTest {
+        mockData(listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.STEPS))
 
-        val scenario = launchFragment<AppDataFragment>(
+        val scenario =
+            launchFragment<AppDataFragment>(
                 bundleOf(
-                        Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
-                        Constants.EXTRA_APP_NAME to TEST_APP_NAME))
+                    Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         assertCheckboxNotShown("Distance")
         assertCheckboxNotShown("Steps")
@@ -266,24 +233,16 @@ class AppDataFragmentTest {
 
     @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     @Test
-    fun triggerDeletionState_checkedItemsAddedToDeleteSet(){
-        whenever(appDataViewModel.fitnessAndMedicalData).then {
-            MediatorLiveData(
-                    AppDataViewModel.AppDataState.WithData(
-                            listOf(
-                                    PermissionTypesPerCategory(
-                                            HealthDataCategory.ACTIVITY,
-                                            listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.STEPS)
-                                    )
-                            )
-                    )
-            )
-        }
+    fun inDeletionState_checkedItemsAddedToDeleteSet() = runTest {
+        mockData(listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.STEPS))
 
-        val scenario = launchFragment<AppDataFragment>(
+        val scenario =
+            launchFragment<AppDataFragment>(
                 bundleOf(
-                        Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
-                        Constants.EXTRA_APP_NAME to TEST_APP_NAME))
+                    Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
             (fragment as AppDataFragment).triggerDeletionState(DELETE)
@@ -291,64 +250,24 @@ class AppDataFragmentTest {
 
         onView(withText("Distance")).perform(click())
         onIdle()
-        verify(appDataViewModel).addToDeletionSet(FitnessPermissionType.DISTANCE)
-    }
-
-    @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
-    @Test
-    fun triggerDeletionState_uncheckedItemsRemovedFromDeleteSet(){
-        whenever(appDataViewModel.fitnessAndMedicalData).then {
-            MediatorLiveData(
-                    AppDataViewModel.AppDataState.WithData(
-                            listOf(
-                                    PermissionTypesPerCategory(
-                                            HealthDataCategory.ACTIVITY,
-                                            listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.STEPS)
-                                    )
-                            )
-                    )
-            )
-        }
-        whenever(appDataViewModel.setOfPermissionTypesToBeDeleted).then {
-            MediatorLiveData(setOf(FitnessPermissionType.DISTANCE))
-        }
-
-        val scenario = launchFragment<AppDataFragment>(
-                bundleOf(
-                        Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
-                        Constants.EXTRA_APP_NAME to TEST_APP_NAME))
-        scenario.onActivity { activity ->
-            val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AppDataFragment).triggerDeletionState(DELETE)
-        }
-
+        assertThat(appDataViewModel.setOfPermissionTypesToBeDeleted.value)
+            .containsExactlyElementsIn(setOf(FitnessPermissionType.DISTANCE))
         onView(withText("Distance")).perform(click())
-        onIdle()
-        verify(appDataViewModel).removeFromDeletionSet(FitnessPermissionType.DISTANCE)
+        assertThat(appDataViewModel.setOfPermissionTypesToBeDeleted.value).isEmpty()
     }
 
-    @Ignore("b/363994647")
     @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     @Test
-    fun triggerDeletionState_checkboxesRemainOnOrientationChange(){
-        whenever(appDataViewModel.getDeletionState()).thenReturn(DELETE)
-        whenever(appDataViewModel.fitnessAndMedicalData).then {
-            MediatorLiveData(
-                    AppDataViewModel.AppDataState.WithData(
-                            listOf(
-                                    PermissionTypesPerCategory(
-                                            HealthDataCategory.ACTIVITY,
-                                            listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.STEPS)
-                                    )
-                            )
-                    )
-            )
-        }
+    fun inDeletionState_checkboxesRemainOnOrientationChange() = runTest {
+        mockData(listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.STEPS))
 
-        val scenario = launchFragment<AppDataFragment>(
+        val scenario =
+            launchFragment<AppDataFragment>(
                 bundleOf(
-                        Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
-                        Constants.EXTRA_APP_NAME to TEST_APP_NAME))
+                    Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
             (fragment as AppDataFragment).triggerDeletionState(DELETE)
@@ -356,39 +275,50 @@ class AppDataFragmentTest {
 
         assertCheckboxShown("Distance")
         assertCheckboxShown("Steps")
+        onView(withText("Distance")).perform(click())
 
-        scenario.onActivity{ activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        scenario.recreate()
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("") as AppDataFragment
+            val fitnessCategoryPreference =
+                fragment.preferenceScreen.findPreference("key_permission_types")
+                    as PreferenceCategory?
+            fitnessCategoryPreference?.children?.forEach { preference ->
+                if (preference is PreferenceCategory) {
+                    preference.children.forEach { permissionTypePreference ->
+                        if (permissionTypePreference is DeletionPermissionTypesPreference) {
+                            if (
+                                permissionTypePreference.getHealthPermissionType() ==
+                                    FitnessPermissionType.DISTANCE
+                            ) {
+                                assertThat(permissionTypePreference.getIsChecked()).isTrue()
+                            } else if (
+                                permissionTypePreference.getHealthPermissionType() ==
+                                    FitnessPermissionType.STEPS
+                            ) {
+                                assertThat(permissionTypePreference.getIsChecked()).isFalse()
+                            }
+                        }
+                    }
+                }
+            }
         }
-
         assertCheckboxShown("Distance")
         assertCheckboxShown("Steps")
-
-        scenario.onActivity{ activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
     }
 
     @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     @Test
-    fun triggerDeletionState_displaysSelectAllButton(){
-        whenever(appDataViewModel.fitnessAndMedicalData).then {
-            MediatorLiveData(
-                    AppDataViewModel.AppDataState.WithData(
-                            listOf(
-                                    PermissionTypesPerCategory(
-                                            HealthDataCategory.ACTIVITY,
-                                            listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.STEPS)
-                                    )
-                            )
-                    )
-            )
-        }
+    fun triggerDeletionState_displaysSelectAllButton() = runTest {
+        mockData(listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.STEPS))
 
-        val scenario = launchFragment<AppDataFragment>(
+        val scenario =
+            launchFragment<AppDataFragment>(
                 bundleOf(
-                        Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
-                        Constants.EXTRA_APP_NAME to TEST_APP_NAME))
+                    Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
             (fragment as AppDataFragment).triggerDeletionState(DELETE)
@@ -399,140 +329,306 @@ class AppDataFragmentTest {
 
     @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     @Test
-    fun triggerDeletionState_onSelectAllChecked_allPermissionTypesChecked() {
-        whenever(appDataViewModel.fitnessAndMedicalData).then {
-            MediatorLiveData(
-                    AppDataViewModel.AppDataState.WithData(
-                            listOf(
-                                    PermissionTypesPerCategory(
-                                            HealthDataCategory.ACTIVITY,
-                                            listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.STEPS)
-                                    )
-                            )
-                    )
-            )
-        }
-        whenever(appDataViewModel.getDeletionState()).thenReturn(DELETE)
-
-        val scenario = launchFragment<AppDataFragment>(
+    fun inDeletionState_onSelectAllChecked_allPermissionTypesChecked() = runTest {
+        mockData(listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.STEPS))
+        val scenario =
+            launchFragment<AppDataFragment>(
                 bundleOf(
-                        Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
-                        Constants.EXTRA_APP_NAME to TEST_APP_NAME))
+                    Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("") as AppDataFragment
             fragment.triggerDeletionState(DELETE)
-            val selectAllPreference =
-                    fragment.preferenceScreen.findPreference("key_select_all")
-                            as SelectAllCheckboxPreference?
-            selectAllPreference?.setIsChecked(false)
-            selectAllPreference?.performClick()
+            val permissionTypesGroupPreference =
+                fragment.preferenceScreen.findPreference("key_permission_types")
+                    as EmptyPreferenceCategory?
 
-            verify(appDataViewModel).addToDeletionSet(FitnessPermissionType.DISTANCE)
-            verify(appDataViewModel).addToDeletionSet(FitnessPermissionType.STEPS)
+            permissionTypesGroupPreference?.children?.forEach { preference ->
+                if (preference is PreferenceCategory) {
+                    preference.children.forEach { permissionTypePreference ->
+                        if (permissionTypePreference is DeletionPermissionTypesPreference) {
+                            if (
+                                permissionTypePreference.getHealthPermissionType() in
+                                    listOf(
+                                        FitnessPermissionType.DISTANCE,
+                                        FitnessPermissionType.STEPS,
+                                    )
+                            ) {
+                                assertThat(permissionTypePreference.getIsChecked()).isFalse()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        assertCheckboxShown("Select all")
+        onView(withText("Select all")).perform(click())
+        advanceUntilIdle()
+
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("") as AppDataFragment
+            val permissionTypesGroupPreference =
+                fragment.preferenceScreen.findPreference("key_permission_types")
+                    as EmptyPreferenceCategory?
+
+            permissionTypesGroupPreference?.children?.forEach { preference ->
+                if (preference is PreferenceCategory) {
+                    preference.children.forEach { permissionTypePreference ->
+                        if (permissionTypePreference is DeletionPermissionTypesPreference) {
+                            if (
+                                permissionTypePreference.getHealthPermissionType() in
+                                    listOf(
+                                        FitnessPermissionType.DISTANCE,
+                                        FitnessPermissionType.STEPS,
+                                    )
+                            ) {
+                                assertThat(permissionTypePreference.getIsChecked()).isTrue()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        assertThat(appDataViewModel.setOfPermissionTypesToBeDeleted.value)
+            .containsExactlyElementsIn(
+                setOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.STEPS)
+            )
+    }
+
+    @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @Test
+    fun inDeletionState_onSelectAllUnchecked_allPermissionTypesUnchecked() = runTest {
+        mockData(listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.STEPS))
+        val scenario =
+            launchFragment<AppDataFragment>(
+                bundleOf(
+                    Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("") as AppDataFragment
+            fragment.triggerDeletionState(DELETE)
+        }
+        assertCheckboxShown("Select all")
+        onView(withText("Select all")).perform(click())
+        assertThat(appDataViewModel.setOfPermissionTypesToBeDeleted.value)
+            .containsExactlyElementsIn(
+                setOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.STEPS)
+            )
+        onView(withText("Select all")).perform(click())
+
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("") as AppDataFragment
+            val permissionTypesGroupPreference =
+                fragment.preferenceScreen.findPreference("key_permission_types")
+                    as EmptyPreferenceCategory?
+
+            permissionTypesGroupPreference?.children?.forEach { preference ->
+                if (preference is PreferenceCategory) {
+                    preference.children.forEach { permissionTypePreference ->
+                        if (permissionTypePreference is DeletionPermissionTypesPreference) {
+                            if (
+                                permissionTypePreference.getHealthPermissionType() in
+                                    listOf(
+                                        FitnessPermissionType.DISTANCE,
+                                        FitnessPermissionType.STEPS,
+                                    )
+                            ) {
+                                assertThat(permissionTypePreference.getIsChecked()).isFalse()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        assertThat(appDataViewModel.setOfPermissionTypesToBeDeleted.value).isEmpty()
+    }
+
+    @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @Test
+    fun inDeletionState_selectAllChecked_checkboxesRemainOnOrientationChange() = runTest {
+        mockData(listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.STEPS))
+
+        val scenario =
+            launchFragment<AppDataFragment>(
+                bundleOf(
+                    Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("") as AppDataFragment
+            fragment.triggerDeletionState(DELETE)
+        }
+
+        assertCheckboxShown("Select all")
+        onView(withText("Select all")).perform(click())
+
+        scenario.recreate()
+        onView(withText("Select all")).perform(scrollTo())
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("") as AppDataFragment
+            val selectAllCheckboxPreference =
+                fragment.preferenceScreen.findPreference("key_select_all")
+                    as SelectAllCheckboxPreference?
+            assertThat(selectAllCheckboxPreference?.getIsChecked()).isTrue()
+            fragment.preferenceScreen.children.forEach { preference ->
+                if (preference is PreferenceCategory) {
+                    preference.children.forEach { permissionTypePreference ->
+                        if (permissionTypePreference is DeletionPermissionTypesPreference) {
+                            assertThat(permissionTypePreference.getIsChecked()).isTrue()
+                        }
+                    }
+                }
+            }
+        }
+        assertCheckboxShown("Distance")
+        assertCheckboxShown("Steps")
+    }
+
+    @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @Test
+    fun inDeletionState_selectAllChecked_oneUnchecked_selectAllUnchecked() = runTest {
+        mockData(listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.MENSTRUATION))
+
+        val scenario =
+            launchFragment<AppDataFragment>(
+                bundleOf(
+                    Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("") as AppDataFragment
+            fragment.triggerDeletionState(DELETE)
+        }
+        advanceUntilIdle()
+        assertCheckboxShown("Select all")
+        onView(withText("Select all")).perform(click())
+        onView(withText("Distance")).perform(click())
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("") as AppDataFragment
+            val selectAllCheckboxPreference =
+                fragment.preferenceScreen.findPreference("key_select_all")
+                    as SelectAllCheckboxPreference?
+            assertThat(selectAllCheckboxPreference?.getIsChecked()).isFalse()
         }
     }
 
     @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     @Test
-    fun triggerDeletionState_onSelectAllUnchecked_allPermissionTypesUnchecked() {
-        whenever(appDataViewModel.fitnessAndMedicalData).then {
-            MediatorLiveData(
-                    AppDataViewModel.AppDataState.WithData(
-                            listOf(
-                                    PermissionTypesPerCategory(
-                                            HealthDataCategory.ACTIVITY,
-                                            listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.STEPS)
-                                    )
-                            )
-                    )
-            )
-        }
-        whenever(appDataViewModel.getDeletionState()).thenReturn(DELETE)
-        whenever(appDataViewModel.allPermissionTypesSelected).thenReturn(MutableLiveData(true))
+    fun inDeletionState_allPermissionTypesChecked_selectAllShouldBeChecked() = runTest {
+        mockData(listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.MENSTRUATION))
 
-        val scenario = launchFragment<AppDataFragment>(
+        val scenario =
+            launchFragment<AppDataFragment>(
                 bundleOf(
-                        Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
-                        Constants.EXTRA_APP_NAME to TEST_APP_NAME))
+                    Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("") as AppDataFragment
             fragment.triggerDeletionState(DELETE)
-            val selectAllPreference =
-                    fragment.preferenceScreen.findPreference("key_select_all")
-                            as SelectAllCheckboxPreference?
-            selectAllPreference?.setIsChecked(true)
-            selectAllPreference?.performClick()
+        }
+        advanceUntilIdle()
 
-            verify(appDataViewModel).removeFromDeletionSet(FitnessPermissionType.DISTANCE)
-            verify(appDataViewModel).removeFromDeletionSet(FitnessPermissionType.STEPS)
+        assertCheckboxShown("Distance")
+        assertCheckboxShown("Menstruation")
+        onView(withText("Distance")).perform(click())
+        onView(withText("Menstruation")).perform(click())
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("") as AppDataFragment
+            val selectAllCheckboxPreference =
+                fragment.preferenceScreen.findPreference("key_select_all")
+                    as SelectAllCheckboxPreference?
+            assertThat(selectAllCheckboxPreference?.getIsChecked()).isTrue()
         }
     }
 
-    @Ignore("b/363994647")
-    @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
-    @Test
-    fun triggerDeletionState_selectAllChecked_checkboxesRemainOnOrientationChange() {
-        whenever(appDataViewModel.getDeletionState()).thenReturn(DELETE)
-        whenever(appDataViewModel.allPermissionTypesSelected).thenReturn(MutableLiveData(true))
-        whenever(appDataViewModel.fitnessAndMedicalData).then {
-            MediatorLiveData(
-                    AppDataViewModel.AppDataState.WithData(
-                            listOf(
-                                    PermissionTypesPerCategory(
-                                            HealthDataCategory.ACTIVITY,
-                                            listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.STEPS)
-                                    )
-                            )
+    private fun mockData(permissionTypesList: List<HealthPermissionType>) {
+        val recordTypeInfoMap =
+            permissionTypesList.filterIsInstance<FitnessPermissionType>().associate {
+                fitnessPermissionType ->
+                val permissionCategory = fitnessPermissionType.category
+                val healthCategory = fromFitnessPermissionType(fitnessPermissionType)
+                val dataType =
+                    HealthPermissionToDatatypeMapper.getDataTypes(fitnessPermissionType)[0]
+
+                dataType to
+                    RecordTypeInfoResponse(
+                        permissionCategory,
+                        healthCategory,
+                        listOf(getDataOrigin(TEST_APP_PACKAGE_NAME)),
                     )
-            )
+            }
+
+        val medicalResourceTypeResources =
+            permissionTypesList.filterIsInstance<MedicalPermissionType>().map {
+                MedicalResourceTypeInfo(toMedicalResourceType(it), setOf(TEST_MEDICAL_DATA_SOURCE))
+            }
+
+        doAnswer(prepareAnswer(recordTypeInfoMap))
+            .`when`(manager)
+            .queryAllRecordTypesInfo(any(), any())
+
+        doAnswer(prepareAnswer(medicalResourceTypeResources))
+            .`when`(manager)
+            .queryAllMedicalResourceTypeInfos(any(), any())
+    }
+
+    private fun prepareAnswer(
+        recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse>
+    ): (InvocationOnMock) -> Map<Class<out Record>, RecordTypeInfoResponse> {
+        val answer = { args: InvocationOnMock ->
+            val receiver = args.arguments[1] as OutcomeReceiver<Any?, *>
+            receiver.onResult(recordTypeInfoMap)
+            recordTypeInfoMap
         }
+        return answer
+    }
 
-        val scenario = launchFragment<AppDataFragment>(
-                bundleOf(
-                        Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
-                        Constants.EXTRA_APP_NAME to TEST_APP_NAME))
-        scenario.onActivity { activity ->
-            val fragment = activity.supportFragmentManager.findFragmentByTag("") as AppDataFragment
-            fragment.triggerDeletionState(DELETE)
-            val selectAllPreference =
-                    fragment.preferenceScreen.findPreference("key_select_all")
-                            as SelectAllCheckboxPreference?
-
-            assertThat(selectAllPreference?.getIsChecked()).isTrue()
+    private fun prepareAnswer(
+        medicalResourceTypeInfo: List<MedicalResourceTypeInfo>
+    ): (InvocationOnMock) -> List<MedicalResourceTypeInfo> {
+        val answer = { args: InvocationOnMock ->
+            val receiver = args.arguments[1] as OutcomeReceiver<Any?, *>
+            receiver.onResult(medicalResourceTypeInfo)
+            medicalResourceTypeInfo
         }
-
-        assertCheckboxShown("Select all")
-
-        scenario.onActivity{ activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-            val fragment = activity.supportFragmentManager.findFragmentByTag("") as AppDataFragment
-            val selectAllPreference =
-                    fragment.preferenceScreen.findPreference("key_select_all")
-                            as SelectAllCheckboxPreference?
-
-            assertThat(selectAllPreference?.getIsChecked()).isTrue()
-        }
-
-        assertCheckboxShown("Select all")
-
-        scenario.onActivity{ activity ->
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        return answer
     }
 
     private fun assertCheckboxShown(title: String, tag: String = "checkbox") {
         onView(ViewMatchers.withId(androidx.preference.R.id.recycler_view))
-                .check(
-                        matches(
-                                Matchers.allOf(ViewMatchers.hasDescendant(withText(title)), ViewMatchers.hasDescendant(ViewMatchers.withTagValue(Matchers.`is`(tag))))))
+            .check(
+                matches(
+                    Matchers.allOf(
+                        ViewMatchers.hasDescendant(withText(title)),
+                        ViewMatchers.hasDescendant(ViewMatchers.withTagValue(Matchers.`is`(tag))),
+                    )
+                )
+            )
     }
 
     private fun assertCheckboxNotShown(title: String, tag: String = "checkbox") {
         onView(ViewMatchers.withId(androidx.preference.R.id.recycler_view))
-                .check(
-                        matches(
-                                Matchers.allOf(
-                                        ViewMatchers.hasDescendant(withText(title)),
-                                        Matchers.not(ViewMatchers.hasDescendant(ViewMatchers.withTagValue(Matchers.`is`(tag)))))))
+            .check(
+                matches(
+                    Matchers.allOf(
+                        ViewMatchers.hasDescendant(withText(title)),
+                        Matchers.not(
+                            ViewMatchers.hasDescendant(
+                                ViewMatchers.withTagValue(Matchers.`is`(tag))
+                            )
+                        ),
+                    )
+                )
+            )
     }
 }

@@ -4,7 +4,11 @@
     android:viewportWidth="24"
     android:viewportHeight="24"
     android:tint="?attr/colorControlNormal">
-  <path
-      android:pathData="M2,18V16H5V11.9C3.567,11.667 2.375,11 1.425,9.9C0.475,8.8 0,7.5 0,6V-0H12V6C12,7.5 11.525,8.8 10.575,9.9C9.625,11 8.433,11.667 7,11.9V16H10V18H2ZM6,10C6.933,10 7.75,9.717 8.45,9.15C9.15,8.583 9.617,7.867 9.85,7H2.15C2.383,7.867 2.85,8.583 3.55,9.15C4.25,9.717 5.067,10 6,10ZM2,5H10V2H2V5Z"
-      android:fillColor="@android:color/white"/>
+  <group>
+    <clip-path
+        android:pathData="M0,0h24v24h-24z"/>
+    <path
+        android:pathData="M8,21V19H11V14.9C9.567,14.667 8.375,14 7.425,12.9C6.475,11.8 6,10.5 6,9V3H18V9C18,10.5 17.525,11.8 16.575,12.9C15.625,14 14.433,14.667 13,14.9V19H16V21H8ZM12,13C12.933,13 13.75,12.717 14.45,12.15C15.15,11.583 15.617,10.867 15.85,10H8.15C8.383,10.867 8.85,11.583 9.55,12.15C10.25,12.717 11.067,13 12,13ZM8,8H16V5H8V8Z"
+        android:fillColor="@android:color/white"/>
+  </group>
 </vector>

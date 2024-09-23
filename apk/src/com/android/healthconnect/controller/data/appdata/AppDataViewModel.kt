@@ -77,20 +77,23 @@ constructor(
 
     private val _setOfPermissionTypesToBeDeleted = MutableLiveData<Set<HealthPermissionType>>()
 
-    val setOfPermissionTypesToBeDeleted : LiveData<Set<HealthPermissionType>>
+    val setOfPermissionTypesToBeDeleted: LiveData<Set<HealthPermissionType>>
         get() = _setOfPermissionTypesToBeDeleted
-    private var appDataDeletionScreenState: AppDataDeletionScreenState = AppDataDeletionScreenState.VIEW
+
+    private var appDataDeletionScreenState: AppDataDeletionScreenState =
+        AppDataDeletionScreenState.VIEW
 
     private var numOfPermissionTypes: Int = 0
 
     private val _allPermissionTypesSelected = MutableLiveData<Boolean>()
 
-    val allPermissionTypesSelected : LiveData<Boolean>
+    val allPermissionTypesSelected: LiveData<Boolean>
         get() = _allPermissionTypesSelected
 
     fun loadAppData(packageName: String) {
         _appFitnessData.postValue(AppDataState.Loading)
         _appMedicalData.postValue(AppDataState.Loading)
+        numOfPermissionTypes = 0
         viewModelScope.launch {
             val fitnessData = async { loadAppDataUseCase.loadFitnessAppData(packageName) }
             val medicalData = async { loadAppDataUseCase.loadMedicalAppData(packageName) }
@@ -152,7 +155,7 @@ constructor(
         val deleteSet = _setOfPermissionTypesToBeDeleted.value.orEmpty().toMutableSet()
         deleteSet.remove(permissionType)
         _setOfPermissionTypesToBeDeleted.value = deleteSet.toSet()
-        if( numOfPermissionTypes != deleteSet.size) {
+        if (numOfPermissionTypes != deleteSet.size) {
             _allPermissionTypesSelected.postValue(false)
         }
     }
@@ -168,9 +171,11 @@ constructor(
         return appDataDeletionScreenState
     }
 
+    fun getNumOfPermissionTypes(): Int = numOfPermissionTypes
+
     enum class AppDataDeletionScreenState {
         VIEW,
-        DELETE
+        DELETE,
     }
 
     sealed class AppDataState {

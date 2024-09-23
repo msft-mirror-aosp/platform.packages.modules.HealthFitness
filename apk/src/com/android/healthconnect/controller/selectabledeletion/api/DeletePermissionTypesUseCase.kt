@@ -17,7 +17,7 @@ package com.android.healthconnect.controller.selectabledeletion.api
 
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
-import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeletionTypeHealthPermissionTypes
+import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteHealthPermissionTypes
 import com.android.healthconnect.controller.service.IoDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -35,7 +35,7 @@ constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
 
-    suspend operator fun invoke(deletePermissionTypes: DeletionTypeHealthPermissionTypes) {
+    suspend operator fun invoke(deletePermissionTypes: DeleteHealthPermissionTypes) {
         withContext(dispatcher) {
             val deleteFitness = async { maybeDeleteFitnessData(deletePermissionTypes) }
             val deleteMedical = async { maybeDeleteMedicalData(deletePermissionTypes) }
@@ -44,7 +44,7 @@ constructor(
         }
     }
 
-    private suspend fun maybeDeleteFitnessData(deletionRequest: DeletionTypeHealthPermissionTypes) {
+    private suspend fun maybeDeleteFitnessData(deletionRequest: DeleteHealthPermissionTypes) {
         val isFitnessDataEmpty =
             deletionRequest.healthPermissionTypes
                 .filterIsInstance<FitnessPermissionType>()
@@ -55,7 +55,7 @@ constructor(
         deleteFitnessPermissionTypesUseCase.invoke(deletionRequest)
     }
 
-    private suspend fun maybeDeleteMedicalData(deletionRequest: DeletionTypeHealthPermissionTypes) {
+    private suspend fun maybeDeleteMedicalData(deletionRequest: DeleteHealthPermissionTypes) {
         val isMedicalDataEmpty =
             deletionRequest.healthPermissionTypes
                 .filterIsInstance<MedicalPermissionType>()

@@ -50,6 +50,7 @@ import com.android.healthconnect.controller.permissions.data.MedicalPermissionTy
 import com.android.healthconnect.controller.permissions.data.fromPermissionTypeName
 import com.android.healthconnect.controller.selectabledeletion.DeletionConstants
 import com.android.healthconnect.controller.selectabledeletion.DeletionFragment
+import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter
@@ -58,7 +59,6 @@ import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.setTitle
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
-import com.android.settingslib.widget.AppHeaderPreference
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
 import javax.inject.Inject
@@ -77,7 +77,6 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     private lateinit var permissionType: HealthPermissionType
     private val entriesViewModel: EntriesViewModel by activityViewModels()
     private val deletionViewModel: DeletionViewModel by activityViewModels()
-    private lateinit var header: AppHeaderPreference
     private lateinit var dateNavigationView: DateNavigationView
     private lateinit var entriesRecyclerView: RecyclerView
     private lateinit var noDataView: TextView
@@ -86,29 +85,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     private lateinit var adapter: RecyclerViewAdapter
     private var aggregation: FormattedEntry.FormattedAggregation? = null
 
-    private val onDeleteEntryListener by lazy {
-        object : OnDeleteEntryListener {
-            override fun onDeleteEntry(
-                id: String,
-                dataType: DataType,
-                index: Int,
-                startTime: Instant?,
-                endTime: Instant?,
-            ) {
-                val entriesToDelete = entriesViewModel.setOfEntriesToBeDeleted.value.orEmpty()
-
-                if (id in entriesToDelete) {
-                    entriesViewModel.removeFromDeleteSet(id)
-                } else {
-                    entriesViewModel.addToDeleteSet(id)
-                    if (entriesViewModel.getDataType() == null) {
-                        entriesViewModel.setDataType(dataType)
-                    }
-                }
-                updateMenu(screenState = DELETE)
-            }
-        }
-    }
+    // VIEW state click listener
     private val onClickEntryListener by lazy {
         object : OnClickEntryListener {
             override fun onItemClicked(id: String, index: Int) {
@@ -124,6 +101,8 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             }
         }
     }
+
+    // VIEW state click listener
     private val onClickMedicalEntryListener by lazy {
         object : OnClickMedicalEntryListener {
             override fun onItemClicked(id: MedicalResourceId, index: Int) {
@@ -135,48 +114,49 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             }
         }
     }
+
+    // DELETE state click listener
+    private val mOnSelectEntryListener by lazy {
+        object : OnSelectEntryListener {
+            override fun onSelectEntry(
+                id: String,
+                dataType: DataType,
+                index: Int,
+                startTime: Instant?,
+                endTime: Instant?,
+            ) {
+                if (id in entriesViewModel.mapOfEntriesToBeDeleted.value.orEmpty()) {
+                    entriesViewModel.removeFromDeleteMap(id)
+                } else {
+                    entriesViewModel.addToDeleteMap(id, dataType)
+                }
+                updateMenu(screenState = DELETE)
+            }
+        }
+    }
+
+    // DELETE state select all
     private val onClickSelectAllListener by lazy {
         object : OnClickSelectAllListener {
             override fun onClicked(isChecked: Boolean) {
                 entriesViewModel.setAllEntriesSelectedValue(isChecked)
                 entriesViewModel.getEntriesList().forEach { entry ->
-                    if (entry !is FormattedEntry.SelectAllHeader && entry !is FormattedEntry.FormattedAggregation ) {
+                    if (entry is FormattedEntry.HasDataType) {
                         if (isChecked) {
-                            entriesViewModel.addToDeleteSet(entry.uuid)
+                            entriesViewModel.addToDeleteMap(entry.uuid, entry.dataType)
                         } else {
-                            entriesViewModel.removeFromDeleteSet(entry.uuid)
-                        }
-
-                        if (entriesViewModel.getDataType() == null) {
-                            when (entry) {
-                                is FormattedEntry.FormattedDataEntry -> {
-                                    entriesViewModel.setDataType(entry.dataType)
-                                }
-                                is FormattedEntry.SleepSessionEntry -> {
-                                    entriesViewModel.setDataType(entry.dataType)
-                                }
-                                is FormattedEntry.ExerciseSessionEntry -> {
-                                    entriesViewModel.setDataType(entry.dataType)
-                                }
-                                is FormattedEntry.SeriesDataEntry -> {
-                                    entriesViewModel.setDataType(entry.dataType)
-                                }
-                                else -> {
-                                    //do nothing
-                                }
-                            }
+                            entriesViewModel.removeFromDeleteMap(entry.uuid)
                         }
                     }
                 }
                 updateMenu(screenState = DELETE)
-
             }
         }
     }
 
     private val aggregationViewBinder by lazy { AggregationViewBinder() }
     private val entryViewBinder by lazy {
-        EntryItemViewBinder(onDeleteEntryListener = onDeleteEntryListener)
+        EntryItemViewBinder(onSelectEntryListener = mOnSelectEntryListener)
     }
     private val medicalEntryViewBinder by lazy {
         MedicalEntryItemViewBinder(onClickMedicalEntryListener = onClickMedicalEntryListener)
@@ -185,29 +165,29 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     private val sleepSessionViewBinder by lazy {
         SleepSessionItemViewBinder(
             onItemClickedListener = onClickEntryListener,
-            onDeleteEntryListener = onDeleteEntryListener,
+            onSelectEntryListener = mOnSelectEntryListener,
         )
     }
     private val exerciseSessionItemViewBinder by lazy {
         ExerciseSessionItemViewBinder(
             onItemClickedListener = onClickEntryListener,
-            onDeleteEntryListener = onDeleteEntryListener,
+            onSelectEntryListener = mOnSelectEntryListener,
         )
     }
     private val seriesDataItemViewBinder by lazy {
         SeriesDataItemViewBinder(
             onItemClickedListener = onClickEntryListener,
-            onDeleteEntryListener = onDeleteEntryListener,
+            onSelectEntryListener = mOnSelectEntryListener,
         )
     }
     private val plannedExerciseSessionItemViewBinder by lazy {
         PlannedExerciseSessionItemViewBinder(
-            onDeleteEntryListener = onDeleteEntryListener,
+            onSelectEntryListener = mOnSelectEntryListener,
             onItemClickedListener = onClickEntryListener,
         )
     }
 
-    private val selectAllViewBinder by lazy { SelectAllViewBinder(onClickSelectAllListener)}
+    private val selectAllViewBinder by lazy { SelectAllViewBinder(onClickSelectAllListener) }
 
     // Not in deletion state
     private val onMenuSetup: (MenuItem) -> Boolean = { menuItem ->
@@ -249,7 +229,6 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-
         val view = inflater.inflate(R.layout.fragment_entries, container, false)
         if (requireArguments().containsKey(PERMISSION_TYPE_NAME_KEY)) {
             val permissionTypeName =
@@ -337,7 +316,6 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             adapter.checkSelectAll(allEntriesSelected)
         }
 
-        header = AppHeaderPreference(requireContext())
         observeEntriesUpdates()
     }
 
@@ -379,7 +357,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
             return
         }
 
-        if (entriesViewModel.setOfEntriesToBeDeleted.value.orEmpty().isEmpty()) {
+        if (entriesViewModel.mapOfEntriesToBeDeleted.value.orEmpty().isEmpty()) {
             setupMenu(
                 R.menu.all_data_delete_menu,
                 viewLifecycleOwner,
@@ -395,10 +373,12 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     @VisibleForTesting
     fun triggerDeletionState(screenState: EntriesViewModel.EntriesDeletionScreenState) {
         updateMenu(screenState)
-        if(screenState == VIEW){
-            removeSelectAll()
+        if (screenState == VIEW) {
+            adapter.removeSelectAll()
+            aggregation?.let { adapter.insertAggregation(it) }
         } else {
-            insertSelectAll()
+            aggregation?.let { adapter.removeAggregation() }
+            adapter.insertSelectAll(FormattedEntry.SelectAllHeader())
         }
         adapter.showCheckBox(screenState == DELETE)
         entriesViewModel.setScreenState(screenState)
@@ -415,35 +395,18 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         }
     }
 
-    private fun removeSelectAll(){
-        if(entriesViewModel.getEntriesList().first() is FormattedEntry.SelectAllHeader) {
-            if (aggregation == null) {
-                adapter.updateSelectAllState(FormattedEntry.SelectAllHeader(), inDeletion = false)
-            } else {
-                adapter.insertAggregationAndRemoveSelectAll(aggregation!!)
-            }
-        }
-    }
-
-    private fun insertSelectAll(){
-        if(aggregation == null) {
-            adapter.updateSelectAllState(FormattedEntry.SelectAllHeader(), inDeletion = true)
-        } else {
-            adapter.insertSelectAllAndRemoveAggregation(FormattedEntry.SelectAllHeader())
-        }
-    }
-
-    private fun deleteData() {
-        entriesViewModel.getDataType()?.let {
-            deletionViewModel.setEntriesDeleteSet(
-                entriesViewModel.setOfEntriesToBeDeleted.value.orEmpty(),
-                it,
+    @VisibleForTesting
+    fun deleteData() {
+        deletionViewModel.setDeletionType(
+            DeletionType.DeleteEntries(
+                entriesViewModel.mapOfEntriesToBeDeleted.value.orEmpty().toMap(),
+                entriesViewModel.getNumOfEntries(),
+                dateNavigationView.getPeriod(),
+                entriesViewModel.currentSelectedDate.value!!,
             )
-        }
+        )
         childFragmentManager.setFragmentResult(DeletionConstants.START_DELETION_KEY, bundleOf())
     }
-
-
 
     private fun observeEntriesUpdates() {
         entriesViewModel.entries.observe(viewLifecycleOwner) { state ->
@@ -470,11 +433,14 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                 is With -> {
                     entriesRecyclerView.isVisible = true
                     adapter.updateData(state.entries)
-                    if(state.entries[0] is FormattedEntry.FormattedAggregation){
-                        aggregation = state.entries[0] as FormattedEntry.FormattedAggregation
-                    } else {
-                        aggregation = null
-                    }
+                    // Save aggregation for re-adding to the entries list
+                    // when exiting deletion without having deleted any entries
+                    aggregation =
+                        if (state.entries[0] is FormattedEntry.FormattedAggregation) {
+                            state.entries[0] as FormattedEntry.FormattedAggregation
+                        } else {
+                            null
+                        }
                     entriesRecyclerView.scrollToPosition(0)
                     errorView.isVisible = false
                     noDataView.isVisible = false
