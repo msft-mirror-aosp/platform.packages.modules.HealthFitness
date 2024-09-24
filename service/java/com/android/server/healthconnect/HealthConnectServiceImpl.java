@@ -29,6 +29,7 @@ import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMIS
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
+import static android.health.connect.datatypes.MedicalDataSource.validateMedicalDataSourceIds;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_DATA;
@@ -2221,11 +2222,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 unsupportedException.getErrorCode());
                         return;
                     }
-                    List<UUID> dataSourceUuids = StorageUtils.toUuids(ids);
-                    if (dataSourceUuids.isEmpty()) {
-                        tryAndReturnResult(callback, List.of(), logger);
-                        return;
-                    }
+                    List<UUID> dataSourceUuids =
+                            validateMedicalDataSourceIds(ids.stream().collect(toSet())).stream()
+                                    .toList();
                     enforceIsForegroundUser(userHandle);
                     verifyPackageNameFromUid(uid, attributionSource);
                     throwExceptionIfDataSyncInProgress();
@@ -2433,6 +2432,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 ERROR_INVALID_ARGUMENT);
                         return;
                     }
+                    validateMedicalDataSourceIds(Set.of(id));
                     UUID uuid = UUID.fromString(id);
                     enforceIsForegroundUser(userHandle);
                     verifyPackageNameFromUid(uid, attributionSource);

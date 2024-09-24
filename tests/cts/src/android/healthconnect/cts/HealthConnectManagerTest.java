@@ -2043,10 +2043,22 @@ public class HealthConnectManagerTest {
     }
 
     @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testGetMedicalDataSources_invalidId_fails() throws Exception {
+        HealthConnectReceiver<List<MedicalDataSource>> callback = new HealthConnectReceiver<>();
+
+        mManager.getMedicalDataSources(
+                List.of("illegal id"), Executors.newSingleThreadExecutor(), callback);
+
+        assertThat(callback.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalDataSourcesById_notPresent_returnsEmptyList() throws Exception {
         HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
-        List<String> ids = List.of("foo");
+        List<String> ids = List.of(DATA_SOURCE_ID);
 
         SystemUtil.runWithShellPermissionIdentity(
                 () ->
@@ -2111,12 +2123,24 @@ public class HealthConnectManagerTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testHealthConnectManager_deleteMedicalDataSourceInvalidId_fails() throws Exception {
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalDataSourceWithData(
+                "illegal id", Executors.newSingleThreadExecutor(), callback);
+
+        assertThat(callback.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
     public void testHealthConnectManager_deleteMedicalDataSourceDoesntExist_fails()
             throws Exception {
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
 
         mManager.deleteMedicalDataSourceWithData(
-                "foo", Executors.newSingleThreadExecutor(), callback);
+                DATA_SOURCE_ID, Executors.newSingleThreadExecutor(), callback);
 
         assertThat(callback.assertAndGetException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
