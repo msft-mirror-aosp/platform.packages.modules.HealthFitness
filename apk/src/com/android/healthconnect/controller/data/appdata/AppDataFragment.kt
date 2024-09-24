@@ -207,6 +207,8 @@ open class AppDataFragment : Hilt_AppDataFragment() {
         }
         setupSelectAllPreference(screenState = viewModel.getDeletionState())
         updateMenu(viewModel.getDeletionState())
+        noDataPreference.isVisible = false
+        footerPreference.isVisible = false
 
         populatedCategories.forEach { permissionTypesPerCategory ->
             val category = permissionTypesPerCategory.category
