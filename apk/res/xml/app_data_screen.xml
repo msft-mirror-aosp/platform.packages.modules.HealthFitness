@@ -24,7 +24,7 @@
         android:title="@string/select_all"
         app:isPreferenceVisible="false"/>
     <com.android.healthconnect.controller.shared.preference.EmptyPreferenceCategory
-        android:key="key_permission_type"/>
+        android:key="key_permission_types"/>
     <com.android.healthconnect.controller.shared.preference.NoDataPreference
         app:isPreferenceVisible="false"/>
     <com.android.settingslib.widget.FooterPreference
