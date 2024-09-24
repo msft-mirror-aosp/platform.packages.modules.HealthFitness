@@ -259,6 +259,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private MedicalDataSourceHelper mMedicalDataSourceHelper;
     private final ExportManager mExportManager;
     private final AccessLogsHelper mAccessLogsHelper;
+    private final ActivityDateHelper mActivityDateHelper;
 
     private volatile UserHandle mCurrentForegroundUser;
 
@@ -276,7 +277,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ExportManager exportManager,
             ExportImportSettingsStorage exportImportSettingsStorage,
             AccessLogsHelper accessLogsHelper,
-            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            ActivityDateHelper activityDateHelper) {
         this(
                 transactionManager,
                 deviceConfigManager,
@@ -291,7 +293,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 exportManager,
                 exportImportSettingsStorage,
                 accessLogsHelper,
-                healthDataCategoryPriorityHelper);
+                healthDataCategoryPriorityHelper,
+                activityDateHelper);
     }
 
     @VisibleForTesting
@@ -309,10 +312,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ExportManager exportManager,
             ExportImportSettingsStorage exportImportSettingsStorage,
             AccessLogsHelper accessLogsHelper,
-            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            ActivityDateHelper activityDateHelper) {
         mAccessLogsHelper = accessLogsHelper;
         mTransactionManager = transactionManager;
         mPreferenceHelper = PreferenceHelper.getInstance();
+        mActivityDateHelper = activityDateHelper;
         mDeviceConfigManager = deviceConfigManager;
         mPermissionHelper = permissionHelper;
         mFirstGrantTimeManager = firstGrantTimeManager;
@@ -514,7 +519,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     private void postInsertTasks(AttributionSource attributionSource, RecordsParcel recordsParcel) {
-        ActivityDateHelper.insertRecordDate(recordsParcel.getRecords());
+        mActivityDateHelper.insertRecordDate(recordsParcel.getRecords());
         Set<Integer> recordsTypesInsertedSet =
                 recordsParcel.getRecords().stream()
                         .map(RecordInternal::getRecordType)
@@ -883,7 +888,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     // Update activity dates table
                     HealthConnectThreadScheduler.scheduleInternalTask(
                             () ->
-                                    ActivityDateHelper.reSyncByRecordTypeIds(
+                                    mActivityDateHelper.reSyncByRecordTypeIds(
                                             recordInternals.stream()
                                                     .map(RecordInternal::getRecordType)
                                                     .toList()));
@@ -1497,7 +1502,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
                         throwExceptionIfDataSyncInProgress();
                         List<LocalDate> localDates =
-                                ActivityDateHelper.getActivityDates(
+                                mActivityDateHelper.getActivityDates(
                                         activityDatesRequestParcel.getRecordTypes());
 
                         callback.onResult(new ActivityDatesResponseParcel(localDates));
@@ -3304,7 +3309,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private void postDeleteTasks(List<Integer> recordTypeIdsToDelete) {
         if (recordTypeIdsToDelete != null && !recordTypeIdsToDelete.isEmpty()) {
             mAppInfoHelper.syncAppInfoRecordTypesUsed(new HashSet<>(recordTypeIdsToDelete));
-            ActivityDateHelper.reSyncByRecordTypeIds(recordTypeIdsToDelete);
+            mActivityDateHelper.reSyncByRecordTypeIds(recordTypeIdsToDelete);
         }
     }
 

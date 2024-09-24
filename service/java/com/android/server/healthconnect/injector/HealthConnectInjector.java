@@ -27,6 +27,7 @@ import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
@@ -84,6 +85,9 @@ public abstract class HealthConnectInjector {
 
     /** Getter for AccessLogsHelper instance initialised by the Health Connect Injector. */
     public abstract AccessLogsHelper getAccessLogsHelper();
+
+    /** Getter for AccessLogsHelper instance initialised by the Health Connect Injector. */
+    public abstract ActivityDateHelper getActivityDateHelper();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {
