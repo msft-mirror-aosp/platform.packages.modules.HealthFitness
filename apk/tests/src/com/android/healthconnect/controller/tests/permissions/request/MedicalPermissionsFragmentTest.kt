@@ -103,7 +103,9 @@ class MedicalPermissionsFragmentTest {
                 AppMetadata(
                     TEST_APP_PACKAGE_NAME,
                     TEST_APP_NAME,
-                    context.getDrawable(R.drawable.health_connect_logo)))
+                    context.getDrawable(R.drawable.health_connect_logo),
+                )
+            )
         }
         `when`(viewModel.allMedicalPermissionsGranted).then { MutableLiveData(false) }
         `when`(viewModel.grantedMedicalPermissions).then {
@@ -146,20 +148,26 @@ class MedicalPermissionsFragmentTest {
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"))
+                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                )
+            )
             .check(matches(isDisplayed()))
 
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(withText("Allow \u201C$TEST_APP_NAME\u201D to read"))))
+                    hasDescendant(withText("Allow \u201C$TEST_APP_NAME\u201D to read"))
+                )
+            )
         Espresso.onIdle()
         onView(withText("Allow \u201C$TEST_APP_NAME\u201D to read")).check(matches(isDisplayed()))
 
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(withText("Allow \u201C$TEST_APP_NAME\u201D to write"))))
+                    hasDescendant(withText("Allow \u201C$TEST_APP_NAME\u201D to write"))
+                )
+            )
         Espresso.onIdle()
         onView(withText("Allow \u201C$TEST_APP_NAME\u201D to write")).check(matches(isDisplayed()))
 
@@ -190,7 +198,9 @@ class MedicalPermissionsFragmentTest {
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"))
+                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                )
+            )
             .check(matches(isDisplayed()))
     }
 
@@ -214,17 +224,16 @@ class MedicalPermissionsFragmentTest {
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"))
+                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                )
+            )
             .check(matches(isDisplayed()))
     }
 
     @Test
     fun displaysOnlyReadPermissions() {
         `when`(viewModel.healthPermissionsList).then {
-            val permissions =
-                listOf(
-                    fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION),
-                )
+            val permissions = listOf(fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION))
             MutableLiveData(permissions)
         }
         launchFragment<MedicalPermissionsFragment>(bundleOf())
@@ -232,20 +241,19 @@ class MedicalPermissionsFragmentTest {
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(withText("Immunization"))))
+                    hasDescendant(withText("Immunization"))
+                )
+            )
         Espresso.onIdle()
         onView(withText("Immunization")).check(matches(isDisplayed()))
 
-        onView(withText("All medical data")).check(doesNotExist())
+        onView(withText("All health records")).check(doesNotExist())
     }
 
     @Test
     fun displaysOnlyWritePermissions() {
         `when`(viewModel.healthPermissionsList).then {
-            val permissions =
-                listOf(
-                    fromPermissionString(WRITE_MEDICAL_DATA),
-                )
+            val permissions = listOf(fromPermissionString(WRITE_MEDICAL_DATA))
             MutableLiveData(permissions)
         }
         launchFragment<MedicalPermissionsFragment>(bundleOf())
@@ -255,9 +263,11 @@ class MedicalPermissionsFragmentTest {
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(withText("All medical data"))))
+                    hasDescendant(withText("All health records"))
+                )
+            )
         Espresso.onIdle()
-        onView(withText("All medical data")).check(matches(isDisplayed()))
+        onView(withText("All health records")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -274,7 +284,9 @@ class MedicalPermissionsFragmentTest {
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(withText("Immunization"))))
+                    hasDescendant(withText("Immunization"))
+                )
+            )
         Espresso.onIdle()
         onView(withText("Immunization")).perform(click())
 
@@ -350,7 +362,8 @@ class MedicalPermissionsFragmentTest {
             mapOf(
                 HealthPermission.fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION) to
                     PermissionState.GRANTED,
-                HealthPermission.fromPermissionString(WRITE_DISTANCE) to PermissionState.GRANTED)
+                HealthPermission.fromPermissionString(WRITE_DISTANCE) to PermissionState.GRANTED,
+            )
         }
         whenever(viewModel.grantedMedicalPermissions).then {
             MutableLiveData(emptySet<FitnessPermission>())
@@ -366,7 +379,8 @@ class MedicalPermissionsFragmentTest {
         whenever(viewModel.healthPermissionsList).then { MutableLiveData(permissions) }
         whenever(viewModel.grantedMedicalPermissions).then {
             MutableLiveData(
-                setOf(HealthPermission.fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION)))
+                setOf(HealthPermission.fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION))
+            )
         }
 
         launchFragment<MedicalPermissionsFragment>(bundleOf())

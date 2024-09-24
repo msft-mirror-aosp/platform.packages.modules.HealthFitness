@@ -99,6 +99,7 @@
         <item name="conditionsIcon">@drawable/ic_medical_conditions</item>
         <item name="immunizationIcon">@drawable/ic_medical_immunization</item>
         <item name="labResultsIcon">@drawable/ic_medical_lab_results</item>
+        <item name="medicalServicesIcon">@drawable/ic_medical_medical_services</item>
         <item name="medicationsIcon">@drawable/ic_medical_medication</item>
         <item name="pastVisitsIcon">@drawable/ic_medical_past_visits</item>
         <item name="patientInfoIcon">@drawable/ic_medical_patient_info</item>

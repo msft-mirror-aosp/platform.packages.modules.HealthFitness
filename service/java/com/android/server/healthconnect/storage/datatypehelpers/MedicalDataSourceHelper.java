@@ -18,13 +18,18 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
 
 import static com.android.server.healthconnect.storage.HealthConnectDatabase.createTable;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getAppIdsWhereClause;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getIntersectionOfResourceTypesReadAndGrantedReadPermissions;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getJoinWithIndicesTableFilterOnMedicalResourceTypes;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getJoinWithMedicalDataSourceFilterOnAppIds;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getJoinWithMedicalDataSourceFilterOnDataSourceIds;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getJoinWithMedicalDataSourceFilterOnDataSourceIdsAndAppId;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getReadRequestForDistinctResourceTypesBelongingToDataSourceIds;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.request.ReadTableRequest.UNION;
@@ -32,6 +37,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_U
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
@@ -70,6 +76,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Helper class for MedicalDataSource.
@@ -95,14 +102,17 @@ public class MedicalDataSourceHelper {
     private final TransactionManager mTransactionManager;
     private final AppInfoHelper mAppInfoHelper;
     private final TimeSource mTimeSource;
+    private final AccessLogsHelper mAccessLogsHelper;
 
     public MedicalDataSourceHelper(
             TransactionManager transactionManager,
             AppInfoHelper appInfoHelper,
-            TimeSource timeSource) {
+            TimeSource timeSource,
+            AccessLogsHelper accessLogsHelper) {
         mTransactionManager = transactionManager;
         mAppInfoHelper = appInfoHelper;
         mTimeSource = timeSource;
+        mAccessLogsHelper = accessLogsHelper;
     }
 
     public static String getMainTableName() {
@@ -273,7 +283,6 @@ public class MedicalDataSourceHelper {
      */
     public MedicalDataSource createMedicalDataSource(
             Context context, CreateMedicalDataSourceRequest request, String packageName) {
-        // TODO(b/344781394): Add support for access logs.
         try {
             return mTransactionManager.runAsTransaction(
                     (TransactionManager.TransactionRunnableWithReturn<
@@ -311,6 +320,12 @@ public class MedicalDataSourceHelper {
         UpsertTableRequest upsertTableRequest =
                 getUpsertTableRequest(dataSourceUuid, request, appInfoId, instant);
         mTransactionManager.insert(db, upsertTableRequest);
+        mAccessLogsHelper.addAccessLog(
+                db,
+                packageName,
+                /* medicalResourceTypes= */ Set.of(),
+                OPERATION_TYPE_UPSERT,
+                /* accessedMedicalDataSource= */ true);
         return buildMedicalDataSource(dataSourceUuid, request, packageName);
     }
 
@@ -379,17 +394,76 @@ public class MedicalDataSourceHelper {
             throw new IllegalArgumentException(
                     "app has not written any data and does not have any read permission");
         }
+        return mTransactionManager.runAsTransaction(
+                (TransactionManager.TransactionRunnableWithReturn<
+                                List<MedicalDataSource>, RuntimeException>)
+                        db -> {
+                            ReadTableRequest readTableRequest =
+                                    getReadRequestBasedOnPermissionFilters(
+                                            ids,
+                                            grantedReadMedicalResourceTypes,
+                                            appId,
+                                            hasWritePermission,
+                                            isCalledFromBgWithoutBgRead);
 
-        ReadTableRequest readTableRequest =
-                getReadRequestBasedOnPermissionFilters(
-                        ids,
-                        grantedReadMedicalResourceTypes,
-                        appId,
-                        hasWritePermission,
-                        isCalledFromBgWithoutBgRead);
-        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
-            return getMedicalDataSources(cursor);
+                            List<MedicalDataSource> medicalDataSources;
+                            try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+                                medicalDataSources = getMedicalDataSources(cursor);
+                            }
+
+                            // If the app is called from background but without background read
+                            // permission, the most the app can do, is to read their own data. Same
+                            // when the grantedReadMedicalResourceTypes is empty. And we don't need
+                            // to add access logs when an app intends to access their own data. If
+                            // medicalDataSources is empty, it means that the app hasn't read any
+                            // dataSources out, so no need to add access logs either.
+                            if (!isCalledFromBgWithoutBgRead
+                                    && !grantedReadMedicalResourceTypes.isEmpty()
+                                    && !medicalDataSources.isEmpty()) {
+                                // We need to figure out from the dataSources that were read, what
+                                // is the resource types relevant to those dataSources, we add
+                                // access logs only if there's any intersection between read
+                                // permissions and resource types's dataSources. If intersection is
+                                // empty, it means that the data read was accessed through self
+                                // read, hence no access log needed.
+                                Set<Integer> resourceTypes =
+                                        getIntersectionOfResourceTypesReadAndGrantedReadPermissions(
+                                                getMedicalResourceTypesBelongingToDataSourceIds(
+                                                        getUUIDsRead(medicalDataSources)),
+                                                grantedReadMedicalResourceTypes);
+                                if (!resourceTypes.isEmpty()) {
+                                    mAccessLogsHelper.addAccessLog(
+                                            db,
+                                            callingPackageName,
+                                            /* medicalResourceTypes= */ Set.of(),
+                                            OPERATION_TYPE_READ,
+                                            /* accessedMedicalDataSource= */ true);
+                                }
+                            }
+
+                            return medicalDataSources;
+                        });
+    }
+
+    private Set<Integer> getMedicalResourceTypesBelongingToDataSourceIds(List<UUID> dataSourceIds) {
+        Set<Integer> resourceTypes = new HashSet<>();
+        ReadTableRequest readRequest =
+                getReadRequestForDistinctResourceTypesBelongingToDataSourceIds(dataSourceIds);
+        try (Cursor cursor = mTransactionManager.read(readRequest)) {
+            if (cursor.moveToFirst()) {
+                do {
+                    resourceTypes.add(getCursorInt(cursor, getMedicalResourceTypeColumnName()));
+                } while (cursor.moveToNext());
+            }
         }
+        return resourceTypes;
+    }
+
+    private static List<UUID> getUUIDsRead(List<MedicalDataSource> dataSources) {
+        return dataSources.stream()
+                .map(MedicalDataSource::getId)
+                .map(UUID::fromString)
+                .collect(Collectors.toList());
     }
 
     private static ReadTableRequest getReadRequestBasedOnPermissionFilters(

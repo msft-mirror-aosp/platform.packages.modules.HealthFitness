@@ -16,13 +16,16 @@ package com.android.healthconnect.controller.data.entries
 import com.android.healthconnect.controller.shared.DataType
 import java.time.Instant
 
-/** OnDeleteListener for Data entries. */
-interface OnDeleteEntryListener {
-    fun onDeleteEntry(
+/**
+ * Click listener for entries in the AllEntries/AppEntries screen which adds/removes them from the
+ * deletion map.
+ */
+interface OnSelectEntryListener {
+    fun onSelectEntry(
         id: String,
         dataType: DataType,
         index: Int,
         startTime: Instant? = null,
-        endTime: Instant? = null
+        endTime: Instant? = null,
     )
 }

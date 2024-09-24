@@ -18,7 +18,7 @@ package com.android.healthconnect.controller.tests.selectabledeletion.api
 import android.health.connect.DeleteUsingFiltersRequest
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
-import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeletionTypeHealthPermissionTypes
+import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteHealthPermissionTypes
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteFitnessPermissionTypesUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteMedicalPermissionTypesUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesUseCase
@@ -66,7 +66,7 @@ class DeletePermissionTypesUseCaseTest {
 
     @Test
     fun permissionTypes_emptyDeleteMethod_noDeletionInvoked() = runTest {
-        useCase.invoke(DeletionTypeHealthPermissionTypes(listOf()))
+        useCase.invoke(DeleteHealthPermissionTypes(setOf(), 0))
         advanceUntilIdle()
 
         verifyZeroInteractions(deleteFitnessPermissionTypesUseCase)
@@ -75,11 +75,11 @@ class DeletePermissionTypesUseCaseTest {
 
     @Test
     fun permissionTypes_delete_deletionInvokedCorrectly() = runTest {
-        useCase.invoke(DeletionTypeHealthPermissionTypes(listOf(FitnessPermissionType.DISTANCE)))
+        useCase.invoke(DeleteHealthPermissionTypes(setOf(FitnessPermissionType.DISTANCE), 1))
         advanceUntilIdle()
 
         val expectedDeletionType =
-            DeletionTypeHealthPermissionTypes(listOf(FitnessPermissionType.DISTANCE))
+            DeleteHealthPermissionTypes(setOf(FitnessPermissionType.DISTANCE), 1)
         verify(deleteFitnessPermissionTypesUseCase).invoke(expectedDeletionType)
         verifyZeroInteractions(deleteMedicalPermissionTypesUseCase)
     }
@@ -87,15 +87,17 @@ class DeletePermissionTypesUseCaseTest {
     @Test
     fun permissionTypes_deleteFitnessAndMedical_deletionInvokedCorrectly() = runTest {
         useCase.invoke(
-            DeletionTypeHealthPermissionTypes(
-                listOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.IMMUNIZATION)
+            DeleteHealthPermissionTypes(
+                setOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.IMMUNIZATION),
+                4,
             )
         )
         advanceUntilIdle()
 
         val expectedDeletionType =
-            DeletionTypeHealthPermissionTypes(
-                listOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.IMMUNIZATION)
+            DeleteHealthPermissionTypes(
+                setOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.IMMUNIZATION),
+                4,
             )
         verify(deleteFitnessPermissionTypesUseCase).invoke(expectedDeletionType)
         verify(deleteMedicalPermissionTypesUseCase).invoke(expectedDeletionType)
@@ -103,13 +105,11 @@ class DeletePermissionTypesUseCaseTest {
 
     @Test
     fun permissionTypes_deleteMedical_deletionInvokedCorrectly() = runTest {
-        useCase.invoke(
-            DeletionTypeHealthPermissionTypes(listOf(MedicalPermissionType.IMMUNIZATION))
-        )
+        useCase.invoke(DeleteHealthPermissionTypes(setOf(MedicalPermissionType.IMMUNIZATION), 3))
         advanceUntilIdle()
 
         val expectedDeletionType =
-            DeletionTypeHealthPermissionTypes(listOf(MedicalPermissionType.IMMUNIZATION))
+            DeleteHealthPermissionTypes(setOf(MedicalPermissionType.IMMUNIZATION), 3)
         verify(deleteMedicalPermissionTypesUseCase).invoke(expectedDeletionType)
         verifyZeroInteractions(deleteFitnessPermissionTypesUseCase)
     }

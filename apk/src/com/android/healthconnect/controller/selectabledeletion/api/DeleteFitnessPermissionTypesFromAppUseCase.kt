@@ -40,7 +40,7 @@ constructor(
 ) {
 
     suspend operator fun invoke(
-        deletePermissionTypesFromApp: DeletionType.DeletionTypeHealthPermissionTypesFromApp
+        deletePermissionTypesFromApp: DeletionType.DeleteHealthPermissionTypesFromApp
     ) {
         val deleteRequest = DeleteUsingFiltersRequest.Builder()
 

@@ -16,7 +16,6 @@
 
 package android.health.connect.datatypes;
 
-
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import static java.util.Objects.hash;
@@ -161,11 +160,12 @@ public final class MedicalDataSource implements Parcelable {
      *
      * @hide
      */
-    public static void validateMedicalDataSourceIds(@NonNull Set<String> ids) {
+    public static Set<UUID> validateMedicalDataSourceIds(@NonNull Set<String> ids) {
         Set<String> invalidIds = new HashSet<>();
+        Set<UUID> uuids = new HashSet<>();
         for (String id : ids) {
             try {
-                UUID.fromString(id);
+                uuids.add(UUID.fromString(id));
             } catch (IllegalArgumentException e) {
                 invalidIds.add(id);
             }
@@ -173,6 +173,7 @@ public final class MedicalDataSource implements Parcelable {
         if (!invalidIds.isEmpty()) {
             throw new IllegalArgumentException("Invalid data source ID(s): " + invalidIds);
         }
+        return uuids;
     }
 
     /** Indicates whether some other object is "equal to" this one. */
