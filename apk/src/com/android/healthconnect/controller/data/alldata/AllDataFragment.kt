@@ -38,6 +38,7 @@ import com.android.healthconnect.controller.permissions.data.HealthPermissionTyp
 import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.START_DELETION_KEY
 import com.android.healthconnect.controller.selectabledeletion.DeletionFragment
 import com.android.healthconnect.controller.selectabledeletion.DeletionPermissionTypesPreference
+import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.selectabledeletion.SelectAllCheckboxPreference
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
@@ -100,6 +101,9 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     private val onDataSourcesClick: (MenuItem) -> Boolean = { menuItem ->
         when (menuItem.itemId) {
             R.id.menu_data_sources -> {
+                logger.logInteraction(ToolbarElement.TOOLBAR_DATA_SOURCES_BUTTON)
+                // TODO (b/368600140) data sources will no longer need category once old IA is
+                // phased out
                 findNavController()
                     .navigate(
                         R.id.action_allDataFragment_to_dataSourcesFragment,
@@ -241,7 +245,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
 
         setupSelectAllPreference(screenState = viewModel.getScreenState())
 
-        setupMenu()
+        updateMenu(screenState = viewModel.getScreenState())
 
         populatedCategories.forEach { permissionTypesPerCategory ->
             val category = permissionTypesPerCategory.category
@@ -338,14 +342,10 @@ open class AllDataFragment : Hilt_AllDataFragment() {
             permissionTypePreference.showCheckbox(screenState == DELETE)
         }
 
-        // scroll to top
+        // scroll to top to show Select all preference when triggered
         if (screenState == DELETE) {
             scrollToPreference(KEY_SELECT_ALL)
         }
-    }
-
-    private fun setupMenu() {
-        updateMenu(screenState = viewModel.getScreenState())
     }
 
     private fun setupEmptyState() {
@@ -355,8 +355,11 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     }
 
     private fun deleteData() {
-        deletionViewModel.setPermissionTypesDeleteSet(
-            viewModel.setOfPermissionTypesToBeDeleted.value.orEmpty()
+        deletionViewModel.setDeletionType(
+            DeletionType.DeleteHealthPermissionTypes(
+                viewModel.setOfPermissionTypesToBeDeleted.value.orEmpty(),
+                viewModel.getNumOfPermissionTypes(),
+            )
         )
         childFragmentManager.setFragmentResult(START_DELETION_KEY, bundleOf())
     }
@@ -384,7 +387,6 @@ open class AllDataFragment : Hilt_AllDataFragment() {
                         EntriesViewModel.EntriesDeletionScreenState.VIEW
                     )
                     entriesViewModel.setAllEntriesSelectedValue(false)
-                    entriesViewModel.setDataType(null)
                     entriesViewModel.currentSelectedDate.value = null
                     findNavController()
                         .navigate(

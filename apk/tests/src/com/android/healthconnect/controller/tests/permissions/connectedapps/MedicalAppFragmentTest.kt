@@ -23,8 +23,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.preference.PreferenceCategory
-import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.onIdle
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -125,7 +125,9 @@ class MedicalAppFragmentTest {
                 AppMetadata(
                     TEST_APP_PACKAGE_NAME,
                     TEST_APP_NAME,
-                    context.getDrawable(R.drawable.health_connect_logo)))
+                    context.getDrawable(R.drawable.health_connect_logo),
+                )
+            )
         }
 
         whenever(additionalAccessViewModel.additionalAccessState).then {
@@ -155,7 +157,10 @@ class MedicalAppFragmentTest {
         val scenario =
             launchFragment<MedicalAppFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
             val fragment =
@@ -182,7 +187,10 @@ class MedicalAppFragmentTest {
         val scenario =
             launchFragment<MedicalAppFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
             val fragment =
@@ -210,7 +218,10 @@ class MedicalAppFragmentTest {
         val scenario =
             launchFragment<MedicalAppFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
             val fragment =
@@ -225,7 +236,7 @@ class MedicalAppFragmentTest {
             assertThat(readCategory?.preferenceCount).isEqualTo(0)
             assertThat(writeCategory?.preferenceCount).isEqualTo(1)
         }
-        onView(withText("All medical data")).check(matches(isDisplayed()))
+        onView(withText("All health records")).check(matches(isDisplayed()))
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
@@ -243,7 +254,10 @@ class MedicalAppFragmentTest {
         val scenario =
             launchFragment<MedicalAppFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
             val fragment =
@@ -258,7 +272,7 @@ class MedicalAppFragmentTest {
             assertThat(readCategory?.preferenceCount).isEqualTo(1)
             assertThat(writeCategory?.preferenceCount).isEqualTo(1)
         }
-        onView(withText("All medical data")).check(matches(isDisplayed()))
+        onView(withText("All health records")).check(matches(isDisplayed()))
         onView(withText("Immunization")).check(matches(isDisplayed()))
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
 
@@ -281,7 +295,10 @@ class MedicalAppFragmentTest {
         val scenario =
             launchFragment<MedicalAppFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
             val fragment =
@@ -308,7 +325,10 @@ class MedicalAppFragmentTest {
         val scenario =
             launchFragment<MedicalAppFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
             val fragment =
@@ -332,7 +352,8 @@ class MedicalAppFragmentTest {
         }
         whenever(viewModel.allMedicalPermissionsGranted).then { MediatorLiveData(true) }
         launchFragment<MedicalAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
         onView(withText("Allow all")).perform(click())
 
         onView(withText("Remove all permissions?")).check(matches(isDisplayed()))
@@ -358,14 +379,15 @@ class MedicalAppFragmentTest {
         }
         whenever(viewModel.allMedicalPermissionsGranted).then { MediatorLiveData(true) }
         launchFragment<MedicalAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
         onView(withText("Allow all")).perform(click())
 
         onView(withText("Remove all")).perform(click())
         verify(healthConnectLogger)
             .logInteraction(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
 
-        onView(withText("All medical data")).check(matches(not(isChecked())))
+        onView(withText("All health records")).check(matches(not(isChecked())))
         onView(withText("Immunization")).check(matches(not(isChecked())))
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
@@ -382,7 +404,8 @@ class MedicalAppFragmentTest {
         }
         whenever(viewModel.allMedicalPermissionsGranted).then { MediatorLiveData(true) }
         launchFragment<MedicalAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
         onView(withText("Allow all")).perform(click())
 
         onView(withId(R.id.dialog_checkbox)).perform(click())
@@ -405,7 +428,8 @@ class MedicalAppFragmentTest {
         whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
             .thenReturn(Intent())
         launchFragment<MedicalAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onIdle()
         onView(
@@ -413,7 +437,9 @@ class MedicalAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -435,10 +461,16 @@ class MedicalAppFragmentTest {
                 AdditionalAccessViewModel.State(
                     historyReadUIState =
                         AdditionalAccessViewModel.AdditionalPermissionState(
-                            isDeclared = true, isEnabled = false, isGranted = false)))
+                            isDeclared = true,
+                            isEnabled = false,
+                            isGranted = false,
+                        )
+                )
+            )
         }
         launchFragment<MedicalAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onIdle()
         onView(
@@ -446,7 +478,9 @@ class MedicalAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -467,7 +501,8 @@ class MedicalAppFragmentTest {
         whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
             .thenReturn(Intent())
         launchFragment<MedicalAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onIdle()
         onView(
@@ -475,7 +510,9 @@ class MedicalAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -499,14 +536,17 @@ class MedicalAppFragmentTest {
             .thenReturn(Intent(rationaleAction))
 
         launchFragment<MedicalAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onView(
                 withText(
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -531,7 +571,9 @@ class MedicalAppFragmentTest {
             bundleOf(
                 EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
                 EXTRA_APP_NAME to TEST_APP_NAME,
-                SHOW_MANAGE_APP_SECTION to true))
+                SHOW_MANAGE_APP_SECTION to true,
+            )
+        )
         onView(withText("Manage app")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Delete app data")).check(doesNotExist())
@@ -552,7 +594,9 @@ class MedicalAppFragmentTest {
             bundleOf(
                 EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
                 EXTRA_APP_NAME to TEST_APP_NAME,
-                SHOW_MANAGE_APP_SECTION to false))
+                SHOW_MANAGE_APP_SECTION to false,
+            )
+        )
         onView(withText("Manage app")).check(doesNotExist())
         onView(withText("See app data")).check(doesNotExist())
     }
@@ -564,7 +608,8 @@ class MedicalAppFragmentTest {
         }
 
         launchFragment<MedicalAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onView(withText(R.string.additional_access_label)).check(doesNotExist())
     }
@@ -574,13 +619,15 @@ class MedicalAppFragmentTest {
         val validState =
             AdditionalAccessViewModel.State(
                 exerciseRoutePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
-                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME)
+                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
 
         launchFragment<MedicalAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onView(withText(R.string.additional_access_label))
             .perform(scrollTo())
@@ -593,13 +640,18 @@ class MedicalAppFragmentTest {
             AdditionalAccessViewModel.State(
                 backgroundReadUIState =
                     AdditionalAccessViewModel.AdditionalPermissionState(
-                        isDeclared = true, isEnabled = false, isGranted = false))
+                        isDeclared = true,
+                        isEnabled = false,
+                        isGranted = false,
+                    )
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
 
         launchFragment<MedicalAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onView(withText(R.string.additional_access_label))
             .perform(scrollTo())
@@ -608,23 +660,24 @@ class MedicalAppFragmentTest {
     }
 
     @Test
-    @Ignore //TODO(b/352003559): Unignore when not flaky.
+    @Ignore // TODO(b/352003559): Unignore when not flaky.
     fun additionalAccessState_onClick_navigatesToAdditionalAccessFragment() {
         val validState =
             AdditionalAccessViewModel.State(
                 exerciseRoutePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
-                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME)
+                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
 
         launchFragment<MedicalAppFragment>(
-            bundleOf(
-                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)) {
-                navHostController.setGraph(R.navigation.nav_graph)
-                navHostController.setCurrentDestination(R.id.medicalAppFragment)
-                Navigation.setViewNavController(requireView(), navHostController)
-            }
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        ) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            navHostController.setCurrentDestination(R.id.medicalAppFragment)
+            Navigation.setViewNavController(requireView(), navHostController)
+        }
         onView(withText(R.string.additional_access_label)).perform(scrollTo()).perform(click())
 
         onIdle()
