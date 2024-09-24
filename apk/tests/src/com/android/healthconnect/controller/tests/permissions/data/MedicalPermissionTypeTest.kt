@@ -15,8 +15,10 @@
  */
 package com.android.healthconnect.controller.tests.permissions.data
 
+import android.content.Context
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN
+import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.fromMedicalResourceType
 import com.android.healthconnect.controller.permissions.data.toMedicalResourceType
@@ -36,10 +38,12 @@ class MedicalPermissionTypeTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
+    private lateinit var context: Context
 
     @Before
     fun setup() {
         hiltRule.inject()
+        context = InstrumentationRegistry.getInstrumentation().context
     }
 
     @Test

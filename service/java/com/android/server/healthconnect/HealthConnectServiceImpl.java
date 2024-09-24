@@ -29,6 +29,7 @@ import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMIS
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
+import static android.health.connect.datatypes.MedicalDataSource.validateMedicalDataSourceIds;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_DATA;
@@ -65,7 +66,6 @@ import android.health.connect.HealthPermissions;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.MedicalResourceTypeInfo;
 import android.health.connect.PageTokenWrapper;
-import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.UpsertMedicalResourceRequest;
@@ -100,6 +100,7 @@ import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
 import android.health.connect.aidl.IRecordTypeInfoResponseCallback;
 import android.health.connect.aidl.InsertRecordsResponseParcel;
+import android.health.connect.aidl.ReadMedicalResourcesRequestParcel;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.aidl.ReadRecordsResponseParcel;
 import android.health.connect.aidl.RecordIdFiltersParcel;
@@ -168,6 +169,7 @@ import com.android.server.healthconnect.permission.DataPermissionEnforcer;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.permission.MedicalDataPermissionEnforcer;
+import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.phr.validations.MedicalResourceValidator;
 import com.android.server.healthconnect.storage.AutoDeleteService;
@@ -2220,11 +2222,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 unsupportedException.getErrorCode());
                         return;
                     }
-                    List<UUID> dataSourceUuids = StorageUtils.toUuids(ids);
-                    if (dataSourceUuids.isEmpty()) {
-                        tryAndReturnResult(callback, List.of(), logger);
-                        return;
-                    }
+                    List<UUID> dataSourceUuids =
+                            validateMedicalDataSourceIds(ids.stream().collect(toSet())).stream()
+                                    .toList();
                     enforceIsForegroundUser(userHandle);
                     verifyPackageNameFromUid(uid, attributionSource);
                     throwExceptionIfDataSyncInProgress();
@@ -2432,6 +2432,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 ERROR_INVALID_ARGUMENT);
                         return;
                     }
+                    validateMedicalDataSourceIds(Set.of(id));
                     UUID uuid = UUID.fromString(id);
                     enforceIsForegroundUser(userHandle);
                     verifyPackageNameFromUid(uid, attributionSource);
@@ -2672,7 +2673,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Override
     public void readMedicalResourcesByRequest(
             AttributionSource attributionSource,
-            ReadMedicalResourcesRequest request,
+            ReadMedicalResourcesRequestParcel request,
             IReadMedicalResourcesResponseCallback callback) {
         checkParamsNonNull(attributionSource, request, callback);
         final ErrorCallback errorCallback = callback::onError;
@@ -2705,13 +2706,14 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     verifyPackageNameFromUid(uid, attributionSource);
                     throwExceptionIfDataSyncInProgress();
 
+                    PhrPageTokenWrapper pageTokenWrapper = PhrPageTokenWrapper.from(request);
                     ReadMedicalResourcesInternalResponse response;
 
                     if (holdsDataManagementPermission) {
                         response =
                                 mMedicalResourceHelper
                                         .readMedicalResourcesByRequestWithoutPermissionChecks(
-                                                request);
+                                                pageTokenWrapper, request.getPageSize());
                     } else {
                         boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
                         logger.setCallerForegroundState(isInForeground);
@@ -2724,7 +2726,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         // the statement throws SecurityException.
                         if (mMedicalDataPermissionEnforcer
                                 .enforceMedicalReadAccessAndGetEnforceSelfRead(
-                                        request.getMedicalResourceType(), attributionSource)) {
+                                        pageTokenWrapper.getRequest().getMedicalResourceType(),
+                                        attributionSource)) {
                             // If read permission is missing but write permission is granted,
                             // then enforce self read.
                             enforceSelfRead = true;
@@ -2747,7 +2750,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         response =
                                 mMedicalResourceHelper
                                         .readMedicalResourcesByRequestWithPermissionChecks(
-                                                request, callingPackageName, enforceSelfRead);
+                                                pageTokenWrapper,
+                                                request.getPageSize(),
+                                                callingPackageName,
+                                                enforceSelfRead);
                     }
 
                     List<MedicalResource> medicalResources = response.getMedicalResources();

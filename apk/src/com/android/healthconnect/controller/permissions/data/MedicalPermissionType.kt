@@ -25,8 +25,8 @@ import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PR
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.utils.AttributeResolver
 
@@ -51,9 +51,16 @@ enum class MedicalPermissionType : HealthPermissionType {
     override fun icon(context: Context): Drawable? {
         val attrRes: Int =
             when (this) {
+                ALL_MEDICAL_DATA -> R.attr.medicalServicesIcon
                 ALLERGY_INTOLERANCE -> R.attr.allergiesIcon
                 IMMUNIZATION -> R.attr.immunizationIcon
-                else -> throw IllegalArgumentException("PermissionType $this is not supported.")
+                LABORATORY_RESULTS -> R.attr.labResultsIcon
+                PREGNANCY -> R.attr.pregnancyIcon
+                PROBLEMS -> R.attr.conditionsIcon
+                PROCEDURES -> R.attr.proceduresIcon
+                SOCIAL_HISTORY -> R.attr.socialHistoryIcon
+                VITAL_SIGNS -> R.attr.vitalsIcon
+                else -> return null
             }
         return AttributeResolver.getDrawable(context, attrRes)
     }

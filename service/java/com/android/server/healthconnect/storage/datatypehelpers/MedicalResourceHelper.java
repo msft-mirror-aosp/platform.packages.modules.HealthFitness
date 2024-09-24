@@ -54,7 +54,7 @@ import android.database.sqlite.SQLiteException;
 import android.health.connect.Constants;
 import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.MedicalResourceId;
-import android.health.connect.ReadMedicalResourcesRequest;
+import android.health.connect.ReadMedicalResourcesInitialRequest;
 import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalDataSource;
@@ -432,7 +432,7 @@ public final class MedicalResourceHelper {
         return resourceTypeToDataSourceIdsMap;
     }
 
-    private static Set<Integer> getIntersectionOfResourceTypesReadAndGrantedReadPermissions(
+    static Set<Integer> getIntersectionOfResourceTypesReadAndGrantedReadPermissions(
             Set<Integer> resourceTypesRead, Set<Integer> grantedReadPerms) {
         Set<Integer> intersection = new HashSet<>(resourceTypesRead);
         intersection.retainAll(grantedReadPerms);
@@ -520,18 +520,19 @@ public final class MedicalResourceHelper {
     /**
      * Reads the {@link MedicalResource}s stored in the HealthConnect database by {@code request}.
      *
-     * @param request a {@link ReadMedicalResourcesRequest}.
+     * @param pageTokenWrapper a {@link PhrPageTokenWrapper}.
      * @return a {@link ReadMedicalResourcesInternalResponse}.
      */
     // TODO(b/354872929): Add cts tests for read by request.
 
     public ReadMedicalResourcesInternalResponse
             readMedicalResourcesByRequestWithoutPermissionChecks(
-                    ReadMedicalResourcesRequest request) {
+                    PhrPageTokenWrapper pageTokenWrapper, int pageSize) {
         ReadMedicalResourcesInternalResponse response;
-        ReadTableRequest readTableRequest = getReadTableRequestUsingRequestFilters(request);
+        ReadTableRequest readTableRequest =
+                getReadTableRequestUsingRequestFilters(pageTokenWrapper, pageSize);
         try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
-            response = getMedicalResources(cursor, request);
+            response = getMedicalResources(cursor, pageTokenWrapper, pageSize);
         }
         return response;
     }
@@ -547,7 +548,8 @@ public final class MedicalResourceHelper {
     // TODO(b/360352345): Add cts tests for access logs being created per API call.
 
     public ReadMedicalResourcesInternalResponse readMedicalResourcesByRequestWithPermissionChecks(
-            ReadMedicalResourcesRequest request,
+            PhrPageTokenWrapper pageTokenWrapper,
+            int pageSize,
             String callingPackageName,
             boolean enforceSelfRead) {
         return mTransactionManager.runAsTransaction(
@@ -555,15 +557,18 @@ public final class MedicalResourceHelper {
                     ReadMedicalResourcesInternalResponse response;
                     ReadTableRequest readTableRequest =
                             getReadTableRequestUsingRequestBasedOnPermissionFilters(
-                                    request, callingPackageName, enforceSelfRead);
+                                    pageTokenWrapper,
+                                    pageSize,
+                                    callingPackageName,
+                                    enforceSelfRead);
                     try (Cursor cursor = mTransactionManager.read(db, readTableRequest)) {
-                        response = getMedicalResources(cursor, request);
+                        response = getMedicalResources(cursor, pageTokenWrapper, pageSize);
                     }
                     if (!enforceSelfRead) {
                         mAccessLogsHelper.addAccessLog(
                                 db,
                                 callingPackageName,
-                                Set.of(request.getMedicalResourceType()),
+                                Set.of(pageTokenWrapper.getRequest().getMedicalResourceType()),
                                 OPERATION_TYPE_READ,
                                 /* accessedMedicalDataSource= */ false);
                     }
@@ -572,25 +577,28 @@ public final class MedicalResourceHelper {
     }
 
     private ReadTableRequest getReadTableRequestUsingRequestBasedOnPermissionFilters(
-            ReadMedicalResourcesRequest request,
+            PhrPageTokenWrapper pageTokenWrapper,
+            int pageSize,
             String callingPackageName,
             boolean enforceSelfRead) {
         // If this is true, app can only read its own data of the given filters set in the request.
         if (enforceSelfRead) {
             long appId = mAppInfoHelper.getAppInfoId(callingPackageName);
-            return getReadTableRequestUsingRequestFiltersAndAppId(request, appId);
+            return getReadTableRequestUsingRequestFiltersAndAppId(
+                    pageTokenWrapper, pageSize, appId);
         }
         // Otherwise, app can read all data of the given filters.
-        return getReadTableRequestUsingRequestFilters(request);
+        return getReadTableRequestUsingRequestFilters(pageTokenWrapper, pageSize);
     }
 
-    /** Creates {@link ReadTableRequest} for the given {@link ReadMedicalResourcesRequest}. */
+    /** Creates {@link ReadTableRequest} for the given {@link PhrPageTokenWrapper}. */
     @VisibleForTesting
     static ReadTableRequest getReadTableRequestUsingRequestFilters(
-            ReadMedicalResourcesRequest request) {
+            PhrPageTokenWrapper pageTokenWrapper, int pageSize) {
+        ReadMedicalResourcesInitialRequest request = pageTokenWrapper.getRequest();
         ReadTableRequest readTableRequest =
-                getReadTableRequestUsingPageSizeAndToken(
-                        request.getPageSize(), request.getPageToken());
+                getReadTableRequestUsingPageSizeAndLastRowId(
+                        pageSize, pageTokenWrapper.getLastRowId());
         SqlJoin joinClause;
         if (request.getDataSourceIds().isEmpty()) {
             joinClause =
@@ -606,15 +614,15 @@ public final class MedicalResourceHelper {
     }
 
     /**
-     * Creates {@link ReadTableRequest} for the given {@link ReadMedicalResourcesRequest} and {@code
+     * Creates {@link ReadTableRequest} for the given {@link PhrPageTokenWrapper} and {@code
      * callingPackageName}.
      */
     private static ReadTableRequest getReadTableRequestUsingRequestFiltersAndAppId(
-            ReadMedicalResourcesRequest request, long appId) {
-
+            PhrPageTokenWrapper pageTokenWrapper, int pageSize, long appId) {
+        ReadMedicalResourcesInitialRequest request = pageTokenWrapper.getRequest();
         ReadTableRequest readTableRequest =
-                getReadTableRequestUsingPageSizeAndToken(
-                        request.getPageSize(), request.getPageToken());
+                getReadTableRequestUsingPageSizeAndLastRowId(
+                        pageSize, pageTokenWrapper.getLastRowId());
         SqlJoin joinClause;
         if (request.getDataSourceIds().isEmpty()) {
             joinClause =
@@ -629,14 +637,25 @@ public final class MedicalResourceHelper {
         return readTableRequest.setJoinClause(joinClause);
     }
 
-    private static ReadTableRequest getReadTableRequestUsingPageSizeAndToken(
-            int pageSize, @Nullable String pageToken) {
+    private static ReadTableRequest getReadTableRequestUsingPageSizeAndLastRowId(
+            int pageSize, long lastRowId) {
         // The limit is set to pageSize + 1, so that we know if there are more resources
         // than the pageSize for creating the pageToken.
         return new ReadTableRequest(getMainTableName())
-                .setWhereClause(getReadByPageTokenWhereClause(pageToken))
+                .setWhereClause(getReadByLastRowIdWhereClause(lastRowId))
                 .setOrderBy(getOrderByClause())
                 .setLimit(pageSize + 1);
+    }
+
+    static ReadTableRequest getReadRequestForDistinctResourceTypesBelongingToDataSourceIds(
+            List<UUID> dataSourceIds) {
+        return new ReadTableRequest(getMainTableName())
+                .setDistinctClause(true)
+                .setColumnNames(
+                        List.of(MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName()))
+                .setJoinClause(
+                        getJoinWithMedicalDataSourceFilterOnDataSourceIds(
+                                dataSourceIds, joinWithMedicalResourceIndicesTable()));
     }
 
     @VisibleForTesting
@@ -846,14 +865,13 @@ public final class MedicalResourceHelper {
                 .addOrderByClause(MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME, /* isAscending= */ true);
     }
 
-    private static WhereClauses getReadByPageTokenWhereClause(@Nullable String pageToken) {
+    private static WhereClauses getReadByLastRowIdWhereClause(long lastRowId) {
         WhereClauses whereClauses = new WhereClauses(AND);
 
-        if (pageToken == null || pageToken.isEmpty()) {
+        if (lastRowId == DEFAULT_LONG) {
             return whereClauses;
         }
 
-        long lastRowId = PhrPageTokenWrapper.from(pageToken).getLastRowId();
         whereClauses.addWhereGreaterThanClause(MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME, lastRowId);
         return whereClauses;
     }
@@ -1011,7 +1029,7 @@ public final class MedicalResourceHelper {
      * than @link MAXIMUM_ALLOWED_CURSOR_COUNT} records, it throws {@link IllegalArgumentException}.
      */
     private static ReadMedicalResourcesInternalResponse getMedicalResources(
-            Cursor cursor, ReadMedicalResourcesRequest request) {
+            Cursor cursor, PhrPageTokenWrapper pageTokenWrapper, int pageSize) {
         // TODO(b/356613483): remove these checks in the helpers and instead validate pageSize
         // in the service.
         if (cursor.getCount() > MAXIMUM_ALLOWED_CURSOR_COUNT) {
@@ -1020,13 +1038,12 @@ public final class MedicalResourceHelper {
                             + MAXIMUM_ALLOWED_CURSOR_COUNT);
         }
         List<MedicalResource> medicalResources = new ArrayList<>();
-        int requestSize = request.getPageSize();
         String nextPageToken = null;
         long lastRowId = DEFAULT_LONG;
         if (cursor.moveToFirst()) {
             do {
-                if (medicalResources.size() >= requestSize) {
-                    nextPageToken = PhrPageTokenWrapper.of(request, lastRowId).encode();
+                if (medicalResources.size() >= pageSize) {
+                    nextPageToken = pageTokenWrapper.cloneWithNewLastRowId(lastRowId).encode();
                     break;
                 }
                 medicalResources.add(getMedicalResource(cursor));
