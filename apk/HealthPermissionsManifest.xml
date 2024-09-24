@@ -274,8 +274,8 @@
 
     <!-- Read permissions for personal health records -->
     <permission
-        android:name="android.permission.health.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE"
-        android:label="@string/allergy_intolerance_content_description"
+        android:name="android.permission.health.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES"
+        android:label="@string/allergies_intolerances_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
     <permission
@@ -284,8 +284,8 @@
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
     <permission
-        android:name="android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION"
-        android:label="@string/immunization_content_description"
+        android:name="android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS"
+        android:label="@string/immunizations_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
     <permission

@@ -272,7 +272,7 @@ class AppEntriesFragmentTest {
 
         launchFragment<AppEntriesFragment>(
             bundleOf(
-                PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name,
+                PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATIONS.name,
                 EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
                 Constants.EXTRA_APP_NAME to TEST_APP_NAME,
             )
@@ -531,7 +531,7 @@ class AppEntriesFragmentTest {
 
         launchFragment<AppEntriesFragment>(
             bundleOf(
-                PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name,
+                PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATIONS.name,
                 EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
                 Constants.EXTRA_APP_NAME to TEST_APP_NAME,
             )

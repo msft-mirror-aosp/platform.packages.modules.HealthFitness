@@ -22,7 +22,7 @@ import android.health.connect.HealthPermissionCategory
 import android.health.connect.MedicalResourceTypeInfo
 import android.health.connect.RecordTypeInfoResponse
 import android.health.connect.datatypes.HeartRateRecord
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.StepsRecord
 import android.health.connect.datatypes.WeightRecord
@@ -32,7 +32,7 @@ import com.android.healthconnect.controller.data.appdata.AppDataUseCase
 import com.android.healthconnect.controller.data.appdata.AppDataViewModel
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
-import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.IMMUNIZATION
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.IMMUNIZATIONS
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.MEDICAL
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
@@ -209,7 +209,7 @@ class AppDataViewModelTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                     setOf(TEST_MEDICAL_DATA_SOURCE),
                 )
             )
@@ -242,7 +242,7 @@ class AppDataViewModelTest {
                 PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()).takeIf {
                     Flags.mindfulness()
                 },
-                PermissionTypesPerCategory(MEDICAL, listOf(IMMUNIZATION)),
+                PermissionTypesPerCategory(MEDICAL, listOf(IMMUNIZATIONS)),
             )
         assertThat(testObserver.getLastValue())
             .isEqualTo(AppDataViewModel.AppDataState.WithData(expected))
@@ -254,7 +254,7 @@ class AppDataViewModelTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                     setOf(TEST_MEDICAL_DATA_SOURCE),
                 )
             )
@@ -278,7 +278,7 @@ class AppDataViewModelTest {
                 PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()).takeIf {
                     Flags.mindfulness()
                 },
-                PermissionTypesPerCategory(MEDICAL, listOf(IMMUNIZATION)),
+                PermissionTypesPerCategory(MEDICAL, listOf(IMMUNIZATIONS)),
             )
         assertThat(testObserver.getLastValue())
             .isEqualTo(AppDataViewModel.AppDataState.WithData(expected))
@@ -290,7 +290,7 @@ class AppDataViewModelTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                     setOf(TEST_MEDICAL_DATA_SOURCE_DIFFERENT_APP),
                 )
             )
