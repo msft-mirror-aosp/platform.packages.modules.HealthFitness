@@ -347,7 +347,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         screenState: EntriesViewModel.EntriesDeletionScreenState,
         hasData: Boolean = true,
     ) {
-        if (!hasData) {
+        if (permissionType is MedicalPermissionType || !hasData) {
             setupSharedMenu(viewLifecycleOwner, logger)
             return
         }

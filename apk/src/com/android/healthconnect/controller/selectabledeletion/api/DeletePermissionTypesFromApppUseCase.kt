@@ -17,7 +17,7 @@ package com.android.healthconnect.controller.selectabledeletion.api
 
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
-import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteHealthPermissionTypes
+import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteHealthPermissionTypesFromApp
 import com.android.healthconnect.controller.service.IoDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -25,17 +25,22 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
-/** Use case to delete all fitness and medical resources from the given permission types. */
+/**
+ * Use case to delete all fitness and medical resources from the given permission types written by a
+ * given app.
+ */
 @Singleton
-class DeletePermissionTypesUseCase
+class DeletePermissionTypesFromAppUseCase
 @Inject
 constructor(
-    private val deleteFitnessPermissionTypesUseCase: DeleteFitnessPermissionTypesUseCase,
-    private val deleteMedicalPermissionTypesUseCase: DeleteMedicalPermissionTypesUseCase,
+    private val deleteFitnessPermissionTypesFromAppUseCase:
+        DeleteFitnessPermissionTypesFromAppUseCase,
+    private val deleteMedicalPermissionTypesFromAppUseCase:
+        DeleteMedicalPermissionTypesFromAppUseCase,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
 
-    suspend operator fun invoke(deletePermissionTypes: DeleteHealthPermissionTypes) {
+    suspend operator fun invoke(deletePermissionTypes: DeleteHealthPermissionTypesFromApp) {
         withContext(dispatcher) {
             val deleteFitness = async { maybeDeleteFitnessData(deletePermissionTypes) }
             val deleteMedical = async { maybeDeleteMedicalData(deletePermissionTypes) }
@@ -44,7 +49,9 @@ constructor(
         }
     }
 
-    private suspend fun maybeDeleteFitnessData(deletionRequest: DeleteHealthPermissionTypes) {
+    private suspend fun maybeDeleteFitnessData(
+        deletionRequest: DeleteHealthPermissionTypesFromApp
+    ) {
         val isFitnessDataEmpty =
             deletionRequest.healthPermissionTypes
                 .filterIsInstance<FitnessPermissionType>()
@@ -52,10 +59,12 @@ constructor(
         if (isFitnessDataEmpty) {
             return
         }
-        deleteFitnessPermissionTypesUseCase.invoke(deletionRequest)
+        deleteFitnessPermissionTypesFromAppUseCase.invoke(deletionRequest)
     }
 
-    private suspend fun maybeDeleteMedicalData(deletionRequest: DeleteHealthPermissionTypes) {
+    private suspend fun maybeDeleteMedicalData(
+        deletionRequest: DeleteHealthPermissionTypesFromApp
+    ) {
         val isMedicalDataEmpty =
             deletionRequest.healthPermissionTypes
                 .filterIsInstance<MedicalPermissionType>()
@@ -63,6 +72,6 @@ constructor(
         if (isMedicalDataEmpty) {
             return
         }
-        deleteMedicalPermissionTypesUseCase.invoke(deletionRequest)
+        deleteMedicalPermissionTypesFromAppUseCase.invoke(deletionRequest)
     }
 }

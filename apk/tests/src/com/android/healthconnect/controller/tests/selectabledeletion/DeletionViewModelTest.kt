@@ -22,7 +22,7 @@ import com.android.healthconnect.controller.permissions.data.MedicalPermissionTy
 import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteEntriesUseCase
-import com.android.healthconnect.controller.selectabledeletion.api.DeleteFitnessPermissionTypesFromAppUseCase
+import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesFromAppUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesUseCase
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
@@ -58,8 +58,8 @@ class DeletionViewModelTest {
         mock(DeletePermissionTypesUseCase::class.java)
     private val deleteEntriesUseCase: DeleteEntriesUseCase = mock(DeleteEntriesUseCase::class.java)
 
-    private val deletePermissionTypesFromAppUseCase: DeleteFitnessPermissionTypesFromAppUseCase =
-        mock(DeleteFitnessPermissionTypesFromAppUseCase::class.java)
+    private val deletePermissionTypesFromAppUseCase: DeletePermissionTypesFromAppUseCase =
+        mock(DeletePermissionTypesFromAppUseCase::class.java)
 
     private lateinit var viewModel: DeletionViewModel
 
