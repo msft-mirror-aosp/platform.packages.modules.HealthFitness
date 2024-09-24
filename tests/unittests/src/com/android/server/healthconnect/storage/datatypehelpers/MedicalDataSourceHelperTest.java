@@ -2185,6 +2185,336 @@ public class MedicalDataSourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByPackage_expectAccessLogWhenDataSourceAccessedThroughReadPerm() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1Package2 =
+                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package2 =
+                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+
+        // App is in foreground or background with background read perm, has write permission and
+        // has immunization read permissions.
+        // The packageName set is empty so no filtering based on packageNames.
+        // App can read dataSources they wrote themselves and dataSources belonging to
+        // immunization resource types.
+        // So access log will be created based on the app permission to access dataSources
+        // belonging to immunizations.
+        mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
+                /* packageNames= */ Set.of(),
+                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                DATA_SOURCE_PACKAGE_NAME,
+                /* hasWritePermission= */ true,
+                /* isCalledFromBgWithoutBgRead= */ false);
+
+        AccessLog readAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_READ,
+                        /* medicalResourceTypes= */ Set.of(),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .contains(readAccessLog);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByPackage_expectAccessLogWhenSelfDataAccessedThroughReadPerm() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+
+        // App is in foreground or background with background read perm, has write permission and
+        // has immunization read permissions.
+        // The packageName set is empty so no filtering based on packageNames.
+        // App can read dataSources they wrote themselves and dataSources belonging to
+        // immunization resource types. In this case the only immunization resource type is for
+        // the app itself. Since the read happened through a read permission, access log will be
+        // created.
+        mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
+                /* packageNames= */ Set.of(),
+                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                DATA_SOURCE_PACKAGE_NAME,
+                /* hasWritePermission= */ true,
+                /* isCalledFromBgWithoutBgRead= */ false);
+
+        AccessLog readAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_READ,
+                        /* medicalResourceTypes= */ Set.of(),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .contains(readAccessLog);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByPackage_expectAccessLogWhenDataSourceAccessedThroughReadPermEvenSelfData() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1Package2 =
+                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package2 =
+                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // App is in foreground or background with background read perm, has write permission and
+        // has immunization read permissions.
+        // The app's package name is included in the list of packages.
+        // App can read dataSources they wrote themselves and dataSources belonging to
+        // immunization resource types written by any of the given packages.
+        // Since some immunization resource types were read, an access log will be created.
+        mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
+                Set.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
+                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                DATA_SOURCE_PACKAGE_NAME,
+                /* hasWritePermission= */ true,
+                /* isCalledFromBgWithoutBgRead= */ false);
+
+        AccessLog readAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_READ,
+                        /* medicalResourceTypes= */ Set.of(),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .contains(readAccessLog);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByPackages_expectAccessLogWhenDataSourceReadThroughReadPermNoSelfData() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1Package2 =
+                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package2 =
+                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // App is in foreground or background with background read perm, has write permission and
+        // has immunization read permissions.
+        // The app's package name is not included in the list of packages.
+        // App can read dataSources belonging to
+        // immunization resource types written by any of the given packages.
+        // Access log is created since the app has access through read permission.
+        mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
+                Set.of(DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
+                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                DATA_SOURCE_PACKAGE_NAME,
+                /* hasWritePermission= */ true,
+                /* isCalledFromBgWithoutBgRead= */ false);
+
+        AccessLog readAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_READ,
+                        /* medicalResourceTypes= */ Set.of(),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .contains(readAccessLog);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByPackages_expectNoAccessLogWhenSelfReadPerm() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1Package2 =
+                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package2 =
+                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+
+        // App is in background without background read perm, has write permission and
+        // no read permissions.
+        // App can read dataSources they wrote themself, which in this case belong to the
+        // immunization and allergy resources written. No access log should be created.
+        mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
+                /* packageNames= */ Set.of(),
+                /* grantedMedicalResourceTypes= */ Set.of(),
+                DATA_SOURCE_PACKAGE_NAME,
+                /* hasWritePermission= */ true,
+                /* isCalledFromBgWithoutBgRead= */ true);
+
+        AccessLog readAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_READ,
+                        /* medicalResourceTypes= */ Set.of(),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .doesNotContain(readAccessLog);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByPackages_inForegroundOrBgWithBgPermNoReadPermCanReadSelfDataNoAccessLog() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1Package2 =
+                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package2 =
+                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+
+        // App is in foreground or background with background read perm, has write permission but
+        // no read permission for any resource types.
+        // The packageNames is empty so no filtering is applied based on packageNames.
+        // App can read only read dataSources they wrote themselves.
+        // No access log should be created for this.
+        mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
+                /* packageNames= */ Set.of(),
+                /* grantedMedicalResourceTypes= */ Set.of(),
+                DATA_SOURCE_PACKAGE_NAME,
+                /* hasWritePermission= */ true,
+                /* isCalledFromBgWithoutBgRead= */ false);
+
+        AccessLog readAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_READ,
+                        /* medicalResourceTypes= */ Set.of(),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .doesNotContain(readAccessLog);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByPackages_expectAccessLogWhenAppAccessesDataSourceThroughReadPerm() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertMedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertMedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1Package2 =
+                mUtil.insertMedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package2 =
+                mUtil.insertMedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+
+        // App is in foreground or background with background read perm, no write permission but
+        // has allergy resource type read permission.
+        // App can only read dataSources belonging to the allergy resource types written
+        // by any apps. Access log should be created in this case.
+        mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
+                /* packageNames= */ Set.of(),
+                Set.of(MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE),
+                DATA_SOURCE_PACKAGE_NAME,
+                /* hasWritePermission= */ false,
+                /* isCalledFromBgWithoutBgRead= */ false);
+
+        AccessLog readAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_READ,
+                        /* medicalResourceTypes= */ Set.of(),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .contains(readAccessLog);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByPackages_expectNoAccessLogWhenNoDataSourcesRead() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
+
+        // No dataSources are inserted, so no dataSources will be returned as part of this
+        // API call. Hence no access log should be created.
+        mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
+                /* packageNames= */ Set.of(),
+                Set.of(MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE),
+                DATA_SOURCE_PACKAGE_NAME,
+                /* hasWritePermission= */ true,
+                /* isCalledFromBgWithoutBgRead= */ false);
+
+        AccessLog readAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_READ,
+                        /* medicalResourceTypes= */ Set.of(),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .doesNotContain(readAccessLog);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteMedicalResourcesByIdsWithoutPermCheck_appIdDoesNotExist_throws() {
         assertThrows(
                 IllegalArgumentException.class,
