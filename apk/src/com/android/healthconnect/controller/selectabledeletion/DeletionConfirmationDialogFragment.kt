@@ -145,8 +145,67 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                 }
             }
             is DeletionType.DeleteEntriesFromApp -> {
-                // TODO
-                ""
+                val deletionMapSize = deletionType.idsToDataTypes.size
+                val appName = deletionType.appName
+                if (deletionMapSize == 1) {
+                    return getString(
+                        R.string.one_app_entry_selected_deletion_confirmation_dialog,
+                        appName,
+                    )
+                }
+                val selectedPeriod = deletionType.period
+                val startTime = deletionType.startTime
+                val displayString =
+                    formatDateTimeForTimePeriod(
+                        startTime,
+                        selectedPeriod,
+                        LocalDateTimeFormatter(requireContext()),
+                        timeSource,
+                        false,
+                    )
+                if (selectedPeriod == DateNavigationPeriod.PERIOD_DAY) {
+                    if (deletionMapSize < deletionType.totalEntries) {
+                        getString(
+                            R.string.some_app_entries_selected_day_deletion_confirmation_dialog,
+                            appName,
+                            displayString,
+                        )
+                    } else {
+                        getString(
+                            R.string.all_app_entries_selected_day_deletion_confirmation_dialog,
+                            appName,
+                            displayString,
+                        )
+                    }
+                } else if (selectedPeriod == DateNavigationPeriod.PERIOD_WEEK) {
+                    if (deletionMapSize < deletionType.totalEntries) {
+                        getString(
+                            R.string.some_app_entries_selected_week_deletion_confirmation_dialog,
+                            appName,
+                            displayString,
+                        )
+                    } else {
+                        getString(
+                            R.string.all_app_entries_selected_week_deletion_confirmation_dialog,
+                            appName,
+                            displayString,
+                        )
+                    }
+                } else {
+                    if (deletionMapSize < deletionType.totalEntries) {
+                        getString(
+                            R.string.some_app_entries_selected_month_deletion_confirmation_dialog,
+                            appName,
+                            displayString,
+                        )
+                    } else {
+                        getString(
+                            R.string.all_app_entries_selected_month_deletion_confirmation_dialog,
+                            appName,
+                            displayString,
+                        )
+                    }
+                }
             }
             is DeletionType.DeleteAppData -> {
                 // TODO

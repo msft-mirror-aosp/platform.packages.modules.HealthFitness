@@ -51,6 +51,8 @@ constructor(
 
     private var _entriesReloadNeeded = MutableLiveData(false)
 
+    private var _appEntriesReloadNeeded = MutableLiveData(false)
+
     private var _deletionProgress = MutableLiveData(DeletionProgress.NOT_STARTED)
 
     val deletionProgress: LiveData<DeletionProgress>
@@ -64,6 +66,9 @@ constructor(
 
     val appPermissionTypesReloadNeeded: LiveData<Boolean>
         get() = _appPermissionTypesReloadNeeded
+
+    val appEntriesReloadNeeded: LiveData<Boolean>
+        get() = _appEntriesReloadNeeded
 
     fun delete() {
         viewModelScope.launch {
@@ -88,6 +93,12 @@ constructor(
                             deletionType as DeletionType.DeleteHealthPermissionTypesFromApp
                         )
                         _appPermissionTypesReloadNeeded.postValue(true)
+                    }
+                    is DeletionType.DeleteEntriesFromApp -> {
+                        deleteEntriesUseCase.invoke(
+                            (deletionType as DeletionType.DeleteEntriesFromApp).toDeleteEntries()
+                        )
+                        _appEntriesReloadNeeded.postValue(true)
                     }
                     else -> {
                         // do nothing
@@ -119,6 +130,10 @@ constructor(
 
     fun resetAppPermissionTypesReloadNeeded() {
         _appPermissionTypesReloadNeeded.postValue(false)
+    }
+
+    fun resetAppEntriesReloadNeeded() {
+        _appEntriesReloadNeeded.postValue(false)
     }
 
     fun getDeletionType(): DeletionType {

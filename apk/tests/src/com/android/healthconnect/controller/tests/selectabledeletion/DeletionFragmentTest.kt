@@ -843,7 +843,621 @@ class DeletionFragmentTest {
     // endregion
 
     // endregion
-    // TODO app entries
+
+    // region DeleteEntriesFromApp
+
+    // region day
+    @Test
+    fun deleteAppEntries_fromDay_oneSelected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                mapOf("test_id_1" to DataType.STEPS),
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 10,
+                period = DateNavigationPeriod.PERIOD_DAY,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete this $TEST_APP_NAME entry?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteAppEntries_fromDayWithinYear_someSelected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 10,
+                period = DateNavigationPeriod.PERIOD_DAY,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete selected $TEST_APP_NAME entries for Sep 19?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteAppEntries_fromDayPastYear_someSelected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 10,
+                period = DateNavigationPeriod.PERIOD_DAY,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete selected $TEST_APP_NAME entries for Sep 19, 2021?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteAppEntries_fromDayWithinYear_allSelected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 2,
+                period = DateNavigationPeriod.PERIOD_DAY,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete all $TEST_APP_NAME entries for Sep 19?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteAppEntries_fromDayPastYear_allSelected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 2,
+                period = DateNavigationPeriod.PERIOD_DAY,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete all $TEST_APP_NAME entries for Sep 19, 2021?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    // endregion
+
+    // region week
+    @Test
+    fun deleteAppEntries_fromWeek_oneSelected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                mapOf("test_id_1" to DataType.STEPS),
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 10,
+                period = DateNavigationPeriod.PERIOD_WEEK,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete this $TEST_APP_NAME entry?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteAppEntries_fromWeekWithinYear_someSelected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 10,
+                period = DateNavigationPeriod.PERIOD_WEEK,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(
+                withText(
+                    "Permanently delete selected $TEST_APP_NAME entries for the week of Sep 19 – 26?"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteAppEntries_fromWeekPastYear_someSelected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 10,
+                period = DateNavigationPeriod.PERIOD_WEEK,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(
+                withText(
+                    "Permanently delete selected $TEST_APP_NAME entries for the week of Sep 19 – 26, 2021?"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteAppEntries_fromWeekWithinYear_allSelected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 2,
+                period = DateNavigationPeriod.PERIOD_WEEK,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(
+                withText(
+                    "Permanently delete all $TEST_APP_NAME entries for the week of Sep 19 – 26?"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteAppEntries_fromWeekPastYear_allSelected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 2,
+                period = DateNavigationPeriod.PERIOD_WEEK,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(
+                withText(
+                    "Permanently delete all $TEST_APP_NAME entries for the week of Sep 19 – 26, 2021?"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    // endregion
+
+    // region month
+    @Test
+    fun deleteAppEntries_fromMonth_oneSelected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                mapOf("test_id_1" to DataType.STEPS),
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 10,
+                period = DateNavigationPeriod.PERIOD_MONTH,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete this $TEST_APP_NAME entry?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteAppEntries_fromMonthWithinYear_someSelected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 10,
+                period = DateNavigationPeriod.PERIOD_MONTH,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete selected $TEST_APP_NAME entries for September?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteAppEntries_fromMonthPastYear_someSelected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 10,
+                period = DateNavigationPeriod.PERIOD_MONTH,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete selected $TEST_APP_NAME entries for September 2021?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteAppEntries_fromMonthWithinYear_allSelected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2022-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 2,
+                period = DateNavigationPeriod.PERIOD_MONTH,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete all $TEST_APP_NAME entries for September?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteAppEntries_fromMonthPastYear_allSelected_confirmationDialog_showsCorrectText() {
+        val now = Instant.parse("2022-09-20T20:00:00.000Z")
+        val selectedDay = Instant.parse("2021-09-19T20:00:00.000Z")
+        (testTimeSource as TestTimeSource).setNow(now)
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteEntriesFromApp(
+                mapOf("test_id_1" to DataType.STEPS, "test_id_2" to DataType.STEPS_CADENCE),
+                TEST_APP_PACKAGE_NAME,
+                TEST_APP_NAME,
+                totalEntries = 2,
+                period = DateNavigationPeriod.PERIOD_MONTH,
+                startTime = selectedDay,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete all $TEST_APP_NAME entries for September 2021?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    // endregion
+
+    // endregion
+
     // TODO inactive app data
 
     // region confirmation dialog buttons
