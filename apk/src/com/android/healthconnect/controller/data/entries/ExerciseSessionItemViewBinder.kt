@@ -25,7 +25,6 @@ import com.android.healthconnect.controller.data.entries.FormattedEntry.Exercise
 import com.android.healthconnect.controller.shared.RoundView
 import com.android.healthconnect.controller.shared.map.MapView
 import com.android.healthconnect.controller.shared.recyclerview.DeletionViewBinder
-import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
@@ -34,7 +33,7 @@ import dagger.hilt.android.EntryPointAccessors
 /** ViewBinder for ExerciseSessionEntry. */
 class ExerciseSessionItemViewBinder(
     private val onItemClickedListener: OnClickEntryListener?,
-    private val onDeleteEntryListener: OnDeleteEntryListener? = null
+    private val onSelectEntryListener: OnSelectEntryListener? = null,
 ) : DeletionViewBinder<ExerciseSessionEntry, View> {
 
     private lateinit var logger: HealthConnectLogger
@@ -51,7 +50,13 @@ class ExerciseSessionItemViewBinder(
             .inflate(R.layout.item_exercise_session_entry_new_ia, parent, false)
     }
 
-    override fun bind(view: View, data: ExerciseSessionEntry, index: Int, isDeletionState: Boolean, isChecked: Boolean) {
+    override fun bind(
+        view: View,
+        data: ExerciseSessionEntry,
+        index: Int,
+        isDeletionState: Boolean,
+        isChecked: Boolean,
+    ) {
         val container = view.findViewById<LinearLayout>(R.id.item_data_entry_container)
         val divider = view.findViewById<LinearLayout>(R.id.item_data_entry_divider)
         val header = view.findViewById<TextView>(R.id.item_data_entry_header)
@@ -73,9 +78,9 @@ class ExerciseSessionItemViewBinder(
             mapView.setRoute(data.route)
         }
 
-        if (isDeletionState){
-            container.setOnClickListener{
-                onDeleteEntryListener?.onDeleteEntry(data.uuid, data.dataType, index)
+        if (isDeletionState) {
+            container.setOnClickListener {
+                onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
                 checkBox.toggle()
             }
         } else {
@@ -91,8 +96,8 @@ class ExerciseSessionItemViewBinder(
 
         checkBox.isVisible = isDeletionState
         checkBox.isChecked = isChecked
-        checkBox.setOnClickListener{
-            onDeleteEntryListener?.onDeleteEntry(data.uuid, data.dataType, index)
+        checkBox.setOnClickListener {
+            onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
         }
     }
 }
