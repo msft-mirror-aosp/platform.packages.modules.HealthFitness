@@ -300,7 +300,7 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
 
                 val preference =
                     HealthSwitchPreference(requireContext()).also { it ->
-                        // TODO(b/342156345): Add icons.
+                        it.icon = permission.medicalPermissionType.icon(requireContext())
                         it.setTitle(
                             fromPermissionType(permission.medicalPermissionType).uppercaseLabel
                         )

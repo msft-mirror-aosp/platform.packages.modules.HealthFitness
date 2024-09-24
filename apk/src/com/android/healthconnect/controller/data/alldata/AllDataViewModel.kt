@@ -48,7 +48,8 @@ class AllDataViewModel @Inject constructor(private val loadAppDataUseCase: AppDa
 
     private var numOfPermissionTypes: Int = 0
 
-    private var allDataDeletionScreenState : AllDataDeletionScreenState = AllDataDeletionScreenState.VIEW
+    private var allDataDeletionScreenState: AllDataDeletionScreenState =
+        AllDataDeletionScreenState.VIEW
 
     private val _allPermissionTypesSelected = MutableLiveData<Boolean>()
 
@@ -140,6 +141,10 @@ class AllDataViewModel @Inject constructor(private val loadAppDataUseCase: AppDa
         return allDataDeletionScreenState
     }
 
+    fun getNumOfPermissionTypes(): Int {
+        return numOfPermissionTypes
+    }
+
     sealed class AllDataState {
         object Loading : AllDataState()
 
@@ -150,6 +155,6 @@ class AllDataViewModel @Inject constructor(private val loadAppDataUseCase: AppDa
 
     enum class AllDataDeletionScreenState {
         VIEW,
-        DELETE
+        DELETE,
     }
 }

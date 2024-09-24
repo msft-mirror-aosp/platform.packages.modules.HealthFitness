@@ -38,6 +38,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
+// TODO rename to LoadAllDataUseCase
 @Singleton
 class AppDataUseCase
 @Inject

@@ -37,6 +37,7 @@ import com.android.healthconnect.controller.dataentries.formatters.MenstruationP
 import com.android.healthconnect.controller.dataentries.formatters.SleepSessionFormatter
 import com.android.healthconnect.controller.dataentries.formatters.StepsFormatter
 import com.android.healthconnect.controller.dataentries.formatters.TotalCaloriesBurnedFormatter
+import com.android.healthconnect.controller.dataentries.formatters.medical.MedicalEntryFormatter
 import com.android.healthconnect.controller.datasources.api.ILoadLastDateWithPriorityDataUseCase
 import com.android.healthconnect.controller.datasources.api.ILoadMostRecentAggregationsUseCase
 import com.android.healthconnect.controller.datasources.api.ILoadPotentialPriorityListUseCase
@@ -133,8 +134,9 @@ class UseCaseModule {
     fun providesLoadMedicalEntriesUseCase(
         @IoDispatcher dispatcher: CoroutineDispatcher,
         loadEntriesHelper: LoadEntriesHelper,
+        medicalEntryFormatter: MedicalEntryFormatter,
     ): ILoadMedicalEntriesUseCase {
-        return LoadMedicalEntriesUseCase(dispatcher, loadEntriesHelper)
+        return LoadMedicalEntriesUseCase(dispatcher, medicalEntryFormatter, loadEntriesHelper)
     }
 
     @Provides

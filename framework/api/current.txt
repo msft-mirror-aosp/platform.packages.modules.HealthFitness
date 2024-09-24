@@ -245,26 +245,38 @@ package android.health.connect {
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.MedicalResourceId> CREATOR;
   }
 
-  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class ReadMedicalResourcesRequest implements android.os.Parcelable {
-    method public int describeContents();
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class ReadMedicalResourcesInitialRequest extends android.health.connect.ReadMedicalResourcesRequest {
     method @NonNull public java.util.Set<java.lang.String> getDataSourceIds();
     method public int getMedicalResourceType();
-    method @IntRange(from=android.health.connect.Constants.MINIMUM_PAGE_SIZE, to=android.health.connect.Constants.MAXIMUM_PAGE_SIZE) public int getPageSize();
-    method @Nullable public String getPageToken();
-    method public void writeToParcel(@NonNull android.os.Parcel, int);
-    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.ReadMedicalResourcesRequest> CREATOR;
   }
 
-  public static final class ReadMedicalResourcesRequest.Builder {
-    ctor public ReadMedicalResourcesRequest.Builder(int);
-    ctor public ReadMedicalResourcesRequest.Builder(@NonNull android.health.connect.ReadMedicalResourcesRequest.Builder);
-    ctor public ReadMedicalResourcesRequest.Builder(@NonNull android.health.connect.ReadMedicalResourcesRequest);
-    method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder addDataSourceId(@NonNull String);
-    method @NonNull public android.health.connect.ReadMedicalResourcesRequest build();
-    method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder clearDataSourceIds();
-    method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder setMedicalResourceType(int);
-    method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder setPageSize(@IntRange(from=android.health.connect.Constants.MINIMUM_PAGE_SIZE, to=android.health.connect.Constants.MAXIMUM_PAGE_SIZE) int);
-    method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder setPageToken(@Nullable String);
+  public static final class ReadMedicalResourcesInitialRequest.Builder {
+    ctor public ReadMedicalResourcesInitialRequest.Builder(int);
+    ctor public ReadMedicalResourcesInitialRequest.Builder(@NonNull android.health.connect.ReadMedicalResourcesInitialRequest.Builder);
+    ctor public ReadMedicalResourcesInitialRequest.Builder(@NonNull android.health.connect.ReadMedicalResourcesInitialRequest);
+    method @NonNull public android.health.connect.ReadMedicalResourcesInitialRequest.Builder addDataSourceId(@NonNull String);
+    method @NonNull public android.health.connect.ReadMedicalResourcesInitialRequest.Builder addDataSourceIds(@NonNull java.util.Set<java.lang.String>);
+    method @NonNull public android.health.connect.ReadMedicalResourcesInitialRequest build();
+    method @NonNull public android.health.connect.ReadMedicalResourcesInitialRequest.Builder clearDataSourceIds();
+    method @NonNull public android.health.connect.ReadMedicalResourcesInitialRequest.Builder setMedicalResourceType(int);
+    method @NonNull public android.health.connect.ReadMedicalResourcesInitialRequest.Builder setPageSize(@IntRange(from=android.health.connect.Constants.MINIMUM_PAGE_SIZE, to=android.health.connect.Constants.MAXIMUM_PAGE_SIZE) int);
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class ReadMedicalResourcesPageRequest extends android.health.connect.ReadMedicalResourcesRequest {
+    method @NonNull public String getPageToken();
+  }
+
+  public static final class ReadMedicalResourcesPageRequest.Builder {
+    ctor public ReadMedicalResourcesPageRequest.Builder(@NonNull String);
+    ctor public ReadMedicalResourcesPageRequest.Builder(@NonNull android.health.connect.ReadMedicalResourcesPageRequest.Builder);
+    ctor public ReadMedicalResourcesPageRequest.Builder(@NonNull android.health.connect.ReadMedicalResourcesPageRequest);
+    method @NonNull public android.health.connect.ReadMedicalResourcesPageRequest build();
+    method @NonNull public android.health.connect.ReadMedicalResourcesPageRequest.Builder setPageSize(@IntRange(from=android.health.connect.Constants.MINIMUM_PAGE_SIZE, to=android.health.connect.Constants.MAXIMUM_PAGE_SIZE) int);
+    method @NonNull public android.health.connect.ReadMedicalResourcesPageRequest.Builder setPageToken(@NonNull String);
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public abstract class ReadMedicalResourcesRequest {
+    method @IntRange(from=android.health.connect.Constants.MINIMUM_PAGE_SIZE, to=android.health.connect.Constants.MAXIMUM_PAGE_SIZE) public int getPageSize();
   }
 
   @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class ReadMedicalResourcesResponse implements android.os.Parcelable {

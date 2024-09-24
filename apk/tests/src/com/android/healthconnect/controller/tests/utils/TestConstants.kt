@@ -67,6 +67,7 @@ import com.google.common.truth.Truth.assertThat
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
+import java.util.UUID
 import kotlin.random.Random
 import org.mockito.Mockito
 
@@ -85,6 +86,10 @@ fun getHeartRateRecord(heartRateValues: List<Long>, startTime: Instant = NOW): H
 
 fun getStepsRecord(steps: Long, time: Instant = NOW): StepsRecord {
     return StepsRecord.Builder(getMetaData(), time, time.plusSeconds(2), steps).build()
+}
+
+fun getStepsRecordWithUniqueIds(steps: Long, time: Instant = NOW): StepsRecord {
+    return StepsRecord.Builder(getMetaDataWithUniqueIds(), time, time.plusSeconds(2), steps).build()
 }
 
 fun getBasalMetabolicRateRecord(calories: Long): BasalMetabolicRateRecord {
@@ -268,6 +273,10 @@ fun getMetaData(): Metadata {
     return getMetaData(TEST_APP_PACKAGE_NAME)
 }
 
+fun getMetaDataWithUniqueIds(): Metadata {
+    return getMetaDataWithUniqueIds(TEST_APP_PACKAGE_NAME)
+}
+
 fun getMetaData(packageName: String): Metadata {
     val device: Device =
         Device.Builder().setManufacturer("google").setModel("Pixel4a").setType(2).build()
@@ -278,6 +287,22 @@ fun getMetaData(packageName: String): Metadata {
         .setDataOrigin(dataOrigin)
         .setClientRecordId("BMR" + Math.random().toString())
         .build()
+}
+
+fun getMetaDataWithUniqueIds(packageName: String): Metadata {
+    val device: Device =
+        Device.Builder().setManufacturer("google").setModel("Pixel4a").setType(2).build()
+    val dataOrigin = DataOrigin.Builder().setPackageName(packageName).build()
+    return Metadata.Builder()
+        .setId(getUniqueId())
+        .setDevice(device)
+        .setDataOrigin(dataOrigin)
+        .setClientRecordId("BMR" + Math.random().toString())
+        .build()
+}
+
+fun getUniqueId(): String {
+    return UUID.randomUUID().toString()
 }
 
 fun getDataOrigin(packageName: String): DataOrigin =

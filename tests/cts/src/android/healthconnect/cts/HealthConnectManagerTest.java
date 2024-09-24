@@ -98,7 +98,8 @@ import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.MedicalResourceTypeInfo;
-import android.health.connect.ReadMedicalResourcesRequest;
+import android.health.connect.ReadMedicalResourcesInitialRequest;
+import android.health.connect.ReadMedicalResourcesPageRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordTypeInfoResponse;
@@ -1768,8 +1769,9 @@ public class HealthConnectManagerTest {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesRequest request =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .build();
 
         mManager.readMedicalResources(request, executor, receiver);
 
@@ -2041,10 +2043,22 @@ public class HealthConnectManagerTest {
     }
 
     @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testGetMedicalDataSources_invalidId_fails() throws Exception {
+        HealthConnectReceiver<List<MedicalDataSource>> callback = new HealthConnectReceiver<>();
+
+        mManager.getMedicalDataSources(
+                List.of("illegal id"), Executors.newSingleThreadExecutor(), callback);
+
+        assertThat(callback.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalDataSourcesById_notPresent_returnsEmptyList() throws Exception {
         HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
-        List<String> ids = List.of("foo");
+        List<String> ids = List.of(DATA_SOURCE_ID);
 
         SystemUtil.runWithShellPermissionIdentity(
                 () ->
@@ -2109,12 +2123,24 @@ public class HealthConnectManagerTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
+    public void testHealthConnectManager_deleteMedicalDataSourceInvalidId_fails() throws Exception {
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalDataSourceWithData(
+                "illegal id", Executors.newSingleThreadExecutor(), callback);
+
+        assertThat(callback.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_DEVELOPMENT_DATABASE})
     public void testHealthConnectManager_deleteMedicalDataSourceDoesntExist_fails()
             throws Exception {
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
 
         mManager.deleteMedicalDataSourceWithData(
-                "foo", Executors.newSingleThreadExecutor(), callback);
+                DATA_SOURCE_ID, Executors.newSingleThreadExecutor(), callback);
 
         assertThat(callback.assertAndGetException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
@@ -2436,8 +2462,9 @@ public class HealthConnectManagerTest {
             throws InterruptedException {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesRequest request =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .build();
 
         mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
         assertThat(receiver.getResponse().getMedicalResources()).isEmpty();
@@ -2450,23 +2477,39 @@ public class HealthConnectManagerTest {
         // Create two data sources.
         MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
-        // Insert two Immunizations and one Allergy.
+        // Insert 3 Immunizations and 1 Allergy.
         MedicalResource immunization1 =
                 upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource immunization2 =
                 upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        MedicalResource immunization3 =
+                upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
         upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
-        // Read all Immunizations.
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+        // Read all Immunizations in 2 pages.
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesRequest allImmunizationsRequest =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
+        ReadMedicalResourcesInitialRequest allImmunizationsRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .setPageSize(2)
+                        .build();
 
         mManager.readMedicalResources(
-                allImmunizationsRequest, Executors.newSingleThreadExecutor(), receiver);
+                allImmunizationsRequest, Executors.newSingleThreadExecutor(), receiver1);
 
-        assertThat(receiver.getResponse().getMedicalResources())
+        assertThat(receiver1.getResponse().getMedicalResources())
                 .containsExactly(immunization1, immunization2);
+        String nextPageToken = receiver1.getResponse().getNextPageToken();
+        assertThat(nextPageToken).isNotEmpty();
+
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
+                new HealthConnectReceiver<>();
+        mManager.readMedicalResources(
+                new ReadMedicalResourcesPageRequest.Builder(nextPageToken).build(),
+                Executors.newSingleThreadExecutor(),
+                receiver2);
+
+        assertThat(receiver2.getResponse().getMedicalResources()).containsExactly(immunization3);
+        assertThat(receiver2.getResponse().getNextPageToken()).isNull();
     }
 
     @Test
@@ -2476,24 +2519,42 @@ public class HealthConnectManagerTest {
         // Create two data sources.
         MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
-        // Insert two Immunizations and one Allergy.
-        MedicalResource immunizationFromDataSource1 =
+        // Insert 3 Immunizations and 1 Allergy.
+        MedicalResource immunization1FromDataSource1 =
                 upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource immunization2FromDataSource1 =
+                upsertMedicalData(dataSource1.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
         upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
         upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
-        // Read Immunizations only from data source 1.
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+        // Read Immunizations only from data source 1 in 2 pages.
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesRequest immunizationsFromDataSource1Request =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+        ReadMedicalResourcesInitialRequest immunizationsFromDataSource1Request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .addDataSourceId(dataSource1.getId())
+                        .setPageSize(1)
                         .build();
 
         mManager.readMedicalResources(
-                immunizationsFromDataSource1Request, Executors.newSingleThreadExecutor(), receiver);
+                immunizationsFromDataSource1Request,
+                Executors.newSingleThreadExecutor(),
+                receiver1);
 
-        assertThat(receiver.getResponse().getMedicalResources())
-                .containsExactly(immunizationFromDataSource1);
+        assertThat(receiver1.getResponse().getMedicalResources())
+                .containsExactly(immunization1FromDataSource1);
+        String nextPageToken = receiver1.getResponse().getNextPageToken();
+        assertThat(nextPageToken).isNotEmpty();
+
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
+                new HealthConnectReceiver<>();
+        mManager.readMedicalResources(
+                new ReadMedicalResourcesPageRequest.Builder(nextPageToken).build(),
+                Executors.newSingleThreadExecutor(),
+                receiver2);
+
+        assertThat(receiver2.getResponse().getMedicalResources())
+                .containsExactly(immunization2FromDataSource1);
+        assertThat(receiver2.getResponse().getNextPageToken()).isNull();
     }
 
     @Test
@@ -2503,28 +2564,42 @@ public class HealthConnectManagerTest {
         // Create two data sources.
         MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
-        // Insert two Immunizations and one Allergy.
+        // Insert 2 Immunizations and 1 Allergy.
         MedicalResource immunizationFromDataSource1 =
                 upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource immunizationFromDataSource2 =
                 upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
         upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
-        // Read Immunizations only from both data sources.
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+        // Read Immunizations only from both data sources in 2 pages.
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesRequest immunizationsFromBothDataSourcesRequest =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+        ReadMedicalResourcesInitialRequest immunizationsFromBothDataSourcesRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .addDataSourceId(dataSource1.getId())
                         .addDataSourceId(dataSource2.getId())
+                        .setPageSize(1)
                         .build();
 
         mManager.readMedicalResources(
                 immunizationsFromBothDataSourcesRequest,
                 Executors.newSingleThreadExecutor(),
-                receiver);
+                receiver1);
 
-        assertThat(receiver.getResponse().getMedicalResources())
-                .containsExactly(immunizationFromDataSource1, immunizationFromDataSource2);
+        assertThat(receiver1.getResponse().getMedicalResources())
+                .containsExactly(immunizationFromDataSource1);
+        String nextPageToken = receiver1.getResponse().getNextPageToken();
+        assertThat(nextPageToken).isNotEmpty();
+
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
+                new HealthConnectReceiver<>();
+        mManager.readMedicalResources(
+                new ReadMedicalResourcesPageRequest.Builder(nextPageToken).build(),
+                Executors.newSingleThreadExecutor(),
+                receiver2);
+
+        assertThat(receiver2.getResponse().getMedicalResources())
+                .containsExactly(immunizationFromDataSource2);
+        assertThat(receiver2.getResponse().getNextPageToken()).isNull();
     }
 
     @Test
@@ -2658,7 +2733,7 @@ public class HealthConnectManagerTest {
         SystemUtil.runWithShellPermissionIdentity(
                 () ->
                         mManager.readMedicalResources(
-                                new ReadMedicalResourcesRequest.Builder(
+                                new ReadMedicalResourcesInitialRequest.Builder(
                                                 MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                                         .build(),
                                 Executors.newSingleThreadExecutor(),
@@ -2924,8 +2999,9 @@ public class HealthConnectManagerTest {
                                 .toJson());
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesRequest allLabResultsRequest =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS)
+        ReadMedicalResourcesInitialRequest allLabResultsRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(
+                                MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS)
                         .build();
 
         mManager.readMedicalResources(
@@ -2946,8 +3022,9 @@ public class HealthConnectManagerTest {
                                 .toJson());
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesRequest allPregnancyRequest =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_PREGNANCY).build();
+        ReadMedicalResourcesInitialRequest allPregnancyRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_PREGNANCY)
+                        .build();
 
         mManager.readMedicalResources(
                 allPregnancyRequest, Executors.newSingleThreadExecutor(), receiver);
@@ -2967,8 +3044,8 @@ public class HealthConnectManagerTest {
                                 .toJson());
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesRequest allSocialHistoryRequest =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY)
+        ReadMedicalResourcesInitialRequest allSocialHistoryRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY)
                         .build();
 
         mManager.readMedicalResources(
@@ -2986,8 +3063,9 @@ public class HealthConnectManagerTest {
                         dataSource1.getId(), new ObservationBuilder().setHeartRate(100).toJson());
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesRequest allVitalSignsRequest =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_VITAL_SIGNS).build();
+        ReadMedicalResourcesInitialRequest allVitalSignsRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VITAL_SIGNS)
+                        .build();
 
         mManager.readMedicalResources(
                 allVitalSignsRequest, Executors.newSingleThreadExecutor(), receiver);
@@ -3003,8 +3081,9 @@ public class HealthConnectManagerTest {
                 upsertMedicalData(dataSource1.getId(), new ConditionBuilder().toJson());
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesRequest allProblems =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_PROBLEMS).build();
+        ReadMedicalResourcesInitialRequest allProblems =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_PROBLEMS)
+                        .build();
 
         mManager.readMedicalResources(allProblems, Executors.newSingleThreadExecutor(), receiver);
 
@@ -3019,8 +3098,9 @@ public class HealthConnectManagerTest {
                 upsertMedicalData(dataSource1.getId(), new ProcedureBuilder().toJson());
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesRequest allProblems =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_PROCEDURES).build();
+        ReadMedicalResourcesInitialRequest allProblems =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_PROCEDURES)
+                        .build();
 
         mManager.readMedicalResources(allProblems, Executors.newSingleThreadExecutor(), receiver);
 
@@ -3035,8 +3115,9 @@ public class HealthConnectManagerTest {
                 upsertMedicalData(dataSource1.getId(), MedicationsBuilder.medication().toJson());
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesRequest allProblems =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_MEDICATIONS).build();
+        ReadMedicalResourcesInitialRequest allProblems =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_MEDICATIONS)
+                        .build();
 
         mManager.readMedicalResources(allProblems, Executors.newSingleThreadExecutor(), receiver);
 
@@ -3051,8 +3132,9 @@ public class HealthConnectManagerTest {
                 upsertMedicalData(dataSource1.getId(), MedicationsBuilder.statementR4().toJson());
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesRequest allProblems =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_MEDICATIONS).build();
+        ReadMedicalResourcesInitialRequest allProblems =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_MEDICATIONS)
+                        .build();
 
         mManager.readMedicalResources(allProblems, Executors.newSingleThreadExecutor(), receiver);
 
@@ -3067,8 +3149,9 @@ public class HealthConnectManagerTest {
                 upsertMedicalData(dataSource1.getId(), MedicationsBuilder.request().toJson());
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
-        ReadMedicalResourcesRequest allProblems =
-                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_MEDICATIONS).build();
+        ReadMedicalResourcesInitialRequest allProblems =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_MEDICATIONS)
+                        .build();
 
         mManager.readMedicalResources(allProblems, Executors.newSingleThreadExecutor(), receiver);
 

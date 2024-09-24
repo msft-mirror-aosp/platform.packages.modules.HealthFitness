@@ -17,7 +17,7 @@ package com.android.healthconnect.controller.data.entries.api
 
 import android.content.Context
 import android.health.connect.HealthConnectManager
-import android.health.connect.ReadMedicalResourcesRequest
+import android.health.connect.ReadMedicalResourcesInitialRequest
 import android.health.connect.ReadMedicalResourcesResponse
 import android.health.connect.ReadRecordsRequestUsingFilters
 import android.health.connect.ReadRecordsResponse
@@ -285,9 +285,9 @@ constructor(
     fun buildMedicalResourceRequest(
         medicalResourceType: Int,
         packageName: String?,
-    ): ReadMedicalResourcesRequest {
+    ): ReadMedicalResourcesInitialRequest {
         // TODO(b/362672526): Filter by dataSourceIds once the API is ready.
-        val filter = ReadMedicalResourcesRequest.Builder(medicalResourceType)
+        val filter = ReadMedicalResourcesInitialRequest.Builder(medicalResourceType)
         return filter.build()
     }
 }
