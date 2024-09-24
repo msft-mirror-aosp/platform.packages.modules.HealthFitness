@@ -60,7 +60,6 @@ import com.android.healthconnect.controller.tests.utils.any
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -79,6 +78,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Matchers.eq
 import org.mockito.Mockito.*
+import org.mockito.kotlin.whenever
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest

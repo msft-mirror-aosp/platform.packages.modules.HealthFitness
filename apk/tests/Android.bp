@@ -100,6 +100,7 @@ java_library {
         "HealthConnectLibrary",
         "hilt_android_testing",
         "mockito-target-minus-junit4",
+        "mockito-kotlin2",
     ],
     libs: [
         "android.test.mock.stubs",

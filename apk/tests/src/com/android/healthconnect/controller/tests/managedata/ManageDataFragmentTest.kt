@@ -21,7 +21,6 @@ import com.android.healthconnect.controller.autodelete.AutoDeleteRange
 import com.android.healthconnect.controller.autodelete.AutoDeleteViewModel
 import com.android.healthconnect.controller.managedata.ManageDataFragment
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.ManageDataElement
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -39,6 +38,7 @@ import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class ManageDataFragmentTest {
@@ -63,7 +63,9 @@ class ManageDataFragmentTest {
         whenever(autoDeleteViewModel.storedAutoDeleteRange).then {
             MutableLiveData(
                 AutoDeleteViewModel.AutoDeleteState.WithData(
-                    AutoDeleteRange.AUTO_DELETE_RANGE_NEVER))
+                    AutoDeleteRange.AUTO_DELETE_RANGE_NEVER
+                )
+            )
         }
         context = InstrumentationRegistry.getInstrumentation().context
         navHostController = TestNavHostController(context)

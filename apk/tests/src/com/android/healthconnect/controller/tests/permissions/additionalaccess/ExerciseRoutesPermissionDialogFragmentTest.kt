@@ -43,7 +43,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchDialog
 import com.android.healthconnect.controller.tests.utils.safeEq
-import com.android.healthconnect.controller.tests.utils.whenever
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -52,6 +51,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class ExerciseRoutesPermissionDialogFragmentTest {
@@ -68,7 +68,8 @@ class ExerciseRoutesPermissionDialogFragmentTest {
         AppMetadata(
             TEST_APP_PACKAGE_NAME,
             TEST_APP_NAME,
-            context.getDrawable(R.drawable.health_connect_logo))
+            context.getDrawable(R.drawable.health_connect_logo),
+        )
 
     @Before
     fun setup() {
@@ -86,7 +87,8 @@ class ExerciseRoutesPermissionDialogFragmentTest {
         }
 
         launchDialog<ExerciseRoutesPermissionDialogFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+        )
 
         onView(withId(R.id.radio_button_always_allow))
             .inRoot(isDialog())
@@ -100,7 +102,8 @@ class ExerciseRoutesPermissionDialogFragmentTest {
         }
 
         launchDialog<ExerciseRoutesPermissionDialogFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+        )
 
         onView(withId(R.id.radio_button_ask)).inRoot(isDialog()).check(matches(isChecked()))
     }
@@ -112,7 +115,8 @@ class ExerciseRoutesPermissionDialogFragmentTest {
         }
 
         launchDialog<ExerciseRoutesPermissionDialogFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+        )
 
         onView(withId(R.id.radio_button_revoke)).inRoot(isDialog()).check(matches(isChecked()))
     }
@@ -120,7 +124,8 @@ class ExerciseRoutesPermissionDialogFragmentTest {
     @Test
     fun onOptionSelected_withAllowAll_callsViewModelWithGranted() {
         launchDialog<ExerciseRoutesPermissionDialogFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+        )
 
         onView(withId(R.id.radio_button_always_allow)).inRoot(isDialog()).perform(click())
 
@@ -131,7 +136,8 @@ class ExerciseRoutesPermissionDialogFragmentTest {
     @Test
     fun onOptionSelected_withAskEveryTime_callsViewModelWithDeclared() {
         launchDialog<ExerciseRoutesPermissionDialogFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+        )
 
         onView(withId(R.id.radio_button_ask)).inRoot(isDialog()).perform(click())
 
@@ -145,7 +151,8 @@ class ExerciseRoutesPermissionDialogFragmentTest {
             MutableLiveData(State(exerciseRoutePermissionUIState = ALWAYS_ALLOW))
         }
         launchDialog<ExerciseRoutesPermissionDialogFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+        )
 
         onView(withId(R.id.radio_button_revoke)).inRoot(isDialog()).perform(click())
 
