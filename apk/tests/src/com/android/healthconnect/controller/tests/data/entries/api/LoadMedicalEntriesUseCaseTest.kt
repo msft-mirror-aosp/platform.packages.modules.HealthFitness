@@ -17,7 +17,7 @@ package com.android.healthconnect.controller.tests.data.entries.api
 
 import android.content.Context
 import android.health.connect.HealthConnectManager
-import android.health.connect.ReadMedicalResourcesRequest
+import android.health.connect.ReadMedicalResourcesInitialRequest
 import android.health.connect.ReadMedicalResourcesResponse
 import android.os.OutcomeReceiver
 import androidx.test.platform.app.InstrumentationRegistry
@@ -25,8 +25,10 @@ import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.api.LoadEntriesHelper
 import com.android.healthconnect.controller.data.entries.api.LoadMedicalEntriesInput
 import com.android.healthconnect.controller.data.entries.api.LoadMedicalEntriesUseCase
+import com.android.healthconnect.controller.dataentries.formatters.medical.MedicalEntryFormatter
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.shared.app.MedicalDataSourceReader
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION
 import com.android.healthconnect.controller.tests.utils.setLocale
@@ -57,8 +59,10 @@ class LoadMedicalEntriesUseCaseTest {
     private lateinit var context: Context
     private lateinit var loadMedicalEntriesUseCase: LoadMedicalEntriesUseCase
     private lateinit var loadEntriesHelper: LoadEntriesHelper
+    private lateinit var medicalEntryFormatter: MedicalEntryFormatter
 
     @Inject lateinit var healthDataEntryFormatter: HealthDataEntryFormatter
+    @Inject lateinit var dataSourceReader: MedicalDataSourceReader
 
     private val healthConnectManager: HealthConnectManager =
         Mockito.mock(HealthConnectManager::class.java)
@@ -70,8 +74,14 @@ class LoadMedicalEntriesUseCaseTest {
         context.setLocale(Locale.US)
         hiltRule.inject()
         loadEntriesHelper =
-            LoadEntriesHelper(context, healthDataEntryFormatter, healthConnectManager)
-        loadMedicalEntriesUseCase = LoadMedicalEntriesUseCase(Dispatchers.Main, loadEntriesHelper)
+            LoadEntriesHelper(
+                context,
+                healthDataEntryFormatter,
+                healthConnectManager,
+                dataSourceReader,
+            )
+        loadMedicalEntriesUseCase =
+            LoadMedicalEntriesUseCase(Dispatchers.Main, medicalEntryFormatter, loadEntriesHelper)
     }
 
     @Test
@@ -87,7 +97,7 @@ class LoadMedicalEntriesUseCaseTest {
         Mockito.doAnswer(prepareAnswer(readMedicalResourcesResponse))
             .`when`(healthConnectManager)
             .readMedicalResources(
-                ArgumentMatchers.any(ReadMedicalResourcesRequest::class.java),
+                ArgumentMatchers.any(ReadMedicalResourcesInitialRequest::class.java),
                 ArgumentMatchers.any(),
                 ArgumentMatchers.any(),
             )
@@ -114,7 +124,7 @@ class LoadMedicalEntriesUseCaseTest {
         Mockito.doAnswer(prepareAnswer(readMedicalResourcesResponse))
             .`when`(healthConnectManager)
             .readMedicalResources(
-                ArgumentMatchers.any(ReadMedicalResourcesRequest::class.java),
+                ArgumentMatchers.any(ReadMedicalResourcesInitialRequest::class.java),
                 ArgumentMatchers.any(),
                 ArgumentMatchers.any(),
             )

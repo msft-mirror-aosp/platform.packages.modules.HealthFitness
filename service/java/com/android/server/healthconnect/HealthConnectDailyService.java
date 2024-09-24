@@ -40,6 +40,7 @@ import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -87,6 +88,7 @@ public class HealthConnectDailyService extends JobService {
         AppInfoHelper appInfoHelper;
         AccessLogsHelper accessLogsHelper;
         TransactionManager transactionManager;
+        ActivityDateHelper activityDateHelper;
 
         if (Flags.dependencyInjection()) {
             HealthConnectInjector healthConnectInjector = HealthConnectInjector.getInstance();
@@ -101,6 +103,7 @@ public class HealthConnectDailyService extends JobService {
             appInfoHelper = healthConnectInjector.getAppInfoHelper();
             accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
             transactionManager = healthConnectInjector.getTransactionManager();
+            activityDateHelper = healthConnectInjector.getActivityDateHelper();
         } else {
             transactionManager = TransactionManager.getInitialisedInstance();
             healthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
@@ -117,6 +120,7 @@ public class HealthConnectDailyService extends JobService {
             migrationStateManager = MigrationStateManager.getInitialisedInstance();
             appInfoHelper = AppInfoHelper.getInstance();
             accessLogsHelper = AccessLogsHelper.getInstance();
+            activityDateHelper = ActivityDateHelper.getInstance();
         }
 
         // This service executes each incoming job on a Handler running on the application's
@@ -132,7 +136,8 @@ public class HealthConnectDailyService extends JobService {
                                     preferenceHelper,
                                     appInfoHelper,
                                     accessLogsHelper,
-                                    transactionManager);
+                                    transactionManager,
+                                    activityDateHelper);
                             jobFinished(params, false);
                         });
                 return true;

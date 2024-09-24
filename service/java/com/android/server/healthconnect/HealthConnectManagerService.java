@@ -47,6 +47,7 @@ import com.android.server.healthconnect.permission.PermissionPackageChangesOrche
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
@@ -120,6 +121,7 @@ public class HealthConnectManagerService extends SystemService {
         AppInfoHelper appInfoHelper;
         AccessLogsHelper accessLogsHelper;
         HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper;
+        ActivityDateHelper activityDateHelper;
 
         if (Flags.dependencyInjection()) {
             Objects.requireNonNull(mHealthConnectInjector);
@@ -127,6 +129,7 @@ public class HealthConnectManagerService extends SystemService {
             accessLogsHelper = mHealthConnectInjector.getAccessLogsHelper();
             healthDataCategoryPriorityHelper =
                     mHealthConnectInjector.getHealthDataCategoryPriorityHelper();
+            activityDateHelper = mHealthConnectInjector.getActivityDateHelper();
             firstGrantTimeManager =
                     new FirstGrantTimeManager(
                             context,
@@ -161,6 +164,7 @@ public class HealthConnectManagerService extends SystemService {
             appInfoHelper = AppInfoHelper.getInstance(mTransactionManager);
             accessLogsHelper = AccessLogsHelper.getInstance(mTransactionManager, appInfoHelper);
             healthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
+            activityDateHelper = ActivityDateHelper.getInstance();
             firstGrantTimeManager =
                     new FirstGrantTimeManager(
                             context,
@@ -213,7 +217,8 @@ public class HealthConnectManagerService extends SystemService {
                         mMigrationNotificationSender);
         TimeSource timeSource = new TimeSourceImpl();
         MedicalDataSourceHelper medicalDataSourceHelper =
-                new MedicalDataSourceHelper(mTransactionManager, appInfoHelper, timeSource);
+                new MedicalDataSourceHelper(
+                        mTransactionManager, appInfoHelper, timeSource, accessLogsHelper);
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mTransactionManager,
@@ -234,7 +239,8 @@ public class HealthConnectManagerService extends SystemService {
                         mExportManager,
                         mExportImportSettingsStorage,
                         accessLogsHelper,
-                        healthDataCategoryPriorityHelper);
+                        healthDataCategoryPriorityHelper,
+                        activityDateHelper);
     }
 
     @Override

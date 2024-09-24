@@ -33,15 +33,16 @@ class DeleteAppDataUseCase
 constructor(
     private val healthConnectManager: HealthConnectManager,
     private val revokeAllHealthPermissionsUseCase: RevokeAllHealthPermissionsUseCase,
-    @IoDispatcher private val dispatcher: CoroutineDispatcher
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
     suspend fun invoke(
-        deleteAppData: DeletionType.DeletionTypeAppData,
-        removePermissions: Boolean = false
+        deleteAppData: DeletionType.DeleteAppData,
+        removePermissions: Boolean = false,
     ) {
         val deleteRequest = DeleteUsingFiltersRequest.Builder()
         deleteRequest.addDataOrigin(
-            DataOrigin.Builder().setPackageName(deleteAppData.packageName).build())
+            DataOrigin.Builder().setPackageName(deleteAppData.packageName).build()
+        )
         withContext(dispatcher) {
             healthConnectManager.deleteRecords(deleteRequest.build(), Runnable::run) {}
 

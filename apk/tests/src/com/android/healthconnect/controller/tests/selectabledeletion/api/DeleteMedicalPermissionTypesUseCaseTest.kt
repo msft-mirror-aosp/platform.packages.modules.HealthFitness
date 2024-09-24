@@ -16,12 +16,11 @@
 package com.android.healthconnect.controller.tests.selectabledeletion.api
 
 import android.health.connect.DeleteMedicalResourcesRequest
-import android.health.connect.DeleteUsingFiltersRequest
 import android.health.connect.HealthConnectManager
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
-import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeletionTypeHealthPermissionTypes
+import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteHealthPermissionTypes
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteMedicalPermissionTypesUseCase
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -47,7 +46,6 @@ class DeleteMedicalPermissionTypesUseCaseTest {
     private lateinit var useCase: DeleteMedicalPermissionTypesUseCase
     var manager: HealthConnectManager = Mockito.mock(HealthConnectManager::class.java)
 
-    @Captor lateinit var filtersCaptor: ArgumentCaptor<DeleteUsingFiltersRequest>
     @Captor lateinit var medicalRequestCaptor: ArgumentCaptor<DeleteMedicalResourcesRequest>
 
     @Before
@@ -63,11 +61,12 @@ class DeleteMedicalPermissionTypesUseCaseTest {
             .deleteMedicalResources(any(DeleteMedicalResourcesRequest::class.java), any(), any())
 
         val deletePermissionType =
-            DeletionTypeHealthPermissionTypes(
-                listOf(
+            DeleteHealthPermissionTypes(
+                setOf(
                     MedicalPermissionType.ALLERGY_INTOLERANCE,
                     MedicalPermissionType.IMMUNIZATION,
-                )
+                ),
+                8,
             )
 
         useCase.invoke(deletePermissionType)

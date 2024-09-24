@@ -360,9 +360,9 @@
     <!--endregion-->
 
     <!-- region Medical data types -->
-    <string name="all_medical_data_uppercase_label" description="Uppercase label used to show the user's active calories burned data [CHAR_LIMIT=50]">All medical data</string>
-    <string name="all_medical_data_lowercase_label" description="Lowercase label used to show the user's active calories burned data [CHAR_LIMIT=50]">all medical data</string>
-    <string name="all_medical_data_content_description" description="Content description for switch that enables permissions for writing the user's medical data [CHAR_LIMIT=NONE]">Write all medical data</string>
+    <string name="all_medical_data_uppercase_label" description="Uppercase label used to show the user's active calories burned data [CHAR_LIMIT=50]">All health records</string>
+    <string name="all_medical_data_lowercase_label" description="Lowercase label used to show the user's active calories burned data [CHAR_LIMIT=50]">all health records</string>
+    <string name="all_medical_data_content_description" description="Content description for switch that enables permissions for writing the user's medical data [CHAR_LIMIT=NONE]">Write all health records</string>
 
     <string name="allergy_intolerance_uppercase_label" description="Uppercase label used to show the user's allergy intolerance data [CHAR_LIMIT=50]">Allergies</string>
     <string name="allergy_intolerance_lowercase_label" description="Lowercase label used to show the user's allergy intolerance data [CHAR_LIMIT=50]">allergies</string>
@@ -444,10 +444,17 @@
     <string name="navigation_selected_day" description="Content description for button that contains selected day. [CHAR_LIMIT=NONE]">Selected day</string>
     <string name="navigation_previous_day" description="Content description for button that changes the current data view to the previous day [CHAR_LIMIT=NONE]">Previous day</string>
     <string name="default_error" description="Label shown when a user initiated action fails (e.g. deleting data) [CHAR_LIMIT=NONE]">Something went wrong. Please try again.</string>
+    <string name="unkwown_resource" description="Label shown when a medical data cannot be identified [CHAR_LIMIT=NONE]">Unknown Resource</string>
+
     <!-- endregion -->
 
     <!-- region Raw FHIR -->
-    <string name="raw_fhir_content_description" description="Content description for a JSON file that is an electronic health care record [CHAR_LIMIT=NONE]">Detailed health record</string>
+    <string name="raw_fhir_title" description="Label for a screen that contains the detailed source code of a medical resource. [CHAR_LIMIT=40]">Source data</string>
+    <string name="raw_fhir_open_bracket" description="Content description for the open curly bracket character and a prefix before that which is usually a space. [CHAR_LIMIT=50]"><xliff:g example=" " id="prefix">%1$s</xliff:g>Open bracket. </string>
+    <string name="raw_fhir_closed_bracket" description="Content description for the closed curly bracket character. [CHAR_LIMIT=50]"><xliff:g example=" " id="prefix">%1$s</xliff:g>Closed bracket. </string>
+    <string name="raw_fhir_field_value" description="Content description for a field and a corresponding value from a JSON file, starting with a prexif which is usually a space. [CHAR_LIMIT=50]"><xliff:g example=" " id="prefix">%1$s</xliff:g> Field <xliff:g example="name" id="field">%2$s</xliff:g> Value </string>
+    <string name="raw_fhir_value" description="Content description for a value from a JSON file, starting with a prefix which is usually a space. [CHAR_LIMIT=50]"><xliff:g example=" " id="prefix">%1$s</xliff:g>: <xliff:g example="Nora" id="value">%2$s</xliff:g>. </string>
+    <string name="raw_fhir_content_description" description="Content description for a JSON file that is an electronic health care record [CHAR_LIMIT=NONE]">Detailed source code: <xliff:g example="Open bracket. Field name Value John Doe. Field age Value 30. close bracket." id="source_code">%1$s</xliff:g></string>
     <!-- endregion -->
 
     <!-- region Connected apps -->
@@ -1431,19 +1438,6 @@
     <string name="additional_access_history_footer" description="Footer of screen to manage additional permissions for an app when no read fitness permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on past data access for this app</string>
     <!--  endregion -->
 
-    <!-- region Delete dialogs -->
-    <string name="all_data_selected_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete all data">Permanently delete all data from Health&#160;Connect?</string>
-    <string name="some_data_selected_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete some data">Permanently delete selected data from Health&#160;Connect?</string>
-    <!-- endregion -->
-
-    <!-- region Delete toast confirmation -->
-    <string name="all_data_selected_deletion_confirmation_toast" description="Message letting the user know that all data has been deleted">All data deleted</string>
-    <string name="one_data_type_deletion_confirmation_toast" description="Message letting the user know that a permission type has been deleted"><xliff:g example="heart rate" id="permission_type">%s</xliff:g> data deleted</string>
-    <string name="multiple_data_types_deletion_confirmation_toast" description="Message letting the user know the number of permission types deleted"><xliff:g example="2" id="number_permission_types">%s</xliff:g> items deleted</string>
-    <!-- endregion -->
-
-    <string name="select_all" description="Label for a button that selects all data for deletion [CHAR_LIMIT=40]">Select all</string>
-
     <!-- region Onboarding -->
     <string name="start_using_hc_banner_title" description="Title for banner shown when users have not connected their first fitness app">Start using Health&#160;Connect</string>
     <string name="start_using_hc_banner_content" description="Content for banner shown when users have not connected their first fitness app">Sync your first apps to share health and fitness data between them</string>
@@ -1459,5 +1453,38 @@
 
     <!-- endregion -->
 
+    <!-- region Selectable deletion -->
+    <string name="select_all" description="Label for a button that selects all data for deletion [CHAR_LIMIT=40]">Select all</string>
+    <string name="deletion_confirmation_dialog_body" description="Text for dialog asking the user to confirm they want to delete all data">Connected apps will no longer be able to read this data from Health&#160;Connect</string>
 
+    <!-- region All data -->
+    <string name="all_data_selected_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete all data">Permanently delete all data?</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete some data">Permanently delete selected data?</string>
+    <!-- endregion -->
+
+    <!-- region App data -->
+    <string name="all_app_data_selected_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete all app data">Permanently delete all <xliff:g example="Run Tracker" id="app_name">%s</xliff:g> data?</string>
+    <string name="some_app_data_selected_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete some app data">Permanently delete selected <xliff:g example="Run Tracker" id="app_name">%s</xliff:g> data?</string>
+    <!-- endregion -->
+
+    <!-- region All entries -->
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete all entries from the selected day">Permanently delete all entries for <xliff:g example="22 Jan 2022" id="selected_date_range">%1$s</xliff:g>?</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete all entries from the selected week">Permanently delete all entries for the week of <xliff:g example="18-25 Jan 2022" id="selected_date_range">%1$s</xliff:g>?</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete all entries from the selected month">Permanently delete all entries for <xliff:g example="Jan 2022" id="selected_date_range">%1$s</xliff:g>?</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete selected entries from the selected day">Permanently delete selected entries for <xliff:g example="22 Jan 2022" id="selected_date_range">%1$s</xliff:g>?</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete selected entries from the selected week">Permanently delete selected entries for the week of <xliff:g example="18-25 Jan 2022" id="selected_date_range">%1$s</xliff:g>?</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete selected entries from the selected month">Permanently delete selected entries for <xliff:g example="Jan 2022" id="selected_date_range">%1$s</xliff:g>?</string>
+    <string name="one_entry_selected_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete the selected entry">Permanently delete this entry?</string>
+    <!-- endregion -->
+
+    <!-- region App entries -->
+    <string name="all_app_entries_selected_day_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete all app entries from the selected day">Permanently delete all <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> entries for <xliff:g example="22 Jan 2022" id="selected_date_range">%2$s</xliff:g>?</string>
+    <string name="all_app_entries_selected_week_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete all app entries from the selected week">Permanently delete all <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> entries for the week of <xliff:g example="18-25 Jan 2022" id="selected_date_range">%2$s</xliff:g>?</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete all app entries from the selected month">Permanently delete all <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> entries for <xliff:g example="Jan 2022" id="selected_date_range">%2$s</xliff:g>?</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete selected app entries from the selected day">Permanently delete selected <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> entries for <xliff:g example="22 Jan 2022" id="selected_date_range">%2$s</xliff:g>?</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete selected app entries from the selected week">Permanently delete selected <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> entries for the week of <xliff:g example="18-25 Jan 2022" id="selected_date_range">%2$s</xliff:g>?</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete selected app entries from the selected month">Permanently delete selected <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> entries for <xliff:g example="Jan 2022" id="selected_date_range">%2$s</xliff:g>?</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete the selected app entry">Permanently delete this <xliff:g example="Run Tracker" id="app_name">%s</xliff:g> entry?</string>
+    <!-- endregion -->
+    <!-- endregion -->
 </resources>
