@@ -1,20 +1,21 @@
-/*
+/**
  * Copyright (C) 2024 The Android Open Source Project
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
+ * ```
  *      http://www.apache.org/licenses/LICENSE-2.0
+ * ```
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 package com.android.healthconnect.controller.tests.data.entries
 
+import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.health.connect.AggregateRecordsResponse
 import android.health.connect.AggregateResult
 import android.health.connect.HealthConnectManager
@@ -34,7 +35,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
-import com.android.healthconnect.controller.data.entries.AllEntriesFragment
+import com.android.healthconnect.controller.data.entries.AppEntriesFragment
 import com.android.healthconnect.controller.data.entries.EntriesViewModel
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
 import com.android.healthconnect.controller.service.DefaultDispatcher
@@ -42,7 +43,9 @@ import com.android.healthconnect.controller.service.DispatcherModule
 import com.android.healthconnect.controller.service.HealthManagerModule
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.service.MainDispatcher
+import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.tests.utils.CoroutineTestRule
+import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.assertCheckboxChecked
 import com.android.healthconnect.controller.tests.utils.assertCheckboxNotChecked
@@ -67,7 +70,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -78,8 +80,7 @@ import org.mockito.invocation.InvocationOnMock
 @OptIn(ExperimentalCoroutinesApi::class)
 @UninstallModules(HealthManagerModule::class, DispatcherModule::class)
 @HiltAndroidTest
-class MockedAllEntriesFragmentTest {
-
+class MockedAppEntriesFragmentTest {
     @get:Rule val coroutineTestRule = CoroutineTestRule()
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @BindValue val manager: HealthConnectManager = Mockito.mock(HealthConnectManager::class.java)
@@ -88,6 +89,7 @@ class MockedAllEntriesFragmentTest {
             .atStartOfDay()
             .atZone(ZoneId.systemDefault())
             .toInstant()
+
     private val recyclerViewId = R.id.data_entries_list
 
     @Before
@@ -98,7 +100,14 @@ class MockedAllEntriesFragmentTest {
     @Test
     fun fragmentDisplaysCorrectly() = runTest {
         mockData()
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+        launchFragment<AppEntriesFragment>(
+            bundleOf(
+                PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
+
         advanceUntilIdle()
 
         onView(withText("10 steps")).check(matches(isDisplayed()))
@@ -119,11 +128,17 @@ class MockedAllEntriesFragmentTest {
     fun toggleDeletion_hidesAggregation_showsSelectAll_showsCheckboxes() = runTest {
         mockData()
         val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchFragment<AppEntriesFragment>(
+                bundleOf(
+                    PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
         advanceUntilIdle()
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllEntriesFragment).triggerDeletionState(
+            (fragment as AppEntriesFragment).triggerDeletionState(
                 EntriesViewModel.EntriesDeletionScreenState.DELETE
             )
         }
@@ -142,11 +157,17 @@ class MockedAllEntriesFragmentTest {
     fun inDeletion_screenStateRemainsOnOrientationChange() = runTest {
         mockData()
         val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchFragment<AppEntriesFragment>(
+                bundleOf(
+                    PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
         advanceUntilIdle()
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllEntriesFragment).triggerDeletionState(
+            (fragment as AppEntriesFragment).triggerDeletionState(
                 EntriesViewModel.EntriesDeletionScreenState.DELETE
             )
         }
@@ -179,11 +200,17 @@ class MockedAllEntriesFragmentTest {
     fun inDeletion_whenAllCheckboxesChecked_selectAllChecked() = runTest {
         mockData()
         val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchFragment<AppEntriesFragment>(
+                bundleOf(
+                    PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
         advanceUntilIdle()
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllEntriesFragment).triggerDeletionState(
+            (fragment as AppEntriesFragment).triggerDeletionState(
                 EntriesViewModel.EntriesDeletionScreenState.DELETE
             )
         }
@@ -210,11 +237,17 @@ class MockedAllEntriesFragmentTest {
     fun inDeletion_whenOneCheckboxUnchecked_selectAllUnchecked() = runTest {
         mockData()
         val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchFragment<AppEntriesFragment>(
+                bundleOf(
+                    PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
         advanceUntilIdle()
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllEntriesFragment).triggerDeletionState(
+            (fragment as AppEntriesFragment).triggerDeletionState(
                 EntriesViewModel.EntriesDeletionScreenState.DELETE
             )
         }
@@ -246,11 +279,17 @@ class MockedAllEntriesFragmentTest {
     fun inDeletion_whenSelectAllChecked_allCheckboxesChecked() = runTest {
         mockData()
         val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchFragment<AppEntriesFragment>(
+                bundleOf(
+                    PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
         advanceUntilIdle()
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllEntriesFragment).triggerDeletionState(
+            (fragment as AppEntriesFragment).triggerDeletionState(
                 EntriesViewModel.EntriesDeletionScreenState.DELETE
             )
         }
@@ -276,11 +315,17 @@ class MockedAllEntriesFragmentTest {
     fun inDeletion_whenSelectAllUnchecked_allCheckboxesUnchecked() = runTest {
         mockData()
         val scenario =
-            launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+            launchFragment<AppEntriesFragment>(
+                bundleOf(
+                    PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
         advanceUntilIdle()
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
-            (fragment as AllEntriesFragment).triggerDeletionState(
+            (fragment as AppEntriesFragment).triggerDeletionState(
                 EntriesViewModel.EntriesDeletionScreenState.DELETE
             )
         }

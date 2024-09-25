@@ -44,7 +44,14 @@ sealed class DeletionType {
     data class DeleteEntriesFromApp(
         val idsToDataTypes: Map<String, DataType>,
         val packageName: String,
-    ) : DeletionType()
+        val appName: String,
+        val totalEntries: Int,
+        val period: DateNavigationPeriod,
+        val startTime: Instant,
+    ) : DeletionType() {
+        fun toDeleteEntries(): DeleteEntries =
+            DeleteEntries(idsToDataTypes, totalEntries, period, startTime)
+    }
 
     data class DeleteAppData(val packageName: String) : DeletionType()
 }
