@@ -213,6 +213,9 @@ public final class ActivityDateHelper extends DatabaseHelper {
                 ChronoUnit.DAYS.between(LocalDate.EPOCH, recordInternal.getLocalDate()));
     }
 
+    /**
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static ActivityDateHelper getInstance() {
         return getInstance(TransactionManager.getInitialisedInstance());
     }
