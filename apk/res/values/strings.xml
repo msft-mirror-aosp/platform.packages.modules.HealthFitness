@@ -623,6 +623,8 @@
     <!--region Onboarding -->
     <string name="onboarding_title" description="Label used to show the title of onboarding page when user opens Health Connect app for the fist time">Get started with Health&#160;Connect</string>
     <string name="onboarding_description" description="Content description of Health Connect app on the onboarding page">Health&#160;Connect stores your health and fitness data, giving you a simple way to sync the different apps on your device</string>
+    <string name="onboarding_description_health_records" description="Content description of Health Connect app on the onboarding page that includes health records">Health&#160;Connect stores and syncs your health and fitness data from different apps.\n\n<b>Fitness and wellness data,</b> including exercise sessions, steps, nutrition, sleep and more\n\n<b>Health records,</b> including immunizations, lab results and more</string>
+    <string name="onboarding_description_with_health_connect" description="Content description of Health Connect app on the onboarding page that explains what the user can do with this app">With Health&#160;Connect you can</string>
     <string name="share_data" description="Label used to show how the user can share data with apps">Share data with your apps</string>
     <string name="share_data_description" description="Content description for how the user can share data with apps">Choose the data each app can read or write to Health&#160;Connect</string>
     <string name="manage_your_settings" description="Label used to show how the user can manage settings and privacy">Manage your settings and privacy</string>
