@@ -56,6 +56,7 @@ import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.utils.ConditionBuilder;
+import android.healthconnect.cts.utils.EncountersBuilder;
 import android.healthconnect.cts.utils.MedicationsBuilder;
 import android.healthconnect.cts.utils.ObservationBuilder;
 import android.healthconnect.cts.utils.ObservationBuilder.QuantityUnits;
@@ -306,6 +307,36 @@ public class MedicalResourceValidatorTest {
         int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
 
         assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS);
+    }
+
+    @Test
+    public void testCalculateMedicalResourceType_encounter() {
+        String fhirData = EncountersBuilder.encounter().toJson();
+        MedicalResourceValidator validator = makeValidator(fhirData);
+
+        int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
+
+        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS);
+    }
+
+    @Test
+    public void testCalculateMedicalResourceType_location() {
+        String fhirData = EncountersBuilder.location().toJson();
+        MedicalResourceValidator validator = makeValidator(fhirData);
+
+        int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
+
+        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS);
+    }
+
+    @Test
+    public void testCalculateMedicalResourceType_organization() {
+        String fhirData = EncountersBuilder.organization().toJson();
+        MedicalResourceValidator validator = makeValidator(fhirData);
+
+        int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
+
+        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS);
     }
 
     // IPS artifacts: https://build.fhir.org/ig/HL7/fhir-ips/artifacts.html

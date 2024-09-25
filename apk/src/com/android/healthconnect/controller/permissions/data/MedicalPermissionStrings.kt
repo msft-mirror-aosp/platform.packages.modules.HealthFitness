@@ -127,6 +127,14 @@ private val PERMISSION_TYPE_STRINGS: ImmutableMap<MedicalPermissionType, Medical
             )
         )
         .put(
+            MedicalPermissionType.VISITS,
+            MedicalPermissionStrings(
+                R.string.visits_uppercase_label,
+                R.string.visits_lowercase_label,
+                R.string.visits_content_description
+            )
+        )
+        .put(
             MedicalPermissionType.VITAL_SIGNS,
             MedicalPermissionStrings(
                 R.string.vital_signs_uppercase_label,

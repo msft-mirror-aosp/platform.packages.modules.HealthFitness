@@ -131,6 +131,7 @@ class HealthPermissionReaderTest {
                 HealthPermissions.READ_MEDICAL_DATA_PROBLEMS,
                 HealthPermissions.READ_MEDICAL_DATA_PROCEDURES,
                 HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                HealthPermissions.READ_MEDICAL_DATA_VISITS,
                 HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS,
                 HealthPermissions.WRITE_MEDICAL_DATA)
     }

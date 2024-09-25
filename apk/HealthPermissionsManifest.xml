@@ -323,7 +323,11 @@
         android:label="@string/social_history_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
-
+    <permission
+        android:name="android.permission.health.READ_MEDICAL_DATA_VISITS"
+        android:label="@string/visits_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
     <permission
         android:name="android.permission.health.READ_MEDICAL_DATA_VITAL_SIGNS"
         android:label="@string/vital_signs_content_description"

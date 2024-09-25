@@ -25,6 +25,7 @@ import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PREGNANCY
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROBLEMS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROCEDURES
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VISITS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS
 import android.health.connect.HealthPermissions.READ_STEPS
 import android.health.connect.HealthPermissions.WRITE_DISTANCE
@@ -137,6 +138,7 @@ class MedicalPermissionsFragmentTest {
                     fromPermissionString(READ_MEDICAL_DATA_PROBLEMS),
                     fromPermissionString(READ_MEDICAL_DATA_PROCEDURES),
                     fromPermissionString(READ_MEDICAL_DATA_SOCIAL_HISTORY),
+                    fromPermissionString(READ_MEDICAL_DATA_VISITS),
                     fromPermissionString(READ_MEDICAL_DATA_VITAL_SIGNS),
                     fromPermissionString(WRITE_MEDICAL_DATA),
                 )

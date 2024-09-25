@@ -26,6 +26,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
@@ -84,6 +85,8 @@ public final class MedicalResourceTypePermissionMapper {
         sMedicalResourceTypeToReadPermissionMap.put(
                 MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
                 HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY);
+        sMedicalResourceTypeToReadPermissionMap.put(
+                MEDICAL_RESOURCE_TYPE_VISITS, HealthPermissions.READ_MEDICAL_DATA_VISITS);
         sMedicalResourceTypeToReadPermissionMap.put(
                 MEDICAL_RESOURCE_TYPE_VITAL_SIGNS, HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS);
 

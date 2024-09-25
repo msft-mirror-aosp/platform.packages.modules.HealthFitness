@@ -28,6 +28,7 @@ import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PREGNAN
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROBLEMS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROCEDURES;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VISITS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 
@@ -127,6 +128,7 @@ public class HealthPermissionsTest {
                     HealthPermissions.READ_MEDICAL_DATA_PROBLEMS,
                     HealthPermissions.READ_MEDICAL_DATA_PROCEDURES,
                     HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                    HealthPermissions.READ_MEDICAL_DATA_VISITS,
                     HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS,
                     HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED,
                     HealthPermissions.WRITE_DISTANCE,
@@ -312,6 +314,7 @@ public class HealthPermissionsTest {
                         READ_MEDICAL_DATA_PROBLEMS,
                         READ_MEDICAL_DATA_PROCEDURES,
                         READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                        READ_MEDICAL_DATA_VISITS,
                         READ_MEDICAL_DATA_VITAL_SIGNS);
     }
 
