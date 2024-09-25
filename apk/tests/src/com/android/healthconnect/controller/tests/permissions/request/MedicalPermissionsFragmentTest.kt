@@ -16,13 +16,13 @@
 package com.android.healthconnect.controller.tests.permissions.request
 
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_CONDITIONS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PRACTITIONER_DETAILS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PREGNANCY
-import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROBLEMS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROCEDURES
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VISITS
@@ -129,13 +129,13 @@ class MedicalPermissionsFragmentTest {
             val permissions =
                 listOf(
                     fromPermissionString(READ_MEDICAL_DATA_ALLERGY_INTOLERANCE),
+                    fromPermissionString(READ_MEDICAL_DATA_CONDITIONS),
                     fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION),
                     fromPermissionString(READ_MEDICAL_DATA_LABORATORY_RESULTS),
                     fromPermissionString(READ_MEDICAL_DATA_MEDICATIONS),
                     fromPermissionString(READ_MEDICAL_DATA_PERSONAL_DETAILS),
                     fromPermissionString(READ_MEDICAL_DATA_PRACTITIONER_DETAILS),
                     fromPermissionString(READ_MEDICAL_DATA_PREGNANCY),
-                    fromPermissionString(READ_MEDICAL_DATA_PROBLEMS),
                     fromPermissionString(READ_MEDICAL_DATA_PROCEDURES),
                     fromPermissionString(READ_MEDICAL_DATA_SOCIAL_HISTORY),
                     fromPermissionString(READ_MEDICAL_DATA_VISITS),

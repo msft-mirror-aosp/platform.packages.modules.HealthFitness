@@ -167,10 +167,10 @@ object Constants {
     val MEDICAL_PERMISSIONS = arrayOf(
         "android.permission.health.WRITE_MEDICAL_DATA",
         "android.permission.health.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE",
+        "android.permission.health.READ_MEDICAL_DATA_CONDITIONS",
         "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION",
         "android.permission.health.READ_MEDICAL_DATA_LABORATORY_RESULTS",
         "android.permission.health.READ_MEDICAL_DATA_PREGNANCY",
-        "android.permission.health.READ_MEDICAL_DATA_PROBLEMS",
         "android.permission.health.READ_MEDICAL_DATA_SOCIAL_HISTORY",
         "android.permission.health.READ_MEDICAL_DATA_VITAL_SIGNS")
 

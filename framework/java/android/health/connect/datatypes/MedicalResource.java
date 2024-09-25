@@ -65,10 +65,10 @@ public final class MedicalResource implements Parcelable {
     public static final int MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS = 6;
 
     /**
-     * Medical resource type labelling data as problems (clinical condition, problem, diagnosis
-     * etc).
+     * Medical resource type labelling data as medical conditions (clinical condition, problem,
+     * diagnosis etc).
      */
-    public static final int MEDICAL_RESOURCE_TYPE_PROBLEMS = 7;
+    public static final int MEDICAL_RESOURCE_TYPE_CONDITIONS = 7;
 
     /** Medical resource type labelling data as procedures (actions taken on or for a patient). */
     public static final int MEDICAL_RESOURCE_TYPE_PROCEDURES = 8;
@@ -101,13 +101,13 @@ public final class MedicalResource implements Parcelable {
     @IntDef({
         MEDICAL_RESOURCE_TYPE_UNKNOWN,
         MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+        MEDICAL_RESOURCE_TYPE_CONDITIONS,
         MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
         MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
         MEDICAL_RESOURCE_TYPE_MEDICATIONS,
         MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS,
         MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS,
         MEDICAL_RESOURCE_TYPE_PREGNANCY,
-        MEDICAL_RESOURCE_TYPE_PROBLEMS,
         MEDICAL_RESOURCE_TYPE_PROCEDURES,
         MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
         MEDICAL_RESOURCE_TYPE_VISITS,
@@ -237,13 +237,13 @@ public final class MedicalResource implements Parcelable {
             Set.of(
                     MEDICAL_RESOURCE_TYPE_UNKNOWN,
                     MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                    MEDICAL_RESOURCE_TYPE_CONDITIONS,
                     MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                     MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
                     MEDICAL_RESOURCE_TYPE_MEDICATIONS,
                     MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS,
                     MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS,
                     MEDICAL_RESOURCE_TYPE_PREGNANCY,
-                    MEDICAL_RESOURCE_TYPE_PROBLEMS,
                     MEDICAL_RESOURCE_TYPE_PROCEDURES,
                     MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
                     MEDICAL_RESOURCE_TYPE_VISITS,
