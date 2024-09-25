@@ -329,7 +329,8 @@ public final class TransactionManager {
             AggregateTableRequest aggregateTableRequest,
             String packageName,
             Set<Integer> recordTypeIds,
-            AccessLogsHelper accessLogsHelper) {
+            AccessLogsHelper accessLogsHelper,
+            boolean shouldRecordAccessLog) {
         final SQLiteDatabase db = getReadableDb();
         try (Cursor cursor = db.rawQuery(aggregateTableRequest.getAggregationCommand(), null);
                 Cursor metaDataCursor =
@@ -337,7 +338,7 @@ public final class TransactionManager {
                                 aggregateTableRequest.getCommandToFetchAggregateMetadata(), null)) {
             aggregateTableRequest.onResultsFetched(cursor, metaDataCursor);
         }
-        if (Flags.addMissingAccessLogs()) {
+        if (Flags.addMissingAccessLogs() && shouldRecordAccessLog) {
             accessLogsHelper.recordReadAccessLog(getWritableDb(), packageName, recordTypeIds);
         }
     }
@@ -355,7 +356,8 @@ public final class TransactionManager {
             ReadTransactionRequest request,
             AppInfoHelper appInfoHelper,
             AccessLogsHelper accessLogsHelper,
-            DeviceInfoHelper deviceInfoHelper)
+            DeviceInfoHelper deviceInfoHelper,
+            boolean shouldRecordAccessLog)
             throws SQLiteException {
         // TODO(b/308158714): Make this build time check once we have different classes.
         checkArgument(
@@ -373,9 +375,11 @@ public final class TransactionManager {
             }
         }
 
-        if (Flags.addMissingAccessLogs() && !request.isReadingSelfData()) {
-            accessLogsHelper.recordReadAccessLog(
-                    getWritableDb(), request.getPackageName(), request.getRecordTypeIds());
+        if (Flags.addMissingAccessLogs()) {
+            if (!request.isReadingSelfData() && shouldRecordAccessLog) {
+                accessLogsHelper.recordReadAccessLog(
+                        getWritableDb(), request.getPackageName(), request.getRecordTypeIds());
+            }
         }
         return recordInternals;
     }
@@ -396,7 +400,8 @@ public final class TransactionManager {
             ReadTransactionRequest request,
             AppInfoHelper appInfoHelper,
             AccessLogsHelper accessLogsHelper,
-            DeviceInfoHelper deviceInfoHelper)
+            DeviceInfoHelper deviceInfoHelper,
+            boolean shouldRecordDeleteAccessLogs)
             throws SQLiteException {
         // TODO(b/308158714): Make these build time checks once we have different classes.
         checkArgument(
@@ -425,9 +430,11 @@ public final class TransactionManager {
             populateInternalRecordsWithExtraData(recordInternalList, readTableRequest);
         }
 
-        if (Flags.addMissingAccessLogs() && !request.isReadingSelfData()) {
-            accessLogsHelper.recordReadAccessLog(
-                    getWritableDb(), request.getPackageName(), request.getRecordTypeIds());
+        if (Flags.addMissingAccessLogs()) {
+            if (!request.isReadingSelfData() && shouldRecordDeleteAccessLogs) {
+                accessLogsHelper.recordReadAccessLog(
+                        getWritableDb(), request.getPackageName(), request.getRecordTypeIds());
+            }
         }
         return Pair.create(recordInternalList, pageToken);
     }
