@@ -42,7 +42,6 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.tests.utils.showOnboarding
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
@@ -54,6 +53,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class DataManagementActivityTest {
@@ -84,14 +84,20 @@ class DataManagementActivityTest {
         showOnboarding(context, show = false)
         whenever(categoryViewModel.categoriesData).then {
             MutableLiveData<HealthDataCategoryViewModel.CategoriesFragmentState>(
-                HealthDataCategoryViewModel.CategoriesFragmentState.WithData(emptyList()))
+                HealthDataCategoryViewModel.CategoriesFragmentState.WithData(emptyList())
+            )
         }
         whenever(allDataViewModel.allData).then {
             MutableLiveData<AllDataViewModel.AllDataState>(
                 AllDataViewModel.AllDataState.WithData(
                     listOf(
                         PermissionTypesPerCategory(
-                            HealthDataCategory.ACTIVITY, listOf(FitnessPermissionType.STEPS)))))
+                            HealthDataCategory.ACTIVITY,
+                            listOf(FitnessPermissionType.STEPS),
+                        )
+                    )
+                )
+            )
         }
         whenever(allDataViewModel.setOfPermissionTypesToBeDeleted).then {
             MutableLiveData<Set<FitnessPermissionType>>(emptySet())
@@ -105,7 +111,8 @@ class DataManagementActivityTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IDLE,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -113,7 +120,10 @@ class DataManagementActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         val startActivityIntent = Intent(context, DataManagementActivity::class.java)
 
@@ -130,7 +140,8 @@ class DataManagementActivityTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IDLE,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -138,7 +149,10 @@ class DataManagementActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         val startActivityIntent = Intent(context, DataManagementActivity::class.java)
@@ -155,7 +169,8 @@ class DataManagementActivityTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IN_PROGRESS,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -163,7 +178,10 @@ class DataManagementActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IN_PROGRESS,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         val startActivityIntent = Intent(context, DataManagementActivity::class.java)
@@ -180,7 +198,8 @@ class DataManagementActivityTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IDLE,
                 dataRestoreState = DataRestoreUiState.IN_PROGRESS,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -188,7 +207,10 @@ class DataManagementActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IN_PROGRESS,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         val startActivityIntent = Intent(context, DataManagementActivity::class.java)
@@ -205,7 +227,8 @@ class DataManagementActivityTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.COMPLETE,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -213,7 +236,10 @@ class DataManagementActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.COMPLETE,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         val startActivityIntent = Intent(context, DataManagementActivity::class.java)
@@ -223,7 +249,9 @@ class DataManagementActivityTest {
         onView(withText("What's new")).inRoot(RootMatchers.isDialog()).check(matches(isDisplayed()))
         onView(
                 withText(
-                    "You can now access Health Connect directly from your settings. Uninstall the Health Connect app any time to free up storage space."))
+                    "You can now access Health Connect directly from your settings. Uninstall the Health Connect app any time to free up storage space."
+                )
+            )
             .inRoot(RootMatchers.isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Got it")).inRoot(RootMatchers.isDialog()).check(matches(isDisplayed()))
