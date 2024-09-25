@@ -180,6 +180,7 @@ public class HealthConnectManagerService extends SystemService {
                             HealthConnectManager.getHealthPermissions(context),
                             permissionIntentTracker,
                             firstGrantTimeManager,
+                            healthDataCategoryPriorityHelper,
                             appInfoHelper);
             mPermissionPackageChangesOrchestrator =
                     new PermissionPackageChangesOrchestrator(
