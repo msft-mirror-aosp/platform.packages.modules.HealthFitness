@@ -54,6 +54,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.health.connect.Constants;
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.net.Uri;
 import android.util.Pair;
@@ -94,7 +95,7 @@ public class MedicalDataSourceHelper {
 
     @VisibleForTesting static final String DISPLAY_NAME_COLUMN_NAME = "display_name";
     @VisibleForTesting static final String FHIR_BASE_URI_COLUMN_NAME = "fhir_base_uri";
-    @VisibleForTesting static final String FHIR_VERSION_COLUMN_NAME = "data_source_fhir_version";
+    @VisibleForTesting static final String FHIR_VERSION_COLUMN_NAME = "fhir_version";
     @VisibleForTesting static final String DATA_SOURCE_UUID_COLUMN_NAME = "data_source_uuid";
     private static final String APP_INFO_ID_COLUMN_NAME = "app_info_id";
     private static final String MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME =
@@ -132,6 +133,10 @@ public class MedicalDataSourceHelper {
 
     public static String getAppInfoIdColumnName() {
         return APP_INFO_ID_COLUMN_NAME;
+    }
+
+    public static String getFhirVersionColumnName() {
+        return FHIR_VERSION_COLUMN_NAME;
     }
 
     private static List<Pair<String, String>> getColumnInfo() {
@@ -885,25 +890,27 @@ public class MedicalDataSourceHelper {
     }
 
     /**
-     * Creates a UUID string to row ID map for {@link MedicalDataSource}s stored in {@code
-     * MEDICAL_DATA_SOURCE_TABLE} that were created by the app matching the {@code
+     * Creates a UUID string to row ID and FHIR version map for {@link MedicalDataSource}s stored in
+     * {@code MEDICAL_DATA_SOURCE_TABLE} that were created by the app matching the {@code *
      * appInfoIdRestriction}.
      */
-    public Map<String, Long> getUuidToRowIdMap(
+    public Map<String, Pair<Long, FhirVersion>> getUuidToRowIdAndVersionMap(
             SQLiteDatabase db, long appInfoIdRestriction, List<UUID> dataSourceUuids) {
-        Map<String, Long> uuidToRowId = new HashMap<>();
+        Map<String, Pair<Long, FhirVersion>> uuidToRowIdAndVersion = new HashMap<>();
         try (Cursor cursor =
                 mTransactionManager.read(
                         db, getReadTableRequest(dataSourceUuids, appInfoIdRestriction))) {
             if (cursor.moveToFirst()) {
                 do {
-                    long rowId = getCursorLong(cursor, MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME);
                     UUID uuid = getCursorUUID(cursor, DATA_SOURCE_UUID_COLUMN_NAME);
-                    uuidToRowId.put(uuid.toString(), rowId);
+                    long rowId = getCursorLong(cursor, MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME);
+                    FhirVersion fhirVersion =
+                            parseFhirVersion(getCursorString(cursor, FHIR_VERSION_COLUMN_NAME));
+                    uuidToRowIdAndVersion.put(uuid.toString(), new Pair(rowId, fhirVersion));
                 } while (cursor.moveToNext());
             }
         }
-        return uuidToRowId;
+        return uuidToRowIdAndVersion;
     }
 
     /**
