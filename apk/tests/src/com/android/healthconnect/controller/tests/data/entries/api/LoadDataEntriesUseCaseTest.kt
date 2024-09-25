@@ -31,6 +31,7 @@ import com.android.healthconnect.controller.data.entries.api.LoadEntriesHelper
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.shared.app.MedicalDataSourceReader
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.tests.utils.forDataType
 import com.android.healthconnect.controller.tests.utils.getStepsRecord
@@ -62,6 +63,7 @@ class LoadDataEntriesUseCaseTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @Inject lateinit var healthDataEntryFormatter: HealthDataEntryFormatter
+    @Inject lateinit var dataSourceReader: MedicalDataSourceReader
     private val healthConnectManager: HealthConnectManager =
         Mockito.mock(HealthConnectManager::class.java)
 
@@ -76,7 +78,12 @@ class LoadDataEntriesUseCaseTest {
         context.setLocale(Locale.US)
         hiltRule.inject()
         loadEntriesHelper =
-            LoadEntriesHelper(context, healthDataEntryFormatter, healthConnectManager)
+            LoadEntriesHelper(
+                context,
+                healthDataEntryFormatter,
+                healthConnectManager,
+                dataSourceReader,
+            )
         loadDataEntriesUseCase = LoadDataEntriesUseCase(Dispatchers.Main, loadEntriesHelper)
     }
 
@@ -89,7 +96,8 @@ class LoadDataEntriesUseCaseTest {
                 packageName = null,
                 displayedStartTime = stepsDate.toInstantAtStartOfDay(),
                 period = DateNavigationPeriod.PERIOD_DAY,
-                showDataOrigin = true)
+                showDataOrigin = true,
+            )
 
         val stepsRecord = getStepsRecord(100, stepsDate.randomInstant())
 
@@ -100,7 +108,8 @@ class LoadDataEntriesUseCaseTest {
                     request.forDataType(dataType = StepsRecord::class.java)
                 },
                 ArgumentMatchers.any(),
-                ArgumentMatchers.any())
+                ArgumentMatchers.any(),
+            )
 
         Mockito.doAnswer(prepareRecordsAnswer(listOf()))
             .`when`(healthConnectManager)
@@ -109,7 +118,8 @@ class LoadDataEntriesUseCaseTest {
                     request.forDataType(dataType = StepsCadenceRecord::class.java)
                 },
                 ArgumentMatchers.any(),
-                ArgumentMatchers.any())
+                ArgumentMatchers.any(),
+            )
 
         val expectedFormattedEntry =
             healthDataEntryFormatter.format(stepsRecord, showDataOrigin = true)
@@ -126,7 +136,10 @@ class LoadDataEntriesUseCaseTest {
         Mockito.doAnswer(prepareFailureAnswer())
             .`when`(healthConnectManager)
             .readRecords<StepsRecord>(
-                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+            )
 
         val input =
             LoadDataEntriesInput(
@@ -134,7 +147,8 @@ class LoadDataEntriesUseCaseTest {
                 packageName = null,
                 displayedStartTime = sleepDate.toInstantAtStartOfDay(),
                 period = DateNavigationPeriod.PERIOD_DAY,
-                showDataOrigin = true)
+                showDataOrigin = true,
+            )
 
         val result = loadDataEntriesUseCase.invoke(input)
         assertThat(result is UseCaseResults.Failed).isTrue()

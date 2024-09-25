@@ -65,7 +65,8 @@ public class AutoDeleteService {
             PreferenceHelper preferenceHelper,
             AppInfoHelper appInfoHelper,
             TransactionManager transactionManager,
-            AccessLogsHelper accessLogsHelper) {
+            AccessLogsHelper accessLogsHelper,
+            ActivityDateHelper activityDateHelper) {
         try {
             // Only do transactional operations here - as this job might get cancelled for several
             // reasons, such as: User switch, low battery etc.
@@ -75,7 +76,7 @@ public class AutoDeleteService {
             // Update the recordTypesUsed by packages if required after the deletion of records.
             appInfoHelper.syncAppInfoRecordTypesUsed();
             // Re-sync activity dates table
-            ActivityDateHelper.reSyncForAllRecords();
+            activityDateHelper.reSyncForAllRecords();
             // Sync health data priority list table
             healthDataCategoryPriorityHelper.reSyncHealthDataPriorityTable(context);
         } catch (Exception e) {
