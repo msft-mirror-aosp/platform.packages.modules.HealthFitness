@@ -809,6 +809,19 @@ public final class HealthPermissions {
             "android.permission.health.READ_MEDICAL_DATA_MEDICATIONS";
 
     /**
+     * Allows an application to read the user's personal details.
+     *
+     * <p>This is demographic information such as name, date of birth, contact details like address
+     * or telephone number and so on. For more examples see the <a
+     * href="https://www.hl7.org/fhir/patient.html">FHIR Patient resource</a>.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_PERSONAL_DETAILS =
+            "android.permission.health.READ_MEDICAL_DATA_PERSONAL_DETAILS";
+
+    /**
      * Allows an application to read the user's pregnancy data.
      *
      * <p>Protection level: dangerous.
@@ -995,6 +1008,7 @@ public final class HealthPermissions {
         permissions.add(READ_MEDICAL_DATA_IMMUNIZATION);
         permissions.add(READ_MEDICAL_DATA_LABORATORY_RESULTS);
         permissions.add(READ_MEDICAL_DATA_MEDICATIONS);
+        permissions.add(READ_MEDICAL_DATA_PERSONAL_DETAILS);
         permissions.add(READ_MEDICAL_DATA_PREGNANCY);
         permissions.add(READ_MEDICAL_DATA_PROBLEMS);
         permissions.add(READ_MEDICAL_DATA_PROCEDURES);

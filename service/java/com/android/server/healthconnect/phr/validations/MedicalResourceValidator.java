@@ -23,6 +23,7 @@ import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_M
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_REQUEST;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_OBSERVATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PATIENT;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PROCEDURE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.FhirResource.FhirResourceType;
@@ -30,6 +31,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
@@ -83,11 +85,6 @@ public class MedicalResourceValidator {
     private static final String OBSERVATION_CATEGORY_SOCIAL_HISTORY = "social-history";
     private static final String OBSERVATION_CATEGORY_VITAL_SIGNS = "vital-signs";
     private static final String OBSERVATION_CATEGORY_LABORATORY = "laboratory";
-    private static final Set<Integer> MEDICATION_FHIR_RESOURCE_TYPES =
-            Set.of(
-                    FHIR_RESOURCE_TYPE_MEDICATION,
-                    FHIR_RESOURCE_TYPE_MEDICATION_REQUEST,
-                    FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT);
 
     private final String mFhirData;
     private final FhirVersion mFhirVersion;
@@ -226,26 +223,30 @@ public class MedicalResourceValidator {
             JSONObject json) {
         // TODO(b/342574702): add mapping logic for more FHIR resource types and improve error
         // message.
-        if (fhirResourceType == FHIR_RESOURCE_TYPE_IMMUNIZATION) {
-            return MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
-        }
-        if (fhirResourceType == FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE) {
-            return MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
-        }
-        if (fhirResourceType == FHIR_RESOURCE_TYPE_CONDITION) {
-            return MEDICAL_RESOURCE_TYPE_PROBLEMS;
-        }
-        if (fhirResourceType == FHIR_RESOURCE_TYPE_PROCEDURE) {
-            return MEDICAL_RESOURCE_TYPE_PROCEDURES;
-        }
-        if (MEDICATION_FHIR_RESOURCE_TYPES.contains(fhirResourceType)) {
-            return MEDICAL_RESOURCE_TYPE_MEDICATIONS;
-        }
-        if (fhirResourceType == FHIR_RESOURCE_TYPE_OBSERVATION) {
-            Integer classification = classifyObservation(json);
-            if (classification != null) {
-                return classification;
-            }
+        switch (fhirResourceType) {
+            case FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE:
+                return MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
+            case FHIR_RESOURCE_TYPE_CONDITION:
+                return MEDICAL_RESOURCE_TYPE_PROBLEMS;
+            case FHIR_RESOURCE_TYPE_IMMUNIZATION:
+                return MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+            case FHIR_RESOURCE_TYPE_OBSERVATION:
+                Integer classification = classifyObservation(json);
+                if (classification != null) {
+                    return classification;
+                } else {
+                    break;
+                }
+            case FHIR_RESOURCE_TYPE_PATIENT:
+                return MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
+            case FHIR_RESOURCE_TYPE_PROCEDURE:
+                return MEDICAL_RESOURCE_TYPE_PROCEDURES;
+            case FHIR_RESOURCE_TYPE_MEDICATION,
+                    FHIR_RESOURCE_TYPE_MEDICATION_REQUEST,
+                    FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT:
+                return MEDICAL_RESOURCE_TYPE_MEDICATIONS;
+            default: // Fall through to special classification logic where FHIR type is not enough
+                break;
         }
         throw new IllegalArgumentException(
                 "Resource with type "

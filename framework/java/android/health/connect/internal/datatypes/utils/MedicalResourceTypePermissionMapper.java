@@ -20,6 +20,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
@@ -66,9 +67,12 @@ public final class MedicalResourceTypePermissionMapper {
                 MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
                 HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS);
         sMedicalResourceTypeToReadPermissionMap.put(
-                MEDICAL_RESOURCE_TYPE_PREGNANCY, HealthPermissions.READ_MEDICAL_DATA_PREGNANCY);
-        sMedicalResourceTypeToReadPermissionMap.put(
                 MEDICAL_RESOURCE_TYPE_MEDICATIONS, HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS);
+        sMedicalResourceTypeToReadPermissionMap.put(
+                MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS,
+                HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS);
+        sMedicalResourceTypeToReadPermissionMap.put(
+                MEDICAL_RESOURCE_TYPE_PREGNANCY, HealthPermissions.READ_MEDICAL_DATA_PREGNANCY);
         sMedicalResourceTypeToReadPermissionMap.put(
                 MEDICAL_RESOURCE_TYPE_PROBLEMS, HealthPermissions.READ_MEDICAL_DATA_PROBLEMS);
         sMedicalResourceTypeToReadPermissionMap.put(

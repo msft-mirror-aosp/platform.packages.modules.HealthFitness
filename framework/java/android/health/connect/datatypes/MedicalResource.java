@@ -76,6 +76,13 @@ public final class MedicalResource implements Parcelable {
     /** Medical resource type labelling data as medication related. */
     public static final int MEDICAL_RESOURCE_TYPE_MEDICATIONS = 9;
 
+    /**
+     * Medical resource type labelling data as related to personal details, including demographic
+     * information such as name, date of birth, and contact details such as address or telephone
+     * numbers.
+     */
+    public static final int MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS = 10;
+
     /** @hide */
     @IntDef({
         MEDICAL_RESOURCE_TYPE_UNKNOWN,
@@ -83,6 +90,7 @@ public final class MedicalResource implements Parcelable {
         MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
         MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
         MEDICAL_RESOURCE_TYPE_MEDICATIONS,
+        MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS,
         MEDICAL_RESOURCE_TYPE_PREGNANCY,
         MEDICAL_RESOURCE_TYPE_PROBLEMS,
         MEDICAL_RESOURCE_TYPE_PROCEDURES,
@@ -216,6 +224,7 @@ public final class MedicalResource implements Parcelable {
                     MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                     MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
                     MEDICAL_RESOURCE_TYPE_MEDICATIONS,
+                    MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS,
                     MEDICAL_RESOURCE_TYPE_PREGNANCY,
                     MEDICAL_RESOURCE_TYPE_PROBLEMS,
                     MEDICAL_RESOURCE_TYPE_PROCEDURES,

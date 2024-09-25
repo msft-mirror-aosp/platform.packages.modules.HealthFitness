@@ -19,6 +19,7 @@ import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLE
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PREGNANCY
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROBLEMS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROCEDURES
@@ -129,6 +130,7 @@ class MedicalPermissionsFragmentTest {
                     fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION),
                     fromPermissionString(READ_MEDICAL_DATA_LABORATORY_RESULTS),
                     fromPermissionString(READ_MEDICAL_DATA_MEDICATIONS),
+                    fromPermissionString(READ_MEDICAL_DATA_PERSONAL_DETAILS),
                     fromPermissionString(READ_MEDICAL_DATA_PREGNANCY),
                     fromPermissionString(READ_MEDICAL_DATA_PROBLEMS),
                     fromPermissionString(READ_MEDICAL_DATA_PROCEDURES),

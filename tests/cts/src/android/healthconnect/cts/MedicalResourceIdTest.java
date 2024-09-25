@@ -77,7 +77,7 @@ public class MedicalResourceIdTest {
     @Test
     public void testMedicalResourceId_fromFhirReference_unknownFhirResourceType() {
         MedicalResourceId medicalResourceId =
-                MedicalResourceId.fromFhirReference(DATA_SOURCE_ID, "Patient/034-AB16.0");
+                MedicalResourceId.fromFhirReference(DATA_SOURCE_ID, "TestReport/034-AB16.0");
 
         assertThat(medicalResourceId.getDataSourceId()).isEqualTo(DATA_SOURCE_ID);
         assertThat(medicalResourceId.getFhirResourceType()).isEqualTo(FHIR_RESOURCE_TYPE_UNKNOWN);
