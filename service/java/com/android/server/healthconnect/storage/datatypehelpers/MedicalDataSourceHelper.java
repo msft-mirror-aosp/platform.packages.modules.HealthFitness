@@ -18,6 +18,7 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_DELETE;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
 
@@ -773,51 +774,92 @@ public class MedicalDataSourceHelper {
         return new UpsertTableRequest(getMainTableName(), contentValues, UNIQUE_COLUMNS_INFO);
     }
 
-    /**
-     * Deletes the {@link MedicalDataSource}s stored in the HealthConnect database using the given
-     * list of {@code ids}.
-     *
-     * <p>Note that this deletes without producing change logs, or access logs.
-     *
-     * @param id the id to delete.
-     * @param appInfoIdRestriction if non-null, restricts any deletions to data sources owned by the
-     *     given app. If null allows deletions of any data sources.
-     * @throws IllegalArgumentException if the id does not exist, or there is an
-     *     appInfoIdRestriction and the data source is owned by a different app
-     */
-    public void deleteMedicalDataSource(UUID id, @Nullable Long appInfoIdRestriction)
-            throws SQLiteException {
+    private static DeleteTableRequest getDeleteRequestForDataSourceUuid(
+            UUID id, @Nullable Long appInfoIdRestriction) {
         DeleteTableRequest request =
                 new DeleteTableRequest(MEDICAL_DATA_SOURCE_TABLE_NAME)
                         .setIds(
                                 DATA_SOURCE_UUID_COLUMN_NAME,
                                 StorageUtils.getListOfHexStrings(List.of(id)));
-        if (appInfoIdRestriction != null) {
-            request.setPackageFilter(APP_INFO_ID_COLUMN_NAME, List.of(appInfoIdRestriction));
+        if (appInfoIdRestriction == null) {
+            return request;
         }
-        ReadTableRequest readTableRequest = getReadTableRequest(List.of(id), appInfoIdRestriction);
-        boolean success =
-                mTransactionManager.runAsTransaction(
-                        db -> {
-                            try (Cursor cursor = mTransactionManager.read(db, readTableRequest)) {
-                                if (cursor.getCount() != 1) {
-                                    return false;
-                                }
-                            }
-                            // This also deletes the contained data, because they are
-                            // referenced by foreign key, and so are handled by ON DELETE
-                            // CASCADE in the db.
-                            mTransactionManager.delete(db, request);
-                            return true;
-                        });
-        if (!success) {
-            if (appInfoIdRestriction == null) {
-                throw new IllegalArgumentException("Id " + id + " does not exist");
-            } else {
-                throw new IllegalArgumentException(
-                        "Id " + id + " does not exist or is owned by another app");
-            }
+        return request.setPackageFilter(APP_INFO_ID_COLUMN_NAME, List.of(appInfoIdRestriction));
+    }
+
+    /**
+     * Deletes the {@link MedicalDataSource}s stored in the HealthConnect database using the given
+     * {@code id}.
+     *
+     * <p>Note that this deletes without producing change logs, or access logs.
+     *
+     * @param id the id to delete.
+     * @throws IllegalArgumentException if the id does not exist.
+     */
+    public void deleteMedicalDataSourceWithoutPermissionChecks(UUID id) throws SQLiteException {
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    try (Cursor cursor =
+                            mTransactionManager.read(
+                                    db,
+                                    getReadTableRequest(
+                                            List.of(id), /* appInfoRestriction= */ null))) {
+                        if (cursor.getCount() != 1) {
+                            throw new IllegalArgumentException("Id " + id + " does not exist");
+                        }
+                    }
+                    // This also deletes the contained data, because they are
+                    // referenced by foreign key, and so are handled by ON DELETE
+                    // CASCADE in the db.
+                    mTransactionManager.delete(
+                            db,
+                            getDeleteRequestForDataSourceUuid(
+                                    id, /* appInfoIdRestriction= */ null));
+                });
+    }
+
+    /**
+     * Deletes the {@link MedicalDataSource}s stored in the HealthConnect database using the given
+     * {@code id}.
+     *
+     * <p>Note that this deletes without producing change logs.
+     *
+     * @param id the id to delete.
+     * @param callingPackageName restricts any deletions to data sources owned by the given app.
+     * @throws IllegalArgumentException if the id does not exist, or dataSource exists but it is not
+     *     owned by the {@code callingPackageName}.
+     */
+    public void deleteMedicalDataSourceWithPermissionChecks(UUID id, String callingPackageName)
+            throws SQLiteException {
+        long appId = mAppInfoHelper.getAppInfoId(callingPackageName);
+        if (appId == Constants.DEFAULT_LONG) {
+            throw new IllegalArgumentException(
+                    "Deletion not permitted as app has inserted no data.");
         }
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    try (Cursor cursor =
+                            mTransactionManager.read(db, getReadTableRequest(List.of(id), appId))) {
+                        if (cursor.getCount() != 1) {
+                            throw new IllegalArgumentException(
+                                    "Id " + id + " does not exist or is owned by another app");
+                        }
+                    }
+
+                    // Medical resource types that belong to this dataSource and will be deleted.
+                    Set<Integer> medicalResourceTypes =
+                            getMedicalResourceTypesBelongingToDataSourceIds(List.of(id));
+                    // This also deletes the contained data, because they are
+                    // referenced by foreign key, and so are handled by ON DELETE
+                    // CASCADE in the db.
+                    mTransactionManager.delete(db, getDeleteRequestForDataSourceUuid(id, appId));
+                    mAccessLogsHelper.addAccessLog(
+                            db,
+                            callingPackageName,
+                            medicalResourceTypes,
+                            OPERATION_TYPE_DELETE,
+                            /* accessedMedicalDataSource= */ true);
+                });
     }
 
     /**

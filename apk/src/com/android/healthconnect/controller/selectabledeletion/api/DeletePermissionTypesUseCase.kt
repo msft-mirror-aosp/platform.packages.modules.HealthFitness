@@ -25,7 +25,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
-/** Use case to delete all medical resources from the given permission type (e.g. Immunization). */
+/** Use case to delete all fitness and medical resources from the given permission types. */
 @Singleton
 class DeletePermissionTypesUseCase
 @Inject

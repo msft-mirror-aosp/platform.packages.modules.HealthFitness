@@ -18,9 +18,20 @@ package com.android.healthconnect.controller.tests.utils
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.BoundedMatcher
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withTagValue
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 
 /**
@@ -102,4 +113,67 @@ private fun View.findViewByMatcher(matcher: Matcher<View>): View? {
         }
     }
     return null // No match found
+}
+
+// Checkbox assertions
+fun assertCheckboxNotChecked(
+    recyclerViewId: Int,
+    title: String,
+    position: Int,
+    tag: String = "checkbox",
+) {
+    onView(withId(recyclerViewId))
+        .check(
+            matches(
+                atPosition(
+                    position,
+                    allOf(
+                        hasDescendant(withText(title)),
+                        hasDescendant(withTagValue(`is`(tag))),
+                        hasDescendant(isNotChecked()),
+                    ),
+                )
+            )
+        )
+}
+
+fun assertCheckboxNotShown(
+    recyclerViewId: Int,
+    title: String,
+    position: Int,
+    tag: String = "checkbox",
+) {
+    onView(withId(recyclerViewId))
+        .check(
+            matches(
+                atPosition(
+                    position,
+                    allOf(
+                        hasDescendant(withText(title)),
+                        not(hasDescendant(withTagValue(`is`(tag)))),
+                    ),
+                )
+            )
+        )
+}
+
+fun assertCheckboxChecked(
+    recyclerViewId: Int,
+    title: String,
+    position: Int,
+    tag: String = "checkbox",
+) {
+    onView(withId(recyclerViewId))
+        .check(
+            matches(
+                atPosition(
+                    position,
+                    allOf(
+                        hasDescendant(withText(title)),
+                        hasDescendant(withTagValue(`is`(tag))),
+                        hasDescendant(isChecked()),
+                    ),
+                )
+            )
+        )
 }
