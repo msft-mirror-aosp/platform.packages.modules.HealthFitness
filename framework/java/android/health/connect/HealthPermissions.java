@@ -822,6 +822,18 @@ public final class HealthPermissions {
             "android.permission.health.READ_MEDICAL_DATA_PERSONAL_DETAILS";
 
     /**
+     * Allows an application to read the user's data about the practitioners who have interacted
+     * with them in their medical record. This is the information about the clinicians (doctors,
+     * nurses, etc) but also other practitioners (masseurs, physiotherapists, etc) who have been
+     * involved with the patient.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_PRACTITIONER_DETAILS =
+            "android.permission.health.READ_MEDICAL_DATA_PRACTITIONER_DETAILS";
+
+    /**
      * Allows an application to read the user's pregnancy data.
      *
      * <p>Protection level: dangerous.
@@ -1009,6 +1021,7 @@ public final class HealthPermissions {
         permissions.add(READ_MEDICAL_DATA_LABORATORY_RESULTS);
         permissions.add(READ_MEDICAL_DATA_MEDICATIONS);
         permissions.add(READ_MEDICAL_DATA_PERSONAL_DETAILS);
+        permissions.add(READ_MEDICAL_DATA_PRACTITIONER_DETAILS);
         permissions.add(READ_MEDICAL_DATA_PREGNANCY);
         permissions.add(READ_MEDICAL_DATA_PROBLEMS);
         permissions.add(READ_MEDICAL_DATA_PROCEDURES);

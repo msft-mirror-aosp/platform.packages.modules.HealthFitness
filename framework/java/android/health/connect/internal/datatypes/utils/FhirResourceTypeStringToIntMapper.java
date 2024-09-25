@@ -38,6 +38,8 @@ public final class FhirResourceTypeStringToIntMapper {
     private static final String FHIR_RESOURCE_TYPE_MEDICATION_REQUEST_STR = "MEDICATIONREQUEST";
     private static final String FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT_STR = "MEDICATIONSTATEMENT";
     private static final String FHIR_RESOURCE_TYPE_PATIENT_STR = "PATIENT";
+    private static final String FHIR_RESOURCE_TYPE_PRACTITIONER_STR = "PRACTITIONER";
+    private static final String FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE_STR = "PRACTITIONERROLE";
 
     /**
      * Returns the corresponding {@code IntDef} {@link FhirResourceType} from a {@code String}
@@ -87,5 +89,10 @@ public final class FhirResourceTypeStringToIntMapper {
                 FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT);
         sFhirResourceTypeStringToIntMap.put(
                 FHIR_RESOURCE_TYPE_PATIENT_STR, FhirResource.FHIR_RESOURCE_TYPE_PATIENT);
+        sFhirResourceTypeStringToIntMap.put(
+                FHIR_RESOURCE_TYPE_PRACTITIONER_STR, FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER);
+        sFhirResourceTypeStringToIntMap.put(
+                FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE_STR,
+                FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE);
     }
 }

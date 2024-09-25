@@ -22,6 +22,7 @@ import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IM
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES
@@ -38,6 +39,7 @@ enum class MedicalPermissionType : HealthPermissionType {
     LABORATORY_RESULTS,
     MEDICATIONS,
     PERSONAL_DETAILS,
+    PRACTITIONER_DETAILS,
     PREGNANCY,
     PROBLEMS,
     PROCEDURES,
@@ -81,11 +83,13 @@ fun fromMedicalResourceType(medicalResourceType: Int): MedicalPermissionType {
     return when (medicalResourceType) {
         MEDICAL_RESOURCE_TYPE_UNKNOWN ->
             throw IllegalArgumentException("MedicalResourceType is UNKNOWN.")
+
         MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE -> MedicalPermissionType.ALLERGY_INTOLERANCE
         MEDICAL_RESOURCE_TYPE_IMMUNIZATION -> MedicalPermissionType.IMMUNIZATION
         MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS -> MedicalPermissionType.LABORATORY_RESULTS
         MEDICAL_RESOURCE_TYPE_MEDICATIONS -> MedicalPermissionType.MEDICATIONS
         MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS -> MedicalPermissionType.PERSONAL_DETAILS
+        MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS -> MedicalPermissionType.PRACTITIONER_DETAILS
         MEDICAL_RESOURCE_TYPE_PREGNANCY -> MedicalPermissionType.PREGNANCY
         MEDICAL_RESOURCE_TYPE_PROBLEMS -> MedicalPermissionType.PROBLEMS
         MEDICAL_RESOURCE_TYPE_PROCEDURES -> MedicalPermissionType.PROCEDURES
@@ -102,6 +106,7 @@ fun toMedicalResourceType(medicalPermissionType: MedicalPermissionType): Int {
         MedicalPermissionType.LABORATORY_RESULTS -> MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS
         MedicalPermissionType.MEDICATIONS -> MEDICAL_RESOURCE_TYPE_MEDICATIONS
         MedicalPermissionType.PERSONAL_DETAILS -> MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS
+        MedicalPermissionType.PRACTITIONER_DETAILS -> MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS
         MedicalPermissionType.PREGNANCY -> MEDICAL_RESOURCE_TYPE_PREGNANCY
         MedicalPermissionType.PROBLEMS -> MEDICAL_RESOURCE_TYPE_PROBLEMS
         MedicalPermissionType.PROCEDURES -> MEDICAL_RESOURCE_TYPE_PROCEDURES

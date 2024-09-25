@@ -98,6 +98,18 @@ public final class FhirResource implements Parcelable {
      */
     public static final int FHIR_RESOURCE_TYPE_PATIENT = 9;
 
+    /**
+     * FHIR resource type for a <a href="https://www.hl7.org/fhir/practitioner.html">FHIR
+     * Practitioner</a>.
+     */
+    public static final int FHIR_RESOURCE_TYPE_PRACTITIONER = 10;
+
+    /**
+     * FHIR resource type for a <a href="https://www.hl7.org/fhir/practitionerrole.html">FHIR
+     * PractionerRole</a>.
+     */
+    public static final int FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE = 11;
+
     /** @hide */
     @IntDef({
         FHIR_RESOURCE_TYPE_UNKNOWN,
@@ -110,6 +122,8 @@ public final class FhirResource implements Parcelable {
         FHIR_RESOURCE_TYPE_MEDICATION_REQUEST,
         FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT,
         FHIR_RESOURCE_TYPE_PATIENT,
+        FHIR_RESOURCE_TYPE_PRACTITIONER,
+        FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FhirResourceType {}
@@ -207,7 +221,9 @@ public final class FhirResource implements Parcelable {
                     FHIR_RESOURCE_TYPE_MEDICATION,
                     FHIR_RESOURCE_TYPE_MEDICATION_REQUEST,
                     FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT,
-                    FHIR_RESOURCE_TYPE_PATIENT);
+                    FHIR_RESOURCE_TYPE_PATIENT,
+                    FHIR_RESOURCE_TYPE_PRACTITIONER,
+                    FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE);
 
     /**
      * Validates the provided {@code fhirResourceType} is in the {@link FhirResource#VALID_TYPES}

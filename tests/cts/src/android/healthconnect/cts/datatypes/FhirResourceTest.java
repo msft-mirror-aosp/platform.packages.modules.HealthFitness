@@ -24,6 +24,7 @@ import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_M
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_OBSERVATION;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PATIENT;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PROCEDURE;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
@@ -42,6 +43,7 @@ import android.healthconnect.cts.utils.ConditionBuilder;
 import android.healthconnect.cts.utils.MedicationsBuilder;
 import android.healthconnect.cts.utils.ObservationBuilder;
 import android.healthconnect.cts.utils.PatientBuilder;
+import android.healthconnect.cts.utils.PractitionerBuilder;
 import android.healthconnect.cts.utils.ProcedureBuilder;
 import android.os.Parcel;
 import android.platform.test.annotations.RequiresFlagsEnabled;
@@ -184,6 +186,38 @@ public class FhirResourceTest {
                         .build();
 
         assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_PATIENT);
+        assertThat(resource.getId()).isEqualTo(id);
+        assertThat(resource.getData()).isEqualTo(fhirData);
+    }
+
+    @Test
+    public void testFhirResourceBuilder_setAllFieldsPractitioner() {
+        String id = "myId123";
+        String fhirData = new PractitionerBuilder().setId(id).toJson();
+        FhirResource resource =
+                getFhirResourceBuilder()
+                        .setType(FHIR_RESOURCE_TYPE_PRACTITIONER)
+                        .setId(id)
+                        .setData(fhirData)
+                        .build();
+
+        assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_PRACTITIONER);
+        assertThat(resource.getId()).isEqualTo(id);
+        assertThat(resource.getData()).isEqualTo(fhirData);
+    }
+
+    @Test
+    public void testFhirResourceBuilder_setAllFieldsPractitionerRole() {
+        String id = "myId123";
+        String fhirData = PractitionerBuilder.role().setId(id).toJson();
+        FhirResource resource =
+                getFhirResourceBuilder()
+                        .setType(FHIR_RESOURCE_TYPE_PRACTITIONER)
+                        .setId(id)
+                        .setData(fhirData)
+                        .build();
+
+        assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_PRACTITIONER);
         assertThat(resource.getId()).isEqualTo(id);
         assertThat(resource.getData()).isEqualTo(fhirData);
     }
