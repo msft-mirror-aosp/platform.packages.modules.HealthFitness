@@ -62,11 +62,14 @@ enum class MedicalPermissionType : HealthPermissionType {
                 CONDITIONS -> R.attr.conditionsIcon
                 IMMUNIZATION -> R.attr.immunizationIcon
                 LABORATORY_RESULTS -> R.attr.labResultsIcon
+                MEDICATIONS -> R.attr.medicationsIcon
+                PERSONAL_DETAILS -> R.attr.patientInfoIcon
+                PRACTITIONER_DETAILS -> R.attr.practitionerDetailsIcon
                 PREGNANCY -> R.attr.pregnancyIcon
                 PROCEDURES -> R.attr.proceduresIcon
                 SOCIAL_HISTORY -> R.attr.socialHistoryIcon
+                VISITS -> R.attr.pastVisitsIcon
                 VITAL_SIGNS -> R.attr.vitalsIcon
-                else -> return null
             }
         return AttributeResolver.getDrawable(context, attrRes)
     }
