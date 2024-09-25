@@ -29,6 +29,7 @@ import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
@@ -57,6 +58,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final DeviceInfoHelper mDeviceInfoHelper;
     private final AppInfoHelper mAppInfoHelper;
     private final AccessLogsHelper mAccessLogsHelper;
+    private final ActivityDateHelper mActivityDateHelper;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -126,6 +128,10 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mAccessLogsHelper == null
                         ? AccessLogsHelper.getInstance(mTransactionManager, mAppInfoHelper)
                         : builder.mAccessLogsHelper;
+        mActivityDateHelper =
+                builder.mActivityDateHelper == null
+                        ? ActivityDateHelper.getInstance(mTransactionManager)
+                        : builder.mActivityDateHelper;
     }
 
     @Override
@@ -188,6 +194,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         return mAccessLogsHelper;
     }
 
+    @Override
+    public ActivityDateHelper getActivityDateHelper() {
+        return mActivityDateHelper;
+    }
+
     /**
      * Returns a new Builder of Health Connect Injector
      *
@@ -219,6 +230,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private DeviceInfoHelper mDeviceInfoHelper;
         @Nullable private AppInfoHelper mAppInfoHelper;
         @Nullable private AccessLogsHelper mAccessLogsHelper;
+        @Nullable private ActivityDateHelper mActivityDateHelper;
 
         private Builder(Context context) {
             mHealthConnectUserContext = new HealthConnectUserContext(context, context.getUser());
@@ -308,6 +320,13 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         public Builder setAccessLogsHelper(AccessLogsHelper accessLogsHelper) {
             Objects.requireNonNull(accessLogsHelper);
             mAccessLogsHelper = accessLogsHelper;
+            return this;
+        }
+
+        /** Set fake or custom ActivityDateHelper */
+        public Builder setActivityDateHelper(ActivityDateHelper activityDateHelper) {
+            Objects.requireNonNull(activityDateHelper);
+            mActivityDateHelper = activityDateHelper;
             return this;
         }
 

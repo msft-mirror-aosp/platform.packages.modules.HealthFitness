@@ -23,7 +23,7 @@ import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteEntries
 import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteHealthPermissionTypes
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteEntriesUseCase
-import com.android.healthconnect.controller.selectabledeletion.api.DeleteFitnessPermissionTypesFromAppUseCase
+import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesFromAppUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -35,8 +35,7 @@ class DeletionViewModel
 constructor(
     private val deletePermissionTypesUseCase: DeletePermissionTypesUseCase,
     private val deleteEntriesUseCase: DeleteEntriesUseCase,
-    private val deleteFitnessPermissionTypesFromAppUseCase:
-        DeleteFitnessPermissionTypesFromAppUseCase,
+    private val deletesPermissionTypesFromAppUseCase: DeletePermissionTypesFromAppUseCase,
 ) : ViewModel() {
 
     companion object {
@@ -51,6 +50,8 @@ constructor(
 
     private var _entriesReloadNeeded = MutableLiveData(false)
 
+    private var _appEntriesReloadNeeded = MutableLiveData(false)
+
     private var _deletionProgress = MutableLiveData(DeletionProgress.NOT_STARTED)
 
     val deletionProgress: LiveData<DeletionProgress>
@@ -64,6 +65,9 @@ constructor(
 
     val appPermissionTypesReloadNeeded: LiveData<Boolean>
         get() = _appPermissionTypesReloadNeeded
+
+    val appEntriesReloadNeeded: LiveData<Boolean>
+        get() = _appEntriesReloadNeeded
 
     fun delete() {
         viewModelScope.launch {
@@ -84,10 +88,16 @@ constructor(
                         _entriesReloadNeeded.postValue(true)
                     }
                     is DeletionType.DeleteHealthPermissionTypesFromApp -> {
-                        deleteFitnessPermissionTypesFromAppUseCase.invoke(
+                        deletesPermissionTypesFromAppUseCase.invoke(
                             deletionType as DeletionType.DeleteHealthPermissionTypesFromApp
                         )
                         _appPermissionTypesReloadNeeded.postValue(true)
+                    }
+                    is DeletionType.DeleteEntriesFromApp -> {
+                        deleteEntriesUseCase.invoke(
+                            (deletionType as DeletionType.DeleteEntriesFromApp).toDeleteEntries()
+                        )
+                        _appEntriesReloadNeeded.postValue(true)
                     }
                     else -> {
                         // do nothing
@@ -119,6 +129,10 @@ constructor(
 
     fun resetAppPermissionTypesReloadNeeded() {
         _appPermissionTypesReloadNeeded.postValue(false)
+    }
+
+    fun resetAppEntriesReloadNeeded() {
+        _appEntriesReloadNeeded.postValue(false)
     }
 
     fun getDeletionType(): DeletionType {

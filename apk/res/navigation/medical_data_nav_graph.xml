@@ -51,7 +51,7 @@
     <fragment
         android:id="@+id/rawFhirFragment"
         android:name="com.android.healthconnect.controller.data.rawfhir.RawFhirFragment"
-        android:label="@string/entry_details_title" >
+        android:label="@string/raw_fhir_title" >
     </fragment>
 
 </navigation>

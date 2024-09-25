@@ -75,10 +75,6 @@ class DisplayNameExtractor @Inject constructor(@ApplicationContext private val c
         fhirData = JSONObject(fhirResourceJson)
         val resourceType = fhirData.optString(RESOURCE_TYPE)
 
-        fun concat(vararg args: String?): String {
-            return args.filterNotNull().filter { it.isNotBlank() }.joinToString(" ")
-        }
-
         return when (resourceType) {
             ALLERGY_INTOLERANCE,
             CONDITION,

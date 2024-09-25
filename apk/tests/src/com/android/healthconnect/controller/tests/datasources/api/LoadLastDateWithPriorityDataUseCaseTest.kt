@@ -15,6 +15,7 @@ import com.android.healthconnect.controller.dataentries.formatters.shared.Health
 import com.android.healthconnect.controller.datasources.api.LoadLastDateWithPriorityDataUseCase
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
+import com.android.healthconnect.controller.shared.app.MedicalDataSourceReader
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.tests.utils.CoroutineTestRule
 import com.android.healthconnect.controller.tests.utils.TEST_APP
@@ -70,6 +71,7 @@ class LoadLastDateWithPriorityDataUseCaseTest {
     private val timeSource = TestTimeSource
 
     @Inject lateinit var healthDataEntryFormatter: HealthDataEntryFormatter
+    @Inject lateinit var dataSourceReader: MedicalDataSourceReader
 
     @Before
     fun setup() {
@@ -78,14 +80,20 @@ class LoadLastDateWithPriorityDataUseCaseTest {
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
         hiltRule.inject()
         loadEntriesHelper =
-            LoadEntriesHelper(context, healthDataEntryFormatter, healthConnectManager)
+            LoadEntriesHelper(
+                context,
+                healthDataEntryFormatter,
+                healthConnectManager,
+                dataSourceReader,
+            )
         loadLastDateWithPriorityDataUseCase =
             LoadLastDateWithPriorityDataUseCase(
                 healthConnectManager,
                 loadEntriesHelper,
                 loadPriorityListUseCase,
                 timeSource,
-                Dispatchers.Main)
+                Dispatchers.Main,
+            )
     }
 
     @After
@@ -115,7 +123,8 @@ class LoadLastDateWithPriorityDataUseCaseTest {
             packageName = TEST_APP_PACKAGE_NAME,
             fitnessPermissionType = FitnessPermissionType.STEPS,
             queryDate = timeSource.currentLocalDateTime().toLocalDate().minusMonths(1),
-            numRecords = 0)
+            numRecords = 0,
+        )
 
         val result = loadLastDateWithPriorityDataUseCase.invoke(FitnessPermissionType.STEPS)
         assertThat(result is UseCaseResults.Success).isTrue()
@@ -134,7 +143,8 @@ class LoadLastDateWithPriorityDataUseCaseTest {
             packageName = TEST_APP_PACKAGE_NAME,
             fitnessPermissionType = FitnessPermissionType.STEPS,
             queryDate = queryDate,
-            numRecords = 1)
+            numRecords = 1,
+        )
 
         val result = loadLastDateWithPriorityDataUseCase.invoke(FitnessPermissionType.STEPS)
         assertThat(result is UseCaseResults.Success).isTrue()
@@ -154,7 +164,8 @@ class LoadLastDateWithPriorityDataUseCaseTest {
             packageName = TEST_APP_PACKAGE_NAME,
             fitnessPermissionType = FitnessPermissionType.STEPS,
             queryDate = dateWithData,
-            numRecords = 0)
+            numRecords = 0,
+        )
 
         val result = loadLastDateWithPriorityDataUseCase.invoke(FitnessPermissionType.STEPS)
         assertThat(result is UseCaseResults.Success).isTrue()
@@ -172,12 +183,14 @@ class LoadLastDateWithPriorityDataUseCaseTest {
             packageName = TEST_APP_PACKAGE_NAME,
             fitnessPermissionType = FitnessPermissionType.STEPS,
             queryDate = dateWithData,
-            numRecords = 2)
+            numRecords = 2,
+        )
         mockReadRecordsResult(
             packageName = TEST_APP_PACKAGE_NAME,
             fitnessPermissionType = FitnessPermissionType.STEPS,
             queryDate = timeSource.currentLocalDateTime().toLocalDate().minusMonths(1),
-            numRecords = 0)
+            numRecords = 0,
+        )
 
         mockQueryActivityDatesAnswer(listOf(dateWithData))
 
@@ -206,7 +219,8 @@ class LoadLastDateWithPriorityDataUseCaseTest {
                 LocalDate.of(2023, 11, 4),
                 // Future date with data, not included because we only
                 // query for data within the last 30 days
-                LocalDate.of(2024, 11, 2))
+                LocalDate.of(2024, 11, 2),
+            )
 
         mockQueryActivityDatesAnswer(activityDates)
         val minDateWithin1Month = LocalDate.of(2023, 11, 1)
@@ -215,25 +229,29 @@ class LoadLastDateWithPriorityDataUseCaseTest {
             packageName = TEST_APP_PACKAGE_NAME,
             fitnessPermissionType = FitnessPermissionType.STEPS,
             queryDate = LocalDate.of(2023, 10, 1),
-            recordDates = listOf(LocalDate.of(2023, 10, 1)))
+            recordDates = listOf(LocalDate.of(2023, 10, 1)),
+        )
 
         mockReadRecordsResult(
             packageName = TEST_APP_PACKAGE_NAME,
             fitnessPermissionType = FitnessPermissionType.STEPS,
             queryDate = minDateWithin1Month,
-            numRecords = 2)
+            numRecords = 2,
+        )
 
         mockReadRecordsResult(
             packageName = TEST_APP_PACKAGE_NAME_2,
             fitnessPermissionType = FitnessPermissionType.STEPS,
             queryDate = minDateWithin1Month,
-            recordDates = listOf(LocalDate.of(2023, 11, 1)))
+            recordDates = listOf(LocalDate.of(2023, 11, 1)),
+        )
 
         mockReadRecordsResult(
             packageName = TEST_APP_PACKAGE_NAME_3,
             fitnessPermissionType = FitnessPermissionType.STEPS,
             queryDate = minDateWithin1Month,
-            recordDates = listOf(LocalDate.of(2023, 11, 1), LocalDate.of(2023, 11, 2)))
+            recordDates = listOf(LocalDate.of(2023, 11, 1), LocalDate.of(2023, 11, 2)),
+        )
 
         val result = loadLastDateWithPriorityDataUseCase.invoke(FitnessPermissionType.STEPS)
         assertThat(result is UseCaseResults.Success).isTrue()
@@ -255,24 +273,29 @@ class LoadLastDateWithPriorityDataUseCaseTest {
                 LocalDate.of(2023, 11, 1),
                 LocalDate.of(2023, 11, 2),
                 // In the future
-                LocalDate.of(2024, 11, 12)))
+                LocalDate.of(2024, 11, 12),
+            )
+        )
         val minDateWithin1Month = LocalDate.of(2023, 11, 1)
 
         mockReadRecordsResult(
             packageName = TEST_APP_PACKAGE_NAME,
             fitnessPermissionType = FitnessPermissionType.STEPS,
             queryDate = minDateWithin1Month,
-            numRecords = 0)
+            numRecords = 0,
+        )
         mockReadRecordsResult(
             packageName = TEST_APP_PACKAGE_NAME_2,
             fitnessPermissionType = FitnessPermissionType.STEPS,
             queryDate = minDateWithin1Month,
-            numRecords = 1)
+            numRecords = 1,
+        )
         mockReadRecordsResult(
             packageName = TEST_APP_PACKAGE_NAME_3,
             fitnessPermissionType = FitnessPermissionType.STEPS,
             queryDate = minDateWithin1Month,
-            recordDates = listOf(LocalDate.of(2023, 11, 1), LocalDate.of(2023, 11, 2)))
+            recordDates = listOf(LocalDate.of(2023, 11, 1), LocalDate.of(2023, 11, 2)),
+        )
 
         val result = loadLastDateWithPriorityDataUseCase.invoke(FitnessPermissionType.STEPS)
         assertThat(result is UseCaseResults.Success).isTrue()
@@ -301,7 +324,9 @@ class LoadLastDateWithPriorityDataUseCaseTest {
                 // Too old
                 LocalDate.of(2021, 8, 12),
                 // Too old
-                LocalDate.of(2023, 7, 2)))
+                LocalDate.of(2023, 7, 2),
+            )
+        )
 
         val minDateWithin1Month = LocalDate.of(2023, 9, 26)
 
@@ -309,17 +334,20 @@ class LoadLastDateWithPriorityDataUseCaseTest {
             packageName = TEST_APP_PACKAGE_NAME,
             fitnessPermissionType = fitnessPermissionType,
             queryDate = minDateWithin1Month,
-            numRecords = 0)
+            numRecords = 0,
+        )
         mockReadRecordsResult(
             packageName = TEST_APP_PACKAGE_NAME_2,
             fitnessPermissionType = fitnessPermissionType,
             queryDate = minDateWithin1Month,
-            numRecords = 1)
+            numRecords = 1,
+        )
         mockReadRecordsResult(
             packageName = TEST_APP_PACKAGE_NAME_3,
             fitnessPermissionType = fitnessPermissionType,
             queryDate = minDateWithin1Month,
-            recordDates = listOf(LocalDate.of(2023, 10, 12), minDateWithin1Month))
+            recordDates = listOf(LocalDate.of(2023, 10, 12), minDateWithin1Month),
+        )
 
         val result = loadLastDateWithPriorityDataUseCase.invoke(fitnessPermissionType)
         assertThat(result is UseCaseResults.Success).isTrue()
@@ -345,7 +373,9 @@ class LoadLastDateWithPriorityDataUseCaseTest {
                 // Too old
                 LocalDate.of(2021, 9, 13),
                 // Too old
-                LocalDate.of(2023, 8, 2)))
+                LocalDate.of(2023, 8, 2),
+            )
+        )
 
         val minDateWithin1Month = LocalDate.of(2023, 10, 1)
 
@@ -353,20 +383,23 @@ class LoadLastDateWithPriorityDataUseCaseTest {
             packageName = TEST_APP_PACKAGE_NAME,
             fitnessPermissionType = fitnessPermissionType,
             queryDate = minDateWithin1Month,
-            numRecords = 1)
+            numRecords = 1,
+        )
 
         mockReadRecordsResult(
             packageName = TEST_APP_PACKAGE_NAME_2,
             fitnessPermissionType = fitnessPermissionType,
             queryDate = minDateWithin1Month,
             recordDates =
-                listOf(LocalDate.of(2023, 10, 12), LocalDate.of(2023, 10, 14), minDateWithin1Month))
+                listOf(LocalDate.of(2023, 10, 12), LocalDate.of(2023, 10, 14), minDateWithin1Month),
+        )
 
         mockReadRecordsResult(
             packageName = TEST_APP_PACKAGE_NAME_3,
             fitnessPermissionType = fitnessPermissionType,
             queryDate = minDateWithin1Month,
-            numRecords = 1)
+            numRecords = 1,
+        )
 
         val result = loadLastDateWithPriorityDataUseCase.invoke(fitnessPermissionType)
         assertThat(result is UseCaseResults.Success).isTrue()
@@ -392,7 +425,9 @@ class LoadLastDateWithPriorityDataUseCaseTest {
                 // Too old
                 LocalDate.of(2021, 9, 13),
                 // Too old
-                LocalDate.of(2023, 8, 2)))
+                LocalDate.of(2023, 8, 2),
+            )
+        )
 
         val minDateWithin1Month = LocalDate.of(2023, 10, 1)
 
@@ -400,20 +435,23 @@ class LoadLastDateWithPriorityDataUseCaseTest {
             packageName = TEST_APP_PACKAGE_NAME,
             fitnessPermissionType = fitnessPermissionType,
             queryDate = minDateWithin1Month,
-            numRecords = 1)
+            numRecords = 1,
+        )
 
         mockReadRecordsResult(
             packageName = TEST_APP_PACKAGE_NAME_2,
             fitnessPermissionType = fitnessPermissionType,
             queryDate = minDateWithin1Month,
             recordDates =
-                listOf(LocalDate.of(2023, 10, 12), LocalDate.of(2023, 10, 14), minDateWithin1Month))
+                listOf(LocalDate.of(2023, 10, 12), LocalDate.of(2023, 10, 14), minDateWithin1Month),
+        )
 
         mockReadRecordsResult(
             packageName = TEST_APP_PACKAGE_NAME_3,
             fitnessPermissionType = fitnessPermissionType,
             queryDate = minDateWithin1Month,
-            numRecords = 1)
+            numRecords = 1,
+        )
 
         val result = loadLastDateWithPriorityDataUseCase.invoke(fitnessPermissionType)
         assertThat(result is UseCaseResults.Success).isTrue()
@@ -466,23 +504,28 @@ class LoadLastDateWithPriorityDataUseCaseTest {
         packageName: String,
         fitnessPermissionType: FitnessPermissionType,
         queryDate: LocalDate,
-        numRecords: Int
+        numRecords: Int,
     ) {
         mockReadRecordsResult(
-            packageName, fitnessPermissionType, queryDate, List(numRecords) { queryDate })
+            packageName,
+            fitnessPermissionType,
+            queryDate,
+            List(numRecords) { queryDate },
+        )
     }
 
     private fun mockReadRecordsResult(
         packageName: String,
         fitnessPermissionType: FitnessPermissionType,
         queryDate: LocalDate,
-        recordDates: List<LocalDate>
+        recordDates: List<LocalDate>,
     ) {
         val timeFilterRange =
             loadEntriesHelper.getTimeFilter(
                 queryDate.toInstantAtStartOfDay(),
                 DateNavigationPeriod.PERIOD_MONTH,
-                endTimeExclusive = true)
+                endTimeExclusive = true,
+            )
         val dataTypes = HealthPermissionToDatatypeMapper.getDataTypes(fitnessPermissionType)
         val records =
             recordDates.map { date -> getRandomRecord(fitnessPermissionType, date) }.toList()
@@ -497,7 +540,8 @@ class LoadLastDateWithPriorityDataUseCaseTest {
                             request.forDataType(dataType)
                     },
                     ArgumentMatchers.any(),
-                    ArgumentMatchers.any())
+                    ArgumentMatchers.any(),
+                )
         }
     }
 
@@ -505,14 +549,20 @@ class LoadLastDateWithPriorityDataUseCaseTest {
         Mockito.doAnswer(prepareActivityDatesAnswer(datesList))
             .`when`(healthConnectManager)
             .queryActivityDates(
-                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+            )
     }
 
     private fun mockQueryActivityDatesError() {
         Mockito.doAnswer(prepareFailureAnswer())
             .`when`(healthConnectManager)
             .queryActivityDates(
-                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(),
+            )
     }
 
     private fun prepareActivityDatesAnswer(
