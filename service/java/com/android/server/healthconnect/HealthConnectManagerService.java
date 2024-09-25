@@ -49,6 +49,8 @@ import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
@@ -122,6 +124,8 @@ public class HealthConnectManagerService extends SystemService {
         AccessLogsHelper accessLogsHelper;
         HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper;
         ActivityDateHelper activityDateHelper;
+        ChangeLogsHelper changeLogsHelper;
+        ChangeLogsRequestHelper changeLogsRequestHelper;
 
         if (Flags.dependencyInjection()) {
             Objects.requireNonNull(mHealthConnectInjector);
@@ -130,6 +134,8 @@ public class HealthConnectManagerService extends SystemService {
             healthDataCategoryPriorityHelper =
                     mHealthConnectInjector.getHealthDataCategoryPriorityHelper();
             activityDateHelper = mHealthConnectInjector.getActivityDateHelper();
+            changeLogsHelper = mHealthConnectInjector.getChangeLogsHelper();
+            changeLogsRequestHelper = mHealthConnectInjector.getChangeLogsRequestHelper();
             firstGrantTimeManager =
                     new FirstGrantTimeManager(
                             context,
@@ -163,6 +169,8 @@ public class HealthConnectManagerService extends SystemService {
         } else {
             appInfoHelper = AppInfoHelper.getInstance(mTransactionManager);
             accessLogsHelper = AccessLogsHelper.getInstance(mTransactionManager, appInfoHelper);
+            changeLogsHelper = new ChangeLogsHelper();
+            changeLogsRequestHelper = new ChangeLogsRequestHelper();
             healthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
             activityDateHelper = ActivityDateHelper.getInstance();
             firstGrantTimeManager =
@@ -241,7 +249,9 @@ public class HealthConnectManagerService extends SystemService {
                         mExportImportSettingsStorage,
                         accessLogsHelper,
                         healthDataCategoryPriorityHelper,
-                        activityDateHelper);
+                        activityDateHelper,
+                        changeLogsHelper,
+                        changeLogsRequestHelper);
     }
 
     @Override

@@ -344,7 +344,9 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getExportImportSettingsStorage(),
                         healthConnectInjector.getAccessLogsHelper(),
                         healthConnectInjector.getHealthDataCategoryPriorityHelper(),
-                        healthConnectInjector.getActivityDateHelper());
+                        healthConnectInjector.getActivityDateHelper(),
+                        healthConnectInjector.getChangeLogsHelper(),
+                        healthConnectInjector.getChangeLogsRequestHelper());
     }
 
     @After
