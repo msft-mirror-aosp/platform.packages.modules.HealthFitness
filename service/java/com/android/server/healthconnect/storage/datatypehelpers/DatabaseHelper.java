@@ -33,7 +33,7 @@ public abstract class DatabaseHelper {
         return Set.of(
                 DeviceInfoHelper.getInstance(),
                 AppInfoHelper.getInstance(),
-                new ActivityDateHelper(),
+                ActivityDateHelper.getInstance(),
                 new ChangeLogsHelper(),
                 new ChangeLogsRequestHelper(),
                 HealthDataCategoryPriorityHelper.getInstance(),

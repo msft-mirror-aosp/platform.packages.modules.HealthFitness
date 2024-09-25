@@ -449,10 +449,11 @@
     <!-- endregion -->
 
     <!-- region Raw FHIR -->
+    <string name="raw_fhir_title" description="Label for a screen that contains the detailed source code of a medical resource. [CHAR_LIMIT=40]">Source data</string>
     <string name="raw_fhir_open_bracket" description="Content description for the open curly bracket character and a prefix before that which is usually a space. [CHAR_LIMIT=50]"><xliff:g example=" " id="prefix">%1$s</xliff:g>Open bracket. </string>
     <string name="raw_fhir_closed_bracket" description="Content description for the closed curly bracket character. [CHAR_LIMIT=50]"><xliff:g example=" " id="prefix">%1$s</xliff:g>Closed bracket. </string>
     <string name="raw_fhir_field_value" description="Content description for a field and a corresponding value from a JSON file, starting with a prexif which is usually a space. [CHAR_LIMIT=50]"><xliff:g example=" " id="prefix">%1$s</xliff:g> Field <xliff:g example="name" id="field">%2$s</xliff:g> Value </string>
-    <string name="raw_fhir_value" description="Content description for a value from a JSON file, starting with a prexif which is usually a space. [CHAR_LIMIT=50]"><xliff:g example=" " id="prefix">%1$s</xliff:g>: <xliff:g example="Nora" id="value">%2$s</xliff:g>. </string>
+    <string name="raw_fhir_value" description="Content description for a value from a JSON file, starting with a prefix which is usually a space. [CHAR_LIMIT=50]"><xliff:g example=" " id="prefix">%1$s</xliff:g>: <xliff:g example="Nora" id="value">%2$s</xliff:g>. </string>
     <string name="raw_fhir_content_description" description="Content description for a JSON file that is an electronic health care record [CHAR_LIMIT=NONE]">Detailed source code: <xliff:g example="Open bracket. Field name Value John Doe. Field age Value 30. close bracket." id="source_code">%1$s</xliff:g></string>
     <!-- endregion -->
 

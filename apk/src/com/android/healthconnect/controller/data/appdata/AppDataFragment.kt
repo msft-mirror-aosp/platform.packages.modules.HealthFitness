@@ -31,9 +31,7 @@ import androidx.preference.PreferenceCategory
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.appdata.AppDataViewModel.AppDataDeletionScreenState.DELETE
 import com.android.healthconnect.controller.data.appdata.AppDataViewModel.AppDataDeletionScreenState.VIEW
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
-import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionConstants
 import com.android.healthconnect.controller.selectabledeletion.DeletionFragment
 import com.android.healthconnect.controller.selectabledeletion.DeletionPermissionTypesPreference
@@ -44,7 +42,6 @@ import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.MEDICAL
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
 import com.android.healthconnect.controller.shared.children
-import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.NoDataPreference
 import com.android.healthconnect.controller.utils.logging.AllDataElement
@@ -207,6 +204,8 @@ open class AppDataFragment : Hilt_AppDataFragment() {
         }
         setupSelectAllPreference(screenState = viewModel.getDeletionState())
         updateMenu(viewModel.getDeletionState())
+        noDataPreference.isVisible = false
+        footerPreference.isVisible = false
 
         populatedCategories.forEach { permissionTypesPerCategory ->
             val category = permissionTypesPerCategory.category
@@ -217,36 +216,9 @@ open class AppDataFragment : Hilt_AppDataFragment() {
 
             permissionTypesPerCategory.data
                 .sortedBy { getString(it.upperCaseLabel()) }
-                .filterIsInstance<FitnessPermissionType>()
                 .forEach { permissionType ->
                     preferenceCategory.addPreference(
                         getPermissionTypePreference(permissionType, permissionType.icon(context))
-                    )
-                }
-
-            permissionTypesPerCategory.data
-                .sortedBy { getString(it.upperCaseLabel()) }
-                .filterIsInstance<MedicalPermissionType>()
-                .forEach { permissionType ->
-                    preferenceCategory.addPreference(
-                        HealthPreference(requireContext()).also {
-                            it.icon = permissionType.icon(context)
-                            it.setTitle(permissionType.upperCaseLabel())
-                            it.setOnPreferenceClickListener {
-                                // TODO(b/281811925): Add in upcoming cl.
-                                // it.logName = AppDataElement.PERMISSION_TYPE_BUTTON
-                                findNavController()
-                                    .navigate(
-                                        R.id.action_appData_to_appEntries,
-                                        bundleOf(
-                                            EXTRA_PACKAGE_NAME to packageName,
-                                            Constants.EXTRA_APP_NAME to appName,
-                                            PERMISSION_TYPE_NAME_KEY to permissionType.name,
-                                        ),
-                                    )
-                                true
-                            }
-                        }
                     )
                 }
         }

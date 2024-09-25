@@ -32,6 +32,7 @@ constructor(
     private val healthConnectManager: HealthConnectManager,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
+    // TODO (b/369108829) Optimise deletion based on selected data and date ranges
     suspend fun invoke(deleteEntries: DeleteEntries) =
         withContext(dispatcher) {
             val recordIdFilters =

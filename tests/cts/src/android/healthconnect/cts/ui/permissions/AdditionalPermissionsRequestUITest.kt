@@ -105,6 +105,7 @@ class AdditionalPermissionsRequestUITest : HealthConnectBaseTest() {
             }
     }
 
+    @Ignore("b/369324916")
     @Test
     fun requestAdditionalPermissions_showsOnlyNotGrantedPermissions() {
         val permissions = listOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)

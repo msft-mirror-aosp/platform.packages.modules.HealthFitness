@@ -116,7 +116,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     }
 
     // DELETE state click listener
-    private val mOnSelectEntryListener by lazy {
+    private val onSelectEntryListener by lazy {
         object : OnSelectEntryListener {
             override fun onSelectEntry(
                 id: String,
@@ -156,7 +156,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
 
     private val aggregationViewBinder by lazy { AggregationViewBinder() }
     private val entryViewBinder by lazy {
-        EntryItemViewBinder(onSelectEntryListener = mOnSelectEntryListener)
+        EntryItemViewBinder(onSelectEntryListener = onSelectEntryListener)
     }
     private val medicalEntryViewBinder by lazy {
         MedicalEntryItemViewBinder(onClickMedicalEntryListener = onClickMedicalEntryListener)
@@ -165,24 +165,24 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
     private val sleepSessionViewBinder by lazy {
         SleepSessionItemViewBinder(
             onItemClickedListener = onClickEntryListener,
-            onSelectEntryListener = mOnSelectEntryListener,
+            onSelectEntryListener = onSelectEntryListener,
         )
     }
     private val exerciseSessionItemViewBinder by lazy {
         ExerciseSessionItemViewBinder(
             onItemClickedListener = onClickEntryListener,
-            onSelectEntryListener = mOnSelectEntryListener,
+            onSelectEntryListener = onSelectEntryListener,
         )
     }
     private val seriesDataItemViewBinder by lazy {
         SeriesDataItemViewBinder(
             onItemClickedListener = onClickEntryListener,
-            onSelectEntryListener = mOnSelectEntryListener,
+            onSelectEntryListener = onSelectEntryListener,
         )
     }
     private val plannedExerciseSessionItemViewBinder by lazy {
         PlannedExerciseSessionItemViewBinder(
-            onSelectEntryListener = mOnSelectEntryListener,
+            onSelectEntryListener = onSelectEntryListener,
             onItemClickedListener = onClickEntryListener,
         )
     }
@@ -347,7 +347,7 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
         screenState: EntriesViewModel.EntriesDeletionScreenState,
         hasData: Boolean = true,
     ) {
-        if (!hasData) {
+        if (permissionType is MedicalPermissionType || !hasData) {
             setupSharedMenu(viewLifecycleOwner, logger)
             return
         }
@@ -436,7 +436,10 @@ class AllEntriesFragment : Hilt_AllEntriesFragment() {
                     // Save aggregation for re-adding to the entries list
                     // when exiting deletion without having deleted any entries
                     aggregation =
-                        if (state.entries[0] is FormattedEntry.FormattedAggregation) {
+                        if (
+                            state.entries.isNotEmpty() &&
+                                state.entries[0] is FormattedEntry.FormattedAggregation
+                        ) {
                             state.entries[0] as FormattedEntry.FormattedAggregation
                         } else {
                             null
