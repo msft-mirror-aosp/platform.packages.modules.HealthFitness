@@ -22,6 +22,7 @@ import android.content.Context
 import android.health.connect.datatypes.MenstruationPeriodRecord
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.entries.FormattedEntry
+import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.dataentries.formatters.MenstruationPeriodFormatter
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
 import com.android.healthconnect.controller.shared.DataType
@@ -60,13 +61,13 @@ class MenstruationPeriodFormatterTest {
     }
 
     @Test
-    fun format_dayOne_formatsMenstruationPeriod() = runBlocking {
+    fun formatForDay_dayOne_formatsMenstruationPeriod() = runBlocking {
         val start = NOW
         val end = NOW.plus(ofDays(5))
         val day = NOW
         val record = MenstruationPeriodRecord.Builder(getMetaData(), start, end).build()
 
-        assertThat(formatter.format(day, record))
+        assertThat(formatter.format(day, record, period = DateNavigationPeriod.PERIOD_DAY))
             .isEqualTo(
                 FormattedEntry.FormattedDataEntry(
                     uuid = record.metadata.id,
@@ -76,16 +77,18 @@ class MenstruationPeriodFormatterTest {
                     titleA11y = "Period day 1 of 6",
                     dataType = DataType.MENSTRUATION_PERIOD,
                     startTime = start,
-                    endTime = end))
+                    endTime = end,
+                )
+            )
     }
 
     @Test
-    fun format_lastDay_formatsMenstruationPeriod() = runBlocking {
+    fun formatForDay_lastDay_formatsMenstruationPeriod() = runBlocking {
         val start = NOW
         val end = NOW.plus(ofDays(5))
         val record = MenstruationPeriodRecord.Builder(getMetaData(), start, end).build()
 
-        assertThat(formatter.format(end, record))
+        assertThat(formatter.format(end, record, DateNavigationPeriod.PERIOD_DAY))
             .isEqualTo(
                 FormattedEntry.FormattedDataEntry(
                     uuid = record.metadata.id,
@@ -95,6 +98,64 @@ class MenstruationPeriodFormatterTest {
                     titleA11y = "Period day 6 of 6",
                     dataType = DataType.MENSTRUATION_PERIOD,
                     startTime = start,
-                    endTime = end))
+                    endTime = end,
+                )
+            )
+    }
+
+    @Test
+    fun formatForWeek_formatsMenstruationPeriod() = runBlocking {
+        val start = NOW
+        val end = NOW.plus(ofDays(5))
+        val record = MenstruationPeriodRecord.Builder(getMetaData(), start, end).build()
+        val header = "Oct 20 – 25 • $TEST_APP_NAME"
+        assertThat(
+                formatter.format(
+                    end,
+                    record,
+                    DateNavigationPeriod.PERIOD_WEEK,
+                    showDataOrigin = true,
+                )
+            )
+            .isEqualTo(
+                FormattedEntry.FormattedDataEntry(
+                    uuid = record.metadata.id,
+                    header = header,
+                    headerA11y = header,
+                    title = "Period (6 days)",
+                    titleA11y = "Period (6 days)",
+                    dataType = DataType.MENSTRUATION_PERIOD,
+                    startTime = start,
+                    endTime = end,
+                )
+            )
+    }
+
+    @Test
+    fun formatForMonth_formatsMenstruationPeriod() = runBlocking {
+        val start = NOW
+        val end = NOW.plus(ofDays(0))
+        val record = MenstruationPeriodRecord.Builder(getMetaData(), start, end).build()
+        val header = "October 20 • $TEST_APP_NAME"
+        assertThat(
+                formatter.format(
+                    end,
+                    record,
+                    DateNavigationPeriod.PERIOD_MONTH,
+                    showDataOrigin = true,
+                )
+            )
+            .isEqualTo(
+                FormattedEntry.FormattedDataEntry(
+                    uuid = record.metadata.id,
+                    header = header,
+                    headerA11y = header,
+                    title = "Period (1 day)",
+                    titleA11y = "Period (1 day)",
+                    dataType = DataType.MENSTRUATION_PERIOD,
+                    startTime = start,
+                    endTime = end,
+                )
+            )
     }
 }

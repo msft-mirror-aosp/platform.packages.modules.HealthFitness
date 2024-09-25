@@ -769,6 +769,9 @@
     <!-- region Data entries -->
     <string name="data_entry_header_with_source_app" translatable="false"><xliff:g example="14:41" id="time">%1$s</xliff:g> • <xliff:g example="Run tracker" id="app_data">%2$s</xliff:g></string>
     <string name="data_entry_header_without_source_app" translatable="false"><xliff:g example="14:41" id="time">%1$s</xliff:g></string>
+    <string name="data_entry_header_date_range_with_source_app" translatable="false"><xliff:g example="Nov 11 - Nov 17" id="date_range">%1$s</xliff:g> • <xliff:g example="Run tracker" id="app_data">%2$s</xliff:g></string>
+    <string name="data_entry_header_date_range_without_source_app" translatable="false"><xliff:g example="Nov 11 - Nov 17" id="date_range">%1$s</xliff:g></string>
+
     <string name="data_point_action_content_description" description="Content description for the menu button of an individual data entry [CHAR LIMIT=NONE]">Delete data entry <xliff:g example="1000 steps" id="entry_to_delete">%s</xliff:g></string>
     <string name="delete_data_point" description="Menu option for deleting an individual data entry [CHAR LIMIT=50]">Delete entry <xliff:g example="1000 steps" id="entry_to_delete">%s</xliff:g></string>
     <string name="aggregation_total" description="Description before the total value. For instance, Total: 1000 steps. [CHAR LIMIT=50]">Total: <xliff:g example="1000 steps" id="total_value">%s</xliff:g></string>
@@ -831,8 +834,10 @@
     <string name="flow_light" description="How heavy the user's menstruation flow was - light. [CHAR LIMIT=50]">Light flow</string>
     <string name="flow_medium" description="How heavy the user's menstruation flow was - medium. [CHAR LIMIT=50]">Medium flow</string>
     <string name="flow_heavy" description="How heavy the user's menstruation flow was - heavy. [CHAR LIMIT=50]">Heavy flow</string>
+    <string name="flow_unknown" description="How heavy the user's menstruation flow was - unknown. [CHAR LIMIT=50]">Unknown flow</string>
 
     <string name="period_day" description="Which day of the user's menstruation period it was. [CHAR LIMIT=50]">Period day <xliff:g example="2" id="day">%1$d</xliff:g> of <xliff:g example="5" id="total_length">%2$d</xliff:g></string>
+    <string name="period_length" description="A user's period entry and how many days it lasted. [CHAR_LIMIT=50]">{count, plural, =1 {Period (1 day)} other {Period (# days)}}</string>
 
     <string name="ovulation_positive" description="The positive result of a user's ovulation test. [CHAR LIMIT=50]">Positive</string>
     <string name="ovulation_negative" description="The negative result of a user's ovulation test. [CHAR LIMIT=50]">Negative</string>
