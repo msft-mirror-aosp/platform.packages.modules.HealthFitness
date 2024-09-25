@@ -782,6 +782,15 @@ public final class HealthPermissions {
             "android.permission.health.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE";
 
     /**
+     * Allows an application to read the user's data about medical conditions.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_CONDITIONS =
+            "android.permission.health.READ_MEDICAL_DATA_CONDITIONS";
+
+    /**
      * Allows an application to read the user's data about immunizations and vaccinations.
      *
      * <p>Protection level: dangerous.
@@ -809,6 +818,31 @@ public final class HealthPermissions {
             "android.permission.health.READ_MEDICAL_DATA_MEDICATIONS";
 
     /**
+     * Allows an application to read the user's personal details.
+     *
+     * <p>This is demographic information such as name, date of birth, contact details like address
+     * or telephone number and so on. For more examples see the <a
+     * href="https://www.hl7.org/fhir/patient.html">FHIR Patient resource</a>.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_PERSONAL_DETAILS =
+            "android.permission.health.READ_MEDICAL_DATA_PERSONAL_DETAILS";
+
+    /**
+     * Allows an application to read the user's data about the practitioners who have interacted
+     * with them in their medical record. This is the information about the clinicians (doctors,
+     * nurses, etc) but also other practitioners (masseurs, physiotherapists, etc) who have been
+     * involved with the patient.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_PRACTITIONER_DETAILS =
+            "android.permission.health.READ_MEDICAL_DATA_PRACTITIONER_DETAILS";
+
+    /**
      * Allows an application to read the user's pregnancy data.
      *
      * <p>Protection level: dangerous.
@@ -816,15 +850,6 @@ public final class HealthPermissions {
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public static final String READ_MEDICAL_DATA_PREGNANCY =
             "android.permission.health.READ_MEDICAL_DATA_PREGNANCY";
-
-    /**
-     * Allows an application to read the user's data about medical problems.
-     *
-     * <p>Protection level: dangerous.
-     */
-    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
-    public static final String READ_MEDICAL_DATA_PROBLEMS =
-            "android.permission.health.READ_MEDICAL_DATA_PROBLEMS";
 
     /**
      * Allows an application to read the user's data about medical procedures.
@@ -843,6 +868,18 @@ public final class HealthPermissions {
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public static final String READ_MEDICAL_DATA_SOCIAL_HISTORY =
             "android.permission.health.READ_MEDICAL_DATA_SOCIAL_HISTORY";
+
+    /**
+     * Allows an application to read the user's information about their encounters with health care
+     * practitioners, including things like location, time of appointment, and name of organization
+     * the visit was with. Despite the name visit it covers remote encounters such as telephone or
+     * videoconference appointments.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_DATA_VISITS =
+            "android.permission.health.READ_MEDICAL_DATA_VISITS";
 
     /**
      * Allows an application to read the user's vital signs data.
@@ -992,13 +1029,16 @@ public final class HealthPermissions {
         Set<String> permissions = new ArraySet<>();
         permissions.add(WRITE_MEDICAL_DATA);
         permissions.add(READ_MEDICAL_DATA_ALLERGY_INTOLERANCE);
+        permissions.add(READ_MEDICAL_DATA_CONDITIONS);
         permissions.add(READ_MEDICAL_DATA_IMMUNIZATION);
         permissions.add(READ_MEDICAL_DATA_LABORATORY_RESULTS);
         permissions.add(READ_MEDICAL_DATA_MEDICATIONS);
+        permissions.add(READ_MEDICAL_DATA_PERSONAL_DETAILS);
+        permissions.add(READ_MEDICAL_DATA_PRACTITIONER_DETAILS);
         permissions.add(READ_MEDICAL_DATA_PREGNANCY);
-        permissions.add(READ_MEDICAL_DATA_PROBLEMS);
         permissions.add(READ_MEDICAL_DATA_PROCEDURES);
         permissions.add(READ_MEDICAL_DATA_SOCIAL_HISTORY);
+        permissions.add(READ_MEDICAL_DATA_VISITS);
         permissions.add(READ_MEDICAL_DATA_VITAL_SIGNS);
         return permissions;
     }

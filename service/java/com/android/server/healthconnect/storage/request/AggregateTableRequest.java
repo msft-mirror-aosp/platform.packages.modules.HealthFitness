@@ -88,6 +88,7 @@ public class AggregateTableRequest {
     private final boolean mUseLocalTime;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     private final AppInfoHelper mAppInfoHelper;
+    private final TransactionManager mTransactionManager;
     private List<Long> mTimeSplits;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
@@ -98,6 +99,7 @@ public class AggregateTableRequest {
             WhereClauses whereClauses,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             AppInfoHelper appInfoHelper,
+            TransactionManager transactionManager,
             boolean useLocalTime) {
         mTableName = params.getTableName();
         mColumnNamesToAggregate = params.getColumnsToFetch();
@@ -117,6 +119,7 @@ public class AggregateTableRequest {
         mUseLocalTime = useLocalTime;
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
         mAppInfoHelper = appInfoHelper;
+        mTransactionManager = transactionManager;
     }
 
     /**
@@ -428,7 +431,8 @@ public class AggregateTableRequest {
     }
 
     private void deriveAggregate(Cursor cursor) {
-        double[] derivedAggregateArray = mRecordHelper.deriveAggregate(cursor, this);
+        double[] derivedAggregateArray =
+                mRecordHelper.deriveAggregate(cursor, this, mTransactionManager);
         int index = 0;
         cursor.moveToFirst();
         for (double aggregate : derivedAggregateArray) {

@@ -1016,6 +1016,9 @@ public final class TransactionManager {
         R run(SQLiteDatabase db) throws E;
     }
 
+    /**
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static synchronized TransactionManager initializeInstance(
             HealthConnectUserContext context) {
         if (sTransactionManager == null) {
@@ -1025,6 +1028,9 @@ public final class TransactionManager {
         return sTransactionManager;
     }
 
+    /**
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static TransactionManager getInitialisedInstance() {
         requireNonNull(sTransactionManager);
 

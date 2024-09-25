@@ -54,6 +54,7 @@ public final class AggregateTransactionRequest {
     private final Duration mDuration;
     private final TimeRangeFilter mTimeRangeFilter;
     private final AggregationTypeIdMapper mAggregationTypeIdMapper;
+    private final TransactionManager mTransactionManager;
     private final Set<Integer> mRecordTypeIds = new HashSet<>();
 
     public AggregateTransactionRequest(
@@ -61,6 +62,7 @@ public final class AggregateTransactionRequest {
             String packageName,
             AggregateDataRequestParcel request,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            TransactionManager transactionManager,
             long startDateAccess) {
         mPackageName = packageName;
         mAggregateTableRequests = new ArrayList<>(request.getAggregateIds().length);
@@ -68,7 +70,7 @@ public final class AggregateTransactionRequest {
         mDuration = request.getDuration();
         mTimeRangeFilter = request.getTimeRangeFilter();
         mAggregationTypeIdMapper = AggregationTypeIdMapper.getInstance();
-
+        mTransactionManager = transactionManager;
         for (int id : request.getAggregateIds()) {
             AggregationType<?> aggregationType = mAggregationTypeIdMapper.getAggregationTypeFor(id);
             int recordTypeId = aggregationType.getApplicableRecordTypeId();
@@ -81,6 +83,7 @@ public final class AggregateTransactionRequest {
                             request.getPackageFilters(),
                             healthDataCategoryPriorityHelper,
                             appInfoHelper,
+                            transactionManager,
                             request.getStartTime(),
                             request.getEndTime(),
                             startDateAccess,
@@ -109,9 +112,8 @@ public final class AggregateTransactionRequest {
         Map<AggregationType<?>, List<AggregateResult<?>>> results = new ArrayMap<>();
         for (AggregateTableRequest aggregateTableRequest : mAggregateTableRequests) {
             // Compute aggregations and record read access log
-            TransactionManager.getInitialisedInstance()
-                    .populateWithAggregation(
-                            aggregateTableRequest, mPackageName, mRecordTypeIds, accessLogsHelper);
+            mTransactionManager.populateWithAggregation(
+                    aggregateTableRequest, mPackageName, mRecordTypeIds, accessLogsHelper);
             results.put(
                     aggregateTableRequest.getAggregationType(),
                     aggregateTableRequest.getAggregateResults());

@@ -23,7 +23,6 @@ import com.android.healthconnect.controller.permissions.additionalaccess.GetAddi
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.safeEq
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -34,6 +33,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class GetAdditionalPermissionUseCaseTest {

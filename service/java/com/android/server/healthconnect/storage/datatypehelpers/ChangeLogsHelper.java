@@ -98,6 +98,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
     /** Returns change logs post the time when {@code changeLogTokenRequest} was generated */
     public static ChangeLogsResponse getChangeLogs(
             AppInfoHelper appInfoHelper,
+            TransactionManager transactionManager,
             ChangeLogsRequestHelper.TokenRequest changeLogTokenRequest,
             ChangeLogsRequest changeLogsRequest) {
         long token = changeLogTokenRequest.getRowIdChangeLogs();
@@ -123,7 +124,6 @@ public final class ChangeLogsHelper extends DatabaseHelper {
                 new ReadTableRequest(TABLE_NAME).setWhereClause(whereClause).setLimit(pageSize + 1);
 
         Map<Integer, ChangeLogs> operationToChangeLogMap = new ArrayMap<>();
-        TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
         long nextChangesToken = DEFAULT_LONG;
         boolean hasMoreRecords = false;
         try (Cursor cursor = transactionManager.read(readTableRequest)) {
@@ -141,14 +141,14 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         String nextToken =
                 nextChangesToken != DEFAULT_LONG
                         ? ChangeLogsRequestHelper.getNextPageToken(
-                                changeLogTokenRequest, nextChangesToken)
+                                changeLogTokenRequest, transactionManager, nextChangesToken)
                         : changeLogsRequest.getToken();
 
         return new ChangeLogsResponse(operationToChangeLogMap, nextToken, hasMoreRecords);
     }
 
-    public static long getLatestRowId() {
-        return TransactionManager.getInitialisedInstance().getLastRowIdFor(TABLE_NAME);
+    public static long getLatestRowId(TransactionManager transactionManager) {
+        return transactionManager.getLastRowIdFor(TABLE_NAME);
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression

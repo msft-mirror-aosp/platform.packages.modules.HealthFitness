@@ -16,13 +16,16 @@
 package com.android.healthconnect.controller.tests.permissions.request
 
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_CONDITIONS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PRACTITIONER_DETAILS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PREGNANCY
-import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROBLEMS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROCEDURES
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VISITS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS
 import android.health.connect.HealthPermissions.READ_STEPS
 import android.health.connect.HealthPermissions.WRITE_DISTANCE
@@ -60,7 +63,6 @@ import com.android.healthconnect.controller.tests.utils.any
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -79,6 +81,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Matchers.eq
 import org.mockito.Mockito.*
+import org.mockito.kotlin.whenever
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
@@ -126,13 +129,16 @@ class MedicalPermissionsFragmentTest {
             val permissions =
                 listOf(
                     fromPermissionString(READ_MEDICAL_DATA_ALLERGY_INTOLERANCE),
+                    fromPermissionString(READ_MEDICAL_DATA_CONDITIONS),
                     fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION),
                     fromPermissionString(READ_MEDICAL_DATA_LABORATORY_RESULTS),
                     fromPermissionString(READ_MEDICAL_DATA_MEDICATIONS),
+                    fromPermissionString(READ_MEDICAL_DATA_PERSONAL_DETAILS),
+                    fromPermissionString(READ_MEDICAL_DATA_PRACTITIONER_DETAILS),
                     fromPermissionString(READ_MEDICAL_DATA_PREGNANCY),
-                    fromPermissionString(READ_MEDICAL_DATA_PROBLEMS),
                     fromPermissionString(READ_MEDICAL_DATA_PROCEDURES),
                     fromPermissionString(READ_MEDICAL_DATA_SOCIAL_HISTORY),
+                    fromPermissionString(READ_MEDICAL_DATA_VISITS),
                     fromPermissionString(READ_MEDICAL_DATA_VITAL_SIGNS),
                     fromPermissionString(WRITE_MEDICAL_DATA),
                 )
