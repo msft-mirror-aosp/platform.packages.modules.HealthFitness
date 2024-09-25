@@ -399,7 +399,7 @@ public class MedicalDataSourceHelper {
                 (TransactionManager.TransactionRunnableWithReturn<
                                 List<MedicalDataSource>, RuntimeException>)
                         db -> {
-                            ReadTableRequest readRequest =
+                            ReadTableRequest readTableRequest =
                                     getReadRequestBasedOnPermissionFilters(
                                             ids,
                                             grantedReadMedicalResourceTypes,
@@ -407,56 +407,43 @@ public class MedicalDataSourceHelper {
                                             hasWritePermission,
                                             isCalledFromBgWithoutBgRead);
 
-                            return readMedicalDataSourcesAndAddAccessLog(
-                                    db,
-                                    readRequest,
-                                    grantedReadMedicalResourceTypes,
-                                    callingPackageName,
-                                    isCalledFromBgWithoutBgRead);
+                            List<MedicalDataSource> medicalDataSources;
+                            try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+                                medicalDataSources = getMedicalDataSources(cursor);
+                            }
+
+                            // If the app is called from background but without background read
+                            // permission, the most the app can do, is to read their own data. Same
+                            // when the grantedReadMedicalResourceTypes is empty. And we don't need
+                            // to add access logs when an app intends to access their own data. If
+                            // medicalDataSources is empty, it means that the app hasn't read any
+                            // dataSources out, so no need to add access logs either.
+                            if (!isCalledFromBgWithoutBgRead
+                                    && !grantedReadMedicalResourceTypes.isEmpty()
+                                    && !medicalDataSources.isEmpty()) {
+                                // We need to figure out from the dataSources that were read, what
+                                // is the resource types relevant to those dataSources, we add
+                                // access logs only if there's any intersection between read
+                                // permissions and resource types's dataSources. If intersection is
+                                // empty, it means that the data read was accessed through self
+                                // read, hence no access log needed.
+                                Set<Integer> resourceTypes =
+                                        getIntersectionOfResourceTypesReadAndGrantedReadPermissions(
+                                                getMedicalResourceTypesBelongingToDataSourceIds(
+                                                        getUUIDsRead(medicalDataSources)),
+                                                grantedReadMedicalResourceTypes);
+                                if (!resourceTypes.isEmpty()) {
+                                    mAccessLogsHelper.addAccessLog(
+                                            db,
+                                            callingPackageName,
+                                            /* medicalResourceTypes= */ Set.of(),
+                                            OPERATION_TYPE_READ,
+                                            /* accessedMedicalDataSource= */ true);
+                                }
+                            }
+
+                            return medicalDataSources;
                         });
-    }
-
-    private List<MedicalDataSource> readMedicalDataSourcesAndAddAccessLog(
-            SQLiteDatabase db,
-            ReadTableRequest request,
-            Set<Integer> grantedReadMedicalResourceTypes,
-            String callingPackageName,
-            boolean isCalledFromBgWithoutBgRead) {
-        List<MedicalDataSource> medicalDataSources;
-        try (Cursor cursor = mTransactionManager.read(db, request)) {
-            medicalDataSources = getMedicalDataSources(cursor);
-        }
-
-        // If the app is called from background but without background read
-        // permission, the most the app can do, is to read their own data. Same
-        // when the grantedReadMedicalResourceTypes is empty. And we don't need
-        // to add access logs when an app intends to access their own data. If
-        // medicalDataSources is empty, it means that the app hasn't read any
-        // dataSources out, so no need to add access logs either.
-        if (!isCalledFromBgWithoutBgRead
-                && !grantedReadMedicalResourceTypes.isEmpty()
-                && !medicalDataSources.isEmpty()) {
-            // We need to figure out from the dataSources that were read, what
-            // is the resource types relevant to those dataSources, we add
-            // access logs only if there's any intersection between read
-            // permissions and resource types's dataSources. If intersection is
-            // empty, it means that the data read was accessed through self
-            // read, hence no access log needed.
-            Set<Integer> resourceTypes =
-                    getIntersectionOfResourceTypesReadAndGrantedReadPermissions(
-                            getMedicalResourceTypesBelongingToDataSourceIds(
-                                    getUUIDsRead(medicalDataSources)),
-                            grantedReadMedicalResourceTypes);
-            if (!resourceTypes.isEmpty()) {
-                mAccessLogsHelper.addAccessLog(
-                        db,
-                        callingPackageName,
-                        /* medicalResourceTypes= */ Set.of(),
-                        OPERATION_TYPE_READ,
-                        /* accessedMedicalDataSource= */ true);
-            }
-        }
-        return medicalDataSources;
     }
 
     private Set<Integer> getMedicalResourceTypesBelongingToDataSourceIds(List<UUID> dataSourceIds) {
@@ -696,25 +683,18 @@ public class MedicalDataSourceHelper {
             throw new IllegalArgumentException(
                     "app doesn't have permission to read based on the given packages");
         }
-        return mTransactionManager.runAsTransaction(
-                (TransactionManager.TransactionRunnableWithReturn<
-                                List<MedicalDataSource>, RuntimeException>)
-                        db -> {
-                            ReadTableRequest readRequest =
-                                    getReadRequestByPackagesWithPermissionChecks(
-                                            new HashSet<>(appIds),
-                                            grantedReadMedicalResourceTypes,
-                                            callingAppId,
-                                            hasWritePermission,
-                                            isCalledFromBgWithoutBgRead);
 
-                            return readMedicalDataSourcesAndAddAccessLog(
-                                    db,
-                                    readRequest,
-                                    grantedReadMedicalResourceTypes,
-                                    callingPackageName,
-                                    isCalledFromBgWithoutBgRead);
-                        });
+        ReadTableRequest readTableRequest =
+                getReadRequestByPackagesWithPermissionChecks(
+                        new HashSet<>(appIds),
+                        grantedReadMedicalResourceTypes,
+                        callingAppId,
+                        hasWritePermission,
+                        isCalledFromBgWithoutBgRead);
+
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+            return getMedicalDataSources(cursor);
+        }
     }
 
     private static ReadTableRequest getReadRequestByPackagesWithPermissionChecks(
