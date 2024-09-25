@@ -25,7 +25,7 @@ sealed class HealthPermission {
             setOf(
                 HealthPermissions.READ_EXERCISE_ROUTES,
                 HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
-                HealthPermissions.READ_HEALTH_DATA_HISTORY
+                HealthPermissions.READ_HEALTH_DATA_HISTORY,
             )
 
         /** Permissions that are grouped separately to general health data types */
@@ -43,7 +43,7 @@ sealed class HealthPermission {
                 HealthPermissions.READ_MEDICAL_DATA_PROCEDURES,
                 HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY,
                 HealthPermissions.READ_MEDICAL_DATA_VISITS,
-                HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS
+                HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS,
             )
 
         fun fromPermissionString(permission: String): HealthPermission {
@@ -60,7 +60,7 @@ sealed class HealthPermission {
     /** Pair of {@link HealthPermissionType} and {@link PermissionsAccessType}. */
     data class FitnessPermission(
         val fitnessPermissionType: FitnessPermissionType,
-        val permissionsAccessType: PermissionsAccessType
+        val permissionsAccessType: PermissionsAccessType,
     ) : HealthPermission() {
         companion object {
             private const val READ_PERMISSION_PREFIX = "android.permission.health.READ_"
@@ -127,8 +127,7 @@ sealed class HealthPermission {
     data class MedicalPermission(val medicalPermissionType: MedicalPermissionType) :
         HealthPermission() {
         companion object {
-            private const val WRITE_MEDICAL_DATA =
-                "android.permission.health.WRITE_MEDICAL_DATA"
+            private const val WRITE_MEDICAL_DATA = "android.permission.health.WRITE_MEDICAL_DATA"
             private const val READ_MEDICAL_DATA_PREFIX =
                 "android.permission.health.READ_MEDICAL_DATA_"
 
