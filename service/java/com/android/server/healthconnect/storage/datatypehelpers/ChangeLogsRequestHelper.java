@@ -55,8 +55,6 @@ import java.util.List;
  *
  * @hide
  */
-// TODO(b/369517586): Add a constructor with dependencies and remove individual dependencies from
-// non-static functions
 public final class ChangeLogsRequestHelper extends DatabaseHelper {
     static final int DEFAULT_CHANGE_LOG_TIME_PERIOD_IN_DAYS = 32;
     private static final String TABLE_NAME = "change_log_request_table";
@@ -65,6 +63,12 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
     private static final String PACKAGE_NAME_COLUMN_NAME = "package_name";
     private static final String ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME = "row_id_change_logs_table";
     private static final String TIME_COLUMN_NAME = "time";
+
+    private final TransactionManager mTransactionManager;
+
+    public ChangeLogsRequestHelper(TransactionManager transactionManager) {
+        mTransactionManager = transactionManager;
+    }
 
     @Override
     protected String getMainTableName() {
@@ -76,10 +80,7 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
     }
 
     public String getToken(
-            long latestChangeLogRowId,
-            String packageName,
-            ChangeLogTokenRequest request,
-            TransactionManager transactionManager) {
+            long latestChangeLogRowId, String packageName, ChangeLogTokenRequest request) {
         ContentValues contentValues = new ContentValues();
 
         /**
@@ -98,11 +99,10 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
         contentValues.put(TIME_COLUMN_NAME, Instant.now().toEpochMilli());
 
         return String.valueOf(
-                transactionManager.insert(new UpsertTableRequest(TABLE_NAME, contentValues)));
+                mTransactionManager.insert(new UpsertTableRequest(TABLE_NAME, contentValues)));
     }
 
-    public TokenRequest getRequest(
-            String packageName, String token, TransactionManager transactionManager) {
+    public TokenRequest getRequest(String packageName, String token) {
         ReadTableRequest readTableRequest =
                 new ReadTableRequest(TABLE_NAME)
                         .setWhereClause(
@@ -110,7 +110,7 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
                                         .addWhereEqualsClause(PRIMARY_COLUMN_NAME, token)
                                         .addWhereEqualsClause(
                                                 PACKAGE_NAME_COLUMN_NAME, packageName));
-        try (Cursor cursor = transactionManager.read(readTableRequest)) {
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
             if (!cursor.moveToFirst()) {
                 throw new IllegalArgumentException("Invalid token");
             }
@@ -123,10 +123,7 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
         }
     }
 
-    public String getNextPageToken(
-            TokenRequest changeLogTokenRequest,
-            TransactionManager transactionManager,
-            long nextRowId) {
+    public String getNextPageToken(TokenRequest changeLogTokenRequest, long nextRowId) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(
                 PACKAGES_TO_FILTERS_COLUMN_NAME,
@@ -139,7 +136,7 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
         contentValues.put(ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME, nextRowId);
 
         return String.valueOf(
-                transactionManager.insert(new UpsertTableRequest(TABLE_NAME, contentValues)));
+                mTransactionManager.insert(new UpsertTableRequest(TABLE_NAME, contentValues)));
     }
 
     public static DeleteTableRequest getDeleteRequestForAutoDelete() {
