@@ -33,7 +33,6 @@ import com.android.healthconnect.controller.permissions.api.GetHealthPermissions
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.di.FakeGetGrantedHealthPermissionsUseCase
-import com.android.healthconnect.controller.tests.utils.safeEq
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -43,6 +42,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
@@ -68,7 +68,7 @@ class LoadExerciseRoutePermissionUseCaseTest {
                 Dispatchers.Main,
             )
         getGrantedHealthPermissionsUseCase.updateData(TEST_APP_PACKAGE_NAME, emptyList())
-        whenever(loadDeclaredHealthPermissionUseCase.invoke(safeEq(TEST_APP_PACKAGE_NAME))).then {
+        whenever(loadDeclaredHealthPermissionUseCase.invoke(eq(TEST_APP_PACKAGE_NAME))).then {
             listOf(READ_EXERCISE_ROUTES, READ_EXERCISE)
         }
         whenever(getHealthPermissionsFlagsUseCase.invoke(any(), any())).then {
@@ -98,11 +98,11 @@ class LoadExerciseRoutePermissionUseCaseTest {
 
     @Test
     fun execute_exerciseRoutePermissionDeclared_returnDeclaredState() = runTest {
-        whenever(loadDeclaredHealthPermissionUseCase.invoke(safeEq(TEST_APP_PACKAGE_NAME))).then {
+        whenever(loadDeclaredHealthPermissionUseCase.invoke(eq(TEST_APP_PACKAGE_NAME))).then {
             listOf(READ_EXERCISE_ROUTES, READ_EXERCISE)
         }
 
-        val state = useCase.invoke(safeEq(TEST_APP_PACKAGE_NAME))
+        val state = useCase.invoke(eq(TEST_APP_PACKAGE_NAME))
 
         val expected =
             ExerciseRouteState(

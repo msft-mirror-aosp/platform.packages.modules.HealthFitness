@@ -42,7 +42,6 @@ import com.android.healthconnect.controller.tests.TestActivity
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchDialog
-import com.android.healthconnect.controller.tests.utils.safeEq
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -51,6 +50,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
@@ -130,7 +130,7 @@ class ExerciseRoutesPermissionDialogFragmentTest {
         onView(withId(R.id.radio_button_always_allow)).inRoot(isDialog()).perform(click())
 
         verify(additionalAccessViewModel)
-            .updateExerciseRouteState(safeEq(TEST_APP_PACKAGE_NAME), safeEq(ALWAYS_ALLOW))
+            .updateExerciseRouteState(eq(TEST_APP_PACKAGE_NAME), eq(ALWAYS_ALLOW))
     }
 
     @Test
@@ -142,7 +142,7 @@ class ExerciseRoutesPermissionDialogFragmentTest {
         onView(withId(R.id.radio_button_ask)).inRoot(isDialog()).perform(click())
 
         verify(additionalAccessViewModel)
-            .updateExerciseRouteState(safeEq(TEST_APP_PACKAGE_NAME), safeEq(ASK_EVERY_TIME))
+            .updateExerciseRouteState(eq(TEST_APP_PACKAGE_NAME), eq(ASK_EVERY_TIME))
     }
 
     @Test
@@ -157,6 +157,6 @@ class ExerciseRoutesPermissionDialogFragmentTest {
         onView(withId(R.id.radio_button_revoke)).inRoot(isDialog()).perform(click())
 
         verify(additionalAccessViewModel)
-            .updateExerciseRouteState(safeEq(TEST_APP_PACKAGE_NAME), safeEq(NEVER_ALLOW))
+            .updateExerciseRouteState(eq(TEST_APP_PACKAGE_NAME), eq(NEVER_ALLOW))
     }
 }

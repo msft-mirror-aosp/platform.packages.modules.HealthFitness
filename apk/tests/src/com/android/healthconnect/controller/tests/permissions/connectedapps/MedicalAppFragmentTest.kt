@@ -56,7 +56,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.android.healthconnect.controller.tests.utils.safeEq
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.FeatureUtils
@@ -80,7 +79,11 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.anyString
+import org.mockito.Mockito.atLeast
+import org.mockito.Mockito.reset
+import org.mockito.Mockito.verify
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
@@ -415,7 +418,7 @@ class MedicalAppFragmentTest {
         verify(healthConnectLogger)
             .logInteraction(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
 
-        verify(viewModel).deleteAppData(safeEq(TEST_APP_PACKAGE_NAME), safeEq(TEST_APP_NAME))
+        verify(viewModel).deleteAppData(eq(TEST_APP_PACKAGE_NAME), eq(TEST_APP_NAME))
     }
 
     @Test
