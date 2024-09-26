@@ -47,6 +47,7 @@ public final class MedicalDataSource implements Parcelable {
     @NonNull private final String mPackageName;
     @NonNull private final Uri mFhirBaseUri;
     @NonNull private final String mDisplayName;
+    @Nullable private final FhirVersion mFhirVersion;
     @Nullable private final Instant mLastDataUpdateTime;
 
     @NonNull
@@ -72,6 +73,7 @@ public final class MedicalDataSource implements Parcelable {
      *     platform at source creation time.
      * @param fhirBaseUri The fhir base URI of this data source.
      * @param displayName The display name that describes this data source.
+     * @param fhirVersion The fhir version of the medical data linked to this data source.
      * @param lastDataUpdateTime The time {@link MedicalResource}s linked to this data source were
      *     last updated in Health Connect.
      */
@@ -80,6 +82,7 @@ public final class MedicalDataSource implements Parcelable {
             @NonNull String packageName,
             @NonNull Uri fhirBaseUri,
             @NonNull String displayName,
+            @Nullable FhirVersion fhirVersion,
             @Nullable Instant lastDataUpdateTime) {
         requireNonNull(id);
         requireNonNull(packageName);
@@ -90,6 +93,7 @@ public final class MedicalDataSource implements Parcelable {
         mPackageName = packageName;
         mFhirBaseUri = fhirBaseUri;
         mDisplayName = displayName;
+        mFhirVersion = fhirVersion;
         mLastDataUpdateTime = lastDataUpdateTime;
     }
 
@@ -99,6 +103,7 @@ public final class MedicalDataSource implements Parcelable {
         mPackageName = requireNonNull(in.readString());
         mFhirBaseUri = requireNonNull(in.readParcelable(Uri.class.getClassLoader(), Uri.class));
         mDisplayName = requireNonNull(in.readString());
+        mFhirVersion = in.readParcelable(FhirVersion.class.getClassLoader(), FhirVersion.class);
         long lastDataUpdateTimeMillis = in.readLong();
         mLastDataUpdateTime =
                 lastDataUpdateTimeMillis == 0
@@ -122,6 +127,12 @@ public final class MedicalDataSource implements Parcelable {
     @NonNull
     public String getDisplayName() {
         return mDisplayName;
+    }
+
+    /** Returns the fhir version of {@link MedicalResource}s from this source. */
+    @Nullable
+    public FhirVersion getFhirVersion() {
+        return mFhirVersion;
     }
 
     /**
@@ -150,6 +161,7 @@ public final class MedicalDataSource implements Parcelable {
         dest.writeString(mPackageName);
         dest.writeParcelable(mFhirBaseUri, 0);
         dest.writeString(mDisplayName);
+        dest.writeParcelable(mFhirVersion, 0);
         dest.writeLong(mLastDataUpdateTime == null ? 0 : mLastDataUpdateTime.toEpochMilli());
     }
 
@@ -185,6 +197,7 @@ public final class MedicalDataSource implements Parcelable {
                 && getPackageName().equals(that.getPackageName())
                 && getFhirBaseUri().equals(that.getFhirBaseUri())
                 && getDisplayName().equals(that.getDisplayName())
+                && Objects.equals(getFhirVersion(), that.getFhirVersion())
                 && Objects.equals(getLastDataUpdateTime(), that.getLastDataUpdateTime());
     }
 
@@ -196,6 +209,7 @@ public final class MedicalDataSource implements Parcelable {
                 getPackageName(),
                 getFhirBaseUri(),
                 getDisplayName(),
+                getFhirVersion(),
                 getLastDataUpdateTime());
     }
 
@@ -208,6 +222,7 @@ public final class MedicalDataSource implements Parcelable {
         sb.append(",packageName=").append(getPackageName());
         sb.append(",fhirBaseUri=").append(getFhirBaseUri());
         sb.append(",displayName=").append(getDisplayName());
+        sb.append(",fhirVersion=").append(getFhirVersion());
         sb.append(",lastDataUpdateTime=").append(getLastDataUpdateTime());
         sb.append("}");
         return sb.toString();
@@ -219,6 +234,7 @@ public final class MedicalDataSource implements Parcelable {
         @NonNull private String mPackageName;
         @NonNull private Uri mFhirBaseUri;
         @NonNull private String mDisplayName;
+        @Nullable private FhirVersion mFhirVersion;
         @Nullable private Instant mLastDataUpdateTime;
 
         /**
@@ -251,6 +267,7 @@ public final class MedicalDataSource implements Parcelable {
             mPackageName = original.mPackageName;
             mFhirBaseUri = original.mFhirBaseUri;
             mDisplayName = original.mDisplayName;
+            mFhirVersion = original.mFhirVersion;
             mLastDataUpdateTime = original.mLastDataUpdateTime;
         }
 
@@ -260,6 +277,7 @@ public final class MedicalDataSource implements Parcelable {
             mPackageName = original.getPackageName();
             mFhirBaseUri = original.getFhirBaseUri();
             mDisplayName = original.getDisplayName();
+            mFhirVersion = original.getFhirVersion();
             mLastDataUpdateTime = original.getLastDataUpdateTime();
         }
 
@@ -301,6 +319,13 @@ public final class MedicalDataSource implements Parcelable {
             return this;
         }
 
+        /** Sets the fhir version of {@link MedicalResource}s linked to this source. */
+        @NonNull
+        public Builder setFhirVersion(@Nullable FhirVersion fhirVersion) {
+            mFhirVersion = fhirVersion;
+            return this;
+        }
+
         /** Sets the time {@link MedicalResource}s linked to this data source were last updated. */
         @NonNull
         public Builder setLastDataUpdateTime(@Nullable Instant lastDataUpdateTime) {
@@ -312,7 +337,12 @@ public final class MedicalDataSource implements Parcelable {
         @NonNull
         public MedicalDataSource build() {
             return new MedicalDataSource(
-                    mId, mPackageName, mFhirBaseUri, mDisplayName, mLastDataUpdateTime);
+                    mId,
+                    mPackageName,
+                    mFhirBaseUri,
+                    mDisplayName,
+                    mFhirVersion,
+                    mLastDataUpdateTime);
         }
     }
 }

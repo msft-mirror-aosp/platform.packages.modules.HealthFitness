@@ -224,6 +224,9 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
     @GuardedBy("mLock")
     private boolean mAggregationSourceControlsEnabled = true;
 
+    /**
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static HealthConnectDeviceConfigManager initializeInstance(Context context) {
         if (sDeviceConfigManager == null) {
             sDeviceConfigManager = new HealthConnectDeviceConfigManager();
@@ -234,7 +237,11 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
         return sDeviceConfigManager;
     }
 
-    /** Returns initialised instance of this class. */
+    /**
+     * Returns initialised instance of this class.
+     *
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static HealthConnectDeviceConfigManager getInitialisedInstance() {
         Objects.requireNonNull(sDeviceConfigManager);
 

@@ -16,10 +16,7 @@
 
 package android.healthconnect.cts.utils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-public final class ProcedureBuilder {
+public final class ProcedureBuilder extends FhirResourceBuilder<ProcedureBuilder> {
 
     private static final String DEFAULT_JSON =
             "{"
@@ -81,44 +78,19 @@ public final class ProcedureBuilder {
                     + "    \"text\" : \"described in care plan\""
                     + "  }]"
                     + "}";
-    private final JSONObject mFhir;
 
     /**
-     * Creates a default valid FHIR Observation.
+     * Creates a default valid FHIR Procedure.
      *
-     * <p>All that should be relied on is that the Observation is valid. To rely on anything else
-     * set it with the other methods.
+     * <p>All that should be relied on is that the Procedure is valid. To rely on anything else set
+     * it with the other methods.
      */
     public ProcedureBuilder() {
-        try {
-            this.mFhir = new JSONObject(DEFAULT_JSON);
-        } catch (JSONException e) {
-            // Should never happen, but JSONException is declared, and is a checked exception.
-            throw new IllegalStateException(e);
-        }
+        super(DEFAULT_JSON);
     }
 
-    /**
-     * Set the FHIR id.
-     *
-     * @return this Builder.
-     */
-    public ProcedureBuilder setId(String id) {
-        try {
-            mFhir.put("id", id);
-        } catch (JSONException e) {
-            throw new IllegalArgumentException(e);
-        }
+    @Override
+    protected ProcedureBuilder returnThis() {
         return this;
-    }
-
-    /** Returns the current state of this builder as a JSON FHIR string. */
-    public String toJson() {
-        try {
-            return mFhir.toString(/* indentSpaces= */ 2);
-        } catch (JSONException e) {
-            // Should never happen, but JSONException is declared, and is a checked exception.
-            throw new IllegalStateException(e);
-        }
     }
 }

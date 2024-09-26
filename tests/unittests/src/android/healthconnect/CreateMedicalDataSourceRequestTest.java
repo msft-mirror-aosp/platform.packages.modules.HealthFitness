@@ -18,6 +18,7 @@ package android.healthconnect;
 
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_VERSION;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -33,7 +34,9 @@ public class CreateMedicalDataSourceRequestTest {
     public void testCreateMedicalDataSourceRequest_getDataSize() {
         CreateMedicalDataSourceRequest original =
                 new CreateMedicalDataSourceRequest.Builder(
-                                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME)
+                                DATA_SOURCE_FHIR_BASE_URI,
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
                         .build();
 
         Parcel parcel = Parcel.obtain();

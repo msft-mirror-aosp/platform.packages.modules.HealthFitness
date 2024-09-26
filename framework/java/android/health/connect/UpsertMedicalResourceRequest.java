@@ -58,7 +58,7 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
     /**
      * @param dataSourceId The id associated with the existing {@link MedicalDataSource}.
      * @param fhirVersion The {@link FhirVersion} object that represents the FHIR version being used
-     *     for {@code data}.
+     *     for {@code data}. This has to match the FHIR version of the {@link MedicalDataSource}.
      * @param data The FHIR resource data in JSON representation.
      */
     private UpsertMedicalResourceRequest(
@@ -154,7 +154,8 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
         /**
          * @param dataSourceId The id associated with the existing {@link MedicalDataSource}.
          * @param fhirVersion The {@link FhirVersion} object that represents the FHIR version being
-         *     used for {@code data}.
+         *     used for {@code data}. This has to match the FHIR version of the {@link
+         *     MedicalDataSource}.
          * @param data The FHIR resource data in JSON representation.
          */
         public Builder(
@@ -196,7 +197,8 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
 
         /**
          * @param fhirVersion The {@link FhirVersion} object that represents the FHIR version being
-         *     used for {@code data}.
+         *     used for {@code data}. This has to match the FHIR version of the {@link
+         *     MedicalDataSource} that data is being inserted for.
          */
         @NonNull
         public Builder setFhirVersion(@NonNull FhirVersion fhirVersion) {

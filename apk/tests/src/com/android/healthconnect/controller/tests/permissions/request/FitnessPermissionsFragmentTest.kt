@@ -53,7 +53,6 @@ import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toPermissionsList
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionsElement
@@ -71,6 +70,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Matchers.eq
 import org.mockito.Mockito.*
+import org.mockito.kotlin.whenever
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
@@ -91,7 +91,9 @@ class FitnessPermissionsFragmentTest {
                 AppMetadata(
                     TEST_APP_PACKAGE_NAME,
                     TEST_APP_NAME,
-                    context.getDrawable(R.drawable.health_connect_logo)))
+                    context.getDrawable(R.drawable.health_connect_logo),
+                )
+            )
         }
         `when`(viewModel.allFitnessPermissionsGranted).then { MutableLiveData(false) }
         `when`(viewModel.grantedFitnessPermissions).then {
@@ -110,10 +112,7 @@ class FitnessPermissionsFragmentTest {
     fun displaysCategories() {
         `when`(viewModel.healthPermissionsList).then {
             val permissions =
-                listOf(
-                    fromPermissionString(READ_STEPS),
-                    fromPermissionString(WRITE_HEART_RATE),
-                )
+                listOf(fromPermissionString(READ_STEPS), fromPermissionString(WRITE_HEART_RATE))
             MutableLiveData(permissions)
         }
         launchFragment<FitnessPermissionsFragment>(bundleOf())
@@ -124,24 +123,32 @@ class FitnessPermissionsFragmentTest {
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "If you give read access, the app can read new data and data from the past 30 days"))
+                    "If you give read access, the app can read new data and data from the past 30 days"
+                )
+            )
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"))
+                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                )
+            )
             .check(matches(isDisplayed()))
 
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(withText("Allow \u201C$TEST_APP_NAME\u201D to read"))))
+                    hasDescendant(withText("Allow \u201C$TEST_APP_NAME\u201D to read"))
+                )
+            )
         Espresso.onIdle()
         onView(withText("Allow \u201C$TEST_APP_NAME\u201D to read")).check(matches(isDisplayed()))
 
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(withText("Allow \u201C$TEST_APP_NAME\u201D to write"))))
+                    hasDescendant(withText("Allow \u201C$TEST_APP_NAME\u201D to write"))
+                )
+            )
         Espresso.onIdle()
         onView(withText("Allow \u201C$TEST_APP_NAME\u201D to write")).check(matches(isDisplayed()))
 
@@ -155,10 +162,7 @@ class FitnessPermissionsFragmentTest {
     fun whenHistoryReadPermissionAlreadyGranted_displaysCorrectText() {
         `when`(viewModel.healthPermissionsList).then {
             val permissions =
-                listOf(
-                    fromPermissionString(READ_STEPS),
-                    fromPermissionString(WRITE_HEART_RATE),
-                )
+                listOf(fromPermissionString(READ_STEPS), fromPermissionString(WRITE_HEART_RATE))
             MutableLiveData(permissions)
         }
         `when`(viewModel.isHistoryAccessGranted()).thenReturn(true)
@@ -172,7 +176,9 @@ class FitnessPermissionsFragmentTest {
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"))
+                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                )
+            )
             .check(matches(isDisplayed()))
     }
 
@@ -180,10 +186,7 @@ class FitnessPermissionsFragmentTest {
     fun displaysReadPermissions() {
         `when`(viewModel.healthPermissionsList).then {
             val permissions =
-                listOf(
-                    fromPermissionString(READ_STEPS),
-                    fromPermissionString(READ_HEART_RATE),
-                )
+                listOf(fromPermissionString(READ_STEPS), fromPermissionString(READ_HEART_RATE))
             MutableLiveData(permissions)
         }
         launchFragment<FitnessPermissionsFragment>(bundleOf())
@@ -191,14 +194,18 @@ class FitnessPermissionsFragmentTest {
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(withText("Steps"))))
+                    hasDescendant(withText("Steps"))
+                )
+            )
         Espresso.onIdle()
         onView(withText("Steps")).check(matches(isDisplayed()))
 
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(withText("Heart rate"))))
+                    hasDescendant(withText("Heart rate"))
+                )
+            )
         Espresso.onIdle()
         onView(withText("Heart rate")).check(matches(isDisplayed()))
     }
@@ -207,10 +214,7 @@ class FitnessPermissionsFragmentTest {
     fun displaysWritePermissions() {
         `when`(viewModel.healthPermissionsList).then {
             val permissions =
-                listOf(
-                    fromPermissionString(WRITE_DISTANCE),
-                    fromPermissionString(WRITE_EXERCISE),
-                )
+                listOf(fromPermissionString(WRITE_DISTANCE), fromPermissionString(WRITE_EXERCISE))
             MutableLiveData(permissions)
         }
         launchFragment<FitnessPermissionsFragment>(bundleOf())
@@ -218,14 +222,18 @@ class FitnessPermissionsFragmentTest {
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(withText("Distance"))))
+                    hasDescendant(withText("Distance"))
+                )
+            )
         Espresso.onIdle()
         onView(withText("Distance")).check(matches(isDisplayed()))
 
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(withText("Exercise"))))
+                    hasDescendant(withText("Exercise"))
+                )
+            )
         Espresso.onIdle()
         onView(withText("Exercise")).check(matches(isDisplayed()))
     }
@@ -234,17 +242,16 @@ class FitnessPermissionsFragmentTest {
     fun togglesPermissions_callsUpdatePermissions() {
         `when`(viewModel.healthPermissionsList).then {
             val permissions =
-                listOf(
-                    fromPermissionString(READ_DISTANCE),
-                    fromPermissionString(WRITE_EXERCISE),
-                )
+                listOf(fromPermissionString(READ_DISTANCE), fromPermissionString(WRITE_EXERCISE))
             MutableLiveData(permissions)
         }
         launchFragment<FitnessPermissionsFragment>(bundleOf())
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(withText("Distance"))))
+                    hasDescendant(withText("Distance"))
+                )
+            )
         Espresso.onIdle()
         onView(withText("Distance")).perform(click())
 
@@ -328,7 +335,8 @@ class FitnessPermissionsFragmentTest {
                 HealthPermission.fromPermissionString(READ_STEPS) to PermissionState.GRANTED,
                 HealthPermission.fromPermissionString(READ_HEART_RATE) to PermissionState.GRANTED,
                 HealthPermission.fromPermissionString(WRITE_DISTANCE) to PermissionState.GRANTED,
-                HealthPermission.fromPermissionString(WRITE_EXERCISE) to PermissionState.GRANTED)
+                HealthPermission.fromPermissionString(WRITE_EXERCISE) to PermissionState.GRANTED,
+            )
         }
         whenever(viewModel.grantedFitnessPermissions).then {
             MutableLiveData(emptySet<FitnessPermission>())

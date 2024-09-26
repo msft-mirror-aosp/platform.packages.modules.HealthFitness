@@ -56,6 +56,7 @@ import android.util.Slog;
 
 import androidx.annotation.Nullable;
 
+import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
@@ -134,6 +135,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             List<String> packageFilters,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             AppInfoHelper appInfoHelper,
+            TransactionManager transactionManager,
             long startTime,
             long endTime,
             long startDateAccess,
@@ -187,6 +189,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                         whereClauses,
                         healthDataCategoryPriorityHelper,
                         appInfoHelper,
+                        transactionManager,
                         useLocalTime)
                 .setTimeFilter(startTime, endTime);
     }
@@ -219,7 +222,8 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      * Used to calculate and get aggregate results for data types that support derived aggregates
      */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public double[] deriveAggregate(Cursor cursor, AggregateTableRequest request) {
+    public double[] deriveAggregate(
+            Cursor cursor, AggregateTableRequest request, TransactionManager transactionManager) {
         return null;
     }
 
