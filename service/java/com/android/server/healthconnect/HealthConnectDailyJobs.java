@@ -98,6 +98,7 @@ public class HealthConnectDailyJobs {
                 context,
                 UserHandle.getUserHandleForUid(userId),
                 preferenceHelper,
-                accessLogsHelper);
+                accessLogsHelper,
+                transactionManager);
     }
 }

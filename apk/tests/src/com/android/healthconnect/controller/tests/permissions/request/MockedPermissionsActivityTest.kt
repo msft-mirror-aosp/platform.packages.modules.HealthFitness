@@ -68,7 +68,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.showOnboarding
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -90,6 +89,7 @@ import org.mockito.kotlin.anyArray
 import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class MockedPermissionsActivityTest {
@@ -115,7 +115,8 @@ class MockedPermissionsActivityTest {
                 fromPermissionString(READ_STEPS),
                 fromPermissionString(READ_HEART_RATE),
                 fromPermissionString(WRITE_DISTANCE),
-                fromPermissionString(WRITE_EXERCISE))
+                fromPermissionString(WRITE_EXERCISE),
+            )
         whenever(viewModel.grantedFitnessPermissions).then {
             MutableLiveData(permissionsList.toSet())
         }
@@ -125,7 +126,9 @@ class MockedPermissionsActivityTest {
                 AppMetadata(
                     TEST_APP_PACKAGE_NAME,
                     TEST_APP_NAME,
-                    context.getDrawable(R.drawable.health_connect_logo)))
+                    context.getDrawable(R.drawable.health_connect_logo),
+                )
+            )
         }
         whenever(viewModel.isAnyPermissionUserFixed(anyString(), anyArray())).thenReturn(false)
         whenever(viewModel.isAnyReadPermissionGranted()).thenReturn(true)
@@ -135,7 +138,10 @@ class MockedPermissionsActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
         (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
@@ -167,7 +173,8 @@ class MockedPermissionsActivityTest {
                 fromPermissionString(READ_STEPS) to PermissionState.GRANTED,
                 fromPermissionString(READ_HEART_RATE) to PermissionState.GRANTED,
                 fromPermissionString(WRITE_DISTANCE) to PermissionState.GRANTED,
-                fromPermissionString(WRITE_EXERCISE) to PermissionState.GRANTED)
+                fromPermissionString(WRITE_EXERCISE) to PermissionState.GRANTED,
+            )
         }
 
         val startActivityIntent = getPermissionScreenIntent(permissions)
@@ -178,7 +185,9 @@ class MockedPermissionsActivityTest {
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "If you give read access, the app can read new data and data from the past 30 days"))
+                    "If you give read access, the app can read new data and data from the past 30 days"
+                )
+            )
             .check(matches(isDisplayed()))
 
         scenario.onActivity { activity: PermissionsActivity ->
@@ -199,7 +208,12 @@ class MockedPermissionsActivityTest {
         assertThat(returnedIntent.getIntArrayExtra(EXTRA_REQUEST_PERMISSIONS_RESULTS))
             .isEqualTo(
                 intArrayOf(
-                    PERMISSION_GRANTED, PERMISSION_GRANTED, PERMISSION_GRANTED, PERMISSION_GRANTED))
+                    PERMISSION_GRANTED,
+                    PERMISSION_GRANTED,
+                    PERMISSION_GRANTED,
+                    PERMISSION_GRANTED,
+                )
+            )
     }
 
     @Test
@@ -220,7 +234,10 @@ class MockedPermissionsActivityTest {
         whenever(viewModel.additionalPermissionsInfo).then {
             MutableLiveData(
                 AdditionalPermissionsInfo(
-                    permissions.toPermissionsList().map { it as AdditionalPermission }, TEST_APP))
+                    permissions.toPermissionsList().map { it as AdditionalPermission },
+                    TEST_APP,
+                )
+            )
         }
         whenever(viewModel.getPermissionGrants()).then {
             mapOf(
@@ -250,7 +267,10 @@ class MockedPermissionsActivityTest {
         whenever(viewModel.additionalPermissionsInfo).then {
             MutableLiveData(
                 AdditionalPermissionsInfo(
-                    permissions.toPermissionsList().map { it as AdditionalPermission }, TEST_APP))
+                    permissions.toPermissionsList().map { it as AdditionalPermission },
+                    TEST_APP,
+                )
+            )
         }
         whenever(viewModel.getPermissionGrants()).then {
             mapOf(
@@ -280,7 +300,10 @@ class MockedPermissionsActivityTest {
         whenever(viewModel.additionalPermissionsInfo).then {
             MutableLiveData(
                 AdditionalPermissionsInfo(
-                    permissions.toPermissionsList().map { it as AdditionalPermission }, TEST_APP))
+                    permissions.toPermissionsList().map { it as AdditionalPermission },
+                    TEST_APP,
+                )
+            )
         }
         whenever(viewModel.getPermissionGrants()).then {
             mapOf(
@@ -322,7 +345,10 @@ class MockedPermissionsActivityTest {
         whenever(viewModel.additionalPermissionsInfo).then {
             MutableLiveData(
                 AdditionalPermissionsInfo(
-                    permissions.toPermissionsList().map { it as AdditionalPermission }, TEST_APP))
+                    permissions.toPermissionsList().map { it as AdditionalPermission },
+                    TEST_APP,
+                )
+            )
         }
         whenever(viewModel.grantedAdditionalPermissions).then {
             MutableLiveData(emptySet<AdditionalPermission>())
@@ -368,7 +394,8 @@ class MockedPermissionsActivityTest {
                 WRITE_DISTANCE,
                 WRITE_EXERCISE,
                 READ_HEALTH_DATA_HISTORY,
-                READ_HEALTH_DATA_IN_BACKGROUND)
+                READ_HEALTH_DATA_IN_BACKGROUND,
+            )
         val healthPermissionsList = permissions.toPermissionsList()
         val fitnessPermissionsList = healthPermissionsList.filterIsInstance<FitnessPermission>()
         val additionalPermissionsList =
@@ -391,7 +418,8 @@ class MockedPermissionsActivityTest {
                 fromPermissionString(WRITE_DISTANCE) to PermissionState.GRANTED,
                 fromPermissionString(WRITE_EXERCISE) to PermissionState.GRANTED,
                 fromPermissionString(READ_HEALTH_DATA_HISTORY) to PermissionState.GRANTED,
-                fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND) to PermissionState.GRANTED)
+                fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND) to PermissionState.GRANTED,
+            )
         }
 
         val startActivityIntent = getPermissionScreenIntent(permissions)
@@ -435,7 +463,9 @@ class MockedPermissionsActivityTest {
                     PERMISSION_GRANTED,
                     PERMISSION_GRANTED,
                     PERMISSION_GRANTED,
-                    PERMISSION_GRANTED))
+                    PERMISSION_GRANTED,
+                )
+            )
     }
 
     @Test
@@ -447,7 +477,8 @@ class MockedPermissionsActivityTest {
                 WRITE_DISTANCE,
                 WRITE_EXERCISE,
                 READ_HEALTH_DATA_HISTORY,
-                READ_HEALTH_DATA_IN_BACKGROUND)
+                READ_HEALTH_DATA_IN_BACKGROUND,
+            )
         val healthPermissionsList = permissions.toPermissionsList()
         val fitnessPermissionsList = healthPermissionsList.filterIsInstance<FitnessPermission>()
         val additionalPermissionsList =
@@ -470,7 +501,8 @@ class MockedPermissionsActivityTest {
                 fromPermissionString(WRITE_DISTANCE) to PermissionState.GRANTED,
                 fromPermissionString(WRITE_EXERCISE) to PermissionState.GRANTED,
                 fromPermissionString(READ_HEALTH_DATA_HISTORY) to PermissionState.NOT_GRANTED,
-                fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND) to PermissionState.NOT_GRANTED)
+                fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND) to PermissionState.NOT_GRANTED,
+            )
         }
 
         val startActivityIntent = getPermissionScreenIntent(permissions)
@@ -511,7 +543,9 @@ class MockedPermissionsActivityTest {
                     PERMISSION_GRANTED,
                     PERMISSION_GRANTED,
                     PERMISSION_DENIED,
-                    PERMISSION_DENIED))
+                    PERMISSION_DENIED,
+                )
+            )
     }
 
     @Test
@@ -523,7 +557,8 @@ class MockedPermissionsActivityTest {
                 WRITE_DISTANCE,
                 WRITE_EXERCISE,
                 READ_HEALTH_DATA_HISTORY,
-                READ_HEALTH_DATA_IN_BACKGROUND)
+                READ_HEALTH_DATA_IN_BACKGROUND,
+            )
         val notGrantedPermissions =
             arrayOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
         val healthPermissionsList = notGrantedPermissions.toPermissionsList()
@@ -548,7 +583,8 @@ class MockedPermissionsActivityTest {
                 fromPermissionString(WRITE_DISTANCE) to PermissionState.GRANTED,
                 fromPermissionString(WRITE_EXERCISE) to PermissionState.GRANTED,
                 fromPermissionString(READ_HEALTH_DATA_HISTORY) to PermissionState.GRANTED,
-                fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND) to PermissionState.NOT_GRANTED)
+                fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND) to PermissionState.NOT_GRANTED,
+            )
         }
 
         val startActivityIntent = getPermissionScreenIntent(permissions)
@@ -577,7 +613,9 @@ class MockedPermissionsActivityTest {
                     PERMISSION_GRANTED,
                     PERMISSION_GRANTED,
                     PERMISSION_GRANTED,
-                    PERMISSION_DENIED))
+                    PERMISSION_DENIED,
+                )
+            )
     }
 
     @Test
@@ -614,7 +652,12 @@ class MockedPermissionsActivityTest {
         assertThat(returnedIntent.getIntArrayExtra(EXTRA_REQUEST_PERMISSIONS_RESULTS))
             .isEqualTo(
                 intArrayOf(
-                    PERMISSION_GRANTED, PERMISSION_GRANTED, PERMISSION_DENIED, PERMISSION_GRANTED))
+                    PERMISSION_GRANTED,
+                    PERMISSION_GRANTED,
+                    PERMISSION_DENIED,
+                    PERMISSION_GRANTED,
+                )
+            )
     }
 
     @Test
@@ -652,7 +695,12 @@ class MockedPermissionsActivityTest {
         assertThat(returnedIntent.getIntArrayExtra(EXTRA_REQUEST_PERMISSIONS_RESULTS))
             .isEqualTo(
                 intArrayOf(
-                    PERMISSION_DENIED, PERMISSION_DENIED, PERMISSION_DENIED, PERMISSION_DENIED))
+                    PERMISSION_DENIED,
+                    PERMISSION_DENIED,
+                    PERMISSION_DENIED,
+                    PERMISSION_DENIED,
+                )
+            )
     }
 
     @Test
@@ -670,7 +718,8 @@ class MockedPermissionsActivityTest {
                 fromPermissionString(READ_STEPS) to PermissionState.GRANTED,
                 fromPermissionString(READ_HEART_RATE) to PermissionState.GRANTED,
                 fromPermissionString(WRITE_DISTANCE) to PermissionState.GRANTED,
-                fromPermissionString(WRITE_EXERCISE) to PermissionState.ERROR)
+                fromPermissionString(WRITE_EXERCISE) to PermissionState.ERROR,
+            )
         }
 
         val startActivityIntent = getPermissionScreenIntent(permissions)
@@ -690,7 +739,12 @@ class MockedPermissionsActivityTest {
         assertThat(returnedIntent.getIntArrayExtra(EXTRA_REQUEST_PERMISSIONS_RESULTS))
             .isEqualTo(
                 intArrayOf(
-                    PERMISSION_GRANTED, PERMISSION_GRANTED, PERMISSION_GRANTED, PERMISSION_DENIED))
+                    PERMISSION_GRANTED,
+                    PERMISSION_GRANTED,
+                    PERMISSION_GRANTED,
+                    PERMISSION_DENIED,
+                )
+            )
     }
 
     @Test
@@ -705,7 +759,8 @@ class MockedPermissionsActivityTest {
                 fromPermissionString(READ_STEPS) to PermissionState.GRANTED,
                 fromPermissionString(READ_HEART_RATE) to PermissionState.GRANTED,
                 fromPermissionString(WRITE_DISTANCE) to PermissionState.GRANTED,
-                fromPermissionString(WRITE_EXERCISE) to PermissionState.GRANTED)
+                fromPermissionString(WRITE_EXERCISE) to PermissionState.GRANTED,
+            )
         }
         whenever(viewModel.fitnessPermissionsList).then {
             MutableLiveData<List<FitnessPermission>>(emptyList())
@@ -722,7 +777,12 @@ class MockedPermissionsActivityTest {
         assertThat(returnedIntent.getIntArrayExtra(EXTRA_REQUEST_PERMISSIONS_RESULTS))
             .isEqualTo(
                 intArrayOf(
-                    PERMISSION_GRANTED, PERMISSION_GRANTED, PERMISSION_GRANTED, PERMISSION_GRANTED))
+                    PERMISSION_GRANTED,
+                    PERMISSION_GRANTED,
+                    PERMISSION_GRANTED,
+                    PERMISSION_GRANTED,
+                )
+            )
     }
 
     @Test
@@ -731,7 +791,8 @@ class MockedPermissionsActivityTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IN_PROGRESS,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -739,7 +800,10 @@ class MockedPermissionsActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IN_PROGRESS,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, WRITE_DISTANCE, WRITE_EXERCISE)
         whenever(viewModel.healthPermissionsList).then {
@@ -764,7 +828,9 @@ class MockedPermissionsActivityTest {
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "Health Connect is being integrated with the Android system.\n\nYou'll get a notification when the process is complete and you can use $TEST_APP_NAME with Health Connect."))
+                    "Health Connect is being integrated with the Android system.\n\nYou'll get a notification when the process is complete and you can use $TEST_APP_NAME with Health Connect."
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Got it")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -788,7 +854,8 @@ class MockedPermissionsActivityTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IDLE,
                 dataRestoreState = DataRestoreUiState.IN_PROGRESS,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -796,7 +863,10 @@ class MockedPermissionsActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IN_PROGRESS,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, WRITE_DISTANCE, WRITE_EXERCISE)
         whenever(viewModel.healthPermissionsList).then {
@@ -821,7 +891,9 @@ class MockedPermissionsActivityTest {
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "Health Connect is restoring data and permissions. This may take some time to complete."))
+                    "Health Connect is restoring data and permissions. This may take some time to complete."
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Got it")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -845,7 +917,8 @@ class MockedPermissionsActivityTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.APP_UPGRADE_REQUIRED,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -853,7 +926,10 @@ class MockedPermissionsActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.APP_UPGRADE_REQUIRED,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, WRITE_DISTANCE, WRITE_EXERCISE)
         whenever(viewModel.healthPermissionsList).then {
@@ -872,7 +948,9 @@ class MockedPermissionsActivityTest {
 
         onView(
                 withText(
-                    "Health Connect is ready to be integrated with your Android system. If you give $TEST_APP_NAME access now, some features may not work until integration is complete."))
+                    "Health Connect is ready to be integrated with your Android system. If you give $TEST_APP_NAME access now, some features may not work until integration is complete."
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         // TODO (b/322495982) check navigation to Migration activity

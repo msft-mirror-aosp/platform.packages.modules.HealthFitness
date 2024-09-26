@@ -206,7 +206,11 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
         return contentValues;
     }
 
-    /** Creates(if it was not already created) and returns instance of PriorityMigrationHelper. */
+    /**
+     * Creates(if it was not already created) and returns instance of PriorityMigrationHelper.
+     *
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static PriorityMigrationHelper getInstance() {
         return getInstance(
                 HealthDataCategoryPriorityHelper.getInstance(),

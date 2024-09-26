@@ -36,7 +36,7 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when` as whenever
+import org.mockito.kotlin.whenever
 
 class HealthConnectSafetySourceTest {
 
@@ -72,7 +72,11 @@ class HealthConnectSafetySourceTest {
 
         verify(mockSafetyCenterManagerWrapper, times(1))
             .setSafetySourceData(
-                context, HEALTH_CONNECT_SOURCE_ID, null, EVENT_SOURCE_STATE_CHANGED)
+                context,
+                HEALTH_CONNECT_SOURCE_ID,
+                null,
+                EVENT_SOURCE_STATE_CHANGED,
+            )
     }
 
     @Test
@@ -85,19 +89,27 @@ class HealthConnectSafetySourceTest {
                     SafetySourceStatus.Builder(
                             HEALTH_CONNECT_TITLE,
                             HEALTH_CONNECT_SUMMARY,
-                            SafetySourceData.SEVERITY_LEVEL_UNSPECIFIED)
+                            SafetySourceData.SEVERITY_LEVEL_UNSPECIFIED,
+                        )
                         .setPendingIntent(
                             PendingIntent.getActivity(
                                 context,
                                 /* requestCode= */ 0,
                                 Intent(HEALTH_CONNECT_INTENT_ACTION),
-                                FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE))
-                        .build())
+                                FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE,
+                            )
+                        )
+                        .build()
+                )
                 .build()
 
         verify(mockSafetyCenterManagerWrapper, times(1))
             .setSafetySourceData(
-                context, HEALTH_CONNECT_SOURCE_ID, expectedData, EVENT_SOURCE_STATE_CHANGED)
+                context,
+                HEALTH_CONNECT_SOURCE_ID,
+                expectedData,
+                EVENT_SOURCE_STATE_CHANGED,
+            )
     }
 
     private fun <T> any(): T {

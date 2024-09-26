@@ -131,8 +131,74 @@ public class FhirResourceTypeStringToIntMapperTest {
 
     @Test
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testFhirResourceTypeInt_patientType() {
+        assertThat(getFhirResourceTypeInt("patient"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_PATIENT);
+        assertThat(getFhirResourceTypeInt("Patient"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_PATIENT);
+        assertThat(getFhirResourceTypeInt("PATIENT"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_PATIENT);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testFhirResourceTypeInt_practitionerType() {
+        assertThat(getFhirResourceTypeInt("practitioner"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER);
+        assertThat(getFhirResourceTypeInt("Practitioner"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER);
+        assertThat(getFhirResourceTypeInt("PRACTITIONER"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testFhirResourceTypeInt_practitionerRoleType() {
+        assertThat(getFhirResourceTypeInt("practitionerRole"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE);
+        assertThat(getFhirResourceTypeInt("PractitionerRole"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE);
+        assertThat(getFhirResourceTypeInt("PRACTITIONERROLE"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testFhirResourceTypeInt_encounterType() {
+        assertThat(getFhirResourceTypeInt("encounter"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_ENCOUNTER);
+        assertThat(getFhirResourceTypeInt("Encounter"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_ENCOUNTER);
+        assertThat(getFhirResourceTypeInt("ENCOUNTER"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_ENCOUNTER);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testFhirResourceTypeInt_locationType() {
+        assertThat(getFhirResourceTypeInt("location"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_LOCATION);
+        assertThat(getFhirResourceTypeInt("Location"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_LOCATION);
+        assertThat(getFhirResourceTypeInt("LOCATION"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_LOCATION);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testFhirResourceTypeInt_organizationType() {
+        assertThat(getFhirResourceTypeInt("organization"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_ORGANIZATION);
+        assertThat(getFhirResourceTypeInt("Organization"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_ORGANIZATION);
+        assertThat(getFhirResourceTypeInt("ORGANIZATION"))
+                .isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_ORGANIZATION);
+    }
+
+    @Test
+    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testFhirResourceTypeInt_unknownType() {
-        int fhirResourceTypeInt = getFhirResourceTypeInt("patient");
+        int fhirResourceTypeInt = getFhirResourceTypeInt("researchstudy");
 
         assertThat(fhirResourceTypeInt).isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN);
     }

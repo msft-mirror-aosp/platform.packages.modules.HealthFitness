@@ -18,14 +18,17 @@ package com.android.healthconnect.controller.permissions.data
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.utils.AttributeResolver
@@ -33,13 +36,16 @@ import com.android.healthconnect.controller.utils.AttributeResolver
 enum class MedicalPermissionType : HealthPermissionType {
     ALL_MEDICAL_DATA,
     ALLERGY_INTOLERANCE,
+    CONDITIONS,
     IMMUNIZATION,
     LABORATORY_RESULTS,
     MEDICATIONS,
+    PERSONAL_DETAILS,
+    PRACTITIONER_DETAILS,
     PREGNANCY,
-    PROBLEMS,
     PROCEDURES,
     SOCIAL_HISTORY,
+    VISITS,
     VITAL_SIGNS;
 
     override fun lowerCaseLabel(): Int =
@@ -53,14 +59,17 @@ enum class MedicalPermissionType : HealthPermissionType {
             when (this) {
                 ALL_MEDICAL_DATA -> R.attr.medicalServicesIcon
                 ALLERGY_INTOLERANCE -> R.attr.allergiesIcon
+                CONDITIONS -> R.attr.conditionsIcon
                 IMMUNIZATION -> R.attr.immunizationIcon
                 LABORATORY_RESULTS -> R.attr.labResultsIcon
+                MEDICATIONS -> R.attr.medicationsIcon
+                PERSONAL_DETAILS -> R.attr.patientInfoIcon
+                PRACTITIONER_DETAILS -> R.attr.practitionerDetailsIcon
                 PREGNANCY -> R.attr.pregnancyIcon
-                PROBLEMS -> R.attr.conditionsIcon
                 PROCEDURES -> R.attr.proceduresIcon
                 SOCIAL_HISTORY -> R.attr.socialHistoryIcon
+                VISITS -> R.attr.pastVisitsIcon
                 VITAL_SIGNS -> R.attr.vitalsIcon
-                else -> return null
             }
         return AttributeResolver.getDrawable(context, attrRes)
     }
@@ -79,14 +88,18 @@ fun fromMedicalResourceType(medicalResourceType: Int): MedicalPermissionType {
     return when (medicalResourceType) {
         MEDICAL_RESOURCE_TYPE_UNKNOWN ->
             throw IllegalArgumentException("MedicalResourceType is UNKNOWN.")
+
         MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE -> MedicalPermissionType.ALLERGY_INTOLERANCE
+        MEDICAL_RESOURCE_TYPE_CONDITIONS -> MedicalPermissionType.CONDITIONS
         MEDICAL_RESOURCE_TYPE_IMMUNIZATION -> MedicalPermissionType.IMMUNIZATION
         MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS -> MedicalPermissionType.LABORATORY_RESULTS
         MEDICAL_RESOURCE_TYPE_MEDICATIONS -> MedicalPermissionType.MEDICATIONS
+        MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS -> MedicalPermissionType.PERSONAL_DETAILS
+        MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS -> MedicalPermissionType.PRACTITIONER_DETAILS
         MEDICAL_RESOURCE_TYPE_PREGNANCY -> MedicalPermissionType.PREGNANCY
-        MEDICAL_RESOURCE_TYPE_PROBLEMS -> MedicalPermissionType.PROBLEMS
         MEDICAL_RESOURCE_TYPE_PROCEDURES -> MedicalPermissionType.PROCEDURES
         MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY -> MedicalPermissionType.SOCIAL_HISTORY
+        MEDICAL_RESOURCE_TYPE_VISITS -> MedicalPermissionType.VISITS
         MEDICAL_RESOURCE_TYPE_VITAL_SIGNS -> MedicalPermissionType.VITAL_SIGNS
         else -> throw IllegalArgumentException("MedicalResourceType is not supported.")
     }
@@ -95,13 +108,16 @@ fun fromMedicalResourceType(medicalResourceType: Int): MedicalPermissionType {
 fun toMedicalResourceType(medicalPermissionType: MedicalPermissionType): Int {
     return when (medicalPermissionType) {
         MedicalPermissionType.ALLERGY_INTOLERANCE -> MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
+        MedicalPermissionType.CONDITIONS -> MEDICAL_RESOURCE_TYPE_CONDITIONS
         MedicalPermissionType.IMMUNIZATION -> MEDICAL_RESOURCE_TYPE_IMMUNIZATION
         MedicalPermissionType.LABORATORY_RESULTS -> MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS
         MedicalPermissionType.MEDICATIONS -> MEDICAL_RESOURCE_TYPE_MEDICATIONS
+        MedicalPermissionType.PERSONAL_DETAILS -> MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS
+        MedicalPermissionType.PRACTITIONER_DETAILS -> MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS
         MedicalPermissionType.PREGNANCY -> MEDICAL_RESOURCE_TYPE_PREGNANCY
-        MedicalPermissionType.PROBLEMS -> MEDICAL_RESOURCE_TYPE_PROBLEMS
         MedicalPermissionType.PROCEDURES -> MEDICAL_RESOURCE_TYPE_PROCEDURES
         MedicalPermissionType.SOCIAL_HISTORY -> MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY
+        MedicalPermissionType.VISITS -> MEDICAL_RESOURCE_TYPE_VISITS
         MedicalPermissionType.VITAL_SIGNS -> MEDICAL_RESOURCE_TYPE_VITAL_SIGNS
         else -> MEDICAL_RESOURCE_TYPE_UNKNOWN
     }

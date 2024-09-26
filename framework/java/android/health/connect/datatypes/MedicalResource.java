@@ -65,10 +65,10 @@ public final class MedicalResource implements Parcelable {
     public static final int MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS = 6;
 
     /**
-     * Medical resource type labelling data as problems (clinical condition, problem, diagnosis
-     * etc).
+     * Medical resource type labelling data as medical conditions (clinical condition, problem,
+     * diagnosis etc).
      */
-    public static final int MEDICAL_RESOURCE_TYPE_PROBLEMS = 7;
+    public static final int MEDICAL_RESOURCE_TYPE_CONDITIONS = 7;
 
     /** Medical resource type labelling data as procedures (actions taken on or for a patient). */
     public static final int MEDICAL_RESOURCE_TYPE_PROCEDURES = 8;
@@ -76,17 +76,41 @@ public final class MedicalResource implements Parcelable {
     /** Medical resource type labelling data as medication related. */
     public static final int MEDICAL_RESOURCE_TYPE_MEDICATIONS = 9;
 
+    /**
+     * Medical resource type labelling data as related to personal details, including demographic
+     * information such as name, date of birth, and contact details such as address or telephone
+     * numbers.
+     */
+    public static final int MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS = 10;
+
+    /**
+     * Medical resource type labelling data as related to practitioners. This is information about
+     * the doctors, nurses, masseurs, physios, etc who have been involved with the user.
+     */
+    public static final int MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS = 11;
+
+    /**
+     * Medical resource type labelling data as related to an encounter with a practitioner. This
+     * includes visits to healthcare providers and remote encounters such as telephone and
+     * videoconference appointments, and information about the time, location and organization who
+     * is being met.
+     */
+    public static final int MEDICAL_RESOURCE_TYPE_VISITS = 12;
+
     /** @hide */
     @IntDef({
         MEDICAL_RESOURCE_TYPE_UNKNOWN,
         MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+        MEDICAL_RESOURCE_TYPE_CONDITIONS,
         MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
         MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
         MEDICAL_RESOURCE_TYPE_MEDICATIONS,
+        MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS,
+        MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS,
         MEDICAL_RESOURCE_TYPE_PREGNANCY,
-        MEDICAL_RESOURCE_TYPE_PROBLEMS,
         MEDICAL_RESOURCE_TYPE_PROCEDURES,
         MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
+        MEDICAL_RESOURCE_TYPE_VISITS,
         MEDICAL_RESOURCE_TYPE_VITAL_SIGNS,
     })
     @Retention(RetentionPolicy.SOURCE)
@@ -213,13 +237,16 @@ public final class MedicalResource implements Parcelable {
             Set.of(
                     MEDICAL_RESOURCE_TYPE_UNKNOWN,
                     MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                    MEDICAL_RESOURCE_TYPE_CONDITIONS,
                     MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
                     MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
                     MEDICAL_RESOURCE_TYPE_MEDICATIONS,
+                    MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS,
+                    MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS,
                     MEDICAL_RESOURCE_TYPE_PREGNANCY,
-                    MEDICAL_RESOURCE_TYPE_PROBLEMS,
                     MEDICAL_RESOURCE_TYPE_PROCEDURES,
                     MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY,
+                    MEDICAL_RESOURCE_TYPE_VISITS,
                     MEDICAL_RESOURCE_TYPE_VITAL_SIGNS);
 
     /**

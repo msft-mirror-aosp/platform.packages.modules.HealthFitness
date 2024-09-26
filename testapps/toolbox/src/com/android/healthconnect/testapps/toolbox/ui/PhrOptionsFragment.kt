@@ -106,6 +106,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
                     view,
                     Uri.parse("example.fhir.com/R4/123"),
                     "My Hospital " + (0..1000).random(),
+                    FhirVersion.parseFhirVersion("4.0.1")
                 )
             }
         }
@@ -234,11 +235,13 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         view: View,
         fhirBaseUri: Uri,
         displayName: String,
+        fhirVersion: FhirVersion,
     ): String {
         val dataSource =
             suspendCancellableCoroutine<MedicalDataSource> { continuation ->
                 healthConnectManager.createMedicalDataSource(
-                    CreateMedicalDataSourceRequest.Builder(fhirBaseUri, displayName).build(),
+                    CreateMedicalDataSourceRequest.Builder(fhirBaseUri, displayName,
+                        fhirVersion).build(),
                     Runnable::run,
                     continuation.asOutcomeReceiver(),
                 )
