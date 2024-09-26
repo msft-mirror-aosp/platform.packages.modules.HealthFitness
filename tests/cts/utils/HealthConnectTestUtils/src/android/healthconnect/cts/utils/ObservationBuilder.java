@@ -35,7 +35,7 @@ import java.util.Map;
  * <p>The Default result will be a valid FHIR Observation, but that is all that should be relied
  * upon. Anything else that is relied upon by a test should be set by one of the methods.
  */
-public class ObservationBuilder {
+public final class ObservationBuilder extends FhirResourceBuilder<ObservationBuilder> {
 
     /** URI representing the LOINC coding system. */
     public static final Uri LOINC = Uri.parse("http://loinc.org");
@@ -212,7 +212,6 @@ public class ObservationBuilder {
                     + "    }"
                     + "  ]"
                     + "}";
-    private final JSONObject mFhir;
 
     /**
      * Creates a default valid FHIR Observation.
@@ -221,22 +220,8 @@ public class ObservationBuilder {
      * set it with the other methods.
      */
     public ObservationBuilder() {
-        try {
-            this.mFhir = new JSONObject(DEFAULT_JSON);
-        } catch (JSONException e) {
-            // Should never happen, but JSONException is declared, and is a checked exception.
-            throw new IllegalStateException(e);
-        }
+        super(DEFAULT_JSON);
         setBloodGlucose(6.3);
-    }
-
-    /**
-     * Set the FHIR id for the Observation.
-     *
-     * @return this Builder.
-     */
-    public ObservationBuilder setId(String id) {
-        return set("id", id);
     }
 
     /**
@@ -288,14 +273,14 @@ public class ObservationBuilder {
         }
         try {
             setCode(LOINC, "15074-8");
-            mFhir.put("valueQuantity", QuantityUnits.MMOL_PER_L.makeFhirQuantity(mmolPerLitre));
+            set("valueQuantity", QuantityUnits.MMOL_PER_L.makeFhirQuantity(mmolPerLitre));
             JSONObject interpretation =
                     makeCodeableConcept(
                             Uri.parse(
                                     "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation"),
                             code,
                             display);
-            mFhir.put("interpretation", new JSONArray(List.of(interpretation)));
+            set("interpretation", new JSONArray(List.of(interpretation)));
             JSONObject range =
                     new JSONObject(
                             Map.of(
@@ -303,7 +288,7 @@ public class ObservationBuilder {
                                     QuantityUnits.MMOL_PER_L.makeFhirQuantity(lowBoundary),
                                     "high",
                                     QuantityUnits.MMOL_PER_L.makeFhirQuantity(highBoundary)));
-            mFhir.put("referenceRange", new JSONArray(List.of(range)));
+            set("referenceRange", new JSONArray(List.of(range)));
 
         } catch (JSONException e) {
             throw new IllegalArgumentException(e);
@@ -394,37 +379,9 @@ public class ObservationBuilder {
      */
     public ObservationBuilder setValueQuantity(Number quantity, QuantityUnits units) {
         try {
-            mFhir.put("valueQuantity", units.makeFhirQuantity(quantity));
-        } catch (JSONException e) {
-            // Should never happen, but JSONException is declared, and is a checked exception.
-            throw new IllegalArgumentException(e);
-        }
-        return this;
-    }
-
-    /**
-     * Sets an arbitrary String or JSON Object element in the observation FHIR.
-     *
-     * @param field the element to set.
-     * @param value the value to set
-     * @return this builder
-     */
-    public ObservationBuilder set(String field, Object value) {
-        try {
-            mFhir.put(field, value);
+            return set("valueQuantity", units.makeFhirQuantity(quantity));
         } catch (JSONException e) {
             throw new IllegalArgumentException(e);
-        }
-        return this;
-    }
-
-    /** Returns the current state of this builder as a JSON FHIR string. */
-    public String toJson() {
-        try {
-            return mFhir.toString(/* indentSpaces= */ 2);
-        } catch (JSONException e) {
-            // Should never happen, but JSONException is declared, and is a checked exception.
-            throw new IllegalStateException(e);
         }
     }
 
@@ -446,5 +403,10 @@ public class ObservationBuilder {
             content.put("display", display);
         }
         return new JSONObject(Map.of("coding", new JSONArray(List.of(new JSONObject(content)))));
+    }
+
+    @Override
+    protected ObservationBuilder returnThis() {
+        return this;
     }
 }

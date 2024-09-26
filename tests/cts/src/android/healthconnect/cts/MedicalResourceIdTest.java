@@ -44,7 +44,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
-@RequiresFlagsEnabled(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+@RequiresFlagsEnabled({
+    Flags.FLAG_PERSONAL_HEALTH_RECORD,
+    Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE
+})
 public class MedicalResourceIdTest {
     @Rule
     public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
@@ -77,7 +80,7 @@ public class MedicalResourceIdTest {
     @Test
     public void testMedicalResourceId_fromFhirReference_unknownFhirResourceType() {
         MedicalResourceId medicalResourceId =
-                MedicalResourceId.fromFhirReference(DATA_SOURCE_ID, "Patient/034-AB16.0");
+                MedicalResourceId.fromFhirReference(DATA_SOURCE_ID, "TestReport/034-AB16.0");
 
         assertThat(medicalResourceId.getDataSourceId()).isEqualTo(DATA_SOURCE_ID);
         assertThat(medicalResourceId.getFhirResourceType()).isEqualTo(FHIR_RESOURCE_TYPE_UNKNOWN);

@@ -31,8 +31,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
-import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.permissions.shared.SettingsActivity
 import com.android.healthconnect.controller.service.HealthPermissionManagerModule
@@ -42,7 +42,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.di.FakeHealthPermissionManager
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.showOnboarding
-import com.android.healthconnect.controller.tests.utils.whenever
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -56,6 +55,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.whenever
 
 @UninstallModules(HealthPermissionManagerModule::class)
 @HiltAndroidTest
@@ -76,7 +76,9 @@ class SettingsActivityTest {
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
         hiltRule.inject()
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
-            TEST_APP_PACKAGE_NAME, listOf())
+            TEST_APP_PACKAGE_NAME,
+            listOf(),
+        )
         whenever(viewModel.grantedFitnessPermissions).then {
             MutableLiveData<Set<FitnessPermission>>(emptySet())
         }
@@ -99,7 +101,9 @@ class SettingsActivityTest {
                 AppMetadata(
                     TEST_APP_PACKAGE_NAME,
                     TEST_APP_NAME,
-                    context.getDrawable(R.drawable.health_connect_logo)))
+                    context.getDrawable(R.drawable.health_connect_logo),
+                )
+            )
         }
         val writePermission =
             FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
@@ -174,7 +178,9 @@ class SettingsActivityTest {
             onView(
                     withText(
                         "Apps with this permission can read and write your" +
-                            " health and fitness data."))
+                            " health and fitness data."
+                    )
+                )
                 .check(matches(isDisplayed()))
         }
     }

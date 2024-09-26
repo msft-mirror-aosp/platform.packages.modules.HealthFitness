@@ -44,9 +44,9 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState.NotStarted
 import com.android.healthconnect.controller.permissions.app.FitnessAppFragment
 import com.android.healthconnect.controller.permissions.app.HealthPermissionStatus
-import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.DISTANCE
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.EXERCISE
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType.READ
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType.WRITE
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
@@ -60,7 +60,6 @@ import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.safeEq
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
 import com.android.healthconnect.controller.utils.logging.DisconnectAppDialogElement
@@ -84,6 +83,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.*
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class FitnessAppFragmentTest {
@@ -126,7 +126,9 @@ class FitnessAppFragmentTest {
                 AppMetadata(
                     TEST_APP_PACKAGE_NAME,
                     TEST_APP_NAME,
-                    context.getDrawable(R.drawable.health_connect_logo)))
+                    context.getDrawable(R.drawable.health_connect_logo),
+                )
+            )
         }
 
         whenever(additionalAccessViewModel.additionalAccessState).then {
@@ -156,7 +158,10 @@ class FitnessAppFragmentTest {
         val scenario =
             launchFragment<FitnessAppFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
             val fragment =
@@ -183,7 +188,10 @@ class FitnessAppFragmentTest {
         val scenario =
             launchFragment<FitnessAppFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
             val fragment =
@@ -212,7 +220,10 @@ class FitnessAppFragmentTest {
         val scenario =
             launchFragment<FitnessAppFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
             val fragment =
@@ -245,7 +256,10 @@ class FitnessAppFragmentTest {
         val scenario =
             launchFragment<FitnessAppFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
             val fragment =
@@ -288,7 +302,10 @@ class FitnessAppFragmentTest {
         val scenario =
             launchFragment<FitnessAppFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
             val fragment =
@@ -318,7 +335,10 @@ class FitnessAppFragmentTest {
         val scenario =
             launchFragment<FitnessAppFragment>(
                 bundleOf(
-                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
 
         scenario.onActivity { activity: TestActivity ->
             val fragment =
@@ -342,7 +362,8 @@ class FitnessAppFragmentTest {
         }
         whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(true) }
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
         onView(withText("Allow all")).perform(click())
 
         onView(withText("Remove all permissions?")).check(matches(isDisplayed()))
@@ -370,7 +391,8 @@ class FitnessAppFragmentTest {
         }
         whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(true) }
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
         onView(withText("Allow all")).perform(click())
 
         onView(withText("Remove all")).perform(click())
@@ -394,7 +416,8 @@ class FitnessAppFragmentTest {
         }
         whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(true) }
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
         onView(withText("Allow all")).perform(click())
 
         onView(withId(R.id.dialog_checkbox)).perform(click())
@@ -417,7 +440,8 @@ class FitnessAppFragmentTest {
         whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
             .thenReturn(Intent())
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onView(
                 withText(
@@ -426,7 +450,9 @@ class FitnessAppFragmentTest {
                         "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -447,10 +473,16 @@ class FitnessAppFragmentTest {
                 AdditionalAccessViewModel.State(
                     historyReadUIState =
                         AdditionalAccessViewModel.AdditionalPermissionState(
-                            isDeclared = true, isEnabled = false, isGranted = false)))
+                            isDeclared = true,
+                            isEnabled = false,
+                            isGranted = false,
+                        )
+                )
+            )
         }
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onIdle()
         onView(
@@ -458,7 +490,9 @@ class FitnessAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -478,7 +512,8 @@ class FitnessAppFragmentTest {
         whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
             .thenReturn(Intent())
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onIdle()
         onView(
@@ -486,7 +521,9 @@ class FitnessAppFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -510,14 +547,17 @@ class FitnessAppFragmentTest {
             .thenReturn(Intent(rationaleAction))
 
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onView(
                 withText(
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -541,7 +581,8 @@ class FitnessAppFragmentTest {
         }
         whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(true) }
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Delete app data")).check(doesNotExist())
     }
@@ -553,7 +594,8 @@ class FitnessAppFragmentTest {
         }
 
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onView(withText(R.string.additional_access_label)).check(doesNotExist())
     }
@@ -563,13 +605,15 @@ class FitnessAppFragmentTest {
         val validState =
             AdditionalAccessViewModel.State(
                 exerciseRoutePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
-                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME)
+                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
 
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onView(withText(R.string.additional_access_label))
             .perform(scrollTo())
@@ -582,13 +626,18 @@ class FitnessAppFragmentTest {
             AdditionalAccessViewModel.State(
                 backgroundReadUIState =
                     AdditionalAccessViewModel.AdditionalPermissionState(
-                        isDeclared = true, isEnabled = false, isGranted = false))
+                        isDeclared = true,
+                        isEnabled = false,
+                        isGranted = false,
+                    )
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
 
         launchFragment<FitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        )
 
         onView(withText(R.string.additional_access_label))
             .perform(scrollTo())
@@ -597,23 +646,24 @@ class FitnessAppFragmentTest {
     }
 
     @Test
-    @Ignore //TODO(b/352003559): Unignore when fixed flakiness.
+    @Ignore // TODO(b/352003559): Unignore when fixed flakiness.
     fun additionalAccessState_onClick_navigatesToAdditionalAccessFragment() {
         val validState =
             AdditionalAccessViewModel.State(
                 exerciseRoutePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
-                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME)
+                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
 
         launchFragment<FitnessAppFragment>(
-            bundleOf(
-                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)) {
-                navHostController.setGraph(R.navigation.nav_graph)
-                navHostController.setCurrentDestination(R.id.fitnessAppFragment)
-                Navigation.setViewNavController(requireView(), navHostController)
-            }
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
+        ) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            navHostController.setCurrentDestination(R.id.fitnessAppFragment)
+            Navigation.setViewNavController(requireView(), navHostController)
+        }
         onView(withText(R.string.additional_access_label)).perform(scrollTo()).perform(click())
 
         onIdle()
