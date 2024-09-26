@@ -41,11 +41,10 @@ import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurned
 import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurnedRecordWithEmptyMetadata;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
+import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByDuration;
@@ -57,6 +56,7 @@ import static android.healthconnect.cts.utils.TestUtils.updateRecords;
 import static android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -398,7 +398,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_noPermission_expectError() throws InterruptedException {
         HealthConnectManager manager = TestUtils.getHealthConnectManager();
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
@@ -415,12 +415,9 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void createMedicalDataSource_noPermission_expectError() throws InterruptedException {
-        CreateMedicalDataSourceRequest request =
-                new CreateMedicalDataSourceRequest.Builder(
-                                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME)
-                        .build();
+        CreateMedicalDataSourceRequest request = getCreateMedicalDataSourceRequest();
         HealthConnectManager manager = TestUtils.getHealthConnectManager();
         HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -432,7 +429,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void upsertMedicalResources_noPermission_expectError() throws InterruptedException {
         HealthConnectManager manager = TestUtils.getHealthConnectManager();
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
@@ -449,7 +446,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void deleteMedicalResourcesByIds_noPermission_expectError() throws InterruptedException {
         HealthConnectManager manager = TestUtils.getHealthConnectManager();
         List<MedicalResourceId> ids =

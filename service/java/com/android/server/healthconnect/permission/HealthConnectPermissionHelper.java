@@ -82,23 +82,6 @@ public final class HealthConnectPermissionHelper {
             Set<String> healthPermissions,
             HealthPermissionIntentAppsTracker permissionIntentTracker,
             FirstGrantTimeManager firstGrantTimeManager,
-            AppInfoHelper appInfoHelper) {
-        this(
-                context,
-                packageManager,
-                healthPermissions,
-                permissionIntentTracker,
-                firstGrantTimeManager,
-                HealthDataCategoryPriorityHelper.getInstance(),
-                appInfoHelper);
-    }
-
-    public HealthConnectPermissionHelper(
-            Context context,
-            PackageManager packageManager,
-            Set<String> healthPermissions,
-            HealthPermissionIntentAppsTracker permissionIntentTracker,
-            FirstGrantTimeManager firstGrantTimeManager,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             AppInfoHelper appInfoHelper) {
         mContext = context;

@@ -54,7 +54,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
 import com.android.healthconnect.controller.tests.utils.getMetaData
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.MigrationElement
@@ -78,6 +77,7 @@ import org.mockito.Mockito
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
@@ -89,7 +89,8 @@ class RouteRequestActivityTest {
                 getMetaData(),
                 START,
                 START.plusMillis(123456),
-                ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING)
+                ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING,
+            )
             .setTitle("Session title")
             .setRoute(
                 ExerciseRoute(
@@ -120,7 +121,9 @@ class RouteRequestActivityTest {
                             .build(),
                         ExerciseRoute.Location.Builder(START.plusSeconds(109), 52.25954, 21.02354)
                             .build(),
-                    )))
+                    )
+                )
+            )
             .build()
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -144,7 +147,10 @@ class RouteRequestActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         whenever(viewModel.isReadRoutesPermissionDeclared(context.packageName)).thenReturn(true)
@@ -209,11 +215,14 @@ class RouteRequestActivityTest {
                             getMetaData(),
                             START,
                             START.plusMillis(123456),
-                            ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING)
+                            ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING,
+                        )
                         .setTitle("Session title")
                         .setRoute(ExerciseRoute(listOf()))
                         .build(),
-                    TEST_APP))
+                    TEST_APP,
+                )
+            )
         }
 
         val scenario = launchActivityForResult<RouteRequestActivity>(startActivityIntent)
@@ -234,11 +243,14 @@ class RouteRequestActivityTest {
                             getMetaData(),
                             START,
                             START.plusMillis(123456),
-                            ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING)
+                            ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING,
+                        )
                         .setTitle("Session title")
                         .setRoute(ExerciseRoute(listOf()))
                         .build(),
-                    TEST_APP))
+                    TEST_APP,
+                )
+            )
         }
 
         val scenario = launchActivityForResult<RouteRequestActivity>(startActivityIntent)
@@ -306,18 +318,30 @@ class RouteRequestActivityTest {
                             getMetaData(),
                             START,
                             START.plusMillis(123456),
-                            ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING)
+                            ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING,
+                        )
                         .setRoute(
                             ExerciseRoute(
                                 listOf(
                                     ExerciseRoute.Location.Builder(
-                                            START.plusSeconds(12), 52.26019, 21.02268)
+                                            START.plusSeconds(12),
+                                            52.26019,
+                                            21.02268,
+                                        )
                                         .build(),
                                     ExerciseRoute.Location.Builder(
-                                            START.plusSeconds(40), 52.26000, 21.02360)
-                                        .build())))
+                                            START.plusSeconds(40),
+                                            52.26000,
+                                            21.02360,
+                                        )
+                                        .build(),
+                                )
+                            )
+                        )
                         .build(),
-                    TEST_APP))
+                    TEST_APP,
+                )
+            )
         }
 
         launchActivityForResult<RouteRequestActivity>(startActivityIntent)
@@ -455,7 +479,8 @@ class RouteRequestActivityTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IN_PROGRESS,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -463,7 +488,10 @@ class RouteRequestActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IN_PROGRESS,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         val startActivityIntent = getRouteActivityIntent()
 
@@ -474,7 +502,9 @@ class RouteRequestActivityTest {
         val scenario = launchActivityForResult<RouteRequestActivity>(startActivityIntent)
         onView(
                 withText(
-                    "Health Connect is being integrated with the Android system.\n\nYou'll get a notification when the process is complete and you can use Health Connect with Health Connect."))
+                    "Health Connect is being integrated with the Android system.\n\nYou'll get a notification when the process is complete and you can use Health Connect with Health Connect."
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Got it")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -499,7 +529,8 @@ class RouteRequestActivityTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IDLE,
                 dataRestoreState = DataRestoreUiState.IN_PROGRESS,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -507,7 +538,10 @@ class RouteRequestActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IN_PROGRESS,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         val startActivityIntent = getRouteActivityIntent()
 
@@ -522,7 +556,9 @@ class RouteRequestActivityTest {
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "Health Connect is restoring data and permissions. This may take some time to complete."))
+                    "Health Connect is restoring data and permissions. This may take some time to complete."
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Got it")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -546,7 +582,8 @@ class RouteRequestActivityTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.APP_UPGRADE_REQUIRED,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -554,7 +591,10 @@ class RouteRequestActivityTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.APP_UPGRADE_REQUIRED,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         val startActivityIntent = getRouteActivityIntent()
 
@@ -566,7 +606,9 @@ class RouteRequestActivityTest {
 
         onView(
                 withText(
-                    "Health Connect is ready to be integrated with your Android system. If you give Health Connect access now, some features may not work until integration is complete."))
+                    "Health Connect is ready to be integrated with your Android system. If you give Health Connect access now, some features may not work until integration is complete."
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         // TODO (b/322495982) check navigation to Migration activity

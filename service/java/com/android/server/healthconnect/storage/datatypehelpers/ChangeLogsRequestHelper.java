@@ -73,7 +73,10 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 
-    public static String getToken(String packageName, ChangeLogTokenRequest request) {
+    public static String getToken(
+            String packageName,
+            ChangeLogTokenRequest request,
+            TransactionManager transactionManager) {
         ContentValues contentValues = new ContentValues();
 
         /**
@@ -88,12 +91,13 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
                 RECORD_TYPES_COLUMN_NAME,
                 StorageUtils.flattenIntArray(request.getRecordTypesArray()));
         contentValues.put(PACKAGE_NAME_COLUMN_NAME, packageName);
-        contentValues.put(ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME, ChangeLogsHelper.getLatestRowId());
+        contentValues.put(
+                ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME,
+                ChangeLogsHelper.getLatestRowId(transactionManager));
         contentValues.put(TIME_COLUMN_NAME, Instant.now().toEpochMilli());
 
         return String.valueOf(
-                TransactionManager.getInitialisedInstance()
-                        .insert(new UpsertTableRequest(TABLE_NAME, contentValues)));
+                transactionManager.insert(new UpsertTableRequest(TABLE_NAME, contentValues)));
     }
 
     public static DeleteTableRequest getDeleteRequestForAutoDelete() {
@@ -118,7 +122,8 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
         return columnInfo;
     }
 
-    public static TokenRequest getRequest(String packageName, String token) {
+    public static TokenRequest getRequest(
+            String packageName, String token, TransactionManager transactionManager) {
         ReadTableRequest readTableRequest =
                 new ReadTableRequest(TABLE_NAME)
                         .setWhereClause(
@@ -126,7 +131,6 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
                                         .addWhereEqualsClause(PRIMARY_COLUMN_NAME, token)
                                         .addWhereEqualsClause(
                                                 PACKAGE_NAME_COLUMN_NAME, packageName));
-        TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
         try (Cursor cursor = transactionManager.read(readTableRequest)) {
             if (!cursor.moveToFirst()) {
                 throw new IllegalArgumentException("Invalid token");
@@ -140,7 +144,10 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
         }
     }
 
-    public static String getNextPageToken(TokenRequest changeLogTokenRequest, long nextRowId) {
+    public static String getNextPageToken(
+            TokenRequest changeLogTokenRequest,
+            TransactionManager transactionManager,
+            long nextRowId) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(
                 PACKAGES_TO_FILTERS_COLUMN_NAME,
@@ -153,8 +160,7 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
         contentValues.put(ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME, nextRowId);
 
         return String.valueOf(
-                TransactionManager.getInitialisedInstance()
-                        .insert(new UpsertTableRequest(TABLE_NAME, contentValues)));
+                transactionManager.insert(new UpsertTableRequest(TABLE_NAME, contentValues)));
     }
 
     /** A class to represent the request corresponding to a token */

@@ -39,7 +39,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TestTimeSource
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.TimeSource
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -51,6 +50,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class DeletionFragmentTest {

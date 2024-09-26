@@ -46,6 +46,27 @@ public class PhrDataFactory {
     private static final int MEDICAL_DATA_SOURCE_DISPLAY_NAME_CHARACTER_LIMIT = 90;
 
     public static final int MAX_ALLOWED_MEDICAL_DATA_SOURCES = 20;
+
+    /**
+     * String version code for FHIR version <a href="https://hl7.org/fhir/r4/versions.html">R4</a>.
+     */
+    public static final String R4_VERSION_STRING = "4.0.1";
+
+    /**
+     * {@link FhirVersion} for FHIR version <a href="https://hl7.org/fhir/r4/versions.html">R4</a>.
+     */
+    public static final FhirVersion FHIR_VERSION_R4 = parseFhirVersion(R4_VERSION_STRING);
+
+    /** String version code for FHIR version <a href="https://www.hl7.org/fhir/R4B/">R4B</a>. */
+    public static final String R4B_VERSION_STRING = "4.3.0";
+
+    /** {@link FhirVersion} for FHIR version <a href="https://www.hl7.org/fhir/R4B/">R4B</a>. */
+    public static final FhirVersion FHIR_VERSION_R4B = parseFhirVersion(R4B_VERSION_STRING);
+
+    public static final String UNSUPPORTED_VERSION_STRING = "4.5.5";
+    public static final FhirVersion FHIR_VERSION_UNSUPPORTED =
+            parseFhirVersion(UNSUPPORTED_VERSION_STRING);
+
     public static final UUID DATA_SOURCE_UUID = UUID.randomUUID();
     public static final String DATA_SOURCE_ID = DATA_SOURCE_UUID.toString();
     public static final String DATA_SOURCE_PACKAGE_NAME = "com.example.app";
@@ -62,6 +83,7 @@ public class PhrDataFactory {
             "d".repeat(MEDICAL_DATA_SOURCE_DISPLAY_NAME_CHARACTER_LIMIT + 1);
     public static final Instant DATA_SOURCE_LAST_DATA_UPDATE_TIME =
             Instant.parse("2024-09-10T00:02:00Z");
+    public static final FhirVersion DATA_SOURCE_FHIR_VERSION = FHIR_VERSION_R4;
     public static final UUID DIFFERENT_DATA_SOURCE_UUID = UUID.randomUUID();
     public static final String DIFFERENT_DATA_SOURCE_ID = DIFFERENT_DATA_SOURCE_UUID.toString();
     public static final String DIFFERENT_DATA_SOURCE_PACKAGE_NAME = "com.other.app";
@@ -70,6 +92,7 @@ public class PhrDataFactory {
     public static final String DIFFERENT_DATA_SOURCE_DISPLAY_NAME = "Doctor Y";
     public static final Instant DIFFERENT_DATA_SOURCE_LAST_DATA_UPDATE_TIME =
             Instant.parse("2023-01-01T00:02:00Z");
+    public static final FhirVersion DIFFERENT_DATA_SOURCE_FHIR_VERSION = FHIR_VERSION_R4B;
 
     public static final String FHIR_DATA_IMMUNIZATION =
             "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization1\"}";
@@ -95,26 +118,6 @@ public class PhrDataFactory {
 
     public static final String RESOURCE_ID_FIELD_NAME = "id";
 
-    /**
-     * String version code for FHIR version <a href="https://hl7.org/fhir/r4/versions.html">R4</a>.
-     */
-    public static final String R4_VERSION_STRING = "4.0.1";
-
-    /**
-     * {@link FhirVersion} for FHIR version <a href="https://hl7.org/fhir/r4/versions.html">R4</a>.
-     */
-    public static final FhirVersion FHIR_VERSION_R4 = parseFhirVersion(R4_VERSION_STRING);
-
-    /** String version code for FHIR version <a href="https://www.hl7.org/fhir/R4B/">R4B</a>. */
-    public static final String R4B_VERSION_STRING = "4.3.0";
-
-    /** {@link FhirVersion} for FHIR version <a href="https://www.hl7.org/fhir/R4B/">R4B</a>. */
-    public static final FhirVersion FHIR_VERSION_R4B = parseFhirVersion(R4B_VERSION_STRING);
-
-    public static final String UNSUPPORTED_VERSION_STRING = "4.5.5";
-    public static final FhirVersion FHIR_VERSION_UNSUPPORTED =
-            parseFhirVersion(UNSUPPORTED_VERSION_STRING);
-
     public static final String PAGE_TOKEN = "111";
 
     /** Creates and returns a {@link MedicalDataSource.Builder} with default arguments. */
@@ -127,12 +130,9 @@ public class PhrDataFactory {
     }
 
     /** Creates and returns a {@link MedicalDataSource.Builder} with default arguments. */
-    public static MedicalDataSource.Builder getMedicalDataSourceBuilderWithLastDataUpdateTime() {
-        return new MedicalDataSource.Builder(
-                        DATA_SOURCE_ID,
-                        DATA_SOURCE_PACKAGE_NAME,
-                        DATA_SOURCE_FHIR_BASE_URI,
-                        DATA_SOURCE_DISPLAY_NAME)
+    public static MedicalDataSource.Builder getMedicalDataSourceBuilderWithOptionalFields() {
+        return getMedicalDataSourceBuilderRequiredFieldsOnly()
+                .setFhirVersion(DATA_SOURCE_FHIR_VERSION)
                 .setLastDataUpdateTime(DATA_SOURCE_LAST_DATA_UPDATE_TIME);
     }
 
@@ -144,8 +144,8 @@ public class PhrDataFactory {
     }
 
     /** Creates and returns a {@link MedicalDataSource} with default arguments. */
-    public static MedicalDataSource getMedicalDataSourceWithLastDataUpdateTime() {
-        return getMedicalDataSourceBuilderWithLastDataUpdateTime().build();
+    public static MedicalDataSource getMedicalDataSourceWithOptionalFields() {
+        return getMedicalDataSourceBuilderWithOptionalFields().build();
     }
 
     /**
@@ -167,7 +167,7 @@ public class PhrDataFactory {
     public static CreateMedicalDataSourceRequest.Builder
             getCreateMedicalDataSourceRequestBuilder() {
         return new CreateMedicalDataSourceRequest.Builder(
-                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME);
+                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME, DATA_SOURCE_FHIR_VERSION);
     }
 
     /**
@@ -179,7 +179,7 @@ public class PhrDataFactory {
             String suffix) {
         Uri fhirBaseUri = Uri.withAppendedPath(DATA_SOURCE_FHIR_BASE_URI, "/" + suffix);
         return new CreateMedicalDataSourceRequest.Builder(
-                fhirBaseUri, DATA_SOURCE_DISPLAY_NAME + " " + suffix);
+                fhirBaseUri, DATA_SOURCE_DISPLAY_NAME + " " + suffix, DATA_SOURCE_FHIR_VERSION);
     }
 
     /** Creates and returns a {@link CreateMedicalDataSourceRequest} with default arguments. */
