@@ -30,67 +30,13 @@ import java.util.Map;
  * href="https://www.hl7.org/fhir/medicationrequest.html">MedicationRequest</a> and <a
  * href="https://www.hl7.org/fhir/medicationstatement.html">MedicationStatement</a>.
  */
-public class MedicationsBuilder {
-
-    private abstract static class ResourceBuilder<T extends ResourceBuilder<T>> {
-        private final JSONObject mFhir;
-
-        private ResourceBuilder(String json) {
-            try {
-                this.mFhir = new JSONObject(json);
-            } catch (JSONException e) {
-                throw new IllegalArgumentException(e);
-            }
-        }
-
-        /**
-         * Help the subclasses return the correct type.
-         *
-         * @return the current object, correctly typed.
-         */
-        protected abstract T returnThis();
-
-        /**
-         * Set the FHIR id for the Observation.
-         *
-         * @return this Builder.
-         */
-        public T setId(String id) {
-            return set("id", id);
-        }
-
-        /**
-         * Sets an arbitrary String or JSON Object element in the observation FHIR.
-         *
-         * @param field the element to set.
-         * @param value the value to set
-         * @return this builder
-         */
-        public T set(String field, Object value) {
-            try {
-                mFhir.put(field, value);
-            } catch (JSONException e) {
-                throw new IllegalArgumentException(e);
-            }
-            return returnThis();
-        }
-
-        /** Returns the current state of this builder as a JSON FHIR string. */
-        public String toJson() {
-            try {
-                return mFhir.toString(/* indentSpaces= */ 2);
-            } catch (JSONException e) {
-                // Should never happen, but JSONException is declared, and is a checked exception.
-                throw new IllegalStateException(e);
-            }
-        }
-    }
+public final class MedicationsBuilder {
 
     /**
      * Builder class for creating FHIR <a
      * href="https://www.hl7.org/fhir/medication.html">Medications</a>
      */
-    public static class MedicationBuilder extends ResourceBuilder<MedicationBuilder> {
+    public static class MedicationBuilder extends FhirResourceBuilder<MedicationBuilder> {
 
         private static final String DEFAULT_MEDICATION_JSON =
                 "{  \"resourceType\" : \"Medication\",  "
@@ -251,7 +197,7 @@ public class MedicationsBuilder {
      * href="https://www.hl7.org/fhir/medicationstatement.html">MedicationStatements</a>
      */
     public static class MedicationStatementR4Builder
-            extends ResourceBuilder<MedicationStatementR4Builder> {
+            extends FhirResourceBuilder<MedicationStatementR4Builder> {
         private static final String DEFAULT_MEDICATION_STATEMENT_JSON =
                 "{  "
                         + "\"resourceType\" : \"MedicationStatement\","
@@ -385,7 +331,8 @@ public class MedicationsBuilder {
         }
     }
 
-    public static class MedicationRequestBuilder extends ResourceBuilder<MedicationRequestBuilder> {
+    public static class MedicationRequestBuilder
+            extends FhirResourceBuilder<MedicationRequestBuilder> {
 
         private static final String DEFAULT_REQUEST_JSON =
                 "{  \"resourceType\": \"MedicationRequest\","

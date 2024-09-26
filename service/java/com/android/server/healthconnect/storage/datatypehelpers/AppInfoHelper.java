@@ -778,6 +778,9 @@ public final class AppInfoHelper extends DatabaseHelper {
         return columnInfo;
     }
 
+    /**
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static AppInfoHelper getInstance() {
         return getInstance(TransactionManager.getInitialisedInstance());
     }

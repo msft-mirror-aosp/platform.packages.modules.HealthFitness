@@ -267,9 +267,12 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"tana harorati"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Tana haroratini oʻqish uchun ruxsat"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Tana harorati haqida maʼlumotlarni yozish"</string>
-    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Barcha tibbiy axborotlar"</string>
-    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"barcha tibbiy axborotlar"</string>
-    <string name="all_medical_data_content_description" msgid="6103488863059447886">"Barcha tibbiy axborotlarni yozish"</string>
+    <!-- no translation found for all_medical_data_uppercase_label (2380759160541898783) -->
+    <skip />
+    <!-- no translation found for all_medical_data_lowercase_label (6293814928992081842) -->
+    <skip />
+    <!-- no translation found for all_medical_data_content_description (4846586780533295022) -->
+    <skip />
     <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"Allergiyalar"</string>
     <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"allergiyalar"</string>
     <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"Allergiyalarni oʻqish"</string>
@@ -281,6 +284,12 @@
     <!-- no translation found for laboratory_results_lowercase_label (6437932041744631964) -->
     <skip />
     <!-- no translation found for laboratory_results_content_description (5882338877203692484) -->
+    <skip />
+    <!-- no translation found for medications_uppercase_label (4783281053427990225) -->
+    <skip />
+    <!-- no translation found for medications_lowercase_label (7808038774503092207) -->
+    <skip />
+    <!-- no translation found for medications_content_description (6165382876281780190) -->
     <skip />
     <!-- no translation found for pregnancy_uppercase_label (5979925175194337864) -->
     <skip />
@@ -357,7 +366,18 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Tanlangan kun"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Avvalgi kun"</string>
     <string name="default_error" msgid="7966868260616403475">"Nimadir xato ketdi. Qayta urining."</string>
-    <string name="raw_fhir_content_description" msgid="4869120157736279594">"Batafsil tibbiy qayd"</string>
+    <!-- no translation found for unkwown_resource (7932225227431922125) -->
+    <skip />
+    <!-- no translation found for raw_fhir_open_bracket (7974657451368655325) -->
+    <skip />
+    <!-- no translation found for raw_fhir_closed_bracket (9084379463440675078) -->
+    <skip />
+    <!-- no translation found for raw_fhir_field_value (369633095565031835) -->
+    <skip />
+    <!-- no translation found for raw_fhir_value (8627152854130338531) -->
+    <skip />
+    <!-- no translation found for raw_fhir_content_description (1491420802097635439) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"Bu ruxsatga ega ilovalar salomatlik va fitnes maʼlumotlaringizni oʻqishi va yozishi mumkin."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connectdagi axborotlar bilan qaysi ilovalar ishlashi mumkinligini boshqaring. Ilova oʻqishi yoki yozishi mumkin boʻlgan maʼlumotlarni koʻrib chiqish uchun ustiga bosing."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Ruxsat berilgan"</string>
@@ -1072,12 +1092,6 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Bu ilovaga orqa fonda yoki avvalgi maʼlumotlarga kirishga ruxsat berish uchun kamida bitta oʻqish ruxsatini faollashtiring"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Bu ilovaga fon rejimida ruxsat berish uchun kamida bitta oʻqish ruxsatini faollashtiring"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Bu ilovaga avvalgi maʼlumotlarga kirishga ruxsat berish uchun kamida bitta oʻqish ruxsatini faollashtiring"</string>
-    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Health Connectdan barcha maʼlumotlar butunlay oʻchirilsinmi?"</string>
-    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Health Connectdan tanlangan maʼlumotlar butunlay oʻchirilsinmi?"</string>
-    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Barcha maʼlumotlar oʻchirildi"</string>
-    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> axboroti oʻchirildi"</string>
-    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> ruxsatlari oʻchirildi"</string>
-    <string name="select_all" msgid="837499881590001166">"Hammasini tanlash"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connect ishlatishni boshlash"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Salomatlik va fitnes maʼlumotlarni oʻzaro ulashadigan ilk ilovalaringizni sinxronlang"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Sozlash"</string>
@@ -1087,4 +1101,43 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Mos ilovalar"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Health Connect orqali <xliff:g id="APP_NAME">%s</xliff:g> bilan sinxronlash uchun boshqa ilovalar toping"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"App Store orqali koʻrish"</string>
+    <string name="select_all" msgid="837499881590001166">"Hammasini tanlash"</string>
+    <!-- no translation found for deletion_confirmation_dialog_body (7643182907084645805) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (2103387413531373305) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (2466281529240054537) -->
+    <skip />
+    <!-- no translation found for all_app_data_selected_deletion_confirmation_dialog (1077157006579195958) -->
+    <skip />
+    <!-- no translation found for some_app_data_selected_deletion_confirmation_dialog (5378172524112070270) -->
+    <skip />
+    <!-- no translation found for all_entries_selected_day_deletion_confirmation_dialog (2887646600541520444) -->
+    <skip />
+    <!-- no translation found for all_entries_selected_week_deletion_confirmation_dialog (6759608395185369048) -->
+    <skip />
+    <!-- no translation found for all_entries_selected_month_deletion_confirmation_dialog (6030161837387559132) -->
+    <skip />
+    <!-- no translation found for some_entries_selected_day_deletion_confirmation_dialog (3481363886097542565) -->
+    <skip />
+    <!-- no translation found for some_entries_selected_week_deletion_confirmation_dialog (7150217982297131340) -->
+    <skip />
+    <!-- no translation found for some_entries_selected_month_deletion_confirmation_dialog (3712014725077445591) -->
+    <skip />
+    <!-- no translation found for one_entry_selected_deletion_confirmation_dialog (4642573082594021789) -->
+    <skip />
+    <!-- no translation found for all_app_entries_selected_day_deletion_confirmation_dialog (2342034541791960151) -->
+    <skip />
+    <!-- no translation found for all_app_entries_selected_week_deletion_confirmation_dialog (24289763841770386) -->
+    <skip />
+    <!-- no translation found for all_app_entries_selected_month_deletion_confirmation_dialog (3240581815583269052) -->
+    <skip />
+    <!-- no translation found for some_app_entries_selected_day_deletion_confirmation_dialog (1030347169774815676) -->
+    <skip />
+    <!-- no translation found for some_app_entries_selected_week_deletion_confirmation_dialog (8009352719322914060) -->
+    <skip />
+    <!-- no translation found for some_app_entries_selected_month_deletion_confirmation_dialog (6617805533334875710) -->
+    <skip />
+    <!-- no translation found for one_app_entry_selected_deletion_confirmation_dialog (7101939753210640660) -->
+    <skip />
 </resources>

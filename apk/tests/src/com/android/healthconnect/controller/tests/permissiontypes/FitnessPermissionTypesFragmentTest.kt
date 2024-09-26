@@ -41,7 +41,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_2
 import com.android.healthconnect.controller.tests.utils.TEST_APP_3
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.DeletionDialogTimeRangeElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -62,6 +61,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class FitnessPermissionTypesFragmentTest {
@@ -107,19 +107,21 @@ class FitnessPermissionTypesFragmentTest {
 
     @Test
     fun deletePermissionTypeData_showsDialog() {
-        Mockito.`when`(viewModel.permissionTypesData).then {
+        whenever(viewModel.permissionTypesData).then {
             MutableLiveData<PermissionTypesState>(
                 PermissionTypesState.WithData(
                     listOf(
                         FitnessPermissionType.DISTANCE,
                         FitnessPermissionType.EXERCISE,
                         FitnessPermissionType.STEPS,
-                    )))
+                    )
+                )
+            )
         }
-        Mockito.`when`(viewModel.appsWithData).then {
+        whenever(viewModel.appsWithData).then {
             MutableLiveData<AppsWithDataFragmentState>(AppsWithDataFragmentState.WithData(listOf()))
         }
-        Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
+        whenever(viewModel.selectedAppFilter).then { MutableLiveData("") }
         launchFragment<HealthPermissionTypesFragment>(activityCategoryBundle())
 
         onView(withText("Delete activity data")).check(matches(isDisplayed()))
@@ -131,13 +133,16 @@ class FitnessPermissionTypesFragmentTest {
             .logImpression(DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_CONTAINER)
         verify(healthConnectLogger)
             .logImpression(
-                DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_LAST_7_DAYS_BUTTON)
+                DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_LAST_7_DAYS_BUTTON
+            )
         verify(healthConnectLogger)
             .logImpression(
-                DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_LAST_24_HOURS_BUTTON)
+                DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_LAST_24_HOURS_BUTTON
+            )
         verify(healthConnectLogger)
             .logImpression(
-                DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_LAST_30_DAYS_BUTTON)
+                DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_LAST_30_DAYS_BUTTON
+            )
         verify(healthConnectLogger)
             .logImpression(DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_NEXT_BUTTON)
         verify(healthConnectLogger)
@@ -146,19 +151,21 @@ class FitnessPermissionTypesFragmentTest {
 
     @Test
     fun permissionTypesFragment_activityCategory_isDisplayed() {
-        Mockito.`when`(viewModel.permissionTypesData).then {
+        whenever(viewModel.permissionTypesData).then {
             MutableLiveData<PermissionTypesState>(
                 PermissionTypesState.WithData(
                     listOf(
                         FitnessPermissionType.DISTANCE,
                         FitnessPermissionType.EXERCISE,
                         FitnessPermissionType.STEPS,
-                    )))
+                    )
+                )
+            )
         }
-        Mockito.`when`(viewModel.appsWithData).then {
+        whenever(viewModel.appsWithData).then {
             MutableLiveData<AppsWithDataFragmentState>(AppsWithDataFragmentState.WithData(listOf()))
         }
-        Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
+        whenever(viewModel.selectedAppFilter).then { MutableLiveData("") }
         launchFragment<HealthPermissionTypesFragment>(activityCategoryBundle())
 
         onView(withText("Active calories burned")).check(doesNotExist())
@@ -189,7 +196,8 @@ class FitnessPermissionTypesFragmentTest {
     fun permissionTypesFragment_activityCategory_trainingPlansAvailable_isDisplayed() {
         whenever(viewModel.permissionTypesData).then {
             MutableLiveData<PermissionTypesState>(
-                PermissionTypesState.WithData(listOf(FitnessPermissionType.PLANNED_EXERCISE)))
+                PermissionTypesState.WithData(listOf(FitnessPermissionType.PLANNED_EXERCISE))
+            )
         }
         whenever(viewModel.appsWithData).then {
             MutableLiveData<AppsWithDataFragmentState>(AppsWithDataFragmentState.WithData(listOf()))
@@ -211,14 +219,15 @@ class FitnessPermissionTypesFragmentTest {
 
     @Test
     fun permissionTypesFragment_sleepCategory_isDisplayed() {
-        Mockito.`when`(viewModel.permissionTypesData).then {
+        whenever(viewModel.permissionTypesData).then {
             MutableLiveData<PermissionTypesState>(
-                PermissionTypesState.WithData(listOf(FitnessPermissionType.SLEEP)))
+                PermissionTypesState.WithData(listOf(FitnessPermissionType.SLEEP))
+            )
         }
-        Mockito.`when`(viewModel.appsWithData).then {
+        whenever(viewModel.appsWithData).then {
             MutableLiveData<AppsWithDataFragmentState>(AppsWithDataFragmentState.WithData(listOf()))
         }
-        Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
+        whenever(viewModel.selectedAppFilter).then { MutableLiveData("") }
         launchFragment<HealthPermissionTypesFragment>(sleepCategoryBundle())
 
         onView(withText("Manage data")).check(matches(isDisplayed()))
@@ -228,20 +237,23 @@ class FitnessPermissionTypesFragmentTest {
 
     @Test
     fun permissionTypesFragment_withTwoOrMoreContributingApps_appFilters_areDisplayed() {
-        Mockito.`when`(viewModel.permissionTypesData).then {
+        whenever(viewModel.permissionTypesData).then {
             MutableLiveData<PermissionTypesState>(
                 PermissionTypesState.WithData(
                     listOf(
                         FitnessPermissionType.DISTANCE,
                         FitnessPermissionType.EXERCISE,
                         FitnessPermissionType.STEPS,
-                    )))
+                    )
+                )
+            )
         }
-        Mockito.`when`(viewModel.appsWithData).then {
+        whenever(viewModel.appsWithData).then {
             MutableLiveData<AppsWithDataFragmentState>(
-                AppsWithDataFragmentState.WithData(listOf(TEST_APP, TEST_APP_2)))
+                AppsWithDataFragmentState.WithData(listOf(TEST_APP, TEST_APP_2))
+            )
         }
-        Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("All apps") }
+        whenever(viewModel.selectedAppFilter).then { MutableLiveData("All apps") }
         launchFragment<HealthPermissionTypesFragment>(activityCategoryBundle())
 
         onView(withText("All apps")).check(matches(isDisplayed()))
@@ -255,16 +267,19 @@ class FitnessPermissionTypesFragmentTest {
 
     @Test
     fun permissionTypesFragment_withLessThanTwoContributingApps_appFilters_areNotDisplayed() {
-        Mockito.`when`(viewModel.permissionTypesData).then {
+        whenever(viewModel.permissionTypesData).then {
             MutableLiveData<PermissionTypesState>(
                 PermissionTypesState.WithData(
-                    listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.EXERCISE)))
+                    listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.EXERCISE)
+                )
+            )
         }
-        Mockito.`when`(viewModel.appsWithData).then {
+        whenever(viewModel.appsWithData).then {
             MutableLiveData<AppsWithDataFragmentState>(
-                AppsWithDataFragmentState.WithData(listOf(TEST_APP_3)))
+                AppsWithDataFragmentState.WithData(listOf(TEST_APP_3))
+            )
         }
-        Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("All apps") }
+        whenever(viewModel.selectedAppFilter).then { MutableLiveData("All apps") }
         launchFragment<HealthPermissionTypesFragment>(activityCategoryBundle())
 
         onView(withText("All apps")).check(doesNotExist())
@@ -273,16 +288,19 @@ class FitnessPermissionTypesFragmentTest {
 
     @Test
     fun permissionTypesFragment_appFilters_areSelectableCorrectly() {
-        Mockito.`when`(viewModel.permissionTypesData).then {
+        whenever(viewModel.permissionTypesData).then {
             MutableLiveData<PermissionTypesState>(
                 PermissionTypesState.WithData(
-                    listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.EXERCISE)))
+                    listOf(FitnessPermissionType.DISTANCE, FitnessPermissionType.EXERCISE)
+                )
+            )
         }
-        Mockito.`when`(viewModel.appsWithData).then {
+        whenever(viewModel.appsWithData).then {
             MutableLiveData<AppsWithDataFragmentState>(
-                AppsWithDataFragmentState.WithData(listOf(TEST_APP, TEST_APP_3)))
+                AppsWithDataFragmentState.WithData(listOf(TEST_APP, TEST_APP_3))
+            )
         }
-        Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("All apps") }
+        whenever(viewModel.selectedAppFilter).then { MutableLiveData("All apps") }
         launchFragment<HealthPermissionTypesFragment>(activityCategoryBundle())
 
         onView(withText(TEST_APP_3.appName)).perform(scrollTo(), click())
@@ -292,19 +310,21 @@ class FitnessPermissionTypesFragmentTest {
 
     @Test
     fun permissionTypesFragment_activityCategory_showsNewAppPriorityButton() {
-        Mockito.`when`(viewModel.permissionTypesData).then {
+        whenever(viewModel.permissionTypesData).then {
             MutableLiveData<PermissionTypesState>(
                 PermissionTypesState.WithData(
                     listOf(
                         FitnessPermissionType.DISTANCE,
                         FitnessPermissionType.EXERCISE,
                         FitnessPermissionType.STEPS,
-                    )))
+                    )
+                )
+            )
         }
-        Mockito.`when`(viewModel.appsWithData).then {
+        whenever(viewModel.appsWithData).then {
             MutableLiveData<AppsWithDataFragmentState>(AppsWithDataFragmentState.WithData(listOf()))
         }
-        Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
+        whenever(viewModel.selectedAppFilter).then { MutableLiveData("") }
         launchFragment<HealthPermissionTypesFragment>(activityCategoryBundle())
 
         onView(withText("Active calories burned")).check(doesNotExist())
@@ -327,14 +347,15 @@ class FitnessPermissionTypesFragmentTest {
 
     @Test
     fun permissionTypesFragment_sleepCategory_showsNewAppPriorityButton() {
-        Mockito.`when`(viewModel.permissionTypesData).then {
+        whenever(viewModel.permissionTypesData).then {
             MutableLiveData<PermissionTypesState>(
-                PermissionTypesState.WithData(listOf(FitnessPermissionType.SLEEP)))
+                PermissionTypesState.WithData(listOf(FitnessPermissionType.SLEEP))
+            )
         }
-        Mockito.`when`(viewModel.appsWithData).then {
+        whenever(viewModel.appsWithData).then {
             MutableLiveData<AppsWithDataFragmentState>(AppsWithDataFragmentState.WithData(listOf()))
         }
-        Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
+        whenever(viewModel.selectedAppFilter).then { MutableLiveData("") }
         launchFragment<HealthPermissionTypesFragment>(sleepCategoryBundle())
 
         onView(withText("Manage data")).check(matches(isDisplayed()))
@@ -344,19 +365,21 @@ class FitnessPermissionTypesFragmentTest {
 
     @Test
     fun permissionTypesFragment_whenBodyMeasurementsCategory_doesNotShowPriorityButton() {
-        Mockito.`when`(viewModel.permissionTypesData).then {
+        whenever(viewModel.permissionTypesData).then {
             MutableLiveData<PermissionTypesState>(
                 PermissionTypesState.WithData(
                     listOf(
                         FitnessPermissionType.BASAL_METABOLIC_RATE,
                         FitnessPermissionType.BODY_FAT,
                         FitnessPermissionType.HEIGHT,
-                    )))
+                    )
+                )
+            )
         }
-        Mockito.`when`(viewModel.appsWithData).then {
+        whenever(viewModel.appsWithData).then {
             MutableLiveData<AppsWithDataFragmentState>(AppsWithDataFragmentState.WithData(listOf()))
         }
-        Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
+        whenever(viewModel.selectedAppFilter).then { MutableLiveData("") }
         launchFragment<HealthPermissionTypesFragment>(bodyMeasurementsCategoryBundle())
 
         onView(withText("Data sources and priority")).check(doesNotExist())
@@ -364,14 +387,15 @@ class FitnessPermissionTypesFragmentTest {
 
     @Test
     fun permissionTypesFragment_whenCycleTrackingCategory_doesNotShowPriorityButton() {
-        Mockito.`when`(viewModel.permissionTypesData).then {
+        whenever(viewModel.permissionTypesData).then {
             MutableLiveData<PermissionTypesState>(
-                PermissionTypesState.WithData(listOf(FitnessPermissionType.MENSTRUATION)))
+                PermissionTypesState.WithData(listOf(FitnessPermissionType.MENSTRUATION))
+            )
         }
-        Mockito.`when`(viewModel.appsWithData).then {
+        whenever(viewModel.appsWithData).then {
             MutableLiveData<AppsWithDataFragmentState>(AppsWithDataFragmentState.WithData(listOf()))
         }
-        Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
+        whenever(viewModel.selectedAppFilter).then { MutableLiveData("") }
         launchFragment<HealthPermissionTypesFragment>(cycleCategoryBundle())
 
         onView(withText("Data sources and priority")).check(doesNotExist())
@@ -379,14 +403,15 @@ class FitnessPermissionTypesFragmentTest {
 
     @Test
     fun permissionTypesFragment_whenNutritionCategory_doesNotShowPriorityButton() {
-        Mockito.`when`(viewModel.permissionTypesData).then {
+        whenever(viewModel.permissionTypesData).then {
             MutableLiveData<PermissionTypesState>(
-                PermissionTypesState.WithData(listOf(FitnessPermissionType.NUTRITION)))
+                PermissionTypesState.WithData(listOf(FitnessPermissionType.NUTRITION))
+            )
         }
-        Mockito.`when`(viewModel.appsWithData).then {
+        whenever(viewModel.appsWithData).then {
             MutableLiveData<AppsWithDataFragmentState>(AppsWithDataFragmentState.WithData(listOf()))
         }
-        Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
+        whenever(viewModel.selectedAppFilter).then { MutableLiveData("") }
         launchFragment<HealthPermissionTypesFragment>(nutritionCategoryBundle())
 
         onView(withText("Data sources and priority")).check(doesNotExist())
@@ -394,14 +419,15 @@ class FitnessPermissionTypesFragmentTest {
 
     @Test
     fun permissionTypesFragment_whenVitalsCategory_doesNotShowPriorityButton() {
-        Mockito.`when`(viewModel.permissionTypesData).then {
+        whenever(viewModel.permissionTypesData).then {
             MutableLiveData<PermissionTypesState>(
-                PermissionTypesState.WithData(listOf(FitnessPermissionType.HEART_RATE)))
+                PermissionTypesState.WithData(listOf(FitnessPermissionType.HEART_RATE))
+            )
         }
-        Mockito.`when`(viewModel.appsWithData).then {
+        whenever(viewModel.appsWithData).then {
             MutableLiveData<AppsWithDataFragmentState>(AppsWithDataFragmentState.WithData(listOf()))
         }
-        Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
+        whenever(viewModel.selectedAppFilter).then { MutableLiveData("") }
         launchFragment<HealthPermissionTypesFragment>(vitalsCategoryBundle())
 
         onView(withText("Data sources and priority")).check(doesNotExist())
@@ -416,7 +442,9 @@ class FitnessPermissionTypesFragmentTest {
     private fun bodyMeasurementsCategoryBundle(): Bundle {
         val bundle = Bundle()
         bundle.putInt(
-            HealthDataCategoriesFragment.CATEGORY_KEY, HealthDataCategory.BODY_MEASUREMENTS)
+            HealthDataCategoriesFragment.CATEGORY_KEY,
+            HealthDataCategory.BODY_MEASUREMENTS,
+        )
         return bundle
     }
 
@@ -445,19 +473,21 @@ class FitnessPermissionTypesFragmentTest {
     }
 
     private fun setupFragmentForNavigationTesting() {
-        Mockito.`when`(viewModel.permissionTypesData).then {
+        whenever(viewModel.permissionTypesData).then {
             MutableLiveData<PermissionTypesState>(
                 PermissionTypesState.WithData(
                     listOf(
                         FitnessPermissionType.DISTANCE,
                         FitnessPermissionType.EXERCISE,
                         FitnessPermissionType.STEPS,
-                    )))
+                    )
+                )
+            )
         }
-        Mockito.`when`(viewModel.appsWithData).then {
+        whenever(viewModel.appsWithData).then {
             MutableLiveData<AppsWithDataFragmentState>(AppsWithDataFragmentState.WithData(listOf()))
         }
-        Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
+        whenever(viewModel.selectedAppFilter).then { MutableLiveData("") }
         launchFragment<HealthPermissionTypesFragment>(activityCategoryBundle()) {
             navHostController.setGraph(R.navigation.data_nav_graph)
             navHostController.setCurrentDestination(R.id.healthPermissionTypesFragment)

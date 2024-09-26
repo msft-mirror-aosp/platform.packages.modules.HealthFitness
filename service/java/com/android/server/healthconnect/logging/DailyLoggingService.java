@@ -20,6 +20,7 @@ import android.content.Context;
 import android.os.UserHandle;
 import android.util.Slog;
 
+import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
@@ -40,17 +41,18 @@ public class DailyLoggingService {
             Context context,
             UserHandle userHandle,
             PreferenceHelper preferenceHelper,
-            AccessLogsHelper accessLogsHelper) {
+            AccessLogsHelper accessLogsHelper,
+            TransactionManager transactionManager) {
         Objects.requireNonNull(context);
         Objects.requireNonNull(userHandle);
 
-        logDatabaseStats(context);
+        logDatabaseStats(context, transactionManager);
         logUsageStats(context, userHandle, preferenceHelper, accessLogsHelper);
     }
 
-    private static void logDatabaseStats(Context context) {
+    private static void logDatabaseStats(Context context, TransactionManager transactionManager) {
         try {
-            DatabaseStatsLogger.log(context);
+            DatabaseStatsLogger.log(context, transactionManager);
         } catch (Exception exception) {
             Slog.e(HEALTH_CONNECT_DAILY_LOGGING_SERVICE, "Failed to log database stats", exception);
         }

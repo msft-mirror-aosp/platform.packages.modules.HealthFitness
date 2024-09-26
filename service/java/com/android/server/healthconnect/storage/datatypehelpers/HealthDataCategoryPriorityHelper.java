@@ -389,6 +389,9 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         return columnInfo;
     }
 
+    /**
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static HealthDataCategoryPriorityHelper getInstance() {
         return getInstance(
                 AppInfoHelper.getInstance(),
