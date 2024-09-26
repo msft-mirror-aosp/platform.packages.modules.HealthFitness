@@ -20,12 +20,11 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
+import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.logging.DisconnectAppDialogElement
@@ -34,18 +33,23 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /**
- * A Dialog Fragment to get confirmation from user for revoking all fitness or medical permissions
- * of an app.
+ * A Dialog Fragment to get confirmation from user for revoking all fitness, medical, or health
+ * permissions of an app.
  */
 @AndroidEntryPoint(DialogFragment::class)
 class DisconnectHealthPermissionsDialogFragment() :
     Hilt_DisconnectHealthPermissionsDialogFragment() {
 
-    private val viewModel: AdditionalAccessViewModel by activityViewModels()
+    private val appPermissionViewModel: AppPermissionViewModel by activityViewModels()
 
-    constructor(appName: String, enableDeleteData: Boolean = true) : this() {
+    constructor(
+        appName: String,
+        enableDeleteData: Boolean = true,
+        disconnectType: DisconnectType = DisconnectType.ALL,
+    ) : this() {
         this.appName = appName
         this.enableDeleteData = enableDeleteData
+        this.disconnectType = disconnectType
     }
 
     companion object {
@@ -57,12 +61,16 @@ class DisconnectHealthPermissionsDialogFragment() :
         const val KEY_ENABLE_DELETE_DATA = "KEY_ENABLE_DELETE_DATA"
         const val KEY_INCLUDE_BACKGROUND_READ = "KEY_INCLUDE_BACKGROUND_READ"
         const val KEY_INCLUDE_HISTORY_READ = "KEY_INCLUDE_HISTORY_READ"
+        const val KEY_DISCONNECT_TYPE = "KEY_INCLUDE_DISCONNECT_TYPE"
+        const val KEY_HAS_MEDICAL_PERMISSIONS = "KEY_HAS_MEDICAL_PERMISSIONS"
     }
 
     lateinit var appName: String
     private var enableDeleteData: Boolean = true
     private var includeBackgroundRead: Boolean = false
     private var includeHistoryRead: Boolean = false
+    private var disconnectType: DisconnectType = DisconnectType.FITNESS
+    private var hasMedicalPermissions: Boolean = false
 
     @Inject lateinit var logger: HealthConnectLogger
 
@@ -74,29 +82,49 @@ class DisconnectHealthPermissionsDialogFragment() :
             includeBackgroundRead =
                 savedInstanceState.getBoolean(KEY_INCLUDE_BACKGROUND_READ, false)
             includeHistoryRead = savedInstanceState.getBoolean(KEY_INCLUDE_HISTORY_READ, false)
+
+            disconnectType =
+                DisconnectType.valueOf(
+                    savedInstanceState.getString(KEY_DISCONNECT_TYPE, DisconnectType.FITNESS.name)
+                )
+
+            hasMedicalPermissions =
+                savedInstanceState.getBoolean(KEY_HAS_MEDICAL_PERMISSIONS, false)
         }
 
-        val additionalPermissionsState =
-            viewModel.additionalAccessState.value ?: AdditionalAccessViewModel.State()
-        includeHistoryRead = additionalPermissionsState.historyReadUIState.isDeclared
-        includeBackgroundRead = additionalPermissionsState.backgroundReadUIState.isDeclared
+        includeHistoryRead =
+            when (disconnectType) {
+                DisconnectType.FITNESS -> {
+                    appPermissionViewModel.revokeFitnessShouldIncludePastData()
+                }
+                DisconnectType.MEDICAL -> {
+                    appPermissionViewModel.revokeMedicalShouldIncludePastData()
+                }
+                else -> {
+                    appPermissionViewModel.revokeAllShouldIncludePastData()
+                }
+            }
+
+        includeBackgroundRead =
+            when (disconnectType) {
+                DisconnectType.FITNESS -> {
+                    appPermissionViewModel.revokeFitnessShouldIncludeBackground()
+                }
+                DisconnectType.MEDICAL -> {
+                    appPermissionViewModel.revokeMedicalShouldIncludeBackground()
+                }
+                DisconnectType.ALL -> {
+                    appPermissionViewModel.revokeAllShouldIncludeBackground()
+                }
+            }
+
+        hasMedicalPermissions =
+            appPermissionViewModel.medicalPermissions.value.orEmpty().isNotEmpty()
 
         val body = layoutInflater.inflate(R.layout.dialog_message_with_checkbox, null)
-        body.findViewById<TextView>(R.id.dialog_message).apply {
-            text =
-                if (includeBackgroundRead && includeHistoryRead) {
-                    getString(R.string.permissions_disconnect_dialog_message_combined, appName)
-                } else if (includeBackgroundRead) {
-                    getString(R.string.permissions_disconnect_dialog_message_background, appName)
-                } else if (includeHistoryRead) {
-                    getString(R.string.permissions_disconnect_dialog_message_history, appName)
-                } else {
-                    getString(R.string.permissions_disconnect_dialog_message, appName)
-                }
-        }
-        body.findViewById<TextView>(R.id.dialog_title).apply {
-            text = getString(R.string.permissions_disconnect_dialog_title)
-        }
+        body.findViewById<TextView>(R.id.dialog_message).apply { text = buildMessage() }
+
+        body.findViewById<TextView>(R.id.dialog_title).apply { text = buildTitle() }
         val iconView = body.findViewById(R.id.dialog_icon) as ImageView
         val iconDrawable =
             AttributeResolver.getNullableDrawable(body.context, R.attr.disconnectIcon)
@@ -106,8 +134,8 @@ class DisconnectHealthPermissionsDialogFragment() :
         }
         val checkBox =
             body.findViewById<CheckBox>(R.id.dialog_checkbox).apply {
-                text = getString(R.string.permissions_disconnect_dialog_checkbox, appName)
-                isVisible = enableDeleteData
+                text = buildCheckboxText()
+                visibility = if (enableDeleteData) View.VISIBLE else View.GONE
             }
         checkBox.setOnCheckedChangeListener { _, _ ->
             logger.logInteraction(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
@@ -141,11 +169,136 @@ class DisconnectHealthPermissionsDialogFragment() :
         return dialog
     }
 
+    private fun buildMessage(): String {
+        return when (disconnectType) {
+            DisconnectType.FITNESS -> {
+                if (hasMedicalPermissions) {
+                    getDisconnectMessageForFitnessOrMedicalPermissions()
+                } else {
+                    getDisconnectMessageForFitnessWithoutMedicalPermissions()
+                }
+            }
+            DisconnectType.MEDICAL -> {
+                getDisconnectMessageForFitnessOrMedicalPermissions()
+            }
+            DisconnectType.ALL -> {
+                getDisconnectMessageForAllPermissions()
+            }
+        }
+    }
+
+    private fun getDisconnectMessageForFitnessOrMedicalPermissions(): String {
+        return if (includeBackgroundRead && includeHistoryRead) {
+            getString(
+                R.string
+                    .disconnect_all_fitness_or_medical_and_additional_permissions_dialog_message,
+                appName,
+            )
+        } else if (includeBackgroundRead) {
+            getString(
+                R.string
+                    .disconnect_all_fitness_or_medical_and_background_permissions_dialog_message,
+                appName,
+            )
+        } else if (includeHistoryRead) {
+            getString(
+                R.string
+                    .disconnect_all_fitness_or_medical_and_historical_permissions_dialog_message,
+                appName,
+            )
+        } else {
+            getString(
+                R.string.disconnect_all_fitness_or_medical_no_additional_permissions_dialog_message,
+                appName,
+            )
+        }
+    }
+
+    private fun getDisconnectMessageForFitnessWithoutMedicalPermissions(): String {
+        return if (includeBackgroundRead && includeHistoryRead) {
+            getString(R.string.permissions_disconnect_dialog_message_combined, appName)
+        } else if (includeBackgroundRead) {
+            getString(R.string.permissions_disconnect_dialog_message_background, appName)
+        } else if (includeHistoryRead) {
+            getString(R.string.permissions_disconnect_dialog_message_history, appName)
+        } else {
+            getString(R.string.permissions_disconnect_dialog_message, appName)
+        }
+    }
+
+    private fun getDisconnectMessageForAllPermissions(): String {
+        return if (includeBackgroundRead && includeHistoryRead) {
+            getString(
+                R.string.disconnect_all_health_and_additional_permissions_dialog_message,
+                appName,
+            )
+        } else if (includeBackgroundRead) {
+            getString(
+                R.string.disconnect_all_health_and_background_permissions_dialog_message,
+                appName,
+            )
+        } else if (includeHistoryRead) {
+            getString(
+                R.string.disconnect_all_health_and_historical_permissions_dialog_message,
+                appName,
+            )
+        } else {
+            getString(
+                R.string.disconnect_all_health_no_additional_permissions_dialog_message,
+                appName,
+            )
+        }
+    }
+
+    private fun buildTitle(): String {
+        return when (disconnectType) {
+            DisconnectType.FITNESS -> {
+                if (hasMedicalPermissions) {
+                    getString(R.string.disconnect_all_fitness_permissions_title)
+                } else {
+                    getString(R.string.permissions_disconnect_dialog_title)
+                }
+            }
+            DisconnectType.MEDICAL -> {
+                getString(R.string.disconnect_all_medical_permissions_title)
+            }
+            DisconnectType.ALL -> {
+                getString(R.string.disconnect_all_health_permissions_title)
+            }
+        }
+    }
+
+    private fun buildCheckboxText(): String {
+        return when (disconnectType) {
+            DisconnectType.FITNESS -> {
+                if (hasMedicalPermissions) {
+                    getString(R.string.disconnect_all_fitness_permissions_dialog_checkbox, appName)
+                } else {
+                    getString(R.string.permissions_disconnect_dialog_checkbox, appName)
+                }
+            }
+            DisconnectType.MEDICAL -> {
+                getString(R.string.disconnect_all_medical_permissions_dialog_checkbox, appName)
+            }
+            DisconnectType.ALL -> {
+                getString(R.string.disconnect_all_health_permissions_dialog_checkbox, appName)
+            }
+        }
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(KEY_APP_NAME, appName)
         outState.putBoolean(KEY_ENABLE_DELETE_DATA, enableDeleteData)
         outState.putBoolean(KEY_INCLUDE_BACKGROUND_READ, includeBackgroundRead)
         outState.putBoolean(KEY_INCLUDE_HISTORY_READ, includeHistoryRead)
+        outState.putString(KEY_DISCONNECT_TYPE, disconnectType.name)
+        outState.putBoolean(KEY_HAS_MEDICAL_PERMISSIONS, hasMedicalPermissions)
+    }
+
+    enum class DisconnectType {
+        MEDICAL,
+        FITNESS,
+        ALL,
     }
 }
