@@ -37,7 +37,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Request to delete Medical resources using {@link HealthConnectManager#deleteMedicalResources}.
+ * A delete request for {@link HealthConnectManager#deleteMedicalResources}.
  *
  * <p>Each field in the request acts as a cumulative filter. So if a set of data sources and a set
  * of types are specified, then only resources which are both from data sources in the given set and
@@ -52,6 +52,10 @@ public final class DeleteMedicalResourcesRequest implements Parcelable {
     @NonNull private final Set<String> mDataSourceIds;
     @NonNull @MedicalResourceType private final Set<Integer> mMedicalResourceTypes;
 
+    /**
+     * Creates a new instance of {@link DeleteMedicalResourcesRequest}. Please see {@link
+     * DeleteMedicalResourcesRequest.Builder} for more detailed parameters information.
+     */
     private DeleteMedicalResourcesRequest(
             @NonNull Set<String> dataSourceIds,
             @NonNull @MedicalResourceType Set<Integer> medicalResourceTypes) {
@@ -101,9 +105,9 @@ public final class DeleteMedicalResourcesRequest implements Parcelable {
             };
 
     /**
-     * Gets the ids for the data sources that are being requested to delete.
+     * Returns the IDs for the {@link MedicalDataSource} that are being requested to delete.
      *
-     * <p>These ids should come from {@link HealthConnectManager#createMedicalDataSource}, or other
+     * <p>These IDs should come from {@link HealthConnectManager#createMedicalDataSource}, or other
      * {@link HealthConnectManager} data source methods.
      *
      * <p>If the set is empty it means resources from any data source should be deleted.
@@ -114,7 +118,7 @@ public final class DeleteMedicalResourcesRequest implements Parcelable {
     }
 
     /**
-     * Gets the Medical resource types that should be deleted.
+     * Returns the {@link MedicalResource} types that should be deleted.
      *
      * <p>If the set is empty it means resources of all types should be deleted.
      */
@@ -163,18 +167,27 @@ public final class DeleteMedicalResourcesRequest implements Parcelable {
         private final Set<String> mDataSourceIds = new HashSet<>();
         @MedicalResourceType private final Set<Integer> mMedicalResourceTypes = new HashSet<>();
 
-        /** Constructs a new {@link Builder} with no data sources set. */
+        /** Constructs a new {@link DeleteMedicalResourcesRequest.Builder} with no filters. */
         public Builder() {}
 
-        /** Constructs a new {@link Builder} copying all settings from {@code other}. */
+        /** Constructs a clone of the other {@link DeleteMedicalResourcesRequest.Builder}. */
         public Builder(@NonNull Builder other) {
             mDataSourceIds.addAll(other.mDataSourceIds);
             mMedicalResourceTypes.addAll(other.mMedicalResourceTypes);
         }
 
+        /** Constructs a clone of the other {@link DeleteMedicalResourcesRequest} instance. */
+        public Builder(@NonNull DeleteMedicalResourcesRequest other) {
+            mDataSourceIds.addAll(other.getDataSourceIds());
+            mMedicalResourceTypes.addAll(other.getMedicalResourceTypes());
+        }
+
         /**
          * Adds the data source ID to request to delete. This should be an ID of the existing {@link
          * MedicalDataSource}.
+         *
+         * <p>If the set of data source IDs is empty, it means resources from any data source should
+         * be deleted.
          *
          * @throws IllegalArgumentException if the provided {@code dataSourceId} is not a valid ID.
          */
@@ -212,9 +225,10 @@ public final class DeleteMedicalResourcesRequest implements Parcelable {
         }
 
         /**
-         * Builds a {@link DeleteMedicalResourcesRequest} from this Builder.
+         * Returns a new instance of {@link DeleteMedicalResourcesRequest} with the specified
+         * parameters.
          *
-         * @throws IllegalArgumentException if no data source ids or medical resource types have
+         * @throws IllegalArgumentException if no data source IDs or medical resource types have
          *     been added.
          */
         @NonNull

@@ -66,6 +66,7 @@ package android.health.connect {
   public static final class DeleteMedicalResourcesRequest.Builder {
     ctor public DeleteMedicalResourcesRequest.Builder();
     ctor public DeleteMedicalResourcesRequest.Builder(@NonNull android.health.connect.DeleteMedicalResourcesRequest.Builder);
+    ctor public DeleteMedicalResourcesRequest.Builder(@NonNull android.health.connect.DeleteMedicalResourcesRequest);
     method @NonNull public android.health.connect.DeleteMedicalResourcesRequest.Builder addDataSourceId(@NonNull String);
     method @NonNull public android.health.connect.DeleteMedicalResourcesRequest.Builder addMedicalResourceType(int);
     method @NonNull public android.health.connect.DeleteMedicalResourcesRequest build();
@@ -82,8 +83,11 @@ package android.health.connect {
 
   public static final class GetMedicalDataSourcesRequest.Builder {
     ctor public GetMedicalDataSourcesRequest.Builder();
+    ctor public GetMedicalDataSourcesRequest.Builder(@NonNull android.health.connect.GetMedicalDataSourcesRequest.Builder);
+    ctor public GetMedicalDataSourcesRequest.Builder(@NonNull android.health.connect.GetMedicalDataSourcesRequest);
     method @NonNull public android.health.connect.GetMedicalDataSourcesRequest.Builder addPackageName(@NonNull String);
     method @NonNull public android.health.connect.GetMedicalDataSourcesRequest build();
+    method @NonNull public android.health.connect.GetMedicalDataSourcesRequest.Builder clearPackageNames();
   }
 
   public class HealthConnectException extends java.lang.RuntimeException {

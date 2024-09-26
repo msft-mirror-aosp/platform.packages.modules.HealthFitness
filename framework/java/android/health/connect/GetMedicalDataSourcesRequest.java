@@ -23,7 +23,7 @@ import static java.util.Objects.requireNonNull;
 
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
-import android.os.OutcomeReceiver;
+import android.health.connect.datatypes.MedicalDataSource;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.ArraySet;
@@ -31,15 +31,13 @@ import android.util.ArraySet;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.Executor;
 
 /**
- * Request to read medical data sources using {@link
- * HealthConnectManager#getMedicalDataSources(GetMedicalDataSourcesRequest, Executor,
- * OutcomeReceiver)}.
+ * A create request for {@link HealthConnectManager#getMedicalDataSources}.
  *
- * <p>If no package names are set requests all data sources from all packages. Otherwise the request
- * is limited to the requested package names.
+ * <p>If no {@link GetMedicalDataSourcesRequest#getPackageNames() package names} are set, requests
+ * all {@link MedicalDataSource}s from all packages. Otherwise the request is limited to the
+ * requested package names.
  */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class GetMedicalDataSourcesRequest implements Parcelable {
@@ -60,6 +58,10 @@ public final class GetMedicalDataSourcesRequest implements Parcelable {
 
     @NonNull private final Set<String> mPackageNames;
 
+    /**
+     * Creates a new instance of {@link GetMedicalDataSourcesRequest}. Please see {@link
+     * GetMedicalDataSourcesRequest.Builder} for more detailed parameters information.
+     */
     private GetMedicalDataSourcesRequest(@NonNull Set<String> packageNames) {
         Objects.requireNonNull(packageNames);
         mPackageNames = packageNames;
@@ -75,8 +77,8 @@ public final class GetMedicalDataSourcesRequest implements Parcelable {
     }
 
     /**
-     * Gets the package names for which datasources are being requested. If data sources for all
-     * apps are requested, the result will be empty..
+     * Returns the package names for which {@link MedicalDataSource}s are being requested, or an
+     * empty set for no filter.
      */
     @NonNull
     public Set<String> getPackageNames() {
@@ -114,17 +116,30 @@ public final class GetMedicalDataSourcesRequest implements Parcelable {
         return sb.toString();
     }
 
-    /** Builder for a {@link GetMedicalDataSourcesRequest}. */
+    /** Builder class for {@link GetMedicalDataSourcesRequest}. */
     public static final class Builder {
         private final Set<String> mPackageNames = new ArraySet<>();
 
+        /** Constructs a new {@link GetMedicalDataSourcesRequest.Builder} with no filters set. */
         public Builder() {}
 
+        /** Constructs a clone of the other {@link GetMedicalDataSourcesRequest.Builder}. */
+        public Builder(@NonNull Builder other) {
+            requireNonNull(other);
+            mPackageNames.addAll(other.mPackageNames);
+        }
+
+        /** Constructs a clone of the other {@link GetMedicalDataSourcesRequest} instance. */
+        public Builder(@NonNull GetMedicalDataSourcesRequest other) {
+            requireNonNull(other);
+            mPackageNames.addAll(other.getPackageNames());
+        }
+
         /**
-         * Add a package name to limit this request to.
+         * Adds a package name to limit this request to.
          *
-         * <p>If the list of package names is empty, medical data sources for all packages will be
-         * requested. Otherwise only data sources for the added package names are requested.
+         * <p>If the list of package names is empty, {@link MedicalDataSource}s for all packages
+         * will be requested. Otherwise only those for the added package names are requested.
          */
         @NonNull
         public Builder addPackageName(@NonNull String packageName) {
@@ -133,7 +148,17 @@ public final class GetMedicalDataSourcesRequest implements Parcelable {
             return this;
         }
 
-        /** Returns a {@link GetMedicalDataSourcesRequest} as specified by this builder. */
+        /** Clears all package names. */
+        @NonNull
+        public Builder clearPackageNames() {
+            mPackageNames.clear();
+            return this;
+        }
+
+        /**
+         * Returns a new instance of {@link GetMedicalDataSourcesRequest} with the specified
+         * parameters.
+         */
         @NonNull
         public GetMedicalDataSourcesRequest build() {
             return new GetMedicalDataSourcesRequest(mPackageNames);

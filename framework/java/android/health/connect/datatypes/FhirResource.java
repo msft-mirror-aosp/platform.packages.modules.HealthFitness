@@ -34,9 +34,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Set;
 
 /**
- * Captures the FHIR resource data. This is the class used for all supported FHIR resource types,
- * which is a subset of the resource list in <a href="https://build.fhir.org/resourcelist.html">the
- * official FHIR website</a>.
+ * A class to capture the FHIR resource data. This is the class used for all supported FHIR resource
+ * types, which is a subset of the resource list in <a
+ * href="https://build.fhir.org/resourcelist.html">the official FHIR website</a>.
  *
  * <p>FHIR stands for the <a href="https://hl7.org/fhir/">Fast Healthcare Interoperability Resources
  * </a> standard.
@@ -152,6 +152,10 @@ public final class FhirResource implements Parcelable {
     @NonNull private final String mId;
     @NonNull private final String mData;
 
+    /**
+     * Creates a new instance of {@link FhirResource}. Please see {@link FhirResource.Builder} for
+     * more detailed parameters information.
+     */
     private FhirResource(@FhirResourceType int type, @NonNull String id, @NonNull String data) {
         validateFhirResourceType(type);
         requireNonNull(id);
@@ -217,7 +221,6 @@ public final class FhirResource implements Parcelable {
         return 0;
     }
 
-    /** Populates a {@link Parcel} with the self information. */
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         requireNonNull(dest);
@@ -260,7 +263,6 @@ public final class FhirResource implements Parcelable {
         validateIntDefValue(fhirResourceType, VALID_TYPES, FhirResourceType.class.getSimpleName());
     }
 
-    /** Indicates whether some other object is "equal to" this one. */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -270,13 +272,11 @@ public final class FhirResource implements Parcelable {
                 && getData().equals(that.getData());
     }
 
-    /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
         return hash(getType(), getId(), getData());
     }
 
-    /** Returns a string representation of this {@link FhirResource}. */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -288,13 +288,15 @@ public final class FhirResource implements Parcelable {
         return sb.toString();
     }
 
-    /** Builder class for {@link FhirResource} */
+    /** Builder class for {@link FhirResource}. */
     public static final class Builder {
         @FhirResourceType private int mType;
         @NonNull private String mId;
         @NonNull private String mData;
 
         /**
+         * Constructs a new {@link FhirResource.Builder} instance.
+         *
          * @param type The FHIR resource type extracted from the "resourceType" field in {@code
          *     data}.
          * @param id The FHIR resource ID extracted from the "id" field in {@code data}.
@@ -312,26 +314,20 @@ public final class FhirResource implements Parcelable {
             mData = data;
         }
 
-        /**
-         * @param original The other {@link FhirResource.Builder} to provide data to construct this
-         *     new instance from.
-         */
-        public Builder(@NonNull Builder original) {
-            requireNonNull(original);
-            mType = original.mType;
-            mId = original.mId;
-            mData = original.mData;
+        /** Constructs a clone of the other {@link FhirResource.Builder}. */
+        public Builder(@NonNull Builder other) {
+            requireNonNull(other);
+            mType = other.mType;
+            mId = other.mId;
+            mData = other.mData;
         }
 
-        /**
-         * @param original The other {@link FhirResource} instance to provide data to construct this
-         *     new instance from.
-         */
-        public Builder(@NonNull FhirResource original) {
-            requireNonNull(original);
-            mType = original.getType();
-            mId = original.getId();
-            mData = original.getData();
+        /** Constructs a clone of the other {@link FhirResource} instance. */
+        public Builder(@NonNull FhirResource other) {
+            requireNonNull(other);
+            mType = other.getType();
+            mId = other.getId();
+            mData = other.getData();
         }
 
         /**
