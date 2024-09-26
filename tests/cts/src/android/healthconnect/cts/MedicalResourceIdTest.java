@@ -44,7 +44,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
-@RequiresFlagsEnabled(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+@RequiresFlagsEnabled({
+    Flags.FLAG_PERSONAL_HEALTH_RECORD,
+    Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE
+})
 public class MedicalResourceIdTest {
     @Rule
     public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
