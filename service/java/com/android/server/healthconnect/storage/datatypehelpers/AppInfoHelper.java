@@ -197,9 +197,11 @@ public final class AppInfoHelper extends DatabaseHelper {
             @NonNull Context context,
             @NonNull String packageName,
             @Nullable String name,
-            @Nullable byte[] icon,
+            @Nullable byte[] maybeIcon,
             boolean onlyUpdate) {
         if (!isAppInstalled(context, packageName)) {
+            byte[] icon =
+                    maybeIcon == null ? getIconFromPackageName(context, packageName) : maybeIcon;
             // using pre-existing value of recordTypesUsed.
             @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
             var recordTypesUsed =
@@ -217,7 +219,27 @@ public final class AppInfoHelper extends DatabaseHelper {
         }
     }
 
-    private boolean isAppInstalled(@NonNull Context context, @NonNull String packageName) {
+    /**
+     * Inserts the application info of the specified {@code packageName} with the specified {@code
+     * name} and {@code icon}, only if no AppInfo entry already exists.
+     */
+    public void addOrUpdateAppInfoIfNoAppInfoEntryExists(
+            Context context, String packageName, @Nullable String name) {
+        if (!containsAppInfo(packageName)) {
+            byte[] icon = getIconFromPackageName(context, packageName);
+            @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+            var recordTypesUsed =
+                    containsAppInfo(packageName)
+                            ? mAppInfoMap.get(packageName).getRecordTypesUsed()
+                            : null;
+            AppInfoInternal appInfoInternal =
+                    new AppInfoInternal(
+                            DEFAULT_LONG, packageName, name, decodeBitmap(icon), recordTypesUsed);
+            insertIfNotPresent(packageName, appInfoInternal);
+        }
+    }
+
+    private boolean isAppInstalled(@NonNull Context context, @NonNull String packageName) { {
         try {
             context.getPackageManager().getApplicationInfo(packageName, ApplicationInfoFlags.of(0));
             return true;
@@ -242,6 +264,10 @@ public final class AppInfoHelper extends DatabaseHelper {
         return appInfo.getId();
     }
 
+    /**
+     * @param packageName Name of package being checked.
+     * @return Boolean stating whether a record for the package being queried exists already.
+     */
     private boolean containsAppInfo(String packageName) {
         return getAppInfoMap().containsKey(packageName);
     }

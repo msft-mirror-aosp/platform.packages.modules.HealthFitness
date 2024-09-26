@@ -28,6 +28,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorIntegerList;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
 import android.content.ContentValues;
@@ -38,6 +39,7 @@ import android.health.connect.accesslog.AccessLog.OperationType;
 import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.util.Pair;
+import android.util.Slog;
 
 import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.internal.annotations.VisibleForTesting;
@@ -48,6 +50,7 @@ import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.OrderByClause;
+import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -68,6 +71,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
     private static final String APP_ID_COLUMN_NAME = "app_id";
     private static final String ACCESS_TIME_COLUMN_NAME = "access_time";
     private static final String OPERATION_TYPE_COLUMN_NAME = "operation_type";
+    private static final String TAG = "AccessLogHelper";
 
     @VisibleForTesting
     static final String MEDICAL_RESOURCE_TYPE_COLUMN_NAME = "medical_resource_type";
@@ -96,6 +100,10 @@ public final class AccessLogsHelper extends DatabaseHelper {
             while (cursor.moveToNext()) {
                 String packageName =
                         appInfoHelper.getPackageName(getCursorLong(cursor, APP_ID_COLUMN_NAME));
+                if (packageName == null) {
+                    Slog.w(TAG, "encounter null package name while query access logs");
+                    continue;
+                }
                 @RecordTypeIdentifier.RecordType
                 List<Integer> recordTypes =
                         getCursorIntegerList(cursor, RECORD_TYPE_COLUMN_NAME, DELIMITER);
@@ -134,10 +142,16 @@ public final class AccessLogsHelper extends DatabaseHelper {
      * Returns the timestamp of the latest access log and {@link Long#MIN_VALUE} if there is no
      * access log.
      */
-    public static long getLatestAccessLogTimeStamp() {
-
+    public static long getLatestUpsertOrReadOperationAccessLogTimeStamp() {
         final ReadTableRequest readTableRequest =
                 new ReadTableRequest(TABLE_NAME)
+                        .setWhereClause(
+                                new WhereClauses(AND)
+                                        .addWhereInIntsClause(
+                                                OPERATION_TYPE_COLUMN_NAME,
+                                                List.of(
+                                                        OPERATION_TYPE_READ,
+                                                        OPERATION_TYPE_UPSERT)))
                         .setOrderBy(
                                 new OrderByClause()
                                         .addOrderByClause(ACCESS_TIME_COLUMN_NAME, false))
