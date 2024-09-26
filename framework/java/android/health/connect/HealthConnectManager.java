@@ -86,6 +86,7 @@ import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.DataOrigin;
+import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Record;
@@ -2065,23 +2066,25 @@ public class HealthConnectManager {
     }
 
     /**
-     * Inserts or updates a list of {@link MedicalResource}s into the HealthConnect database.
+     * Inserts or updates a list of {@link MedicalResource}s into the HealthConnect database using
+     * {@link UpsertMedicalResourceRequest}.
      *
      * <p>Medical data is represented using the <a href="https://hl7.org/fhir/">Fast Healthcare
      * Interoperability Resources (FHIR)</a> standard.
      *
-     * <p>The returned list of {@link MedicalResource}s will be in the same order as the {@code
-     * requests}.
+     * <p>For each {@link UpsertMedicalResourceRequest}, one {@link MedicalResource} will be
+     * returned.The returned list of {@link MedicalResource}s will be in the same order as the
+     * {@code requests}.
      *
-     * <p>The uniqueness is calculated comparing the combination of {@link
+     * <p>If any request is deemed invalid, the caller will receive an exception with code {@link
+     * HealthConnectException#ERROR_INVALID_ARGUMENT} via {@code callback.onError()}, and none of
+     * the {@code requests} will be upserted into the HealthConnect database.
+     *
+     * <p>The uniqueness of each request is calculated comparing the combination of {@link
      * UpsertMedicalResourceRequest#getDataSourceId() data source id}, FHIR resource type and FHIR
-     * resource id extracted from the provided {@link MedicalResource} data. If there is no match,
-     * then a new {@link MedicalResource} is inserted, otherwise the existing one is updated.
-     *
-     * <p>If an invalid {@link UpsertMedicalResourceRequest#getDataSourceId() data source id} is
-     * provided, this will throw an {@link IllegalArgumentException} with the first data source id
-     * that is invalid. In this case, none of the given {@link UpsertMedicalResourceRequest}s will
-     * be upserted into the HealthConnect database.
+     * resource ID extracted from the provided {@link UpsertMedicalResourceRequest#getData() data}.
+     * If the above combination does not match with an existing one in Health Connect, then a new
+     * {@link MedicalResource} is inserted, otherwise the existing one is updated.
      */
     // Suppress missing because API flagged out.
     // TODO: b/355156275 - remove suppression once API not flagged out.
@@ -2127,34 +2130,44 @@ public class HealthConnectManager {
      * <p>The returned list of {@link MedicalResource}s will be in the same order as the {@code
      * ids}.
      *
-     * <p>Number of resources returned by this API will depend based on below factors:
+     * <p>Number of medical resources returned by this API will depend based on below factors:
      *
      * <ul>
-     *   <li>When an app with read permissions allowed for the requested IDs but without the {@link
-     *       android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} calls the API
-     *       from background then it will be able to read only its own inserted medical resources
-     *       and will not get medical resources inserted by other apps. This may be less than the
-     *       requested size.
-     *   <li>When an app with read permissions allowed for the requested IDs and with the {@link
-     *       android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} calls the API
-     *       from background then it will be able to read the medical resources it has read
-     *       permissions for. This has the same size the app can read from foreground.
-     *   <li>When an app with all read permissions allowed for the requested IDs calls the API from
-     *       foreground then it will be able to read all the corresponding medical resources.
-     *   <li>When an app with less read permissions allowed to cover all the requested IDs calls the
-     *       API from foreground then it will be able to read only the medical resources it has read
-     *       permissions for. This may be less than the requested size.
-     *   <li>App with only write permission but no read permission allowed will be able to read only
-     *       its own inserted medical resources both when in foreground or background. This may be
-     *       less than the requested size.
-     *   <li>An app without both read and write permissions will not be able to read any medical
-     *       resources and the API will throw Security Exception.
+     *   <li>If an empty list of {@code ids} is provided, an empty list will be returned.
+     *   <li>If the size of {@code ids} is more than 5000, the API will throw an {@link
+     *       IllegalArgumentException}.
+     *   <li>If any ID in {@code ids} is invalid, the API will throw an {@link
+     *       IllegalArgumentException}.
+     *   <li>If any ID in {@code ids} does not exist, no medical resource will be returned for that
+     *       ID.
+     *   <li>Callers will only get medical resources they are permitted to get. See below.
      * </ul>
+     *
+     * Being permitted to read medical resources is dependent on the following logic, in priority
+     * order, earlier statements take precedence.
+     *
+     * <ol>
+     *   <li>A caller with the system permission can get any medical resources in the foreground or
+     *       background.
+     *   <li>A caller without any read or write permissions for health data will not be able to get
+     *       any medical resources and receive an exception with code {@link
+     *       HealthConnectException#ERROR_SECURITY} via {@code callback.onError()}, even for medical
+     *       resources the caller has created.
+     *   <li>Callers can get medical resources they have created, whether this method is called in
+     *       the foreground or background. Note this only applies if the caller has at least one
+     *       read or write permission for health data.
+     *   <li>For any given medical resource, a caller can get that medical resource in the
+     *       foreground if the caller has the corresponding read permission, or in the background if
+     *       it also has {@link
+     *       android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND}.
+     *   <li>In all other cases the caller is not permitted to get the given medical resource and it
+     *       will not be returned.
+     * </ol>
      *
      * @param ids Identifiers on which to perform read operation.
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
-     * @throws IllegalArgumentException if {@code ids} is empty or its size is more than 5000.
+     * @throws IllegalArgumentException if the size of {@code ids} is more than 5000.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public void readMedicalResources(
@@ -2266,8 +2279,8 @@ public class HealthConnectManager {
      * <p>Regarding permissions:
      *
      * <ul>
-     *   <li>Only apps with {@link HealthPermissions#MANAGE_HEALTH_DATA_PERMISSION} can delete data
-     *       written by apps other than themselves.
+     *   <li>Only apps with the system permission can delete data written by apps other than
+     *       themselves.
      *   <li>Deletes are permitted in the foreground or background.
      * </ul>
      *
@@ -2310,13 +2323,21 @@ public class HealthConnectManager {
     }
 
     /**
-     * Deletes a list of medical resources by id. Ids that don't exist will be ignored.
+     * Deletes a list of {@link MedicalResource}s by the provided list of {@link
+     * MedicalResourceId}s.
+     *
+     * <ul>
+     *   <li>If any ID in {@code ids} is invalid, the API will throw an {@link
+     *       IllegalArgumentException}, and nothing will be deleted.
+     *   <li>If any ID in {@code ids} does not exist, that ID will be ignored, while deletion on
+     *       other IDs will be performed.
+     * </ul>
      *
      * <p>Regarding permissions:
      *
      * <ul>
-     *   <li>Only apps with {@link HealthPermissions#MANAGE_HEALTH_DATA_PERMISSION} can delete data
-     *       written by apps other than themselves.
+     *   <li>Only apps with the system permission can delete data written by apps other than
+     *       themselves.
      *   <li>Deletes are permitted in the foreground or background.
      * </ul>
      *
@@ -2411,9 +2432,10 @@ public class HealthConnectManager {
      * <p>Medical data is represented using the <a href="https://hl7.org/fhir/">Fast Healthcare
      * Interoperability Resources (FHIR)</a> standard.
      *
-     * <p>The {@link CreateMedicalDataSourceRequest.Builder#setFhirBaseUri} must be unique across
-     * all medical data sources created by an app. The FHIR base uri cannot be updated after
-     * creating the data source.
+     * <p>The {@link CreateMedicalDataSourceRequest.Builder#setDisplayName display name} must be
+     * unique per app, and {@link CreateMedicalDataSourceRequest.Builder#setFhirVersion} FHIR
+     * version} must be a version supported by Health Connect, as documented on the {@link
+     * FhirVersion}.
      *
      * @param request Creation request.
      * @param executor Executor on which to invoke the callback.
@@ -2453,37 +2475,40 @@ public class HealthConnectManager {
     }
 
     /**
-     * Returns {@link MedicalDataSource}s for the provided list of {@link MedicalDataSource} ids.
+     * Returns {@link MedicalDataSource}s for the provided list of IDs.
      *
      * <p>The returned list of data sources will be in the same order as the {@code ids}.
      *
      * <p>Number of data sources returned by this API will depend based on below factors:
      *
      * <ul>
-     *   <li>If an empty list of {@code ids} is provided, no data sources will be returned.
-     *   <li>If an id is invalid or non-existent, no data source will be returned for that id.
+     *   <li>If an empty list of {@code ids} is provided, an empty list will be returned.
+     *   <li>If any ID in {@code ids} is invalid, the caller will receive an error via the {@code
+     *       callback}.
+     *   <li>If any ID in {@code ids} does not exist, no data source will be returned for that ID.
      *   <li>Callers will only get data sources they are permitted to get. See below.
      * </ul>
      *
-     * <p>There is no specific read permission for getting data sources. Instead permission to read
-     * data sources is based on whether the caller has permission to read the data currently
-     * contained in that data source. Being permitted to get data sources is dependent on the
-     * following logic, in priority order, earlier statements take precedence.
+     * <p>There is no specific read permission for getting data sources. Instead, permission to read
+     * data sources is based on whether the caller has permission to read the data currently linked
+     * to that data source. Being permitted to get data sources is dependent on the following logic,
+     * in priority order, earlier statements take precedence.
      *
      * <ol>
-     *   <li>A caller with System permission {@link HealthPermissions#MANAGE_HEALTH_DATA_PERMISSION}
-     *       can get any datasource in the foreground or background.
+     *   <li>A caller with the system permission can get any data source in the foreground or
+     *       background.
      *   <li>A caller without any read or write permissions for health data will not be able to get
-     *       any medical data sources and the API will throw {@link SecurityException}, even for
-     *       data sources the caller has created.
+     *       any medical data sources and receive an exception with code {@link
+     *       HealthConnectException#ERROR_SECURITY} via {@code callback.onError()}, even for data
+     *       sources the caller has created.
      *   <li>Callers can get data sources they have created, whether this method is called in the
      *       foreground or background. Note this only applies if the caller has at least one read or
      *       write permission for health data.
      *   <li>For any given data source, a caller can get that data source in the foreground if the
-     *       caller has permission to read any of the data contained in that data source. For
-     *       clarity, the does not allow it to get an empty data source.
+     *       caller has permission to read any of the data linked to that data source. For clarity,
+     *       the does not allow it to get an empty data source.
      *   <li>For any given data source, a caller can get that data source in the background if it
-     *       has both permission to read any of the data contained in that data source, and {@link
+     *       has both permission to read any of the data linked to that data source, and {@link
      *       android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND}.
      *   <li>In all other cases the caller is not permitted to get the given data source and it will
      *       not be returned.
@@ -2533,33 +2558,33 @@ public class HealthConnectManager {
      * <p>Number of data sources returned by this API will depend based on below factors:
      *
      * <ul>
-     *   <li>If an empty {@link GetMedicalDataSourcesRequest} is passed, all data sources for all
-     *       apps are requested, and all which the caller is permitted to get will be returned. See
-     *       below.
-     *   <li>If a list of packages is specified in the request, then only the data sources created
-     *       by those packages is being requested. All data sources created by those packages which
-     *       the caller is permitted to get will be returned. See below.
+     *   <li>If an empty {@link GetMedicalDataSourcesRequest#getPackageNames() list of package
+     *       names} is passed, all permitted data sources from all apps will be returned. See below.
+     *   <li>If a non-empty {@link GetMedicalDataSourcesRequest#getPackageNames() list of package
+     *       names} is specified in the request, then only the permitted data sources created by
+     *       those packages will be returned. See below.
      * </ul>
      *
      * <p>There is no specific read permission for getting data sources. Instead permission to read
-     * data sources is based on whether the caller has permission to read the data currently
-     * contained in that data source. Being permitted to get data sources is dependent on the
-     * following logic, in priority order, earlier statements take precedence.
+     * data sources is based on whether the caller has permission to read the data currently linked
+     * to that data source. Being permitted to get data sources is dependent on the following logic,
+     * in priority order, earlier statements take precedence.
      *
      * <ol>
-     *   <li>A caller with System permission {@link HealthPermissions#MANAGE_HEALTH_DATA_PERMISSION}
-     *       can get any datasource in the foreground or background.
+     *   <li>A caller with the system permission can get any data source in the foreground or
+     *       background.
      *   <li>A caller without any read or write permissions for health data will not be able to get
-     *       any medical data sources and the API will throw {@link SecurityException}, even for
-     *       data sources the caller has created.
+     *       any medical data sources and receive an exception with code {@link
+     *       HealthConnectException#ERROR_SECURITY} via {@code callback.onError()}, even for data
+     *       sources the caller has created.
      *   <li>Callers can get data sources they have created, whether this method is called in the
      *       foreground or background. Note this only applies if the caller has at least one read or
      *       write permission for health data.
      *   <li>For any given data source, a caller can get that data source in the foreground if the
-     *       caller has permission to read any of the data contained in that data source. For
-     *       clarity, the does not allow it to get an empty data source.
+     *       caller has permission to read any of the data linked to that data source. For clarity,
+     *       the does not allow it to get an empty data source.
      *   <li>For any given data source, a caller can get that data source in the background if it
-     *       has both permission to read any of the data contained in that data source, and {@link
+     *       has both permission to read any of the data linked to that data source, and {@link
      *       android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND}.
      *   <li>In all other cases the caller is not permitted to get the given data source and it will
      *       not be returned.
@@ -2599,16 +2624,16 @@ public class HealthConnectManager {
     }
 
     /**
-     * Deletes a {@link MedicalDataSource} and all data contained within it.
+     * Deletes a {@link MedicalDataSource} and all data linked to it.
      *
-     * <p>If the datasource does not exist, {@code callback.onError()} is passed an exception with
-     * code {@link HealthConnectException#ERROR_INVALID_ARGUMENT}.
+     * <p>If the data source does not exist, the caller will receive an exception with code {@link
+     * HealthConnectException#ERROR_INVALID_ARGUMENT} via {@code callback.onError()}.
      *
      * <p>Regarding permissions:
      *
      * <ul>
-     *   <li>Only apps with {@link HealthPermissions#MANAGE_HEALTH_DATA_PERMISSION} can delete data
-     *       written by apps other than themselves.
+     *   <li>Only apps with the system permission can delete data written by apps other than
+     *       themselves.
      *   <li>Deletes are permitted in the foreground or background.
      * </ul>
      *
