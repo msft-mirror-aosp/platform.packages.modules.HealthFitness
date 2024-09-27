@@ -137,7 +137,7 @@ public class CreateMedicalDataSourceRequestTest {
                         DATA_SOURCE_FHIR_VERSION);
 
         var thrown = assertThrows(IllegalArgumentException.class, () -> requestBuilder.build());
-        assertThat(thrown).hasMessageThat().contains("Fhir base uri cannot be longer than");
+        assertThat(thrown).hasMessageThat().contains("FHIR base URI cannot be longer than");
     }
 
     @Test
@@ -147,7 +147,7 @@ public class CreateMedicalDataSourceRequestTest {
                         Uri.EMPTY, DATA_SOURCE_DISPLAY_NAME, DATA_SOURCE_FHIR_VERSION);
 
         var thrown = assertThrows(IllegalArgumentException.class, () -> requestBuilder.build());
-        assertThat(thrown).hasMessageThat().contains("Fhir base uri cannot be empty");
+        assertThat(thrown).hasMessageThat().contains("FHIR base URI cannot be empty");
     }
 
     @Test
@@ -270,7 +270,7 @@ public class CreateMedicalDataSourceRequestTest {
                 assertThrows(
                         IllegalArgumentException.class,
                         () -> CreateMedicalDataSourceRequest.CREATOR.createFromParcel(parcel));
-        assertThat(thrown).hasMessageThat().contains("Fhir base uri cannot be longer than");
+        assertThat(thrown).hasMessageThat().contains("FHIR base URI cannot be longer than");
     }
 
     @Test
