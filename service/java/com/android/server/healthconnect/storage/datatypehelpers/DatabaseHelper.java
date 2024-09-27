@@ -16,10 +16,10 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -29,18 +29,10 @@ import java.util.Set;
  */
 public abstract class DatabaseHelper {
 
-    private static Set<DatabaseHelper> getDatabaseHelpers() {
-        return Set.of(
-                DeviceInfoHelper.getInstance(),
-                AppInfoHelper.getInstance(),
-                ActivityDateHelper.getInstance(),
-                new ChangeLogsHelper(),
-                new ChangeLogsRequestHelper(),
-                HealthDataCategoryPriorityHelper.getInstance(),
-                PreferenceHelper.getInstance(),
-                AccessLogsHelper.getInstance(),
-                new MigrationEntityHelper(),
-                PriorityMigrationHelper.getInstance());
+    private static final Set<DatabaseHelper> sDatabaseHelpers = new HashSet<>();
+
+    protected DatabaseHelper() {
+        sDatabaseHelpers.add(this);
     }
 
     /**
@@ -49,19 +41,19 @@ public abstract class DatabaseHelper {
      * <p>This function is only used for testing, do not use in production.
      */
     public static void clearAllData(TransactionManager transactionManager) {
-        for (DatabaseHelper databaseHelper : getDatabaseHelpers()) {
+        for (DatabaseHelper databaseHelper : sDatabaseHelpers) {
             databaseHelper.clearData(transactionManager);
         }
     }
 
     public static void clearAllCache() {
-        for (DatabaseHelper databaseHelper : getDatabaseHelpers()) {
+        for (DatabaseHelper databaseHelper : sDatabaseHelpers) {
             databaseHelper.clearCache();
         }
     }
 
     /** Deletes all entries from the database and clears the cache for the helper class. */
-    public void clearData(TransactionManager transactionManager) {
+    public final synchronized void clearData(TransactionManager transactionManager) {
         transactionManager.delete(new DeleteTableRequest(getMainTableName()));
         clearCache();
     }

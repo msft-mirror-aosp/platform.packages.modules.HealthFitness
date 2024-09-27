@@ -31,6 +31,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -47,11 +48,11 @@ import org.junit.Test;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
 public class MedicalResourceTypePermissionMapperTest {
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_immunizationType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -61,7 +62,6 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_allergyType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -72,7 +72,6 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_labsType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -83,7 +82,6 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_medicationsType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -93,7 +91,6 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_personalDetailsType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -103,7 +100,6 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_practitionerDetailsType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -114,7 +110,6 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_pregnancyType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -124,7 +119,6 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_conditionsType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -134,7 +128,6 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_proceduresType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -144,7 +137,6 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_socialHistoryType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -154,7 +146,6 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_visitsType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -164,7 +155,6 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_vitalSignsType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -174,7 +164,6 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_unknownType_throws() {
         assertThrows(
                 IllegalArgumentException.class,
@@ -184,7 +173,6 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalResourceTypeForReadPermission_immunizationType_returns() {
         int medicalResourceType =
                 MedicalResourceTypePermissionMapper.getMedicalResourceType(
@@ -194,7 +182,6 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalResourceTypeForReadPermission_coversAllPermissions() {
         Set<String> medicalReadPermissions =
                 HealthPermissions.getAllMedicalPermissions().stream()
@@ -213,7 +200,6 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalResourceTypeForReadPermission_fitnessDataType_throws() {
         assertThrows(
                 IllegalArgumentException.class,

@@ -65,6 +65,8 @@ import java.util.stream.Collectors;
  *
  * @hide
  */
+// TODO(b/369517586): Add a constructor with dependencies and remove individual dependencies from
+// non-static functions
 public final class ChangeLogsHelper extends DatabaseHelper {
     public static final String TABLE_NAME = "change_logs_table";
     private static final String RECORD_TYPE_COLUMN_NAME = "record_type";
@@ -96,11 +98,12 @@ public final class ChangeLogsHelper extends DatabaseHelper {
     }
 
     /** Returns change logs post the time when {@code changeLogTokenRequest} was generated */
-    public static ChangeLogsResponse getChangeLogs(
+    public ChangeLogsResponse getChangeLogs(
             AppInfoHelper appInfoHelper,
             TransactionManager transactionManager,
             ChangeLogsRequestHelper.TokenRequest changeLogTokenRequest,
-            ChangeLogsRequest changeLogsRequest) {
+            ChangeLogsRequest changeLogsRequest,
+            ChangeLogsRequestHelper changeLogsRequestHelper) {
         long token = changeLogTokenRequest.getRowIdChangeLogs();
         WhereClauses whereClause =
                 new WhereClauses(AND)
@@ -140,14 +143,14 @@ public final class ChangeLogsHelper extends DatabaseHelper {
 
         String nextToken =
                 nextChangesToken != DEFAULT_LONG
-                        ? ChangeLogsRequestHelper.getNextPageToken(
+                        ? changeLogsRequestHelper.getNextPageToken(
                                 changeLogTokenRequest, transactionManager, nextChangesToken)
                         : changeLogsRequest.getToken();
 
         return new ChangeLogsResponse(operationToChangeLogMap, nextToken, hasMoreRecords);
     }
 
-    public static long getLatestRowId(TransactionManager transactionManager) {
+    public long getLatestRowId(TransactionManager transactionManager) {
         return transactionManager.getLastRowIdFor(TABLE_NAME);
     }
 
@@ -298,10 +301,6 @@ public final class ChangeLogsHelper extends DatabaseHelper {
             mRecordTypeAndAppIdToUUIDMap.putIfAbsent(recordTypeAndAppIdPair, new ArrayList<>());
             mRecordTypeAndAppIdToUUIDMap.get(recordTypeAndAppIdPair).addAll(uuids);
             return this;
-        }
-
-        public void clear() {
-            mRecordTypeAndAppIdToUUIDMap.clear();
         }
 
         /** A helper class to create a pair of recordType and appId */
