@@ -183,13 +183,7 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
     }
 
     private fun revokeAllPermissions(): Boolean {
-        // The manage app section includes the additional permissions button too. If this section is
-        // visible then all health permissions should be revoked (medical and additional). If the
-        // manage app section is not visible then medical permissions should be revoked only,
-        // because fitness and additional permissions are displayed on other screens.
-        return if (showManageAppSection)
-            appPermissionViewModel.revokeAllHealthPermissions(packageName)
-        else appPermissionViewModel.revokeAllMedicalPermissions(packageName)
+        return appPermissionViewModel.revokeAllMedicalAndMaybeAdditionalPermissions(packageName)
     }
 
     private fun setupHeader() {
@@ -274,7 +268,11 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
     }
 
     private fun showRevokeAllPermissions() {
-        DisconnectHealthPermissionsDialogFragment(appName)
+        DisconnectHealthPermissionsDialogFragment(
+                appName,
+                enableDeleteData = true,
+                DisconnectHealthPermissionsDialogFragment.DisconnectType.MEDICAL,
+            )
             .show(childFragmentManager, DisconnectHealthPermissionsDialogFragment.TAG)
     }
 
