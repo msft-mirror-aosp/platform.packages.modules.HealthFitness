@@ -61,7 +61,6 @@ public final class ReadMedicalResourcesPageRequest extends ReadMedicalResourcesR
      * @param pageSize The maximum number of {@code MedicalResource}s to be returned by the read
      *     operation.
      * @throws IllegalArgumentException if {@code pageSize} is less than 1 or more than 5000.
-     * @throws NullPointerException if {@code pageToken} is null.
      */
     private ReadMedicalResourcesPageRequest(
             @NonNull String pageToken,
@@ -120,7 +119,6 @@ public final class ReadMedicalResourcesPageRequest extends ReadMedicalResourcesR
         /**
          * @param pageToken The page token to read the requested page of the result, from the
          *     previous {@link ReadMedicalResourcesResponse#getNextPageToken()}.
-         * @throws IllegalArgumentException if the provided {@code pageToken} is null.
          */
         public Builder(@NonNull String pageToken) {
             requireNonNull(pageToken);
@@ -148,8 +146,6 @@ public final class ReadMedicalResourcesPageRequest extends ReadMedicalResourcesR
         /**
          * Sets page token to read the requested page of the result, from the previous {@link
          * ReadMedicalResourcesResponse#getNextPageToken()}.
-         *
-         * @throws NullPointerException if {@code pageToken} is null.
          */
         @NonNull
         public Builder setPageToken(@NonNull String pageToken) {

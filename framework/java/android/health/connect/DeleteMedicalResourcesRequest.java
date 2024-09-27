@@ -16,6 +16,7 @@
 
 package android.health.connect;
 
+import static android.health.connect.datatypes.MedicalDataSource.validateMedicalDataSourceIds;
 import static android.health.connect.datatypes.MedicalResource.validateMedicalResourceType;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
@@ -25,6 +26,7 @@ import static java.util.Objects.requireNonNull;
 
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
+import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import android.os.Parcel;
@@ -58,6 +60,7 @@ public final class DeleteMedicalResourcesRequest implements Parcelable {
                     "No restrictions specified for delete. The request must restrict by data source"
                             + " or resource type");
         }
+        validateMedicalDataSourceIds(dataSourceIds);
         medicalResourceTypes.forEach(MedicalResource::validateMedicalResourceType);
         mDataSourceIds = dataSourceIds;
         mMedicalResourceTypes = medicalResourceTypes;
@@ -75,6 +78,7 @@ public final class DeleteMedicalResourcesRequest implements Parcelable {
             throw new IllegalArgumentException("Empty data sources and resource types in parcel");
         }
         mDataSourceIds = new HashSet<>(dataSourceIdList);
+        validateMedicalDataSourceIds(mDataSourceIds);
         mMedicalResourceTypes = new HashSet<>();
         for (int resourceType : resourceTypes) {
             validateMedicalResourceType(resourceType);
@@ -168,14 +172,24 @@ public final class DeleteMedicalResourcesRequest implements Parcelable {
             mMedicalResourceTypes.addAll(other.mMedicalResourceTypes);
         }
 
-        /** Add the data source ID to request to delete. */
+        /**
+         * Adds the data source ID to request to delete. This should be an ID of the existing {@link
+         * MedicalDataSource}.
+         *
+         * @throws IllegalArgumentException if the provided {@code dataSourceId} is not a valid ID.
+         */
         @NonNull
         public Builder addDataSourceId(@NonNull String dataSourceId) {
             mDataSourceIds.add(requireNonNull(dataSourceId));
+            validateMedicalDataSourceIds(Set.of(dataSourceId));
             return this;
         }
 
-        /** Add the medical resource type to request to delete. */
+        /**
+         * Adds the medical resource type to request to delete.
+         *
+         * @throws IllegalArgumentException if the provided {@code resourceType} is not supported.
+         */
         @NonNull
         public Builder addMedicalResourceType(@MedicalResourceType int resourceType) {
             validateMedicalResourceType(resourceType);
