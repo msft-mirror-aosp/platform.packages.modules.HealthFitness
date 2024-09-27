@@ -2601,7 +2601,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     }
 
                     if (medicalResourceIds.isEmpty()) {
-                        callback.onResult(new ReadMedicalResourcesResponse(List.of(), null, 0));
+                        callback.onResult(new ReadMedicalResourcesResponse(List.of(), null));
                         return;
                     }
 
@@ -2681,7 +2681,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                     // TODO(b/343921816): Creates access log.
 
-                    callback.onResult(new ReadMedicalResourcesResponse(medicalResources, null, 0));
+                    callback.onResult(new ReadMedicalResourcesResponse(medicalResources, null));
                     logger.setHealthDataServiceApiStatusSuccess();
                 },
                 logger,
@@ -2781,9 +2781,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                     callback.onResult(
                             new ReadMedicalResourcesResponse(
-                                    medicalResources,
-                                    response.getPageToken(),
-                                    response.getRemainingCount()));
+                                    medicalResources, response.getPageToken()));
                     logger.setHealthDataServiceApiStatusSuccess();
                 },
                 logger,

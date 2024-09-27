@@ -2502,10 +2502,7 @@ public class HealthConnectManagerTest {
                         .build();
 
         mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-        ReadMedicalResourcesResponse response = receiver.getResponse();
-        assertThat(response.getMedicalResources()).isEmpty();
-        assertThat(response.getNextPageToken()).isNull();
-        assertThat(response.getRemainingCount()).isEqualTo(0);
+        assertThat(receiver.getResponse().getMedicalResources()).isEmpty();
     }
 
     @Test
@@ -2538,7 +2535,6 @@ public class HealthConnectManagerTest {
                 .containsExactly(immunization1, immunization2);
         String nextPageToken = receiver1.getResponse().getNextPageToken();
         assertThat(nextPageToken).isNotEmpty();
-        assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
 
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
                 new HealthConnectReceiver<>();
@@ -2549,7 +2545,6 @@ public class HealthConnectManagerTest {
 
         assertThat(receiver2.getResponse().getMedicalResources()).containsExactly(immunization3);
         assertThat(receiver2.getResponse().getNextPageToken()).isNull();
-        assertThat(receiver2.getResponse().getRemainingCount()).isEqualTo(0);
     }
 
     @Test
@@ -2584,7 +2579,6 @@ public class HealthConnectManagerTest {
                 .containsExactly(immunization1FromDataSource1);
         String nextPageToken = receiver1.getResponse().getNextPageToken();
         assertThat(nextPageToken).isNotEmpty();
-        assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
 
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
                 new HealthConnectReceiver<>();
@@ -2630,7 +2624,6 @@ public class HealthConnectManagerTest {
                 .containsExactly(immunizationFromDataSource1);
         String nextPageToken = receiver1.getResponse().getNextPageToken();
         assertThat(nextPageToken).isNotEmpty();
-        assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
 
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
                 new HealthConnectReceiver<>();

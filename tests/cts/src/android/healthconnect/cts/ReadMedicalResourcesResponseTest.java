@@ -50,23 +50,20 @@ public class ReadMedicalResourcesResponseTest {
 
     @Test
     public void testReadMedicalResourcesResponse_constructor_emptyList() {
-        ReadMedicalResourcesResponse response =
-                new ReadMedicalResourcesResponse(List.of(), null, 0);
+        ReadMedicalResourcesResponse response = new ReadMedicalResourcesResponse(List.of(), null);
 
         assertThat(response.getMedicalResources()).isEqualTo(List.of());
         assertThat(response.getNextPageToken()).isNull();
-        assertThat(response.getRemainingCount()).isEqualTo(0);
     }
 
     @Test
     public void testReadMedicalResourcesResponse_constructor_singleton() {
         List<MedicalResource> medicalResources = List.of(getMedicalResource());
         ReadMedicalResourcesResponse response =
-                new ReadMedicalResourcesResponse(medicalResources, null, 0);
+                new ReadMedicalResourcesResponse(medicalResources, null);
 
         assertThat(response.getMedicalResources()).isEqualTo(medicalResources);
         assertThat(response.getNextPageToken()).isNull();
-        assertThat(response.getRemainingCount()).isEqualTo(0);
     }
 
     @Test
@@ -80,63 +77,39 @@ public class ReadMedicalResourcesResponseTest {
                                 .setFhirResource(getFhirResourceAllergy())
                                 .build());
         ReadMedicalResourcesResponse response =
-                new ReadMedicalResourcesResponse(medicalResources, null, 0);
+                new ReadMedicalResourcesResponse(medicalResources, null);
 
         assertThat(response.getMedicalResources()).isEqualTo(medicalResources);
         assertThat(response.getNextPageToken()).isNull();
-        assertThat(response.getRemainingCount()).isEqualTo(0);
     }
 
     @Test
     public void testReadMedicalResourcesResponse_constructor_withPageToken() {
         List<MedicalResource> medicalResources = List.of(getMedicalResource());
         ReadMedicalResourcesResponse response =
-                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN, 11);
+                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN);
 
         assertThat(response.getMedicalResources()).isEqualTo(medicalResources);
         assertThat(response.getNextPageToken()).isEqualTo(PAGE_TOKEN);
-        assertThat(response.getRemainingCount()).isEqualTo(11);
     }
 
     @Test
     public void testReadMedicalResourcesResponse_equals() {
         List<MedicalResource> medicalResources = List.of(getMedicalResource());
         ReadMedicalResourcesResponse response1 =
-                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN, 10);
+                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN);
         ReadMedicalResourcesResponse response2 =
-                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN, 10);
+                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN);
 
         assertThat(response1.equals(response2)).isTrue();
         assertThat(response1.hashCode()).isEqualTo(response2.hashCode());
     }
 
     @Test
-    public void testReadMedicalResourcesResponseEquals_comparesTotalSize() {
-        List<MedicalResource> medicalResources = List.of(getMedicalResource());
-        ReadMedicalResourcesResponse response1 =
-                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN, 10);
-        ReadMedicalResourcesResponse response2 =
-                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN, 11);
-
-        assertThat(response1).isNotEqualTo(response2);
-    }
-
-    @Test
-    public void testReadMedicalResourcesResponseEquals_comparesPageToken() {
-        List<MedicalResource> medicalResources = List.of(getMedicalResource());
-        ReadMedicalResourcesResponse response1 =
-                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN, 10);
-        ReadMedicalResourcesResponse response2 =
-                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN + "1", 10);
-
-        assertThat(response1).isNotEqualTo(response2);
-    }
-
-    @Test
-    public void testReadMedicalResourcesResponseEquals_comparesResources() {
+    public void testReadMedicalResourcesResponse_equals_comparesAllValues() {
         List<MedicalResource> medicalResources = List.of(getMedicalResource());
         ReadMedicalResourcesResponse response =
-                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN, 11);
+                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN);
         ReadMedicalResourcesResponse responseDifferentList =
                 new ReadMedicalResourcesResponse(
                         List.of(
@@ -145,10 +118,14 @@ public class ReadMedicalResourcesResponseTest {
                                         .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                                         .setFhirResource(getFhirResourceAllergy())
                                         .build()),
-                        PAGE_TOKEN,
-                        11);
+                        PAGE_TOKEN);
+        ReadMedicalResourcesResponse responseDifferentPageToken =
+                new ReadMedicalResourcesResponse(medicalResources, null);
 
         assertThat(responseDifferentList.equals(response)).isFalse();
+        assertThat(responseDifferentPageToken.equals(response)).isFalse();
+        assertThat(responseDifferentList.hashCode()).isNotEqualTo(response.hashCode());
+        assertThat(responseDifferentPageToken.hashCode()).isNotEqualTo(response.hashCode());
     }
 
     @Test
@@ -174,7 +151,7 @@ public class ReadMedicalResourcesResponseTest {
                                 .setFhirResource(getFhirResourceAllergy())
                                 .build());
         ReadMedicalResourcesResponse original =
-                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN, 11);
+                new ReadMedicalResourcesResponse(medicalResources, PAGE_TOKEN);
 
         Parcel parcel = Parcel.obtain();
         original.writeToParcel(parcel, 0);
