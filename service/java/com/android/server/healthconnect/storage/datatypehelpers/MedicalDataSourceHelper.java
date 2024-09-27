@@ -284,8 +284,9 @@ public class MedicalDataSourceHelper {
                                 cursor, AppInfoHelper.PACKAGE_COLUMN_NAME),
                         /* fhirBaseUri= */ Uri.parse(
                                 getCursorString(cursor, FHIR_BASE_URI_COLUMN_NAME)),
-                        /* displayName= */ getCursorString(cursor, DISPLAY_NAME_COLUMN_NAME))
-                .setFhirVersion(parseFhirVersion(getCursorString(cursor, FHIR_VERSION_COLUMN_NAME)))
+                        /* displayName= */ getCursorString(cursor, DISPLAY_NAME_COLUMN_NAME),
+                        /* fhirVersion= */ parseFhirVersion(
+                                getCursorString(cursor, FHIR_VERSION_COLUMN_NAME)))
                 .setLastDataUpdateTime(lastDataUpdateTime)
                 .build();
     }
@@ -941,8 +942,8 @@ public class MedicalDataSourceHelper {
                         uuid.toString(),
                         packageName,
                         request.getFhirBaseUri(),
-                        request.getDisplayName())
-                .setFhirVersion(request.getFhirVersion())
+                        request.getDisplayName(),
+                        request.getFhirVersion())
                 .build();
     }
 
