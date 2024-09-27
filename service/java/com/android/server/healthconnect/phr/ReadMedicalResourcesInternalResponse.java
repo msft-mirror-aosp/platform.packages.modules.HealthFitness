@@ -31,24 +31,11 @@ import java.util.Objects;
 public final class ReadMedicalResourcesInternalResponse {
     @Nullable String mPageToken;
     List<MedicalResource> mMedicalResources;
-    int mRemainingCount;
 
     public ReadMedicalResourcesInternalResponse(
-            List<MedicalResource> medicalResources,
-            @Nullable String pageToken,
-            int remainingCount) {
-        if (pageToken == null && remainingCount > 0) {
-            throw new IllegalArgumentException(
-                    String.format(
-                            "Remaining count must be 0 to have a null next page token, but was %d",
-                            remainingCount));
-        }
-        if (pageToken != null && remainingCount == 0) {
-            throw new IllegalArgumentException("Next page token provided with no remaining data");
-        }
-        mMedicalResources = medicalResources;
-        mPageToken = pageToken;
-        mRemainingCount = remainingCount;
+            List<MedicalResource> medicalResources, @Nullable String pageToken) {
+        this.mMedicalResources = medicalResources;
+        this.mPageToken = pageToken;
     }
 
     /** Returns the {@code mPageToken}. */
@@ -62,31 +49,18 @@ public final class ReadMedicalResourcesInternalResponse {
         return mMedicalResources;
     }
 
-    /**
-     * Returns the count of medical resources still remaining which were not returned due to
-     * pagination.
-     *
-     * <p>For a response with a null next page token, this will be 0. This result is accurate at the
-     * time the request was made, and with the permissions when the request was made. However, the
-     * actual results may change if permissions change or resources are inserted or deleted.
-     */
-    public int getRemainingCount() {
-        return mRemainingCount;
-    }
-
     /** Indicates whether some other object is "equal to" this one. */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ReadMedicalResourcesInternalResponse that)) return false;
         return Objects.equals(mPageToken, that.mPageToken)
-                && Objects.equals(mMedicalResources, that.mMedicalResources)
-                && mRemainingCount == that.mRemainingCount;
+                && Objects.equals(mMedicalResources, that.mMedicalResources);
     }
 
     /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
-        return Objects.hash(mPageToken, mMedicalResources, mRemainingCount);
+        return Objects.hash(mPageToken, mMedicalResources);
     }
 }

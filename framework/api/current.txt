@@ -285,11 +285,10 @@ package android.health.connect {
   }
 
   @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class ReadMedicalResourcesResponse implements android.os.Parcelable {
-    ctor public ReadMedicalResourcesResponse(@NonNull java.util.List<android.health.connect.datatypes.MedicalResource>, @Nullable String, int);
+    ctor public ReadMedicalResourcesResponse(@NonNull java.util.List<android.health.connect.datatypes.MedicalResource>, @Nullable String);
     method public int describeContents();
     method @NonNull public java.util.List<android.health.connect.datatypes.MedicalResource> getMedicalResources();
     method @Nullable public String getNextPageToken();
-    method public int getRemainingCount();
     method public void writeToParcel(@NonNull android.os.Parcel, int);
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.ReadMedicalResourcesResponse> CREATOR;
   }

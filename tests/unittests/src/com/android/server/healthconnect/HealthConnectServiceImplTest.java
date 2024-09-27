@@ -2043,10 +2043,10 @@ public class HealthConnectServiceImplTest {
                 .thenReturn(List.of());
         when(mMedicalResourceHelper.readMedicalResourcesByRequestWithoutPermissionChecks(
                         any(), anyInt()))
-                .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null, 0));
+                .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null));
         when(mMedicalResourceHelper.readMedicalResourcesByRequestWithPermissionChecks(
                         any(), anyInt(), anyString(), anyBoolean()))
-                .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null, 0));
+                .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null));
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(any()))
                 .thenReturn(List.of());
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
