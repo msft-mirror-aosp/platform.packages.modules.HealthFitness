@@ -55,6 +55,38 @@ sealed class HealthPermission {
                 FitnessPermission.fromPermissionString(permission)
             }
         }
+
+        fun isFitnessReadPermission(permission: String): Boolean {
+            val healthPermission = fromPermissionString(permission)
+            return isFitnessReadPermission(healthPermission)
+        }
+
+        fun isMedicalReadPermission(permission: String): Boolean {
+            val healthPermission = fromPermissionString(permission)
+            return isMedicalReadPermission(healthPermission)
+        }
+
+        fun isFitnessReadPermission(permission: HealthPermission): Boolean {
+            return (permission is FitnessPermission) &&
+                permission.permissionsAccessType == PermissionsAccessType.READ
+        }
+
+        fun isMedicalReadPermission(permission: HealthPermission): Boolean {
+            return (permission is MedicalPermission) &&
+                permission.medicalPermissionType != MedicalPermissionType.ALL_MEDICAL_DATA
+        }
+
+        fun isAdditionalPermission(permission: String): Boolean {
+            return additionalPermissions.contains(permission)
+        }
+
+        fun isMedicalPermission(permission: String): Boolean {
+            return medicalPermissions.contains(permission)
+        }
+
+        fun isFitnessPermission(permission: String): Boolean {
+            return !isAdditionalPermission(permission) && !isMedicalPermission(permission)
+        }
     }
 
     /** Pair of {@link HealthPermissionType} and {@link PermissionsAccessType}. */

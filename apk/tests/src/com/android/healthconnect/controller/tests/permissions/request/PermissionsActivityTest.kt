@@ -41,6 +41,9 @@ import android.health.connect.HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED
 import android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA
 import android.health.connect.HealthPermissions.WRITE_SKIN_TEMPERATURE
 import android.health.connect.HealthPermissions.WRITE_SLEEP
+import android.platform.test.annotations.DisableFlags
+import android.platform.test.annotations.EnableFlags
+import android.platform.test.flag.junit.SetFlagsRule
 import android.widget.Button
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
@@ -79,6 +82,7 @@ import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
 import com.android.healthconnect.controller.utils.FeatureUtils
+import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -114,6 +118,7 @@ class PermissionsActivityTest {
     }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val setFlagsRule = SetFlagsRule()
 
     @BindValue val permissionManager: HealthPermissionManager = FakeHealthPermissionManager()
     @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
@@ -150,7 +155,6 @@ class PermissionsActivityTest {
         (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
         (fakeFeatureUtils as FakeFeatureUtils).setIsSkinTemperatureEnabled(true)
         (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(false)
     }
 
     @After
@@ -159,7 +163,6 @@ class PermissionsActivityTest {
         (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(false)
         (fakeFeatureUtils as FakeFeatureUtils).setIsSkinTemperatureEnabled(false)
         (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(false)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(false)
     }
 
     @Test
@@ -299,6 +302,7 @@ class PermissionsActivityTest {
     }
 
     @Test
+    @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun intentSkipsHiddenMedicalPermissions() {
         val startActivityIntent = getPermissionScreenIntent(medicalPermissions)
 
@@ -455,10 +459,10 @@ class PermissionsActivityTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun whenReadPermissionsAlreadyGranted_requestAdditionalPermissions_sendsResultOk() {
         (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
         (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
         val permissions = arrayOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
             TEST_APP_PACKAGE_NAME,
@@ -489,10 +493,10 @@ class PermissionsActivityTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun requestOneAdditionalPermission_clickOnDontAllow_deniesPermission() {
         (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
         (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
         val permissions = arrayOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
             TEST_APP_PACKAGE_NAME,
@@ -521,10 +525,10 @@ class PermissionsActivityTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun requestOneAdditionalPermission_clickOnAllow_grantsPermission() {
         (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
         (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
         val permissions = arrayOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
             TEST_APP_PACKAGE_NAME,
@@ -604,8 +608,8 @@ class PermissionsActivityTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun grantOneMedicalPermission_sendsResultOk() {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
         val startActivityIntent = getPermissionScreenIntent(medicalPermissions)
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
@@ -631,6 +635,7 @@ class PermissionsActivityTest {
     }
 
     @Test
+    @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun requestMedicalAndFitnessPermissions_flagDisabled_onlyShowFitness() {
         val startActivityIntent = getPermissionScreenIntent(fitnessAndMedicalPermissions)
 
@@ -656,8 +661,8 @@ class PermissionsActivityTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun requestMedicalAndAdditionalPermissions_showBoth() {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
         val startActivityIntent = getPermissionScreenIntent(medicalAndAdditionalPermissions)
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
@@ -685,6 +690,7 @@ class PermissionsActivityTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun requestMedicalAndAdditionalPermissions_backgroundAndHistory_showBoth() {
         val permissions =
             arrayOf(
@@ -692,7 +698,6 @@ class PermissionsActivityTest {
                 READ_HEALTH_DATA_IN_BACKGROUND,
                 READ_HEALTH_DATA_HISTORY,
             )
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
         val startActivityIntent = getPermissionScreenIntent(permissions)
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
@@ -797,8 +802,8 @@ class PermissionsActivityTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun clickOnCancel_deniesAllMedicalPermissions_finishesActivity() {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
         val startActivityIntent = getPermissionScreenIntent(medicalPermissions)
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)

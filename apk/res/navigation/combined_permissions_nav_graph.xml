@@ -50,5 +50,8 @@
         <argument
             android:name="android.intent.extra.PACKAGE_NAME"
             app:argType="string" />
+        <action
+            android:id="@+id/action_additionalAccess_to_medicalApp"
+            app:destination="@id/medical_app_nav_graph" />
     </fragment>
 </navigation>

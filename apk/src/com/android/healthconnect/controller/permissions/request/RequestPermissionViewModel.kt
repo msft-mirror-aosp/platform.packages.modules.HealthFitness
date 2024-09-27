@@ -33,6 +33,9 @@ import com.android.healthconnect.controller.permissions.api.LoadAccessDateUseCas
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isAdditionalPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isFitnessPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isMedicalPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
 import com.android.healthconnect.controller.permissions.data.PermissionState
@@ -55,7 +58,8 @@ constructor(
     private val getGrantedHealthPermissionsUseCase: GetGrantedHealthPermissionsUseCase,
     private val getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase,
     private val loadAccessDateUseCase: LoadAccessDateUseCase,
-    private val healthPermissionReader: HealthPermissionReader,
+    private val healthPermissionReader:
+        HealthPermissionReader, // TODO use loadDeclaredPermissionsUseCase
 ) : ViewModel() {
 
     companion object {
@@ -303,6 +307,18 @@ constructor(
     }
 
     /**
+     * Updates the internal grants map without granting or revoking permissions. This is used when
+     * the request permissions screen is not shown because a permission is USER_FIXED or no valid
+     * permissions are requested. In that case, we don't want to revoke other permissions, e.g.
+     * Exercise Routes, because the user hasn't specifically fixed them.
+     */
+    fun updatePermissionGrants() {
+        requestedPermissions.forEach { (permission, permissionState) ->
+            updateGrants(permission, permissionState)
+        }
+    }
+
+    /**
      * Returns a map of all [HealthPermission]s that have been requested by the caller and their
      * current grant state. A permission may be granted if it was already granted when the request
      * was made, or if it was granted during this permission request. Similarly for not granted
@@ -369,23 +385,17 @@ constructor(
 
         val dataTypeNotGrantedPermissions =
             filteredPermissions
-                .filter { permission ->
-                    healthPermissionReader.isFitnessPermission(permission.toString())
-                }
+                .filter { permission -> isFitnessPermission(permission.toString()) }
                 .map { permission -> permission as FitnessPermission }
 
         val medicalNotGrantedPermissions =
             filteredPermissions
-                .filter { permission ->
-                    healthPermissionReader.isMedicalPermission(permission.toString())
-                }
+                .filter { permission -> isMedicalPermission(permission.toString()) }
                 .map { permission -> permission as MedicalPermission }
 
         val additionalNotGrantedPermissions =
             filteredPermissions
-                .filter { permission ->
-                    healthPermissionReader.isAdditionalPermission(permission.toString())
-                }
+                .filter { permission -> isAdditionalPermission(permission.toString()) }
                 .filterNot { permission ->
                     permission.toString() == HealthPermissions.READ_EXERCISE_ROUTES
                 }
@@ -447,6 +457,18 @@ constructor(
 
     private fun loadAppInfo(packageName: String) {
         viewModelScope.launch { _appMetaData.postValue(appInfoReader.getAppMetadata(packageName)) }
+    }
+
+    /** Updates grants without granting or revoking permissions. */
+    private fun updateGrants(permission: HealthPermission, permissionState: PermissionState) {
+        val granted =
+            isPermissionLocallyGranted(permission) || permissionState == PermissionState.GRANTED
+
+        if (granted) {
+            grants[permission] = PermissionState.GRANTED
+        } else {
+            grants[permission] = PermissionState.NOT_GRANTED
+        }
     }
 
     private fun internalGrantOrRevokePermission(
