@@ -140,7 +140,7 @@ final class DatabaseUpgradeHelper {
             if (oldVersion < DB_VERSION_MINDFULNESS_SESSION) {
                 UPGRADE_TO_MINDFULNESS_SESSION.upgrade(db);
             }
-            if (oldVersion < DB_VERSION_PERSONAL_HEALTH_RECORD) {
+            if (shouldUpgrade(DB_VERSION_PERSONAL_HEALTH_RECORD, oldVersion, newVersion)) {
                 UPGRADE_TO_PERSONAL_HEALTH_RECORD.upgrade(db);
             }
         }
