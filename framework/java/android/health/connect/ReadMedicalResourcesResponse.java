@@ -33,13 +33,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/** A class to represent a read response for {@link HealthConnectManager#readMedicalResources}. */
+/** A read response for {@link HealthConnectManager#readMedicalResources}. */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class ReadMedicalResourcesResponse implements Parcelable {
     @NonNull private final List<MedicalResource> mMedicalResources;
     @Nullable private final String mNextPageToken;
 
     /**
+     * Constructs a new {@link ReadMedicalResourcesResponse} instance.
+     *
      * @param medicalResources List of {@link MedicalResource}s.
      * @param nextPageToken The token value of the read result which can be used as input token for
      *     next read request. {@code null} if there are no more pages available.
@@ -106,7 +108,6 @@ public final class ReadMedicalResourcesResponse implements Parcelable {
         dest.writeString(mNextPageToken);
     }
 
-    /** Indicates whether some other object is "equal to" this one. */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -115,9 +116,18 @@ public final class ReadMedicalResourcesResponse implements Parcelable {
                 && Objects.equals(getNextPageToken(), that.getNextPageToken());
     }
 
-    /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
         return hash(getMedicalResources(), getNextPageToken());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getClass().getSimpleName()).append("{");
+        sb.append("medicalResources=").append(getMedicalResources());
+        sb.append(",nextPageToken=").append(getNextPageToken());
+        sb.append("}");
+        return sb.toString();
     }
 }

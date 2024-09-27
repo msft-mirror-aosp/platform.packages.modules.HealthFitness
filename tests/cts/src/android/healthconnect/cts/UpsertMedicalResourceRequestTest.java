@@ -155,6 +155,21 @@ public class UpsertMedicalResourceRequestTest {
     }
 
     @Test
+    public void testToString() {
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, FHIR_DATA_ALLERGY)
+                        .build();
+        String dataSourceIdString = "dataSourceId=" + DATA_SOURCE_ID;
+        String fhirVersionString = "fhirVersion=" + FHIR_VERSION_R4;
+        String dataString = "data=" + FHIR_DATA_ALLERGY;
+
+        assertThat(request.toString()).contains(dataSourceIdString);
+        assertThat(request.toString()).contains(fhirVersionString);
+        assertThat(request.toString()).contains(dataString);
+    }
+
+    @Test
     public void testRestoreInvalidDataSourceIdFromParcel_expectException()
             throws NoSuchFieldException, IllegalAccessException {
 

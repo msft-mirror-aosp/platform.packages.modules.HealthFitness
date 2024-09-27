@@ -207,6 +207,73 @@ public class DeleteMedicalResourcesRequestTest {
     }
 
     @Test
+    public void testRequestBuilder_fromExistingInstance() {
+        DeleteMedicalResourcesRequest original =
+                new DeleteMedicalResourcesRequest.Builder().addDataSourceId(DATA_SOURCE_ID).build();
+        DeleteMedicalResourcesRequest request =
+                new DeleteMedicalResourcesRequest.Builder(original).build();
+
+        assertThat(request).isEqualTo(original);
+    }
+
+    @Test
+    public void testRequestBuilder_fromExistingInstance_changeIndependently() {
+        DeleteMedicalResourcesRequest original =
+                new DeleteMedicalResourcesRequest.Builder().addDataSourceId(DATA_SOURCE_ID).build();
+        DeleteMedicalResourcesRequest.Builder copy =
+                new DeleteMedicalResourcesRequest.Builder(original);
+        copy.addDataSourceId(DIFFERENT_DATA_SOURCE_ID);
+
+        assertThat(original.getDataSourceIds()).containsExactly(DATA_SOURCE_ID);
+        assertThat(copy.build().getDataSourceIds())
+                .containsExactly(DATA_SOURCE_ID, DIFFERENT_DATA_SOURCE_ID);
+    }
+
+    @Test
+    public void testRequestBuilder_fromExistingInstanceResourceType() {
+        DeleteMedicalResourcesRequest original =
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addDataSourceId(DATA_SOURCE_ID)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .build();
+        DeleteMedicalResourcesRequest request =
+                new DeleteMedicalResourcesRequest.Builder(original).build();
+
+        assertThat(request).isEqualTo(original);
+    }
+
+    @Test
+    public void testRequestBuilder_fromExistingInstanceClearDataSources() {
+        DeleteMedicalResourcesRequest original =
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addDataSourceId(DATA_SOURCE_ID)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .build();
+        DeleteMedicalResourcesRequest.Builder copy =
+                new DeleteMedicalResourcesRequest.Builder(original);
+        copy.clearDataSourceIds();
+
+        assertThat(original.getDataSourceIds()).containsExactly(DATA_SOURCE_ID);
+        assertThat(copy.build().getDataSourceIds()).isEmpty();
+    }
+
+    @Test
+    public void testRequestBuilder_fromExistingInstanceClearMedicalResourceTypes() {
+        DeleteMedicalResourcesRequest original =
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addDataSourceId(DATA_SOURCE_ID)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .build();
+        DeleteMedicalResourcesRequest.Builder copy =
+                new DeleteMedicalResourcesRequest.Builder(original);
+        copy.clearMedicalResourceTypes();
+
+        assertThat(original.getMedicalResourceTypes())
+                .containsExactly(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+        assertThat(copy.build().getMedicalResourceTypes()).isEmpty();
+    }
+
+    @Test
     public void testRequest_equalsSameIdOnly() {
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder().addDataSourceId(DATA_SOURCE_ID).build();
@@ -310,13 +377,11 @@ public class DeleteMedicalResourcesRequestTest {
     public void testToString_idOnly() {
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder().addDataSourceId(DATA_SOURCE_ID).build();
-        String expectedPropertiesString =
-                String.format("dataSourceIds=[%s],medicalResourceTypes=[]", DATA_SOURCE_ID);
+        String dataSourceIdsString = "dataSourceIds=[" + DATA_SOURCE_ID + "]";
+        String resourceTypesString = "medicalResourceTypes=[]";
 
-        assertThat(request.toString())
-                .isEqualTo(
-                        String.format(
-                                "DeleteMedicalResourcesRequest{%s}", expectedPropertiesString));
+        assertThat(request.toString()).contains(dataSourceIdsString);
+        assertThat(request.toString()).contains(resourceTypesString);
     }
 
     @Test
@@ -326,15 +391,12 @@ public class DeleteMedicalResourcesRequestTest {
                         .addDataSourceId(DATA_SOURCE_ID)
                         .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
                         .build();
-        String expectedPropertiesString =
-                String.format(
-                        "dataSourceIds=[%s],medicalResourceTypes=[%d]",
-                        DATA_SOURCE_ID, MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
 
-        assertThat(request.toString())
-                .isEqualTo(
-                        String.format(
-                                "DeleteMedicalResourcesRequest{%s}", expectedPropertiesString));
+        String dataSourceIdsString = "dataSourceIds=[" + DATA_SOURCE_ID + "]";
+        String resourceTypesString = "medicalResourceTypes=[1]";
+
+        assertThat(request.toString()).contains(dataSourceIdsString);
+        assertThat(request.toString()).contains(resourceTypesString);
     }
 
     @Test

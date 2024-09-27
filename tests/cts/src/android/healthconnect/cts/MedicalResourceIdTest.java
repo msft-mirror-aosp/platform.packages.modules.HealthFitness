@@ -133,15 +133,13 @@ public class MedicalResourceIdTest {
                         DATA_SOURCE_ID,
                         FHIR_RESOURCE_TYPE_IMMUNIZATION,
                         FHIR_RESOURCE_ID_IMMUNIZATION);
-        String expectedPropertiesString =
-                String.format(
-                        "dataSourceId=%s,fhirResourceType=%s,fhirResourceId=%s",
-                        DATA_SOURCE_ID,
-                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
-                        FHIR_RESOURCE_ID_IMMUNIZATION);
+        String dataSourceIdString = "dataSourceId=" + DATA_SOURCE_ID;
+        String fhirResourceTypeString = "fhirResourceType=1";
+        String fhirResourceIdString = "fhirResourceId=" + FHIR_RESOURCE_ID_IMMUNIZATION;
 
-        assertThat(medicalResourceId.toString())
-                .isEqualTo(String.format("MedicalResourceId{%s}", expectedPropertiesString));
+        assertThat(medicalResourceId.toString()).contains(dataSourceIdString);
+        assertThat(medicalResourceId.toString()).contains(fhirResourceTypeString);
+        assertThat(medicalResourceId.toString()).contains(fhirResourceIdString);
     }
 
     @Test

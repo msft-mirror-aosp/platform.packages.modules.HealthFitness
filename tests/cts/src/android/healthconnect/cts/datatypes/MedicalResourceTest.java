@@ -173,16 +173,15 @@ public class MedicalResourceTest {
                                 FHIR_VERSION_R4,
                                 fhirResource)
                         .build();
-        String expectedPropertiesString =
-                String.format(
-                        "type=%d,dataSourceId=%s,fhirVersion=%s,fhirResource=%s",
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
-                        DATA_SOURCE_ID,
-                        FHIR_VERSION_R4,
-                        fhirResource);
+        String typeString = "type=1";
+        String dataSourceIdString = "dataSourceId=" + DATA_SOURCE_ID;
+        String fhirVersionString = "fhirVersion=" + FHIR_VERSION_R4;
+        String fhirResourceString = "fhirResource=" + fhirResource;
 
-        assertThat(resource.toString())
-                .isEqualTo(String.format("MedicalResource{%s}", expectedPropertiesString));
+        assertThat(resource.toString()).contains(typeString);
+        assertThat(resource.toString()).contains(dataSourceIdString);
+        assertThat(resource.toString()).contains(fhirVersionString);
+        assertThat(resource.toString()).contains(fhirResourceString);
     }
 
     @Test

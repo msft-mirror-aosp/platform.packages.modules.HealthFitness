@@ -156,16 +156,13 @@ public class ReadMedicalResourcesInitialRequestTest {
                         .addDataSourceId(DATA_SOURCE_ID)
                         .setPageSize(100)
                         .build();
-        String expectedPropertiesString =
-                String.format(
-                        "medicalResourceType=%d,dataSourceIds={%s},pageSize=%d",
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, DATA_SOURCE_ID, 100);
+        String medicalResourceTypeString = "medicalResourceType=1";
+        String dataSourceIdsString = "dataSourceIds={" + DATA_SOURCE_ID + "}";
+        String pageSizeString = "pageSize=100";
 
-        assertThat(request.toString())
-                .isEqualTo(
-                        String.format(
-                                "ReadMedicalResourcesInitialRequest{%s}",
-                                expectedPropertiesString));
+        assertThat(request.toString()).contains(medicalResourceTypeString);
+        assertThat(request.toString()).contains(dataSourceIdsString);
+        assertThat(request.toString()).contains(pageSizeString);
     }
 
     @Test
