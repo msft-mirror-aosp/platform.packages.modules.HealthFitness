@@ -16,7 +16,11 @@
 
 package android.healthconnect.cts;
 
+import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
+
 import static com.google.common.truth.Truth.assertThat;
+
+import static org.junit.Assert.assertThrows;
 
 import android.health.connect.GetMedicalDataSourcesRequest;
 import android.os.Parcel;
@@ -28,9 +32,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 
+import com.google.common.collect.Sets;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Set;
 
 @RequiresFlagsEnabled(Flags.FLAG_PERSONAL_HEALTH_RECORD)
 @RunWith(AndroidJUnit4.class)
@@ -46,7 +54,7 @@ public class GetMedicalDataSourcesRequestTest {
     }
 
     @Test
-    public void testBuilder_addPackageNames() {
+    public void testBuilder_addValidPackageNames() {
         GetMedicalDataSourcesRequest request =
                 new GetMedicalDataSourcesRequest.Builder()
                         .addPackageName("com.foo")
@@ -135,6 +143,13 @@ public class GetMedicalDataSourcesRequestTest {
     }
 
     @Test
+    public void testBuilder_addInvalidPackageNames_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new GetMedicalDataSourcesRequest.Builder().addPackageName("foo"));
+    }
+
+    @Test
     public void testRequest_equalsAndHashcode() {
         GetMedicalDataSourcesRequest request =
                 new GetMedicalDataSourcesRequest.Builder()
@@ -191,5 +206,43 @@ public class GetMedicalDataSourcesRequestTest {
                 .isAnyOf(
                         String.format(formatString, expectedPropertiesStringOrder1),
                         String.format(formatString, expectedPropertiesStringOrder2));
+    }
+
+    @Test
+    public void testRestoreInvalidPackageNameFromParcel_expectException()
+            throws NoSuchFieldException, IllegalAccessException {
+        GetMedicalDataSourcesRequest original = new GetMedicalDataSourcesRequest.Builder().build();
+        Set<String> validPackageNames =
+                Set.of("com.foo", "com.FOO", "com.foo_bar", "com.foo_bar.baz1");
+        Set<String> invalidPackageNames =
+                Set.of(
+                        ".",
+                        ".foo",
+                        "foo.",
+                        "com",
+                        "_com.bar",
+                        "com.1bar",
+                        "1com.bar",
+                        "com..bar",
+                        "com.-bar",
+                        "delete * from table");
+        Set<String> packageNames = Sets.union(validPackageNames, invalidPackageNames);
+        setFieldValueUsingReflection(original, "mPackageNames", packageNames);
+
+        Parcel parcel = Parcel.obtain();
+        original.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Exception exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> GetMedicalDataSourcesRequest.CREATOR.createFromParcel(parcel));
+
+        for (String validPackageName : validPackageNames) {
+            assertThat(exception.getMessage()).doesNotContain(validPackageName);
+        }
+        for (String invalidPackageName : invalidPackageNames) {
+            assertThat(exception.getMessage()).contains(invalidPackageName);
+        }
     }
 }
