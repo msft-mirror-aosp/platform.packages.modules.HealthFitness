@@ -56,6 +56,7 @@ import static android.healthconnect.cts.utils.TestUtils.updateRecords;
 import static android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -397,7 +398,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_noPermission_expectError() throws InterruptedException {
         HealthConnectManager manager = TestUtils.getHealthConnectManager();
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
@@ -414,7 +415,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void createMedicalDataSource_noPermission_expectError() throws InterruptedException {
         CreateMedicalDataSourceRequest request = getCreateMedicalDataSourceRequest();
         HealthConnectManager manager = TestUtils.getHealthConnectManager();
@@ -428,7 +429,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void upsertMedicalResources_noPermission_expectError() throws InterruptedException {
         HealthConnectManager manager = TestUtils.getHealthConnectManager();
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
@@ -445,7 +446,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void deleteMedicalResourcesByIds_noPermission_expectError() throws InterruptedException {
         HealthConnectManager manager = TestUtils.getHealthConnectManager();
         List<MedicalResourceId> ids =

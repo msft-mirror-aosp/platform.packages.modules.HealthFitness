@@ -344,7 +344,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void getReadTableRequest_noRestrictions_success() throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource expected =
@@ -364,7 +364,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void getReadTableRequest_packageRestrictionMatches_success()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
@@ -386,7 +386,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void getReadTableRequest_packageRestrictionDoesNotMatch_noResult()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
@@ -414,7 +414,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void getReadTableRequest_noIdsPackageRestrictionMatches_succeeds()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
@@ -441,7 +441,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void getReadTableRequest_noIdsNoPackageRestrictionMatches_succeeds()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
@@ -469,7 +469,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void createAndGetSingleMedicalDataSource_packageDoesNotExist_success()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
@@ -489,7 +489,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void createAndGetSingleMedicalDataSource_packageAlreadyExists_success() {
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource1 =
@@ -507,7 +507,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void createMedicalDataSources_sameDisplayNamesFromSamePackage_throws() {
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
         mMedicalDataSourceHelper.createMedicalDataSource(
@@ -533,7 +533,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void createMedicalDataSource_lastModifiedTimeIsPopulated() {
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
         createDataSource(
@@ -549,7 +549,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void createAndGetMultipleMedicalDataSources_bothPackagesAlreadyExist_success() {
         mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
@@ -574,7 +574,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void createAndGetMultipleMedicalDataSourcesWithSamePackage_packageDoesNotExist_success()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
@@ -601,7 +601,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void
             createAndGetMultipleMedicalDataSourcesWithDifferentPackages_packagesDoNotExist_success()
                     throws NameNotFoundException {
@@ -628,7 +628,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void createMultipleMedicalDataSources_maxLimitExceeded_throws()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
@@ -653,7 +653,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void getMedicalDataSourcesByPackage_noPackages_returnsAll() throws Exception {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
         setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
@@ -678,7 +678,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void getMedicalDataSourcesByPackage_onePackage_filters() throws Exception {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
         setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
@@ -707,7 +707,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getDataSourcesByIds_noWriteOrReadPerm_throws() {
         assertThrows(
                 IllegalStateException.class,
@@ -723,7 +723,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getDataSourcesByIds_hasWritePermButNeverWrittenData_noReadPerm_throws() {
         assertThrows(
                 IllegalArgumentException.class,
@@ -739,7 +739,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getDataSourcesByIds_inBgWithoutBgPermHasWritePerm_canReadSelfDataSources() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
@@ -765,7 +765,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void createMedicalDataSource_createsAccessLog() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
         mMedicalDataSourceHelper.createMedicalDataSource(
@@ -785,7 +785,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getById_inBgWithoutBgPerm_hasWritePerm_noAccessLog() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
@@ -813,7 +813,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getById_inBgWithoutBgPerm_hasWritePerm_hasReadPermForResourceTypes_noAccessLog() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
@@ -841,7 +841,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getById_inBgWithoutBgPerm_noWritePerm_immunizationReadPermOnly_noAccessLog() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
@@ -869,7 +869,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getById_expectAccessLogsWhenDataAccessedIsThroughReadPermission() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
@@ -917,7 +917,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getById_expectAccessLogsWhenAppHasNoWritePermHasReadPermButReadOnlySelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
@@ -963,7 +963,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getById_expectAccessLogsWhenAppHasNoWritePermHasReadPermReadNonSelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         String dataSource =
@@ -1002,7 +1002,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getById_inForegroundOrBgWithPerm_hasReadImmunization_nothingRead_noAccessLog() {
         List<UUID> dataSourceIds = List.of(UUID.fromString("a6194e35-698c-4706-918f-00bf959f123b"));
         mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
@@ -1017,7 +1017,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getById_inForegroundOrBgWithPerm_hasWritePerm_noReadPerm_noAccessLog() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
         String dataSource = mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME).getId();
@@ -1044,7 +1044,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getById_expectAccessLogsWhenAppHasWritePermHasReadPermReadSelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource =
@@ -1080,7 +1080,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByIds_inBgWithoutBgPermHasWritePermHasReadPerm_canReadSelfDataSources() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
@@ -1105,7 +1105,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByIds_inBgWithoutBgPermNoWritePermImmunizationReadPermOnly_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
@@ -1133,7 +1133,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void
             getById_inBgWithoutBgPermNoWritePermBothAllergyAndImmunizationReadPerm_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
@@ -1172,7 +1172,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getById_inForegroundOrinBgWithBgPermNoWritePermHasImmunizationPerm_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -1208,7 +1208,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void
             getByIds_inForegroundOrBgWithBgPermHasWritePermNoReadResourceTypesPerm_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
@@ -1246,7 +1246,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByIds_inForegroundOrBgWithBgPermNoWritePermHasAllergyPerm_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -1283,7 +1283,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByIds_inForegroundOrBgWithBgPermNoWritePermMultipleReadPerms_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -1327,7 +1327,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void
             getByIds_inForegroundOrBgWithBgPermHasWritePermHasReadImmunizationPerm_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
@@ -1367,7 +1367,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackage_appHasNotCreatedDataSourcesAndNoReadPermission_throws() {
         assertThrows(
                 IllegalArgumentException.class,
@@ -1382,7 +1382,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackage_emptyPackages_inForegroundOrBgWithBgPermHasWriteAndReadPerm_success() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -1418,7 +1418,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_selfIncluded_inForegroundOrBgWithBgPermHasWriteAndReadPerm_success() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -1454,7 +1454,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void
             getByPackages_selfNotIncluded_inForegroundOrBgWithBgPermHasWriteAndReadPerm_success() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
@@ -1490,7 +1490,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_emptyPackages_inBgWithoutBgPermHasWritePerm_canReadSelfDataSources() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -1524,7 +1524,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_selfIncluded_inBgWithoutBgPermHasWritePerm_canReadSelfDataSources() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -1558,7 +1558,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_selfNotIncluded_inBgWithoutBgPermHasWritePerm_throws() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -1593,7 +1593,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_emptyPackages_inBgWithoutBgPermHasWriteAndReadPerm_canReadSelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -1627,7 +1627,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_selfIncluded_inBgWithoutBgPermHasWriteAndReadPerm_canReadSelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -1661,7 +1661,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_selfNotIncluded_inBgWithoutBgPermHasWriteAndReadPerm_throws() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -1696,7 +1696,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_emptyPackages_inBgWithoutBgPermHasReadPermOnly_canReadSelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -1730,7 +1730,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_selfIncluded_inBgWithoutBgPermHasReadPermOnly_canReadSelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -1764,7 +1764,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_selfNotIncluded_inBgWithoutBgPermHasReadPermOnly_throws() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -1799,7 +1799,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_emptyPackages_inBgWithoutBgPermHasMultipleReadPerms_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -1836,7 +1836,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_selfIncluded_inBgWithoutBgPermHasMultipleReadPerms_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -1871,7 +1871,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void
             getByPackages_emptyPackages_inForegroundOrBgWithBgPermOnlyWritePerm_canReadSelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
@@ -1906,7 +1906,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void
             getByPackages_selfIncluded_inForegroundOrBgWithBgPermOnlyWritePerm_canReadSelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
@@ -1941,7 +1941,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_selfNotIncluded_inForegroundOrBgWithBgPermOnlyWritePerm_throws() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -1976,7 +1976,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_emptyPackages_inForegroundOrBgWithBgPermHasAllergyPerm_correct() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -2010,7 +2010,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_inForegroundOrBgWithBgPermHasAllergyPerm_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -2044,7 +2044,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_emptyPackages_inForegroundOrBgWithBgPermMultipleReadPerms_correct() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -2086,7 +2086,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_inForegroundOrBgWithBgPermMultipleReadPerms_correctResult() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -2127,7 +2127,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void
             getByPackages_emptyPackages_inForegroundOrBgWithBgPermHasWriteAndReadPerm_correct() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
@@ -2164,7 +2164,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void
             getByPackages_selfIncluded_inForegroundOrBgWithBgPermHasWriteAndReadPerm_correctRes() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
@@ -2201,7 +2201,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void
             getByPackages_selfNotIncluded_inForegroundOrBgWithPermHasWriteAndReadPerm_correctRes() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
@@ -2234,6 +2234,336 @@ public class MedicalDataSourceHelperTest {
                         /* isCalledFromBgWithoutBgRead= */ false);
 
         assertThat(result).containsExactly(dataSource1Package2);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByPackage_expectAccessLogWhenDataSourceAccessedThroughReadPerm() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1Package2 =
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package2 =
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+
+        // App is in foreground or background with background read perm, has write permission and
+        // has immunization read permissions.
+        // The packageName set is empty so no filtering based on packageNames.
+        // App can read dataSources they wrote themselves and dataSources belonging to
+        // immunization resource types.
+        // So access log will be created based on the app permission to access dataSources
+        // belonging to immunizations.
+        mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
+                /* packageNames= */ Set.of(),
+                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                DATA_SOURCE_PACKAGE_NAME,
+                /* hasWritePermission= */ true,
+                /* isCalledFromBgWithoutBgRead= */ false);
+
+        AccessLog readAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_READ,
+                        /* medicalResourceTypes= */ Set.of(),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .contains(readAccessLog);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByPackage_expectAccessLogWhenSelfDataAccessedThroughReadPerm() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+
+        // App is in foreground or background with background read perm, has write permission and
+        // has immunization read permissions.
+        // The packageName set is empty so no filtering based on packageNames.
+        // App can read dataSources they wrote themselves and dataSources belonging to
+        // immunization resource types. In this case the only immunization resource type is for
+        // the app itself. Since the read happened through a read permission, access log will be
+        // created.
+        mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
+                /* packageNames= */ Set.of(),
+                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                DATA_SOURCE_PACKAGE_NAME,
+                /* hasWritePermission= */ true,
+                /* isCalledFromBgWithoutBgRead= */ false);
+
+        AccessLog readAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_READ,
+                        /* medicalResourceTypes= */ Set.of(),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .contains(readAccessLog);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByPackage_expectAccessLogWhenDataSourceAccessedThroughReadPermEvenSelfData() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1Package2 =
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package2 =
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // App is in foreground or background with background read perm, has write permission and
+        // has immunization read permissions.
+        // The app's package name is included in the list of packages.
+        // App can read dataSources they wrote themselves and dataSources belonging to
+        // immunization resource types written by any of the given packages.
+        // Since some immunization resource types were read, an access log will be created.
+        mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
+                Set.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
+                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                DATA_SOURCE_PACKAGE_NAME,
+                /* hasWritePermission= */ true,
+                /* isCalledFromBgWithoutBgRead= */ false);
+
+        AccessLog readAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_READ,
+                        /* medicalResourceTypes= */ Set.of(),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .contains(readAccessLog);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByPackages_expectAccessLogWhenDataSourceReadThroughReadPermNoSelfData() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1Package2 =
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package2 =
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // App is in foreground or background with background read perm, has write permission and
+        // has immunization read permissions.
+        // The app's package name is not included in the list of packages.
+        // App can read dataSources belonging to
+        // immunization resource types written by any of the given packages.
+        // Access log is created since the app has access through read permission.
+        mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
+                Set.of(DIFFERENT_DATA_SOURCE_PACKAGE_NAME),
+                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                DATA_SOURCE_PACKAGE_NAME,
+                /* hasWritePermission= */ true,
+                /* isCalledFromBgWithoutBgRead= */ false);
+
+        AccessLog readAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_READ,
+                        /* medicalResourceTypes= */ Set.of(),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .contains(readAccessLog);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByPackages_expectNoAccessLogWhenSelfReadPerm() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1Package2 =
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package2 =
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+
+        // App is in background without background read perm, has write permission and
+        // no read permissions.
+        // App can read dataSources they wrote themself, which in this case belong to the
+        // immunization and allergy resources written. No access log should be created.
+        mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
+                /* packageNames= */ Set.of(),
+                /* grantedMedicalResourceTypes= */ Set.of(),
+                DATA_SOURCE_PACKAGE_NAME,
+                /* hasWritePermission= */ true,
+                /* isCalledFromBgWithoutBgRead= */ true);
+
+        AccessLog readAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_READ,
+                        /* medicalResourceTypes= */ Set.of(),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .doesNotContain(readAccessLog);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByPackages_inForegroundOrBgWithBgPermNoReadPermCanReadSelfDataNoAccessLog() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1Package2 =
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package2 =
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+
+        // App is in foreground or background with background read perm, has write permission but
+        // no read permission for any resource types.
+        // The packageNames is empty so no filtering is applied based on packageNames.
+        // App can read only read dataSources they wrote themselves.
+        // No access log should be created for this.
+        mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
+                /* packageNames= */ Set.of(),
+                /* grantedMedicalResourceTypes= */ Set.of(),
+                DATA_SOURCE_PACKAGE_NAME,
+                /* hasWritePermission= */ true,
+                /* isCalledFromBgWithoutBgRead= */ false);
+
+        AccessLog readAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_READ,
+                        /* medicalResourceTypes= */ Set.of(),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .doesNotContain(readAccessLog);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByPackages_expectAccessLogWhenAppAccessesDataSourceThroughReadPerm() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
+        MedicalDataSource dataSource1Package1 =
+                mUtil.insertR4MedicalDataSource("ds/1", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package1 =
+                mUtil.insertR4MedicalDataSource("ds/2", DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1Package2 =
+                mUtil.insertR4MedicalDataSource("ds/3", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource2Package2 =
+                mUtil.insertR4MedicalDataSource("ds/4", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package1);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
+        mUtil.upsertResource(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
+        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+
+        // App is in foreground or background with background read perm, no write permission but
+        // has allergy resource type read permission.
+        // App can only read dataSources belonging to the allergy resource types written
+        // by any apps. Access log should be created in this case.
+        mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
+                /* packageNames= */ Set.of(),
+                Set.of(MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE),
+                DATA_SOURCE_PACKAGE_NAME,
+                /* hasWritePermission= */ false,
+                /* isCalledFromBgWithoutBgRead= */ false);
+
+        AccessLog readAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_READ,
+                        /* medicalResourceTypes= */ Set.of(),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .contains(readAccessLog);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getByPackages_expectNoAccessLogWhenNoDataSourcesRead() {
+        insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
+
+        // No dataSources are inserted, so no dataSources will be returned as part of this
+        // API call. Hence no access log should be created.
+        mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithPermissionChecks(
+                /* packageNames= */ Set.of(),
+                Set.of(MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE),
+                DATA_SOURCE_PACKAGE_NAME,
+                /* hasWritePermission= */ true,
+                /* isCalledFromBgWithoutBgRead= */ false);
+
+        AccessLog readAccessLog =
+                new AccessLog(
+                        DATA_SOURCE_PACKAGE_NAME,
+                        INSTANT_NOW.toEpochMilli(),
+                        OPERATION_TYPE_READ,
+                        /* medicalResourceTypes= */ Set.of(),
+                        /* isMedicalDataSourceAccessed= */ true);
+
+        assertThat(mAccessLogsHelper.queryAccessLogs())
+                .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
+                .doesNotContain(readAccessLog);
     }
 
     @Test
@@ -2413,7 +2743,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void deleteByIdsWithoutPermCheck_badId_throws() {
         assertThrows(
                 IllegalArgumentException.class,
@@ -2424,7 +2754,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void deleteByIdsWithoutPermCheck__badId_leavesRecordsUnchanged()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
@@ -2449,7 +2779,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void deleteByIdsWithPermCheck_oneIdWrongPackage_existingDataUnchanged()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
@@ -2481,7 +2811,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void deleteByIdsWithoutPermCheck_oneId_existingDataDeleted()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
@@ -2503,7 +2833,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void deleteByIdsWithoutPermCheck_multiplePresentOneIdRequested_onlyRequestedDeleted()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
@@ -2531,7 +2861,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void deleteWithPermCheck_multiplePresentOneIdRequested_onlyRequestedDeleted()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
@@ -2559,7 +2889,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void deleteWithPermCheck_multiplePresentOneIdRequestedDifferentAppId_throws()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
@@ -2591,7 +2921,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void deleteByIdsWithoutPermCheck_removesAssociatedResource()
             throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
@@ -2636,7 +2966,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void testGetAllContributorAppInfoIds_success() throws NameNotFoundException {
         setUpMocksForAppInfo(DATA_SOURCE_PACKAGE_NAME);
         setUpMocksForAppInfo(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);

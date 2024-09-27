@@ -171,3 +171,12 @@ flag {
     is_fixed_read_only: true
     is_exported: true
 }
+
+flag {
+    name: "immediate_export"
+    namespace: "health_fitness_aconfig"
+    description: "Enables immediate export."
+    bug: "318484000"
+    is_fixed_read_only: true
+    is_exported: true
+}

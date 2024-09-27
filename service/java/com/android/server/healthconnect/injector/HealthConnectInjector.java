@@ -29,6 +29,8 @@ import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -86,8 +88,14 @@ public abstract class HealthConnectInjector {
     /** Getter for AccessLogsHelper instance initialised by the Health Connect Injector. */
     public abstract AccessLogsHelper getAccessLogsHelper();
 
-    /** Getter for AccessLogsHelper instance initialised by the Health Connect Injector. */
+    /** Getter for ActivityDateHelper instance initialised by the Health Connect Injector. */
     public abstract ActivityDateHelper getActivityDateHelper();
+
+    /** Getter for ChangeLogsHelper instance initialised by the Health Connect Injector. */
+    public abstract ChangeLogsHelper getChangeLogsHelper();
+
+    /** Getter for ChangeLogsRequestHelper instance initialised by the Health Connect Injector. */
+    public abstract ChangeLogsRequestHelper getChangeLogsRequestHelper();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {
