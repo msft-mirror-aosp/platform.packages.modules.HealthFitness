@@ -31,7 +31,6 @@ import android.platform.test.flag.junit.SetFlagsRule;
 
 import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -59,6 +58,7 @@ public class AconfigFlagHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_INFRA_TO_GUARD_DB_CHANGES})
+    @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void infraToGuardDbChangesEnabled() {
         assertThat(getDbVersion()).isEqualTo(LAST_ROLLED_OUT_DB_VERSION);
     }
@@ -164,7 +164,6 @@ public class AconfigFlagHelperTest {
         assertThat(isPersonalHealthRecordEnabled()).isFalse();
     }
 
-    @Ignore("TODO(b/357062401): enabled this test when PHR schemas are finalized")
     @Test
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
