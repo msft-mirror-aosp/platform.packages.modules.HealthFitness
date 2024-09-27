@@ -276,6 +276,12 @@
     <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"एलर्जी"</string>
     <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"एलर्जी"</string>
     <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"एलर्जी से जुड़ा डेटा देखने की अनुमति दें"</string>
+    <!-- no translation found for conditions_uppercase_label (5260404343402770877) -->
+    <skip />
+    <!-- no translation found for conditions_lowercase_label (2678248918552246997) -->
+    <skip />
+    <!-- no translation found for conditions_content_description (3230552343616193829) -->
+    <skip />
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"टीकाकरण से जुड़ा डेटा"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"टीकाकरण से जुड़ा डेटा"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"टीकाकरण से जुड़ा डेटा पढ़ने की अनुमति दें"</string>
@@ -285,18 +291,33 @@
     <string name="medications_uppercase_label" msgid="4783281053427990225">"दवाइयां"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"दवाइयां"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"दवाइयों से जुड़ा डेटा देखने की अनुमति दें"</string>
+    <!-- no translation found for personal_details_uppercase_label (7241635933310394120) -->
+    <skip />
+    <!-- no translation found for personal_details_lowercase_label (1907848447611775151) -->
+    <skip />
+    <!-- no translation found for personal_details_content_description (3191211304673909831) -->
+    <skip />
+    <!-- no translation found for practitioner_details_uppercase_label (2940667649808082510) -->
+    <skip />
+    <!-- no translation found for practitioner_details_lowercase_label (8195591077717971542) -->
+    <skip />
+    <!-- no translation found for practitioner_details_content_description (8775396516928504185) -->
+    <skip />
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"गर्भावस्था से जुड़ा डेटा"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"गर्भावस्था से जुड़ा डेटा"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"गर्भावस्था से जुड़ा डेटा देखने की अनुमति दें"</string>
-    <string name="problems_uppercase_label" msgid="4047882613795113715">"समस्याओं से जुड़ा डेटा"</string>
-    <string name="problems_lowercase_label" msgid="6934298611508910866">"समस्याओं से जुड़ा डेटा"</string>
-    <string name="problems_content_description" msgid="1549418294742668962">"समस्याओं से जुड़ा डेटा देखने की अनुमति दें"</string>
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"इलाज से जुड़ा डेटा"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"इलाज से जुड़ा डेटा"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"इलाज से जुड़ा डेटा देखने की अनुमति दें"</string>
     <string name="social_history_uppercase_label" msgid="1731364502071035544">"सोशल मीडिया के इस्तेमाल से जुड़ा डेटा"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"सोशल मीडिया के इस्तेमाल से जुड़ा डेटा"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"सोशल मीडिया से जुड़ा डेटा इस्तेमाल करने की अनुमति दें"</string>
+    <!-- no translation found for visits_uppercase_label (8532619758336375886) -->
+    <skip />
+    <!-- no translation found for visits_lowercase_label (2545887061364564151) -->
+    <skip />
+    <!-- no translation found for visits_content_description (6336796415049565697) -->
+    <skip />
     <string name="vital_signs_uppercase_label" msgid="214938594708280346">"बीपी, धड़कन की दर वगैरह से जुड़ा डेटा"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"बीपी, धड़कन की दर वगैरह से जुड़ा डेटा"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"बीपी, धड़कन की दर वगैरह से जुड़ा डेटा देखने की अनुमति दें"</string>
@@ -338,6 +359,7 @@
     <string name="default_error" msgid="7966868260616403475">"कोई गड़बड़ी हुई. कृपया फिर से कोशिश करें."</string>
     <!-- no translation found for unkwown_resource (7932225227431922125) -->
     <skip />
+    <string name="raw_fhir_title" msgid="1295744907036066319">"सोर्स डेटा"</string>
     <!-- no translation found for raw_fhir_open_bracket (7974657451368655325) -->
     <skip />
     <!-- no translation found for raw_fhir_closed_bracket (9084379463440675078) -->
@@ -475,6 +497,10 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Store पर जाएं"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect का इस्तेमाल शुरू करें"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect में, आपकी सेहत और फ़िटनेस से जुड़ा डेटा सेव किया जाता है. इससे अपने डिवाइस में अलग-अलग ऐप्लिकेशन को आसानी से सिंक करने में मदद मिलती है"</string>
+    <!-- no translation found for onboarding_description_health_records (6816666836571797870) -->
+    <skip />
+    <!-- no translation found for onboarding_description_with_health_connect (8751881078749676542) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"ऐप्लिकेशन के साथ डेटा शेयर करें"</string>
     <string name="share_data_description" msgid="2919871301634375092">"यह चुनें कि हर ऐप्लिकेशन, Health Connect में कौनसा डेटा देख सकता है और उसमें बदलाव कर सकता है"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"सेटिंग और निजता को मैनेज करें"</string>
