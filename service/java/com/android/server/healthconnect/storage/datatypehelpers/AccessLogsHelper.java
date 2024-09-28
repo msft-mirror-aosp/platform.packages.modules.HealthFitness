@@ -107,8 +107,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
         final ReadTableRequest readTableRequest = new ReadTableRequest(TABLE_NAME);
 
         List<AccessLog> accessLogsList = new ArrayList<>();
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        try (Cursor cursor = transactionManager.read(readTableRequest)) {
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
             while (cursor.moveToNext()) {
                 String packageName =
                         mAppInfoHelper.getPackageName(getCursorLong(cursor, APP_ID_COLUMN_NAME));
@@ -335,6 +334,9 @@ public final class AccessLogsHelper extends DatabaseHelper {
         return TABLE_NAME;
     }
 
+    /**
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static AccessLogsHelper getInstance() {
         return getInstance(
                 TransactionManager.getInitialisedInstance(), AppInfoHelper.getInstance());

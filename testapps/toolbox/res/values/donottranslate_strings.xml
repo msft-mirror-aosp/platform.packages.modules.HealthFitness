@@ -15,7 +15,7 @@
 -->
 
 <resources>
-  <string name="app_label">Health Connect Toolbox</string>
+  <string name="app_label">HC Toolbox</string>
   <string name="not_implemented">Not implemented</string>
   <string name="insert_data">Insert Data</string>
   <string name="update_data">Update Data</string>
@@ -141,6 +141,7 @@
 
   <!-- region Phr Options screen -->
   <string name="phr_options_title">PHR Options</string>
+  <string name="phr_options_ingest_title">Ingest PHR data</string>
   <string name="phr_options_create_data_source">Create data source</string>
   <string name="phr_options_data_source_id_placeholder">Create data source to see the id</string>
   <string name="phr_options_insert_immunization">Insert immunization</string>

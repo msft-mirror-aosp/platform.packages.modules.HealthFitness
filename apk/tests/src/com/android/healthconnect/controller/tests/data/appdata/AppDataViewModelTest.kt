@@ -22,7 +22,7 @@ import android.health.connect.HealthPermissionCategory
 import android.health.connect.MedicalResourceTypeInfo
 import android.health.connect.RecordTypeInfoResponse
 import android.health.connect.datatypes.HeartRateRecord
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.StepsRecord
 import android.health.connect.datatypes.WeightRecord
@@ -32,7 +32,7 @@ import com.android.healthconnect.controller.data.appdata.AppDataUseCase
 import com.android.healthconnect.controller.data.appdata.AppDataViewModel
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
-import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.IMMUNIZATION
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.IMMUNIZATIONS
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.MEDICAL
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
@@ -209,7 +209,7 @@ class AppDataViewModelTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                     setOf(TEST_MEDICAL_DATA_SOURCE),
                 )
             )
@@ -242,7 +242,7 @@ class AppDataViewModelTest {
                 PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()).takeIf {
                     Flags.mindfulness()
                 },
-                PermissionTypesPerCategory(MEDICAL, listOf(IMMUNIZATION)),
+                PermissionTypesPerCategory(MEDICAL, listOf(IMMUNIZATIONS)),
             )
         assertThat(testObserver.getLastValue())
             .isEqualTo(AppDataViewModel.AppDataState.WithData(expected))
@@ -254,7 +254,7 @@ class AppDataViewModelTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                     setOf(TEST_MEDICAL_DATA_SOURCE),
                 )
             )
@@ -278,7 +278,7 @@ class AppDataViewModelTest {
                 PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()).takeIf {
                     Flags.mindfulness()
                 },
-                PermissionTypesPerCategory(MEDICAL, listOf(IMMUNIZATION)),
+                PermissionTypesPerCategory(MEDICAL, listOf(IMMUNIZATIONS)),
             )
         assertThat(testObserver.getLastValue())
             .isEqualTo(AppDataViewModel.AppDataState.WithData(expected))
@@ -290,7 +290,7 @@ class AppDataViewModelTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                     setOf(TEST_MEDICAL_DATA_SOURCE_DIFFERENT_APP),
                 )
             )
@@ -326,7 +326,7 @@ class AppDataViewModelTest {
         viewModel.addToDeletionSet(FitnessPermissionType.DISTANCE)
 
         assertThat(viewModel.setOfPermissionTypesToBeDeleted.value)
-                .containsExactly(FitnessPermissionType.DISTANCE)
+            .containsExactly(FitnessPermissionType.DISTANCE)
     }
 
     @Test
@@ -336,21 +336,23 @@ class AppDataViewModelTest {
         viewModel.removeFromDeletionSet(FitnessPermissionType.DISTANCE)
 
         assertThat(viewModel.setOfPermissionTypesToBeDeleted.value)
-                .containsExactly(FitnessPermissionType.MENSTRUATION)
+            .containsExactly(FitnessPermissionType.MENSTRUATION)
     }
 
     @Test
     fun setDeletionState_setsCorrectly() {
         viewModel.setDeletionState(AppDataViewModel.AppDataDeletionScreenState.DELETE)
 
-        assertThat(viewModel.getDeletionState()).isEqualTo(AppDataViewModel.AppDataDeletionScreenState.DELETE)
+        assertThat(viewModel.getDeletionState())
+            .isEqualTo(AppDataViewModel.AppDataDeletionScreenState.DELETE)
     }
 
     @Test
     fun getDeletionState_getsCorrectValue() {
         viewModel.setDeletionState(AppDataViewModel.AppDataDeletionScreenState.VIEW)
 
-        assertThat(viewModel.getDeletionState()).isEqualTo(AppDataViewModel.AppDataDeletionScreenState.VIEW)
+        assertThat(viewModel.getDeletionState())
+            .isEqualTo(AppDataViewModel.AppDataDeletionScreenState.VIEW)
     }
 
     @Test
@@ -363,28 +365,28 @@ class AppDataViewModelTest {
     }
 
     @Test
-    fun addToDeleteSet_allPermissionTypesSelected_valueUpdatedToTrue() = runTest{
+    fun addToDeleteSet_allPermissionTypesSelected_valueUpdatedToTrue() = runTest {
         val recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse> =
-                mapOf(
-                        StepsRecord::class.java to
-                                RecordTypeInfoResponse(
-                                        HealthPermissionCategory.STEPS,
-                                        HealthDataCategory.ACTIVITY,
-                                        listOf(
-                                                getDataOrigin(TEST_APP_PACKAGE_NAME),
-                                                getDataOrigin(TEST_APP_PACKAGE_NAME_2),
-                                        ),
-                                ),
-                        HeartRateRecord::class.java to
-                                RecordTypeInfoResponse(
-                                        HealthPermissionCategory.HEART_RATE,
-                                        HealthDataCategory.VITALS,
-                                        listOf((getDataOrigin(TEST_APP_PACKAGE_NAME))),
-                                ),
-                )
+            mapOf(
+                StepsRecord::class.java to
+                    RecordTypeInfoResponse(
+                        HealthPermissionCategory.STEPS,
+                        HealthDataCategory.ACTIVITY,
+                        listOf(
+                            getDataOrigin(TEST_APP_PACKAGE_NAME),
+                            getDataOrigin(TEST_APP_PACKAGE_NAME_2),
+                        ),
+                    ),
+                HeartRateRecord::class.java to
+                    RecordTypeInfoResponse(
+                        HealthPermissionCategory.HEART_RATE,
+                        HealthDataCategory.VITALS,
+                        listOf((getDataOrigin(TEST_APP_PACKAGE_NAME))),
+                    ),
+            )
         doAnswer(prepareAnswer(recordTypeInfoMap))
-                .`when`(manager)
-                .queryAllRecordTypesInfo(any(), any())
+            .`when`(manager)
+            .queryAllRecordTypesInfo(any(), any())
 
         viewModel.loadAppData(TEST_APP_PACKAGE_NAME)
         viewModel.addToDeletionSet(FitnessPermissionType.STEPS)
@@ -397,26 +399,26 @@ class AppDataViewModelTest {
     @Test
     fun removeFromDeleteSet_allPermissionTypesSelected_valueUpdatedToFalse() = runTest {
         val recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse> =
-                mapOf(
-                        StepsRecord::class.java to
-                                RecordTypeInfoResponse(
-                                        HealthPermissionCategory.STEPS,
-                                        HealthDataCategory.ACTIVITY,
-                                        listOf(
-                                                getDataOrigin(TEST_APP_PACKAGE_NAME),
-                                                getDataOrigin(TEST_APP_PACKAGE_NAME_2),
-                                        ),
-                                ),
-                        HeartRateRecord::class.java to
-                                RecordTypeInfoResponse(
-                                        HealthPermissionCategory.HEART_RATE,
-                                        HealthDataCategory.VITALS,
-                                        listOf((getDataOrigin(TEST_APP_PACKAGE_NAME))),
-                                ),
-                )
+            mapOf(
+                StepsRecord::class.java to
+                    RecordTypeInfoResponse(
+                        HealthPermissionCategory.STEPS,
+                        HealthDataCategory.ACTIVITY,
+                        listOf(
+                            getDataOrigin(TEST_APP_PACKAGE_NAME),
+                            getDataOrigin(TEST_APP_PACKAGE_NAME_2),
+                        ),
+                    ),
+                HeartRateRecord::class.java to
+                    RecordTypeInfoResponse(
+                        HealthPermissionCategory.HEART_RATE,
+                        HealthDataCategory.VITALS,
+                        listOf((getDataOrigin(TEST_APP_PACKAGE_NAME))),
+                    ),
+            )
         doAnswer(prepareAnswer(recordTypeInfoMap))
-                .`when`(manager)
-                .queryAllRecordTypesInfo(any(), any())
+            .`when`(manager)
+            .queryAllRecordTypesInfo(any(), any())
 
         viewModel.loadAppData(TEST_APP_PACKAGE_NAME)
         viewModel.addToDeletionSet(FitnessPermissionType.STEPS)
@@ -430,6 +432,41 @@ class AppDataViewModelTest {
         assertThat(viewModel.allPermissionTypesSelected.value).isFalse()
     }
 
+    @Test
+    fun getNumOfPermissionTypes_returnsCorrect() = runTest {
+        val recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse> =
+            mapOf(
+                StepsRecord::class.java to
+                    RecordTypeInfoResponse(
+                        HealthPermissionCategory.STEPS,
+                        HealthDataCategory.ACTIVITY,
+                        listOf(
+                            getDataOrigin(TEST_APP_PACKAGE_NAME),
+                            getDataOrigin(TEST_APP_PACKAGE_NAME_2),
+                        ),
+                    ),
+                WeightRecord::class.java to
+                    RecordTypeInfoResponse(
+                        HealthPermissionCategory.WEIGHT,
+                        HealthDataCategory.BODY_MEASUREMENTS,
+                        listOf((getDataOrigin(TEST_APP_PACKAGE_NAME))),
+                    ),
+                HeartRateRecord::class.java to
+                    RecordTypeInfoResponse(
+                        HealthPermissionCategory.HEART_RATE,
+                        HealthDataCategory.VITALS,
+                        listOf((getDataOrigin(TEST_APP_PACKAGE_NAME))),
+                    ),
+            )
+        doAnswer(prepareAnswer(recordTypeInfoMap))
+            .`when`(manager)
+            .queryAllRecordTypesInfo(any(), any())
+
+        viewModel.loadAppData(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        assertThat(viewModel.getNumOfPermissionTypes()).isEqualTo(3)
+    }
 
     private fun prepareAnswer(
         recordTypeInfoMap: Map<Class<out Record>, RecordTypeInfoResponse>

@@ -39,6 +39,7 @@ import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import org.junit.Before;
@@ -77,6 +78,7 @@ public class PriorityMigrationTest {
     @Mock PriorityMigrationHelper mPriorityMigrationHelper;
     @Mock SQLiteDatabase mSQLiteDatabase;
     @Mock PreferenceHelper mPreferenceHelper;
+    @Mock MigrationEntityHelper mMigrationEntityHelper;
 
     DataMigrationManager mDataMigrationManager;
 
@@ -107,7 +109,8 @@ public class PriorityMigrationTest {
                         mAppInfoHelper,
                         mHealthDataCategoryPriorityHelper,
                         mPriorityMigrationHelper,
-                        mPreferenceHelper);
+                        mPreferenceHelper,
+                        mMigrationEntityHelper);
     }
 
     @Test

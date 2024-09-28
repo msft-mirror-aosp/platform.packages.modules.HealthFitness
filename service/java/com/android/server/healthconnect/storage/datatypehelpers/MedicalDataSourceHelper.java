@@ -18,13 +18,20 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_DELETE;
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
+import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
+import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 
 import static com.android.server.healthconnect.storage.HealthConnectDatabase.createTable;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getAppIdsWhereClause;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getIntersectionOfResourceTypesReadAndGrantedReadPermissions;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getJoinWithIndicesTableFilterOnMedicalResourceTypes;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getJoinWithMedicalDataSourceFilterOnAppIds;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getJoinWithMedicalDataSourceFilterOnDataSourceIds;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getJoinWithMedicalDataSourceFilterOnDataSourceIdsAndAppId;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.getReadRequestForDistinctResourceTypesBelongingToDataSourceIds;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.request.ReadTableRequest.UNION;
@@ -32,6 +39,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_U
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
@@ -46,6 +54,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.health.connect.Constants;
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.net.Uri;
 import android.util.Pair;
@@ -70,6 +79,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Helper class for MedicalDataSource.
@@ -85,6 +95,7 @@ public class MedicalDataSourceHelper {
 
     @VisibleForTesting static final String DISPLAY_NAME_COLUMN_NAME = "display_name";
     @VisibleForTesting static final String FHIR_BASE_URI_COLUMN_NAME = "fhir_base_uri";
+    @VisibleForTesting static final String FHIR_VERSION_COLUMN_NAME = "fhir_version";
     @VisibleForTesting static final String DATA_SOURCE_UUID_COLUMN_NAME = "data_source_uuid";
     private static final String APP_INFO_ID_COLUMN_NAME = "app_info_id";
     private static final String MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME =
@@ -95,14 +106,17 @@ public class MedicalDataSourceHelper {
     private final TransactionManager mTransactionManager;
     private final AppInfoHelper mAppInfoHelper;
     private final TimeSource mTimeSource;
+    private final AccessLogsHelper mAccessLogsHelper;
 
     public MedicalDataSourceHelper(
             TransactionManager transactionManager,
             AppInfoHelper appInfoHelper,
-            TimeSource timeSource) {
+            TimeSource timeSource,
+            AccessLogsHelper accessLogsHelper) {
         mTransactionManager = transactionManager;
         mAppInfoHelper = appInfoHelper;
         mTimeSource = timeSource;
+        mAccessLogsHelper = accessLogsHelper;
     }
 
     public static String getMainTableName() {
@@ -121,12 +135,17 @@ public class MedicalDataSourceHelper {
         return APP_INFO_ID_COLUMN_NAME;
     }
 
+    public static String getFhirVersionColumnName() {
+        return FHIR_VERSION_COLUMN_NAME;
+    }
+
     private static List<Pair<String, String>> getColumnInfo() {
         return List.of(
                 Pair.create(MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME, PRIMARY),
                 Pair.create(APP_INFO_ID_COLUMN_NAME, INTEGER_NOT_NULL),
                 Pair.create(DISPLAY_NAME_COLUMN_NAME, TEXT_NOT_NULL),
                 Pair.create(FHIR_BASE_URI_COLUMN_NAME, TEXT_NOT_NULL),
+                Pair.create(FHIR_VERSION_COLUMN_NAME, TEXT_NOT_NULL),
                 Pair.create(DATA_SOURCE_UUID_COLUMN_NAME, BLOB_UNIQUE_NON_NULL),
                 Pair.create(LAST_MODIFIED_TIME_COLUMN_NAME, INTEGER_NOT_NULL));
     }
@@ -257,6 +276,7 @@ public class MedicalDataSourceHelper {
                         /* fhirBaseUri= */ Uri.parse(
                                 getCursorString(cursor, FHIR_BASE_URI_COLUMN_NAME)),
                         /* displayName= */ getCursorString(cursor, DISPLAY_NAME_COLUMN_NAME))
+                .setFhirVersion(parseFhirVersion(getCursorString(cursor, FHIR_VERSION_COLUMN_NAME)))
                 // TODO(b/365756516) Populate this value from DB
                 .setLastDataUpdateTime(null)
                 .build();
@@ -273,7 +293,6 @@ public class MedicalDataSourceHelper {
      */
     public MedicalDataSource createMedicalDataSource(
             Context context, CreateMedicalDataSourceRequest request, String packageName) {
-        // TODO(b/344781394): Add support for access logs.
         try {
             return mTransactionManager.runAsTransaction(
                     (TransactionManager.TransactionRunnableWithReturn<
@@ -311,6 +330,12 @@ public class MedicalDataSourceHelper {
         UpsertTableRequest upsertTableRequest =
                 getUpsertTableRequest(dataSourceUuid, request, appInfoId, instant);
         mTransactionManager.insert(db, upsertTableRequest);
+        mAccessLogsHelper.addAccessLog(
+                db,
+                packageName,
+                /* medicalResourceTypes= */ Set.of(),
+                OPERATION_TYPE_UPSERT,
+                /* accessedMedicalDataSource= */ true);
         return buildMedicalDataSource(dataSourceUuid, request, packageName);
     }
 
@@ -379,17 +404,89 @@ public class MedicalDataSourceHelper {
             throw new IllegalArgumentException(
                     "app has not written any data and does not have any read permission");
         }
+        return mTransactionManager.runAsTransaction(
+                (TransactionManager.TransactionRunnableWithReturn<
+                                List<MedicalDataSource>, RuntimeException>)
+                        db -> {
+                            ReadTableRequest readRequest =
+                                    getReadRequestBasedOnPermissionFilters(
+                                            ids,
+                                            grantedReadMedicalResourceTypes,
+                                            appId,
+                                            hasWritePermission,
+                                            isCalledFromBgWithoutBgRead);
 
-        ReadTableRequest readTableRequest =
-                getReadRequestBasedOnPermissionFilters(
-                        ids,
-                        grantedReadMedicalResourceTypes,
-                        appId,
-                        hasWritePermission,
-                        isCalledFromBgWithoutBgRead);
-        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
-            return getMedicalDataSources(cursor);
+                            return readMedicalDataSourcesAndAddAccessLog(
+                                    db,
+                                    readRequest,
+                                    grantedReadMedicalResourceTypes,
+                                    callingPackageName,
+                                    isCalledFromBgWithoutBgRead);
+                        });
+    }
+
+    private List<MedicalDataSource> readMedicalDataSourcesAndAddAccessLog(
+            SQLiteDatabase db,
+            ReadTableRequest request,
+            Set<Integer> grantedReadMedicalResourceTypes,
+            String callingPackageName,
+            boolean isCalledFromBgWithoutBgRead) {
+        List<MedicalDataSource> medicalDataSources;
+        try (Cursor cursor = mTransactionManager.read(db, request)) {
+            medicalDataSources = getMedicalDataSources(cursor);
         }
+
+        // If the app is called from background but without background read
+        // permission, the most the app can do, is to read their own data. Same
+        // when the grantedReadMedicalResourceTypes is empty. And we don't need
+        // to add access logs when an app intends to access their own data. If
+        // medicalDataSources is empty, it means that the app hasn't read any
+        // dataSources out, so no need to add access logs either.
+        if (!isCalledFromBgWithoutBgRead
+                && !grantedReadMedicalResourceTypes.isEmpty()
+                && !medicalDataSources.isEmpty()) {
+            // We need to figure out from the dataSources that were read, what
+            // is the resource types relevant to those dataSources, we add
+            // access logs only if there's any intersection between read
+            // permissions and resource types's dataSources. If intersection is
+            // empty, it means that the data read was accessed through self
+            // read, hence no access log needed.
+            Set<Integer> resourceTypes =
+                    getIntersectionOfResourceTypesReadAndGrantedReadPermissions(
+                            getMedicalResourceTypesBelongingToDataSourceIds(
+                                    getUUIDsRead(medicalDataSources)),
+                            grantedReadMedicalResourceTypes);
+            if (!resourceTypes.isEmpty()) {
+                mAccessLogsHelper.addAccessLog(
+                        db,
+                        callingPackageName,
+                        /* medicalResourceTypes= */ Set.of(),
+                        OPERATION_TYPE_READ,
+                        /* accessedMedicalDataSource= */ true);
+            }
+        }
+        return medicalDataSources;
+    }
+
+    private Set<Integer> getMedicalResourceTypesBelongingToDataSourceIds(List<UUID> dataSourceIds) {
+        Set<Integer> resourceTypes = new HashSet<>();
+        ReadTableRequest readRequest =
+                getReadRequestForDistinctResourceTypesBelongingToDataSourceIds(dataSourceIds);
+        try (Cursor cursor = mTransactionManager.read(readRequest)) {
+            if (cursor.moveToFirst()) {
+                do {
+                    resourceTypes.add(getCursorInt(cursor, getMedicalResourceTypeColumnName()));
+                } while (cursor.moveToNext());
+            }
+        }
+        return resourceTypes;
+    }
+
+    private static List<UUID> getUUIDsRead(List<MedicalDataSource> dataSources) {
+        return dataSources.stream()
+                .map(MedicalDataSource::getId)
+                .map(UUID::fromString)
+                .collect(Collectors.toList());
     }
 
     private static ReadTableRequest getReadRequestBasedOnPermissionFilters(
@@ -492,7 +589,8 @@ public class MedicalDataSourceHelper {
                                 AppInfoHelper.PACKAGE_COLUMN_NAME,
                                 DATA_SOURCE_UUID_COLUMN_NAME,
                                 FHIR_BASE_URI_COLUMN_NAME,
-                                DISPLAY_NAME_COLUMN_NAME))
+                                DISPLAY_NAME_COLUMN_NAME,
+                                FHIR_VERSION_COLUMN_NAME))
                 .setJoinClause(joinClause);
     }
 
@@ -509,7 +607,8 @@ public class MedicalDataSourceHelper {
                                 AppInfoHelper.PACKAGE_COLUMN_NAME,
                                 DATA_SOURCE_UUID_COLUMN_NAME,
                                 FHIR_BASE_URI_COLUMN_NAME,
-                                DISPLAY_NAME_COLUMN_NAME))
+                                DISPLAY_NAME_COLUMN_NAME,
+                                FHIR_VERSION_COLUMN_NAME))
                 .setJoinClause(getJoinClauseWithAppInfoTable());
     }
 
@@ -525,7 +624,8 @@ public class MedicalDataSourceHelper {
                                 AppInfoHelper.PACKAGE_COLUMN_NAME,
                                 DATA_SOURCE_UUID_COLUMN_NAME,
                                 FHIR_BASE_URI_COLUMN_NAME,
-                                DISPLAY_NAME_COLUMN_NAME))
+                                DISPLAY_NAME_COLUMN_NAME,
+                                FHIR_VERSION_COLUMN_NAME))
                 .setJoinClause(getJoinClauseWithAppInfoTable());
     }
 
@@ -608,18 +708,25 @@ public class MedicalDataSourceHelper {
             throw new IllegalArgumentException(
                     "app doesn't have permission to read based on the given packages");
         }
+        return mTransactionManager.runAsTransaction(
+                (TransactionManager.TransactionRunnableWithReturn<
+                                List<MedicalDataSource>, RuntimeException>)
+                        db -> {
+                            ReadTableRequest readRequest =
+                                    getReadRequestByPackagesWithPermissionChecks(
+                                            new HashSet<>(appIds),
+                                            grantedReadMedicalResourceTypes,
+                                            callingAppId,
+                                            hasWritePermission,
+                                            isCalledFromBgWithoutBgRead);
 
-        ReadTableRequest readTableRequest =
-                getReadRequestByPackagesWithPermissionChecks(
-                        new HashSet<>(appIds),
-                        grantedReadMedicalResourceTypes,
-                        callingAppId,
-                        hasWritePermission,
-                        isCalledFromBgWithoutBgRead);
-
-        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
-            return getMedicalDataSources(cursor);
-        }
+                            return readMedicalDataSourcesAndAddAccessLog(
+                                    db,
+                                    readRequest,
+                                    grantedReadMedicalResourceTypes,
+                                    callingPackageName,
+                                    isCalledFromBgWithoutBgRead);
+                        });
     }
 
     private static ReadTableRequest getReadRequestByPackagesWithPermissionChecks(
@@ -699,51 +806,92 @@ public class MedicalDataSourceHelper {
         return new UpsertTableRequest(getMainTableName(), contentValues, UNIQUE_COLUMNS_INFO);
     }
 
-    /**
-     * Deletes the {@link MedicalDataSource}s stored in the HealthConnect database using the given
-     * list of {@code ids}.
-     *
-     * <p>Note that this deletes without producing change logs, or access logs.
-     *
-     * @param id the id to delete.
-     * @param appInfoIdRestriction if non-null, restricts any deletions to data sources owned by the
-     *     given app. If null allows deletions of any data sources.
-     * @throws IllegalArgumentException if the id does not exist, or there is an
-     *     appInfoIdRestriction and the data source is owned by a different app
-     */
-    public void deleteMedicalDataSource(UUID id, @Nullable Long appInfoIdRestriction)
-            throws SQLiteException {
+    private static DeleteTableRequest getDeleteRequestForDataSourceUuid(
+            UUID id, @Nullable Long appInfoIdRestriction) {
         DeleteTableRequest request =
                 new DeleteTableRequest(MEDICAL_DATA_SOURCE_TABLE_NAME)
                         .setIds(
                                 DATA_SOURCE_UUID_COLUMN_NAME,
                                 StorageUtils.getListOfHexStrings(List.of(id)));
-        if (appInfoIdRestriction != null) {
-            request.setPackageFilter(APP_INFO_ID_COLUMN_NAME, List.of(appInfoIdRestriction));
+        if (appInfoIdRestriction == null) {
+            return request;
         }
-        ReadTableRequest readTableRequest = getReadTableRequest(List.of(id), appInfoIdRestriction);
-        boolean success =
-                mTransactionManager.runAsTransaction(
-                        db -> {
-                            try (Cursor cursor = mTransactionManager.read(db, readTableRequest)) {
-                                if (cursor.getCount() != 1) {
-                                    return false;
-                                }
-                            }
-                            // This also deletes the contained data, because they are
-                            // referenced by foreign key, and so are handled by ON DELETE
-                            // CASCADE in the db.
-                            mTransactionManager.delete(db, request);
-                            return true;
-                        });
-        if (!success) {
-            if (appInfoIdRestriction == null) {
-                throw new IllegalArgumentException("Id " + id + " does not exist");
-            } else {
-                throw new IllegalArgumentException(
-                        "Id " + id + " does not exist or is owned by another app");
-            }
+        return request.setPackageFilter(APP_INFO_ID_COLUMN_NAME, List.of(appInfoIdRestriction));
+    }
+
+    /**
+     * Deletes the {@link MedicalDataSource}s stored in the HealthConnect database using the given
+     * {@code id}.
+     *
+     * <p>Note that this deletes without producing change logs, or access logs.
+     *
+     * @param id the id to delete.
+     * @throws IllegalArgumentException if the id does not exist.
+     */
+    public void deleteMedicalDataSourceWithoutPermissionChecks(UUID id) throws SQLiteException {
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    try (Cursor cursor =
+                            mTransactionManager.read(
+                                    db,
+                                    getReadTableRequest(
+                                            List.of(id), /* appInfoRestriction= */ null))) {
+                        if (cursor.getCount() != 1) {
+                            throw new IllegalArgumentException("Id " + id + " does not exist");
+                        }
+                    }
+                    // This also deletes the contained data, because they are
+                    // referenced by foreign key, and so are handled by ON DELETE
+                    // CASCADE in the db.
+                    mTransactionManager.delete(
+                            db,
+                            getDeleteRequestForDataSourceUuid(
+                                    id, /* appInfoIdRestriction= */ null));
+                });
+    }
+
+    /**
+     * Deletes the {@link MedicalDataSource}s stored in the HealthConnect database using the given
+     * {@code id}.
+     *
+     * <p>Note that this deletes without producing change logs.
+     *
+     * @param id the id to delete.
+     * @param callingPackageName restricts any deletions to data sources owned by the given app.
+     * @throws IllegalArgumentException if the id does not exist, or dataSource exists but it is not
+     *     owned by the {@code callingPackageName}.
+     */
+    public void deleteMedicalDataSourceWithPermissionChecks(UUID id, String callingPackageName)
+            throws SQLiteException {
+        long appId = mAppInfoHelper.getAppInfoId(callingPackageName);
+        if (appId == Constants.DEFAULT_LONG) {
+            throw new IllegalArgumentException(
+                    "Deletion not permitted as app has inserted no data.");
         }
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    try (Cursor cursor =
+                            mTransactionManager.read(db, getReadTableRequest(List.of(id), appId))) {
+                        if (cursor.getCount() != 1) {
+                            throw new IllegalArgumentException(
+                                    "Id " + id + " does not exist or is owned by another app");
+                        }
+                    }
+
+                    // Medical resource types that belong to this dataSource and will be deleted.
+                    Set<Integer> medicalResourceTypes =
+                            getMedicalResourceTypesBelongingToDataSourceIds(List.of(id));
+                    // This also deletes the contained data, because they are
+                    // referenced by foreign key, and so are handled by ON DELETE
+                    // CASCADE in the db.
+                    mTransactionManager.delete(db, getDeleteRequestForDataSourceUuid(id, appId));
+                    mAccessLogsHelper.addAccessLog(
+                            db,
+                            callingPackageName,
+                            medicalResourceTypes,
+                            OPERATION_TYPE_DELETE,
+                            /* accessedMedicalDataSource= */ true);
+                });
     }
 
     /**
@@ -757,29 +905,32 @@ public class MedicalDataSourceHelper {
                         packageName,
                         request.getFhirBaseUri(),
                         request.getDisplayName())
+                .setFhirVersion(request.getFhirVersion())
                 .build();
     }
 
     /**
-     * Creates a UUID string to row ID map for {@link MedicalDataSource}s stored in {@code
-     * MEDICAL_DATA_SOURCE_TABLE} that were created by the app matching the {@code
+     * Creates a UUID string to row ID and FHIR version map for {@link MedicalDataSource}s stored in
+     * {@code MEDICAL_DATA_SOURCE_TABLE} that were created by the app matching the {@code *
      * appInfoIdRestriction}.
      */
-    public Map<String, Long> getUuidToRowIdMap(
+    public Map<String, Pair<Long, FhirVersion>> getUuidToRowIdAndVersionMap(
             SQLiteDatabase db, long appInfoIdRestriction, List<UUID> dataSourceUuids) {
-        Map<String, Long> uuidToRowId = new HashMap<>();
+        Map<String, Pair<Long, FhirVersion>> uuidToRowIdAndVersion = new HashMap<>();
         try (Cursor cursor =
                 mTransactionManager.read(
                         db, getReadTableRequest(dataSourceUuids, appInfoIdRestriction))) {
             if (cursor.moveToFirst()) {
                 do {
-                    long rowId = getCursorLong(cursor, MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME);
                     UUID uuid = getCursorUUID(cursor, DATA_SOURCE_UUID_COLUMN_NAME);
-                    uuidToRowId.put(uuid.toString(), rowId);
+                    long rowId = getCursorLong(cursor, MEDICAL_DATA_SOURCE_PRIMARY_COLUMN_NAME);
+                    FhirVersion fhirVersion =
+                            parseFhirVersion(getCursorString(cursor, FHIR_VERSION_COLUMN_NAME));
+                    uuidToRowIdAndVersion.put(uuid.toString(), new Pair(rowId, fhirVersion));
                 } while (cursor.moveToNext());
             }
         }
-        return uuidToRowId;
+        return uuidToRowIdAndVersion;
     }
 
     /**
@@ -833,6 +984,9 @@ public class MedicalDataSourceHelper {
         contentValues.put(
                 FHIR_BASE_URI_COLUMN_NAME,
                 createMedicalDataSourceRequest.getFhirBaseUri().toString());
+        contentValues.put(
+                FHIR_VERSION_COLUMN_NAME,
+                createMedicalDataSourceRequest.getFhirVersion().toString());
         contentValues.put(APP_INFO_ID_COLUMN_NAME, appInfoId);
         contentValues.put(LAST_MODIFIED_TIME_COLUMN_NAME, instant.toEpochMilli());
         return contentValues;

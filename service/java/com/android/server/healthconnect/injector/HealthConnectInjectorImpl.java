@@ -29,7 +29,10 @@ import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -57,6 +60,9 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final DeviceInfoHelper mDeviceInfoHelper;
     private final AppInfoHelper mAppInfoHelper;
     private final AccessLogsHelper mAccessLogsHelper;
+    private final ActivityDateHelper mActivityDateHelper;
+    private final ChangeLogsHelper mChangeLogsHelper;
+    private final ChangeLogsRequestHelper mChangeLogsRequestHelper;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -126,6 +132,18 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mAccessLogsHelper == null
                         ? AccessLogsHelper.getInstance(mTransactionManager, mAppInfoHelper)
                         : builder.mAccessLogsHelper;
+        mActivityDateHelper =
+                builder.mActivityDateHelper == null
+                        ? ActivityDateHelper.getInstance(mTransactionManager)
+                        : builder.mActivityDateHelper;
+        mChangeLogsHelper =
+                builder.mChangeLogsHelper == null
+                        ? new ChangeLogsHelper()
+                        : builder.mChangeLogsHelper;
+        mChangeLogsRequestHelper =
+                builder.mChangeLogsRequestHelper == null
+                        ? new ChangeLogsRequestHelper()
+                        : builder.mChangeLogsRequestHelper;
     }
 
     @Override
@@ -188,6 +206,21 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         return mAccessLogsHelper;
     }
 
+    @Override
+    public ActivityDateHelper getActivityDateHelper() {
+        return mActivityDateHelper;
+    }
+
+    @Override
+    public ChangeLogsHelper getChangeLogsHelper() {
+        return mChangeLogsHelper;
+    }
+
+    @Override
+    public ChangeLogsRequestHelper getChangeLogsRequestHelper() {
+        return mChangeLogsRequestHelper;
+    }
+
     /**
      * Returns a new Builder of Health Connect Injector
      *
@@ -219,6 +252,9 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private DeviceInfoHelper mDeviceInfoHelper;
         @Nullable private AppInfoHelper mAppInfoHelper;
         @Nullable private AccessLogsHelper mAccessLogsHelper;
+        @Nullable private ActivityDateHelper mActivityDateHelper;
+        @Nullable private ChangeLogsHelper mChangeLogsHelper;
+        @Nullable private ChangeLogsRequestHelper mChangeLogsRequestHelper;
 
         private Builder(Context context) {
             mHealthConnectUserContext = new HealthConnectUserContext(context, context.getUser());
@@ -308,6 +344,27 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         public Builder setAccessLogsHelper(AccessLogsHelper accessLogsHelper) {
             Objects.requireNonNull(accessLogsHelper);
             mAccessLogsHelper = accessLogsHelper;
+            return this;
+        }
+
+        /** Set fake or custom ActivityDateHelper */
+        public Builder setActivityDateHelper(ActivityDateHelper activityDateHelper) {
+            Objects.requireNonNull(activityDateHelper);
+            mActivityDateHelper = activityDateHelper;
+            return this;
+        }
+
+        /** Set fake or custom ChangeLogsHelper */
+        public Builder setChangeLogsHelper(ChangeLogsHelper changeLogsHelper) {
+            Objects.requireNonNull(changeLogsHelper);
+            mChangeLogsHelper = changeLogsHelper;
+            return this;
+        }
+
+        /** Set fake or custom ActivityDateHelper */
+        public Builder setChangeLogsRequestHelper(ChangeLogsRequestHelper changeLogsRequestHelper) {
+            Objects.requireNonNull(changeLogsRequestHelper);
+            mChangeLogsRequestHelper = changeLogsRequestHelper;
             return this;
         }
 

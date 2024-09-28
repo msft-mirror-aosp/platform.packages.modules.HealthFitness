@@ -450,7 +450,7 @@ public final class TestUtils {
     }
 
     /**
-     * Delete all medical data (datasources, resources etc) stored in the Health Connect database.
+     * Delete all health records (datasources, resources etc) stored in the Health Connect database.
      */
     public static void deleteAllMedicalData() throws InterruptedException {
         if (!isPersonalHealthRecordEnabled()) {
