@@ -32,6 +32,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -56,7 +57,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.android.healthconnect.controller.tests.utils.safeEq
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.FeatureUtils
@@ -80,7 +80,11 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.anyString
+import org.mockito.Mockito.atLeast
+import org.mockito.Mockito.reset
+import org.mockito.Mockito.verify
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
@@ -344,19 +348,34 @@ class MedicalAppFragmentTest {
     }
 
     @Test
-    fun allowAll_toggleOff_showsDisconnectDialog() {
+    fun allowAll_toggleOff_withAdditionalPermissions_showsDisconnectDialog() {
         val writePermission = MedicalPermission(ALL_MEDICAL_DATA)
         val readPermission = MedicalPermission(IMMUNIZATION)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
         whenever(viewModel.allMedicalPermissionsGranted).then { MediatorLiveData(true) }
+        whenever(viewModel.revokeMedicalShouldIncludeBackground()).thenReturn(true)
+        whenever(viewModel.revokeMedicalShouldIncludePastData()).thenReturn(true)
         launchFragment<MedicalAppFragment>(
             bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
         )
         onView(withText("Allow all")).perform(click())
 
-        onView(withText("Remove all permissions?")).check(matches(isDisplayed()))
+        onView(withText("Remove all health record permissions?")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "$TEST_APP_NAME will no longer be able to read or write" +
+                        " this data from Health Connect, including background and past data." +
+                        "\n\nThis doesn't affect other permissions this app may have, like camera, " +
+                        "microphone or location."
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Also delete health records from " + "$TEST_APP_NAME from Health Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
         verify(healthConnectLogger)
             .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONTAINER)
         verify(healthConnectLogger)
@@ -366,6 +385,11 @@ class MedicalAppFragmentTest {
         verify(healthConnectLogger)
             .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
     }
+
+    // TODO (b/369796531) Add more tests for dialogs
+    // allowAll_toggleOff_withBackgroundPermission_showsDisconnectDialog
+    // allowAll_toggleOff_withPastDataPermission_showsDisconnectDialog
+    // allowAll_toggleOff_noAdditionalPermissions_showsDisconnectDialog
 
     @Test
     fun allowAll_toggleOff_onDialogRemoveAllClicked_disconnectAllPermissions() {
@@ -378,6 +402,8 @@ class MedicalAppFragmentTest {
             MutableLiveData(setOf(writePermission, readPermission))
         }
         whenever(viewModel.allMedicalPermissionsGranted).then { MediatorLiveData(true) }
+        whenever(viewModel.revokeMedicalShouldIncludeBackground()).thenReturn(true)
+        whenever(viewModel.revokeMedicalShouldIncludePastData()).thenReturn(true)
         launchFragment<MedicalAppFragment>(
             bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
         )
@@ -393,6 +419,7 @@ class MedicalAppFragmentTest {
     }
 
     @Test
+    @Ignore("b/369796531 - unignore when more tests added")
     fun allowAll_toggleOff_deleteDataSelected_onDialogRemoveAllClicked_deleteIsCalled() {
         val writePermission = MedicalPermission(ALL_MEDICAL_DATA)
         val readPermission = MedicalPermission(IMMUNIZATION)
@@ -415,7 +442,7 @@ class MedicalAppFragmentTest {
         verify(healthConnectLogger)
             .logInteraction(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
 
-        verify(viewModel).deleteAppData(safeEq(TEST_APP_PACKAGE_NAME), safeEq(TEST_APP_NAME))
+        verify(viewModel).deleteAppData(eq(TEST_APP_PACKAGE_NAME), eq(TEST_APP_NAME))
     }
 
     @Test

@@ -267,15 +267,18 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"კანის ტემპერატურა"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"კანის ტემპერატურის წაკითხვა"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"კანის ტემპერატურის დაწერა"</string>
-    <!-- no translation found for all_medical_data_uppercase_label (2380759160541898783) -->
-    <skip />
-    <!-- no translation found for all_medical_data_lowercase_label (6293814928992081842) -->
-    <skip />
-    <!-- no translation found for all_medical_data_content_description (4846586780533295022) -->
-    <skip />
+    <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"ჯანმრთელობის ყველა ჩანაწერი"</string>
+    <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"ჯანმრთელობის ყველა ჩანაწერი"</string>
+    <string name="all_medical_data_content_description" msgid="4846586780533295022">"ჯანმრთელობის ყველა ჩანაწერის დაწერა"</string>
     <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"ალერგიები"</string>
     <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"ალერგიები"</string>
     <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"ალერგიების წაკითხვა"</string>
+    <!-- no translation found for conditions_uppercase_label (5260404343402770877) -->
+    <skip />
+    <!-- no translation found for conditions_lowercase_label (2678248918552246997) -->
+    <skip />
+    <!-- no translation found for conditions_content_description (3230552343616193829) -->
+    <skip />
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"იმუნიზაცია"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"იმუნიზაცია"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"იმუნიზაციის წაკითხვა"</string>
@@ -285,18 +288,33 @@
     <string name="medications_uppercase_label" msgid="4783281053427990225">"მედიკამენტები"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"მედიკამენტები"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"მედიკამენტების შესახებ მონაცემების წაკითხვა"</string>
+    <!-- no translation found for personal_details_uppercase_label (7241635933310394120) -->
+    <skip />
+    <!-- no translation found for personal_details_lowercase_label (1907848447611775151) -->
+    <skip />
+    <!-- no translation found for personal_details_content_description (3191211304673909831) -->
+    <skip />
+    <!-- no translation found for practitioner_details_uppercase_label (2940667649808082510) -->
+    <skip />
+    <!-- no translation found for practitioner_details_lowercase_label (8195591077717971542) -->
+    <skip />
+    <!-- no translation found for practitioner_details_content_description (8775396516928504185) -->
+    <skip />
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"ორსულობა"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"ორსულობა"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"ორსულობის შესახებ მონაცემების წაკითხვა"</string>
-    <string name="problems_uppercase_label" msgid="4047882613795113715">"პრობლემები"</string>
-    <string name="problems_lowercase_label" msgid="6934298611508910866">"პრობლემები"</string>
-    <string name="problems_content_description" msgid="1549418294742668962">"პრობლემების შესახებ ინფორმაციის წაკითხვა"</string>
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"პროცედურები"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"პროცედურები"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"პროცედურების შესახებ ინფორმაციის წაკითხვა"</string>
     <string name="social_history_uppercase_label" msgid="1731364502071035544">"სოციალური ისტორია"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"სოციალური ისტორია"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"სოციალური ისტორიის შესახებ ინფორმაციის წაკითხვა"</string>
+    <!-- no translation found for visits_uppercase_label (8532619758336375886) -->
+    <skip />
+    <!-- no translation found for visits_lowercase_label (2545887061364564151) -->
+    <skip />
+    <!-- no translation found for visits_content_description (6336796415049565697) -->
+    <skip />
     <string name="vital_signs_uppercase_label" msgid="214938594708280346">"სასიცოცხლო მაჩვენებლები"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"სასიცოცხლო მაჩვენებლები"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"სასიცოცხლო მაჩვენებლების შესახებ ინფორმაციის წაკითხვა"</string>
@@ -336,18 +354,13 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"შერჩეული დღე"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"წინა დღე"</string>
     <string name="default_error" msgid="7966868260616403475">"რაღაც შეცდომა მოხდა. გთხოვთ, სცადოთ ხელახლა."</string>
-    <!-- no translation found for unkwown_resource (7932225227431922125) -->
-    <skip />
-    <!-- no translation found for raw_fhir_open_bracket (7974657451368655325) -->
-    <skip />
-    <!-- no translation found for raw_fhir_closed_bracket (9084379463440675078) -->
-    <skip />
-    <!-- no translation found for raw_fhir_field_value (369633095565031835) -->
-    <skip />
-    <!-- no translation found for raw_fhir_value (8627152854130338531) -->
-    <skip />
-    <!-- no translation found for raw_fhir_content_description (1491420802097635439) -->
-    <skip />
+    <string name="unkwown_resource" msgid="7932225227431922125">"უცნობი რესურსი"</string>
+    <string name="raw_fhir_title" msgid="1295744907036066319">"წყაროს მონაცემები"</string>
+    <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>გახსნილი ფრჩხილი."</string>
+    <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>დახურული ფრჩხილი."</string>
+    <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> ველის <xliff:g id="FIELD">%2$s</xliff:g> მნიშვნელობა"</string>
+    <string name="raw_fhir_value" msgid="8627152854130338531">"<xliff:g id="PREFIX">%1$s</xliff:g>: <xliff:g id="VALUE">%2$s</xliff:g>."</string>
+    <string name="raw_fhir_content_description" msgid="1491420802097635439">"დეტალური საწყისი კოდი: <xliff:g id="SOURCE_CODE">%1$s</xliff:g>"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"ამ ნებართვის მქონე აპებს შეუძლიათ წაიკითხონ და დაწერონ მონაცემები თქვენი ჯანმრთელობის და ფიტნესის თაობაზე."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"თვითონ მართეთ, რომელ აპებს ჰქონდეთ Health Connect-ში შენახულ მონაცემებზე წვდომა. შეეხეთ აპს იმის სანახავად, თუ რომელი მონაცემების წაკითხვა ან დაწერა შეუძლია."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"ნებადართული წვდომა"</string>
@@ -475,6 +488,10 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Store-ში გადასვლა"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"დაიწყეთ Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect ინახავს თქვენს ჯანმრთელობასა და ფიტნესთან დაკავშირებულ მონაცემებს და გაძლევთ თქვენს მოწყობილობაში სხვადასხვა აპის მარტივი სინქრონიზაციის საშუალებას."</string>
+    <!-- no translation found for onboarding_description_health_records (6816666836571797870) -->
+    <skip />
+    <!-- no translation found for onboarding_description_with_health_connect (8751881078749676542) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"გააზიარეთ ინფორმაცია თქვენს აპებთან"</string>
     <string name="share_data_description" msgid="2919871301634375092">"აირჩიეთ მონაცემები, რომლებიც თითოეულ აპს შეუძლია წაიკითხოს ან ჩაწეროს Health Connect-Ში"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"მართეთ თქვენი პარამეტრები და კონფიდენციალურობა"</string>
@@ -1069,42 +1086,23 @@
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Health Connect-ის დახმარებით იპოვეთ მეტი აპი <xliff:g id="APP_NAME">%s</xliff:g>-თან სინქრონიზაციისთვის"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"აპების მაღაზიაში ნახვა"</string>
     <string name="select_all" msgid="837499881590001166">"ყველას არჩევა"</string>
-    <!-- no translation found for deletion_confirmation_dialog_body (7643182907084645805) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (2103387413531373305) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (2466281529240054537) -->
-    <skip />
-    <!-- no translation found for all_app_data_selected_deletion_confirmation_dialog (1077157006579195958) -->
-    <skip />
-    <!-- no translation found for some_app_data_selected_deletion_confirmation_dialog (5378172524112070270) -->
-    <skip />
-    <!-- no translation found for all_entries_selected_day_deletion_confirmation_dialog (2887646600541520444) -->
-    <skip />
-    <!-- no translation found for all_entries_selected_week_deletion_confirmation_dialog (6759608395185369048) -->
-    <skip />
-    <!-- no translation found for all_entries_selected_month_deletion_confirmation_dialog (6030161837387559132) -->
-    <skip />
-    <!-- no translation found for some_entries_selected_day_deletion_confirmation_dialog (3481363886097542565) -->
-    <skip />
-    <!-- no translation found for some_entries_selected_week_deletion_confirmation_dialog (7150217982297131340) -->
-    <skip />
-    <!-- no translation found for some_entries_selected_month_deletion_confirmation_dialog (3712014725077445591) -->
-    <skip />
-    <!-- no translation found for one_entry_selected_deletion_confirmation_dialog (4642573082594021789) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_day_deletion_confirmation_dialog (2342034541791960151) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_week_deletion_confirmation_dialog (24289763841770386) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_month_deletion_confirmation_dialog (3240581815583269052) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_day_deletion_confirmation_dialog (1030347169774815676) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_week_deletion_confirmation_dialog (8009352719322914060) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_month_deletion_confirmation_dialog (6617805533334875710) -->
-    <skip />
-    <!-- no translation found for one_app_entry_selected_deletion_confirmation_dialog (7101939753210640660) -->
-    <skip />
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"დაკავშირებული აპები ვეღარ წაიკითხავს Health Connect-ის ამ მონაცემებს"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"გსურთ ყველა მონაცემის სამუდამოდ წაშლა?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"გსურთ არჩეული მონაცემების სამუდამოდ წაშლა?"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"გსურთ <xliff:g id="APP_NAME">%s</xliff:g>-ის ყველა მონაცემის სამუდამოდ წაშლა?"</string>
+    <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"გსურთ <xliff:g id="APP_NAME">%s</xliff:g>-ის არჩეული მონაცემების სამუდამოდ წაშლა?"</string>
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-ისთვის ყველა სამუდამოდ წაშლა?"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-ის კვირისთვის ყველა შენატანის სამუდამოდ წაშლა?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-ისთვის ყველა სამუდამოდ წაშლა?"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-ისთვის არჩეული შენატანების სამუდამოდ წაშლა?"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-ის კვირისთვის არჩეული შენატანების სამუდამოდ წაშლა?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-ისთვის არჩეული შენატანების სამუდამოდ წაშლა?"</string>
+    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"გსურთ ამ შენატანის სამუდამოდ წაშლა?"</string>
+    <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>-ისთვის <xliff:g id="APP_NAME">%1$s</xliff:g>-ის ყველა შენატანის სამუდამოდ წაშლა?"</string>
+    <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>-ის კვირისთვის <xliff:g id="APP_NAME">%1$s</xliff:g>-ის ყველა შენატანის სამუდამოდ წაშლა?"</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>-ისთვის <xliff:g id="APP_NAME">%1$s</xliff:g>-ის ყველა შენატანის სამუდამოდ წაშლა?"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>-ისთვის <xliff:g id="APP_NAME">%1$s</xliff:g>-ის არჩეული შენატანების სამუდამოდ წაშლა?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>-ის კვირისთვის <xliff:g id="APP_NAME">%1$s</xliff:g>-ის არჩეული შენატანების სამუდამოდ წაშლა?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>-ისთვის <xliff:g id="APP_NAME">%1$s</xliff:g>-ის არჩეული შენატანების სამუდამოდ წაშლა?"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"გსურთ ამ <xliff:g id="APP_NAME">%s</xliff:g>-ის შენატანის სამუდამოდ წაშლა?"</string>
 </resources>

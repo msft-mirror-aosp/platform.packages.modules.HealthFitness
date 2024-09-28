@@ -276,51 +276,51 @@
     <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"ଆଲର୍ଜି ଅସହିଷ୍ଣୁତା ଡାଟା"</string>
     <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"ଆଲର୍ଜି ଅସହିଷ୍ଣୁତା ଡାଟା"</string>
     <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"ଆଲର୍ଜି ଅସହିଷ୍ଣୁତା ଡାଟା ପଢ଼ନ୍ତୁ"</string>
+    <!-- no translation found for conditions_uppercase_label (5260404343402770877) -->
+    <skip />
+    <!-- no translation found for conditions_lowercase_label (2678248918552246997) -->
+    <skip />
+    <!-- no translation found for conditions_content_description (3230552343616193829) -->
+    <skip />
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"ଟୀକାକରଣ"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"ଟୀକାକରଣ"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"ଟୀକାକରଣ ପଢ଼ନ୍ତୁ"</string>
-    <!-- no translation found for laboratory_results_uppercase_label (2521886562709901654) -->
+    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"ଲାବୋରେଟୋରୀ ଫଳାଫଳ"</string>
+    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"ଲାବୋରେଟୋରୀ ଫଳାଫଳ"</string>
+    <string name="laboratory_results_content_description" msgid="5882338877203692484">"ସମସ୍ତ ଲାବୋରେଟୋରୀ ଫଳାଫଳ ପଢ଼ନ୍ତୁ"</string>
+    <string name="medications_uppercase_label" msgid="4783281053427990225">"ଔଷଧ"</string>
+    <string name="medications_lowercase_label" msgid="7808038774503092207">"ଔଷଧ"</string>
+    <string name="medications_content_description" msgid="6165382876281780190">"ଔଷଧ ସମ୍ପର୍କିତ ଡାଟା ପଢ଼ନ୍ତୁ"</string>
+    <!-- no translation found for personal_details_uppercase_label (7241635933310394120) -->
     <skip />
-    <!-- no translation found for laboratory_results_lowercase_label (6437932041744631964) -->
+    <!-- no translation found for personal_details_lowercase_label (1907848447611775151) -->
     <skip />
-    <!-- no translation found for laboratory_results_content_description (5882338877203692484) -->
+    <!-- no translation found for personal_details_content_description (3191211304673909831) -->
     <skip />
-    <!-- no translation found for medications_uppercase_label (4783281053427990225) -->
+    <!-- no translation found for practitioner_details_uppercase_label (2940667649808082510) -->
     <skip />
-    <!-- no translation found for medications_lowercase_label (7808038774503092207) -->
+    <!-- no translation found for practitioner_details_lowercase_label (8195591077717971542) -->
     <skip />
-    <!-- no translation found for medications_content_description (6165382876281780190) -->
+    <!-- no translation found for practitioner_details_content_description (8775396516928504185) -->
     <skip />
-    <!-- no translation found for pregnancy_uppercase_label (5979925175194337864) -->
+    <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"ଗର୍ଭାବସ୍ଥା"</string>
+    <string name="pregnancy_lowercase_label" msgid="810439290131044517">"ଗର୍ଭାବସ୍ଥା"</string>
+    <string name="pregnancy_content_description" msgid="3436773729243586287">"ଗର୍ଭାବସ୍ଥାର ଡାଟା ପଢ଼ନ୍ତୁ"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"ପ୍ରକ୍ରିୟା"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"ପ୍ରକ୍ରିୟା"</string>
+    <string name="procedures_content_description" msgid="1086900373141440005">"ପ୍ରକ୍ରିୟାଗୁଡ଼ିକର ଡାଟା ପଢ଼ନ୍ତୁ"</string>
+    <string name="social_history_uppercase_label" msgid="1731364502071035544">"ସାମାଜିକ ଇତିହାସ"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"ସାମାଜିକ ଇତିହାସ"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"ସାମାଜିକ ଇତିହାସର ଡାଟା ପଢ଼ନ୍ତୁ"</string>
+    <!-- no translation found for visits_uppercase_label (8532619758336375886) -->
     <skip />
-    <!-- no translation found for pregnancy_lowercase_label (810439290131044517) -->
+    <!-- no translation found for visits_lowercase_label (2545887061364564151) -->
     <skip />
-    <!-- no translation found for pregnancy_content_description (3436773729243586287) -->
+    <!-- no translation found for visits_content_description (6336796415049565697) -->
     <skip />
-    <!-- no translation found for problems_uppercase_label (4047882613795113715) -->
-    <skip />
-    <!-- no translation found for problems_lowercase_label (6934298611508910866) -->
-    <skip />
-    <!-- no translation found for problems_content_description (1549418294742668962) -->
-    <skip />
-    <!-- no translation found for procedures_uppercase_label (9176087520132593261) -->
-    <skip />
-    <!-- no translation found for procedures_lowercase_label (5320804313946273234) -->
-    <skip />
-    <!-- no translation found for procedures_content_description (1086900373141440005) -->
-    <skip />
-    <!-- no translation found for social_history_uppercase_label (1731364502071035544) -->
-    <skip />
-    <!-- no translation found for social_history_lowercase_label (9027541979445736412) -->
-    <skip />
-    <!-- no translation found for social_history_content_description (7187059309389849831) -->
-    <skip />
-    <!-- no translation found for vital_signs_uppercase_label (214938594708280346) -->
-    <skip />
-    <!-- no translation found for vital_signs_lowercase_label (9141304492316454529) -->
-    <skip />
-    <!-- no translation found for vital_signs_content_description (914944352640528612) -->
-    <skip />
+    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସଙ୍କେତ"</string>
+    <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସଙ୍କେତ"</string>
+    <string name="vital_signs_content_description" msgid="914944352640528612">"ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ସଙ୍କେତଗୁଡ଼ିକର ଡାଟା ପଢ଼ନ୍ତୁ"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"ଏକାଗ୍ରତା"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"ଏକାଗ୍ରତା"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"ଏକାଗ୍ରତା ସେସନ ଡାଟା ପଢ଼ନ୍ତୁ"</string>
@@ -344,29 +344,22 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g>, ପୂର୍ବର ଡାଟା ସମେତ Health Connectରୁ କୌଣସି ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହି ଆପର ଲୋକେସନ, କେମେରା କିମ୍ବା ମାଇକ୍ରୋଫୋନ ପରି ରହିଥିବା ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ଏହା ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g>, ବେକଗ୍ରାଉଣ୍ଡ ଏବଂ ପୂର୍ବର ଡାଟା ସମେତ Health Connectରୁ କୌଣସି ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହି ଆପର ଲୋକେସନ, କେମେରା କିମ୍ବା ମାଇକ୍ରୋଫୋନ ପରି ରହିଥିବା ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ଏହା ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"ଏହା ସହିତ, Health Connectରୁ <xliff:g id="APP_NAME">%1$s</xliff:g> ଡାଟାକୁ ଡିଲିଟ କରନ୍ତୁ"</string>
-    <!-- no translation found for disconnect_all_health_permissions_title (3995410660376966233) -->
-    <skip />
-    <!-- no translation found for disconnect_all_medical_permissions_title (735315242997370168) -->
-    <skip />
-    <!-- no translation found for disconnect_all_fitness_permissions_title (7612364222525900592) -->
-    <skip />
-    <!-- no translation found for disconnect_all_health_no_additional_permissions_dialog_message (211728516196974197) -->
-    <skip />
-    <!-- no translation found for disconnect_all_health_and_background_permissions_dialog_message (654533675296670869) -->
-    <skip />
-    <!-- no translation found for disconnect_all_health_and_historical_permissions_dialog_message (6743215620789357899) -->
-    <skip />
-    <!-- no translation found for disconnect_all_health_and_additional_permissions_dialog_message (6062891741278986209) -->
-    <skip />
-    <!-- no translation found for disconnect_all_health_permissions_dialog_checkbox (762880061016391846) -->
-    <skip />
-    <!-- no translation found for disconnect_all_health_permissions_success_toast (9010063821116197894) -->
-    <skip />
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"ସବୁ ଅନୁମତିକୁ କାଢ଼ି ଦେବେ?"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"ସମସ୍ତ ସ୍ୱାସ୍ଥ୍ୟ ରେକର୍ଡ ଅନୁମତି କାଢ଼ି ଦେବେ?"</string>
+    <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"ସମସ୍ତ ଫିଟନେସ ଏବଂ ସୁସ୍ଥତାର ଅନୁମତିକୁ କାଢ଼ି ଦେବେ?"</string>
+    <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"<xliff:g id="APP_NAME">%1$s</xliff:g>, Health Connectରୁ ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହା ଏହି ଆପରେ ଥିବା କେମେରା, ମାଇକ୍ରୋଫୋନ କିମ୍ବା ଲୋକେସନ ପରି ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>
+    <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"<xliff:g id="APP_NAME">%1$s</xliff:g> ବେକଗ୍ରାଉଣ୍ଡ ଡାଟା ସମେତ Health Connectରୁ ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହା ଏହି ଆପରେ ଥିବା କେମେରା, ମାଇକ୍ରୋଫୋନ କିମ୍ବା ଲୋକେସନ ପରି ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>
+    <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"<xliff:g id="APP_NAME">%1$s</xliff:g> ପୂର୍ବର ଡାଟା ସମେତ Health Connectରୁ ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହା ଏହି ଆପରେ ଥିବା କେମେରା, ମାଇକ୍ରୋଫୋନ କିମ୍ବା ଲୋକେସନ ପରି ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>
+    <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> ବେକଗ୍ରାଉଣ୍ଡ ଏବଂ ପୂର୍ବର ଡାଟା ସମେତ Health Connectରୁ ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହା ଏହି ଆପରେ ଥିବା କେମେରା, ମାଇକ୍ରୋଫୋନ କିମ୍ବା ଲୋକେସନ ପରି ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>
+    <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Health Connectରୁ <xliff:g id="APP_NAME">%1$s</xliff:g>ରେ ଥିବା ଫିଟନେସ ଡାଟା ଏବଂ ସ୍ୱାସ୍ଥ୍ୟ ରେକର୍ଡ ମଧ୍ୟ ଡିଲିଟ କରେ"</string>
+    <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"ଏହି ଆପରୁ ଅନୁମତିଗୁଡ଼ିକୁ କାଢ଼ି ଦିଆଯାଇଛି"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"ପରବର୍ତ୍ତୀ ଦିନ"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"ଚୟନିତ ଦିନ"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"ପୂର୍ବବର୍ତ୍ତୀ ଦିନ"</string>
     <string name="default_error" msgid="7966868260616403475">"କିଛି ତ୍ରୁଟି ହୋଇଛି। ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"</string>
     <!-- no translation found for unkwown_resource (7932225227431922125) -->
+    <skip />
+    <!-- no translation found for raw_fhir_title (1295744907036066319) -->
     <skip />
     <!-- no translation found for raw_fhir_open_bracket (7974657451368655325) -->
     <skip />
@@ -394,8 +387,7 @@
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"ସବୁ କାଢ଼ି ଦିଅନ୍ତୁ"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"ଆପକୁ ପରିଚାଳନା କରନ୍ତୁ"</string>
     <string name="see_app_data" msgid="3951030076195119476">"ଆପ ଡାଟା ଦେଖନ୍ତୁ"</string>
-    <!-- no translation found for remove_access_for_this_app (7701101420310711833) -->
-    <skip />
+    <string name="remove_access_for_this_app" msgid="7701101420310711833">"ଏହି ଆପ ପାଇଁ ଆକ୍ସେସକୁ କାଢ଼ି ଦିଅନ୍ତୁ"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"ଆପ ଡାଟାକୁ ଡିଲିଟ କରନ୍ତୁ"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"ନିଷ୍କ୍ରିୟ ଆପ୍ସ"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"ଏହି ଆପ୍ସର ଆଉ ଆକ୍ସେସ ନାହିଁ, କିନ୍ତୁ ଏବେ ବି ଷ୍ଟୋର କରାଯାଇଥିବା ଡାଟା Health Connectରେ ଅଛି"</string>
@@ -463,8 +455,7 @@
     <string name="export_destination_title" msgid="8352929396306002479">"ସିଡୁଲ ହୋଇଥିବା ଏକ୍ସପୋର୍ଟକୁ କେଉଁଠି ସେଭ କରିବେ ତାହା ବାଛନ୍ତୁ"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"ଆପଣଙ୍କ ଡାଟା ଏକ୍ସପୋର୍ଟ କରିବା ପାଇଁ ଦୟାକରି ଏକ କ୍ଲାଉଡ ଷ୍ଟୋରେଜ ଆପ ବାଛନ୍ତୁ"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
-    <!-- no translation found for export_default_file_name_with_sequence (2380551038319211752) -->
-    <skip />
+    <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Health Connect (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
     <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"ଏହି ଫାଇଲକୁ ଇମ୍ପୋର୍ଟ କରିବେ?"</string>
     <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"<xliff:g id="FILE_NAME">%1$s</xliff:g> Health Connectକୁ ଇମ୍ପୋର୍ଟ କରାଯିବ"</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"ବାତିଲ କରନ୍ତୁ"</string>
@@ -507,6 +498,10 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Storeକୁ ଯାଆନ୍ତୁ"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ସହ ଆରମ୍ଭ କରନ୍ତୁ"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect ଆପଣଙ୍କ ସ୍ୱାସ୍ଥ୍ୟ ଏବଂ ଫିଟନେସ ଡାଟାକୁ ଷ୍ଟୋର କରେ, ଯାହା ଆପଣଙ୍କ ଡିଭାଇସରେ ବିଭିନ୍ନ ଆପ୍ସ ସିଙ୍କ କରିବାକୁ ଆପଣଙ୍କୁ ଏକ ସହଜ ଉପାୟ ଦେଇଥାଏ"</string>
+    <!-- no translation found for onboarding_description_health_records (6816666836571797870) -->
+    <skip />
+    <!-- no translation found for onboarding_description_with_health_connect (8751881078749676542) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"ଆପଣଙ୍କ ଆପ୍ସ ସହ ଡାଟା ସେୟାର କରନ୍ତୁ"</string>
     <string name="share_data_description" msgid="2919871301634375092">"ପ୍ରତ୍ୟେକ ଆପ Health Connectରୁ କେଉଁ ଡାଟା ପଢ଼ିପାରିବ କିମ୍ବା ଲେଖିପାରିବ ତାହା ବାଛନ୍ତୁ"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"ଆପଣଙ୍କ ସେଟିଂସ ଏବଂ ଗୋପନୀୟତାକୁ ପରିଚାଳନା କରନ୍ତୁ"</string>
@@ -551,8 +546,7 @@
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"<xliff:g id="APP_DATA">%2$s</xliff:g> ଦ୍ୱାରା ଯୋଗ କରାଯାଇଥିବା ସମସ୍ତ <xliff:g id="DATA_TYPE">%1$s</xliff:g> ଡାଟାକୁ ସ୍ଥାୟୀ ଭାବେ ଡିଲିଟ କରିବେ?"</string>
     <string name="confirming_question_single_entry" msgid="2064578008447638932">"Health Connectରୁ ଏହି ଏଣ୍ଟ୍ରିକୁ ସ୍ଥାୟୀ ଭାବେ ଡିଲିଟ କରିବେ?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"କନେକ୍ଟ ହୋଇଥିବା ଆପ୍ସ Health Connectରୁ ଏହି ଡାଟାକୁ ଆକ୍ସେସ କରିବା ପାଇଁ ଆଉ ସକ୍ଷମ ହେବ ନାହିଁ"</string>
-    <!-- no translation found for confirming_question_message_menstruation (944931041343695373) -->
-    <skip />
+    <string name="confirming_question_message_menstruation" msgid="944931041343695373">"ଏହା <xliff:g id="START_DATE">%1$s</xliff:g>ରୁ <xliff:g id="END_DATE">%2$s</xliff:g> ପର୍ଯ୍ୟନ୍ତ ମାସିକ ଋତୁସ୍ରାବର ସମସ୍ତ ଏଣ୍ଟ୍ରିକୁ ଡିଲିଟ କରିବ।"</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"ଡିଲିଟ କରନ୍ତୁ"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"ପଛକୁ ଫେରନ୍ତୁ"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"ହୋଇଗଲା"</string>

@@ -129,6 +129,18 @@ public class ReadMedicalResourcesResponseTest {
     }
 
     @Test
+    public void testToString() {
+        MedicalResource medicalResource = getMedicalResource();
+        ReadMedicalResourcesResponse response =
+                new ReadMedicalResourcesResponse(List.of(medicalResource), PAGE_TOKEN);
+        String medicalResourceTypeString = "medicalResources=[" + medicalResource + "]";
+        String nextPageTokenString = "nextPageToken=" + PAGE_TOKEN;
+
+        assertThat(response.toString()).contains(medicalResourceTypeString);
+        assertThat(response.toString()).contains(nextPageTokenString);
+    }
+
+    @Test
     public void testWriteToParcelThenRestore_objectsAreIdentical() {
         List<MedicalResource> medicalResources =
                 List.of(

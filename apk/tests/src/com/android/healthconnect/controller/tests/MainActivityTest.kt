@@ -26,10 +26,10 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.showOnboarding
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -39,7 +39,6 @@ import org.mockito.Mockito
 import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
-@OptIn(ExperimentalCoroutinesApi::class)
 class MainActivityTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -49,6 +48,8 @@ class MainActivityTest {
     @BindValue
     val exportStatusViewModel: ExportStatusViewModel =
         Mockito.mock(ExportStatusViewModel::class.java)
+    @BindValue
+    val healthConnectLogger: HealthConnectLogger = Mockito.mock(HealthConnectLogger::class.java)
 
     private lateinit var context: Context
 

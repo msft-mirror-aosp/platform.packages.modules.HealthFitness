@@ -31,13 +31,13 @@ import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchDialog
-import com.android.healthconnect.controller.tests.utils.safeEq
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 
@@ -51,7 +51,8 @@ class EnableExercisePermissionDialogTest {
     private val bundle =
         bundleOf(
             Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
-            Constants.EXTRA_APP_NAME to TEST_APP_NAME)
+            Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+        )
 
     @Before
     fun setup() {
@@ -66,7 +67,7 @@ class EnableExercisePermissionDialogTest {
             .inRoot(isDialog())
             .perform(click())
 
-        verify(viewModel).enableExercisePermission(safeEq(TEST_APP_PACKAGE_NAME))
+        verify(viewModel).enableExercisePermission(eq(TEST_APP_PACKAGE_NAME))
         verify(viewModel).hideExercisePermissionRequestDialog()
     }
 

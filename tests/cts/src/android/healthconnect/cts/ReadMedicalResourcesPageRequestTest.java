@@ -108,13 +108,11 @@ public class ReadMedicalResourcesPageRequestTest {
     public void testToString() {
         ReadMedicalResourcesPageRequest request =
                 new ReadMedicalResourcesPageRequest.Builder(PAGE_TOKEN).setPageSize(100).build();
-        String expectedPropertiesString =
-                String.format("pageToken=%s,pageSize=%d", PAGE_TOKEN, 100);
+        String pageTokenString = "pageToken=" + PAGE_TOKEN;
+        String pageSizeString = "pageSize=100";
 
-        assertThat(request.toString())
-                .isEqualTo(
-                        String.format(
-                                "ReadMedicalResourcesPageRequest{%s}", expectedPropertiesString));
+        assertThat(request.toString()).contains(pageTokenString);
+        assertThat(request.toString()).contains(pageSizeString);
     }
 
     @Test

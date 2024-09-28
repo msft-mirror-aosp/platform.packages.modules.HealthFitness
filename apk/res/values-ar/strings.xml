@@ -276,6 +276,12 @@
     <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"بيانات الحساسية"</string>
     <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"بيانات الحساسية"</string>
     <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"قراءة بيانات الحساسية"</string>
+    <!-- no translation found for conditions_uppercase_label (5260404343402770877) -->
+    <skip />
+    <!-- no translation found for conditions_lowercase_label (2678248918552246997) -->
+    <skip />
+    <!-- no translation found for conditions_content_description (3230552343616193829) -->
+    <skip />
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"بيانات التحصين"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"بيانات التحصين"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"قراءة بيانات التحصين"</string>
@@ -285,18 +291,33 @@
     <string name="medications_uppercase_label" msgid="4783281053427990225">"بيانات الأدوية"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"بيانات الأدوية"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"قراءة بيانات الأدوية"</string>
+    <!-- no translation found for personal_details_uppercase_label (7241635933310394120) -->
+    <skip />
+    <!-- no translation found for personal_details_lowercase_label (1907848447611775151) -->
+    <skip />
+    <!-- no translation found for personal_details_content_description (3191211304673909831) -->
+    <skip />
+    <!-- no translation found for practitioner_details_uppercase_label (2940667649808082510) -->
+    <skip />
+    <!-- no translation found for practitioner_details_lowercase_label (8195591077717971542) -->
+    <skip />
+    <!-- no translation found for practitioner_details_content_description (8775396516928504185) -->
+    <skip />
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"بيانات الحمل"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"بيانات الحمل"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"قراءة بيانات الحمل"</string>
-    <string name="problems_uppercase_label" msgid="4047882613795113715">"بيانات المشاكل"</string>
-    <string name="problems_lowercase_label" msgid="6934298611508910866">"بيانات المشاكل"</string>
-    <string name="problems_content_description" msgid="1549418294742668962">"قراءة بيانات المشاكل"</string>
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"بيانات الإجراءات"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"بيانات الإجراءات"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"قراءة بيانات الإجراءات"</string>
     <string name="social_history_uppercase_label" msgid="1731364502071035544">"بيانات السجلّ الاجتماعي"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"بيانات السجلّ الاجتماعي"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"قراءة بيانات السجلّ الاجتماعي"</string>
+    <!-- no translation found for visits_uppercase_label (8532619758336375886) -->
+    <skip />
+    <!-- no translation found for visits_lowercase_label (2545887061364564151) -->
+    <skip />
+    <!-- no translation found for visits_content_description (6336796415049565697) -->
+    <skip />
     <string name="vital_signs_uppercase_label" msgid="214938594708280346">"بيانات المؤشرات الحيوية"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"بيانات المؤشرات الحيوية"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"قراءة بيانات المؤشرات الحيوية"</string>
@@ -337,6 +358,8 @@
     <string name="navigation_previous_day" msgid="718353386484938584">"اليوم السابق"</string>
     <string name="default_error" msgid="7966868260616403475">"حدث خطأ. يُرجى إعادة المحاولة."</string>
     <!-- no translation found for unkwown_resource (7932225227431922125) -->
+    <skip />
+    <!-- no translation found for raw_fhir_title (1295744907036066319) -->
     <skip />
     <!-- no translation found for raw_fhir_open_bracket (7974657451368655325) -->
     <skip />
@@ -475,6 +498,10 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"الانتقال إلى \"متجر Play\""</string>
     <string name="onboarding_title" msgid="8550656211291180188">"بدء استخدام Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"يُخزِّن تطبيق Health Connect بيانات الصحة واللياقة البدنية، ما يمنحك طريقة بسيطة لمزامنة التطبيقات المختلفة على جهازك"</string>
+    <!-- no translation found for onboarding_description_health_records (6816666836571797870) -->
+    <skip />
+    <!-- no translation found for onboarding_description_with_health_connect (8751881078749676542) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"مشاركة البيانات مع تطبيقاتك"</string>
     <string name="share_data_description" msgid="2919871301634375092">"اختَر البيانات التي يمكن لكل تطبيق قراءتها من تطبيق Health Connect أو كتابتها فيه."</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"إدارة الإعدادات والخصوصية"</string>
