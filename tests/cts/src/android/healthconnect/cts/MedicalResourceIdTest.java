@@ -67,6 +67,24 @@ public class MedicalResourceIdTest {
     }
 
     @Test
+    public void testMedicalResourceId_constructWithInvalidDataSourceId_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        new MedicalResourceId(
+                                "1",
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                FHIR_RESOURCE_ID_IMMUNIZATION));
+    }
+
+    @Test
+    public void testMedicalResourceId_constructWithInvalidFhirResourceType_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new MedicalResourceId(DATA_SOURCE_ID, -1, FHIR_RESOURCE_ID_IMMUNIZATION));
+    }
+
+    @Test
     public void testMedicalResourceId_fromFhirReference_validReference() {
         MedicalResourceId medicalResourceId =
                 MedicalResourceId.fromFhirReference(DATA_SOURCE_ID, "Immunization/034-AB16.0");
@@ -75,6 +93,13 @@ public class MedicalResourceIdTest {
         assertThat(medicalResourceId.getFhirResourceType())
                 .isEqualTo(FHIR_RESOURCE_TYPE_IMMUNIZATION);
         assertThat(medicalResourceId.getFhirResourceId()).isEqualTo("034-AB16.0");
+    }
+
+    @Test
+    public void testMedicalResourceId_fromFhirReference_invalidDataSourceId_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> MedicalResourceId.fromFhirReference("1", "Immunization/034-AB16.0"));
     }
 
     @Test
@@ -88,14 +113,14 @@ public class MedicalResourceIdTest {
     }
 
     @Test
-    public void testMedicalResourceId_fromFhirReference_invalidFhirResourceType() {
+    public void testMedicalResourceId_fromFhirReference_invalidFhirResourceType_throws() {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> MedicalResourceId.fromFhirReference(DATA_SOURCE_ID, "Patient0/034-AB16.0"));
     }
 
     @Test
-    public void testMedicalResourceId_fromFhirReference_invalidFhirResourceId() {
+    public void testMedicalResourceId_fromFhirReference_invalidFhirResourceId_throws() {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> MedicalResourceId.fromFhirReference(DATA_SOURCE_ID, "Patient/034*AB16#0"));
@@ -108,15 +133,13 @@ public class MedicalResourceIdTest {
                         DATA_SOURCE_ID,
                         FHIR_RESOURCE_TYPE_IMMUNIZATION,
                         FHIR_RESOURCE_ID_IMMUNIZATION);
-        String expectedPropertiesString =
-                String.format(
-                        "dataSourceId=%s,fhirResourceType=%s,fhirResourceId=%s",
-                        DATA_SOURCE_ID,
-                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
-                        FHIR_RESOURCE_ID_IMMUNIZATION);
+        String dataSourceIdString = "dataSourceId=" + DATA_SOURCE_ID;
+        String fhirResourceTypeString = "fhirResourceType=1";
+        String fhirResourceIdString = "fhirResourceId=" + FHIR_RESOURCE_ID_IMMUNIZATION;
 
-        assertThat(medicalResourceId.toString())
-                .isEqualTo(String.format("MedicalResourceId{%s}", expectedPropertiesString));
+        assertThat(medicalResourceId.toString()).contains(dataSourceIdString);
+        assertThat(medicalResourceId.toString()).contains(fhirResourceTypeString);
+        assertThat(medicalResourceId.toString()).contains(fhirResourceIdString);
     }
 
     @Test
@@ -176,6 +199,21 @@ public class MedicalResourceIdTest {
             throws NoSuchFieldException, IllegalAccessException {
         MedicalResourceId original = getMedicalResourceId();
         setFieldValueUsingReflection(original, "mFhirResourceType", -1);
+
+        Parcel parcel = Parcel.obtain();
+        original.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> MedicalResourceId.CREATOR.createFromParcel(parcel));
+    }
+
+    @Test
+    public void testRestoreInvalidDataSourceIdFromParcel_expectException()
+            throws NoSuchFieldException, IllegalAccessException {
+        MedicalResourceId original = getMedicalResourceId();
+        setFieldValueUsingReflection(original, "mDataSourceId", "1");
 
         Parcel parcel = Parcel.obtain();
         original.writeToParcel(parcel, 0);

@@ -16,6 +16,7 @@
 
 package android.health.connect;
 
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -303,7 +304,7 @@ public class HealthConnectManagerTest {
                 .when(mService)
                 .deleteMedicalResourcesByRequest(any(), any(), any());
         DeleteMedicalResourcesRequest request =
-                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
+                new DeleteMedicalResourcesRequest.Builder().addDataSourceId(DATA_SOURCE_ID).build();
 
         healthConnectManager.deleteMedicalResources(
                 request, Executors.newSingleThreadExecutor(), receiver);
@@ -328,7 +329,7 @@ public class HealthConnectManagerTest {
                 .when(mService)
                 .deleteMedicalResourcesByRequest(any(), any(), any());
         DeleteMedicalResourcesRequest request =
-                new DeleteMedicalResourcesRequest.Builder().addDataSourceId("foo").build();
+                new DeleteMedicalResourcesRequest.Builder().addDataSourceId(DATA_SOURCE_ID).build();
 
         healthConnectManager.deleteMedicalResources(
                 request, Executors.newSingleThreadExecutor(), receiver);

@@ -180,7 +180,7 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
             DisconnectHealthPermissionsDialogFragment.DISCONNECT_ALL_EVENT,
             this,
         ) { _, bundle ->
-            if (!viewModel.revokeAllHealthPermissions(packageName)) {
+            if (!viewModel.revokeAllMedicalAndMaybeAdditionalPermissions(packageName)) {
                 Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
             }
 
@@ -259,7 +259,11 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
     }
 
     private fun showRevokeAllPermissions() {
-        DisconnectHealthPermissionsDialogFragment(appName = appName, enableDeleteData = false)
+        DisconnectHealthPermissionsDialogFragment(
+                appName = appName,
+                enableDeleteData = false,
+                DisconnectHealthPermissionsDialogFragment.DisconnectType.MEDICAL,
+            )
             .show(childFragmentManager, DisconnectHealthPermissionsDialogFragment.TAG)
     }
 

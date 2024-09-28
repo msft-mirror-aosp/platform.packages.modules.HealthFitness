@@ -192,7 +192,7 @@ class SettingsFitnessAppFragment : Hilt_SettingsFitnessAppFragment() {
             DisconnectHealthPermissionsDialogFragment.DISCONNECT_ALL_EVENT,
             this,
         ) { _, bundle ->
-            if (!viewModel.revokeAllHealthPermissions(packageName)) {
+            if (!viewModel.revokeAllFitnessAndMaybeAdditionalPermissions(packageName)) {
                 Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
             }
 
@@ -271,7 +271,11 @@ class SettingsFitnessAppFragment : Hilt_SettingsFitnessAppFragment() {
     }
 
     private fun showRevokeAllPermissions() {
-        DisconnectHealthPermissionsDialogFragment(appName = appName, enableDeleteData = false)
+        DisconnectHealthPermissionsDialogFragment(
+                appName = appName,
+                enableDeleteData = false,
+                DisconnectHealthPermissionsDialogFragment.DisconnectType.FITNESS,
+            )
             .show(childFragmentManager, DisconnectHealthPermissionsDialogFragment.TAG)
     }
 

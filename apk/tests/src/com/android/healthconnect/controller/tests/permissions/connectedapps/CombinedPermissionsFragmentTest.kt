@@ -42,6 +42,8 @@ import com.android.healthconnect.controller.permissions.additionalaccess.Permiss
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState.NotStarted
 import com.android.healthconnect.controller.permissions.app.CombinedPermissionsFragment
+import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
@@ -365,6 +367,13 @@ class CombinedPermissionsFragmentTest {
                 )
             )
         }
+        whenever(viewModel.revokeAllShouldIncludeBackground()).thenReturn(true)
+        whenever(viewModel.revokeAllShouldIncludePastData()).thenReturn(true)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
+            )
+        }
         launchFragment<CombinedPermissionsFragment>(
             bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
         )
@@ -412,6 +421,13 @@ class CombinedPermissionsFragmentTest {
                             isGranted = false,
                         ),
                 )
+            )
+        }
+        whenever(viewModel.revokeAllShouldIncludeBackground()).thenReturn(true)
+        whenever(viewModel.revokeAllShouldIncludePastData()).thenReturn(false)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
             )
         }
         launchFragment<CombinedPermissionsFragment>(
@@ -463,6 +479,13 @@ class CombinedPermissionsFragmentTest {
                 )
             )
         }
+        whenever(viewModel.revokeAllShouldIncludeBackground()).thenReturn(false)
+        whenever(viewModel.revokeAllShouldIncludePastData()).thenReturn(true)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
+            )
+        }
         launchFragment<CombinedPermissionsFragment>(
             bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
         )
@@ -494,6 +517,13 @@ class CombinedPermissionsFragmentTest {
 
     @Test
     fun removeAccessButton_noAdditionalPermissions_showsConfirmationDialog() {
+        whenever(viewModel.revokeAllShouldIncludeBackground()).thenReturn(false)
+        whenever(viewModel.revokeAllShouldIncludePastData()).thenReturn(false)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
+            )
+        }
         launchFragment<CombinedPermissionsFragment>(
             bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
         )
@@ -525,6 +555,13 @@ class CombinedPermissionsFragmentTest {
 
     @Test
     fun removeAccessButton_confirmationDialogWithCheckbox_remainsAfterRotation() {
+        whenever(viewModel.revokeAllShouldIncludeBackground()).thenReturn(false)
+        whenever(viewModel.revokeAllShouldIncludePastData()).thenReturn(false)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
+            )
+        }
         val scenario =
             launchFragment<CombinedPermissionsFragment>(
                 bundleOf(
