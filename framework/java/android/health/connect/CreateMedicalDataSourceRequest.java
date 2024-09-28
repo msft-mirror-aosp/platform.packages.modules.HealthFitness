@@ -30,7 +30,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Represents a create request for {@link HealthConnectManager#createMedicalDataSource}
+ * A create request for {@link HealthConnectManager#createMedicalDataSource}.
  *
  * <p>Medical data is represented using the <a href="https://hl7.org/fhir/">Fast Healthcare
  * Interoperability Resources (FHIR)</a> standard.
@@ -67,6 +67,10 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
                 }
             };
 
+    /**
+     * Creates a new instance of {@link CreateMedicalDataSourceRequest}. Please see {@link
+     * CreateMedicalDataSourceRequest.Builder} for more detailed parameters information.
+     */
     private CreateMedicalDataSourceRequest(
             @NonNull Uri fhirBaseUri,
             @NonNull String displayName,
@@ -98,19 +102,25 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
         validateFhirVersion(mFhirVersion);
     }
 
-    /** Returns the fhir base uri. */
+    /**
+     * Returns the FHIR base URI. For data coming from a FHIR server this is <a
+     * href="https://hl7.org/fhir/R4/http.html#root">the base URL</a>.
+     */
     @NonNull
     public Uri getFhirBaseUri() {
         return mFhirBaseUri;
     }
 
-    /** Returns the display name. */
+    /** Returns the display name. For the request to succeed this must be unique per app. */
     @NonNull
     public String getDisplayName() {
         return mDisplayName;
     }
 
-    /** Returns the fhir version. */
+    /**
+     * Returns the FHIR version. For the request to succeeds this must be a version supported by
+     * Health Connect, as documented on the {@link FhirVersion}.
+     */
     @NonNull
     public FhirVersion getFhirVersion() {
         return mFhirVersion;
@@ -137,7 +147,6 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
         dest.writeParcelable(mFhirVersion, 0);
     }
 
-    /** Indicates whether some other object is "equal to" this one. */
     @Override
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
@@ -147,13 +156,11 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
                 && getFhirVersion().equals(that.getFhirVersion());
     }
 
-    /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
         return hash(getFhirBaseUri(), getDisplayName(), getFhirVersion());
     }
 
-    /** Returns a string representation of this {@link CreateMedicalDataSourceRequest}. */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -165,19 +172,21 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
         return sb.toString();
     }
 
-    /** Builder class for {@link CreateMedicalDataSourceRequest} */
+    /** Builder class for {@link CreateMedicalDataSourceRequest}. */
     public static final class Builder {
         @NonNull private Uri mFhirBaseUri;
         @NonNull private String mDisplayName;
         @NonNull private FhirVersion mFhirVersion;
 
         /**
+         * Constructs a new {@link CreateMedicalDataSourceRequest.Builder} instance.
+         *
          * @param fhirBaseUri The FHIR base URI of the data source. For data coming from a FHIR
-         *     server this should be the base URL. The maximum length for the Uri is 2000
+         *     server this should be the base URL. The maximum length for the URI is 2000
          *     characters.
          * @param displayName The display name that describes the data source. The maximum length
-         *     for the display name is 90 characters.
-         * @param fhirVersion The fhir version of the medical data that will be linked to this data
+         *     for the display name is 90 characters. This must be unique per app.
+         * @param fhirVersion The FHIR version of the medical data that will be linked to this data
          *     source. This has to be a version supported by Health Connect, as documented on the
          *     {@link FhirVersion}.
          */
@@ -194,24 +203,27 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
             mFhirVersion = fhirVersion;
         }
 
-        public Builder(@NonNull Builder original) {
-            requireNonNull(original);
-            mFhirBaseUri = original.mFhirBaseUri;
-            mDisplayName = original.mDisplayName;
-            mFhirVersion = original.mFhirVersion;
+        /** Constructs a clone of the other {@link CreateMedicalDataSourceRequest.Builder}. */
+        public Builder(@NonNull Builder other) {
+            requireNonNull(other);
+            mFhirBaseUri = other.mFhirBaseUri;
+            mDisplayName = other.mDisplayName;
+            mFhirVersion = other.mFhirVersion;
         }
 
-        public Builder(@NonNull CreateMedicalDataSourceRequest original) {
-            requireNonNull(original);
-            mFhirBaseUri = original.getFhirBaseUri();
-            mDisplayName = original.getDisplayName();
-            mFhirVersion = original.getFhirVersion();
+        /** Constructs a clone of the other {@link CreateMedicalDataSourceRequest} instance. */
+        public Builder(@NonNull CreateMedicalDataSourceRequest other) {
+            requireNonNull(other);
+            mFhirBaseUri = other.getFhirBaseUri();
+            mDisplayName = other.getDisplayName();
+            mFhirVersion = other.getFhirVersion();
         }
 
         /**
-         * Sets the fhir base URI. For data coming from a FHIR server this should be the base URL.
+         * Sets the FHIR base URI. For data coming from a FHIR server this should be <a
+         * href="https://hl7.org/fhir/R4/http.html#root">the base URL</a>.
          *
-         * <p>The uri may not exceed 2000 characters.
+         * <p>The URI may not exceed 2000 characters.
          */
         @NonNull
         public Builder setFhirBaseUri(@NonNull Uri fhirBaseUri) {
@@ -221,7 +233,7 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
         }
 
         /**
-         * Sets the display name
+         * Sets the display name. For the request to succeed this must be unique per app.
          *
          * <p>The display name may not exceed 90 characters.
          */
@@ -232,7 +244,12 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
             return this;
         }
 
-        /** Sets the fhir version of data from this data source. */
+        /**
+         * Sets the FHIR version of data from this data source.
+         *
+         * <p>This has to be a version supported by Health Connect, as documented on the {@link
+         * FhirVersion}.
+         */
         @NonNull
         public Builder setFhirVersion(@NonNull FhirVersion fhirVersion) {
             requireNonNull(fhirVersion);
@@ -269,11 +286,11 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
     private static void validateFhirBaseUriCharacterLimit(Uri fhirBaseUri) {
         String fhirBaseUriString = fhirBaseUri.toString();
         if (fhirBaseUriString.isEmpty()) {
-            throw new IllegalArgumentException("Fhir base uri cannot be empty.");
+            throw new IllegalArgumentException("FHIR base URI cannot be empty.");
         }
         if (fhirBaseUriString.length() > FHIR_BASE_URI_CHARACTER_LIMIT) {
             throw new IllegalArgumentException(
-                    "Fhir base uri cannot be longer than "
+                    "FHIR base URI cannot be longer than "
                             + FHIR_BASE_URI_CHARACTER_LIMIT
                             + " characters.");
         }

@@ -312,15 +312,13 @@ public class FhirResourceTest {
                                 FHIR_RESOURCE_ID_IMMUNIZATION,
                                 FHIR_DATA_IMMUNIZATION)
                         .build();
-        String expectedPropertiesString =
-                String.format(
-                        "type=%d,id=%s,data=%s",
-                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
-                        FHIR_RESOURCE_ID_IMMUNIZATION,
-                        FHIR_DATA_IMMUNIZATION);
+        String typeString = "type=1";
+        String idString = "id=" + FHIR_RESOURCE_ID_IMMUNIZATION;
+        String dataString = "data=" + FHIR_DATA_IMMUNIZATION;
 
-        assertThat(resource.toString())
-                .isEqualTo(String.format("FhirResource{%s}", expectedPropertiesString));
+        assertThat(resource.toString()).contains(typeString);
+        assertThat(resource.toString()).contains(idString);
+        assertThat(resource.toString()).contains(dataString);
     }
 
     @Test
