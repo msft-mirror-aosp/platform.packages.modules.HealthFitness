@@ -17,6 +17,7 @@
 package android.health.connect;
 
 import static android.health.connect.datatypes.FhirResource.validateFhirResourceType;
+import static android.health.connect.datatypes.MedicalDataSource.validateMedicalDataSourceIds;
 import static android.health.connect.internal.datatypes.utils.FhirResourceTypeStringToIntMapper.getFhirResourceTypeInt;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
@@ -27,9 +28,11 @@ import static java.util.Objects.requireNonNull;
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
 import android.health.connect.datatypes.FhirResource.FhirResourceType;
+import android.health.connect.datatypes.MedicalDataSource;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,11 +56,16 @@ public final class MedicalResourceId implements Parcelable {
     private static final String FHIR_REFERENCE_REGEX = "([A-Za-z]+)/([A-Za-z0-9-.]+)";
 
     /**
-     * @param dataSourceId The unique identifier of where the data comes from.
+     * Constructs a new {@link MedicalResourceId} instance.
+     *
+     * @param dataSourceId The unique identifier of the existing {@link MedicalDataSource},
+     *     representing where the data comes from.
      * @param fhirResourceType The FHIR resource type. This is the "resourceType" field from a JSON
      *     representation of FHIR resource data.
      * @param fhirResourceId The FHIR resource ID. This is the "id" field from a JSON representation
      *     of FHIR resource data.
+     * @throws IllegalArgumentException if the provided {@code dataSourceId} is not a valid ID, or
+     *     {@code fhirResourceType} is not a valid supported type.
      */
     public MedicalResourceId(
             @NonNull String dataSourceId,
@@ -66,6 +74,7 @@ public final class MedicalResourceId implements Parcelable {
         requireNonNull(dataSourceId);
         requireNonNull(fhirResourceId);
         validateFhirResourceType(fhirResourceType);
+        validateMedicalDataSourceIds(Set.of(dataSourceId));
         mDataSourceId = dataSourceId;
         mFhirResourceType = fhirResourceType;
         mFhirResourceId = fhirResourceId;
@@ -75,16 +84,24 @@ public final class MedicalResourceId implements Parcelable {
      * Creates a {@link MedicalResourceId} instance from {@code dataSourceId} and {@code
      * fhirReference}.
      *
-     * @param dataSourceId The unique identifier of a data source where the data comes from.
+     * @param dataSourceId The unique identifier of the existing {@link MedicalDataSource},
+     *     representing where the data comes from.
      * @param fhirReference The FHIR reference string typically extracted from the "reference" field
      *     in one FHIR resource (source), pointing to another FHIR resource (target) within the same
      *     data source, for example "Patient/034AB16".
+     * @throws IllegalArgumentException if the provided {@code dataSourceId} is not a valid ID, or
+     *     {@code fhirReference} does not match with the pattern of {@code
+     *     $fhir_resource_type/$fhir_resource_id}, where the FHIR resource type should align with
+     *     the resource list in <a href="https://build.fhir.org/resourcelist.html">the official FHIR
+     *     website</a>, and the FHIR resource ID should also follow the pattern described in <a
+     *     href="https://build.fhir.org/datatypes.html#id">the official FHIR datatypes</a>.
      */
     @NonNull
     public static MedicalResourceId fromFhirReference(
             @NonNull String dataSourceId, @NonNull String fhirReference) {
         requireNonNull(dataSourceId);
         requireNonNull(fhirReference);
+        validateMedicalDataSourceIds(Set.of(dataSourceId));
         Pattern pattern = Pattern.compile(FHIR_REFERENCE_REGEX);
         Matcher matcher = pattern.matcher(fhirReference);
         if (!matcher.matches()) {
@@ -106,6 +123,7 @@ public final class MedicalResourceId implements Parcelable {
     private MedicalResourceId(@NonNull Parcel in) {
         requireNonNull(in);
         mDataSourceId = requireNonNull(in.readString());
+        validateMedicalDataSourceIds(Set.of(mDataSourceId));
         mFhirResourceType = in.readInt();
         validateFhirResourceType(mFhirResourceType);
         mFhirResourceId = requireNonNull(in.readString());
@@ -129,7 +147,7 @@ public final class MedicalResourceId implements Parcelable {
                 }
             };
 
-    /** Returns the unique identifier of where the data comes from. */
+    /** Returns the unique {@link MedicalDataSource} ID of where the data comes from. */
     @NonNull
     public String getDataSourceId() {
         return mDataSourceId;
@@ -152,7 +170,6 @@ public final class MedicalResourceId implements Parcelable {
         return 0;
     }
 
-    /** Populates a {@link Parcel} with the self information. */
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         requireNonNull(dest);
@@ -161,7 +178,6 @@ public final class MedicalResourceId implements Parcelable {
         dest.writeString(getFhirResourceId());
     }
 
-    /** Indicates whether some other object is "equal to" this one. */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -171,13 +187,11 @@ public final class MedicalResourceId implements Parcelable {
                 && getFhirResourceId().equals(that.getFhirResourceId());
     }
 
-    /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
         return hash(getDataSourceId(), getFhirResourceType(), getFhirResourceId());
     }
 
-    /** Returns a string representation of this {@link MedicalResourceId}. */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

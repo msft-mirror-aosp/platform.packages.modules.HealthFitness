@@ -24,7 +24,6 @@ import static android.health.connect.HealthPermissions.READ_STEPS;
 import static android.health.connect.HealthPermissions.READ_TOTAL_CALORIES_BURNED;
 import static android.health.connect.datatypes.DistanceRecord.DISTANCE_TOTAL;
 import static android.health.connect.datatypes.ExerciseSessionRecord.EXERCISE_DURATION_TOTAL;
-import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
 import static android.health.connect.datatypes.SleepSessionRecord.SLEEP_DURATION_TOTAL;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
@@ -45,6 +44,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
+import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByDuration;
@@ -404,9 +404,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
 
         manager.readMedicalResources(
-                List.of(new MedicalResourceId("123", FHIR_RESOURCE_TYPE_IMMUNIZATION, "456")),
-                Executors.newSingleThreadExecutor(),
-                receiver);
+                List.of(getMedicalResourceId()), Executors.newSingleThreadExecutor(), receiver);
 
         HealthConnectException exception = receiver.assertAndGetException();
         assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
@@ -449,8 +447,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void deleteMedicalResourcesByIds_noPermission_expectError() throws InterruptedException {
         HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        List<MedicalResourceId> ids =
-                List.of(new MedicalResourceId("123", FHIR_RESOURCE_TYPE_IMMUNIZATION, "456"));
+        List<MedicalResourceId> ids = List.of(getMedicalResourceId());
         HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
 
         manager.deleteMedicalResources(ids, Executors.newSingleThreadExecutor(), receiver);

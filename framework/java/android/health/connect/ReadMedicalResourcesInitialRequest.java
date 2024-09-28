@@ -40,7 +40,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Class to represent an initial read request with specified filters for {@link
+ * An initial read request with specified filters for {@link
  * HealthConnectManager#readMedicalResources}.
  *
  * <p>On receiving the response, if {@link ReadMedicalResourcesResponse#getNextPageToken()} is not
@@ -68,15 +68,8 @@ public final class ReadMedicalResourcesInitialRequest extends ReadMedicalResourc
     @NonNull private final Set<String> mDataSourceIds;
 
     /**
-     * @param medicalResourceType The medical resource type to request to read.
-     * @param dataSourceIds The {@link MedicalDataSource}s filter based on which the read operation
-     *     is to be performed. An empty set means no filter.
-     * @param pageSize The maximum number of {@code MedicalResource}s to be returned by the read
-     *     operation.
-     * @throws IllegalArgumentException if the provided {@code medicalResourceType} is not a
-     *     supported type; or {@code dataSourceIds} is null or any IDs in it are invalid; or {@code
-     *     pageSize} is less than 1 or more than 5000.
-     * @throws NullPointerException if {@code dataSourceIds} is null.
+     * Creates a new instance of {@link ReadMedicalResourcesInitialRequest}. Please see {@link
+     * ReadMedicalResourcesInitialRequest.Builder} for more detailed parameters information.
      */
     private ReadMedicalResourcesInitialRequest(
             @MedicalResourceType int medicalResourceType,
@@ -106,7 +99,6 @@ public final class ReadMedicalResourcesInitialRequest extends ReadMedicalResourc
         return new ArraySet<>(mDataSourceIds);
     }
 
-    /** Indicates whether some other object is "equal to" this one. */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -117,13 +109,11 @@ public final class ReadMedicalResourcesInitialRequest extends ReadMedicalResourc
                 && getPageSize() == that.getPageSize();
     }
 
-    /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
         return hash(getMedicalResourceType(), getDataSourceIds(), getPageSize());
     }
 
-    /** Returns a string representation of this {@link ReadMedicalResourcesInitialRequest}. */
     @Override
     public String toString() {
         return this.getClass().getSimpleName()
@@ -146,13 +136,15 @@ public final class ReadMedicalResourcesInitialRequest extends ReadMedicalResourc
         return new ReadMedicalResourcesRequestParcel(this);
     }
 
-    /** Builder class for {@link ReadMedicalResourcesInitialRequest} */
+    /** Builder class for {@link ReadMedicalResourcesInitialRequest}. */
     public static final class Builder {
         @MedicalResourceType private int mMedicalResourceType;
         @NonNull private Set<String> mDataSourceIds = new HashSet<>();
         private int mPageSize = DEFAULT_PAGE_SIZE;
 
         /**
+         * Constructs a new {@link ReadMedicalResourcesInitialRequest.Builder} instance.
+         *
          * @param medicalResourceType The medical resource type.
          * @throws IllegalArgumentException if the provided {@code medicalResourceType} is not a
          *     supported type.
@@ -162,24 +154,18 @@ public final class ReadMedicalResourcesInitialRequest extends ReadMedicalResourc
             mMedicalResourceType = medicalResourceType;
         }
 
-        /**
-         * @param original The other {@link Builder} to provide data to construct this new instance
-         *     from.
-         */
-        public Builder(@NonNull Builder original) {
-            mMedicalResourceType = original.mMedicalResourceType;
-            mDataSourceIds.addAll(original.mDataSourceIds);
-            mPageSize = original.mPageSize;
+        /** Constructs a clone of the other {@link ReadMedicalResourcesInitialRequest.Builder}. */
+        public Builder(@NonNull Builder other) {
+            mMedicalResourceType = other.mMedicalResourceType;
+            mDataSourceIds.addAll(other.mDataSourceIds);
+            mPageSize = other.mPageSize;
         }
 
-        /**
-         * @param original The other {@link ReadMedicalResourcesInitialRequest} instance to provide
-         *     data to construct this new instance from.
-         */
-        public Builder(@NonNull ReadMedicalResourcesInitialRequest original) {
-            mMedicalResourceType = original.getMedicalResourceType();
-            mDataSourceIds.addAll(original.getDataSourceIds());
-            mPageSize = original.getPageSize();
+        /** Constructs a clone of the other {@link ReadMedicalResourcesInitialRequest} instance. */
+        public Builder(@NonNull ReadMedicalResourcesInitialRequest other) {
+            mMedicalResourceType = other.getMedicalResourceType();
+            mDataSourceIds.addAll(other.getDataSourceIds());
+            mPageSize = other.getPageSize();
         }
 
         /**
@@ -196,15 +182,13 @@ public final class ReadMedicalResourcesInitialRequest extends ReadMedicalResourc
         }
 
         /**
-         * Adds the {@link MedicalDataSource} filter based on which the read operation is to be
-         * performed.
+         * Adds the data source ID based on which the read operation is to be performed. This should
+         * be an ID of the existing {@link MedicalDataSource}.
          *
-         * @param dataSourceId The ID of an existing {@link MedicalDataSource} from which to read
-         *     {@link MedicalResource}s.
-         *     <p>If no {@link MedicalDataSource} ID is added, then {@link MedicalResource}s from
-         *     all {@link MedicalDataSource}s will be read.
-         * @throws IllegalArgumentException if the provided {@code dataSourceId} is null, or is not
-         *     a valid ID.
+         * <p>If no {@link MedicalDataSource} ID is added, then {@link MedicalResource}s from all
+         * {@link MedicalDataSource}s will be read.
+         *
+         * @throws IllegalArgumentException if the provided {@code dataSourceId} is not a valid ID.
          */
         @NonNull
         public Builder addDataSourceId(@NonNull String dataSourceId) {
@@ -215,13 +199,12 @@ public final class ReadMedicalResourcesInitialRequest extends ReadMedicalResourc
         }
 
         /**
-         * Adds all {@link MedicalDataSource}s filter based on which the read operation is to be
-         * performed.
+         * Adds all data source IDs based on which the read operation is to be performed. This
+         * should all be IDs of existing {@link MedicalDataSource}s.
          *
-         * @param dataSourceIds the set of IDs of the existing {@link MedicalDataSource}s from which
-         *     to read {@link MedicalResource}s.
-         *     <p>If no {@link MedicalDataSource} ID is added, then {@link MedicalResource}s from
-         *     all {@link MedicalDataSource}s will be read.
+         * <p>If no {@link MedicalDataSource} IDs are added, then {@link MedicalResource}s from all
+         * {@link MedicalDataSource}s will be read.
+         *
          * @throws IllegalArgumentException if the provided {@code dataSourceIds} is null, or any ID
          *     in it is not valid.
          */

@@ -707,4 +707,44 @@ class RequestPermissionViewModelTest {
             )
         assertThat(result).isTrue()
     }
+
+    @Test
+    fun isAnyPermissionUserFixed_whenNoPermissionUserFixed_andSomePermissionsNotDeclared_returnsFalse() {
+        val permissionFlags =
+            mapOf(
+                READ_EXERCISE to PackageManager.FLAG_PERMISSION_USER_SET,
+                READ_SLEEP to PackageManager.FLAG_PERMISSION_GRANTED_BY_DEFAULT,
+            )
+        (permissionManager as FakeHealthPermissionManager).setHealthPermissionFlags(
+            TEST_APP_PACKAGE_NAME,
+            permissionFlags,
+        )
+
+        val result =
+            viewModel.isAnyPermissionUserFixed(
+                TEST_APP_PACKAGE_NAME,
+                arrayOf(READ_EXERCISE, READ_SLEEP, READ_SKIN_TEMPERATURE),
+            )
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun isAnyPermissionUserFixed_whenAtLeastOnePermissionIsUserFixed__andSomePermissionsNotDeclared_returnsTrue() {
+        val permissionFlags =
+            mapOf(
+                READ_EXERCISE to PackageManager.FLAG_PERMISSION_USER_SET,
+                READ_SLEEP to PackageManager.FLAG_PERMISSION_USER_FIXED,
+            )
+        (permissionManager as FakeHealthPermissionManager).setHealthPermissionFlags(
+            TEST_APP_PACKAGE_NAME,
+            permissionFlags,
+        )
+
+        val result =
+            viewModel.isAnyPermissionUserFixed(
+                TEST_APP_PACKAGE_NAME,
+                arrayOf(READ_EXERCISE, READ_SLEEP, WRITE_PLANNED_EXERCISE),
+            )
+        assertThat(result).isTrue()
+    }
 }

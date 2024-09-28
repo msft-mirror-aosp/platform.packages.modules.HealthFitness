@@ -21,6 +21,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4B;
+import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -52,6 +53,15 @@ public class UpsertMedicalResourceRequestTest {
         assertThat(upsertMedicalResourceRequest.getDataSourceId()).isEqualTo(DATA_SOURCE_ID);
         assertThat(upsertMedicalResourceRequest.getFhirVersion()).isEqualTo(FHIR_VERSION_R4);
         assertThat(upsertMedicalResourceRequest.getData()).isEqualTo(FHIR_DATA_ALLERGY);
+    }
+
+    @Test
+    public void testUpsertMedicalResourceRequest_constructWithInvalidDataSourceId_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        new UpsertMedicalResourceRequest.Builder(
+                                "1", FHIR_VERSION_R4, FHIR_DATA_ALLERGY));
     }
 
     @Test
@@ -142,5 +152,39 @@ public class UpsertMedicalResourceRequestTest {
         assertThrows(
                 NullPointerException.class,
                 () -> new UpsertMedicalResourceRequest.Builder(null, null, null));
+    }
+
+    @Test
+    public void testToString() {
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, FHIR_DATA_ALLERGY)
+                        .build();
+        String dataSourceIdString = "dataSourceId=" + DATA_SOURCE_ID;
+        String fhirVersionString = "fhirVersion=" + FHIR_VERSION_R4;
+        String dataString = "data=" + FHIR_DATA_ALLERGY;
+
+        assertThat(request.toString()).contains(dataSourceIdString);
+        assertThat(request.toString()).contains(fhirVersionString);
+        assertThat(request.toString()).contains(dataString);
+    }
+
+    @Test
+    public void testRestoreInvalidDataSourceIdFromParcel_expectException()
+            throws NoSuchFieldException, IllegalAccessException {
+
+        UpsertMedicalResourceRequest original =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, FHIR_DATA_ALLERGY)
+                        .build();
+        setFieldValueUsingReflection(original, "mDataSourceId", "1");
+
+        Parcel parcel = Parcel.obtain();
+        original.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> UpsertMedicalResourceRequest.CREATOR.createFromParcel(parcel));
     }
 }

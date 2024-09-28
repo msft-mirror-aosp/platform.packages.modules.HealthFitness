@@ -53,7 +53,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Matchers
 import org.mockito.Mockito
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
@@ -225,7 +224,7 @@ class AdditionalPermissionsFragmentTest {
         onView(withText("Access data in the background")).perform(click())
 
         Mockito.verify(viewModel)
-            .updateHealthPermission(any(AdditionalPermission::class.java), Matchers.eq(true))
+            .updateHealthPermission(any(AdditionalPermission::class.java), eq(true))
 
         verify(healthConnectLogger)
             .logInteraction(
@@ -263,7 +262,7 @@ class AdditionalPermissionsFragmentTest {
         onView(withText("Access past data")).perform(click())
 
         Mockito.verify(viewModel)
-            .updateHealthPermission(any(AdditionalPermission::class.java), Matchers.eq(false))
+            .updateHealthPermission(any(AdditionalPermission::class.java), eq(false))
 
         verify(healthConnectLogger)
             .logInteraction(

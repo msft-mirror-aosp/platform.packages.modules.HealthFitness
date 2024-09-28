@@ -60,30 +60,35 @@ public class ReadTableRequest {
     public @interface UnionType {}
 
     private final String mTableName;
-    private RecordHelper<?> mRecordHelper;
-    private List<String> mColumnNames;
-    private SqlJoin mJoinClause;
+    @Nullable private RecordHelper<?> mRecordHelper;
+    @Nullable private List<String> mColumnNames;
+    @Nullable private SqlJoin mJoinClause;
     private WhereClauses mWhereClauses = new WhereClauses(AND);
     private boolean mDistinct = false;
     private OrderByClause mOrderByClause = new OrderByClause();
     private String mLimitClause = "";
-    private List<ReadTableRequest> mExtraReadRequests;
-    private List<ReadTableRequest> mUnionReadRequests;
+    @Nullable private List<ReadTableRequest> mExtraReadRequests;
+    @Nullable private List<ReadTableRequest> mUnionReadRequests;
     private String mUnionType = UNION_ALL;
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     public ReadTableRequest(String tableName) {
         Objects.requireNonNull(tableName);
 
         mTableName = tableName;
     }
 
+    /** Returns the record helper associated with this request if it has been set, or null. */
+    @Nullable
     public RecordHelper<?> getRecordHelper() {
         return mRecordHelper;
     }
 
+    /**
+     * Sets the record helper associated with this request. This is not used for creating the SQL,
+     * but is a side channel for other classes processing this request.
+     */
     public ReadTableRequest setRecordHelper(RecordHelper<?> recordHelper) {
-        mRecordHelper = recordHelper;
+        mRecordHelper = Objects.requireNonNull(recordHelper);
         return this;
     }
 
@@ -215,7 +220,6 @@ public class ReadTableRequest {
     }
 
     /** Sets union read requests. */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public ReadTableRequest setUnionReadRequests(
             @Nullable List<ReadTableRequest> unionReadRequests) {
         mUnionReadRequests = unionReadRequests;

@@ -79,8 +79,12 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Matchers.eq
-import org.mockito.Mockito.*
+import org.mockito.Mockito.atLeast
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.reset
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.whenever
 
 @ExperimentalCoroutinesApi
@@ -101,7 +105,7 @@ class MedicalPermissionsFragmentTest {
         hiltRule.inject()
         val context = getInstrumentation().context
         context.setLocale(Locale.US)
-        `when`(viewModel.appMetadata).then {
+        whenever(viewModel.appMetadata).then {
             MutableLiveData(
                 AppMetadata(
                     TEST_APP_PACKAGE_NAME,
@@ -110,8 +114,8 @@ class MedicalPermissionsFragmentTest {
                 )
             )
         }
-        `when`(viewModel.allMedicalPermissionsGranted).then { MutableLiveData(false) }
-        `when`(viewModel.grantedMedicalPermissions).then {
+        whenever(viewModel.allMedicalPermissionsGranted).then { MutableLiveData(false) }
+        whenever(viewModel.grantedMedicalPermissions).then {
             MutableLiveData(emptySet<FitnessPermission>())
         }
         toggleAnimation(false)
@@ -125,7 +129,7 @@ class MedicalPermissionsFragmentTest {
 
     @Test
     fun displaysMedicalCategories() {
-        `when`(viewModel.healthPermissionsList).then {
+        whenever(viewModel.healthPermissionsList).then {
             val permissions =
                 listOf(
                     fromPermissionString(READ_MEDICAL_DATA_ALLERGY_INTOLERANCE),
@@ -184,7 +188,7 @@ class MedicalPermissionsFragmentTest {
 
     @Test
     fun whenHistoryReadPermissionAlreadyGranted_displaysCorrectText() {
-        `when`(viewModel.healthPermissionsList).then {
+        whenever(viewModel.healthPermissionsList).then {
             val permissions =
                 listOf(
                     fromPermissionString(READ_MEDICAL_DATA_ALLERGY_INTOLERANCE),
@@ -193,7 +197,7 @@ class MedicalPermissionsFragmentTest {
                 )
             MutableLiveData(permissions)
         }
-        `when`(viewModel.isHistoryAccessGranted()).thenReturn(true)
+        whenever(viewModel.isHistoryAccessGranted()).thenReturn(true)
         launchFragment<MedicalPermissionsFragment>(bundleOf())
 
         onView(withText("Allow $TEST_APP_NAME to access Health Connect?"))
@@ -212,7 +216,7 @@ class MedicalPermissionsFragmentTest {
 
     @Test
     fun whenHistoryReadPermissionRevoked_displaysCorrectText() {
-        `when`(viewModel.healthPermissionsList).then {
+        whenever(viewModel.healthPermissionsList).then {
             val permissions =
                 listOf(
                     fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION),
@@ -238,7 +242,7 @@ class MedicalPermissionsFragmentTest {
 
     @Test
     fun displaysOnlyReadPermissions() {
-        `when`(viewModel.healthPermissionsList).then {
+        whenever(viewModel.healthPermissionsList).then {
             val permissions = listOf(fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION))
             MutableLiveData(permissions)
         }
@@ -258,7 +262,7 @@ class MedicalPermissionsFragmentTest {
 
     @Test
     fun displaysOnlyWritePermissions() {
-        `when`(viewModel.healthPermissionsList).then {
+        whenever(viewModel.healthPermissionsList).then {
             val permissions = listOf(fromPermissionString(WRITE_MEDICAL_DATA))
             MutableLiveData(permissions)
         }
@@ -278,7 +282,7 @@ class MedicalPermissionsFragmentTest {
 
     @Test
     fun togglesPermissions_callsUpdatePermissions() {
-        `when`(viewModel.healthPermissionsList).then {
+        whenever(viewModel.healthPermissionsList).then {
             val permissions =
                 listOf(
                     fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION),
@@ -310,7 +314,7 @@ class MedicalPermissionsFragmentTest {
                 fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION),
                 fromPermissionString(WRITE_MEDICAL_DATA),
             )
-        `when`(viewModel.healthPermissionsList).then { MutableLiveData(permissions) }
+        whenever(viewModel.healthPermissionsList).then { MutableLiveData(permissions) }
 
         val activityScenario = launchFragment<MedicalPermissionsFragment>(bundleOf())
 
@@ -341,7 +345,7 @@ class MedicalPermissionsFragmentTest {
                 fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATION),
                 fromPermissionString(WRITE_MEDICAL_DATA),
             )
-        `when`(viewModel.healthPermissionsList).then { MutableLiveData(permissions) }
+        whenever(viewModel.healthPermissionsList).then { MutableLiveData(permissions) }
         val activityScenario = launchFragment<MedicalPermissionsFragment>(bundleOf())
 
         activityScenario.onActivity { activity: TestActivity ->
