@@ -17,7 +17,7 @@
 package com.android.server.healthconnect.phr;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
 
@@ -46,7 +46,7 @@ public class PhrPageTokenWrapperTest {
     @Test
     public void phrPageTokenWrapper_createUsingInitialRequest_success() {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .build();
@@ -60,7 +60,7 @@ public class PhrPageTokenWrapperTest {
     @Test
     public void phrPageTokenWrapper_encodeAndDecodeWithoutDataSources_success() {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .build();
         PhrPageTokenWrapper expected =
                 PhrPageTokenWrapper.from(request.toParcel()).cloneWithNewLastRowId(LAST_ROW_ID);
@@ -74,7 +74,7 @@ public class PhrPageTokenWrapperTest {
     @Test
     public void phrPageTokenWrapper_encodeAndDecodeWithAllFilters_success() {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .build();
@@ -90,7 +90,7 @@ public class PhrPageTokenWrapperTest {
     @Test
     public void phrPageTokenWrapper_encodeWithNegativeLastRowId_throws() {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .build();
         assertThrows(
                 IllegalStateException.class,
@@ -175,7 +175,7 @@ public class PhrPageTokenWrapperTest {
     @Test
     public void phrPageTokenWrapper_fromInvalidRowId_throws() {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .build();
         assertThrows(
                 IllegalStateException.class,

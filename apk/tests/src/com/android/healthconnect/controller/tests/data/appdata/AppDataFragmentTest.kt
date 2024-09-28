@@ -162,7 +162,7 @@ class AppDataFragmentTest {
             listOf(
                 FitnessPermissionType.DISTANCE,
                 FitnessPermissionType.EXERCISE,
-                MedicalPermissionType.IMMUNIZATION,
+                MedicalPermissionType.IMMUNIZATIONS,
             )
         )
 
@@ -178,7 +178,7 @@ class AppDataFragmentTest {
         onView(withText("Exercise")).check(matches(isDisplayed()))
 
         onView(withText("Health records")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Immunization")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Immunizations")).perform(scrollTo()).check(matches(isDisplayed()))
 
         onView(withText("Steps")).check(doesNotExist())
         onView(withText("Body measurements")).check(doesNotExist())
@@ -187,7 +187,7 @@ class AppDataFragmentTest {
 
     @Test
     fun medicalDataOnly_populatedDataTypesDisplayed() = runTest {
-        mockData(listOf(MedicalPermissionType.IMMUNIZATION))
+        mockData(listOf(MedicalPermissionType.IMMUNIZATIONS))
         launchFragment<AppDataFragment>(
             bundleOf(
                 Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
@@ -199,7 +199,7 @@ class AppDataFragmentTest {
         onView(withText("Distance")).check(doesNotExist())
 
         onView(withText("Health records")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Immunization")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Immunizations")).perform(scrollTo()).check(matches(isDisplayed()))
 
         onView(withText("Body measurements")).check(doesNotExist())
     }
@@ -234,8 +234,8 @@ class AppDataFragmentTest {
             listOf(
                 FitnessPermissionType.DISTANCE,
                 FitnessPermissionType.STEPS,
-                MedicalPermissionType.ALLERGY_INTOLERANCE,
-                MedicalPermissionType.IMMUNIZATION,
+                MedicalPermissionType.ALLERGIES_INTOLERANCES,
+                MedicalPermissionType.IMMUNIZATIONS,
             )
         )
 
@@ -250,7 +250,7 @@ class AppDataFragmentTest {
         assertCheckboxNotShown("Distance")
         assertCheckboxNotShown("Steps")
         assertCheckboxNotShown("Allergies")
-        assertCheckboxNotShown("Immunization")
+        assertCheckboxNotShown("Immunizations")
 
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
@@ -258,7 +258,7 @@ class AppDataFragmentTest {
         }
 
         assertCheckboxShown("Allergies")
-        assertCheckboxShown("Immunization")
+        assertCheckboxShown("Immunizations")
         assertCheckboxShown("Distance")
         assertCheckboxShown("Steps")
     }
@@ -293,8 +293,8 @@ class AppDataFragmentTest {
             listOf(
                 FitnessPermissionType.DISTANCE,
                 FitnessPermissionType.STEPS,
-                MedicalPermissionType.ALLERGY_INTOLERANCE,
-                MedicalPermissionType.IMMUNIZATION,
+                MedicalPermissionType.ALLERGIES_INTOLERANCES,
+                MedicalPermissionType.IMMUNIZATIONS,
             )
         )
 
@@ -310,11 +310,11 @@ class AppDataFragmentTest {
             (fragment as AppDataFragment).triggerDeletionState(DELETE)
         }
 
-        onView(withText("Immunization")).perform(click())
+        onView(withText("Immunizations")).perform(click())
         onIdle()
         assertThat(appDataViewModel.setOfPermissionTypesToBeDeleted.value)
-            .containsExactlyElementsIn(setOf(MedicalPermissionType.IMMUNIZATION))
-        onView(withText("Immunization")).perform(click())
+            .containsExactlyElementsIn(setOf(MedicalPermissionType.IMMUNIZATIONS))
+        onView(withText("Immunizations")).perform(click())
         assertThat(appDataViewModel.setOfPermissionTypesToBeDeleted.value).isEmpty()
     }
 
@@ -691,8 +691,8 @@ class AppDataFragmentTest {
                 listOf(
                     FitnessPermissionType.DISTANCE,
                     FitnessPermissionType.STEPS,
-                    MedicalPermissionType.ALLERGY_INTOLERANCE,
-                    MedicalPermissionType.IMMUNIZATION,
+                    MedicalPermissionType.ALLERGIES_INTOLERANCES,
+                    MedicalPermissionType.IMMUNIZATIONS,
                 )
             )
             val scenario =
@@ -714,8 +714,8 @@ class AppDataFragmentTest {
                     setOf(
                         FitnessPermissionType.DISTANCE,
                         FitnessPermissionType.STEPS,
-                        MedicalPermissionType.ALLERGY_INTOLERANCE,
-                        MedicalPermissionType.IMMUNIZATION,
+                        MedicalPermissionType.ALLERGIES_INTOLERANCES,
+                        MedicalPermissionType.IMMUNIZATIONS,
                     )
                 )
             onView(withText("Select all")).perform(click())
@@ -736,8 +736,8 @@ class AppDataFragmentTest {
                                         listOf(
                                             FitnessPermissionType.DISTANCE,
                                             FitnessPermissionType.STEPS,
-                                            MedicalPermissionType.ALLERGY_INTOLERANCE,
-                                            MedicalPermissionType.IMMUNIZATION,
+                                            MedicalPermissionType.ALLERGIES_INTOLERANCES,
+                                            MedicalPermissionType.IMMUNIZATIONS,
                                         )
                                 ) {
                                     assertThat(permissionTypePreference.getIsChecked()).isFalse()
@@ -799,7 +799,7 @@ class AppDataFragmentTest {
                     FitnessPermissionType.DISTANCE,
                     FitnessPermissionType.STEPS,
                     MedicalPermissionType.VITAL_SIGNS,
-                    MedicalPermissionType.ALLERGY_INTOLERANCE,
+                    MedicalPermissionType.ALLERGIES_INTOLERANCES,
                 )
             )
 

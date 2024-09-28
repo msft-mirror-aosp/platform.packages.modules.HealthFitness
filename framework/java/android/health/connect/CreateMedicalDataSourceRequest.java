@@ -147,7 +147,6 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
         dest.writeParcelable(mFhirVersion, 0);
     }
 
-    /** Indicates whether some other object is "equal to" this one. */
     @Override
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
@@ -157,13 +156,11 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
                 && getFhirVersion().equals(that.getFhirVersion());
     }
 
-    /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
         return hash(getFhirBaseUri(), getDisplayName(), getFhirVersion());
     }
 
-    /** Returns a string representation of this {@link CreateMedicalDataSourceRequest}. */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

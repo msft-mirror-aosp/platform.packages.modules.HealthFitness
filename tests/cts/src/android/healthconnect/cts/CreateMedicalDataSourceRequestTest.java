@@ -183,17 +183,13 @@ public class CreateMedicalDataSourceRequestTest {
                                 DATA_SOURCE_DISPLAY_NAME,
                                 DATA_SOURCE_FHIR_VERSION)
                         .build();
-        String expectedPropertiesString =
-                String.format(
-                        "fhirBaseUri=%s,displayName=%s,fhirVersion=%s",
-                        DATA_SOURCE_FHIR_BASE_URI,
-                        DATA_SOURCE_DISPLAY_NAME,
-                        DATA_SOURCE_FHIR_VERSION);
+        String fhirBaseUriString = "fhirBaseUri=" + DATA_SOURCE_FHIR_BASE_URI;
+        String displayNameString = "displayName=" + DATA_SOURCE_DISPLAY_NAME;
+        String fhirVersionString = "fhirVersion=" + DATA_SOURCE_FHIR_VERSION;
 
-        assertThat(request.toString())
-                .isEqualTo(
-                        String.format(
-                                "CreateMedicalDataSourceRequest{%s}", expectedPropertiesString));
+        assertThat(request.toString()).contains(fhirBaseUriString);
+        assertThat(request.toString()).contains(displayNameString);
+        assertThat(request.toString()).contains(fhirVersionString);
     }
 
     @Test

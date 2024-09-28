@@ -778,8 +778,8 @@ public final class HealthPermissions {
      * <p>Protection level: dangerous.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
-    public static final String READ_MEDICAL_DATA_ALLERGY_INTOLERANCE =
-            "android.permission.health.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE";
+    public static final String READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES =
+            "android.permission.health.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES";
 
     /**
      * Allows an application to read the user's data about medical conditions.
@@ -796,8 +796,8 @@ public final class HealthPermissions {
      * <p>Protection level: dangerous.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
-    public static final String READ_MEDICAL_DATA_IMMUNIZATION =
-            "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION";
+    public static final String READ_MEDICAL_DATA_IMMUNIZATIONS =
+            "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS";
 
     /**
      * Allows an application to read the user's laboratory result data.
@@ -1028,9 +1028,9 @@ public final class HealthPermissions {
 
         Set<String> permissions = new ArraySet<>();
         permissions.add(WRITE_MEDICAL_DATA);
-        permissions.add(READ_MEDICAL_DATA_ALLERGY_INTOLERANCE);
+        permissions.add(READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES);
         permissions.add(READ_MEDICAL_DATA_CONDITIONS);
-        permissions.add(READ_MEDICAL_DATA_IMMUNIZATION);
+        permissions.add(READ_MEDICAL_DATA_IMMUNIZATIONS);
         permissions.add(READ_MEDICAL_DATA_LABORATORY_RESULTS);
         permissions.add(READ_MEDICAL_DATA_MEDICATIONS);
         permissions.add(READ_MEDICAL_DATA_PERSONAL_DETAILS);

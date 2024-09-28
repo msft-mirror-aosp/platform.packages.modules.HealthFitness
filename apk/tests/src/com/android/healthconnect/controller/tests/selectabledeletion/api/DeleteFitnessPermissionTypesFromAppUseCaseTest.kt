@@ -76,7 +76,7 @@ class DeleteFitnessPermissionTypesFromAppUseCaseTest {
                     FitnessPermissionType.SLEEP,
                     FitnessPermissionType.EXERCISE,
                     FitnessPermissionType.MENSTRUATION,
-                    MedicalPermissionType.IMMUNIZATION,
+                    MedicalPermissionType.IMMUNIZATIONS,
                 ),
                 8,
                 packageName = "package.name",

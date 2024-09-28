@@ -16,9 +16,9 @@
 
 package com.android.server.healthconnect.permission;
 
-import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_CONDITIONS;
-import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS;
@@ -29,7 +29,7 @@ import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_SOCIAL_
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VISITS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.permission.PermissionManager.PERMISSION_GRANTED;
 import static android.permission.PermissionManager.PERMISSION_HARD_DENIED;
 
@@ -97,12 +97,12 @@ public class MedicalDataPermissionEnforcerTest {
     @Test
     public void testEnforceMedicalReadAccessAndGetEnforceSelfRead_permissionGranted_returnsFalse() {
         when(mPermissionManager.checkPermissionForDataDelivery(
-                        READ_MEDICAL_DATA_IMMUNIZATION, mAttributionSource, null))
+                        READ_MEDICAL_DATA_IMMUNIZATIONS, mAttributionSource, null))
                 .thenReturn(PERMISSION_GRANTED);
 
         boolean selfRead =
                 mMedicalDataPermissionEnforcer.enforceMedicalReadAccessAndGetEnforceSelfRead(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, mAttributionSource);
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, mAttributionSource);
 
         assertThat(selfRead).isFalse();
     }
@@ -110,7 +110,7 @@ public class MedicalDataPermissionEnforcerTest {
     @Test
     public void testEnforceMedicalReadAccessAndGetEnforceSelfRead_onlyWriteGranted_returnsTrue() {
         when(mPermissionManager.checkPermissionForDataDelivery(
-                        READ_MEDICAL_DATA_IMMUNIZATION, mAttributionSource, null))
+                        READ_MEDICAL_DATA_IMMUNIZATIONS, mAttributionSource, null))
                 .thenReturn(PERMISSION_HARD_DENIED);
         when(mPermissionManager.checkPermissionForDataDelivery(
                         WRITE_MEDICAL_DATA, mAttributionSource, null))
@@ -118,7 +118,7 @@ public class MedicalDataPermissionEnforcerTest {
 
         boolean selfRead =
                 mMedicalDataPermissionEnforcer.enforceMedicalReadAccessAndGetEnforceSelfRead(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION, mAttributionSource);
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, mAttributionSource);
 
         assertThat(selfRead).isTrue();
     }
@@ -135,8 +135,8 @@ public class MedicalDataPermissionEnforcerTest {
 
         assertThat(permissions)
                 .containsExactly(
-                        READ_MEDICAL_DATA_ALLERGY_INTOLERANCE,
-                        READ_MEDICAL_DATA_IMMUNIZATION,
+                        READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
+                        READ_MEDICAL_DATA_IMMUNIZATIONS,
                         READ_MEDICAL_DATA_LABORATORY_RESULTS,
                         READ_MEDICAL_DATA_MEDICATIONS,
                         READ_MEDICAL_DATA_PERSONAL_DETAILS,
@@ -156,14 +156,14 @@ public class MedicalDataPermissionEnforcerTest {
         when(mPermissionManager.checkPermissionForPreflight(anyString(), eq(mAttributionSource)))
                 .thenReturn(PERMISSION_HARD_DENIED);
         when(mPermissionManager.checkPermissionForPreflight(
-                        eq(READ_MEDICAL_DATA_IMMUNIZATION), eq(mAttributionSource)))
+                        eq(READ_MEDICAL_DATA_IMMUNIZATIONS), eq(mAttributionSource)))
                 .thenReturn(PERMISSION_GRANTED);
 
         Set<String> permissions =
                 mMedicalDataPermissionEnforcer.getGrantedMedicalPermissionsForPreflight(
                         mAttributionSource);
 
-        assertThat(permissions).containsExactly(READ_MEDICAL_DATA_IMMUNIZATION);
+        assertThat(permissions).containsExactly(READ_MEDICAL_DATA_IMMUNIZATIONS);
     }
 
     @Test

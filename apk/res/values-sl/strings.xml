@@ -267,15 +267,18 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura kože"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Branje temperature kože"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Zapisovanje temperature kože"</string>
-    <!-- no translation found for all_medical_data_uppercase_label (2380759160541898783) -->
-    <skip />
-    <!-- no translation found for all_medical_data_lowercase_label (6293814928992081842) -->
-    <skip />
-    <!-- no translation found for all_medical_data_content_description (4846586780533295022) -->
-    <skip />
+    <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Vse zdravstvene evidence"</string>
+    <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"vse zdravstvene evidence"</string>
+    <string name="all_medical_data_content_description" msgid="4846586780533295022">"Zapisovanje vseh zdravstvenih evidenc"</string>
     <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"Alergije"</string>
     <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"alergije"</string>
     <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"Branje podatkov o alergijah"</string>
+    <!-- no translation found for conditions_uppercase_label (5260404343402770877) -->
+    <skip />
+    <!-- no translation found for conditions_lowercase_label (2678248918552246997) -->
+    <skip />
+    <!-- no translation found for conditions_content_description (3230552343616193829) -->
+    <skip />
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Cepljenje"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"cepljenje"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Branje podatkov o cepljenju"</string>
@@ -285,18 +288,33 @@
     <string name="medications_uppercase_label" msgid="4783281053427990225">"Zdravila"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"zdravila"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"Branje podatkov o zdravilih"</string>
+    <!-- no translation found for personal_details_uppercase_label (7241635933310394120) -->
+    <skip />
+    <!-- no translation found for personal_details_lowercase_label (1907848447611775151) -->
+    <skip />
+    <!-- no translation found for personal_details_content_description (3191211304673909831) -->
+    <skip />
+    <!-- no translation found for practitioner_details_uppercase_label (2940667649808082510) -->
+    <skip />
+    <!-- no translation found for practitioner_details_lowercase_label (8195591077717971542) -->
+    <skip />
+    <!-- no translation found for practitioner_details_content_description (8775396516928504185) -->
+    <skip />
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Nosečnost"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"nosečnost"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"Branje podatkov o nosečnosti"</string>
-    <string name="problems_uppercase_label" msgid="4047882613795113715">"Težave"</string>
-    <string name="problems_lowercase_label" msgid="6934298611508910866">"težave"</string>
-    <string name="problems_content_description" msgid="1549418294742668962">"Branje podatkov o težavah"</string>
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"Posegi"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"posegi"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Branje podatkov o posegih"</string>
     <string name="social_history_uppercase_label" msgid="1731364502071035544">"Zgodovina družabnih stikov"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"zgodovina družabnih stikov"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"Branje zgodovine družabnih stikov"</string>
+    <!-- no translation found for visits_uppercase_label (8532619758336375886) -->
+    <skip />
+    <!-- no translation found for visits_lowercase_label (2545887061364564151) -->
+    <skip />
+    <!-- no translation found for visits_content_description (6336796415049565697) -->
+    <skip />
     <string name="vital_signs_uppercase_label" msgid="214938594708280346">"Vitalni znaki"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"vitalni znaki"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"Branje vitalnih znakov"</string>
@@ -336,18 +354,13 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Izbrani dan"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Prejšnji dan"</string>
     <string name="default_error" msgid="7966868260616403475">"Prišlo je do napake. Poskusite znova."</string>
-    <!-- no translation found for unkwown_resource (7932225227431922125) -->
-    <skip />
-    <!-- no translation found for raw_fhir_open_bracket (7974657451368655325) -->
-    <skip />
-    <!-- no translation found for raw_fhir_closed_bracket (9084379463440675078) -->
-    <skip />
-    <!-- no translation found for raw_fhir_field_value (369633095565031835) -->
-    <skip />
-    <!-- no translation found for raw_fhir_value (8627152854130338531) -->
-    <skip />
-    <!-- no translation found for raw_fhir_content_description (1491420802097635439) -->
-    <skip />
+    <string name="unkwown_resource" msgid="7932225227431922125">"Neznano sredstvo"</string>
+    <string name="raw_fhir_title" msgid="1295744907036066319">"Izvorni podatki"</string>
+    <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>Zaviti uklepaj."</string>
+    <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>Zaviti zaklepaj."</string>
+    <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> Vrednost polja <xliff:g id="FIELD">%2$s</xliff:g>"</string>
+    <string name="raw_fhir_value" msgid="8627152854130338531">"<xliff:g id="PREFIX">%1$s</xliff:g>: <xliff:g id="VALUE">%2$s</xliff:g>."</string>
+    <string name="raw_fhir_content_description" msgid="1491420802097635439">"Podrobna izvorna koda: <xliff:g id="SOURCE_CODE">%1$s</xliff:g>"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Aplikacije s tem dovoljenjem lahko berejo in zapisujejo podatke o zdravju in telesni pripravljenosti."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Upravljajte, katere aplikacije lahko dostopajo do podatkov, shranjenih v storitvi Health Connect. Dotaknite se aplikacije, da pregledate, katere podatke lahko bere in zapisuje."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Dostop je dovoljen"</string>
@@ -475,6 +488,10 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Odpri Trgovino Play"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Začetek uporabe storitve Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect shranjuje vaše podatke o zdravju in telesni pripravljenosti ter vam omogoča, da na preprost način sinhronizirate različne aplikacije v napravi."</string>
+    <!-- no translation found for onboarding_description_health_records (6816666836571797870) -->
+    <skip />
+    <!-- no translation found for onboarding_description_with_health_connect (8751881078749676542) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"Deljenje podatkov z aplikacijami"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Izberite, katere podatke lahko aplikacije berejo ali zapisujejo v storitvi Health Connect."</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Upravljanje nastavitev in zasebnosti"</string>
@@ -1069,42 +1086,23 @@
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Poiščite več aplikacij za sinhronizacijo z aplikacijo <xliff:g id="APP_NAME">%s</xliff:g> prek storitve Health Connect"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Prikaži v trgovini z aplikacijami"</string>
     <string name="select_all" msgid="837499881590001166">"Izberi vse"</string>
-    <!-- no translation found for deletion_confirmation_dialog_body (7643182907084645805) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (2103387413531373305) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (2466281529240054537) -->
-    <skip />
-    <!-- no translation found for all_app_data_selected_deletion_confirmation_dialog (1077157006579195958) -->
-    <skip />
-    <!-- no translation found for some_app_data_selected_deletion_confirmation_dialog (5378172524112070270) -->
-    <skip />
-    <!-- no translation found for all_entries_selected_day_deletion_confirmation_dialog (2887646600541520444) -->
-    <skip />
-    <!-- no translation found for all_entries_selected_week_deletion_confirmation_dialog (6759608395185369048) -->
-    <skip />
-    <!-- no translation found for all_entries_selected_month_deletion_confirmation_dialog (6030161837387559132) -->
-    <skip />
-    <!-- no translation found for some_entries_selected_day_deletion_confirmation_dialog (3481363886097542565) -->
-    <skip />
-    <!-- no translation found for some_entries_selected_week_deletion_confirmation_dialog (7150217982297131340) -->
-    <skip />
-    <!-- no translation found for some_entries_selected_month_deletion_confirmation_dialog (3712014725077445591) -->
-    <skip />
-    <!-- no translation found for one_entry_selected_deletion_confirmation_dialog (4642573082594021789) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_day_deletion_confirmation_dialog (2342034541791960151) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_week_deletion_confirmation_dialog (24289763841770386) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_month_deletion_confirmation_dialog (3240581815583269052) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_day_deletion_confirmation_dialog (1030347169774815676) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_week_deletion_confirmation_dialog (8009352719322914060) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_month_deletion_confirmation_dialog (6617805533334875710) -->
-    <skip />
-    <!-- no translation found for one_app_entry_selected_deletion_confirmation_dialog (7101939753210640660) -->
-    <skip />
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Povezane aplikacije ne bodo več mogle brati teh podatkov v storitvi Health Connect"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Ali želite trajno izbrisati vse podatke?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Ali želite trajno izbrisati izbrane podatke?"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Ali želite trajno izbrisati vse podatke aplikacije <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
+    <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Ali želite trajno izbrisati izbrane podatke aplikacije <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Ali želite trajno izbrisati vse vnose za dan <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Ali želite trajno izbrisati vse vnose za teden od dne <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Ali želite trajno izbrisati vse vnose za mesec <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Ali želite trajno izbrisati izbrane vnose za dan <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Ali želite trajno izbrisati izbrane vnose za teden od dne <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Ali želite trajno izbrisati izbrane vnose za mesec <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Ali želite trajno izbrisati ta vnos?"</string>
+    <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"Ali želite trajno izbrisati vse vnose aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> za dan <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Ali želite trajno izbrisati vse vnose aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> za teden od dne <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Ali želite trajno izbrisati vse vnose aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> za mesec <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Ali želite trajno izbrisati izbrane vnose aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> za dan <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Ali želite trajno izbrisati izbrane vnose aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> za teden od dne <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Ali želite trajno izbrisati izbrane vnose aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> za mesec <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Ali želite trajno izbrisati ta vnos aplikacije <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
 </resources>

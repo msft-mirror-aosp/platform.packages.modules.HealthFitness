@@ -36,8 +36,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Set;
 
 /**
- * Captures the user's medical data. This is the class used for all medical resource types, and the
- * type is specified via {@link MedicalResourceType}.
+ * A class to capture the user's medical data. This is the class used for all medical resource
+ * types.
  *
  * <p>The data representation follows the <a href="https://hl7.org/fhir/">Fast Healthcare
  * Interoperability Resources (FHIR)</a> standard.
@@ -47,11 +47,11 @@ public final class MedicalResource implements Parcelable {
     /** Unknown medical resource type. */
     public static final int MEDICAL_RESOURCE_TYPE_UNKNOWN = 0;
 
-    /** Medical resource type to capture the Immunization data. */
-    public static final int MEDICAL_RESOURCE_TYPE_IMMUNIZATION = 1;
+    /** Medical resource type labelling data as immunizations. */
+    public static final int MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS = 1;
 
-    /** Medical resource type to capture the AllergyIntolerance data. */
-    public static final int MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE = 2;
+    /** Medical resource type labelling data as allergies or intolerances. */
+    public static final int MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES = 2;
 
     /** Medical resource type labelling data as to do with pregnancy. */
     public static final int MEDICAL_RESOURCE_TYPE_PREGNANCY = 3;
@@ -101,9 +101,9 @@ public final class MedicalResource implements Parcelable {
     /** @hide */
     @IntDef({
         MEDICAL_RESOURCE_TYPE_UNKNOWN,
-        MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+        MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
         MEDICAL_RESOURCE_TYPE_CONDITIONS,
-        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
         MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
         MEDICAL_RESOURCE_TYPE_MEDICATIONS,
         MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS,
@@ -124,12 +124,8 @@ public final class MedicalResource implements Parcelable {
     @NonNull private final FhirResource mFhirResource;
 
     /**
-     * @param type The medical resource type assigned by the Android Health Platform at insertion
-     *     time.
-     * @param dataSourceId The unique identifier of the existing {@link MedicalDataSource},
-     *     representing where the data comes from.
-     * @param fhirVersion The {@link FhirVersion} object that represents the FHIR version.
-     * @param fhirResource The enclosed {@link FhirResource} object.
+     * Creates a new instance of {@link MedicalResource}. Please see {@link MedicalResource.Builder}
+     * for more detailed parameters information.
      */
     private MedicalResource(
             @MedicalResourceType int type,
@@ -171,10 +167,6 @@ public final class MedicalResource implements Parcelable {
     @NonNull
     public static final Creator<MedicalResource> CREATOR =
             new Creator<>() {
-                /**
-                 * Reading from the {@link Parcel} should have the same order as {@link
-                 * MedicalResource#writeToParcel}.
-                 */
                 @Override
                 public MedicalResource createFromParcel(Parcel in) {
                     return new MedicalResource(in);
@@ -186,7 +178,9 @@ public final class MedicalResource implements Parcelable {
                 }
             };
 
-    /** Returns the medical resource type. */
+    /**
+     * Returns the medical resource type, assigned by the Android Health Platform at insertion time.
+     */
     @MedicalResourceType
     public int getType() {
         return mType;
@@ -198,13 +192,13 @@ public final class MedicalResource implements Parcelable {
         return mId;
     }
 
-    /** Returns The data source ID where the data comes from. */
+    /** Returns the unique {@link MedicalDataSource} ID of where the data comes from. */
     @NonNull
     public String getDataSourceId() {
         return mDataSourceId;
     }
 
-    /** Returns the {@link FhirVersion} object that represents the FHIR version. */
+    /** Returns the FHIR version being used for {@code mFhirResource} */
     @NonNull
     public FhirVersion getFhirVersion() {
         return mFhirVersion;
@@ -221,7 +215,6 @@ public final class MedicalResource implements Parcelable {
         return 0;
     }
 
-    /** Populates a {@link Parcel} with the self information. */
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         requireNonNull(dest);
@@ -240,9 +233,9 @@ public final class MedicalResource implements Parcelable {
     public static final Set<Integer> VALID_TYPES =
             Set.of(
                     MEDICAL_RESOURCE_TYPE_UNKNOWN,
-                    MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                    MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
                     MEDICAL_RESOURCE_TYPE_CONDITIONS,
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                     MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
                     MEDICAL_RESOURCE_TYPE_MEDICATIONS,
                     MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS,
@@ -266,7 +259,6 @@ public final class MedicalResource implements Parcelable {
                 medicalResourceType, VALID_TYPES, MedicalResourceType.class.getSimpleName());
     }
 
-    /** Indicates whether some other object is "equal to" this one. */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -277,13 +269,11 @@ public final class MedicalResource implements Parcelable {
                 && getFhirResource().equals(that.getFhirResource());
     }
 
-    /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
         return hash(getType(), getDataSourceId(), getFhirVersion(), getFhirResource());
     }
 
-    /** Returns a string representation of this {@link MedicalResource}. */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -296,7 +286,7 @@ public final class MedicalResource implements Parcelable {
         return sb.toString();
     }
 
-    /** Builder class for {@link MedicalResource} */
+    /** Builder class for {@link MedicalResource}. */
     public static final class Builder {
         @MedicalResourceType private int mType;
         @NonNull private String mDataSourceId;
@@ -304,14 +294,14 @@ public final class MedicalResource implements Parcelable {
         @NonNull private FhirResource mFhirResource;
 
         /**
-         * @param type The medical resource type assigned by the Android Health Platform at
-         *     insertion time.
-         * @param dataSourceId The unique identifier of the existing {@link MedicalDataSource},
-         *     representing where the data comes from.
-         * @param fhirVersion The enclosed {@link FhirVersion} object.
+         * Constructs a new {@link MedicalResource.Builder} instance.
+         *
+         * @param type The medical resource type.
+         * @param dataSourceId The unique {@link MedicalDataSource} ID of where the data comes from.
+         * @param fhirVersion the FHIR version being used for {@code fhirResource}.
          * @param fhirResource The enclosed {@link FhirResource} object.
-         * @throws IllegalArgumentException if the provided {@code type} is not supported, or {@code
-         *     dataSourceId} is not a valid ID.
+         * @throws IllegalArgumentException if the provided medical resource {@code type} is not a
+         *     valid supported type, or {@code dataSourceId} is not a valid ID.
          */
         public Builder(
                 @MedicalResourceType int type,
@@ -330,35 +320,29 @@ public final class MedicalResource implements Parcelable {
             mFhirResource = fhirResource;
         }
 
-        /**
-         * @param original The other {@link MedicalResource.Builder} to provide data to construct
-         *     this new instance from.
-         */
-        public Builder(@NonNull Builder original) {
-            requireNonNull(original);
-            mType = original.mType;
-            mDataSourceId = original.mDataSourceId;
-            mFhirVersion = original.mFhirVersion;
-            mFhirResource = original.mFhirResource;
+        /** Constructs a clone of the other {@link MedicalResource.Builder}. */
+        public Builder(@NonNull Builder other) {
+            requireNonNull(other);
+            mType = other.mType;
+            mDataSourceId = other.mDataSourceId;
+            mFhirVersion = other.mFhirVersion;
+            mFhirResource = other.mFhirResource;
+        }
+
+        /** Constructs a clone of the other {@link MedicalResource} instance. */
+        public Builder(@NonNull MedicalResource other) {
+            requireNonNull(other);
+            mType = other.getType();
+            mDataSourceId = other.getDataSourceId();
+            mFhirVersion = other.getFhirVersion();
+            mFhirResource = other.getFhirResource();
         }
 
         /**
-         * @param original The other {@link MedicalResource} instance to provide data to construct
-         *     this new instance from.
-         */
-        public Builder(@NonNull MedicalResource original) {
-            requireNonNull(original);
-            mType = original.getType();
-            mDataSourceId = original.getDataSourceId();
-            mFhirVersion = original.getFhirVersion();
-            mFhirResource = original.getFhirResource();
-        }
-
-        /**
-         * Sets the medical resource type, assigned by the Android Health Platform at insertion
-         * time.
+         * Sets the medical resource type.
          *
-         * @throws IllegalArgumentException if the provided {@code type} is not supported.
+         * @throws IllegalArgumentException if the provided medical resource {@code type} is not a
+         *     valid supported type.
          */
         @NonNull
         public Builder setType(@MedicalResourceType int type) {
@@ -368,8 +352,7 @@ public final class MedicalResource implements Parcelable {
         }
 
         /**
-         * Sets the data source ID where the data comes from. This should be an ID of the existing
-         * {@link MedicalDataSource}.
+         * Sets the unique {@link MedicalDataSource} ID of where the data comes from.
          *
          * @throws IllegalArgumentException if the provided {@code dataSourceId} is not a valid ID.
          */
@@ -381,7 +364,7 @@ public final class MedicalResource implements Parcelable {
             return this;
         }
 
-        /** Sets the {@link FhirVersion} object that represents the FHIR version. */
+        /** Sets the FHIR version being used for {@code fhirResource}. */
         @NonNull
         public Builder setFhirVersion(@NonNull FhirVersion fhirVersion) {
             requireNonNull(fhirVersion);
