@@ -96,6 +96,8 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
 
     private var packageName: String = ""
     private var appName: String = ""
+    // TODO (b/367626030) rename as proxy for whether app also has medical/additional permissions
+    // Or use viewModel
     private var showManageAppSection: Boolean = true
 
     private val appPermissionViewModel: AppPermissionViewModel by activityViewModels()
@@ -210,13 +212,7 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
     }
 
     private fun revokeAllPermissions(): Boolean {
-        // The manage app section includes the additional permissions button too. If this section is
-        // visible then all health permissions should be revoked (fitness and additional). If the
-        // manage app section is not visible then fitness permissions should be revoked only,
-        // because medical and additional permissions are displayed on other screens.
-        return if (showManageAppSection)
-            appPermissionViewModel.revokeAllHealthPermissions(packageName)
-        else appPermissionViewModel.revokeAllFitnessPermissions(packageName)
+        return appPermissionViewModel.revokeAllFitnessAndMaybeAdditionalPermissions(packageName)
     }
 
     private fun setupHeader() {
@@ -305,7 +301,7 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
                 Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
             }
         } else {
-            showRevokeAllPermissions()
+            showRevokeAllFitnessPermissions()
         }
     }
 
@@ -319,8 +315,12 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
         }
     }
 
-    private fun showRevokeAllPermissions() {
-        DisconnectHealthPermissionsDialogFragment(appName)
+    private fun showRevokeAllFitnessPermissions() {
+        DisconnectHealthPermissionsDialogFragment(
+                appName,
+                enableDeleteData = true,
+                disconnectType = DisconnectHealthPermissionsDialogFragment.DisconnectType.FITNESS,
+            )
             .show(childFragmentManager, DisconnectHealthPermissionsDialogFragment.TAG)
     }
 

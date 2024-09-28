@@ -121,19 +121,19 @@ public class MedicalDataSourceTest {
                         .setFhirVersion(DATA_SOURCE_FHIR_VERSION)
                         .setLastDataUpdateTime(DATA_SOURCE_LAST_DATA_UPDATE_TIME)
                         .build();
-        String expectedPropertiesString =
-                String.format(
-                        "id=%s,packageName=%s,fhirBaseUri=%s,displayName=%s,fhirVersion=%s,"
-                                + "lastDataUpdateTime=%s",
-                        DATA_SOURCE_ID,
-                        DATA_SOURCE_PACKAGE_NAME,
-                        DATA_SOURCE_FHIR_BASE_URI,
-                        DATA_SOURCE_DISPLAY_NAME,
-                        DATA_SOURCE_FHIR_VERSION,
-                        DATA_SOURCE_LAST_DATA_UPDATE_TIME);
+        String idString = "id=" + DATA_SOURCE_ID;
+        String packageNameString = "packageName=" + DATA_SOURCE_PACKAGE_NAME;
+        String fhirBaseUriString = "fhirBaseUri=" + DATA_SOURCE_FHIR_BASE_URI;
+        String displayNameString = "displayName=" + DATA_SOURCE_DISPLAY_NAME;
+        String fhirVersionString = "fhirVersion=" + DATA_SOURCE_FHIR_VERSION;
+        String lastDataUpdateTimeString = "lastDataUpdateTime=" + DATA_SOURCE_LAST_DATA_UPDATE_TIME;
 
-        assertThat(dataSource.toString())
-                .isEqualTo(String.format("MedicalDataSource{%s}", expectedPropertiesString));
+        assertThat(dataSource.toString()).contains(idString);
+        assertThat(dataSource.toString()).contains(packageNameString);
+        assertThat(dataSource.toString()).contains(fhirBaseUriString);
+        assertThat(dataSource.toString()).contains(displayNameString);
+        assertThat(dataSource.toString()).contains(fhirVersionString);
+        assertThat(dataSource.toString()).contains(lastDataUpdateTimeString);
     }
 
     @Test

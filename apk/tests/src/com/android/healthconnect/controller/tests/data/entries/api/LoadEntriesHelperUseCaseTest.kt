@@ -68,6 +68,7 @@ import com.android.healthconnect.controller.tests.utils.SLEEP_WEEK_33H15
 import com.android.healthconnect.controller.tests.utils.SLEEP_WEEK_9H15
 import com.android.healthconnect.controller.tests.utils.START_TIME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
+import com.android.healthconnect.controller.tests.utils.TEST_DATASOURCE_ID
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_DATA_SOURCE
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_DATA_SOURCE_2
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION
@@ -506,7 +507,7 @@ class LoadEntriesHelperUseCaseTest {
 
         assertArgumentRequestCaptorValidity(immunizationCaptor)
         assertThat(actual.size).isEqualTo(1)
-        assertThat(actual[0].dataSourceId).isEqualTo("123")
+        assertThat(actual[0].dataSourceId).isEqualTo(TEST_DATASOURCE_ID)
     }
 
     @Test
@@ -525,7 +526,7 @@ class LoadEntriesHelperUseCaseTest {
 
         assertArgumentRequestCaptorValidity(immunizationCaptor)
         assertThat(actual.size).isEqualTo(1)
-        assertThat(actual[0].dataSourceId).isEqualTo("123")
+        assertThat(actual[0].dataSourceId).isEqualTo(TEST_DATASOURCE_ID)
     }
 
     private fun prepareDataSourceAnswer(

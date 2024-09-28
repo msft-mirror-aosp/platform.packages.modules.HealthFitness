@@ -276,48 +276,51 @@
     <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"Alergie"</string>
     <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"alergie"</string>
     <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"Čtení alergií"</string>
+    <!-- no translation found for conditions_uppercase_label (5260404343402770877) -->
+    <skip />
+    <!-- no translation found for conditions_lowercase_label (2678248918552246997) -->
+    <skip />
+    <!-- no translation found for conditions_content_description (3230552343616193829) -->
+    <skip />
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Imunizace"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"imunizace"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Čtení imunizace"</string>
-    <!-- no translation found for laboratory_results_uppercase_label (2521886562709901654) -->
-    <skip />
-    <!-- no translation found for laboratory_results_lowercase_label (6437932041744631964) -->
-    <skip />
-    <!-- no translation found for laboratory_results_content_description (5882338877203692484) -->
-    <skip />
+    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"Laboratorní výsledky"</string>
+    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"laboratorní výsledky"</string>
+    <string name="laboratory_results_content_description" msgid="5882338877203692484">"Číst laboratorní výsledky"</string>
     <string name="medications_uppercase_label" msgid="4783281053427990225">"Užívané léky"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"užívané léky"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"Čtení užívaných léků"</string>
-    <!-- no translation found for pregnancy_uppercase_label (5979925175194337864) -->
+    <!-- no translation found for personal_details_uppercase_label (7241635933310394120) -->
     <skip />
-    <!-- no translation found for pregnancy_lowercase_label (810439290131044517) -->
+    <!-- no translation found for personal_details_lowercase_label (1907848447611775151) -->
     <skip />
-    <!-- no translation found for pregnancy_content_description (3436773729243586287) -->
+    <!-- no translation found for personal_details_content_description (3191211304673909831) -->
     <skip />
-    <!-- no translation found for problems_uppercase_label (4047882613795113715) -->
+    <!-- no translation found for practitioner_details_uppercase_label (2940667649808082510) -->
     <skip />
-    <!-- no translation found for problems_lowercase_label (6934298611508910866) -->
+    <!-- no translation found for practitioner_details_lowercase_label (8195591077717971542) -->
     <skip />
-    <!-- no translation found for problems_content_description (1549418294742668962) -->
+    <!-- no translation found for practitioner_details_content_description (8775396516928504185) -->
     <skip />
-    <!-- no translation found for procedures_uppercase_label (9176087520132593261) -->
+    <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Těhotenství"</string>
+    <string name="pregnancy_lowercase_label" msgid="810439290131044517">"Těhotenství"</string>
+    <string name="pregnancy_content_description" msgid="3436773729243586287">"Číst informace o těhotenství"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"Zákroky"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"zákroky"</string>
+    <string name="procedures_content_description" msgid="1086900373141440005">"Číst zákroky"</string>
+    <string name="social_history_uppercase_label" msgid="1731364502071035544">"Sociální anamnéza"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"sociální anamnéza"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"Číst sociální anamnézu"</string>
+    <!-- no translation found for visits_uppercase_label (8532619758336375886) -->
     <skip />
-    <!-- no translation found for procedures_lowercase_label (5320804313946273234) -->
+    <!-- no translation found for visits_lowercase_label (2545887061364564151) -->
     <skip />
-    <!-- no translation found for procedures_content_description (1086900373141440005) -->
+    <!-- no translation found for visits_content_description (6336796415049565697) -->
     <skip />
-    <!-- no translation found for social_history_uppercase_label (1731364502071035544) -->
-    <skip />
-    <!-- no translation found for social_history_lowercase_label (9027541979445736412) -->
-    <skip />
-    <!-- no translation found for social_history_content_description (7187059309389849831) -->
-    <skip />
-    <!-- no translation found for vital_signs_uppercase_label (214938594708280346) -->
-    <skip />
-    <!-- no translation found for vital_signs_lowercase_label (9141304492316454529) -->
-    <skip />
-    <!-- no translation found for vital_signs_content_description (914944352640528612) -->
-    <skip />
+    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"Vitální znaky"</string>
+    <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"vitální znaky"</string>
+    <string name="vital_signs_content_description" msgid="914944352640528612">"Číst vitální znaky"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Mindfulness"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"mindfulness"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Čtení dat o mindfulness"</string>
@@ -341,30 +344,22 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> už nebude moct číst ani zapisovat žádná data ze služby Health Connect, včetně dřívějších dat.\n\nTato akce nebude mít vliv na ostatní oprávnění, která aplikace má, jako je přístup k poloze, fotoaparátu nebo mikrofonu."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> už nebude moct číst ani zapisovat žádná data ze služby Health Connect, včetně dat na pozadí a dřívějších dat.\n\nTato akce nebude mít vliv na ostatní oprávnění, která aplikace má, jako je přístup k poloze, fotoaparátu nebo mikrofonu."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Také vymazat data aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> ze služby Health Connect"</string>
-    <!-- no translation found for disconnect_all_health_permissions_title (3995410660376966233) -->
-    <skip />
-    <!-- no translation found for disconnect_all_medical_permissions_title (735315242997370168) -->
-    <skip />
-    <!-- no translation found for disconnect_all_fitness_permissions_title (7612364222525900592) -->
-    <skip />
-    <!-- no translation found for disconnect_all_health_no_additional_permissions_dialog_message (211728516196974197) -->
-    <skip />
-    <!-- no translation found for disconnect_all_health_and_background_permissions_dialog_message (654533675296670869) -->
-    <skip />
-    <!-- no translation found for disconnect_all_health_and_historical_permissions_dialog_message (6743215620789357899) -->
-    <skip />
-    <!-- no translation found for disconnect_all_health_and_additional_permissions_dialog_message (6062891741278986209) -->
-    <skip />
-    <!-- no translation found for disconnect_all_health_permissions_dialog_checkbox (762880061016391846) -->
-    <skip />
-    <!-- no translation found for disconnect_all_health_permissions_success_toast (9010063821116197894) -->
-    <skip />
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"Odebrat všechna oprávnění?"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Odebrat všechna oprávnění ke zdravotním záznamům?"</string>
+    <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"Odebrat všechna oprávnění pro fitness a kvalitu života?"</string>
+    <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> už nebude moct číst ani zapisovat data ze služby Health Connect.\n\nTato akce nemá vliv na ostatní oprávnění, která aplikace může mít, jako je přístup k fotoaparátu, mikrofonu nebo poloze."</string>
+    <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> už nebude moct číst ani zapisovat data ze služby Health Connect, včetně dat na pozadí.\n\nTato akce nemá vliv na ostatní oprávnění, která aplikace může mít, jako je přístup k fotoaparátu, mikrofonu nebo poloze."</string>
+    <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> už nebude moct číst ani zapisovat data ze služby Health Connect, včetně dřívějších dat.\n\nTato akce nemá vliv na ostatní oprávnění, která aplikace může mít, jako je přístup k fotoaparátu, mikrofonu nebo poloze."</string>
+    <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> už nebude moct číst ani zapisovat data ze služby Health Connect, včetně dat na pozadí a dřívějších dat.\n\nTato akce nemá vliv na ostatní oprávnění, která aplikace může mít, jako je přístup k fotoaparátu, mikrofonu nebo poloze."</string>
+    <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Vymazat ze služby Health Connect také údaje o kondici a zdravotní záznamy z aplikace <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Této aplikaci byla odebrána oprávnění"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Další den"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Vybraný den"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Předchozí den"</string>
     <string name="default_error" msgid="7966868260616403475">"Něco se pokazilo. Zkuste to znovu."</string>
     <!-- no translation found for unkwown_resource (7932225227431922125) -->
     <skip />
+    <string name="raw_fhir_title" msgid="1295744907036066319">"Zdrojová data"</string>
     <!-- no translation found for raw_fhir_open_bracket (7974657451368655325) -->
     <skip />
     <!-- no translation found for raw_fhir_closed_bracket (9084379463440675078) -->
@@ -391,8 +386,7 @@
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Odstranit vše"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Správa aplikace"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Zobrazit data aplikace"</string>
-    <!-- no translation found for remove_access_for_this_app (7701101420310711833) -->
-    <skip />
+    <string name="remove_access_for_this_app" msgid="7701101420310711833">"Odebrat této aplikaci přístup"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"Smazat data aplikace"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Neaktivní aplikace"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Tyto aplikace už nemají přístup, ale stále mají uložená data ve službě Health Connect"</string>
@@ -460,8 +454,7 @@
     <string name="export_destination_title" msgid="8352929396306002479">"Vyberte, kam naplánovaný export uložit"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"Vyberte aplikaci cloudového úložiště k exportu dat"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
-    <!-- no translation found for export_default_file_name_with_sequence (2380551038319211752) -->
-    <skip />
+    <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Health Connect (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
     <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Importovat tento soubor?"</string>
     <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"Soubor <xliff:g id="FILE_NAME">%1$s</xliff:g> se importujte do služby Health Connect"</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Zrušit"</string>
@@ -504,6 +497,10 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Přejít do obchodu Play"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Začínáme se službou Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect bezpečně ukládá údaje o zdraví a kondici, což umožňuje jednoduše synchronizovat různé aplikace v zařízení"</string>
+    <!-- no translation found for onboarding_description_health_records (6816666836571797870) -->
+    <skip />
+    <!-- no translation found for onboarding_description_with_health_connect (8751881078749676542) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"Sdílení dat s aplikacemi"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Můžete si zvolit, které údaje mohou jednotlivé aplikace číst nebo zapisovat ve službě Health Connect"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Správa nastavení a ochrany soukromí"</string>
@@ -548,8 +545,7 @@
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Trvale smazat všechna data typu <xliff:g id="DATA_TYPE">%1$s</xliff:g> přidaná aplikací <xliff:g id="APP_DATA">%2$s</xliff:g>?"</string>
     <string name="confirming_question_single_entry" msgid="2064578008447638932">"Trvale ze služby Health Connect vymazat tento záznam?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Připojené aplikace již k těmto datům ze služby Health Connect nebudou mít přístup"</string>
-    <!-- no translation found for confirming_question_message_menstruation (944931041343695373) -->
-    <skip />
+    <string name="confirming_question_message_menstruation" msgid="944931041343695373">"Smažou se všechny záznamy o menstruaci z období od <xliff:g id="START_DATE">%1$s</xliff:g> do <xliff:g id="END_DATE">%2$s</xliff:g>."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Smazat"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Zpět"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Hotovo"</string>

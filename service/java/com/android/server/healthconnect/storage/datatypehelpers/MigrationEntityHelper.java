@@ -62,7 +62,7 @@ public final class MigrationEntityHelper extends DatabaseHelper {
     }
 
     /** Returns a request to insert the provided {@code entityId}. */
-    public static UpsertTableRequest getInsertRequest(String entityId) {
+    public UpsertTableRequest getInsertRequest(String entityId) {
         final ContentValues values = new ContentValues();
         values.put(COLUMN_ENTITY_ID, entityId);
         return new UpsertTableRequest(

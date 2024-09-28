@@ -276,6 +276,12 @@
     <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"Allergieën"</string>
     <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"allergieën"</string>
     <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"Allergieën lezen"</string>
+    <!-- no translation found for conditions_uppercase_label (5260404343402770877) -->
+    <skip />
+    <!-- no translation found for conditions_lowercase_label (2678248918552246997) -->
+    <skip />
+    <!-- no translation found for conditions_content_description (3230552343616193829) -->
+    <skip />
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Vaccinatie"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"vaccinatie"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Vaccinatie lezen"</string>
@@ -285,18 +291,33 @@
     <string name="medications_uppercase_label" msgid="4783281053427990225">"Gegevens over geneesmiddelen"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"gegevens over geneesmiddelen"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"Gegevens over geneesmiddelen lezen"</string>
+    <!-- no translation found for personal_details_uppercase_label (7241635933310394120) -->
+    <skip />
+    <!-- no translation found for personal_details_lowercase_label (1907848447611775151) -->
+    <skip />
+    <!-- no translation found for personal_details_content_description (3191211304673909831) -->
+    <skip />
+    <!-- no translation found for practitioner_details_uppercase_label (2940667649808082510) -->
+    <skip />
+    <!-- no translation found for practitioner_details_lowercase_label (8195591077717971542) -->
+    <skip />
+    <!-- no translation found for practitioner_details_content_description (8775396516928504185) -->
+    <skip />
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Zwangerschap"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"zwangerschap"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"Zwangerschap lezen"</string>
-    <string name="problems_uppercase_label" msgid="4047882613795113715">"Problemen"</string>
-    <string name="problems_lowercase_label" msgid="6934298611508910866">"Problemen"</string>
-    <string name="problems_content_description" msgid="1549418294742668962">"Problemen lezen"</string>
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"Procedures"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"procedures"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Procedures lezen"</string>
     <string name="social_history_uppercase_label" msgid="1731364502071035544">"Sociale geschiedenis"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"sociale geschiedenis"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"Sociale geschiedenis lezen"</string>
+    <!-- no translation found for visits_uppercase_label (8532619758336375886) -->
+    <skip />
+    <!-- no translation found for visits_lowercase_label (2545887061364564151) -->
+    <skip />
+    <!-- no translation found for visits_content_description (6336796415049565697) -->
+    <skip />
     <string name="vital_signs_uppercase_label" msgid="214938594708280346">"Vitale functies"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"vitale functies"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"Vitale functies lezen"</string>
@@ -337,6 +358,8 @@
     <string name="navigation_previous_day" msgid="718353386484938584">"Vorige dag"</string>
     <string name="default_error" msgid="7966868260616403475">"Er is iets misgegaan. Probeer het opnieuw."</string>
     <!-- no translation found for unkwown_resource (7932225227431922125) -->
+    <skip />
+    <!-- no translation found for raw_fhir_title (1295744907036066319) -->
     <skip />
     <!-- no translation found for raw_fhir_open_bracket (7974657451368655325) -->
     <skip />
@@ -475,6 +498,10 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Naar de Play Store"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Aan de slag met Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect slaat je gezondheids- en fitnessgegevens op zodat je de verschillende apps op je apparaat makkelijk kunt synchroniseren"</string>
+    <!-- no translation found for onboarding_description_health_records (6816666836571797870) -->
+    <skip />
+    <!-- no translation found for onboarding_description_with_health_connect (8751881078749676542) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"Gegevens delen met je apps"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Kies de gegevens die elke app mag lezen in of sturen naar Health Connect"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Je instellingen en privacy beheren"</string>
