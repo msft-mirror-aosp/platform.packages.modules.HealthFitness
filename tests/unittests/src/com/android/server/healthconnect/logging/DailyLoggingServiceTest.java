@@ -92,8 +92,6 @@ public class DailyLoggingServiceTest {
             "USER_MOST_RECENT_ACCESS_LOG_TIME";
     private static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
 
-    private DailyLoggingService mDailyLoggingService;
-
     @Before
     public void mockStatsLog() {
         ExtendedMockito.doReturn(true)

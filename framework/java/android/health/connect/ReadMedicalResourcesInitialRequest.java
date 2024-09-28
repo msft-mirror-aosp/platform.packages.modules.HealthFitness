@@ -74,9 +74,8 @@ public final class ReadMedicalResourcesInitialRequest extends ReadMedicalResourc
      * @param pageSize The maximum number of {@code MedicalResource}s to be returned by the read
      *     operation.
      * @throws IllegalArgumentException if the provided {@code medicalResourceType} is not a
-     *     supported type; or {@code dataSourceIds} is null or any IDs in it are invalid; or {@code
-     *     pageSize} is less than 1 or more than 5000.
-     * @throws NullPointerException if {@code dataSourceIds} is null.
+     *     supported type; or any IDs in {@code dataSourceIds} are invalid; or {@code pageSize} is
+     *     less than 1 or more than 5000.
      */
     private ReadMedicalResourcesInitialRequest(
             @MedicalResourceType int medicalResourceType,
@@ -196,15 +195,13 @@ public final class ReadMedicalResourcesInitialRequest extends ReadMedicalResourc
         }
 
         /**
-         * Adds the {@link MedicalDataSource} filter based on which the read operation is to be
-         * performed.
+         * Adds the data source ID based on which the read operation is to be performed. This should
+         * be an ID of the existing {@link MedicalDataSource}.
          *
-         * @param dataSourceId The ID of an existing {@link MedicalDataSource} from which to read
-         *     {@link MedicalResource}s.
-         *     <p>If no {@link MedicalDataSource} ID is added, then {@link MedicalResource}s from
-         *     all {@link MedicalDataSource}s will be read.
-         * @throws IllegalArgumentException if the provided {@code dataSourceId} is null, or is not
-         *     a valid ID.
+         * <p>If no {@link MedicalDataSource} ID is added, then {@link MedicalResource}s from all
+         * {@link MedicalDataSource}s will be read.
+         *
+         * @throws IllegalArgumentException if the provided {@code dataSourceId} is not a valid ID.
          */
         @NonNull
         public Builder addDataSourceId(@NonNull String dataSourceId) {
@@ -215,13 +212,12 @@ public final class ReadMedicalResourcesInitialRequest extends ReadMedicalResourc
         }
 
         /**
-         * Adds all {@link MedicalDataSource}s filter based on which the read operation is to be
-         * performed.
+         * Adds all data source IDs based on which the read operation is to be performed. This
+         * should all be IDs of existing {@link MedicalDataSource}s.
          *
-         * @param dataSourceIds the set of IDs of the existing {@link MedicalDataSource}s from which
-         *     to read {@link MedicalResource}s.
-         *     <p>If no {@link MedicalDataSource} ID is added, then {@link MedicalResource}s from
-         *     all {@link MedicalDataSource}s will be read.
+         * <p>If no {@link MedicalDataSource} IDs are added, then {@link MedicalResource}s from all
+         * {@link MedicalDataSource}s will be read.
+         *
          * @throws IllegalArgumentException if the provided {@code dataSourceIds} is null, or any ID
          *     in it is not valid.
          */

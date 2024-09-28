@@ -185,6 +185,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.AggregateTransactionRequest;
@@ -260,6 +261,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final ExportManager mExportManager;
     private final AccessLogsHelper mAccessLogsHelper;
     private final ActivityDateHelper mActivityDateHelper;
+    private final ChangeLogsHelper mChangeLogsHelper;
+    private final ChangeLogsRequestHelper mChangeLogsRequestHelper;
+    private final MigrationEntityHelper mMigrationEntityHelper;
 
     private volatile UserHandle mCurrentForegroundUser;
 
@@ -278,7 +282,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ExportImportSettingsStorage exportImportSettingsStorage,
             AccessLogsHelper accessLogsHelper,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
-            ActivityDateHelper activityDateHelper) {
+            ActivityDateHelper activityDateHelper,
+            ChangeLogsHelper changeLogsHelper,
+            ChangeLogsRequestHelper changeLogsRequestHelper) {
         this(
                 transactionManager,
                 deviceConfigManager,
@@ -294,7 +300,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 exportImportSettingsStorage,
                 accessLogsHelper,
                 healthDataCategoryPriorityHelper,
-                activityDateHelper);
+                activityDateHelper,
+                changeLogsHelper,
+                changeLogsRequestHelper);
     }
 
     @VisibleForTesting
@@ -313,10 +321,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ExportImportSettingsStorage exportImportSettingsStorage,
             AccessLogsHelper accessLogsHelper,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
-            ActivityDateHelper activityDateHelper) {
+            ActivityDateHelper activityDateHelper,
+            ChangeLogsHelper changeLogsHelper,
+            ChangeLogsRequestHelper changeLogsRequestHelper) {
         mAccessLogsHelper = accessLogsHelper;
         mTransactionManager = transactionManager;
         mPreferenceHelper = PreferenceHelper.getInstance();
+        mChangeLogsRequestHelper = changeLogsRequestHelper;
         mActivityDateHelper = activityDateHelper;
         mDeviceConfigManager = deviceConfigManager;
         mPermissionHelper = permissionHelper;
@@ -362,6 +373,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mAggregationTypeIdMapper = AggregationTypeIdMapper.getInstance();
         mMedicalResourceHelper = medicalResourceHelper;
         mMedicalDataSourceHelper = medicalDataSourceHelper;
+        mChangeLogsHelper = changeLogsHelper;
+        mMigrationEntityHelper = new MigrationEntityHelper();
     }
 
     public void onUserSwitching(UserHandle currentForegroundUser) {
@@ -935,7 +948,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             request.getRecordTypesList(), attributionSource);
                     callback.onResult(
                             new ChangeLogTokenResponse(
-                                    ChangeLogsRequestHelper.getToken(
+                                    mChangeLogsRequestHelper.getToken(
+                                            mChangeLogsHelper.getLatestRowId(mTransactionManager),
                                             attributionSource.getPackageName(),
                                             request,
                                             mTransactionManager)));
@@ -986,7 +1000,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     }
 
                     ChangeLogsRequestHelper.TokenRequest changeLogsTokenRequest =
-                            ChangeLogsRequestHelper.getRequest(
+                            mChangeLogsRequestHelper.getRequest(
                                     callerPackageName, request.getToken(), mTransactionManager);
                     tryAcquireApiCallQuota(
                             uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, logger);
@@ -1005,11 +1019,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                         .toEpochMilli();
                     }
                     final ChangeLogsHelper.ChangeLogsResponse changeLogsResponse =
-                            ChangeLogsHelper.getChangeLogs(
+                            mChangeLogsHelper.getChangeLogs(
                                     mAppInfoHelper,
                                     mTransactionManager,
                                     changeLogsTokenRequest,
-                                    request);
+                                    request,
+                                    mChangeLogsRequestHelper);
 
                     Map<Integer, List<UUID>> recordTypeToInsertedUuids =
                             ChangeLogsHelper.getRecordTypeToInsertedUuids(
@@ -3105,7 +3120,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 mAppInfoHelper,
                 mHealthDataCategoryPriorityHelper,
                 mPriorityMigrationHelper,
-                mPreferenceHelper);
+                mPreferenceHelper,
+                mMigrationEntityHelper);
     }
 
     private void enforceCallingPackageBelongsToUid(String packageName, int callingUid) {

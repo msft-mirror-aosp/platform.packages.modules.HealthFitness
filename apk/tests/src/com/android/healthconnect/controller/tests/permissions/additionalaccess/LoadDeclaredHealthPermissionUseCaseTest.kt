@@ -21,7 +21,6 @@ package com.android.healthconnect.controller.tests.permissions.additionalaccess
 import com.android.healthconnect.controller.permissions.additionalaccess.LoadDeclaredHealthPermissionUseCase
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
-import com.android.healthconnect.controller.tests.utils.safeEq
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -30,6 +29,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
@@ -54,6 +54,6 @@ class LoadDeclaredHealthPermissionUseCaseTest {
     fun execute_callsGetHealthPermissions() {
         useCase.invoke(TEST_APP_PACKAGE_NAME)
 
-        verify(healthPermissionReader).getDeclaredHealthPermissions(safeEq(TEST_APP_PACKAGE_NAME))
+        verify(healthPermissionReader).getDeclaredHealthPermissions(eq(TEST_APP_PACKAGE_NAME))
     }
 }

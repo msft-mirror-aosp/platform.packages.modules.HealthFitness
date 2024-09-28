@@ -523,7 +523,7 @@ val OLD_TEST_APP =
 // endregion
 
 // PHR
-const val TEST_DATASOURCE_ID = "123"
+val TEST_DATASOURCE_ID = getUniqueId()
 val TEST_FHIR_VERSION: FhirVersion = FhirVersion.parseFhirVersion("4.0.1")
 val TEST_FHIR_RESOURCE_IMMUNIZATION: FhirResource =
     FhirResource.Builder(
@@ -602,7 +602,7 @@ val TEST_MEDICAL_RESOURCE_INVALID_JSON: MedicalResource =
         .build()
 val TEST_MEDICAL_DATA_SOURCE: MedicalDataSource =
     MedicalDataSource.Builder(
-            /* id= */ "123",
+            /* id= */ TEST_DATASOURCE_ID,
             TEST_APP_PACKAGE_NAME,
             /* fhirBaseUri= */ Uri.parse("fhir.base.uri"),
             /* displayName= */ "App A Data Source",
@@ -610,7 +610,7 @@ val TEST_MEDICAL_DATA_SOURCE: MedicalDataSource =
         .build()
 val TEST_MEDICAL_DATA_SOURCE_2: MedicalDataSource =
     MedicalDataSource.Builder(
-            /* id= */ "234",
+            /* id= */ getUniqueId(),
             TEST_APP_PACKAGE_NAME,
             /* fhirBaseUri= */ Uri.parse("fhir.base.uri"),
             /* displayName= */ "App A Data Source 2",
@@ -618,7 +618,7 @@ val TEST_MEDICAL_DATA_SOURCE_2: MedicalDataSource =
         .build()
 val TEST_MEDICAL_DATA_SOURCE_DIFFERENT_APP: MedicalDataSource =
     MedicalDataSource.Builder(
-            /* id= */ "456",
+            /* id= */ getUniqueId(),
             TEST_APP_PACKAGE_NAME_2,
             /* fhirBaseUri= */ Uri.parse("fhir.base.uri"),
             /* displayName= */ "App B Data Source",
