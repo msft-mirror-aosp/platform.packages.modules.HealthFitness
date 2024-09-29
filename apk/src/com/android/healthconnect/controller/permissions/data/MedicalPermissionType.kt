@@ -17,9 +17,9 @@ package com.android.healthconnect.controller.permissions.data
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS
@@ -35,9 +35,9 @@ import com.android.healthconnect.controller.utils.AttributeResolver
 
 enum class MedicalPermissionType : HealthPermissionType {
     ALL_MEDICAL_DATA,
-    ALLERGY_INTOLERANCE,
+    ALLERGIES_INTOLERANCES,
     CONDITIONS,
-    IMMUNIZATION,
+    IMMUNIZATIONS,
     LABORATORY_RESULTS,
     MEDICATIONS,
     PERSONAL_DETAILS,
@@ -58,9 +58,9 @@ enum class MedicalPermissionType : HealthPermissionType {
         val attrRes: Int =
             when (this) {
                 ALL_MEDICAL_DATA -> R.attr.medicalServicesIcon
-                ALLERGY_INTOLERANCE -> R.attr.allergiesIcon
+                ALLERGIES_INTOLERANCES -> R.attr.allergiesIcon
                 CONDITIONS -> R.attr.conditionsIcon
-                IMMUNIZATION -> R.attr.immunizationIcon
+                IMMUNIZATIONS -> R.attr.immunizationIcon
                 LABORATORY_RESULTS -> R.attr.labResultsIcon
                 MEDICATIONS -> R.attr.medicationsIcon
                 PERSONAL_DETAILS -> R.attr.patientInfoIcon
@@ -89,9 +89,9 @@ fun fromMedicalResourceType(medicalResourceType: Int): MedicalPermissionType {
         MEDICAL_RESOURCE_TYPE_UNKNOWN ->
             throw IllegalArgumentException("MedicalResourceType is UNKNOWN.")
 
-        MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE -> MedicalPermissionType.ALLERGY_INTOLERANCE
+        MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES -> MedicalPermissionType.ALLERGIES_INTOLERANCES
         MEDICAL_RESOURCE_TYPE_CONDITIONS -> MedicalPermissionType.CONDITIONS
-        MEDICAL_RESOURCE_TYPE_IMMUNIZATION -> MedicalPermissionType.IMMUNIZATION
+        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS -> MedicalPermissionType.IMMUNIZATIONS
         MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS -> MedicalPermissionType.LABORATORY_RESULTS
         MEDICAL_RESOURCE_TYPE_MEDICATIONS -> MedicalPermissionType.MEDICATIONS
         MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS -> MedicalPermissionType.PERSONAL_DETAILS
@@ -107,9 +107,9 @@ fun fromMedicalResourceType(medicalResourceType: Int): MedicalPermissionType {
 
 fun toMedicalResourceType(medicalPermissionType: MedicalPermissionType): Int {
     return when (medicalPermissionType) {
-        MedicalPermissionType.ALLERGY_INTOLERANCE -> MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
+        MedicalPermissionType.ALLERGIES_INTOLERANCES -> MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES
         MedicalPermissionType.CONDITIONS -> MEDICAL_RESOURCE_TYPE_CONDITIONS
-        MedicalPermissionType.IMMUNIZATION -> MEDICAL_RESOURCE_TYPE_IMMUNIZATION
+        MedicalPermissionType.IMMUNIZATIONS -> MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
         MedicalPermissionType.LABORATORY_RESULTS -> MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS
         MedicalPermissionType.MEDICATIONS -> MEDICAL_RESOURCE_TYPE_MEDICATIONS
         MedicalPermissionType.PERSONAL_DETAILS -> MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS

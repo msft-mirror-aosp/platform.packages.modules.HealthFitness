@@ -47,7 +47,7 @@ import com.android.healthconnect.controller.permissions.app.HealthPermissionStat
 import com.android.healthconnect.controller.permissions.app.MedicalAppFragment
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.ALL_MEDICAL_DATA
-import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.IMMUNIZATION
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.IMMUNIZATIONS
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -120,7 +120,7 @@ class MedicalAppFragmentTest {
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
         whenever(viewModel.loadAccessDate(anyString())).thenReturn(accessDate)
         val writePermission = MedicalPermission(ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(IMMUNIZATION)
+        val readPermission = MedicalPermission(IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -184,7 +184,7 @@ class MedicalAppFragmentTest {
 
     @Test
     fun test_readPermission() {
-        val permission = MedicalPermission(IMMUNIZATION)
+        val permission = MedicalPermission(IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then { MutableLiveData(listOf(permission)) }
         whenever(viewModel.grantedMedicalPermissions).then { MutableLiveData(setOf(permission)) }
 
@@ -209,7 +209,7 @@ class MedicalAppFragmentTest {
             assertThat(readCategory?.preferenceCount).isEqualTo(1)
             assertThat(writeCategory?.preferenceCount).isEqualTo(0)
         }
-        onView(withText("Immunization")).check(matches(isDisplayed()))
+        onView(withText("Immunizations")).check(matches(isDisplayed()))
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
@@ -247,7 +247,7 @@ class MedicalAppFragmentTest {
     @Test
     fun test_readAndWritePermission() {
         val writePermission = MedicalPermission(ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(IMMUNIZATION)
+        val readPermission = MedicalPermission(IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -277,7 +277,7 @@ class MedicalAppFragmentTest {
             assertThat(writeCategory?.preferenceCount).isEqualTo(1)
         }
         onView(withText("All health records")).check(matches(isDisplayed()))
-        onView(withText("Immunization")).check(matches(isDisplayed()))
+        onView(withText("Immunizations")).check(matches(isDisplayed()))
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
 
         verify(healthConnectLogger, atLeast(1)).setPageId(PageName.UNKNOWN_PAGE)
@@ -287,7 +287,7 @@ class MedicalAppFragmentTest {
     @Test
     fun test_allowAllToggleOn_whenAllPermissionsOn() {
         val writePermission = MedicalPermission(ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(IMMUNIZATION)
+        val readPermission = MedicalPermission(IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -320,7 +320,7 @@ class MedicalAppFragmentTest {
     @Test
     fun test_allowAllToggleOff_whenAtLeastOnePermissionOff() {
         val writePermission = MedicalPermission(ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(IMMUNIZATION)
+        val readPermission = MedicalPermission(IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -350,7 +350,7 @@ class MedicalAppFragmentTest {
     @Test
     fun allowAll_toggleOff_withAdditionalPermissions_showsDisconnectDialog() {
         val writePermission = MedicalPermission(ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(IMMUNIZATION)
+        val readPermission = MedicalPermission(IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -394,7 +394,7 @@ class MedicalAppFragmentTest {
     @Test
     fun allowAll_toggleOff_onDialogRemoveAllClicked_disconnectAllPermissions() {
         val writePermission = MedicalPermission(ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(IMMUNIZATION)
+        val readPermission = MedicalPermission(IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -414,7 +414,7 @@ class MedicalAppFragmentTest {
             .logInteraction(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
 
         onView(withText("All health records")).check(matches(not(isChecked())))
-        onView(withText("Immunization")).check(matches(not(isChecked())))
+        onView(withText("Immunizations")).check(matches(not(isChecked())))
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
@@ -422,7 +422,7 @@ class MedicalAppFragmentTest {
     @Ignore("b/369796531 - unignore when more tests added")
     fun allowAll_toggleOff_deleteDataSelected_onDialogRemoveAllClicked_deleteIsCalled() {
         val writePermission = MedicalPermission(ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(IMMUNIZATION)
+        val readPermission = MedicalPermission(IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -447,7 +447,7 @@ class MedicalAppFragmentTest {
 
     @Test
     fun footerWithGrantTime_whenNoHistoryRead_isNotDisplayed() {
-        val permission = MedicalPermission(IMMUNIZATION)
+        val permission = MedicalPermission(IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then { MutableLiveData(listOf(permission)) }
         whenever(viewModel.grantedMedicalPermissions).then { MutableLiveData(setOf(permission)) }
         whenever(healthPermissionReader.isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME))
@@ -476,7 +476,7 @@ class MedicalAppFragmentTest {
     @Test
     @Ignore // TODO(b/353512381): Unignore when not flaky.
     fun footerWithGrantTime_whenHistoryRead_isNotDisplayed() {
-        val permission = MedicalPermission(IMMUNIZATION)
+        val permission = MedicalPermission(IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then { MutableLiveData(listOf(permission)) }
         whenever(viewModel.grantedMedicalPermissions).then { MutableLiveData(setOf(permission)) }
         whenever(healthPermissionReader.isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME))
@@ -517,7 +517,7 @@ class MedicalAppFragmentTest {
     @Test
     @Ignore
     fun footerWithoutGrantTime_isDisplayed() {
-        val permission = MedicalPermission(IMMUNIZATION)
+        val permission = MedicalPermission(IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then { MutableLiveData(listOf(permission)) }
         whenever(viewModel.grantedMedicalPermissions).then {
             MutableLiveData<Set<MedicalPermission>>(setOf())
@@ -551,7 +551,7 @@ class MedicalAppFragmentTest {
     @Ignore
     fun whenClickOnPrivacyPolicyLink_startsRationaleActivity() {
         val rationaleAction = "android.intent.action.VIEW_PERMISSION_USAGE"
-        val permission = MedicalPermission(IMMUNIZATION)
+        val permission = MedicalPermission(IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then { MutableLiveData(listOf(permission)) }
         whenever(viewModel.grantedMedicalPermissions).then {
             MutableLiveData<Set<MedicalPermission>>(setOf())
@@ -586,7 +586,7 @@ class MedicalAppFragmentTest {
     @Test
     fun seeAppData_shouldShowManageDataSection_displayed() {
         val writePermission = MedicalPermission(ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(IMMUNIZATION)
+        val readPermission = MedicalPermission(IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -609,7 +609,7 @@ class MedicalAppFragmentTest {
     @Test
     fun seeAppData_shouldNotSowManageDataSection_notDisplayed() {
         val writePermission = MedicalPermission(ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(IMMUNIZATION)
+        val readPermission = MedicalPermission(IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }

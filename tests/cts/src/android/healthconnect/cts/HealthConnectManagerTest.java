@@ -27,9 +27,9 @@ import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_FAILED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
 import static android.health.connect.HealthConnectManager.isHealthPermission;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
@@ -1780,7 +1780,7 @@ public class HealthConnectManagerTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .build();
 
         mManager.readMedicalResources(request, executor, receiver);
@@ -2498,7 +2498,7 @@ public class HealthConnectManagerTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .build();
 
         mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
@@ -2524,7 +2524,7 @@ public class HealthConnectManagerTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest allImmunizationsRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .setPageSize(2)
                         .build();
 
@@ -2565,7 +2565,7 @@ public class HealthConnectManagerTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest immunizationsFromDataSource1Request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .addDataSourceId(dataSource1.getId())
                         .setPageSize(1)
                         .build();
@@ -2609,7 +2609,7 @@ public class HealthConnectManagerTest {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest immunizationsFromBothDataSourcesRequest =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .addDataSourceId(dataSource1.getId())
                         .addDataSourceId(dataSource2.getId())
                         .setPageSize(1)
@@ -2769,7 +2769,7 @@ public class HealthConnectManagerTest {
                 () ->
                         mManager.readMedicalResources(
                                 new ReadMedicalResourcesInitialRequest.Builder(
-                                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                                         .build(),
                                 Executors.newSingleThreadExecutor(),
                                 readReceiver));
@@ -2858,7 +2858,7 @@ public class HealthConnectManagerTest {
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .build();
         SystemUtil.runWithShellPermissionIdentity(
                 () ->
@@ -2892,7 +2892,7 @@ public class HealthConnectManagerTest {
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION + 1)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS + 1)
                         .build();
         SystemUtil.runWithShellPermissionIdentity(
                 () ->
@@ -2953,11 +2953,11 @@ public class HealthConnectManagerTest {
         assertThat(receiver.getResponse())
                 .containsExactly(
                         new MedicalResourceTypeInfo(
-                                MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
                                 Set.of(dataSource1, dataSource3)),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_CONDITIONS, Set.of()),
                         new MedicalResourceTypeInfo(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                                 Set.of(dataSource1, dataSource2)),
                         new MedicalResourceTypeInfo(
                                 MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS, Set.of()),
@@ -2988,9 +2988,9 @@ public class HealthConnectManagerTest {
         assertThat(receiver.getResponse())
                 .containsExactly(
                         new MedicalResourceTypeInfo(
-                                MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE, Set.of()),
+                                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_CONDITIONS, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, Set.of()),
                         new MedicalResourceTypeInfo(
                                 MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_MEDICATIONS, Set.of()),
@@ -3022,9 +3022,9 @@ public class HealthConnectManagerTest {
         assertThat(receiver.getResponse())
                 .containsExactly(
                         new MedicalResourceTypeInfo(
-                                MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE, Set.of()),
+                                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_CONDITIONS, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, Set.of()),
+                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, Set.of()),
                         new MedicalResourceTypeInfo(
                                 MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS, Set.of()),
                         new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_MEDICATIONS, Set.of()),

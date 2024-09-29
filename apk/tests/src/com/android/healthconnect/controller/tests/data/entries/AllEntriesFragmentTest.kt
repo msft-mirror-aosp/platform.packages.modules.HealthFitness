@@ -231,7 +231,7 @@ class AllEntriesFragmentTest {
         whenever(viewModel.entries).thenReturn(MutableLiveData(Empty))
 
         launchFragment<AllEntriesFragment>(
-            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name)
+            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATIONS.name)
         )
 
         onView(withId(R.id.no_data_view)).check(matches(isDisplayed()))
@@ -242,7 +242,7 @@ class AllEntriesFragmentTest {
         whenever(viewModel.entries).thenReturn(MutableLiveData(LoadingFailed))
 
         launchFragment<AllEntriesFragment>(
-            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name)
+            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATIONS.name)
         )
 
         onView(withId(R.id.error_view)).check(matches(isDisplayed()))
@@ -253,7 +253,7 @@ class AllEntriesFragmentTest {
         whenever(viewModel.entries).thenReturn(MutableLiveData(Loading))
 
         launchFragment<AllEntriesFragment>(
-            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name)
+            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATIONS.name)
         )
 
         onView(withId(R.id.loading)).check(matches(isDisplayed()))
@@ -265,7 +265,7 @@ class AllEntriesFragmentTest {
         whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_IMMUNIZATION_LIST.toMutableList())
 
         launchFragment<AllEntriesFragment>(
-            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name)
+            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATIONS.name)
         )
 
         onView(withText("02 May 2023 • Health Connect Toolbox")).check(matches(isDisplayed()))

@@ -99,16 +99,16 @@ class HealthPermissionTest {
 
         assertThat(
                 fromPermissionString(
-                    "android.permission.health.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE"
+                    "android.permission.health.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES"
                 )
             )
-            .isEqualTo(MedicalPermission(MedicalPermissionType.ALLERGY_INTOLERANCE))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.ALLERGIES_INTOLERANCES))
 
         assertThat(fromPermissionString("android.permission.health.READ_MEDICAL_DATA_CONDITIONS"))
             .isEqualTo(MedicalPermission(MedicalPermissionType.CONDITIONS))
 
-        assertThat(fromPermissionString("android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION"))
-            .isEqualTo(MedicalPermission(MedicalPermissionType.IMMUNIZATION))
+        assertThat(fromPermissionString("android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS"))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.IMMUNIZATIONS))
 
         assertThat(
                 fromPermissionString(

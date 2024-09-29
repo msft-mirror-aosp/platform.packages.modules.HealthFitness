@@ -34,7 +34,7 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.health.connect.HealthPermissions.READ_EXERCISE
 import android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY
 import android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND
-import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS
 import android.health.connect.HealthPermissions.READ_SKIN_TEMPERATURE
 import android.health.connect.HealthPermissions.READ_SLEEP
 import android.health.connect.HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED
@@ -102,14 +102,14 @@ class PermissionsActivityTest {
         private val fitnessPermissions =
             arrayOf(READ_EXERCISE, READ_SLEEP, WRITE_SKIN_TEMPERATURE, WRITE_ACTIVE_CALORIES_BURNED)
         private val fitnessAndMedicalPermissions =
-            arrayOf(READ_EXERCISE, READ_MEDICAL_DATA_IMMUNIZATION)
+            arrayOf(READ_EXERCISE, READ_MEDICAL_DATA_IMMUNIZATIONS)
         private val fitnessAndAdditionalPermissions =
             arrayOf(WRITE_SLEEP, READ_HEALTH_DATA_IN_BACKGROUND)
-        private val medicalPermissions = arrayOf(READ_MEDICAL_DATA_IMMUNIZATION, WRITE_MEDICAL_DATA)
+        private val medicalPermissions = arrayOf(READ_MEDICAL_DATA_IMMUNIZATIONS, WRITE_MEDICAL_DATA)
         private val medicalAndAdditionalPermissions =
-            arrayOf(READ_MEDICAL_DATA_IMMUNIZATION, READ_HEALTH_DATA_IN_BACKGROUND)
+            arrayOf(READ_MEDICAL_DATA_IMMUNIZATIONS, READ_HEALTH_DATA_IN_BACKGROUND)
         private val allThreeCombined =
-            arrayOf(READ_HEALTH_DATA_IN_BACKGROUND, READ_SLEEP, READ_MEDICAL_DATA_IMMUNIZATION)
+            arrayOf(READ_HEALTH_DATA_IN_BACKGROUND, READ_SLEEP, READ_MEDICAL_DATA_IMMUNIZATIONS)
     }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -612,8 +612,8 @@ class PermissionsActivityTest {
             .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
         Espresso.onIdle()
 
-        onView(withText("Immunization")).check(matches(isDisplayed()))
-        onView(withText("Immunization")).perform(click())
+        onView(withText("Immunizations")).check(matches(isDisplayed()))
+        onView(withText("Immunizations")).perform(click())
 
         scenario.onActivity { activity: PermissionsActivity ->
             activity.findViewById<Button>(R.id.allow).callOnClick()
@@ -664,8 +664,8 @@ class PermissionsActivityTest {
             .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
         Espresso.onIdle()
 
-        onView(withText("Immunization")).check(matches(isDisplayed()))
-        onView(withText("Immunization")).perform(click())
+        onView(withText("Immunizations")).check(matches(isDisplayed()))
+        onView(withText("Immunizations")).perform(click())
         scenario.onActivity { activity: PermissionsActivity ->
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
@@ -687,7 +687,7 @@ class PermissionsActivityTest {
     fun requestMedicalAndAdditionalPermissions_backgroundAndHistory_showBoth() {
         val permissions =
             arrayOf(
-                READ_MEDICAL_DATA_IMMUNIZATION,
+                READ_MEDICAL_DATA_IMMUNIZATIONS,
                 READ_HEALTH_DATA_IN_BACKGROUND,
                 READ_HEALTH_DATA_HISTORY,
             )
@@ -699,8 +699,8 @@ class PermissionsActivityTest {
             .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
         Espresso.onIdle()
 
-        onView(withText("Immunization")).check(matches(isDisplayed()))
-        onView(withText("Immunization")).perform(click())
+        onView(withText("Immunizations")).check(matches(isDisplayed()))
+        onView(withText("Immunizations")).perform(click())
         scenario.onActivity { activity: PermissionsActivity ->
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
