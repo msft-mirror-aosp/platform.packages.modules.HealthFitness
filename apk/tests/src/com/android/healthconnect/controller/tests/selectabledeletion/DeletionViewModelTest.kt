@@ -141,7 +141,7 @@ class DeletionViewModelTest {
     fun permissionTypes_deleteFitnessAndMedical_deletionInvokedCorrectly() = runTest {
         val deletionType =
             DeletionType.DeleteHealthPermissionTypes(
-                setOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.IMMUNIZATION),
+                setOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.IMMUNIZATIONS),
                 4,
             )
         viewModel.setDeletionType(deletionType = deletionType)
@@ -154,7 +154,7 @@ class DeletionViewModelTest {
     @Test
     fun permissionTypes_deleteMedical_deletionInvokedCorrectly() = runTest {
         val deletionType =
-            DeletionType.DeleteHealthPermissionTypes(setOf(MedicalPermissionType.IMMUNIZATION), 2)
+            DeletionType.DeleteHealthPermissionTypes(setOf(MedicalPermissionType.IMMUNIZATIONS), 2)
         viewModel.setDeletionType(deletionType)
         viewModel.delete()
         advanceUntilIdle()

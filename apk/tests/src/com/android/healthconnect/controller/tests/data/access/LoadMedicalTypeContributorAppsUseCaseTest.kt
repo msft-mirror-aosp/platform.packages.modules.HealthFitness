@@ -59,7 +59,7 @@ class LoadMedicalTypeContributorAppsUseCaseTest {
 
     @Test
     fun immunization_returnsEmptyMap() = runTest {
-        val result = loadMedicalTypeContributorAppsUseCase.invoke(MedicalPermissionType.IMMUNIZATION)
+        val result = loadMedicalTypeContributorAppsUseCase.invoke(MedicalPermissionType.IMMUNIZATIONS)
         val expected = listOf<AppMetadata>()
         assertThat(result).isEqualTo(expected)
     }

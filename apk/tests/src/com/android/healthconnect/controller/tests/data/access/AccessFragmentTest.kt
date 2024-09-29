@@ -304,8 +304,8 @@ class AccessFragmentTest {
         }
         launchFragment<AccessFragment>(immunizationBundle)
 
-        onView(withText("Can read immunization")).check(matches(isDisplayed()))
-        onView(withText("Can write immunization")).check(doesNotExist())
+        onView(withText("Can read immunizations")).check(matches(isDisplayed()))
+        onView(withText("Can write immunizations")).check(doesNotExist())
         onView(withText("Inactive apps")).check(doesNotExist())
         onView(
                 withText(
@@ -350,7 +350,7 @@ class AccessFragmentTest {
     private val immunizationBundle: Bundle
         get() {
             val bundle = Bundle()
-            bundle.putString(PERMISSION_TYPE_NAME_KEY, MedicalPermissionType.IMMUNIZATION.name)
+            bundle.putString(PERMISSION_TYPE_NAME_KEY, MedicalPermissionType.IMMUNIZATIONS.name)
             return bundle
         }
 

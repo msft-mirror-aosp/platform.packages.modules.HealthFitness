@@ -19,8 +19,8 @@ import android.health.connect.DeleteMedicalResourcesRequest
 import android.health.connect.GetMedicalDataSourcesRequest
 import android.health.connect.HealthConnectManager
 import android.health.connect.datatypes.MedicalDataSource
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
 import android.os.OutcomeReceiver
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionType
@@ -76,8 +76,8 @@ class DeleteMedicalPermissionTypesFromAppUseCaseTest {
         val deletePermissionType =
             DeletionType.DeleteHealthPermissionTypesFromApp(
                 setOf(
-                    MedicalPermissionType.ALLERGY_INTOLERANCE,
-                    MedicalPermissionType.IMMUNIZATION,
+                    MedicalPermissionType.ALLERGIES_INTOLERANCES,
+                    MedicalPermissionType.IMMUNIZATIONS,
                 ),
                 8,
                 packageName = "package.name",
@@ -93,8 +93,8 @@ class DeleteMedicalPermissionTypesFromAppUseCaseTest {
             .containsExactly(TEST_MEDICAL_DATA_SOURCE.id)
         assertThat(medicalRequestCaptor.value.medicalResourceTypes)
             .containsExactly(
-                MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
-                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
+                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
             )
     }
 

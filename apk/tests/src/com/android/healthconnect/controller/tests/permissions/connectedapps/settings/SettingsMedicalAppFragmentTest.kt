@@ -158,7 +158,7 @@ class SettingsMedicalAppFragmentTest {
     @Test
     fun fragment_starts() {
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -185,7 +185,7 @@ class SettingsMedicalAppFragmentTest {
 
     @Test
     fun doesNotShowWriteHeader_whenNoWritePermissions() {
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then { MutableLiveData(listOf(readPermission)) }
         whenever(viewModel.grantedMedicalPermissions).then {
             MutableLiveData(setOf(readPermission))
@@ -227,7 +227,7 @@ class SettingsMedicalAppFragmentTest {
 
     @Test
     fun unsupportedPackage_grantedPermissionsNotLoaded_onOrientationChange() {
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
 
         whenever(viewModel.medicalPermissions).then {
@@ -247,10 +247,10 @@ class SettingsMedicalAppFragmentTest {
         }
 
         onView(withText("Allow all")).check(matches(isDisplayed()))
-        onView(withText("Immunization")).check(matches(isDisplayed()))
+        onView(withText("Immunizations")).check(matches(isDisplayed()))
         onView(withText("All health records")).check(matches(isDisplayed()))
-        onView(withText("Immunization")).perform(click())
-        onView(withText("Immunization")).check(matches(not(isChecked())))
+        onView(withText("Immunizations")).perform(click())
+        onView(withText("Immunizations")).check(matches(not(isChecked())))
 
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -259,12 +259,12 @@ class SettingsMedicalAppFragmentTest {
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(RecyclerViewActions.scrollToLastPosition<RecyclerView.ViewHolder>())
         onIdle()
-        onView(withText("Immunization")).perform(scrollTo()).check(matches(not(isChecked())))
+        onView(withText("Immunizations")).perform(scrollTo()).check(matches(not(isChecked())))
     }
 
     @Test
     fun unsupportedPackage_doesNotShowFooter() {
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
 
         whenever(viewModel.medicalPermissions).then {
@@ -293,7 +293,7 @@ class SettingsMedicalAppFragmentTest {
     @Test
     fun supportedPackage_whenNoHistoryRead_showsFooterWithGrantTime() {
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -319,7 +319,7 @@ class SettingsMedicalAppFragmentTest {
     @Test
     fun supportedPackage_whenHistoryRead_showsFooterWithoutGrantTime() {
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -440,7 +440,7 @@ class SettingsMedicalAppFragmentTest {
             )
         }
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -497,7 +497,7 @@ class SettingsMedicalAppFragmentTest {
             )
         }
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -554,7 +554,7 @@ class SettingsMedicalAppFragmentTest {
             )
         }
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }

@@ -29,7 +29,7 @@ import android.health.connect.datatypes.FloorsClimbedRecord
 import android.health.connect.datatypes.HydrationRecord
 import android.health.connect.datatypes.IntermenstrualBleedingRecord
 import android.health.connect.datatypes.MedicalDataSource
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
 import android.health.connect.datatypes.OxygenSaturationRecord
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.SleepSessionRecord
@@ -502,7 +502,7 @@ class LoadEntriesHelperUseCaseTest {
 
     @Test
     fun readMedicalResources_allImmunization() = runTest {
-        val input = setupReadMedicalResourceTest(MedicalPermissionType.IMMUNIZATION)
+        val input = setupReadMedicalResourceTest(MedicalPermissionType.IMMUNIZATIONS)
         val actual = loadEntriesHelper.readMedicalRecords(input)
 
         assertArgumentRequestCaptorValidity(immunizationCaptor)
@@ -521,7 +521,7 @@ class LoadEntriesHelperUseCaseTest {
             .getMedicalDataSources(any<List<String>>(), any(), any())
 
         val input =
-            setupReadMedicalResourceTest(MedicalPermissionType.IMMUNIZATION, TEST_APP_PACKAGE_NAME)
+            setupReadMedicalResourceTest(MedicalPermissionType.IMMUNIZATIONS, TEST_APP_PACKAGE_NAME)
         val actual = loadEntriesHelper.readMedicalRecords(input)
 
         assertArgumentRequestCaptorValidity(immunizationCaptor)
@@ -853,7 +853,7 @@ class LoadEntriesHelperUseCaseTest {
 
         val mockitoStubber: Stubber =
             when (permissionType) {
-                MedicalPermissionType.IMMUNIZATION -> Mockito.doAnswer(prepareImmunizationAnswer())
+                MedicalPermissionType.IMMUNIZATIONS -> Mockito.doAnswer(prepareImmunizationAnswer())
                 MedicalPermissionType.ALL_MEDICAL_DATA ->
                     Mockito.doAnswer(prepareEmptyMedicalAnswer())
                 else ->
@@ -876,6 +876,6 @@ class LoadEntriesHelperUseCaseTest {
         Mockito.verify(healthConnectManager, Mockito.times(wantedInvocationCount))
             .readMedicalResources(requestCaptor.capture(), any(), any())
         assertThat(requestCaptor.value.medicalResourceType)
-            .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+            .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
     }
 }
