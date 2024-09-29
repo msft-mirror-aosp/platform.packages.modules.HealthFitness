@@ -19,8 +19,8 @@ package android.healthconnect.cts.utils;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
@@ -269,7 +269,7 @@ public class PhrDataFactory {
      */
     public static MedicalResource.Builder getMedicalResourceBuilder() {
         return new MedicalResource.Builder(
-                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                 DATA_SOURCE_ID,
                 FHIR_VERSION_R4,
                 getFhirResource());
@@ -286,11 +286,11 @@ public class PhrDataFactory {
 
     /**
      * Creates and returns a {@link MedicalResource} of type {@link
-     * MedicalResource#MEDICAL_RESOURCE_TYPE_IMMUNIZATION} with the given {@code dataSource}.
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS} with the given {@code dataSource}.
      */
     public static MedicalResource createImmunizationMedicalResource(String dataSource) {
         return new MedicalResource.Builder(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                         dataSource,
                         FHIR_VERSION_R4,
                         getFhirResource())
@@ -299,12 +299,12 @@ public class PhrDataFactory {
 
     /**
      * Creates and returns a {@link MedicalResource} of type {@link
-     * MedicalResource#MEDICAL_RESOURCE_TYPE_IMMUNIZATION} and {@link
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS} and {@link
      * PhrDataFactory#DIFFERENT_FHIR_DATA_IMMUNIZATION} data, with the given {@code dataSource}.
      */
     public static MedicalResource createDifferentImmunizationMedicalResource(String dataSource) {
         return new MedicalResource.Builder(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                         dataSource,
                         FHIR_VERSION_R4,
                         getFhirResourceDifferentImmunization())
@@ -313,13 +313,13 @@ public class PhrDataFactory {
 
     /**
      * Creates and returns a {@link MedicalResource} of type {@link
-     * MedicalResource#MEDICAL_RESOURCE_TYPE_IMMUNIZATION} with the given {@code dataSource} with
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS} with the given {@code dataSource} with
      * the default {@link PhrDataFactory#FHIR_DATA_IMMUNIZATION}'s status field added.
      */
     public static MedicalResource createUpdatedImmunizationMedicalResource(String dataSource)
             throws JSONException {
         return new MedicalResource.Builder(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                         dataSource,
                         FHIR_VERSION_R4,
                         getUpdatedImmunizationFhirResource())
@@ -328,11 +328,12 @@ public class PhrDataFactory {
 
     /**
      * Creates and returns a {@link MedicalResource} of type {@link
-     * MedicalResource#MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE} with the given {@code dataSource}.
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES} with the given {@code
+     * dataSource}.
      */
     public static MedicalResource createAllergyMedicalResource(String dataSource) {
         return new MedicalResource.Builder(
-                        MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                        MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
                         dataSource,
                         FHIR_VERSION_R4,
                         getFhirResourceAllergy())
@@ -392,7 +393,7 @@ public class PhrDataFactory {
                             .build();
             MedicalResource medicalResource =
                     new MedicalResource.Builder(
-                                    MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                                     dataSourceId,
                                     fhirVersion,
                                     fhirResource)
@@ -419,7 +420,7 @@ public class PhrDataFactory {
                             .build();
             MedicalResource medicalResource =
                     new MedicalResource.Builder(
-                                    MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                                    MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
                                     dataSourceId,
                                     fhirVersion,
                                     fhirResource)

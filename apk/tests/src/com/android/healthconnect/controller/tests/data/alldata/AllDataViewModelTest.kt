@@ -22,8 +22,8 @@ import android.health.connect.HealthPermissionCategory
 import android.health.connect.MedicalResourceTypeInfo
 import android.health.connect.RecordTypeInfoResponse
 import android.health.connect.datatypes.HeartRateRecord
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.StepsRecord
 import android.health.connect.datatypes.WeightRecord
@@ -185,8 +185,8 @@ class AllDataViewModelTest {
         doAnswer(
                 prepareAnswer(
                     listOf(
-                        MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION, setOf()),
-                        MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE, setOf()),
+                        MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, setOf()),
+                        MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES, setOf()),
                     )
                 )
             )
@@ -208,10 +208,10 @@ class AllDataViewModelTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                     setOf(TEST_MEDICAL_DATA_SOURCE),
                 ),
-                MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE, setOf()),
+                MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES, setOf()),
             )
         doAnswer(prepareAnswer(medicalResourceTypeResources))
             .`when`(manager)
@@ -223,7 +223,7 @@ class AllDataViewModelTest {
         advanceUntilIdle()
 
         val expected =
-            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATION)))
+            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATIONS)))
         assertThat(testObserver.getLastValue())
             .isEqualTo(AllDataViewModel.AllDataState.WithData(expected))
     }
@@ -247,7 +247,7 @@ class AllDataViewModelTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                     setOf(TEST_MEDICAL_DATA_SOURCE),
                 )
             )

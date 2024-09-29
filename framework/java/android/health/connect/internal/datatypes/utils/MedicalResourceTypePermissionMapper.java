@@ -16,9 +16,9 @@
 
 package android.health.connect.internal.datatypes.utils;
 
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
@@ -60,13 +60,13 @@ public final class MedicalResourceTypePermissionMapper {
 
         // Populate sMedicalResourceTypeToReadPermissionMap.
         sMedicalResourceTypeToReadPermissionMap.put(
-                MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
-                HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE);
+                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
+                HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES);
         sMedicalResourceTypeToReadPermissionMap.put(
                 MEDICAL_RESOURCE_TYPE_CONDITIONS, HealthPermissions.READ_MEDICAL_DATA_CONDITIONS);
         sMedicalResourceTypeToReadPermissionMap.put(
-                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
-                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION);
+                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS);
         sMedicalResourceTypeToReadPermissionMap.put(
                 MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
                 HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS);

@@ -17,7 +17,7 @@ package android.healthconnect.aidl;
 
 import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
 import static android.health.connect.Constants.MINIMUM_PAGE_SIZE;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
@@ -42,7 +42,7 @@ public class ReadMedicalResourcesRequestParcelTest {
     @Test
     public void testWriteInitialRequestToParcelThenRestore_propertiesAreIdentical() {
         ReadMedicalResourcesInitialRequest original =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .setPageSize(100)
@@ -55,7 +55,7 @@ public class ReadMedicalResourcesRequestParcelTest {
                 ReadMedicalResourcesRequestParcel.CREATOR.createFromParcel(parcel);
 
         assertThat(restoredParcel.getMedicalResourceType())
-                .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+                .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
         assertThat(restoredParcel.getDataSourceIds())
                 .containsExactly(DATA_SOURCE_ID, DIFFERENT_DATA_SOURCE_ID);
         assertThat(restoredParcel.getPageToken()).isNull();
@@ -85,7 +85,7 @@ public class ReadMedicalResourcesRequestParcelTest {
     public void testRestoreInvalidMedicalResourceTypeFromParcel_expectException()
             throws NoSuchFieldException, IllegalAccessException {
         ReadMedicalResourcesRequestParcel original =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .setPageSize(100)
@@ -106,7 +106,7 @@ public class ReadMedicalResourcesRequestParcelTest {
     public void testRestoreInvalidDataSourceIdFromParcel_expectException()
             throws NoSuchFieldException, IllegalAccessException {
         ReadMedicalResourcesRequestParcel original =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .setPageSize(100)
@@ -127,7 +127,7 @@ public class ReadMedicalResourcesRequestParcelTest {
     public void testRestoreTooSmallPageSizeFromParcel_expectException()
             throws NoSuchFieldException, IllegalAccessException {
         ReadMedicalResourcesRequestParcel original =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .setPageSize(100)
@@ -148,7 +148,7 @@ public class ReadMedicalResourcesRequestParcelTest {
     public void testRestoreTooLargePageSizeFromParcel_expectException()
             throws NoSuchFieldException, IllegalAccessException {
         ReadMedicalResourcesRequestParcel original =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .setPageSize(100)

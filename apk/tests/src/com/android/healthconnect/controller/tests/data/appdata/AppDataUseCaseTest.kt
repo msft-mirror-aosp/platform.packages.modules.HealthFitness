@@ -202,7 +202,7 @@ class AppDataUseCaseTest {
     fun loadMedicalAppData_noData_returnEmptyList() = runTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
-                MedicalResourceTypeInfo(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION, setOf())
+                MedicalResourceTypeInfo(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, setOf())
             )
         Mockito.doAnswer(prepareAnswer(medicalResourceTypeResources))
             .`when`(healthConnectManager)
@@ -217,7 +217,7 @@ class AppDataUseCaseTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                     setOf(TEST_MEDICAL_DATA_SOURCE),
                 )
             )
@@ -227,7 +227,7 @@ class AppDataUseCaseTest {
 
         val actual = appDataUseCase.loadMedicalAppData(TEST_APP_PACKAGE_NAME)
         val expected =
-            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATION)))
+            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATIONS)))
         assertThat(actual).isEqualTo(Success(expected))
     }
 
@@ -236,7 +236,7 @@ class AppDataUseCaseTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                     setOf(
                         TEST_MEDICAL_DATA_SOURCE,
                         TEST_MEDICAL_DATA_SOURCE_2,
@@ -250,7 +250,7 @@ class AppDataUseCaseTest {
 
         val actual = appDataUseCase.loadMedicalAppData(TEST_APP_PACKAGE_NAME)
         val expected =
-            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATION)))
+            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATIONS)))
         assertThat(actual).isEqualTo(Success(expected))
     }
 
@@ -259,7 +259,7 @@ class AppDataUseCaseTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                     setOf(TEST_MEDICAL_DATA_SOURCE_DIFFERENT_APP),
                 )
             )
@@ -288,7 +288,7 @@ class AppDataUseCaseTest {
     fun loadAllMedicalAppData_noData_returnEmptyList() = runTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
-                MedicalResourceTypeInfo(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION, setOf())
+                MedicalResourceTypeInfo(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, setOf())
             )
         Mockito.doAnswer(prepareAnswer(medicalResourceTypeResources))
             .`when`(healthConnectManager)
@@ -303,7 +303,7 @@ class AppDataUseCaseTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                     setOf(TEST_MEDICAL_DATA_SOURCE),
                 )
             )
@@ -313,7 +313,7 @@ class AppDataUseCaseTest {
 
         val actual = appDataUseCase.loadAllMedicalData()
         val expected =
-            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATION)))
+            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATIONS)))
         assertThat(actual).isEqualTo(Success(expected))
     }
 
@@ -322,7 +322,7 @@ class AppDataUseCaseTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
                 MedicalResourceTypeInfo(
-                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                     setOf(
                         TEST_MEDICAL_DATA_SOURCE,
                         TEST_MEDICAL_DATA_SOURCE_2,
@@ -336,7 +336,7 @@ class AppDataUseCaseTest {
 
         val actual = appDataUseCase.loadAllMedicalData()
         val expected =
-            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATION)))
+            listOf(PermissionTypesPerCategory(MEDICAL, listOf(MedicalPermissionType.IMMUNIZATIONS)))
         assertThat(actual).isEqualTo(Success(expected))
     }
 

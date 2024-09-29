@@ -23,7 +23,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
 import com.android.healthconnect.controller.data.entriesandaccess.EntriesAndAccessFragment
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
-import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.IMMUNIZATION
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.IMMUNIZATIONS
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -51,7 +51,7 @@ class EntriesAndAccessFragmentTest {
     @Test
     fun entriesAndAccessInit_medicalData_showsTabs() {
         launchFragment<EntriesAndAccessFragment>(
-            bundleOf(PERMISSION_TYPE_NAME_KEY to IMMUNIZATION.name))
+            bundleOf(PERMISSION_TYPE_NAME_KEY to IMMUNIZATIONS.name))
 
         onView(withText("Entries")).check(matches(isDisplayed()))
         onView(withText("Access")).check(matches(isDisplayed()))

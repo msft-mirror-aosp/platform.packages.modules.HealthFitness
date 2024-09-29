@@ -19,7 +19,7 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_DELETE;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BODY_FAT;
@@ -132,7 +132,7 @@ public class AccessLogsHelperTest {
                                 mAccessLogsHelper.addAccessLog(
                                         db,
                                         DATA_SOURCE_PACKAGE_NAME,
-                                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                                        Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
                                         OPERATION_TYPE_READ,
                                         /* accessedMedicalDataSource= */ false));
 
@@ -142,7 +142,7 @@ public class AccessLogsHelperTest {
         assertThat(result).hasSize(1);
         assertThat(accessLog.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(accessLog.getMedicalResourceTypes())
-                .isEqualTo(Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION));
+                .isEqualTo(Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS));
         assertThat(accessLog.getRecordTypes()).isEmpty();
         assertThat(accessLog.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
         assertThat(accessLog.isMedicalDataSourceAccessed()).isFalse();
@@ -160,7 +160,7 @@ public class AccessLogsHelperTest {
                                         DATA_SOURCE_PACKAGE_NAME,
                                         Set.of(
                                                 MEDICAL_RESOURCE_TYPE_UNKNOWN,
-                                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
                                         OPERATION_TYPE_READ,
                                         /* accessedMedicalDataSource= */ false));
 
@@ -171,7 +171,7 @@ public class AccessLogsHelperTest {
         assertThat(accessLog.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(accessLog.getMedicalResourceTypes())
                 .isEqualTo(
-                        Set.of(MEDICAL_RESOURCE_TYPE_UNKNOWN, MEDICAL_RESOURCE_TYPE_IMMUNIZATION));
+                        Set.of(MEDICAL_RESOURCE_TYPE_UNKNOWN, MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS));
         assertThat(accessLog.getRecordTypes()).isEmpty();
         assertThat(accessLog.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
         assertThat(accessLog.isMedicalDataSourceAccessed()).isFalse();
@@ -237,7 +237,7 @@ public class AccessLogsHelperTest {
                     mAccessLogsHelper.addAccessLog(
                             db,
                             DATA_SOURCE_PACKAGE_NAME,
-                            Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION),
+                            Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
                             OPERATION_TYPE_UPSERT,
                             /* accessedMedicalDataSource= */ false);
                 });
@@ -257,7 +257,7 @@ public class AccessLogsHelperTest {
 
         assertThat(accessLog2.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(accessLog2.getMedicalResourceTypes())
-                .isEqualTo(Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION));
+                .isEqualTo(Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS));
         assertThat(accessLog2.getRecordTypes()).isEmpty();
         assertThat(accessLog2.getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
         assertThat(accessLog2.isMedicalDataSourceAccessed()).isFalse();

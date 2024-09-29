@@ -16,9 +16,9 @@
 
 package android.healthconnect.internal.datatypes.utils;
 
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
@@ -56,19 +56,19 @@ public class MedicalResourceTypePermissionMapperTest {
     public void testGetMedicalReadPermissionForResourceType_immunizationType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
 
-        assertThat(readPermission).isEqualTo(HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION);
+        assertThat(readPermission).isEqualTo(HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS);
     }
 
     @Test
     public void testGetMedicalReadPermissionForResourceType_allergyType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
-                        MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
+                        MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES);
 
         assertThat(readPermission)
-                .isEqualTo(HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE);
+                .isEqualTo(HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES);
     }
 
     @Test
@@ -176,9 +176,9 @@ public class MedicalResourceTypePermissionMapperTest {
     public void testGetMedicalResourceTypeForReadPermission_immunizationType_returns() {
         int medicalResourceType =
                 MedicalResourceTypePermissionMapper.getMedicalResourceType(
-                        HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION);
+                        HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS);
 
-        assertThat(medicalResourceType).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+        assertThat(medicalResourceType).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
     }
 
     @Test
