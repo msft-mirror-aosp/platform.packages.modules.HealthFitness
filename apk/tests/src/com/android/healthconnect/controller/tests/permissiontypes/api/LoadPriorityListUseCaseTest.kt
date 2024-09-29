@@ -25,6 +25,7 @@ import org.junit.Test
 import org.mockito.Matchers
 import org.mockito.Mockito
 import org.mockito.invocation.InvocationOnMock
+import org.mockito.kotlin.eq
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
@@ -49,12 +50,18 @@ class LoadPriorityListUseCaseTest {
         val dataOriginsPriorityOrderResponse =
             FetchDataOriginsPriorityOrderResponse(
                 mutableListOf(
-                    getDataOrigin(TEST_APP_PACKAGE_NAME), getDataOrigin(TEST_APP_PACKAGE_NAME_2)))
+                    getDataOrigin(TEST_APP_PACKAGE_NAME),
+                    getDataOrigin(TEST_APP_PACKAGE_NAME_2),
+                )
+            )
 
         Mockito.doAnswer(prepareAnswer(dataOriginsPriorityOrderResponse))
             .`when`(manager)
             .fetchDataOriginsPriorityOrder(
-                Matchers.eq(HealthDataCategory.ACTIVITY), Matchers.any(), Matchers.any())
+                eq(HealthDataCategory.ACTIVITY),
+                Matchers.any(),
+                Matchers.any(),
+            )
 
         val loadedAppsPriorityList = usecase.execute(HealthDataCategory.ACTIVITY)
 

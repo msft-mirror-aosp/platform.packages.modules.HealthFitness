@@ -34,9 +34,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Set;
 
 /**
- * Captures the FHIR resource data. This is the class used for all supported FHIR resource types,
- * which is a subset of the resource list in <a href="https://build.fhir.org/resourcelist.html">the
- * official FHIR website</a>.
+ * A class to capture the FHIR resource data. This is the class used for all supported FHIR resource
+ * types, which is a subset of the resource list in <a
+ * href="https://build.fhir.org/resourcelist.html">the official FHIR website</a>.
  *
  * <p>FHIR stands for the <a href="https://hl7.org/fhir/">Fast Healthcare Interoperability Resources
  * </a> standard.
@@ -93,6 +93,40 @@ public final class FhirResource implements Parcelable {
      */
     public static final int FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT = 8;
 
+    /**
+     * FHIR resource type for a <a href="https://www.hl7.org/fhir/patient.html">FHIR Patient</a>.
+     */
+    public static final int FHIR_RESOURCE_TYPE_PATIENT = 9;
+
+    /**
+     * FHIR resource type for a <a href="https://www.hl7.org/fhir/practitioner.html">FHIR
+     * Practitioner</a>.
+     */
+    public static final int FHIR_RESOURCE_TYPE_PRACTITIONER = 10;
+
+    /**
+     * FHIR resource type for a <a href="https://www.hl7.org/fhir/practitionerrole.html">FHIR
+     * PractitionerRole</a>.
+     */
+    public static final int FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE = 11;
+
+    /**
+     * FHIR resource type for a <a href="https://www.hl7.org/fhir/encounter.html">FHIR
+     * Encounter</a>.
+     */
+    public static final int FHIR_RESOURCE_TYPE_ENCOUNTER = 12;
+
+    /**
+     * FHIR resource type for a <a href="https://www.hl7.org/fhir/location.html">FHIR Location</a>.
+     */
+    public static final int FHIR_RESOURCE_TYPE_LOCATION = 13;
+
+    /**
+     * FHIR resource type for a <a href="https://www.hl7.org/fhir/organization.html">FHIR
+     * Organization</a>.
+     */
+    public static final int FHIR_RESOURCE_TYPE_ORGANIZATION = 14;
+
     /** @hide */
     @IntDef({
         FHIR_RESOURCE_TYPE_UNKNOWN,
@@ -103,7 +137,13 @@ public final class FhirResource implements Parcelable {
         FHIR_RESOURCE_TYPE_PROCEDURE,
         FHIR_RESOURCE_TYPE_MEDICATION,
         FHIR_RESOURCE_TYPE_MEDICATION_REQUEST,
-        FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT
+        FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT,
+        FHIR_RESOURCE_TYPE_PATIENT,
+        FHIR_RESOURCE_TYPE_PRACTITIONER,
+        FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE,
+        FHIR_RESOURCE_TYPE_ENCOUNTER,
+        FHIR_RESOURCE_TYPE_LOCATION,
+        FHIR_RESOURCE_TYPE_ORGANIZATION,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FhirResourceType {}
@@ -112,6 +152,10 @@ public final class FhirResource implements Parcelable {
     @NonNull private final String mId;
     @NonNull private final String mData;
 
+    /**
+     * Creates a new instance of {@link FhirResource}. Please see {@link FhirResource.Builder} for
+     * more detailed parameters information.
+     */
     private FhirResource(@FhirResourceType int type, @NonNull String id, @NonNull String data) {
         validateFhirResourceType(type);
         requireNonNull(id);
@@ -177,7 +221,6 @@ public final class FhirResource implements Parcelable {
         return 0;
     }
 
-    /** Populates a {@link Parcel} with the self information. */
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         requireNonNull(dest);
@@ -200,7 +243,13 @@ public final class FhirResource implements Parcelable {
                     FHIR_RESOURCE_TYPE_PROCEDURE,
                     FHIR_RESOURCE_TYPE_MEDICATION,
                     FHIR_RESOURCE_TYPE_MEDICATION_REQUEST,
-                    FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT);
+                    FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT,
+                    FHIR_RESOURCE_TYPE_PATIENT,
+                    FHIR_RESOURCE_TYPE_PRACTITIONER,
+                    FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE,
+                    FHIR_RESOURCE_TYPE_ENCOUNTER,
+                    FHIR_RESOURCE_TYPE_LOCATION,
+                    FHIR_RESOURCE_TYPE_ORGANIZATION);
 
     /**
      * Validates the provided {@code fhirResourceType} is in the {@link FhirResource#VALID_TYPES}
@@ -214,7 +263,6 @@ public final class FhirResource implements Parcelable {
         validateIntDefValue(fhirResourceType, VALID_TYPES, FhirResourceType.class.getSimpleName());
     }
 
-    /** Indicates whether some other object is "equal to" this one. */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -224,13 +272,11 @@ public final class FhirResource implements Parcelable {
                 && getData().equals(that.getData());
     }
 
-    /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
         return hash(getType(), getId(), getData());
     }
 
-    /** Returns a string representation of this {@link FhirResource}. */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -242,13 +288,15 @@ public final class FhirResource implements Parcelable {
         return sb.toString();
     }
 
-    /** Builder class for {@link FhirResource} */
+    /** Builder class for {@link FhirResource}. */
     public static final class Builder {
         @FhirResourceType private int mType;
         @NonNull private String mId;
         @NonNull private String mData;
 
         /**
+         * Constructs a new {@link FhirResource.Builder} instance.
+         *
          * @param type The FHIR resource type extracted from the "resourceType" field in {@code
          *     data}.
          * @param id The FHIR resource ID extracted from the "id" field in {@code data}.
@@ -266,26 +314,20 @@ public final class FhirResource implements Parcelable {
             mData = data;
         }
 
-        /**
-         * @param original The other {@link FhirResource.Builder} to provide data to construct this
-         *     new instance from.
-         */
-        public Builder(@NonNull Builder original) {
-            requireNonNull(original);
-            mType = original.mType;
-            mId = original.mId;
-            mData = original.mData;
+        /** Constructs a clone of the other {@link FhirResource.Builder}. */
+        public Builder(@NonNull Builder other) {
+            requireNonNull(other);
+            mType = other.mType;
+            mId = other.mId;
+            mData = other.mData;
         }
 
-        /**
-         * @param original The other {@link FhirResource} instance to provide data to construct this
-         *     new instance from.
-         */
-        public Builder(@NonNull FhirResource original) {
-            requireNonNull(original);
-            mType = original.getType();
-            mId = original.getId();
-            mData = original.getData();
+        /** Constructs a clone of the other {@link FhirResource} instance. */
+        public Builder(@NonNull FhirResource other) {
+            requireNonNull(other);
+            mType = other.getType();
+            mId = other.getId();
+            mData = other.getData();
         }
 
         /**

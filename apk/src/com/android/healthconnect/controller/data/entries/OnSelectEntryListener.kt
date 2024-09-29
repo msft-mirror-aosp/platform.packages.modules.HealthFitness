@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2022 The Android Open Source Project
+/*
+ * Copyright (C) 2023 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -11,20 +11,21 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.android.healthconnect.controller.tests.utils
+package com.android.healthconnect.controller.data.entries
 
-import org.mockito.Matchers.eq
-import org.mockito.Mockito.`when`
-import org.mockito.stubbing.OngoingStubbing
-import org.mockito.stubbing.Stubber
-
-fun <T : Any> safeEq(value: T): T = eq(value) ?: value
+import com.android.healthconnect.controller.shared.DataType
+import java.time.Instant
 
 /**
- * Helper function for stubbing methods without the need to use backticks.
- *
- * @see Mockito.when
+ * Click listener for entries in the AllEntries/AppEntries screen which adds/removes them from the
+ * deletion map.
  */
-fun <T> whenever(methodCall: T): OngoingStubbing<T> = `when`(methodCall)
-
-fun <T> Stubber.whenever(mock: T): T = `when`(mock)
+interface OnSelectEntryListener {
+    fun onSelectEntry(
+        id: String,
+        dataType: DataType,
+        index: Int,
+        startTime: Instant? = null,
+        endTime: Instant? = null,
+    )
+}

@@ -11,6 +11,10 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
+import com.android.healthconnect.controller.shared.app.AppPermissionsType.COMBINED_PERMISSIONS
+import com.android.healthconnect.controller.shared.app.AppPermissionsType.FITNESS_PERMISSIONS_ONLY
+import com.android.healthconnect.controller.shared.app.AppPermissionsType.MEDICAL_PERMISSIONS_ONLY
+import com.android.healthconnect.controller.tests.utils.MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
@@ -25,10 +29,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import com.android.healthconnect.controller.shared.app.AppPermissionsType.COMBINED_PERMISSIONS
-import com.android.healthconnect.controller.shared.app.AppPermissionsType.FITNESS_PERMISSIONS_ONLY
-import com.android.healthconnect.controller.shared.app.AppPermissionsType.MEDICAL_PERMISSIONS_ONLY
-import com.android.healthconnect.controller.tests.utils.MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME
 
 @HiltAndroidTest
 class HealthPermissionReaderTest {
@@ -54,7 +54,8 @@ class HealthPermissionReaderTest {
                 HealthPermissions.WRITE_EXERCISE_ROUTE.toHealthPermission(),
                 HealthPermissions.READ_ACTIVE_CALORIES_BURNED.toHealthPermission(),
                 HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED.toHealthPermission(),
-                HealthPermission.AdditionalPermission.READ_EXERCISE_ROUTES)
+                HealthPermission.AdditionalPermission.READ_EXERCISE_ROUTES,
+            )
     }
 
     @Test
@@ -73,7 +74,8 @@ class HealthPermissionReaderTest {
                 HealthPermission.AdditionalPermission.READ_EXERCISE_ROUTES,
                 HealthPermissions.WRITE_EXERCISE_ROUTE.toHealthPermission(),
                 HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
-                HealthPermission.AdditionalPermission.READ_HEALTH_DATA_HISTORY)
+                HealthPermission.AdditionalPermission.READ_HEALTH_DATA_HISTORY,
+            )
     }
 
     @Test
@@ -87,7 +89,8 @@ class HealthPermissionReaderTest {
                 HealthPermissions.READ_SLEEP.toHealthPermission(),
                 HealthPermissions.READ_ACTIVE_CALORIES_BURNED.toHealthPermission(),
                 HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED.toHealthPermission(),
-                HealthPermission.AdditionalPermission.READ_EXERCISE_ROUTES)
+                HealthPermission.AdditionalPermission.READ_EXERCISE_ROUTES,
+            )
     }
 
     @Test
@@ -103,7 +106,8 @@ class HealthPermissionReaderTest {
                 HealthPermissions.WRITE_SLEEP,
                 HealthPermissions.READ_EXERCISE_ROUTES,
                 HealthPermissions.WRITE_EXERCISE_ROUTE,
-                HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
+                HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
+            )
     }
 
     @Test
@@ -121,16 +125,20 @@ class HealthPermissionReaderTest {
                 HealthPermissions.READ_EXERCISE_ROUTES,
                 HealthPermissions.WRITE_EXERCISE_ROUTE,
                 HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
-                HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE,
-                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION,
+                HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
+                HealthPermissions.READ_MEDICAL_DATA_CONDITIONS,
+                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS,
                 HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS,
                 HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS,
+                HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS,
+                HealthPermissions.READ_MEDICAL_DATA_PRACTITIONER_DETAILS,
                 HealthPermissions.READ_MEDICAL_DATA_PREGNANCY,
-                HealthPermissions.READ_MEDICAL_DATA_PROBLEMS,
                 HealthPermissions.READ_MEDICAL_DATA_PROCEDURES,
                 HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                HealthPermissions.READ_MEDICAL_DATA_VISITS,
                 HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS,
-                HealthPermissions.WRITE_MEDICAL_DATA)
+                HealthPermissions.WRITE_MEDICAL_DATA,
+            )
     }
 
     @Test
@@ -165,7 +173,7 @@ class HealthPermissionReaderTest {
     @Test
     fun getAppsWithFitnessPermissions_returnsSupportedApps() = runTest {
         assertThat(permissionReader.getAppsWithFitnessPermissions())
-                .containsAtLeast(TEST_APP_PACKAGE_NAME, TEST_APP_PACKAGE_NAME_2)
+            .containsAtLeast(TEST_APP_PACKAGE_NAME, TEST_APP_PACKAGE_NAME_2)
     }
 
     @Test
@@ -177,21 +185,20 @@ class HealthPermissionReaderTest {
     @Test
     fun getAppsWithFitnessPermissions_doesNotReturnUnsupportedApps() = runTest {
         assertThat(permissionReader.getAppsWithFitnessPermissions())
-                .doesNotContain(UNSUPPORTED_TEST_APP_PACKAGE_NAME)
+            .doesNotContain(UNSUPPORTED_TEST_APP_PACKAGE_NAME)
     }
 
     @Test
     fun getAppsWithFitnessPermissions_doesNotReturnMedicalPermissionApps() = runTest {
         assertThat(permissionReader.getAppsWithFitnessPermissions())
-                .doesNotContain(MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME)
+            .doesNotContain(MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME)
     }
 
     @Test
     fun getAppsWithMedicalPermissions_flagDisabled_returnsEmptyList() = runTest {
         (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(false)
 
-        assertThat(permissionReader.getAppsWithMedicalPermissions())
-                .isEmpty()
+        assertThat(permissionReader.getAppsWithMedicalPermissions()).isEmpty()
     }
 
     @Test
@@ -199,7 +206,7 @@ class HealthPermissionReaderTest {
         (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
 
         assertThat(permissionReader.getAppsWithMedicalPermissions())
-                .containsAtLeast(TEST_APP_PACKAGE_NAME, MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME)
+            .containsAtLeast(TEST_APP_PACKAGE_NAME, MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME)
     }
 
     @Test
@@ -215,7 +222,7 @@ class HealthPermissionReaderTest {
         (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(false)
 
         assertThat(permissionReader.getAppsWithMedicalPermissions())
-                .doesNotContain(UNSUPPORTED_TEST_APP_PACKAGE_NAME)
+            .doesNotContain(UNSUPPORTED_TEST_APP_PACKAGE_NAME)
     }
 
     @Test
@@ -286,28 +293,36 @@ class HealthPermissionReaderTest {
     fun getAppPermissionsType_flagDisabled_returnsFitnessOnly() = runTest {
         (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(false)
 
-        assertThat(permissionReader.getAppPermissionsType(TEST_APP_PACKAGE_NAME)).isEqualTo(FITNESS_PERMISSIONS_ONLY)
+        assertThat(permissionReader.getAppPermissionsType(TEST_APP_PACKAGE_NAME))
+            .isEqualTo(FITNESS_PERMISSIONS_ONLY)
     }
 
     @Test
     fun getAppPermissionsType_flagEnabled_returnsCombinedPermissions() = runTest {
         (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
 
-        assertThat(permissionReader.getAppPermissionsType(TEST_APP_PACKAGE_NAME)).isEqualTo(COMBINED_PERMISSIONS)
+        assertThat(permissionReader.getAppPermissionsType(TEST_APP_PACKAGE_NAME))
+            .isEqualTo(COMBINED_PERMISSIONS)
     }
 
     @Test
     fun getAppPermissionsType_medicalPermissionsOnlyApp_returnsMedicalPermissions() = runTest {
         (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
 
-        assertThat(permissionReader.getAppPermissionsType(MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME)).isEqualTo(MEDICAL_PERMISSIONS_ONLY)
+        assertThat(
+                permissionReader.getAppPermissionsType(MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME)
+            )
+            .isEqualTo(MEDICAL_PERMISSIONS_ONLY)
     }
 
     @Test
     fun getAppPermissionsType_noPermissions_returnsFitnessPermissions() = runTest {
         (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(false)
 
-        assertThat(permissionReader.getAppPermissionsType(MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME)).isEqualTo(FITNESS_PERMISSIONS_ONLY)
+        assertThat(
+                permissionReader.getAppPermissionsType(MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME)
+            )
+            .isEqualTo(FITNESS_PERMISSIONS_ONLY)
     }
 
     private fun String.toHealthPermission(): FitnessPermission {

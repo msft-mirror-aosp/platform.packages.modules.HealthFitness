@@ -15,8 +15,10 @@
  */
 package com.android.healthconnect.controller.tests.permissions.data
 
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
+import android.content.Context
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN
+import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.fromMedicalResourceType
 import com.android.healthconnect.controller.permissions.data.toMedicalResourceType
@@ -36,16 +38,18 @@ class MedicalPermissionTypeTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
+    private lateinit var context: Context
 
     @Before
     fun setup() {
         hiltRule.inject()
+        context = InstrumentationRegistry.getInstrumentation().context
     }
 
     @Test
     fun fromMedicalResourceType_immunization() {
-        assertThat(fromMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION))
-            .isEqualTo(MedicalPermissionType.IMMUNIZATION)
+        assertThat(fromMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS))
+            .isEqualTo(MedicalPermissionType.IMMUNIZATIONS)
     }
 
     @Test
@@ -66,8 +70,8 @@ class MedicalPermissionTypeTest {
 
     @Test
     fun toMedicalResourceType_immunization() {
-        assertThat(toMedicalResourceType(MedicalPermissionType.IMMUNIZATION))
-            .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+        assertThat(toMedicalResourceType(MedicalPermissionType.IMMUNIZATIONS))
+            .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
     }
 
     @Test

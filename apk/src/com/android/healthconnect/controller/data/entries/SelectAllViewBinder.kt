@@ -17,35 +17,39 @@ package com.android.healthconnect.controller.data.entries
 
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.shared.recyclerview.DeletionViewBinder
 
-
-class SelectAllViewBinder (private val onClickSelectAllListener: OnClickSelectAllListener): DeletionViewBinder<FormattedEntry.SelectAllHeader, View> {
+class SelectAllViewBinder(private val onClickSelectAllListener: OnClickSelectAllListener) :
+    DeletionViewBinder<FormattedEntry.SelectAllHeader, View> {
 
     override fun newView(parent: ViewGroup): View {
-        return LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_select_all, parent, false)
+        return LayoutInflater.from(parent.context).inflate(R.layout.item_select_all, parent, false)
     }
 
-    override fun bind(view: View, data: FormattedEntry.SelectAllHeader, index: Int, isDeletionState: Boolean, isChecked: Boolean) {
+    override fun bind(
+        view: View,
+        data: FormattedEntry.SelectAllHeader,
+        index: Int,
+        isDeletionState: Boolean,
+        isChecked: Boolean,
+    ) {
         val checkBox = view.findViewById<CheckBox>(R.id.item_checkbox_button)
         val container = view.findViewById<LinearLayout>(R.id.item_select_all_container)
 
-        container.setOnClickListener{
+        container.setOnClickListener {
             checkBox.toggle()
             onClickSelectAllListener.onClicked(checkBox.isChecked)
         }
 
         checkBox.isChecked = isChecked
-        checkBox.setOnClickListener{
+        checkBox.setOnClickListener {
             // check all entries
             onClickSelectAllListener.onClicked(checkBox.isChecked)
         }
+        checkBox.tag = if (isDeletionState) "checkbox" else ""
     }
 }

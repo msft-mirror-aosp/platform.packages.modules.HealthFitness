@@ -107,6 +107,8 @@ public final class MigrationStateManager {
     /**
      * Initialises {@link MigrationStateManager} with the provided arguments and returns the
      * instance.
+     *
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
      */
     public static MigrationStateManager initializeInstance(
             @UserIdInt int userId,
@@ -131,7 +133,11 @@ public final class MigrationStateManager {
         }
     }
 
-    /** Returns initialised instance of this class. */
+    /**
+     * Returns initialised instance of this class.
+     *
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static MigrationStateManager getInitialisedInstance() {
         synchronized (sInstanceLock) {
             Objects.requireNonNull(sMigrationStateManager);

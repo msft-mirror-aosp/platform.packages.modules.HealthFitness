@@ -25,6 +25,7 @@ import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 
 import static com.android.server.healthconnect.storage.HealthConnectDatabase.createTable;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getDataSourceUuidColumnName;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getFhirVersionColumnName;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getReadTableWhereClause;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getCreateMedicalResourceIndicesTableRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName;
@@ -54,7 +55,7 @@ import android.database.sqlite.SQLiteException;
 import android.health.connect.Constants;
 import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.MedicalResourceId;
-import android.health.connect.ReadMedicalResourcesRequest;
+import android.health.connect.ReadMedicalResourcesInitialRequest;
 import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalDataSource;
@@ -103,7 +104,7 @@ public final class MedicalResourceHelper {
     private static final String MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME = "medical_resource_row_id";
     @VisibleForTesting static final String FHIR_RESOURCE_TYPE_COLUMN_NAME = "fhir_resource_type";
     @VisibleForTesting static final String FHIR_DATA_COLUMN_NAME = "fhir_data";
-    @VisibleForTesting static final String FHIR_VERSION_COLUMN_NAME = "fhir_version";
+
     @VisibleForTesting static final String DATA_SOURCE_ID_COLUMN_NAME = "data_source_id";
     @VisibleForTesting static final String FHIR_RESOURCE_ID_COLUMN_NAME = "fhir_resource_id";
     private static final String MEDICAL_RESOURCE_COLUMNS =
@@ -113,7 +114,7 @@ public final class MedicalResourceHelper {
                     + ","
                     + FHIR_DATA_COLUMN_NAME
                     + ","
-                    + FHIR_VERSION_COLUMN_NAME
+                    + MedicalDataSourceHelper.getFhirVersionColumnName()
                     + ","
                     + MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName()
                     + ","
@@ -249,7 +250,6 @@ public final class MedicalResourceHelper {
                 Pair.create(FHIR_RESOURCE_TYPE_COLUMN_NAME, INTEGER_NOT_NULL),
                 Pair.create(FHIR_RESOURCE_ID_COLUMN_NAME, TEXT_NOT_NULL),
                 Pair.create(FHIR_DATA_COLUMN_NAME, TEXT_NOT_NULL),
-                Pair.create(FHIR_VERSION_COLUMN_NAME, TEXT_NOT_NULL),
                 Pair.create(DATA_SOURCE_ID_COLUMN_NAME, INTEGER_NOT_NULL),
                 Pair.create(LAST_MODIFIED_TIME_COLUMN_NAME, INTEGER_NOT_NULL));
     }
@@ -432,7 +432,7 @@ public final class MedicalResourceHelper {
         return resourceTypeToDataSourceIdsMap;
     }
 
-    private static Set<Integer> getIntersectionOfResourceTypesReadAndGrantedReadPermissions(
+    static Set<Integer> getIntersectionOfResourceTypesReadAndGrantedReadPermissions(
             Set<Integer> resourceTypesRead, Set<Integer> grantedReadPerms) {
         Set<Integer> intersection = new HashSet<>(resourceTypesRead);
         intersection.retainAll(grantedReadPerms);
@@ -520,18 +520,19 @@ public final class MedicalResourceHelper {
     /**
      * Reads the {@link MedicalResource}s stored in the HealthConnect database by {@code request}.
      *
-     * @param request a {@link ReadMedicalResourcesRequest}.
+     * @param pageTokenWrapper a {@link PhrPageTokenWrapper}.
      * @return a {@link ReadMedicalResourcesInternalResponse}.
      */
     // TODO(b/354872929): Add cts tests for read by request.
 
     public ReadMedicalResourcesInternalResponse
             readMedicalResourcesByRequestWithoutPermissionChecks(
-                    ReadMedicalResourcesRequest request) {
+                    PhrPageTokenWrapper pageTokenWrapper, int pageSize) {
         ReadMedicalResourcesInternalResponse response;
-        ReadTableRequest readTableRequest = getReadTableRequestUsingRequestFilters(request);
+        ReadTableRequest readTableRequest =
+                getReadTableRequestUsingRequestFilters(pageTokenWrapper, pageSize);
         try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
-            response = getMedicalResources(cursor, request);
+            response = getMedicalResources(cursor, pageTokenWrapper, pageSize);
         }
         return response;
     }
@@ -547,7 +548,8 @@ public final class MedicalResourceHelper {
     // TODO(b/360352345): Add cts tests for access logs being created per API call.
 
     public ReadMedicalResourcesInternalResponse readMedicalResourcesByRequestWithPermissionChecks(
-            ReadMedicalResourcesRequest request,
+            PhrPageTokenWrapper pageTokenWrapper,
+            int pageSize,
             String callingPackageName,
             boolean enforceSelfRead) {
         return mTransactionManager.runAsTransaction(
@@ -555,15 +557,18 @@ public final class MedicalResourceHelper {
                     ReadMedicalResourcesInternalResponse response;
                     ReadTableRequest readTableRequest =
                             getReadTableRequestUsingRequestBasedOnPermissionFilters(
-                                    request, callingPackageName, enforceSelfRead);
+                                    pageTokenWrapper,
+                                    pageSize,
+                                    callingPackageName,
+                                    enforceSelfRead);
                     try (Cursor cursor = mTransactionManager.read(db, readTableRequest)) {
-                        response = getMedicalResources(cursor, request);
+                        response = getMedicalResources(cursor, pageTokenWrapper, pageSize);
                     }
                     if (!enforceSelfRead) {
                         mAccessLogsHelper.addAccessLog(
                                 db,
                                 callingPackageName,
-                                Set.of(request.getMedicalResourceType()),
+                                Set.of(pageTokenWrapper.getRequest().getMedicalResourceType()),
                                 OPERATION_TYPE_READ,
                                 /* accessedMedicalDataSource= */ false);
                     }
@@ -572,25 +577,28 @@ public final class MedicalResourceHelper {
     }
 
     private ReadTableRequest getReadTableRequestUsingRequestBasedOnPermissionFilters(
-            ReadMedicalResourcesRequest request,
+            PhrPageTokenWrapper pageTokenWrapper,
+            int pageSize,
             String callingPackageName,
             boolean enforceSelfRead) {
         // If this is true, app can only read its own data of the given filters set in the request.
         if (enforceSelfRead) {
             long appId = mAppInfoHelper.getAppInfoId(callingPackageName);
-            return getReadTableRequestUsingRequestFiltersAndAppId(request, appId);
+            return getReadTableRequestUsingRequestFiltersAndAppId(
+                    pageTokenWrapper, pageSize, appId);
         }
         // Otherwise, app can read all data of the given filters.
-        return getReadTableRequestUsingRequestFilters(request);
+        return getReadTableRequestUsingRequestFilters(pageTokenWrapper, pageSize);
     }
 
-    /** Creates {@link ReadTableRequest} for the given {@link ReadMedicalResourcesRequest}. */
+    /** Creates {@link ReadTableRequest} for the given {@link PhrPageTokenWrapper}. */
     @VisibleForTesting
     static ReadTableRequest getReadTableRequestUsingRequestFilters(
-            ReadMedicalResourcesRequest request) {
+            PhrPageTokenWrapper pageTokenWrapper, int pageSize) {
+        ReadMedicalResourcesInitialRequest request = pageTokenWrapper.getRequest();
         ReadTableRequest readTableRequest =
-                getReadTableRequestUsingPageSizeAndToken(
-                        request.getPageSize(), request.getPageToken());
+                getReadTableRequestUsingPageSizeAndLastRowId(
+                        pageSize, pageTokenWrapper.getLastRowId());
         SqlJoin joinClause;
         if (request.getDataSourceIds().isEmpty()) {
             joinClause =
@@ -606,15 +614,15 @@ public final class MedicalResourceHelper {
     }
 
     /**
-     * Creates {@link ReadTableRequest} for the given {@link ReadMedicalResourcesRequest} and {@code
+     * Creates {@link ReadTableRequest} for the given {@link PhrPageTokenWrapper} and {@code
      * callingPackageName}.
      */
     private static ReadTableRequest getReadTableRequestUsingRequestFiltersAndAppId(
-            ReadMedicalResourcesRequest request, long appId) {
-
+            PhrPageTokenWrapper pageTokenWrapper, int pageSize, long appId) {
+        ReadMedicalResourcesInitialRequest request = pageTokenWrapper.getRequest();
         ReadTableRequest readTableRequest =
-                getReadTableRequestUsingPageSizeAndToken(
-                        request.getPageSize(), request.getPageToken());
+                getReadTableRequestUsingPageSizeAndLastRowId(
+                        pageSize, pageTokenWrapper.getLastRowId());
         SqlJoin joinClause;
         if (request.getDataSourceIds().isEmpty()) {
             joinClause =
@@ -629,14 +637,25 @@ public final class MedicalResourceHelper {
         return readTableRequest.setJoinClause(joinClause);
     }
 
-    private static ReadTableRequest getReadTableRequestUsingPageSizeAndToken(
-            int pageSize, @Nullable String pageToken) {
+    private static ReadTableRequest getReadTableRequestUsingPageSizeAndLastRowId(
+            int pageSize, long lastRowId) {
         // The limit is set to pageSize + 1, so that we know if there are more resources
         // than the pageSize for creating the pageToken.
         return new ReadTableRequest(getMainTableName())
-                .setWhereClause(getReadByPageTokenWhereClause(pageToken))
+                .setWhereClause(getReadByLastRowIdWhereClause(lastRowId))
                 .setOrderBy(getOrderByClause())
                 .setLimit(pageSize + 1);
+    }
+
+    static ReadTableRequest getReadRequestForDistinctResourceTypesBelongingToDataSourceIds(
+            List<UUID> dataSourceIds) {
+        return new ReadTableRequest(getMainTableName())
+                .setDistinctClause(true)
+                .setColumnNames(
+                        List.of(MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName()))
+                .setJoinClause(
+                        getJoinWithMedicalDataSourceFilterOnDataSourceIds(
+                                dataSourceIds, joinWithMedicalResourceIndicesTable()));
     }
 
     @VisibleForTesting
@@ -846,14 +865,13 @@ public final class MedicalResourceHelper {
                 .addOrderByClause(MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME, /* isAscending= */ true);
     }
 
-    private static WhereClauses getReadByPageTokenWhereClause(@Nullable String pageToken) {
+    private static WhereClauses getReadByLastRowIdWhereClause(long lastRowId) {
         WhereClauses whereClauses = new WhereClauses(AND);
 
-        if (pageToken == null || pageToken.isEmpty()) {
+        if (lastRowId == DEFAULT_LONG) {
             return whereClauses;
         }
 
-        long lastRowId = PhrPageTokenWrapper.from(pageToken).getLastRowId();
         whereClauses.addWhereGreaterThanClause(MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME, lastRowId);
         return whereClauses;
     }
@@ -877,6 +895,8 @@ public final class MedicalResourceHelper {
      *     UpsertMedicalResourceInternalRequest}.
      * @return List of {@link MedicalResource}s that were upserted into the database, in the same
      *     order as their associated {@link UpsertMedicalResourceInternalRequest}s.
+     * @throws IllegalArgumentException if the data source id does not exist, or if a resource's
+     *     FHIR version does not match the data source's FHIR version.
      */
     public List<MedicalResource> upsertMedicalResources(
             String callingPackageName,
@@ -911,8 +931,8 @@ public final class MedicalResourceHelper {
                         .map(UpsertMedicalResourceInternalRequest::getDataSourceId)
                         .toList();
         long appInfoIdRestriction = mAppInfoHelper.getAppInfoId(callingPackageName);
-        Map<String, Long> dataSourceUuidToRowId =
-                mMedicalDataSourceHelper.getUuidToRowIdMap(
+        Map<String, Pair<Long, FhirVersion>> dataSourceUuidToRowIdAndVersion =
+                mMedicalDataSourceHelper.getUuidToRowIdAndVersionMap(
                         db, appInfoIdRestriction, StorageUtils.toUuids(dataSourceUuids));
 
         // Standard Upsert code cannot be used as it uses a query with inline values to look for
@@ -924,10 +944,19 @@ public final class MedicalResourceHelper {
         // https://developer.android.com/reference/android/database/sqlite/package-summary.html
         // So we use this.
         for (UpsertMedicalResourceInternalRequest upsertRequest : upsertRequests) {
-            Long dataSourceRowId = dataSourceUuidToRowId.get(upsertRequest.getDataSourceId());
-            if (dataSourceRowId == null) {
+            Pair<Long, FhirVersion> dataSourceRowIdAndVersion =
+                    dataSourceUuidToRowIdAndVersion.get(upsertRequest.getDataSourceId());
+            if (dataSourceRowIdAndVersion == null) {
                 throw new IllegalArgumentException(
                         "Invalid data source id: " + upsertRequest.getDataSourceId());
+            }
+            Long dataSourceRowId = dataSourceRowIdAndVersion.first;
+            String dataSourceFhirVersion = dataSourceRowIdAndVersion.second.toString();
+            if (!upsertRequest.getFhirVersion().equals(dataSourceFhirVersion)) {
+                throw new IllegalArgumentException(
+                        "Invalid fhir version: "
+                                + upsertRequest.getFhirVersion()
+                                + ". It did not match the data source's fhir version");
             }
             ContentValues contentValues =
                     getContentValues(dataSourceRowId, upsertRequest, mTimeSource.getInstantNow());
@@ -975,8 +1004,6 @@ public final class MedicalResourceHelper {
         resourceContentValues.put(
                 FHIR_DATA_COLUMN_NAME, upsertMedicalResourceInternalRequest.getData());
         resourceContentValues.put(
-                FHIR_VERSION_COLUMN_NAME, upsertMedicalResourceInternalRequest.getFhirVersion());
-        resourceContentValues.put(
                 FHIR_RESOURCE_TYPE_COLUMN_NAME,
                 upsertMedicalResourceInternalRequest.getFhirResourceType());
         resourceContentValues.put(
@@ -1011,7 +1038,7 @@ public final class MedicalResourceHelper {
      * than @link MAXIMUM_ALLOWED_CURSOR_COUNT} records, it throws {@link IllegalArgumentException}.
      */
     private static ReadMedicalResourcesInternalResponse getMedicalResources(
-            Cursor cursor, ReadMedicalResourcesRequest request) {
+            Cursor cursor, PhrPageTokenWrapper pageTokenWrapper, int pageSize) {
         // TODO(b/356613483): remove these checks in the helpers and instead validate pageSize
         // in the service.
         if (cursor.getCount() > MAXIMUM_ALLOWED_CURSOR_COUNT) {
@@ -1020,13 +1047,12 @@ public final class MedicalResourceHelper {
                             + MAXIMUM_ALLOWED_CURSOR_COUNT);
         }
         List<MedicalResource> medicalResources = new ArrayList<>();
-        int requestSize = request.getPageSize();
         String nextPageToken = null;
         long lastRowId = DEFAULT_LONG;
         if (cursor.moveToFirst()) {
             do {
-                if (medicalResources.size() >= requestSize) {
-                    nextPageToken = PhrPageTokenWrapper.of(request, lastRowId).encode();
+                if (medicalResources.size() >= pageSize) {
+                    nextPageToken = pageTokenWrapper.cloneWithNewLastRowId(lastRowId).encode();
                     break;
                 }
                 medicalResources.add(getMedicalResource(cursor));
@@ -1281,7 +1307,7 @@ public final class MedicalResourceHelper {
                                 getCursorString(cursor, FHIR_DATA_COLUMN_NAME))
                         .build();
         FhirVersion fhirVersion =
-                parseFhirVersion(getCursorString(cursor, FHIR_VERSION_COLUMN_NAME));
+                parseFhirVersion(getCursorString(cursor, getFhirVersionColumnName()));
         return new MedicalResource.Builder(
                         getCursorInt(cursor, getMedicalResourceTypeColumnName()),
                         getCursorUUID(cursor, getDataSourceUuidColumnName()).toString(),

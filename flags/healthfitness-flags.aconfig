@@ -162,3 +162,21 @@ flag {
        purpose: PURPOSE_BUGFIX
    }
 }
+
+flag {
+    name: "ecosystem_metrics"
+    namespace: "health_fitness_aconfig"
+    description: "Enables collection of ecosystem metrics."
+    bug: "369507783"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "immediate_export"
+    namespace: "health_fitness_aconfig"
+    description: "Enables immediate export."
+    bug: "318484000"
+    is_fixed_read_only: true
+    is_exported: true
+}

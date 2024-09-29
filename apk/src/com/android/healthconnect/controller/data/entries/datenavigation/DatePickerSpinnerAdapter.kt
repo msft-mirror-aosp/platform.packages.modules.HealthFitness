@@ -12,9 +12,9 @@ import com.android.healthconnect.controller.data.entries.datenavigation.DateNavi
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.SystemTimeSource
 import com.android.healthconnect.controller.utils.TimeSource
+import com.android.healthconnect.controller.utils.formatDateTimeForTimePeriod
 import java.time.Instant
 import java.time.LocalDate
-import java.time.Period
 import java.time.temporal.TemporalAdjusters
 import java.time.temporal.WeekFields
 import java.util.Locale
@@ -24,7 +24,7 @@ class DatePickerSpinnerAdapter(
     context: Context,
     private var displayedStartDate: Instant,
     var period: DateNavigationPeriod,
-    private val timeSource: TimeSource = SystemTimeSource
+    private val timeSource: TimeSource = SystemTimeSource,
 ) :
     ArrayAdapter<String>(
         context,
@@ -32,7 +32,9 @@ class DatePickerSpinnerAdapter(
         listOf(
             context.getString(R.string.date_picker_day),
             context.getString(R.string.date_picker_week),
-            context.getString(R.string.date_picker_month))) {
+            context.getString(R.string.date_picker_month),
+        ),
+    ) {
     private val dateFormatter = LocalDateTimeFormatter(context)
     private var text: String? = null
 
@@ -50,49 +52,18 @@ class DatePickerSpinnerAdapter(
         val view = super.getView(position, convertView, parent)
         if (view is TextView) {
             getItem(position)?.let {
-                val dateView = formatDateTimeForTimePeriod(displayedStartDate, period)
+                val dateView =
+                    formatDateTimeForTimePeriod(
+                        displayedStartDate,
+                        period,
+                        dateFormatter,
+                        timeSource,
+                    )
                 view.text = maybeReplaceWithTemporalDeixis(dateView, displayedStartDate, period)
-                text= view.text as String
+                text = view.text as String
             }
         }
         return view
-    }
-
-    /**
-     * Formats [startTime] and [period] as follows:
-     * * Day: "Sun, Aug 20" or "Mon, Aug 20, 2022"
-     * * Week: "Aug 21-27" or "Aug 21-27, 2022"
-     * * Month: "August" or "August 2022"
-     */
-    private fun formatDateTimeForTimePeriod(
-        startTime: Instant,
-        period: DateNavigationPeriod
-    ): String {
-        if (areInSameYear(startTime, Instant.ofEpochMilli(timeSource.currentTimeMillis()))) {
-            return when (period) {
-                PERIOD_DAY -> {
-                    dateFormatter.formatWeekdayDateWithoutYear(startTime)
-                }
-                PERIOD_WEEK -> {
-                    dateFormatter.formatDateRangeWithoutYear(
-                        startTime, startTime.plus(Period.ofWeeks(1)))
-                }
-                PERIOD_MONTH -> {
-                    dateFormatter.formatMonthWithoutYear(startTime)
-                }
-            }
-        }
-        return when (period) {
-            PERIOD_DAY -> {
-                dateFormatter.formatWeekdayDateWithYear(startTime)
-            }
-            PERIOD_WEEK -> {
-                dateFormatter.formatDateRangeWithYear(startTime, startTime.plus(Period.ofWeeks(1)))
-            }
-            PERIOD_MONTH -> {
-                dateFormatter.formatMonthWithYear(startTime)
-            }
-        }
     }
 
     /**
@@ -106,12 +77,13 @@ class DatePickerSpinnerAdapter(
     private fun maybeReplaceWithTemporalDeixis(
         dateView: String,
         selectedDate: Instant,
-        period: DateNavigationPeriod
+        period: DateNavigationPeriod,
     ): String {
         val currentPeriod =
             LocalDate.ofInstant(
                     Instant.ofEpochMilli(timeSource.currentTimeMillis()),
-                    timeSource.deviceZoneOffset())
+                    timeSource.deviceZoneOffset(),
+                )
                 .atStartOfDay(timeSource.deviceZoneOffset())
                 .toInstant()
         val previousPeriod =
@@ -153,7 +125,7 @@ class DatePickerSpinnerAdapter(
     private fun areInSamePeriod(
         instant1: Instant,
         instant2: Instant,
-        period: DateNavigationPeriod
+        period: DateNavigationPeriod,
     ): Boolean {
         return when (period) {
             PERIOD_DAY -> areOnSameDay(instant1, instant2)
