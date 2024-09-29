@@ -28,9 +28,9 @@ import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
-import com.android.healthconnect.controller.permissions.shared.DisconnectAllAppPermissionsDialogFragment
-import com.android.healthconnect.controller.permissions.shared.DisconnectAllAppPermissionsDialogFragment.Companion.DISCONNECT_EVENT
-import com.android.healthconnect.controller.permissions.shared.DisconnectAllAppPermissionsDialogFragment.Companion.KEY_DELETE_DATA
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment.Companion.DISCONNECT_ALL_EVENT
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment.Companion.KEY_DELETE_DATA
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -119,7 +119,7 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
             setupManageAppPreferenceCategory(granted)
         }
 
-        childFragmentManager.setFragmentResultListener(DISCONNECT_EVENT, this) { _, bundle ->
+        childFragmentManager.setFragmentResultListener(DISCONNECT_ALL_EVENT, this) { _, bundle ->
             val permissionsUpdated = revokeAllPermissions()
             val toastString =
                 if (!permissionsUpdated) {
@@ -268,8 +268,12 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
     }
 
     private fun showRevokeAllPermissions() {
-        DisconnectAllAppPermissionsDialogFragment(appName)
-            .show(childFragmentManager, DisconnectAllAppPermissionsDialogFragment.TAG)
+        DisconnectHealthPermissionsDialogFragment(
+                appName,
+                enableDeleteData = true,
+                disconnectType = DisconnectHealthPermissionsDialogFragment.DisconnectType.ALL,
+            )
+            .show(childFragmentManager, DisconnectHealthPermissionsDialogFragment.TAG)
     }
 
     private fun revokeAllPermissions(): Boolean {

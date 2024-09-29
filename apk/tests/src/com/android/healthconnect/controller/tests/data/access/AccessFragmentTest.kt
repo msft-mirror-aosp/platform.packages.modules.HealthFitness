@@ -44,7 +44,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -55,6 +54,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class AccessFragmentTest {
@@ -304,8 +304,8 @@ class AccessFragmentTest {
         }
         launchFragment<AccessFragment>(immunizationBundle)
 
-        onView(withText("Can read immunization")).check(matches(isDisplayed()))
-        onView(withText("Can write immunization")).check(doesNotExist())
+        onView(withText("Can read immunizations")).check(matches(isDisplayed()))
+        onView(withText("Can write immunizations")).check(doesNotExist())
         onView(withText("Inactive apps")).check(doesNotExist())
         onView(
                 withText(
@@ -350,7 +350,7 @@ class AccessFragmentTest {
     private val immunizationBundle: Bundle
         get() {
             val bundle = Bundle()
-            bundle.putString(PERMISSION_TYPE_NAME_KEY, MedicalPermissionType.IMMUNIZATION.name)
+            bundle.putString(PERMISSION_TYPE_NAME_KEY, MedicalPermissionType.IMMUNIZATIONS.name)
             return bundle
         }
 

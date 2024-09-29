@@ -58,6 +58,7 @@ public final class DeriveBasalCaloriesBurnedHelper {
     private static final String TAG = "DeriveBasalCalories";
     private final Cursor mCursor;
     private final String mColumnName;
+    private final TransactionManager mTransactionManager;
     private double mRateOfEnergyBurntInWatts = 0;
     private String mTimeColumnName;
 
@@ -65,13 +66,17 @@ public final class DeriveBasalCaloriesBurnedHelper {
     private static final int DEFAULT_AGE = 30;
 
     public DeriveBasalCaloriesBurnedHelper(
-            Cursor cursor, String columnName, String timeColumnName) {
+            Cursor cursor,
+            String columnName,
+            String timeColumnName,
+            TransactionManager transactionManager) {
         Objects.requireNonNull(cursor);
         Objects.requireNonNull(columnName);
         Objects.requireNonNull(timeColumnName);
         mCursor = cursor;
         mColumnName = columnName;
         mTimeColumnName = timeColumnName;
+        mTransactionManager = transactionManager;
     }
 
     /**
@@ -141,9 +146,8 @@ public final class DeriveBasalCaloriesBurnedHelper {
                     mRateOfEnergyBurntInWatts, intervalStartTime, intervalEndTime);
         }
 
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
         try (Cursor cursor =
-                transactionManager.read(
+                mTransactionManager.read(
                         new ReadTableRequest(BASAL_METABOLIC_RATE_RECORD_TABLE_NAME)
                                 .setColumnNames(List.of(BASAL_METABOLIC_RATE_COLUMN_NAME))
                                 .setWhereClause(
@@ -313,8 +317,7 @@ public final class DeriveBasalCaloriesBurnedHelper {
 
     private Cursor getReadCursorForDerivingBMR(
             long intervalStartTime, long intervalEndTime, String tableName, String colName) {
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        return transactionManager.read(
+        return mTransactionManager.read(
                 new ReadTableRequest(tableName)
                         .setColumnNames(List.of(colName, mTimeColumnName))
                         .setWhereClause(

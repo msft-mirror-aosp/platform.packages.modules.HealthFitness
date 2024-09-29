@@ -350,14 +350,12 @@ public final class DatabaseMerger {
             recordInternalList = readResult.first;
             token = readResult.second;
             if (readTableRequest.getExtraReadRequests() != null) {
+                RecordHelper<?> mainRecordHelper =
+                        requireNonNull(readTableRequest.getRecordHelper());
                 for (ReadTableRequest extraDataRequest : readTableRequest.getExtraReadRequests()) {
                     Cursor cursorExtraData = read(stagedDatabase, extraDataRequest);
-                    readTableRequest
-                            .getRecordHelper()
-                            .updateInternalRecordsWithExtraFields(
-                                    recordInternalList,
-                                    cursorExtraData,
-                                    extraDataRequest.getTableName());
+                    mainRecordHelper.updateInternalRecordsWithExtraFields(
+                            recordInternalList, cursorExtraData, extraDataRequest.getTableName());
                 }
             }
         }

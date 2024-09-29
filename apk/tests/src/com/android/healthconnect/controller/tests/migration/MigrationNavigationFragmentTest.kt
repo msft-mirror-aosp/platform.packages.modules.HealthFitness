@@ -13,7 +13,6 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.NavigationUtils
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -26,6 +25,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class MigrationNavigationFragmentTest {
@@ -44,7 +44,8 @@ class MigrationNavigationFragmentTest {
     fun whenMigrationFragmentStateLoading_showsLoading() {
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData<MigrationViewModel.MigrationFragmentState>(
-                MigrationViewModel.MigrationFragmentState.Loading)
+                MigrationViewModel.MigrationFragmentState.Loading
+            )
         }
 
         launchFragment<MigrationNavigationFragment>()
@@ -55,7 +56,8 @@ class MigrationNavigationFragmentTest {
     fun whenMigrationFragmentStateError_showsError() {
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData<MigrationViewModel.MigrationFragmentState>(
-                MigrationViewModel.MigrationFragmentState.Error)
+                MigrationViewModel.MigrationFragmentState.Error
+            )
         }
 
         launchFragment<MigrationNavigationFragment>()
@@ -71,7 +73,10 @@ class MigrationNavigationFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.ALLOWED_NOT_STARTED,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         launchFragment<MigrationNavigationFragment>()
@@ -88,7 +93,10 @@ class MigrationNavigationFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.ALLOWED_PAUSED,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         launchFragment<MigrationNavigationFragment>()
@@ -105,14 +113,18 @@ class MigrationNavigationFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.APP_UPGRADE_REQUIRED,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         launchFragment<MigrationNavigationFragment>()
         verify(navigationUtils, times(1))
             .navigate(
                 any(),
-                eq(R.id.action_migrationNavigationFragment_to_migrationAppUpdateNeededFragment))
+                eq(R.id.action_migrationNavigationFragment_to_migrationAppUpdateNeededFragment),
+            )
     }
 
     @Test
@@ -124,14 +136,18 @@ class MigrationNavigationFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.MODULE_UPGRADE_REQUIRED,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         launchFragment<MigrationNavigationFragment>()
         verify(navigationUtils, times(1))
             .navigate(
                 any(),
-                eq(R.id.action_migrationNavigationFragment_to_migrationModuleUpdateNeededFragment))
+                eq(R.id.action_migrationNavigationFragment_to_migrationModuleUpdateNeededFragment),
+            )
     }
 
     @Test
@@ -143,13 +159,18 @@ class MigrationNavigationFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IN_PROGRESS,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         launchFragment<MigrationNavigationFragment>()
         verify(navigationUtils, times(1))
             .navigate(
-                any(), eq(R.id.action_migrationNavigationFragment_to_migrationInProgressFragment))
+                any(),
+                eq(R.id.action_migrationNavigationFragment_to_migrationInProgressFragment),
+            )
     }
 
     @Test
@@ -161,7 +182,10 @@ class MigrationNavigationFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.COMPLETE_IDLE,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         launchFragment<MigrationNavigationFragment>()
@@ -178,7 +202,10 @@ class MigrationNavigationFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.COMPLETE,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         launchFragment<MigrationNavigationFragment>()
@@ -195,7 +222,10 @@ class MigrationNavigationFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         launchFragment<MigrationNavigationFragment>()
@@ -212,7 +242,10 @@ class MigrationNavigationFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.ALLOWED_MIGRATOR_DISABLED,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         launchFragment<MigrationNavigationFragment>()
@@ -229,7 +262,10 @@ class MigrationNavigationFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.UNKNOWN,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         launchFragment<MigrationNavigationFragment>()
@@ -246,13 +282,18 @@ class MigrationNavigationFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IN_PROGRESS,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         launchFragment<MigrationNavigationFragment>()
         verify(navigationUtils, times(1))
             .navigate(
-                any(), eq(R.id.action_migrationNavigationFragment_to_dataRestoreInProgressFragment))
+                any(),
+                eq(R.id.action_migrationNavigationFragment_to_dataRestoreInProgressFragment),
+            )
     }
 
     @Test
@@ -264,7 +305,10 @@ class MigrationNavigationFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.PENDING,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
 
         launchFragment<MigrationNavigationFragment>()
@@ -281,7 +325,10 @@ class MigrationNavigationFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_FETCHING_DATA)))
+                        dataRestoreError = DataRestoreUiError.ERROR_FETCHING_DATA,
+                    )
+                )
+            )
         }
 
         launchFragment<MigrationNavigationFragment>()

@@ -20,7 +20,6 @@ import android.health.connect.HealthConnectManager
 import android.os.OutcomeReceiver
 import com.android.healthconnect.controller.autodelete.api.UpdateAutoDeleteUseCase
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -40,6 +39,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest

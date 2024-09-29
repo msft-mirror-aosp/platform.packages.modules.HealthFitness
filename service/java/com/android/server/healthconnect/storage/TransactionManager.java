@@ -884,9 +884,13 @@ public final class TransactionManager {
         }
         for (ReadTableRequest extraDataRequest : request.getExtraReadRequests()) {
             Cursor cursorExtraData = read(extraDataRequest);
-            request.getRecordHelper()
-                    .updateInternalRecordsWithExtraFields(
-                            records, cursorExtraData, extraDataRequest.getTableName());
+            RecordHelper<?> recordHelper = request.getRecordHelper();
+            if (recordHelper == null) {
+                throw new IllegalArgumentException(
+                        "Extra read request with no attached record helper.");
+            }
+            recordHelper.updateInternalRecordsWithExtraFields(
+                    records, cursorExtraData, extraDataRequest.getTableName());
         }
     }
 
@@ -991,8 +995,10 @@ public final class TransactionManager {
                         callingPackageAppInfoId)) {
             Cursor cursorAdditionalUuids = read(additionalChangelogUuidRequest);
             while (cursorAdditionalUuids.moveToNext()) {
+                RecordHelper<?> extraRecordHelper =
+                        requireNonNull(additionalChangelogUuidRequest.getRecordHelper());
                 modificationChangelogs.addUUID(
-                        additionalChangelogUuidRequest.getRecordHelper().getRecordIdentifier(),
+                        extraRecordHelper.getRecordIdentifier(),
                         StorageUtils.getCursorLong(cursorAdditionalUuids, APP_INFO_ID_COLUMN_NAME),
                         StorageUtils.getCursorUUID(cursorAdditionalUuids, UUID_COLUMN_NAME));
             }
@@ -1016,6 +1022,9 @@ public final class TransactionManager {
         R run(SQLiteDatabase db) throws E;
     }
 
+    /**
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static synchronized TransactionManager initializeInstance(
             HealthConnectUserContext context) {
         if (sTransactionManager == null) {
@@ -1025,6 +1034,9 @@ public final class TransactionManager {
         return sTransactionManager;
     }
 
+    /**
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static TransactionManager getInitialisedInstance() {
         requireNonNull(sTransactionManager);
 

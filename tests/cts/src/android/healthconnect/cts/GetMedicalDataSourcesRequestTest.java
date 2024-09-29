@@ -57,6 +57,84 @@ public class GetMedicalDataSourcesRequestTest {
     }
 
     @Test
+    public void testBuilder_fromExistingBuilder() {
+        GetMedicalDataSourcesRequest.Builder original =
+                new GetMedicalDataSourcesRequest.Builder()
+                        .addPackageName("com.foo")
+                        .addPackageName("com.bar");
+        GetMedicalDataSourcesRequest copy =
+                new GetMedicalDataSourcesRequest.Builder(original).build();
+
+        assertThat(copy).isEqualTo(original.build());
+    }
+
+    @Test
+    public void testBuilder_fromExistingBuilder_changeIndependently() {
+        GetMedicalDataSourcesRequest.Builder original =
+                new GetMedicalDataSourcesRequest.Builder().addPackageName("com.foo");
+        GetMedicalDataSourcesRequest.Builder copy =
+                new GetMedicalDataSourcesRequest.Builder(original);
+        original.addPackageName("com.bar");
+
+        assertThat(original.build().getPackageNames()).containsExactly("com.foo", "com.bar");
+        assertThat(copy.build().getPackageNames()).containsExactly("com.foo");
+    }
+
+    @Test
+    public void testBuilder_fromExistingBuilderClearPackageNames() {
+        GetMedicalDataSourcesRequest.Builder original =
+                new GetMedicalDataSourcesRequest.Builder()
+                        .addPackageName("com.foo")
+                        .addPackageName("com.bar");
+        GetMedicalDataSourcesRequest.Builder copy =
+                new GetMedicalDataSourcesRequest.Builder(original);
+        original.clearPackageNames();
+
+        assertThat(original.build().getPackageNames()).isEmpty();
+        assertThat(copy.build().getPackageNames()).containsExactly("com.foo", "com.bar");
+    }
+
+    @Test
+    public void testBuilder_fromExistingInstance() {
+        GetMedicalDataSourcesRequest original =
+                new GetMedicalDataSourcesRequest.Builder()
+                        .addPackageName("com.foo")
+                        .addPackageName("com.bar")
+                        .build();
+        GetMedicalDataSourcesRequest copy =
+                new GetMedicalDataSourcesRequest.Builder(original).build();
+
+        assertThat(copy).isEqualTo(original);
+    }
+
+    @Test
+    public void testBuilder_fromExistingInstance_changeIndependently() {
+        GetMedicalDataSourcesRequest original =
+                new GetMedicalDataSourcesRequest.Builder().addPackageName("com.foo").build();
+        GetMedicalDataSourcesRequest.Builder copy =
+                new GetMedicalDataSourcesRequest.Builder(original);
+        copy.addPackageName("com.bar");
+
+        assertThat(original.getPackageNames()).containsExactly("com.foo");
+        assertThat(copy.build().getPackageNames()).containsExactly("com.foo", "com.bar");
+    }
+
+    @Test
+    public void testBuilder_fromExistingInstanceClearPackageNames() {
+        GetMedicalDataSourcesRequest original =
+                new GetMedicalDataSourcesRequest.Builder()
+                        .addPackageName("com.foo")
+                        .addPackageName("com.bar")
+                        .build();
+        GetMedicalDataSourcesRequest.Builder copy =
+                new GetMedicalDataSourcesRequest.Builder(original);
+        copy.clearPackageNames();
+
+        assertThat(original.getPackageNames()).containsExactly("com.foo", "com.bar");
+        assertThat(copy.build().getPackageNames()).isEmpty();
+    }
+
+    @Test
     public void testRequest_equalsAndHashcode() {
         GetMedicalDataSourcesRequest request =
                 new GetMedicalDataSourcesRequest.Builder()

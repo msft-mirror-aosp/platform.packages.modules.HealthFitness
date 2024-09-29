@@ -35,7 +35,6 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionTy
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.logging.DataAccessElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -53,6 +52,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class HealthDataAccessFragmentTest {
@@ -84,7 +84,9 @@ class HealthDataAccessFragmentTest {
         onView(withText("Inactive apps")).check(doesNotExist())
         onView(
                 withText(
-                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"
+                )
+            )
             .check(doesNotExist())
         onView(withText("Manage data")).check(matches(isDisplayed()))
         onView(withText("See all entries")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -95,9 +97,11 @@ class HealthDataAccessFragmentTest {
     fun dataAccessFragment_readSection_isDisplayed() {
         val map =
             mapOf(
-                AppAccessState.Read to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
+                AppAccessState.Read to
+                    listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
                 AppAccessState.Write to emptyList(),
-                AppAccessState.Inactive to emptyList())
+                AppAccessState.Inactive to emptyList(),
+            )
         whenever(viewModel.appMetadataMap).then {
             MutableLiveData<AccessScreenState>(WithData(map))
         }
@@ -108,7 +112,9 @@ class HealthDataAccessFragmentTest {
         onView(withText("Inactive apps")).check(doesNotExist())
         onView(
                 withText(
-                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"
+                )
+            )
             .check(doesNotExist())
         onView(withText("Manage data")).check(matches(isDisplayed()))
         onView(withText("See all entries")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -119,9 +125,12 @@ class HealthDataAccessFragmentTest {
     fun dataAccessFragment_readAndWriteSections_isDisplayed() {
         val map =
             mapOf(
-                AppAccessState.Read to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
-                AppAccessState.Write to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
-                AppAccessState.Inactive to emptyList())
+                AppAccessState.Read to
+                    listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
+                AppAccessState.Write to
+                    listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
+                AppAccessState.Inactive to emptyList(),
+            )
         whenever(viewModel.appMetadataMap).then {
             MutableLiveData<AccessScreenState>(WithData(map))
         }
@@ -132,7 +141,9 @@ class HealthDataAccessFragmentTest {
         onView(withText("Inactive apps")).check(doesNotExist())
         onView(
                 withText(
-                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"
+                )
+            )
             .check(doesNotExist())
         onView(withText("Manage data")).check(matches(isDisplayed()))
         onView(withText("See all entries")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -152,7 +163,9 @@ class HealthDataAccessFragmentTest {
             mapOf(
                 AppAccessState.Read to emptyList(),
                 AppAccessState.Write to emptyList(),
-                AppAccessState.Inactive to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))))
+                AppAccessState.Inactive to
+                    listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
+            )
         whenever(viewModel.appMetadataMap).then {
             MutableLiveData<AccessScreenState>(WithData(map))
         }
@@ -163,7 +176,9 @@ class HealthDataAccessFragmentTest {
         onView(withText("Inactive apps")).check(matches(isDisplayed()))
         onView(
                 withText(
-                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"))
+                    "These apps can no longer read or write distance, but still have data stored in Health\u00A0Connect"
+                )
+            )
             .check(matches(isDisplayed()))
         onView(withText("Manage data")).check(matches(isDisplayed()))
         onView(withText("See all entries")).perform(scrollTo()).check(matches(isDisplayed()))

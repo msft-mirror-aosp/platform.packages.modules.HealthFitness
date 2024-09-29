@@ -60,6 +60,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class DataEntriesFragmentTest {
@@ -80,7 +81,7 @@ class DataEntriesFragmentTest {
         context.setLocale(Locale.UK)
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
 
-        Mockito.`when`(viewModel.currentSelectedDate).thenReturn(MutableLiveData())
+        whenever(viewModel.currentSelectedDate).thenReturn(MutableLiveData())
     }
 
     @After
@@ -90,7 +91,7 @@ class DataEntriesFragmentTest {
 
     @Test
     fun dataEntriesInit_showsDateNavigationPreference() {
-        Mockito.`when`(viewModel.dataEntries).thenReturn(MutableLiveData(WithData(emptyList())))
+        whenever(viewModel.dataEntries).thenReturn(MutableLiveData(WithData(emptyList())))
 
         launchFragment<DataEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
 
@@ -104,7 +105,7 @@ class DataEntriesFragmentTest {
 
     @Test
     fun dataEntriesInit_noData_showsNoData() {
-        Mockito.`when`(viewModel.dataEntries).thenReturn(MutableLiveData(Empty))
+        whenever(viewModel.dataEntries).thenReturn(MutableLiveData(Empty))
 
         launchFragment<DataEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
 
@@ -113,7 +114,7 @@ class DataEntriesFragmentTest {
 
     @Test
     fun dataEntriesInit_error_showsNoData() {
-        Mockito.`when`(viewModel.dataEntries).thenReturn(MutableLiveData(LoadingFailed))
+        whenever(viewModel.dataEntries).thenReturn(MutableLiveData(LoadingFailed))
 
         launchFragment<DataEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
 
@@ -122,7 +123,7 @@ class DataEntriesFragmentTest {
 
     @Test
     fun dataEntriesInit_loading_showsLoading() {
-        Mockito.`when`(viewModel.dataEntries).thenReturn(MutableLiveData(Loading))
+        whenever(viewModel.dataEntries).thenReturn(MutableLiveData(Loading))
 
         launchFragment<DataEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
 
@@ -131,8 +132,7 @@ class DataEntriesFragmentTest {
 
     @Test
     fun dataEntriesInit_withData_showsListOfEntries() {
-        Mockito.`when`(viewModel.dataEntries)
-            .thenReturn(MutableLiveData(WithData(FORMATTED_STEPS_LIST)))
+        whenever(viewModel.dataEntries).thenReturn(MutableLiveData(WithData(FORMATTED_STEPS_LIST)))
 
         launchFragment<DataEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
 
@@ -150,7 +150,7 @@ class DataEntriesFragmentTest {
 
     @Test
     fun dataEntriesInit_withPlannedExerciseData_showsListOfPlannedExerciseEntries() {
-        Mockito.`when`(viewModel.dataEntries)
+        whenever(viewModel.dataEntries)
             .thenReturn(MutableLiveData(WithData(FORMATTED_PLANNED_EXERCISE_LIST)))
 
         launchFragment<DataEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to PLANNED_EXERCISE))
@@ -167,8 +167,7 @@ class DataEntriesFragmentTest {
 
     @Test
     fun dataEntries_withData_showsDeleteAction() {
-        Mockito.`when`(viewModel.dataEntries)
-            .thenReturn(MutableLiveData(WithData(FORMATTED_STEPS_LIST)))
+        whenever(viewModel.dataEntries).thenReturn(MutableLiveData(WithData(FORMATTED_STEPS_LIST)))
 
         launchFragment<DataEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
 
@@ -184,18 +183,22 @@ private val FORMATTED_STEPS_LIST =
             headerA11y = "from 7:06 to 7:06 • TEST_APP_NAME",
             title = "12 steps",
             titleA11y = "12 steps",
-            dataType = DataType.STEPS),
+            dataType = DataType.STEPS,
+        ),
         FormattedDataEntry(
             uuid = "test_id",
             header = "8:06 - 8:06 • TEST_APP_NAME",
             headerA11y = "from 8:06 to 8:06 • TES   T_APP_NAME",
             title = "15 steps",
             titleA11y = "15 steps",
-            dataType = DataType.STEPS),
+            dataType = DataType.STEPS,
+        ),
         FormattedAggregation(
             aggregation = "127 steps",
             aggregationA11y = "127 steps",
-            contributingApps = "TEST_APP_NAME, TEST_APP_NAME_2"))
+            contributingApps = "TEST_APP_NAME, TEST_APP_NAME_2",
+        ),
+    )
 
 private val FORMATTED_PLANNED_EXERCISE_LIST =
     listOf(
@@ -206,7 +209,8 @@ private val FORMATTED_PLANNED_EXERCISE_LIST =
             title = "Running • Morning Run",
             titleA11y = "Running • Morning Run",
             notes = "Daily morning run.",
-            dataType = DataType.PLANNED_EXERCISE),
+            dataType = DataType.PLANNED_EXERCISE,
+        ),
         PlannedExerciseSessionEntry(
             uuid = "test_id",
             header = "4:00 PM - 5:00 PM • TEST_APP_NAME",
@@ -214,4 +218,6 @@ private val FORMATTED_PLANNED_EXERCISE_LIST =
             title = "Swimming • Freestyle Technique Bootcamp",
             titleA11y = "Swimming • Freestyle Technique Bootcamp",
             notes = "A weekly swimming training plan.",
-            dataType = DataType.PLANNED_EXERCISE))
+            dataType = DataType.PLANNED_EXERCISE,
+        ),
+    )

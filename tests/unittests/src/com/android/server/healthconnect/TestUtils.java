@@ -75,10 +75,6 @@ public final class TestUtils {
                 15);
     }
 
-    public static long getInternalBackgroundExecutorTaskCount() {
-        return HealthConnectThreadScheduler.sInternalBackgroundExecutor.getTaskCount();
-    }
-
     /** Runs a {@link Runnable} adopting a subset of Shell's permissions. */
     public static void runWithShellPermissionIdentity(
             @NonNull Runnable runnable, String... permissions) {

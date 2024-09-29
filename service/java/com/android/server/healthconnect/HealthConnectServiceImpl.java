@@ -185,6 +185,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.AggregateTransactionRequest;
@@ -259,6 +260,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private MedicalDataSourceHelper mMedicalDataSourceHelper;
     private final ExportManager mExportManager;
     private final AccessLogsHelper mAccessLogsHelper;
+    private final ActivityDateHelper mActivityDateHelper;
+    private final ChangeLogsHelper mChangeLogsHelper;
+    private final ChangeLogsRequestHelper mChangeLogsRequestHelper;
+    private final MigrationEntityHelper mMigrationEntityHelper;
 
     private volatile UserHandle mCurrentForegroundUser;
 
@@ -276,7 +281,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ExportManager exportManager,
             ExportImportSettingsStorage exportImportSettingsStorage,
             AccessLogsHelper accessLogsHelper,
-            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            ActivityDateHelper activityDateHelper,
+            ChangeLogsHelper changeLogsHelper,
+            ChangeLogsRequestHelper changeLogsRequestHelper) {
         this(
                 transactionManager,
                 deviceConfigManager,
@@ -291,7 +299,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 exportManager,
                 exportImportSettingsStorage,
                 accessLogsHelper,
-                healthDataCategoryPriorityHelper);
+                healthDataCategoryPriorityHelper,
+                activityDateHelper,
+                changeLogsHelper,
+                changeLogsRequestHelper);
     }
 
     @VisibleForTesting
@@ -309,10 +320,15 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ExportManager exportManager,
             ExportImportSettingsStorage exportImportSettingsStorage,
             AccessLogsHelper accessLogsHelper,
-            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            ActivityDateHelper activityDateHelper,
+            ChangeLogsHelper changeLogsHelper,
+            ChangeLogsRequestHelper changeLogsRequestHelper) {
         mAccessLogsHelper = accessLogsHelper;
         mTransactionManager = transactionManager;
         mPreferenceHelper = PreferenceHelper.getInstance();
+        mChangeLogsRequestHelper = changeLogsRequestHelper;
+        mActivityDateHelper = activityDateHelper;
         mDeviceConfigManager = deviceConfigManager;
         mPermissionHelper = permissionHelper;
         mFirstGrantTimeManager = firstGrantTimeManager;
@@ -357,6 +373,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mAggregationTypeIdMapper = AggregationTypeIdMapper.getInstance();
         mMedicalResourceHelper = medicalResourceHelper;
         mMedicalDataSourceHelper = medicalDataSourceHelper;
+        mChangeLogsHelper = changeLogsHelper;
+        mMigrationEntityHelper = new MigrationEntityHelper();
     }
 
     public void onUserSwitching(UserHandle currentForegroundUser) {
@@ -514,7 +532,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     private void postInsertTasks(AttributionSource attributionSource, RecordsParcel recordsParcel) {
-        ActivityDateHelper.insertRecordDate(recordsParcel.getRecords());
+        mActivityDateHelper.insertRecordDate(recordsParcel.getRecords());
         Set<Integer> recordsTypesInsertedSet =
                 recordsParcel.getRecords().stream()
                         .map(RecordInternal::getRecordType)
@@ -607,6 +625,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             attributionSource.getPackageName(),
                                             request,
                                             mHealthDataCategoryPriorityHelper,
+                                            mTransactionManager,
                                             startDateAccess)
                                     .getAggregateDataResponseParcel(mAccessLogsHelper));
                     logger.setDataTypesFromRecordTypes(recordTypesToTest)
@@ -883,7 +902,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     // Update activity dates table
                     HealthConnectThreadScheduler.scheduleInternalTask(
                             () ->
-                                    ActivityDateHelper.reSyncByRecordTypeIds(
+                                    mActivityDateHelper.reSyncByRecordTypeIds(
                                             recordInternals.stream()
                                                     .map(RecordInternal::getRecordType)
                                                     .toList()));
@@ -929,8 +948,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             request.getRecordTypesList(), attributionSource);
                     callback.onResult(
                             new ChangeLogTokenResponse(
-                                    ChangeLogsRequestHelper.getToken(
-                                            attributionSource.getPackageName(), request)));
+                                    mChangeLogsRequestHelper.getToken(
+                                            mChangeLogsHelper.getLatestRowId(mTransactionManager),
+                                            attributionSource.getPackageName(),
+                                            request,
+                                            mTransactionManager)));
                     logger.setHealthDataServiceApiStatusSuccess();
                 },
                 logger,
@@ -978,8 +1000,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     }
 
                     ChangeLogsRequestHelper.TokenRequest changeLogsTokenRequest =
-                            ChangeLogsRequestHelper.getRequest(
-                                    callerPackageName, request.getToken());
+                            mChangeLogsRequestHelper.getRequest(
+                                    callerPackageName, request.getToken(), mTransactionManager);
                     tryAcquireApiCallQuota(
                             uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, logger);
                     if (changeLogsTokenRequest.getRecordTypes().isEmpty()) {
@@ -997,8 +1019,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                         .toEpochMilli();
                     }
                     final ChangeLogsHelper.ChangeLogsResponse changeLogsResponse =
-                            ChangeLogsHelper.getChangeLogs(
-                                    mAppInfoHelper, changeLogsTokenRequest, request);
+                            mChangeLogsHelper.getChangeLogs(
+                                    mAppInfoHelper,
+                                    mTransactionManager,
+                                    changeLogsTokenRequest,
+                                    request,
+                                    mChangeLogsRequestHelper);
 
                     Map<Integer, List<UUID>> recordTypeToInsertedUuids =
                             ChangeLogsHelper.getRecordTypeToInsertedUuids(
@@ -1497,7 +1523,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
                         throwExceptionIfDataSyncInProgress();
                         List<LocalDate> localDates =
-                                ActivityDateHelper.getActivityDates(
+                                mActivityDateHelper.getActivityDates(
                                         activityDatesRequestParcel.getRecordTypes());
 
                         callback.onResult(new ActivityDatesResponseParcel(localDates));
@@ -2437,9 +2463,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     enforceIsForegroundUser(userHandle);
                     verifyPackageNameFromUid(uid, attributionSource);
                     throwExceptionIfDataSyncInProgress();
-                    Long appInfoIdRestriction;
                     if (holdsDataManagementPermission) {
-                        appInfoIdRestriction = null;
+                        mMedicalDataSourceHelper.deleteMedicalDataSourceWithoutPermissionChecks(
+                                uuid);
                     } else {
                         boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
                         logger.setCallerForegroundState(isInForeground);
@@ -2447,17 +2473,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 uid, QuotaCategory.QUOTA_CATEGORY_WRITE, isInForeground, logger);
                         mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
                                 attributionSource);
-                        appInfoIdRestriction =
-                                mAppInfoHelper.getAppInfoId(attributionSource.getPackageName());
-                        if (appInfoIdRestriction == Constants.DEFAULT_LONG) {
-                            throw new IllegalArgumentException(
-                                    "Deletion not permitted as app has inserted no data.");
-                        }
+                        // This also deletes the contained data, because they are referenced
+                        // by foreign key, and so are handled by ON DELETE CASCADE in the db.
+                        mMedicalDataSourceHelper.deleteMedicalDataSourceWithPermissionChecks(
+                                uuid, attributionSource.getPackageName());
                     }
-
-                    // This also deletes the contained data, because they are referenced
-                    // by foreign key, and so are handled by ON DELETE CASCADE in the db.
-                    mMedicalDataSourceHelper.deleteMedicalDataSource(uuid, appInfoIdRestriction);
                     tryAndReturnResult(callback, logger);
                 },
                 logger,
@@ -3100,7 +3120,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 mAppInfoHelper,
                 mHealthDataCategoryPriorityHelper,
                 mPriorityMigrationHelper,
-                mPreferenceHelper);
+                mPreferenceHelper,
+                mMigrationEntityHelper);
     }
 
     private void enforceCallingPackageBelongsToUid(String packageName, int callingUid) {
@@ -3310,7 +3331,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private void postDeleteTasks(List<Integer> recordTypeIdsToDelete) {
         if (recordTypeIdsToDelete != null && !recordTypeIdsToDelete.isEmpty()) {
             mAppInfoHelper.syncAppInfoRecordTypesUsed(new HashSet<>(recordTypeIdsToDelete));
-            ActivityDateHelper.reSyncByRecordTypeIds(recordTypeIdsToDelete);
+            mActivityDateHelper.reSyncByRecordTypeIds(recordTypeIdsToDelete);
         }
     }
 

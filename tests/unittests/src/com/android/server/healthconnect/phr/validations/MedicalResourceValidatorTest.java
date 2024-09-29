@@ -47,6 +47,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_UNSUPP
 import static android.healthconnect.cts.utils.PhrDataFactory.getUpsertMedicalResourceRequestBuilder;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -56,9 +57,12 @@ import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.utils.ConditionBuilder;
+import android.healthconnect.cts.utils.EncountersBuilder;
 import android.healthconnect.cts.utils.MedicationsBuilder;
 import android.healthconnect.cts.utils.ObservationBuilder;
 import android.healthconnect.cts.utils.ObservationBuilder.QuantityUnits;
+import android.healthconnect.cts.utils.PatientBuilder;
+import android.healthconnect.cts.utils.PractitionerBuilder;
 import android.healthconnect.cts.utils.ProcedureBuilder;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -79,7 +83,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-@EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+@EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
 @RunWith(TestParameterInjector.class)
 public class MedicalResourceValidatorTest {
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
@@ -93,7 +97,7 @@ public class MedicalResourceValidatorTest {
         UpsertMedicalResourceInternalRequest expected =
                 new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
-                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .setFhirResourceType(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(FHIR_RESOURCE_ID_IMMUNIZATION)
                         .setFhirVersion(FHIR_VERSION_R4)
@@ -115,7 +119,7 @@ public class MedicalResourceValidatorTest {
         UpsertMedicalResourceInternalRequest expected =
                 new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
-                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .setFhirResourceType(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(FHIR_RESOURCE_ID_IMMUNIZATION)
                         .setFhirVersion(FHIR_VERSION_R4B)
@@ -218,26 +222,26 @@ public class MedicalResourceValidatorTest {
     }
 
     @Test
-    public void testCalculateMedicalResourceType_allergy() throws JSONException {
+    public void testCalculateMedicalResourceType_allergy() {
         MedicalResourceValidator validator = makeValidator(FHIR_DATA_ALLERGY);
 
         int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
 
-        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
+        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES);
     }
 
     @Test
-    public void testCalculateMedicalResourceType_condition() throws JSONException {
+    public void testCalculateMedicalResourceType_condition() {
         String fhirData = new ConditionBuilder().toJson();
         MedicalResourceValidator validator = makeValidator(fhirData);
 
         int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
 
-        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS);
+        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS);
     }
 
     @Test
-    public void testCalculateMedicalResourceType_procedure() throws JSONException {
+    public void testCalculateMedicalResourceType_procedure() {
         String fhirData = new ProcedureBuilder().toJson();
         MedicalResourceValidator validator = makeValidator(fhirData);
 
@@ -274,6 +278,66 @@ public class MedicalResourceValidatorTest {
         int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
 
         assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS);
+    }
+
+    @Test
+    public void testCalculateMedicalResourceType_patient() {
+        String fhirData = new PatientBuilder().toJson();
+        MedicalResourceValidator validator = makeValidator(fhirData);
+
+        int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
+
+        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS);
+    }
+
+    @Test
+    public void testCalculateMedicalResourceType_practitioner() {
+        String fhirData = new PractitionerBuilder().toJson();
+        MedicalResourceValidator validator = makeValidator(fhirData);
+
+        int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
+
+        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS);
+    }
+
+    @Test
+    public void testCalculateMedicalResourceType_practitionerRole() {
+        String fhirData = PractitionerBuilder.role().toJson();
+        MedicalResourceValidator validator = makeValidator(fhirData);
+
+        int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
+
+        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS);
+    }
+
+    @Test
+    public void testCalculateMedicalResourceType_encounter() {
+        String fhirData = EncountersBuilder.encounter().toJson();
+        MedicalResourceValidator validator = makeValidator(fhirData);
+
+        int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
+
+        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS);
+    }
+
+    @Test
+    public void testCalculateMedicalResourceType_location() {
+        String fhirData = EncountersBuilder.location().toJson();
+        MedicalResourceValidator validator = makeValidator(fhirData);
+
+        int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
+
+        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS);
+    }
+
+    @Test
+    public void testCalculateMedicalResourceType_organization() {
+        String fhirData = EncountersBuilder.organization().toJson();
+        MedicalResourceValidator validator = makeValidator(fhirData);
+
+        int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
+
+        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS);
     }
 
     // IPS artifacts: https://build.fhir.org/ig/HL7/fhir-ips/artifacts.html
@@ -381,7 +445,7 @@ public class MedicalResourceValidatorTest {
 
     @Test
     public void testCalculateMedicalResourceType_pregnancyStatus_pregnancy(
-            @TestParameter PregnancyStatusTestValue testValue) throws JSONException {
+            @TestParameter PregnancyStatusTestValue testValue) {
         String fhirData =
                 new ObservationBuilder()
                         .setCode(LOINC, testValue.mCode)
@@ -411,7 +475,7 @@ public class MedicalResourceValidatorTest {
 
     @Test
     public void testCalculateMedicalResourceType_expectedDeliveryDate_pregnancy(
-            @TestParameter({"11778-8", "11779-6", "11780-4"}) String code) throws JSONException {
+            @TestParameter({"11778-8", "11779-6", "11780-4"}) String code) {
         // https://build.fhir.org/ig/HL7/fhir-ips/ValueSet-edd-method-uv-ips.html
         String fhirData =
                 new ObservationBuilder()
@@ -438,7 +502,7 @@ public class MedicalResourceValidatorTest {
 
     @Test
     public void testCalculateMedicalResourceType_smoking_socialHistory(
-            @TestParameter SmokingTestValue value) throws JSONException {
+            @TestParameter SmokingTestValue value) {
         // https://build.fhir.org/ig/HL7/fhir-ips/StructureDefinition-Observation-tobaccouse-uv-ips.html
         String fhirData =
                 new ObservationBuilder()
@@ -479,7 +543,7 @@ public class MedicalResourceValidatorTest {
 
     @Test
     public void testCalculateMedicalResourceType_vitalSigns_vitalSigns(
-            @TestParameter VitalSignsTestValue value) throws JSONException {
+            @TestParameter VitalSignsTestValue value) {
         // From https://hl7.org/fhir/R5/observation-vitalsigns.html
         String fhirData =
                 new ObservationBuilder()
