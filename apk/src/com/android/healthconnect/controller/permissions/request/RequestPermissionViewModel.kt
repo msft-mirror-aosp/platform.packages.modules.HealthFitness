@@ -55,7 +55,7 @@ constructor(
     private val getGrantedHealthPermissionsUseCase: GetGrantedHealthPermissionsUseCase,
     private val getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase,
     private val loadAccessDateUseCase: LoadAccessDateUseCase,
-    private val healthPermissionReader: HealthPermissionReader
+    private val healthPermissionReader: HealthPermissionReader,
 ) : ViewModel() {
 
     companion object {
@@ -109,11 +109,13 @@ constructor(
         MediatorLiveData(false).apply {
             addSource(_fitnessPermissionsList) {
                 postValue(
-                    areAllPermissionsGranted(fitnessPermissionsList, grantedFitnessPermissions))
+                    areAllPermissionsGranted(fitnessPermissionsList, grantedFitnessPermissions)
+                )
             }
             addSource(_grantedFitnessPermissions) {
                 postValue(
-                    areAllPermissionsGranted(fitnessPermissionsList, grantedFitnessPermissions))
+                    areAllPermissionsGranted(fitnessPermissionsList, grantedFitnessPermissions)
+                )
             }
         }
     val allFitnessPermissionsGranted: LiveData<Boolean>
@@ -124,11 +126,13 @@ constructor(
         MediatorLiveData(false).apply {
             addSource(_medicalPermissionsList) {
                 postValue(
-                    areAllPermissionsGranted(medicalPermissionsList, grantedMedicalPermissions))
+                    areAllPermissionsGranted(medicalPermissionsList, grantedMedicalPermissions)
+                )
             }
             addSource(_grantedFitnessPermissions) {
                 postValue(
-                    areAllPermissionsGranted(medicalPermissionsList, grantedMedicalPermissions))
+                    areAllPermissionsGranted(medicalPermissionsList, grantedMedicalPermissions)
+                )
             }
         }
     val allMedicalPermissionsGranted: LiveData<Boolean>
@@ -142,11 +146,13 @@ constructor(
         MediatorLiveData<AdditionalPermissionsInfo>().apply {
             addSource(_additionalPermissionsList) { additionalPermissionsList ->
                 this.postValue(
-                    AdditionalPermissionsInfo(additionalPermissionsList, _appMetaData.value))
+                    AdditionalPermissionsInfo(additionalPermissionsList, _appMetaData.value)
+                )
             }
             addSource(_appMetaData) { appMetadata ->
                 this.postValue(
-                    AdditionalPermissionsInfo(_additionalPermissionsList.value, appMetadata))
+                    AdditionalPermissionsInfo(_additionalPermissionsList.value, appMetadata)
+                )
             }
         }
 
@@ -216,10 +222,11 @@ constructor(
 
     /** Returns true if any of the requested permissions is USER_FIXED, false otherwise. */
     fun isAnyPermissionUserFixed(packageName: String, permissions: Array<out String>): Boolean {
-        return getHealthPermissionsFlagsUseCase.invoke(packageName, permissions.toList()).any {
-            (_, flags) ->
-            flags.and(PackageManager.FLAG_PERMISSION_USER_FIXED) != 0
-        }
+        val declaredPermissions = healthPermissionReader.getDeclaredHealthPermissions(packageName)
+        val validPermissions = permissions.filter { declaredPermissions.contains(it) }
+        return getHealthPermissionsFlagsUseCase
+            .invoke(packageName, validPermissions.toList())
+            .any { (_, flags) -> flags.and(PackageManager.FLAG_PERMISSION_USER_FIXED) != 0 }
     }
 
     /** Mark a permission as locally granted */
@@ -309,7 +316,7 @@ constructor(
 
     private fun <T> areAllPermissionsGranted(
         permissionsListLiveData: LiveData<List<T>>,
-        grantedPermissionsLiveData: LiveData<Set<T>>
+        grantedPermissionsLiveData: LiveData<Set<T>>,
     ): Boolean {
         val permissionsList = permissionsListLiveData.value.orEmpty()
         val grantedPermissions = grantedPermissionsLiveData.value.orEmpty()
@@ -396,7 +403,7 @@ constructor(
     /** Adds a permission to the [requestedPermissions] map with its original granted state */
     private fun addToRequestedPermissions(
         grantedPermissions: List<String>,
-        permission: HealthPermission
+        permission: HealthPermission,
     ) {
         val isPermissionGranted = grantedPermissions.contains(permission.toString())
         if (isPermissionGranted) {
@@ -445,7 +452,7 @@ constructor(
     private fun internalGrantOrRevokePermission(
         packageName: String,
         permission: HealthPermission,
-        permissionState: PermissionState
+        permissionState: PermissionState,
     ) {
         val granted =
             isPermissionLocallyGranted(permission) || permissionState == PermissionState.GRANTED
@@ -468,5 +475,5 @@ constructor(
 
 data class AdditionalPermissionsInfo(
     val additionalPermissions: List<AdditionalPermission>?,
-    val appInfo: AppMetadata?
+    val appInfo: AppMetadata?,
 )

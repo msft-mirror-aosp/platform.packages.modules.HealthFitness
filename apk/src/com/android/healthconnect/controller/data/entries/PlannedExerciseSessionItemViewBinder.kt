@@ -32,7 +32,7 @@ import dagger.hilt.android.EntryPointAccessors
 /** ViewBinder for PlannedExerciseSessionEntry. */
 class PlannedExerciseSessionItemViewBinder(
     private val onItemClickedListener: OnClickEntryListener?,
-    private val onDeleteEntryListener: OnDeleteEntryListener? = null,
+    private val onSelectEntryListener: OnSelectEntryListener? = null,
 ) : DeletionViewBinder<FormattedEntry.PlannedExerciseSessionEntry, View> {
     private lateinit var logger: HealthConnectLogger
 
@@ -66,7 +66,7 @@ class PlannedExerciseSessionItemViewBinder(
 
         container.setOnClickListener {
             if (isDeletionState) {
-                onDeleteEntryListener?.onDeleteEntry(data.uuid, data.dataType, index)
+                onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
                 checkBox.toggle()
             } else {
                 logger.logInteraction(DataEntriesElement.PLANNED_EXERCISE_SESSION_ENTRY_BUTTON)
@@ -76,7 +76,7 @@ class PlannedExerciseSessionItemViewBinder(
         checkBox.isVisible = isDeletionState
         checkBox.isChecked = isChecked
         checkBox.setOnClickListener {
-            onDeleteEntryListener?.onDeleteEntry(data.uuid, data.dataType, index)
+            onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
         }
     }
 }

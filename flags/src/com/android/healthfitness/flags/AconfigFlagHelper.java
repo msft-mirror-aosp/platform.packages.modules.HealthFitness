@@ -16,6 +16,7 @@
 
 package com.android.healthfitness.flags;
 
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.DatabaseVersions.LAST_ROLLED_OUT_DB_VERSION;
 import static com.android.internal.annotations.VisibleForTesting.Visibility.PRIVATE;
 
@@ -62,26 +63,30 @@ public final class AconfigFlagHelper {
 
     /**
      * Returns whether the DB flag of a feature is enabled.
-     * <p>
-     * A DB flag is deemed to be enabled if and only if the DB flag as well as all other features
+     *
+     * <p>A DB flag is deemed to be enabled if and only if the DB flag as well as all other features
      * with smaller version numbers have their DB flags enabled.
-     * <p>
-     * For example, if DB_VERSION_TO_DB_FLAG_MAP contains these:
+     *
+     * <p>For example, if DB_VERSION_TO_DB_FLAG_MAP contains these:
+     *
      * <pre>{@code
-     *   DB_F1 = true
-     *   DB_F2 = true
-     *   DB_F3 = true
-     *   DB_F4 = false
+     * DB_F1 = true
+     * DB_F2 = true
+     * DB_F3 = true
+     * DB_F4 = false
      * }</pre>
+     *
      * Then isDbFlagEnabled(3) will return true and isDbFlagEnabled(4) will return false.
-     * <p>
-     * In case the map contains a disconnected line of "true"s before the last "false" like this:
+     *
+     * <p>In case the map contains a disconnected line of "true"s before the last "false" like this:
+     *
      * <pre>{@code
-     *   DB_F1 = true
-     *   DB_F2 = false
-     *   DB_F3 = true
-     *   DB_F4 = false
+     * DB_F1 = true
+     * DB_F2 = false
+     * DB_F3 = true
+     * DB_F4 = false
      * }</pre>
+     *
      * Then isDbFlagEnabled(3) will return false even though DB_F3 is mapped to true.
      *
      * @see #getDbVersion()
@@ -113,20 +118,14 @@ public final class AconfigFlagHelper {
             return DB_VERSION_TO_DB_FLAG_MAP;
         }
 
-        // TODO(b/357062401): When PHR DB schema changes is finalized, we'll create
-        // DB_VERSION_TO_DB_FLAG_MAP, add the following line, then move advance the PHR DB flag to
-        // trunk-food first, then PHR feature flag:
-        // DB_VERSION_TO_DB_FLAG_MAP.put(DB_VERSION_PERSONAL_HEALTH_RECORD,
-        //                                                  Flags.personalHealthRecordDatabase());
+        DB_VERSION_TO_DB_FLAG_MAP.put(
+                DB_VERSION_PERSONAL_HEALTH_RECORD, Flags.personalHealthRecordDatabase());
 
         return DB_VERSION_TO_DB_FLAG_MAP;
     }
 
     /** Returns a boolean indicating whether PHR feature is enabled. */
     public static synchronized boolean isPersonalHealthRecordEnabled() {
-        // TODO(b/357062401): When PHR DB schema changes is finalized:
-        // return Flags.personalHealthRecord() &&
-        // isDbFlagEnabled(DB_VERSION_PERSONAL_HEALTH_RECORD);
-        return Flags.personalHealthRecord();
+        return Flags.personalHealthRecord() && isDbFlagEnabled(DB_VERSION_PERSONAL_HEALTH_RECORD);
     }
 }

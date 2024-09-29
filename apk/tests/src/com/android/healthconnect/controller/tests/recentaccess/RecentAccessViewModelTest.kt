@@ -18,8 +18,8 @@ package com.android.healthconnect.controller.tests.recentaccess
 import android.health.connect.Constants
 import android.health.connect.accesslog.AccessLog
 import android.health.connect.datatypes.BasalMetabolicRateRecord
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
 import android.health.connect.datatypes.RecordTypeIdentifier
 import android.health.connect.datatypes.StepsRecord
 import android.health.connect.datatypes.WeightRecord
@@ -899,7 +899,7 @@ class RecentAccessViewModelTest {
         assertRecentAccessEquality(actual, expected)
     }
 
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     @Test
     fun loadRecentAccessApps_healthRecords_read() = runTest {
         val packageName = TEST_APP_PACKAGE_NAME
@@ -912,8 +912,8 @@ class RecentAccessViewModelTest {
                         accessTime.toEpochMilli(),
                         Constants.READ,
                         setOf(
-                            MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
-                            MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                            MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                            MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
                         ),
                         true,
                     )
@@ -940,7 +940,7 @@ class RecentAccessViewModelTest {
         assertRecentAccessEquality(actual, expected)
     }
 
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     @Test
     fun loadRecentAccessApps_healthRecords_upsert() = runTest {
         val packageName = TEST_APP_PACKAGE_NAME
@@ -953,8 +953,8 @@ class RecentAccessViewModelTest {
                         accessTime.toEpochMilli(),
                         Constants.UPSERT,
                         setOf(
-                            MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
-                            MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                            MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                            MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
                         ),
                         true,
                     )

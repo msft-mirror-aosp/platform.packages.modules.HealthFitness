@@ -28,8 +28,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 /**
- * Use case to delete all records from the given permission type (e.g. Steps) written by a given
- * app.
+ * Use case to delete all fitness records from the given permission type (e.g. Steps) written by a
+ * given app.
  */
 @Singleton
 class DeleteFitnessPermissionTypesFromAppUseCase
@@ -40,7 +40,7 @@ constructor(
 ) {
 
     suspend operator fun invoke(
-        deletePermissionTypesFromApp: DeletionType.DeletionTypeHealthPermissionTypesFromApp
+        deletePermissionTypesFromApp: DeletionType.DeleteHealthPermissionTypesFromApp
     ) {
         val deleteRequest = DeleteUsingFiltersRequest.Builder()
 

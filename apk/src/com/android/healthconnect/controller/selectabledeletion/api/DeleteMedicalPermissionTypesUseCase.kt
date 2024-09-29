@@ -19,7 +19,7 @@ import android.health.connect.DeleteMedicalResourcesRequest
 import android.health.connect.HealthConnectManager
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.toMedicalResourceType
-import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeletionTypeHealthPermissionTypes
+import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteHealthPermissionTypes
 import com.android.healthconnect.controller.service.IoDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -35,7 +35,7 @@ constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
 
-    suspend operator fun invoke(deletePermissionTypes: DeletionTypeHealthPermissionTypes) {
+    suspend operator fun invoke(deletePermissionTypes: DeleteHealthPermissionTypes) {
         val deleteRequest = DeleteMedicalResourcesRequest.Builder()
 
         deletePermissionTypes.healthPermissionTypes.filterIsInstance<MedicalPermissionType>().map {

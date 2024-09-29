@@ -16,8 +16,8 @@
 
 package android.healthconnect.cts.datatypes;
 
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
@@ -60,13 +60,13 @@ public class MedicalResourceTest {
         FhirResource fhirResource = getFhirResource();
         MedicalResource resource =
                 new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                                 DATA_SOURCE_ID,
                                 FHIR_VERSION_R4,
                                 fhirResource)
                         .build();
 
-        assertThat(resource.getType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+        assertThat(resource.getType()).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS);
         assertThat(resource.getDataSourceId()).isEqualTo(DATA_SOURCE_ID);
         assertThat(resource.getFhirVersion()).isEqualTo(FHIR_VERSION_R4);
         assertThat(resource.getFhirResource()).isEqualTo(fhirResource);
@@ -82,13 +82,13 @@ public class MedicalResourceTest {
         FhirResource differentFhirResource = getFhirResourceAllergy();
         MedicalResource resource =
                 getMedicalResourceBuilder()
-                        .setType(MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE)
+                        .setType(MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
                         .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .setFhirVersion(differentFhirVersion)
                         .setFhirResource(differentFhirResource)
                         .build();
 
-        assertThat(resource.getType()).isEqualTo(MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
+        assertThat(resource.getType()).isEqualTo(MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES);
         assertThat(resource.getDataSourceId()).isEqualTo(DIFFERENT_DATA_SOURCE_ID);
         assertThat(resource.getFhirVersion()).isEqualTo(differentFhirVersion);
         assertThat(resource.getFhirResource()).isEqualTo(differentFhirResource);
@@ -117,25 +117,71 @@ public class MedicalResourceTest {
     }
 
     @Test
+    public void testMedicalResourceBuilder_constructWithInvalidMedicalResourceType_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        new MedicalResource.Builder(
+                                -1, DATA_SOURCE_ID, FHIR_VERSION_R4, getFhirResource()));
+    }
+
+    @Test
+    public void testMedicalResourceBuilder_setInvalidMedicalResourceType_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        new MedicalResource.Builder(
+                                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                                        DATA_SOURCE_ID,
+                                        FHIR_VERSION_R4,
+                                        getFhirResource())
+                                .setType(-1));
+    }
+
+    @Test
+    public void testMedicalResourceBuilder_constructWithInvalidDataSourceId_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        new MedicalResource.Builder(
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                                "1",
+                                FHIR_VERSION_R4,
+                                getFhirResource()));
+    }
+
+    @Test
+    public void testMedicalResourceBuilder_setInvalidDataSourceId_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        new MedicalResource.Builder(
+                                        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                                        DATA_SOURCE_ID,
+                                        FHIR_VERSION_R4,
+                                        getFhirResource())
+                                .setDataSourceId("1"));
+    }
+
+    @Test
     public void testMedicalResource_toString() {
         FhirResource fhirResource = getFhirResource();
         MedicalResource resource =
                 new MedicalResource.Builder(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                                 DATA_SOURCE_ID,
                                 FHIR_VERSION_R4,
                                 fhirResource)
                         .build();
-        String expectedPropertiesString =
-                String.format(
-                        "type=%d,dataSourceId=%s,fhirVersion=%s,fhirResource=%s",
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
-                        DATA_SOURCE_ID,
-                        FHIR_VERSION_R4,
-                        fhirResource);
+        String typeString = "type=1";
+        String dataSourceIdString = "dataSourceId=" + DATA_SOURCE_ID;
+        String fhirVersionString = "fhirVersion=" + FHIR_VERSION_R4;
+        String fhirResourceString = "fhirResource=" + fhirResource;
 
-        assertThat(resource.toString())
-                .isEqualTo(String.format("MedicalResource{%s}", expectedPropertiesString));
+        assertThat(resource.toString()).contains(typeString);
+        assertThat(resource.toString()).contains(dataSourceIdString);
+        assertThat(resource.toString()).contains(fhirVersionString);
+        assertThat(resource.toString()).contains(fhirResourceString);
     }
 
     @Test
@@ -152,7 +198,7 @@ public class MedicalResourceTest {
         MedicalResource resource = getMedicalResource();
         MedicalResource resourceDifferentType =
                 new MedicalResource.Builder(resource)
-                        .setType(MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE)
+                        .setType(MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
                         .build();
         MedicalResource resourceDifferentDataSourceId =
                 new MedicalResource.Builder(resource)
@@ -193,6 +239,21 @@ public class MedicalResourceTest {
             throws NoSuchFieldException, IllegalAccessException {
         MedicalResource original = getMedicalResource();
         setFieldValueUsingReflection(original, "mType", -1);
+
+        Parcel parcel = Parcel.obtain();
+        original.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> MedicalResource.CREATOR.createFromParcel(parcel));
+    }
+
+    @Test
+    public void testRestoreInvalidDataSourceIdFromParcel_expectException()
+            throws NoSuchFieldException, IllegalAccessException {
+        MedicalResource original = getMedicalResource();
+        setFieldValueUsingReflection(original, "mDataSourceId", "1");
 
         Parcel parcel = Parcel.obtain();
         original.writeToParcel(parcel, 0);
