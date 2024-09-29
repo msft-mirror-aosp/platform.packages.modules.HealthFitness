@@ -20,7 +20,7 @@ import android.health.connect.HealthConnectManager
 import android.health.connect.datatypes.DataOrigin
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.api.RevokeAllHealthPermissionsUseCase
-import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeletionTypeAppData
+import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteAppData
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteAppDataUseCase
 import com.google.common.truth.Truth
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -60,7 +60,7 @@ class DeleteAppDataUseCaseTest {
             .`when`(dataManager)
             .deleteRecords(any(DeleteUsingFiltersRequest::class.java), any(), any())
 
-        val deleteAppData = DeletionTypeAppData(packageName = "package.name", appName = "APP_NAME")
+        val deleteAppData = DeleteAppData(packageName = "package.name")
 
         useCase.invoke(deleteAppData)
 

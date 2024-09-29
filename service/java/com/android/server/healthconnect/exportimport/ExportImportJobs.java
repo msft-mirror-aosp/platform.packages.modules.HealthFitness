@@ -74,9 +74,13 @@ public class ExportImportJobs {
             Objects.requireNonNull(context.getSystemService(JobScheduler.class))
                     .forNamespace(NAMESPACE)
                     .cancelAll();
+
+            // TODO(b/364855153): Move to next condition once fast follow flag is enabled.
             // If export is off we try to delete the local files, just in case it happened the
             // rare case where those files weren't delete after the last export.
-            exportManager.deleteLocalExportFiles();
+            if (periodInDays <= 0) {
+                exportManager.deleteLocalExportFiles();
+            }
         }
         // If period is 0 the user has turned export off, we should no longer schedule a new job
         if (periodInDays <= 0) {

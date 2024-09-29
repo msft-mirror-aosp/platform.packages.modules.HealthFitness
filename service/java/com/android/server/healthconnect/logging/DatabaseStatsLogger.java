@@ -19,6 +19,7 @@ package com.android.server.healthconnect.logging;
 import android.content.Context;
 import android.health.HealthFitnessStatsLog;
 
+import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseStatsCollector;
 
 import java.util.Objects;
@@ -31,12 +32,14 @@ import java.util.Objects;
 class DatabaseStatsLogger {
 
     /** Write Health Connect database stats to statsd. */
-    static void log(Context context) {
+    static void log(Context context, TransactionManager transactionManager) {
 
-        long numberOfInstantRecords = DatabaseStatsCollector.getNumberOfInstantRecordRows();
-        long numberOfIntervalRecords = DatabaseStatsCollector.getNumberOfIntervalRecordRows();
-        long numberOfSeriesRecords = DatabaseStatsCollector.getNumberOfSeriesRecordRows();
-        long numberOfChangeLogs = DatabaseStatsCollector.getNumberOfChangeLogs();
+        DatabaseStatsCollector databaseStatsCollector =
+                new DatabaseStatsCollector(transactionManager, context);
+        long numberOfInstantRecords = databaseStatsCollector.getNumberOfInstantRecordRows();
+        long numberOfIntervalRecords = databaseStatsCollector.getNumberOfIntervalRecordRows();
+        long numberOfSeriesRecords = databaseStatsCollector.getNumberOfSeriesRecordRows();
+        long numberOfChangeLogs = databaseStatsCollector.getNumberOfChangeLogs();
 
         // If this condition is true then the user does not uses HC and we should not collect data.
         // This will reduce the load on logging service otherwise we will get daily data from
@@ -51,7 +54,7 @@ class DatabaseStatsLogger {
         Objects.requireNonNull(context);
         HealthFitnessStatsLog.write(
                 HealthFitnessStatsLog.HEALTH_CONNECT_STORAGE_STATS,
-                DatabaseStatsCollector.getDatabaseSize(context),
+                databaseStatsCollector.getDatabaseSize(),
                 numberOfInstantRecords,
                 numberOfIntervalRecords,
                 numberOfSeriesRecords,

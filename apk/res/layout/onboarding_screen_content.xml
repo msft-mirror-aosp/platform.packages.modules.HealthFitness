@@ -53,6 +53,15 @@
             android:layout_marginBottom="@dimen/spacing_xlarge"
             android:scaleType="centerInside" />
 
+        <TextView
+            android:id="@+id/onboarding_description_with_health_connect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:text="@string/onboarding_description_with_health_connect"
+            android:textAppearance="?attr/textAppearanceLabel"
+            android:textColor="?android:attr/colorAccent"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

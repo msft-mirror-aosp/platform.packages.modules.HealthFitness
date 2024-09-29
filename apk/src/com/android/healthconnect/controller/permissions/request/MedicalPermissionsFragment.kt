@@ -96,7 +96,7 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         logger.setPageId(pageName)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -219,16 +219,19 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
                 requireContext()
                     .getString(
                         MedicalPermissionStrings.fromPermissionType(it.medicalPermissionType)
-                            .uppercaseLabel)
+                            .uppercaseLabel
+                    )
             }
             .forEach { permission ->
                 val value = viewModel.isPermissionLocallyGranted(permission)
                 if (permission.medicalPermissionType == MedicalPermissionType.ALL_MEDICAL_DATA) {
                     writePermissionCategory?.addPreference(
-                        getPermissionPreference(value, permission))
+                        getPermissionPreference(value, permission)
+                    )
                 } else {
                     readPermissionCategory?.addPreference(
-                        getPermissionPreference(value, permission))
+                        getPermissionPreference(value, permission)
+                    )
                 }
             }
 
@@ -238,14 +241,15 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
 
     private fun getPermissionPreference(
         defaultValue: Boolean,
-        permission: HealthPermission.MedicalPermission
+        permission: HealthPermission.MedicalPermission,
     ): Preference {
         return HealthSwitchPreference(requireContext()).also {
-            // TODO(b/342156345): Add icons.
+            it.icon = permission.medicalPermissionType.icon(requireContext())
             it.setDefaultValue(defaultValue)
             it.setTitle(
                 MedicalPermissionStrings.fromPermissionType(permission.medicalPermissionType)
-                    .uppercaseLabel)
+                    .uppercaseLabel
+            )
             it.logNameActive = PermissionsElement.PERMISSION_SWITCH
             it.logNameInactive = PermissionsElement.PERMISSION_SWITCH
             it.setOnPreferenceChangeListener { _, newValue ->

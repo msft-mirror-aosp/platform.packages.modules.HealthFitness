@@ -160,6 +160,9 @@ public class PreferenceHelper extends DatabaseHelper {
         sPreferenceHelper = null;
     }
 
+    /**
+     * @deprecated DO NOT USE THIS FUNCTION ANYMORE. As part of DI, it will soon be removed.
+     */
     public static PreferenceHelper getInstance() {
         return getInstance(TransactionManager.getInitialisedInstance());
     }

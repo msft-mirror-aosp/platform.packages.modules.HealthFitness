@@ -24,9 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
@@ -86,6 +84,7 @@ public class DailyLoggingServiceTest {
     @Mock private PackageInfo mPackageInfoNotConnectedApp;
     @Mock private PreferenceHelper mPreferenceHelper;
     @Mock private AccessLogsHelper mAccessLogsHelper;
+    @Mock private TransactionManager mTransactionManager;
     private final UserHandle mCurrentUser = Process.myUserHandle();
     private static final String HEALTH_PERMISSION = "HEALTH_PERMISSION";
     private static final String NOT_HEALTH_PERMISSION = "NOT_HEALTH_PERMISSION";
@@ -119,14 +118,8 @@ public class DailyLoggingServiceTest {
     @Test
     public void testDatabaseLogsStats() {
 
-        TransactionManager transactionManager = mock(TransactionManager.class);
-
-        ExtendedMockito.doReturn(transactionManager)
-                .when(TransactionManager::getInitialisedInstance);
-
-        when(transactionManager.getDatabaseSize(mContext)).thenReturn(1L);
-
-        when(transactionManager.getNumberOfEntriesInTheTable(any())).thenReturn(0L);
+        when(mTransactionManager.getDatabaseSize(mContext)).thenReturn(1L);
+        when(mTransactionManager.getNumberOfEntriesInTheTable(any())).thenReturn(0L);
 
         for (String tableName :
                 new String[] {
@@ -139,11 +132,11 @@ public class DailyLoggingServiceTest {
                     SpeedRecordHelper.TABLE_NAME,
                     HeartRateRecordHelper.TABLE_NAME
                 }) {
-            doReturn(2L).when(transactionManager).getNumberOfEntriesInTheTable(tableName);
+            when(mTransactionManager.getNumberOfEntriesInTheTable(tableName)).thenReturn(2L);
         }
 
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper);
+                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
 
         ExtendedMockito.verify(
                 () ->
@@ -161,32 +154,11 @@ public class DailyLoggingServiceTest {
 
     @Test
     public void testDatabaseLogsStats_userDoesNotUseHealthConnect() {
-
-        TransactionManager transactionManager = mock(TransactionManager.class);
-
-        ExtendedMockito.doReturn(transactionManager)
-                .when(TransactionManager::getInitialisedInstance);
-
-        when(transactionManager.getDatabaseSize(mContext)).thenReturn(1L);
-
-        when(transactionManager.getNumberOfEntriesInTheTable(any())).thenReturn(0L);
-
-        for (String tableName :
-                new String[] {
-                    ChangeLogsHelper.TABLE_NAME,
-                    BloodPressureRecordHelper.BLOOD_PRESSURE_RECORD_TABLE_NAME,
-                    HeightRecordHelper.HEIGHT_RECORD_TABLE_NAME,
-                    Vo2MaxRecordHelper.VO2_MAX_RECORD_TABLE_NAME,
-                    StepsRecordHelper.STEPS_TABLE_NAME,
-                    TotalCaloriesBurnedRecordHelper.TOTAL_CALORIES_BURNED_RECORD_TABLE_NAME,
-                    SpeedRecordHelper.TABLE_NAME,
-                    HeartRateRecordHelper.TABLE_NAME
-                }) {
-            doReturn(0L).when(transactionManager).getNumberOfEntriesInTheTable(tableName);
-        }
+        when(mTransactionManager.getDatabaseSize(mContext)).thenReturn(1L);
+        when(mTransactionManager.getNumberOfEntriesInTheTable(any())).thenReturn(0L);
 
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper);
+                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
 
         ExtendedMockito.verify(
                 () ->
@@ -213,7 +185,7 @@ public class DailyLoggingServiceTest {
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 0)));
 
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper);
+                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
 
         // Makes sure we do not have count any app that does not have Health Connect permission
         // declared in the manifest as a connected or an available app.
@@ -237,7 +209,7 @@ public class DailyLoggingServiceTest {
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 0)));
 
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper);
+                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
 
         ExtendedMockito.verify(
                 () ->
@@ -259,7 +231,7 @@ public class DailyLoggingServiceTest {
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 31)));
 
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper);
+                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
 
         ExtendedMockito.verify(
                 () ->
@@ -281,7 +253,7 @@ public class DailyLoggingServiceTest {
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 1)));
 
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper);
+                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
 
         ExtendedMockito.verify(
                 () ->
@@ -297,7 +269,7 @@ public class DailyLoggingServiceTest {
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 1)));
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper);
+                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
 
         ExtendedMockito.verify(
                 () ->
@@ -317,7 +289,7 @@ public class DailyLoggingServiceTest {
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 31)));
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper);
+                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
 
         ExtendedMockito.verify(
                 () ->
@@ -335,7 +307,7 @@ public class DailyLoggingServiceTest {
         when(mPreferenceHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY))
                 .thenReturn(String.valueOf(7));
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper);
+                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
 
         ExtendedMockito.verify(
                 () ->
@@ -352,7 +324,7 @@ public class DailyLoggingServiceTest {
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 1)));
         when(mPreferenceHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY)).thenReturn(null);
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper);
+                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
 
         ExtendedMockito.verify(
                 () ->
@@ -368,7 +340,7 @@ public class DailyLoggingServiceTest {
         when(mPreferenceHelper.getPreference(USER_MOST_RECENT_ACCESS_LOG_TIME))
                 .thenReturn(String.valueOf(subtractDaysFromInstantNow(/* numberOfDays= */ 31)));
         DailyLoggingService.logDailyMetrics(
-                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper);
+                mContext, mCurrentUser, mPreferenceHelper, mAccessLogsHelper, mTransactionManager);
 
         ExtendedMockito.verify(
                 () ->

@@ -24,10 +24,12 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_GENERATED_LOCAL_TIME;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_MINDFULNESS_SESSION;
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_PLANNED_EXERCISE_SESSIONS;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_SKIN_TEMPERATURE;
 import static com.android.healthfitness.flags.DatabaseVersions.MIN_SUPPORTED_DB_VERSION;
 import static com.android.server.healthconnect.storage.TransactionManager.runAsTransaction;
+import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.getAlterTableRequestForPhrAccessLogs;
 import static com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper.PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME;
 
 import android.database.DatabaseUtils;
@@ -43,6 +45,8 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsReques
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ExerciseSessionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MindfulnessSessionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper;
@@ -81,6 +85,9 @@ final class DatabaseUpgradeHelper {
                                     RECORD_TYPE_MINDFULNESS_SESSION)
                             .applyMindfulnessSessionUpgrade(db);
 
+    private static final Upgrader UPGRADE_TO_PERSONAL_HEALTH_RECORD =
+            DatabaseUpgradeHelper::applyPersonalHealthRecordDatabaseUpgrade;
+
     /**
      * A list of db version -> Upgrader to upgrade the db from the previous version to the version.
      * The upgrades must be executed one by one in the numeric order of db versions, hence TreeMap.
@@ -92,7 +99,8 @@ final class DatabaseUpgradeHelper {
                             DB_VERSION_SKIN_TEMPERATURE, UPGRADE_TO_SKIN_TEMPERATURE,
                             DB_VERSION_PLANNED_EXERCISE_SESSIONS,
                                     UPGRADE_TO_PLANNED_EXERCISE_SESSIONS,
-                            DB_VERSION_MINDFULNESS_SESSION, UPGRADE_TO_MINDFULNESS_SESSION));
+                            DB_VERSION_MINDFULNESS_SESSION, UPGRADE_TO_MINDFULNESS_SESSION,
+                            DB_VERSION_PERSONAL_HEALTH_RECORD, UPGRADE_TO_PERSONAL_HEALTH_RECORD));
 
     /**
      * Applies db upgrades to bring the current schema to the latest supported version.
@@ -131,6 +139,9 @@ final class DatabaseUpgradeHelper {
             }
             if (oldVersion < DB_VERSION_MINDFULNESS_SESSION) {
                 UPGRADE_TO_MINDFULNESS_SESSION.upgrade(db);
+            }
+            if (oldVersion < DB_VERSION_PERSONAL_HEALTH_RECORD) {
+                UPGRADE_TO_PERSONAL_HEALTH_RECORD.upgrade(db);
             }
         }
     }
@@ -217,6 +228,20 @@ final class DatabaseUpgradeHelper {
                 exerciseRecordHelper
                         .getAlterTableRequestForPlannedExerciseFeature()
                         .getAlterTableAddColumnsCommands());
+    }
+
+    private static void applyPersonalHealthRecordDatabaseUpgrade(SQLiteDatabase db) {
+        if (doesTableAlreadyExist(db, MedicalResourceHelper.getMainTableName())) {
+            // Upgrade has already been applied. Return early.
+            // This is necessary as the ALTER TABLE ... ADD COLUMN statements below are not
+            // idempotent, as SQLite does not support ADD COLUMN IF NOT EXISTS.
+            return;
+        }
+
+        MedicalDataSourceHelper.onInitialUpgrade(db);
+        MedicalResourceHelper.onInitialUpgrade(db);
+        DatabaseUpgradeHelper.executeSqlStatements(
+                db, getAlterTableRequestForPhrAccessLogs().getAlterTableAddColumnsCommands());
     }
 
     /** Executes a list of SQL statements one after another, in a transaction. */

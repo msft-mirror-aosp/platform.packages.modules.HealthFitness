@@ -16,12 +16,12 @@
 package com.android.healthconnect.controller.tests.permissions.data
 
 import android.health.connect.HealthPermissions
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.ACTIVE_CALORIES_BURNED
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.BLOOD_GLUCOSE
 import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.fromPermissionString
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.ACTIVE_CALORIES_BURNED
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.BLOOD_GLUCOSE
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -98,48 +98,55 @@ class HealthPermissionTest {
             .isEqualTo(MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
 
         assertThat(
-            fromPermissionString(
-                "android.permission.health.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE"))
-            .isEqualTo(MedicalPermission(MedicalPermissionType.ALLERGY_INTOLERANCE))
+                fromPermissionString(
+                    "android.permission.health.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES"
+                )
+            )
+            .isEqualTo(MedicalPermission(MedicalPermissionType.ALLERGIES_INTOLERANCES))
+
+        assertThat(fromPermissionString("android.permission.health.READ_MEDICAL_DATA_CONDITIONS"))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.CONDITIONS))
+
+        assertThat(fromPermissionString("android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS"))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.IMMUNIZATIONS))
 
         assertThat(
                 fromPermissionString(
-                    "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION"))
-            .isEqualTo(MedicalPermission(MedicalPermissionType.IMMUNIZATION))
-
-        assertThat(
-            fromPermissionString(
-                "android.permission.health.READ_MEDICAL_DATA_LABORATORY_RESULTS"))
+                    "android.permission.health.READ_MEDICAL_DATA_LABORATORY_RESULTS"
+                )
+            )
             .isEqualTo(MedicalPermission(MedicalPermissionType.LABORATORY_RESULTS))
 
-        assertThat(
-            fromPermissionString(
-                "android.permission.health.READ_MEDICAL_DATA_MEDICATIONS"))
+        assertThat(fromPermissionString("android.permission.health.READ_MEDICAL_DATA_MEDICATIONS"))
             .isEqualTo(MedicalPermission(MedicalPermissionType.MEDICATIONS))
 
         assertThat(
-            fromPermissionString(
-                "android.permission.health.READ_MEDICAL_DATA_PREGNANCY"))
+                fromPermissionString("android.permission.health.READ_MEDICAL_DATA_PERSONAL_DETAILS")
+            )
+            .isEqualTo(MedicalPermission(MedicalPermissionType.PERSONAL_DETAILS))
+
+        assertThat(
+                fromPermissionString(
+                    "android.permission.health.READ_MEDICAL_DATA_PRACTITIONER_DETAILS"
+                )
+            )
+            .isEqualTo(MedicalPermission(MedicalPermissionType.PRACTITIONER_DETAILS))
+
+        assertThat(fromPermissionString("android.permission.health.READ_MEDICAL_DATA_PREGNANCY"))
             .isEqualTo(MedicalPermission(MedicalPermissionType.PREGNANCY))
 
-        assertThat(
-            fromPermissionString(
-                "android.permission.health.READ_MEDICAL_DATA_PROBLEMS"))
-            .isEqualTo(MedicalPermission(MedicalPermissionType.PROBLEMS))
-
-        assertThat(
-            fromPermissionString(
-                "android.permission.health.READ_MEDICAL_DATA_PROCEDURES"))
+        assertThat(fromPermissionString("android.permission.health.READ_MEDICAL_DATA_PROCEDURES"))
             .isEqualTo(MedicalPermission(MedicalPermissionType.PROCEDURES))
 
         assertThat(
-            fromPermissionString(
-                "android.permission.health.READ_MEDICAL_DATA_SOCIAL_HISTORY"))
+                fromPermissionString("android.permission.health.READ_MEDICAL_DATA_SOCIAL_HISTORY")
+            )
             .isEqualTo(MedicalPermission(MedicalPermissionType.SOCIAL_HISTORY))
 
-        assertThat(
-            fromPermissionString(
-                "android.permission.health.READ_MEDICAL_DATA_VITAL_SIGNS"))
+        assertThat(fromPermissionString("android.permission.health.READ_MEDICAL_DATA_VISITS"))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.VISITS))
+
+        assertThat(fromPermissionString("android.permission.health.READ_MEDICAL_DATA_VITAL_SIGNS"))
             .isEqualTo(MedicalPermission(MedicalPermissionType.VITAL_SIGNS))
     }
 

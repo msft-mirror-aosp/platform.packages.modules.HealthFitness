@@ -18,7 +18,7 @@ package com.android.healthconnect.controller.selectabledeletion.api
 import android.health.connect.DeleteUsingFiltersRequest
 import android.health.connect.HealthConnectManager
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
-import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeletionTypeHealthPermissionTypes
+import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteHealthPermissionTypes
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
 import javax.inject.Inject
@@ -26,7 +26,7 @@ import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-/** Use case to delete all records from the given permission type (e.g. Steps). */
+/** Use case to delete all fitness records from the given permission type (e.g. Steps). */
 @Singleton
 class DeleteFitnessPermissionTypesUseCase
 @Inject
@@ -35,7 +35,7 @@ constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
 
-    suspend operator fun invoke(deletePermissionTypes: DeletionTypeHealthPermissionTypes) {
+    suspend operator fun invoke(deletePermissionTypes: DeleteHealthPermissionTypes) {
         val deleteRequest = DeleteUsingFiltersRequest.Builder()
 
         deletePermissionTypes.healthPermissionTypes.filterIsInstance<FitnessPermissionType>().map {

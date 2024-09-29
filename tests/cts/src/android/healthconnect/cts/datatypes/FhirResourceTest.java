@@ -18,11 +18,16 @@ package android.healthconnect.cts.datatypes;
 
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_CONDITION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ENCOUNTER;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_LOCATION;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_REQUEST;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_OBSERVATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ORGANIZATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PATIENT;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PROCEDURE;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
@@ -38,8 +43,11 @@ import static org.junit.Assert.assertThrows;
 
 import android.health.connect.datatypes.FhirResource;
 import android.healthconnect.cts.utils.ConditionBuilder;
+import android.healthconnect.cts.utils.EncountersBuilder;
 import android.healthconnect.cts.utils.MedicationsBuilder;
 import android.healthconnect.cts.utils.ObservationBuilder;
+import android.healthconnect.cts.utils.PatientBuilder;
+import android.healthconnect.cts.utils.PractitionerBuilder;
 import android.healthconnect.cts.utils.ProcedureBuilder;
 import android.os.Parcel;
 import android.platform.test.annotations.RequiresFlagsEnabled;
@@ -171,6 +179,102 @@ public class FhirResourceTest {
     }
 
     @Test
+    public void testFhirResourceBuilder_setAllFieldsPatient() {
+        String id = "myId123";
+        String fhirData = new PatientBuilder().setId(id).toJson();
+        FhirResource resource =
+                getFhirResourceBuilder()
+                        .setType(FHIR_RESOURCE_TYPE_PATIENT)
+                        .setId(id)
+                        .setData(fhirData)
+                        .build();
+
+        assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_PATIENT);
+        assertThat(resource.getId()).isEqualTo(id);
+        assertThat(resource.getData()).isEqualTo(fhirData);
+    }
+
+    @Test
+    public void testFhirResourceBuilder_setAllFieldsPractitioner() {
+        String id = "myId123";
+        String fhirData = new PractitionerBuilder().setId(id).toJson();
+        FhirResource resource =
+                getFhirResourceBuilder()
+                        .setType(FHIR_RESOURCE_TYPE_PRACTITIONER)
+                        .setId(id)
+                        .setData(fhirData)
+                        .build();
+
+        assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_PRACTITIONER);
+        assertThat(resource.getId()).isEqualTo(id);
+        assertThat(resource.getData()).isEqualTo(fhirData);
+    }
+
+    @Test
+    public void testFhirResourceBuilder_setAllFieldsPractitionerRole() {
+        String id = "myId123";
+        String fhirData = PractitionerBuilder.role().setId(id).toJson();
+        FhirResource resource =
+                getFhirResourceBuilder()
+                        .setType(FHIR_RESOURCE_TYPE_PRACTITIONER)
+                        .setId(id)
+                        .setData(fhirData)
+                        .build();
+
+        assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_PRACTITIONER);
+        assertThat(resource.getId()).isEqualTo(id);
+        assertThat(resource.getData()).isEqualTo(fhirData);
+    }
+
+    @Test
+    public void testFhirResourceBuilder_setAllFieldsEncounter() {
+        String id = "myId123";
+        String fhirData = EncountersBuilder.encounter().setId(id).toJson();
+        FhirResource resource =
+                getFhirResourceBuilder()
+                        .setType(FHIR_RESOURCE_TYPE_ENCOUNTER)
+                        .setId(id)
+                        .setData(fhirData)
+                        .build();
+
+        assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_ENCOUNTER);
+        assertThat(resource.getId()).isEqualTo(id);
+        assertThat(resource.getData()).isEqualTo(fhirData);
+    }
+
+    @Test
+    public void testFhirResourceBuilder_setAllFieldsLocation() {
+        String id = "myId123";
+        String fhirData = EncountersBuilder.location().setId(id).toJson();
+        FhirResource resource =
+                getFhirResourceBuilder()
+                        .setType(FHIR_RESOURCE_TYPE_LOCATION)
+                        .setId(id)
+                        .setData(fhirData)
+                        .build();
+
+        assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_LOCATION);
+        assertThat(resource.getId()).isEqualTo(id);
+        assertThat(resource.getData()).isEqualTo(fhirData);
+    }
+
+    @Test
+    public void testFhirResourceBuilder_setAllFieldsOrganization() {
+        String id = "myId123";
+        String fhirData = EncountersBuilder.organization().setId(id).toJson();
+        FhirResource resource =
+                getFhirResourceBuilder()
+                        .setType(FHIR_RESOURCE_TYPE_ORGANIZATION)
+                        .setId(id)
+                        .setData(fhirData)
+                        .build();
+
+        assertThat(resource.getType()).isEqualTo(FHIR_RESOURCE_TYPE_ORGANIZATION);
+        assertThat(resource.getId()).isEqualTo(id);
+        assertThat(resource.getData()).isEqualTo(fhirData);
+    }
+
+    @Test
     public void testFhirResourceBuilder_setAllFields_allergy() {
         FhirResource resource =
                 getFhirResourceBuilder()
@@ -208,15 +312,13 @@ public class FhirResourceTest {
                                 FHIR_RESOURCE_ID_IMMUNIZATION,
                                 FHIR_DATA_IMMUNIZATION)
                         .build();
-        String expectedPropertiesString =
-                String.format(
-                        "type=%d,id=%s,data=%s",
-                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
-                        FHIR_RESOURCE_ID_IMMUNIZATION,
-                        FHIR_DATA_IMMUNIZATION);
+        String typeString = "type=1";
+        String idString = "id=" + FHIR_RESOURCE_ID_IMMUNIZATION;
+        String dataString = "data=" + FHIR_DATA_IMMUNIZATION;
 
-        assertThat(resource.toString())
-                .isEqualTo(String.format("FhirResource{%s}", expectedPropertiesString));
+        assertThat(resource.toString()).contains(typeString);
+        assertThat(resource.toString()).contains(idString);
+        assertThat(resource.toString()).contains(dataString);
     }
 
     @Test

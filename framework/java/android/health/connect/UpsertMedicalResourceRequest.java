@@ -16,6 +16,8 @@
 
 package android.health.connect;
 
+import static android.health.connect.datatypes.MedicalDataSource.validateMedicalDataSourceIds;
+
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import static java.util.Objects.hash;
@@ -28,8 +30,10 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Set;
+
 /**
- * Class used to create requests for {@link HealthConnectManager#upsertMedicalResources}.
+ * An upsert request for {@link HealthConnectManager#upsertMedicalResources}.
  *
  * <p>Medical data is represented using the <a href="https://hl7.org/fhir/">Fast Healthcare
  * Interoperability Resources (FHIR)</a> standard.
@@ -56,16 +60,15 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
             };
 
     /**
-     * @param dataSourceId The id associated with the existing {@link MedicalDataSource}.
-     * @param fhirVersion The {@link FhirVersion} object that represents the FHIR version being used
-     *     for {@code data}.
-     * @param data The FHIR resource data in JSON representation.
+     * Creates a new instance of {@link UpsertMedicalResourceRequest}. Please see {@link
+     * UpsertMedicalResourceRequest.Builder} for more detailed parameters information.
      */
     private UpsertMedicalResourceRequest(
             @NonNull String dataSourceId, @NonNull FhirVersion fhirVersion, @NonNull String data) {
         requireNonNull(dataSourceId);
         requireNonNull(fhirVersion);
         requireNonNull(data);
+        validateMedicalDataSourceIds(Set.of(dataSourceId));
 
         mDataSourceId = dataSourceId;
         mFhirVersion = fhirVersion;
@@ -76,6 +79,7 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
         requireNonNull(in);
         mDataSize = in.dataSize();
         mDataSourceId = requireNonNull(in.readString());
+        validateMedicalDataSourceIds(Set.of(mDataSourceId));
         mFhirVersion =
                 requireNonNull(
                         in.readParcelable(FhirVersion.class.getClassLoader(), FhirVersion.class));
@@ -83,8 +87,8 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
     }
 
     /**
-     * Returns the id of the existing {@link MedicalDataSource}, to represent where the data is
-     * coming from.
+     * Returns the unique ID of the existing {@link MedicalDataSource}, to represent where the
+     * {@code data} is coming from.
      */
     @NonNull
     public String getDataSourceId() {
@@ -92,8 +96,9 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
     }
 
     /**
-     * Returns the {@link FhirVersion} object that represents the FHIR version being used for {@code
-     * data}.
+     * Returns the FHIR version being used for {@code data}. For the request to succeed this must
+     * match the {@link MedicalDataSource#getFhirVersion()} FHIR version} of the {@link
+     * MedicalDataSource} with the provided {@code dataSourceId}.
      */
     @NonNull
     public FhirVersion getFhirVersion() {
@@ -120,7 +125,6 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
         return 0;
     }
 
-    /** Populates a {@link Parcel} with the self information. */
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         requireNonNull(dest);
@@ -129,13 +133,11 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
         dest.writeString(mData);
     }
 
-    /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
         return hash(getDataSourceId(), getFhirVersion(), getData());
     }
 
-    /** Returns whether an object is equal to the current one. */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -145,6 +147,17 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
                 && getData().equals(that.getData());
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getClass().getSimpleName()).append("{");
+        sb.append("dataSourceId=").append(mDataSourceId);
+        sb.append(",fhirVersion=").append(mFhirVersion);
+        sb.append(",data=").append(mData);
+        sb.append("}");
+        return sb.toString();
+    }
+
     /** Builder class for {@link UpsertMedicalResourceRequest}. */
     public static final class Builder {
         private String mDataSourceId;
@@ -152,10 +165,15 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
         private String mData;
 
         /**
-         * @param dataSourceId The id associated with the existing {@link MedicalDataSource}.
+         * Constructs a new {@link UpsertMedicalResourceRequest.Builder} instance.
+         *
+         * @param dataSourceId The unique identifier of the existing {@link MedicalDataSource},
+         *     representing where the data comes from.
          * @param fhirVersion The {@link FhirVersion} object that represents the FHIR version being
-         *     used for {@code data}.
+         *     used for {@code data}. This has to match the FHIR version of the {@link
+         *     MedicalDataSource}.
          * @param data The FHIR resource data in JSON representation.
+         * @throws IllegalArgumentException if the provided {@code dataSourceId} is not a valid ID.
          */
         public Builder(
                 @NonNull String dataSourceId,
@@ -164,39 +182,47 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
             requireNonNull(dataSourceId);
             requireNonNull(fhirVersion);
             requireNonNull(data);
+            validateMedicalDataSourceIds(Set.of(dataSourceId));
 
             mDataSourceId = dataSourceId;
             mFhirVersion = fhirVersion;
             mData = data;
         }
 
-        public Builder(@NonNull Builder original) {
-            requireNonNull(original);
-            mDataSourceId = original.mDataSourceId;
-            mFhirVersion = original.mFhirVersion;
-            mData = original.mData;
+        /** Constructs a clone of the other {@link UpsertMedicalResourceRequest.Builder}. */
+        public Builder(@NonNull Builder other) {
+            requireNonNull(other);
+            mDataSourceId = other.mDataSourceId;
+            mFhirVersion = other.mFhirVersion;
+            mData = other.mData;
         }
 
-        public Builder(@NonNull UpsertMedicalResourceRequest original) {
-            requireNonNull(original);
-            mDataSourceId = original.getDataSourceId();
-            mFhirVersion = original.getFhirVersion();
-            mData = original.getData();
+        /** Constructs a clone of the other {@link UpsertMedicalResourceRequest} instance. */
+        public Builder(@NonNull UpsertMedicalResourceRequest other) {
+            requireNonNull(other);
+            mDataSourceId = other.getDataSourceId();
+            mFhirVersion = other.getFhirVersion();
+            mData = other.getData();
         }
 
         /**
-         * @param dataSourceId The id associated with the existing {@link MedicalDataSource}.
+         * Sets the unique ID of the existing {@link MedicalDataSource}, to represent where the
+         * {@code data} is coming from.
+         *
+         * @throws IllegalArgumentException if the provided {@code dataSourceId} is not a valid ID.
          */
         @NonNull
         public Builder setDataSourceId(@NonNull String dataSourceId) {
             requireNonNull(dataSourceId);
+            validateMedicalDataSourceIds(Set.of(dataSourceId));
             mDataSourceId = dataSourceId;
             return this;
         }
 
         /**
-         * @param fhirVersion The {@link FhirVersion} object that represents the FHIR version being
-         *     used for {@code data}.
+         * Sets the FHIR version being used for {@code data}. For the request to succeed this must
+         * match the {@link MedicalDataSource#getFhirVersion()} FHIR version} of the {@link
+         * MedicalDataSource} with the provided {@code dataSourceId}.
          */
         @NonNull
         public Builder setFhirVersion(@NonNull FhirVersion fhirVersion) {
@@ -205,9 +231,7 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
             return this;
         }
 
-        /**
-         * @param data represents the FHIR resource data in JSON format.
-         */
+        /** Sets the FHIR resource data in JSON format. */
         @NonNull
         public Builder setData(@NonNull String data) {
             requireNonNull(data);
@@ -215,7 +239,10 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
             return this;
         }
 
-        /** Returns the Object of {@link UpsertMedicalResourceRequest}. */
+        /**
+         * Returns a new instance of {@link UpsertMedicalResourceRequest} with the specified
+         * parameters.
+         */
         @NonNull
         public UpsertMedicalResourceRequest build() {
             return new UpsertMedicalResourceRequest(mDataSourceId, mFhirVersion, mData);
