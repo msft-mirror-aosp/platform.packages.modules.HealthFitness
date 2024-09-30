@@ -2495,6 +2495,66 @@ public class HealthConnectManagerTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byIdsHappyPath_succeeds() throws InterruptedException {
+        // Create two data sources.
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
+        // Insert 3 Immunizations and 1 Allergy.
+        MedicalResource immunization1 =
+                upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource immunization2 =
+                upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        // Immunization 3 will not be checked for, but inserted to check that everything isn't read.
+        upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource allergy = upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+
+        mManager.readMedicalResources(
+                List.of(
+                        immunization1.getId(),
+                        immunization2.getId(),
+                        // leave out 3
+                        allergy.getId()),
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        assertThat(receiver.getResponse()).containsExactly(immunization1, immunization2, allergy);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byIdsHappyPathWithManageHealthDataPermission_succeeds()
+            throws InterruptedException {
+        // Create two data sources.
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
+        // Insert 3 Immunizations and 1 Allergy.
+        MedicalResource immunization1 =
+                upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource immunization2 =
+                upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        // Immunization 3 will not be checked for, but inserted to check that everything isn't read.
+        upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource allergy = upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.readMedicalResources(
+                                List.of(
+                                        immunization1.getId(),
+                                        immunization2.getId(),
+                                        // leave out 3
+                                        allergy.getId()),
+                                Executors.newSingleThreadExecutor(),
+                                receiver),
+                MANAGE_HEALTH_DATA);
+
+        assertThat(receiver.getResponse()).containsExactly(immunization1, immunization2, allergy);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_unknownTypeInInitialRequest_throws()
             throws InterruptedException {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
