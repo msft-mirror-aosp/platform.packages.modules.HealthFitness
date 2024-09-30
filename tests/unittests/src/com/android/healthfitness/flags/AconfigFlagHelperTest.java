@@ -38,7 +38,13 @@ import java.util.Map;
 
 public class AconfigFlagHelperTest {
     @ClassRule public static final SetFlagsRule.ClassRule mClassRule = new SetFlagsRule.ClassRule();
-    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    @Rule(order = 0)
+    public final AconfigFlagHelperTestRule mAconfigFlagHelperTestRule =
+            new AconfigFlagHelperTestRule();
+
+    @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Before
     public void setup() {
