@@ -48,10 +48,10 @@ public final class MedicalResource implements Parcelable {
     public static final int MEDICAL_RESOURCE_TYPE_UNKNOWN = 0;
 
     /** Medical resource type labelling data as immunizations. */
-    public static final int MEDICAL_RESOURCE_TYPE_IMMUNIZATION = 1;
+    public static final int MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS = 1;
 
     /** Medical resource type labelling data as allergies or intolerances. */
-    public static final int MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE = 2;
+    public static final int MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES = 2;
 
     /** Medical resource type labelling data as to do with pregnancy. */
     public static final int MEDICAL_RESOURCE_TYPE_PREGNANCY = 3;
@@ -101,9 +101,9 @@ public final class MedicalResource implements Parcelable {
     /** @hide */
     @IntDef({
         MEDICAL_RESOURCE_TYPE_UNKNOWN,
-        MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+        MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
         MEDICAL_RESOURCE_TYPE_CONDITIONS,
-        MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+        MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
         MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
         MEDICAL_RESOURCE_TYPE_MEDICATIONS,
         MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS,
@@ -233,9 +233,9 @@ public final class MedicalResource implements Parcelable {
     public static final Set<Integer> VALID_TYPES =
             Set.of(
                     MEDICAL_RESOURCE_TYPE_UNKNOWN,
-                    MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                    MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
                     MEDICAL_RESOURCE_TYPE_CONDITIONS,
-                    MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                    MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                     MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS,
                     MEDICAL_RESOURCE_TYPE_MEDICATIONS,
                     MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS,

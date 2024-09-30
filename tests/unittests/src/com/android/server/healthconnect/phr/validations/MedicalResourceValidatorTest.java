@@ -97,7 +97,7 @@ public class MedicalResourceValidatorTest {
         UpsertMedicalResourceInternalRequest expected =
                 new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
-                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .setFhirResourceType(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(FHIR_RESOURCE_ID_IMMUNIZATION)
                         .setFhirVersion(FHIR_VERSION_R4)
@@ -119,7 +119,7 @@ public class MedicalResourceValidatorTest {
         UpsertMedicalResourceInternalRequest expected =
                 new UpsertMedicalResourceInternalRequest()
                         .setDataSourceId(DATA_SOURCE_ID)
-                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .setMedicalResourceType(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .setFhirResourceType(FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION)
                         .setFhirResourceId(FHIR_RESOURCE_ID_IMMUNIZATION)
                         .setFhirVersion(FHIR_VERSION_R4B)
@@ -227,7 +227,7 @@ public class MedicalResourceValidatorTest {
 
         int type = validator.validateAndCreateInternalRequest().getMedicalResourceType();
 
-        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
+        assertThat(type).isEqualTo(MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES);
     }
 
     @Test

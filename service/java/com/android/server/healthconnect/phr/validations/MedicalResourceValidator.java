@@ -32,9 +32,9 @@ import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_P
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PROCEDURE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.FhirResource.FhirResourceType;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
@@ -232,7 +232,7 @@ public class MedicalResourceValidator {
         // message.
         switch (fhirResourceType) {
             case FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE:
-                return MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
+                return MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
             case FHIR_RESOURCE_TYPE_CONDITION:
                 return MEDICAL_RESOURCE_TYPE_CONDITIONS;
             case FHIR_RESOURCE_TYPE_ENCOUNTER,
@@ -240,7 +240,7 @@ public class MedicalResourceValidator {
                     FHIR_RESOURCE_TYPE_ORGANIZATION:
                 return MEDICAL_RESOURCE_TYPE_VISITS;
             case FHIR_RESOURCE_TYPE_IMMUNIZATION:
-                return MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+                return MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
             case FHIR_RESOURCE_TYPE_OBSERVATION:
                 Integer classification = classifyObservation(json);
                 if (classification != null) {

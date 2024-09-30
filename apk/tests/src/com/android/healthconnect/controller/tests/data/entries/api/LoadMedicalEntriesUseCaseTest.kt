@@ -88,7 +88,7 @@ class LoadMedicalEntriesUseCaseTest {
     fun invoke_noData_returnsEmptyList() = runTest {
         val input =
             LoadMedicalEntriesInput(
-                medicalPermissionType = MedicalPermissionType.IMMUNIZATION,
+                medicalPermissionType = MedicalPermissionType.IMMUNIZATIONS,
                 packageName = null,
                 showDataOrigin = true,
             )
@@ -112,7 +112,7 @@ class LoadMedicalEntriesUseCaseTest {
     fun invoke_returnsFormattedData() = runTest {
         val input =
             LoadMedicalEntriesInput(
-                medicalPermissionType = MedicalPermissionType.IMMUNIZATION,
+                medicalPermissionType = MedicalPermissionType.IMMUNIZATIONS,
                 packageName = null,
                 showDataOrigin = true,
             )
