@@ -372,13 +372,13 @@
     <string name="conditions_lowercase_label" description="Lowercase label used to show the user's data about medical conditions [CHAR_LIMIT=50]">conditions</string>
     <string name="conditions_content_description" description="Content description for switch that enables permissions for reading the user's data about medical conditions [CHAR_LIMIT=NONE]">Read conditions</string>
 
-    <string name="immunizations_uppercase_label" description="Uppercase label used to show the user's immunization data [CHAR_LIMIT=50]">Immunizations</string>
-    <string name="immunizations_lowercase_label" description="Lowercase label used to show the user's immunization data [CHAR_LIMIT=50]">immunizations</string>
-    <string name="immunizations_content_description" description="Content description for switch that enables permissions for reading the user's immunization data [CHAR_LIMIT=NONE]">Read immunizations</string>
+    <string name="immunizations_uppercase_label" description="Uppercase label used to show the user's immunization data [CHAR_LIMIT=50]">Vaccines</string>
+    <string name="immunizations_lowercase_label" description="Lowercase label used to show the user's immunization data [CHAR_LIMIT=50]">vaccines</string>
+    <string name="immunizations_content_description" description="Content description for switch that enables permissions for reading the user's immunization data [CHAR_LIMIT=NONE]">Read vaccines</string>
 
-    <string name="laboratory_results_uppercase_label" description="Uppercase label used to show the user's laboratory results data [CHAR_LIMIT=50]">Laboratory Results</string>
-    <string name="laboratory_results_lowercase_label" description="Lowercase label used to show the user's laboratory results data [CHAR_LIMIT=50]">laboratory results</string>
-    <string name="laboratory_results_content_description" description="Content description for switch that enables permissions for reading the user's laboratory results data [CHAR_LIMIT=NONE]">Read laboratory results</string>
+    <string name="laboratory_results_uppercase_label" description="Uppercase label used to show the user's laboratory results data [CHAR_LIMIT=50]">Lab results</string>
+    <string name="laboratory_results_lowercase_label" description="Lowercase label used to show the user's laboratory results data [CHAR_LIMIT=50]">lab results</string>
+    <string name="laboratory_results_content_description" description="Content description for switch that enables permissions for reading the user's laboratory results data [CHAR_LIMIT=NONE]">Read lab results</string>
 
     <string name="medications_uppercase_label" description="Uppercase label used to show the user's medications data [CHAR_LIMIT=50]">Medications</string>
     <string name="medications_lowercase_label" description="Lowercase label used to show the user's medications data [CHAR_LIMIT=50]">medications</string>
@@ -400,7 +400,7 @@
     <string name="procedures_lowercase_label" description="Lowercase label used to show the user's procedure data [CHAR_LIMIT=50]">procedures</string>
     <string name="procedures_content_description" description="Content description for switch that enables permissions for reading the user's procedure data [CHAR_LIMIT=NONE]">Read procedures</string>
 
-    <string name="social_history_uppercase_label" description="Uppercase label used to show the user's social history data [CHAR_LIMIT=50]">Social History</string>
+    <string name="social_history_uppercase_label" description="Uppercase label used to show the user's social history data [CHAR_LIMIT=50]">Social history</string>
     <string name="social_history_lowercase_label" description="Lowercase label used to show the user's social history data [CHAR_LIMIT=50]">social history</string>
     <string name="social_history_content_description" description="Content description for switch that enables permissions for reading the user's social history data [CHAR_LIMIT=NONE]">Read social history</string>
 
@@ -408,7 +408,7 @@
     <string name="visits_lowercase_label" description="Lowercase label used to show the user's visits to a doctor or other encounters with a medical professional [CHAR_LIMIT=50]">visits</string>
     <string name="visits_content_description" description="Content description for switch that enables permissions for reading the user's visits to a doctor or other encounters with a medical professional [CHAR_LIMIT=NONE]">Read visits</string>
 
-    <string name="vital_signs_uppercase_label" description="Uppercase label used to show the user's vital signs data [CHAR_LIMIT=50]">Vital Signs</string>
+    <string name="vital_signs_uppercase_label" description="Uppercase label used to show the user's vital signs data [CHAR_LIMIT=50]">Vital signs</string>
     <string name="vital_signs_lowercase_label" description="Lowercase label used to show the user's vital signs data [CHAR_LIMIT=50]">vital signs</string>
     <string name="vital_signs_content_description" description="Content description for switch that enables permissions for reading the user's vital signs data [CHAR_LIMIT=NONE]">Read vital signs</string>
     <!--endregion-->
@@ -527,9 +527,9 @@
     <string name="permissions_header" description="Title shown for section that lists permissions. [CHAR_LIMIT=40]">Permissions</string>
     <string name="fitness_permissions" description="Label of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Fitness and wellness</string>
     <string name="fitness_permissions_summary" description="Summary of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Exercise, sleep, nutrition and others</string>
-    <string name="medical_permissions" description="Uppercase name of medical data category that contains lab results, immunizations, medications, etc. [CHAR_LIMIT=40]">Health records</string>
-    <string name="medical_permissions_lowercase" description="Lowercase name of medical data category that contains lab results, immunizations, medications, etc. [CHAR_LIMIT=40]">health records</string>
-    <string name="medical_permissions_summary" description="Summary of a button that opens the medical permissions screen. [CHAR_LIMIT=40]">Lab results, medications, immunizations and others</string>
+    <string name="medical_permissions" description="Uppercase name of medical data category that contains lab results, vaccines, medications, etc. [CHAR_LIMIT=40]">Health records</string>
+    <string name="medical_permissions_lowercase" description="Lowercase name of medical data category that contains lab results, vaccines, medications, etc. [CHAR_LIMIT=40]">health records</string>
+    <string name="medical_permissions_summary" description="Summary of a button that opens the medical permissions screen. [CHAR_LIMIT=40]">Lab results, medications, vaccines and others</string>
     <!--endregion-->
 
     <!--region Denied Apps -->
@@ -647,7 +647,7 @@
     <!--region Onboarding -->
     <string name="onboarding_title" description="Label used to show the title of onboarding page when user opens Health Connect app for the fist time">Get started with Health&#160;Connect</string>
     <string name="onboarding_description" description="Content description of Health Connect app on the onboarding page">Health&#160;Connect stores your health and fitness data, giving you a simple way to sync the different apps on your device</string>
-    <string name="onboarding_description_health_records" description="Content description of Health Connect app on the onboarding page that includes health records">Health&#160;Connect stores and syncs your health and fitness data from different apps.\n\n<b>Fitness and wellness data,</b> including exercise sessions, steps, nutrition, sleep and more\n\n<b>Health records,</b> including immunizations, lab results and more</string>
+    <string name="onboarding_description_health_records" description="Content description of Health Connect app on the onboarding page that includes health records">Health&#160;Connect stores and syncs your health and fitness data from different apps.\n\n<b>Fitness and wellness data,</b> including exercise sessions, steps, nutrition, sleep and more\n\n<b>Health records,</b> including vaccines, lab results and more</string>
     <string name="onboarding_description_with_health_connect" description="Content description of Health Connect app on the onboarding page that explains what the user can do with this app">With Health&#160;Connect you can</string>
     <string name="share_data" description="Label used to show how the user can share data with apps">Share data with your apps</string>
     <string name="share_data_description" description="Content description for how the user can share data with apps">Choose the data each app can read or write to Health&#160;Connect</string>

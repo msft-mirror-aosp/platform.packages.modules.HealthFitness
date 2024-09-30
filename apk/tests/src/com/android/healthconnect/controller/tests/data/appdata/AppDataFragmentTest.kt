@@ -153,7 +153,7 @@ class AppDataFragmentTest {
         onView(withText("Sleep")).check(doesNotExist())
         onView(withText("Vitals")).check(doesNotExist())
         onView(withText("Health records")).check(doesNotExist())
-        onView(withText("Immunizations")).check(doesNotExist())
+        onView(withText("Vaccines")).check(doesNotExist())
     }
 
     @Test
@@ -178,7 +178,7 @@ class AppDataFragmentTest {
         onView(withText("Exercise")).check(matches(isDisplayed()))
 
         onView(withText("Health records")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Immunizations")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Vaccines")).perform(scrollTo()).check(matches(isDisplayed()))
 
         onView(withText("Steps")).check(doesNotExist())
         onView(withText("Body measurements")).check(doesNotExist())
@@ -199,7 +199,7 @@ class AppDataFragmentTest {
         onView(withText("Distance")).check(doesNotExist())
 
         onView(withText("Health records")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Immunizations")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Vaccines")).perform(scrollTo()).check(matches(isDisplayed()))
 
         onView(withText("Body measurements")).check(doesNotExist())
     }
@@ -250,7 +250,7 @@ class AppDataFragmentTest {
         assertCheckboxNotShown("Distance")
         assertCheckboxNotShown("Steps")
         assertCheckboxNotShown("Allergies")
-        assertCheckboxNotShown("Immunizations")
+        assertCheckboxNotShown("Vaccines")
 
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
@@ -258,7 +258,7 @@ class AppDataFragmentTest {
         }
 
         assertCheckboxShown("Allergies")
-        assertCheckboxShown("Immunizations")
+        assertCheckboxShown("Vaccines")
         assertCheckboxShown("Distance")
         assertCheckboxShown("Steps")
     }
@@ -310,11 +310,11 @@ class AppDataFragmentTest {
             (fragment as AppDataFragment).triggerDeletionState(DELETE)
         }
 
-        onView(withText("Immunizations")).perform(click())
+        onView(withText("Vaccines")).perform(click())
         onIdle()
         assertThat(appDataViewModel.setOfPermissionTypesToBeDeleted.value)
             .containsExactlyElementsIn(setOf(MedicalPermissionType.IMMUNIZATIONS))
-        onView(withText("Immunizations")).perform(click())
+        onView(withText("Vaccines")).perform(click())
         assertThat(appDataViewModel.setOfPermissionTypesToBeDeleted.value).isEmpty()
     }
 
@@ -841,7 +841,7 @@ class AppDataFragmentTest {
             assertCheckboxShown("Distance")
             assertCheckboxShown("Steps")
             assertCheckboxShown("Allergies")
-            assertCheckboxShown("Vital Signs")
+            assertCheckboxShown("Vital signs")
         }
 
     @Test
@@ -966,10 +966,10 @@ class AppDataFragmentTest {
 
             assertCheckboxShown("Distance")
             assertCheckboxShown("Menstruation")
-            assertCheckboxShown("Social History")
+            assertCheckboxShown("Social history")
             onView(withText("Distance")).perform(click())
             onView(withText("Menstruation")).perform(scrollTo()).perform(click())
-            onView(withText("Social History")).perform(scrollTo()).perform(click())
+            onView(withText("Social history")).perform(scrollTo()).perform(click())
             scenario.onActivity { activity ->
                 val fragment =
                     activity.supportFragmentManager.findFragmentByTag("") as AppDataFragment
