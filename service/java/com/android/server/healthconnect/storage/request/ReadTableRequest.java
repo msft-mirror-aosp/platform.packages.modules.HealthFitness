@@ -66,7 +66,9 @@ public class ReadTableRequest {
     private WhereClauses mWhereClauses = new WhereClauses(AND);
     private boolean mDistinct = false;
     private OrderByClause mOrderByClause = new OrderByClause();
-    private String mLimitClause = "";
+
+    // Null means no limit.
+    @Nullable private Integer mLimit = null;
     @Nullable private List<ReadTableRequest> mExtraReadRequests;
     @Nullable private List<ReadTableRequest> mUnionReadRequests;
     private String mUnionType = UNION_ALL;
@@ -92,6 +94,7 @@ public class ReadTableRequest {
         return this;
     }
 
+    /** Sets the column names to select. */
     public ReadTableRequest setColumnNames(List<String> columnNames) {
         Objects.requireNonNull(columnNames);
 
@@ -99,6 +102,7 @@ public class ReadTableRequest {
         return this;
     }
 
+    /** Sets the WHERE clause to use in this SELECT. */
     public ReadTableRequest setWhereClause(WhereClauses whereClauses) {
         mWhereClauses = whereClauses;
         return this;
@@ -133,7 +137,57 @@ public class ReadTableRequest {
 
     /** Returns SQL statement to perform read operation. */
     public String getReadCommand() {
-        String selectStatement = buildSelectStatement();
+        return getReadCommand(/* asCount= */ false);
+    }
+
+    /**
+     * Returns an SQL statement that performs a count of the number of items that would be returned
+     * by the read operation.
+     *
+     * <p>The SQL result will have a single row, single column with the count of rows as the integer
+     * value in that first row, first column.
+     */
+    public String getCountCommand() {
+        return getReadCommand(/* asCount= */ true);
+    }
+
+    /**
+     * Returns the SQL for this request.
+     *
+     * @param asCount if true, the SQL returns the count of the results, if false returns the
+     *     results
+     */
+    private String getReadCommand(boolean asCount) {
+        if (mUnionReadRequests != null && !mUnionReadRequests.isEmpty()) {
+            StringBuilder builder = new StringBuilder();
+            if (asCount) {
+                builder.append("SELECT COUNT(*) FROM (");
+            }
+            for (ReadTableRequest unionReadRequest : mUnionReadRequests) {
+                builder.append("SELECT * FROM (");
+                builder.append(unionReadRequest.getReadCommand());
+                builder.append(")");
+                builder.append(mUnionType);
+            }
+            // For a union request we have to do the count outside the query.
+            builder.append(getReadQuery(/* asCount= */ false));
+            if (asCount) {
+                builder.append(")");
+            }
+            return builder.toString();
+        } else {
+            return getReadQuery(asCount);
+        }
+    }
+
+    /**
+     * Returns the SQL for this request, ignoring union read requests.
+     *
+     * @param asCount if true, the SQL returns the count of the results, if false returns the
+     *     results
+     */
+    private String getReadQuery(boolean asCount) {
+        String selectStatement = buildSelectStatement(asCount);
 
         String readQuery;
         if (mJoinClause != null) {
@@ -146,30 +200,34 @@ public class ReadTableRequest {
         if (Constants.DEBUG) {
             Slog.d(TAG, "read query: " + readQuery);
         }
-
-        if (mUnionReadRequests != null && !mUnionReadRequests.isEmpty()) {
-            StringBuilder builder = new StringBuilder();
-            for (ReadTableRequest unionReadRequest : mUnionReadRequests) {
-                builder.append("SELECT * FROM (");
-                builder.append(unionReadRequest.getReadCommand());
-                builder.append(")");
-                builder.append(mUnionType);
-            }
-
-            builder.append(readQuery);
-
-            return builder.toString();
-        }
-
         return readQuery;
     }
 
-    private String buildSelectStatement() {
+    private String buildSelectStatement(boolean asCount) {
         StringBuilder selectStatement = new StringBuilder(SELECT);
+        if (asCount) {
+            selectStatement.append("COUNT(");
+        }
         if (mDistinct) {
             selectStatement.append(DISTINCT);
         }
-        selectStatement.append(getColumnsToFetch());
+        // If we have distinct over multiple columns, or no count we need the column names.
+        // COUNT(*) differs from COUNT(column) in that it only counts non-null values. However,
+        // a select query will return null values. Therefore, we need COUNT(*) for the count
+        // to match the number of rows in the result.
+        if (!mDistinct && asCount) {
+            selectStatement.append("*");
+        } else {
+            String columns = "*";
+            if (mColumnNames != null && !mColumnNames.isEmpty()) {
+                columns = String.join(DELIMITER, mColumnNames);
+            }
+            selectStatement.append(columns);
+        }
+        if (asCount) {
+            selectStatement.append(")");
+        }
+
         selectStatement.append(FROM);
         return selectStatement.toString();
     }
@@ -179,7 +237,7 @@ public class ReadTableRequest {
                 + mTableName
                 + mWhereClauses.get(/* withWhereKeyword */ true)
                 + mOrderByClause.getOrderBy()
-                + mLimitClause;
+                + (mLimit == null ? "" : LIMIT_SIZE + mLimit);
     }
 
     /** Get requests for populating extra data */
@@ -205,18 +263,16 @@ public class ReadTableRequest {
         return this;
     }
 
-    /** Sets LIMIT size for the read query */
-    public ReadTableRequest setLimit(int limit) {
-        mLimitClause = LIMIT_SIZE + limit;
-        return this;
+    /** Returns the current LIMIT size for the query, or null for no LIMIT. */
+    @Nullable
+    public Integer getLimit() {
+        return mLimit;
     }
 
-    private String getColumnsToFetch() {
-        if (mColumnNames == null || mColumnNames.isEmpty()) {
-            return "*";
-        }
-
-        return String.join(DELIMITER, mColumnNames);
+    /** Sets LIMIT size for the read query, or null for no limit. */
+    public ReadTableRequest setLimit(@Nullable Integer limit) {
+        mLimit = limit;
+        return this;
     }
 
     /** Sets union read requests. */
