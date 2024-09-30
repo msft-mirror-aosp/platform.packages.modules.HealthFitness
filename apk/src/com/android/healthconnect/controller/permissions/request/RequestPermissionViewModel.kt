@@ -228,9 +228,18 @@ constructor(
     fun isAnyPermissionUserFixed(packageName: String, permissions: Array<out String>): Boolean {
         val declaredPermissions = healthPermissionReader.getDeclaredHealthPermissions(packageName)
         val validPermissions = permissions.filter { declaredPermissions.contains(it) }
-        return getHealthPermissionsFlagsUseCase
-            .invoke(packageName, validPermissions.toList())
-            .any { (_, flags) -> flags.and(PackageManager.FLAG_PERMISSION_USER_FIXED) != 0 }
+        val permissionFlags =
+            getHealthPermissionsFlagsUseCase.invoke(packageName, validPermissions.toList())
+        val userFixedPermissions =
+            permissionFlags
+                .filter { (_, flags) -> flags.and(PackageManager.FLAG_PERMISSION_USER_FIXED) != 0 }
+                .keys
+                .toList()
+        if (userFixedPermissions.isNotEmpty()) {
+            Log.e(TAG, "Permissions are user-fixed: $userFixedPermissions")
+            return true
+        }
+        return false
     }
 
     /** Mark a permission as locally granted */
