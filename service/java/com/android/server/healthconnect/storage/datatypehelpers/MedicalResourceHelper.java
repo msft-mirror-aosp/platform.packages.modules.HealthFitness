@@ -1050,19 +1050,10 @@ public final class MedicalResourceHelper {
             PhrPageTokenWrapper pageTokenWrapper,
             int pageSize) {
         ReadMedicalResourcesInternalResponse response;
-        int totalRowCount;
         // Get the count from a requests with no limit,
         Integer originalLimit = request.getLimit();
         request.setLimit(null);
-        try (Cursor cursor = db.rawQuery(request.getCountCommand(), null)) {
-            if (cursor.moveToFirst()) {
-                totalRowCount = cursor.getInt(0);
-            } else {
-                throw new RuntimeException(
-                        "request count command did not give appropriate SQL: "
-                                + request.getCountCommand());
-            }
-        }
+        int totalRowCount = TransactionManager.count(request, db);
         request.setLimit(originalLimit);
         try (Cursor cursor = db.rawQuery(request.getReadCommand(), null)) {
             response = getMedicalResources(cursor, pageTokenWrapper, pageSize, totalRowCount);
