@@ -18,8 +18,8 @@ package com.android.healthconnect.controller.tests.recentaccess
 import android.health.connect.Constants
 import android.health.connect.accesslog.AccessLog
 import android.health.connect.datatypes.BasalMetabolicRateRecord
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
 import android.health.connect.datatypes.RecordTypeIdentifier
 import android.health.connect.datatypes.StepsRecord
 import android.health.connect.datatypes.WeightRecord
@@ -912,8 +912,8 @@ class RecentAccessViewModelTest {
                         accessTime.toEpochMilli(),
                         Constants.READ,
                         setOf(
-                            MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
-                            MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                            MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                            MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
                         ),
                         true,
                     )
@@ -953,8 +953,8 @@ class RecentAccessViewModelTest {
                         accessTime.toEpochMilli(),
                         Constants.UPSERT,
                         setOf(
-                            MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
-                            MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                            MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                            MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
                         ),
                         true,
                     )

@@ -98,8 +98,8 @@ class AppPermissionViewModelTest {
     private val readExerciseRoutesPermission = AdditionalPermission.READ_EXERCISE_ROUTES
     private val readHistoryDataPermission = AdditionalPermission.READ_HEALTH_DATA_HISTORY
     private val readDataInBackgroundPermission = AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND
-    private val readImmunization = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
-    private val readAllergies = MedicalPermission(MedicalPermissionType.ALLERGY_INTOLERANCE)
+    private val readImmunization = MedicalPermission(MedicalPermissionType.IMMUNIZATIONS)
+    private val readAllergies = MedicalPermission(MedicalPermissionType.ALLERGIES_INTOLERANCES)
     private val writeSleepPermission =
         FitnessPermission(FitnessPermissionType.SLEEP, PermissionsAccessType.WRITE)
     private val writeDistancePermission =
