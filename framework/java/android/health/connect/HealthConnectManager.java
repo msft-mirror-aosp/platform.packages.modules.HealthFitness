@@ -2135,9 +2135,14 @@ public class HealthConnectManager {
      *       FhirVersion} of the {@link MedicalDataSource}.
      * </ul>
      *
-     * <p>If any request is deemed invalid, the caller will receive an exception with code {@link
-     * HealthConnectException#ERROR_INVALID_ARGUMENT} via {@code callback.onError()}, and none of
-     * the {@code requests} will be upserted into the HealthConnect database.
+     * <p>If any request contains invalid {@link MedicalDataSource} IDs, the API will throw an
+     * {@link IllegalArgumentException}, and none of the {@code requests} will be upserted into the
+     * HealthConnect database.
+     *
+     * <p>If any request is deemed invalid for any other reasons, the caller will receive an
+     * exception with code {@link HealthConnectException#ERROR_INVALID_ARGUMENT} via {@code
+     * callback.onError()}, and none of the {@code requests} will be upserted into the HealthConnect
+     * database.
      *
      * <p>If data for any {@link UpsertMedicalResourceRequest} fails to be upserted, then no data
      * from any {@code requests} will be upserted into the database.
@@ -2147,6 +2152,12 @@ public class HealthConnectManager {
      * resource ID extracted from the provided {@link UpsertMedicalResourceRequest#getData() data}.
      * If the above combination does not match with an existing one in Health Connect, then a new
      * {@link MedicalResource} is inserted, otherwise the existing one is updated.
+     *
+     * @param requests List of upsert requests.
+     * @param executor Executor on which to invoke the callback.
+     * @param callback Callback to receive result of performing this operation.
+     * @throws IllegalArgumentException if any {@code requests} contains invalid {@link
+     *     MedicalDataSource} IDs.
      */
     // Suppress missing because API flagged out.
     // TODO: b/355156275 - remove suppression once API not flagged out.
@@ -2280,34 +2291,34 @@ public class HealthConnectManager {
      * Reads {@link MedicalResource}s based on {@link ReadMedicalResourcesInitialRequest} or {@link
      * ReadMedicalResourcesPageRequest}.
      *
-     * <p>Number of resources returned by this API will depend based on below factors:
+     * <p>Being permitted to read medical resources is dependent on the following logic, in priority
+     * order, earlier statements take precedence.
      *
-     * <ul>
-     *   <li>When an app with read permissions allowed for the requested filters but without the
-     *       {@link android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} calls
-     *       the API from background then it will be able to read only its own inserted medical
-     *       resources and will not get medical resources inserted by other apps. This may be less
-     *       than the size the app can read from foreground.
-     *   <li>When an app with read permissions allowed for the requested filters and with the {@link
-     *       android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} calls the API
-     *       from background then it will be able to read all the corresponding medical resources.
-     *       This has the same size the app can read from foreground.
-     *   <li>When an app with the read permissions allowed for the requested filters calls the API
-     *       from foreground then it will be able to read all the corresponding medical resources.
-     *   <li>App with only write permission but no read permission allowed will be able to read only
-     *       its own inserted medical resources both when in foreground or background.
-     *   <li>An app without both read and write permissions will not be able to read any medical
-     *       resources and the API will throw Security Exception.
-     * </ul>
+     * <ol>
+     *   <li>A caller with the system permission can get any medical resources in the foreground or
+     *       background.
+     *   <li>A caller without any read or write permissions for health data will not be able to get
+     *       any medical resources and receive an exception with code {@link
+     *       HealthConnectException#ERROR_SECURITY} via {@code callback.onError()}, even for medical
+     *       resources the caller has created.
+     *   <li>Callers can get medical resources they have created, whether this method is called in
+     *       the foreground or background. Note this only applies if the caller has at least one
+     *       read or write permission for health data.
+     *   <li>For any given medical resource, a caller can get that medical resource in the
+     *       foreground if the caller has the corresponding read permission, or in the background if
+     *       it also has {@link
+     *       android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND}.
+     *   <li>In all other cases the caller is not permitted to get the given medical resource and it
+     *       will not be returned.
+     * </ol>
      *
      * @param request The read request {@link ReadMedicalResourcesInitialRequest} or {@link
      *     ReadMedicalResourcesPageRequest}.
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
-     * @throws IllegalArgumentException if request page size set is less than 1 or more than 5000;
-     *     or if contains not supported medical resource type or invalid {@link MedicalDataSource}
-     *     IDs when using {@link ReadMedicalResourcesInitialRequest}; or page token is {@code null}
-     *     when using {@link ReadMedicalResourcesPageRequest}.
+     * @throws IllegalArgumentException if {@code request} has set page size to be less than 1 or
+     *     more than 5000; or if contains unsupported medical resource type or invalid {@link
+     *     MedicalDataSource} IDs when using {@link ReadMedicalResourcesInitialRequest}.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public void readMedicalResources(
@@ -2355,6 +2366,8 @@ public class HealthConnectManager {
      * @param request The delete request.
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
+     * @throws IllegalArgumentException if {@code request} contains unsupported medical resource
+     *     types or invalid {@link MedicalDataSource} IDs.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     // Suppress missing because API flagged out. "RequiresPermission" is also needed because
@@ -2508,6 +2521,8 @@ public class HealthConnectManager {
      * @param request Creation request.
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
+     * @throws IllegalArgumentException if {@code request} contains a FHIR base URI or display name
+     *     exceeding the character limits, or an unsupported FHIR version.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     // Suppress missing because API flagged out.
@@ -2551,8 +2566,8 @@ public class HealthConnectManager {
      *
      * <ul>
      *   <li>If an empty list of {@code ids} is provided, an empty list will be returned.
-     *   <li>If any ID in {@code ids} is invalid, the caller will receive an error via the {@code
-     *       callback}.
+     *   <li>If any ID in {@code ids} is invalid, the caller will receive an exception with code
+     *       {@link HealthConnectException#ERROR_INVALID_ARGUMENT} via {@code callback.onError()}.
      *   <li>If any ID in {@code ids} does not exist, no data source will be returned for that ID.
      *   <li>Callers will only get data sources they are permitted to get. See below.
      * </ul>
@@ -2629,8 +2644,7 @@ public class HealthConnectManager {
      *   <li>If an empty {@link GetMedicalDataSourcesRequest#getPackageNames() list of package
      *       names} is passed, all permitted data sources from all apps will be returned. See below.
      *   <li>If any package name in the {@link GetMedicalDataSourcesRequest#getPackageNames() list
-     *       of package names} is invalid, the caller will receive an error via the {@code
-     *       callback}.
+     *       of package names} is invalid, the API will throw an {@link IllegalArgumentException}.
      *   <li>If a non-empty {@link GetMedicalDataSourcesRequest#getPackageNames() list of package
      *       names} is specified in the request, then only the permitted data sources created by
      *       those packages will be returned. See below.
@@ -2664,6 +2678,7 @@ public class HealthConnectManager {
      * @param request the request for which data sources to return.
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
+     * @throws IllegalArgumentException if {@code request} contains invalid package names.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public void getMedicalDataSources(
@@ -2697,7 +2712,8 @@ public class HealthConnectManager {
     /**
      * Deletes a {@link MedicalDataSource} and all data linked to it.
      *
-     * <p>If the data source does not exist, the caller will receive an exception with code {@link
+     * <p>If the provided data source {@code id} is either invalid, or does not exist, or owned by
+     * another apps, the caller will receive an exception with code {@link
      * HealthConnectException#ERROR_INVALID_ARGUMENT} via {@code callback.onError()}.
      *
      * <p>Regarding permissions:
