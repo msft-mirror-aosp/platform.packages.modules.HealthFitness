@@ -129,13 +129,13 @@ public class PhrDataFactory {
                 DATA_SOURCE_ID,
                 DATA_SOURCE_PACKAGE_NAME,
                 DATA_SOURCE_FHIR_BASE_URI,
-                DATA_SOURCE_DISPLAY_NAME);
+                DATA_SOURCE_DISPLAY_NAME,
+                DATA_SOURCE_FHIR_VERSION);
     }
 
     /** Creates and returns a {@link MedicalDataSource.Builder} with default arguments. */
     public static MedicalDataSource.Builder getMedicalDataSourceBuilderWithOptionalFields() {
         return getMedicalDataSourceBuilderRequiredFieldsOnly()
-                .setFhirVersion(DATA_SOURCE_FHIR_VERSION)
                 .setLastDataUpdateTime(DATA_SOURCE_LAST_DATA_UPDATE_TIME);
     }
 

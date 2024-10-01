@@ -62,26 +62,8 @@ public class MedicalDataSourceTest {
                                 DATA_SOURCE_ID,
                                 DATA_SOURCE_PACKAGE_NAME,
                                 DATA_SOURCE_FHIR_BASE_URI,
-                                DATA_SOURCE_DISPLAY_NAME)
-                        .build();
-
-        assertThat(dataSource.getId()).isEqualTo(DATA_SOURCE_ID);
-        assertThat(dataSource.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
-        assertThat(dataSource.getFhirBaseUri()).isEqualTo(DATA_SOURCE_FHIR_BASE_URI);
-        assertThat(dataSource.getDisplayName()).isEqualTo(DATA_SOURCE_DISPLAY_NAME);
-        assertThat(dataSource.getLastDataUpdateTime()).isNull();
-    }
-
-    @Test
-    public void testMedicalDataSourceBuilder_setAllFields() {
-        MedicalDataSource dataSource =
-                new MedicalDataSource.Builder("", "", Uri.EMPTY, "")
-                        .setId(DATA_SOURCE_ID)
-                        .setPackageName(DATA_SOURCE_PACKAGE_NAME)
-                        .setFhirBaseUri(DATA_SOURCE_FHIR_BASE_URI)
-                        .setDisplayName(DATA_SOURCE_DISPLAY_NAME)
-                        .setFhirVersion(DATA_SOURCE_FHIR_VERSION)
-                        .setLastDataUpdateTime(DATA_SOURCE_LAST_DATA_UPDATE_TIME)
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
                         .build();
 
         assertThat(dataSource.getId()).isEqualTo(DATA_SOURCE_ID);
@@ -89,6 +71,26 @@ public class MedicalDataSourceTest {
         assertThat(dataSource.getFhirBaseUri()).isEqualTo(DATA_SOURCE_FHIR_BASE_URI);
         assertThat(dataSource.getDisplayName()).isEqualTo(DATA_SOURCE_DISPLAY_NAME);
         assertThat(dataSource.getFhirVersion()).isEqualTo(DATA_SOURCE_FHIR_VERSION);
+        assertThat(dataSource.getLastDataUpdateTime()).isNull();
+    }
+
+    @Test
+    public void testMedicalDataSourceBuilder_setAllFields() {
+        MedicalDataSource dataSource =
+                new MedicalDataSource.Builder("", "", Uri.EMPTY, "", DATA_SOURCE_FHIR_VERSION)
+                        .setId(DATA_SOURCE_ID)
+                        .setPackageName(DATA_SOURCE_PACKAGE_NAME)
+                        .setFhirBaseUri(DATA_SOURCE_FHIR_BASE_URI)
+                        .setDisplayName(DATA_SOURCE_DISPLAY_NAME)
+                        .setFhirVersion(DIFFERENT_DATA_SOURCE_FHIR_VERSION)
+                        .setLastDataUpdateTime(DATA_SOURCE_LAST_DATA_UPDATE_TIME)
+                        .build();
+
+        assertThat(dataSource.getId()).isEqualTo(DATA_SOURCE_ID);
+        assertThat(dataSource.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+        assertThat(dataSource.getFhirBaseUri()).isEqualTo(DATA_SOURCE_FHIR_BASE_URI);
+        assertThat(dataSource.getDisplayName()).isEqualTo(DATA_SOURCE_DISPLAY_NAME);
+        assertThat(dataSource.getFhirVersion()).isEqualTo(DIFFERENT_DATA_SOURCE_FHIR_VERSION);
         assertThat(dataSource.getLastDataUpdateTime()).isEqualTo(DATA_SOURCE_LAST_DATA_UPDATE_TIME);
     }
 
@@ -117,8 +119,8 @@ public class MedicalDataSourceTest {
                                 DATA_SOURCE_ID,
                                 DATA_SOURCE_PACKAGE_NAME,
                                 DATA_SOURCE_FHIR_BASE_URI,
-                                DATA_SOURCE_DISPLAY_NAME)
-                        .setFhirVersion(DATA_SOURCE_FHIR_VERSION)
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
                         .setLastDataUpdateTime(DATA_SOURCE_LAST_DATA_UPDATE_TIME)
                         .build();
         String idString = "id=" + DATA_SOURCE_ID;
@@ -143,8 +145,8 @@ public class MedicalDataSourceTest {
                                 DATA_SOURCE_ID,
                                 DATA_SOURCE_PACKAGE_NAME,
                                 DATA_SOURCE_FHIR_BASE_URI,
-                                DATA_SOURCE_DISPLAY_NAME)
-                        .setFhirVersion(null)
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
                         .setLastDataUpdateTime(null)
                         .build();
         String expectedPropertiesString =
@@ -155,7 +157,7 @@ public class MedicalDataSourceTest {
                         DATA_SOURCE_PACKAGE_NAME,
                         DATA_SOURCE_FHIR_BASE_URI,
                         DATA_SOURCE_DISPLAY_NAME,
-                        null,
+                        DATA_SOURCE_FHIR_VERSION,
                         null);
 
         assertThat(dataSource.toString())
