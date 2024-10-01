@@ -1794,6 +1794,24 @@ public class HealthConnectManagerTest {
     }
 
     @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResourcesByIds_migrationInProgress_apiBlocked()
+            throws InterruptedException {
+        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalResource immunization =
+                upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+
+        startMigrationWithShellPermissionIdentity();
+        mManager.readMedicalResources(List.of(immunization.getId()), executor, receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
+        finishMigrationWithShellPermissionIdentity();
+    }
+
+    @Test
     public void testGetRecordTypeInfo_InsertRecords_correctContributingPackages() throws Exception {
         // Insert a set of test records for StepRecords, ExerciseSessionRecord, HeartRateRecord,
         // BasalMetabolicRateRecord.
