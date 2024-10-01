@@ -41,6 +41,7 @@ import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDa
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.FHIR_VERSION_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.MAX_ALLOWED_MEDICAL_DATA_SOURCES;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.MEDICAL_DATA_SOURCE_TABLE_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getReadQueryForDataSourcesFilterOnIdsAndAppIdsAndResourceTypes;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_UNIQUE_NON_NULL;
@@ -123,6 +124,8 @@ public class MedicalDataSourceHelperTest {
             new HealthConnectDatabaseTestRule();
 
     private static final Instant INSTANT_NOW = Instant.now();
+    private static final Instant INSTANT_NOW_PLUS_TEN_SEC = INSTANT_NOW.plusSeconds(10);
+    private static final Instant INSTANT_NOW_PLUS_TWENTY_SEC = INSTANT_NOW.plusSeconds(20);
 
     private MedicalDataSourceHelper mMedicalDataSourceHelper;
     private MedicalResourceHelper mMedicalResourceHelper;
@@ -243,104 +246,6 @@ public class MedicalDataSourceHelperTest {
                         "SELECT * FROM medical_data_source_table WHERE data_source_uuid IN ("
                                 + String.join(", ", hexValues)
                                 + ")");
-    }
-
-    @Test
-    public void getReadTableRequestJoinWithAppInfo_usingMedicalDataSourceId_correctQuery() {
-        UUID uuid1 = UUID.randomUUID();
-        UUID uuid2 = UUID.randomUUID();
-        List<String> hexValues = List.of(getHexString(uuid1), getHexString(uuid2));
-
-        ReadTableRequest readRequest =
-                MedicalDataSourceHelper.getReadTableRequestJoinWithAppInfo(List.of(uuid1, uuid2));
-
-        assertThat(readRequest.getTableName()).isEqualTo(MEDICAL_DATA_SOURCE_TABLE_NAME);
-        assertThat(readRequest.getReadCommand())
-                .isEqualTo(
-                        "SELECT * FROM ( SELECT * FROM medical_data_source_table WHERE"
-                                + " data_source_uuid IN ("
-                                + String.join(", ", hexValues)
-                                + ") ) AS inner_query_result  INNER JOIN application_info_table ON"
-                                + " inner_query_result.app_info_id ="
-                                + " application_info_table.row_id");
-    }
-
-    @Test
-    public void getReadTableRequestForDataSourceWrittenByAppIdFilterOnResourceTypes_correctQuery() {
-        UUID uuid1 = UUID.randomUUID();
-        UUID uuid2 = UUID.randomUUID();
-        List<String> hexValues = List.of(getHexString(uuid1), getHexString(uuid2));
-
-        ReadTableRequest readRequest =
-                MedicalDataSourceHelper
-                        .getReadTableRequestForDataSourceWrittenByAppIdFilterOnResourceTypes(
-                                List.of(uuid1, uuid2),
-                                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
-                                /* appId= */ 123L);
-
-        List<String> selectColumns =
-                List.of(
-                        "package_name",
-                        "data_source_uuid",
-                        "fhir_base_uri",
-                        "display_name",
-                        "fhir_version");
-        assertThat(readRequest.getReadCommand())
-                .isEqualTo(
-                        "SELECT DISTINCT "
-                                + String.join(",", selectColumns)
-                                + " FROM ( SELECT * FROM medical_resource_table ) AS"
-                                + " inner_query_result  INNER JOIN ( SELECT * FROM"
-                                + " medical_data_source_table WHERE app_info_id = '123' AND"
-                                + " data_source_uuid IN ("
-                                + String.join(", ", hexValues)
-                                + ")) medical_data_source_table ON"
-                                + " inner_query_result.data_source_id ="
-                                + " medical_data_source_table.medical_data_source_row_id  INNER"
-                                + " JOIN application_info_table ON"
-                                + " medical_data_source_table.app_info_id ="
-                                + " application_info_table.row_id  INNER JOIN ( SELECT * FROM"
-                                + " medical_resource_indices_table WHERE medical_resource_type IN"
-                                + " (1)) medical_resource_indices_table ON"
-                                + " inner_query_result.medical_resource_row_id ="
-                                + " medical_resource_indices_table.medical_resource_id");
-    }
-
-    @Test
-    public void getReadTableRequestForDataSourcesFilterOnResourceTypes_correctQuery() {
-        UUID uuid1 = UUID.randomUUID();
-        UUID uuid2 = UUID.randomUUID();
-        List<String> hexValues = List.of(getHexString(uuid1), getHexString(uuid2));
-
-        ReadTableRequest readRequest =
-                MedicalDataSourceHelper.getReadTableRequestForDataSourcesFilterOnResourceTypes(
-                        List.of(uuid1, uuid2), Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS));
-
-        List<String> selectColumns =
-                List.of(
-                        "package_name",
-                        "data_source_uuid",
-                        "fhir_base_uri",
-                        "display_name",
-                        "fhir_version");
-        assertThat(readRequest.getReadCommand())
-                .isEqualTo(
-                        "SELECT DISTINCT "
-                                + String.join(",", selectColumns)
-                                + " FROM ( SELECT * FROM medical_resource_table ) AS"
-                                + " inner_query_result  INNER JOIN ( SELECT * FROM"
-                                + " medical_data_source_table WHERE data_source_uuid IN ("
-                                + String.join(", ", hexValues)
-                                + ")) medical_data_source_table ON"
-                                + " inner_query_result.data_source_id ="
-                                + " medical_data_source_table.medical_data_source_row_id  INNER"
-                                + " JOIN application_info_table ON"
-                                + " medical_data_source_table.app_info_id ="
-                                + " application_info_table.row_id  INNER JOIN ( SELECT * FROM"
-                                + " medical_resource_indices_table WHERE medical_resource_type IN"
-                                + " (1)) medical_resource_indices_table ON"
-                                + " inner_query_result.medical_resource_row_id ="
-                                + " medical_resource_indices_table.medical_resource_id");
     }
 
     @Test
@@ -746,9 +651,12 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
-        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
+        upsertResourceAtTime(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1, INSTANT_NOW);
+        upsertResourceAtTime(
+                PhrDataFactory::createAllergyMedicalResource,
+                dataSource1,
+                INSTANT_NOW_PLUS_TEN_SEC);
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
 
@@ -761,7 +669,8 @@ public class MedicalDataSourceHelperTest {
                         /* isCalledFromBgWithoutBgRead= */ true,
                         mAppInfoHelper);
 
-        assertThat(result).containsExactly(dataSource1);
+        assertThat(result)
+                .containsExactly(addLastDataUpdateTime(dataSource1, INSTANT_NOW_PLUS_TEN_SEC));
     }
 
     @Test
@@ -1087,8 +996,12 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
-        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
+        upsertResourceAtTime(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1, INSTANT_NOW);
+        upsertResourceAtTime(
+                PhrDataFactory::createAllergyMedicalResource,
+                dataSource1,
+                INSTANT_NOW_PLUS_TEN_SEC);
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
 
@@ -1101,7 +1014,8 @@ public class MedicalDataSourceHelperTest {
                         /* isCalledFromBgWithoutBgRead= */ true,
                         mAppInfoHelper);
 
-        assertThat(result).containsExactly(dataSource1);
+        assertThat(result)
+                .containsExactly(addLastDataUpdateTime(dataSource1, INSTANT_NOW_PLUS_TEN_SEC));
     }
 
     @Test
@@ -1112,8 +1026,14 @@ public class MedicalDataSourceHelperTest {
                 mUtil.insertR4MedicalDataSource("ds", DATA_SOURCE_PACKAGE_NAME);
         MedicalDataSource dataSource2 =
                 mUtil.insertR4MedicalDataSource("ds", DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
-        mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource1);
-        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
+        upsertResourceAtTime(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1, INSTANT_NOW);
+        // Even though the reader does not have Allergy read permissions, this resource needs to
+        // be considered for calculating the MedicalDataSource's last data update time.
+        upsertResourceAtTime(
+                PhrDataFactory::createAllergyMedicalResource,
+                dataSource1,
+                INSTANT_NOW_PLUS_TEN_SEC);
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2);
 
@@ -1129,7 +1049,8 @@ public class MedicalDataSourceHelperTest {
                         /* isCalledFromBgWithoutBgRead= */ true,
                         mAppInfoHelper);
 
-        assertThat(result).containsExactly(dataSource1);
+        assertThat(result)
+                .containsExactly(addLastDataUpdateTime(dataSource1, INSTANT_NOW_PLUS_TEN_SEC));
     }
 
     @Test
@@ -1149,6 +1070,15 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentAllergyMedicalResource,
+                dataSource2Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in background without background read perm, no write permission but has
         // immunization read permission. App can read dataSources belonging to immunizations
@@ -1168,7 +1098,10 @@ public class MedicalDataSourceHelperTest {
                         /* isCalledFromBgWithoutBgRead= */ true,
                         mAppInfoHelper);
 
-        assertThat(result).containsExactly(dataSource1Package1, dataSource2Package1);
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW_PLUS_TEN_SEC));
     }
 
     @Test
@@ -1188,7 +1121,15 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package1);
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
-        mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package2,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, no write permission but has
         // immunization read permission. App can read all dataSources belonging to immunizations.
@@ -1204,7 +1145,10 @@ public class MedicalDataSourceHelperTest {
                         /* isCalledFromBgWithoutBgRead= */ false,
                         mAppInfoHelper);
 
-        assertThat(result).containsExactly(dataSource1Package1, dataSource1Package2);
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource1Package2, INSTANT_NOW_PLUS_TEN_SEC));
     }
 
     @Test
@@ -1226,6 +1170,15 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentAllergyMedicalResource,
+                dataSource2Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, has write permission but
         // no read permission for any resource types.
@@ -1242,7 +1195,10 @@ public class MedicalDataSourceHelperTest {
                         /* isCalledFromBgWithoutBgRead= */ false,
                         mAppInfoHelper);
 
-        assertThat(result).containsExactly(dataSource1Package1, dataSource2Package1);
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW_PLUS_TEN_SEC));
     }
 
     @Test
@@ -1263,6 +1219,15 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentAllergyMedicalResource,
+                dataSource2Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentAllergyMedicalResource,
+                dataSource2Package2,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, no write permission but
         // has allergy resource type read permission.
@@ -1279,7 +1244,10 @@ public class MedicalDataSourceHelperTest {
                         /* isCalledFromBgWithoutBgRead= */ false,
                         mAppInfoHelper);
 
-        assertThat(result).containsExactly(dataSource2Package1, dataSource2Package2);
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package2, INSTANT_NOW_PLUS_TEN_SEC));
     }
 
     @Test
@@ -1300,6 +1268,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentAllergyMedicalResource,
+                dataSource2Package2,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, no write permission but
         // has allergy resource type and immunization read permissions.
@@ -1320,10 +1293,10 @@ public class MedicalDataSourceHelperTest {
 
         assertThat(result)
                 .containsExactly(
-                        dataSource1Package1,
-                        dataSource2Package1,
-                        dataSource1Package2,
-                        dataSource2Package2);
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW),
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW),
+                        addLastDataUpdateTime(dataSource1Package2, INSTANT_NOW),
+                        addLastDataUpdateTime(dataSource2Package2, INSTANT_NOW_PLUS_TEN_SEC));
     }
 
     @Test
@@ -1345,6 +1318,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, has write permission and
         // has immunization read permissions.
@@ -1363,7 +1341,10 @@ public class MedicalDataSourceHelperTest {
                         mAppInfoHelper);
 
         assertThat(result)
-                .containsExactly(dataSource1Package1, dataSource2Package1, dataSource1Package2);
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW),
+                        addLastDataUpdateTime(dataSource1Package2, INSTANT_NOW));
     }
 
     @Test
@@ -1399,6 +1380,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, has write permission and
         // has immunization read permissions.
@@ -1414,7 +1400,10 @@ public class MedicalDataSourceHelperTest {
                         /* isCalledFromBgWithoutBgRead= */ false);
 
         assertThat(result)
-                .containsExactly(dataSource1Package1, dataSource2Package1, dataSource1Package2);
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW),
+                        addLastDataUpdateTime(dataSource1Package2, INSTANT_NOW));
     }
 
     @Test
@@ -1435,6 +1424,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, has write permission and
         // has immunization read permissions.
@@ -1450,7 +1444,10 @@ public class MedicalDataSourceHelperTest {
                         /* isCalledFromBgWithoutBgRead= */ false);
 
         assertThat(result)
-                .containsExactly(dataSource1Package1, dataSource2Package1, dataSource1Package2);
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW),
+                        addLastDataUpdateTime(dataSource1Package2, INSTANT_NOW));
     }
 
     @Test
@@ -1472,6 +1469,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package2,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, has write permission and
         // has immunization read permissions.
@@ -1486,7 +1488,9 @@ public class MedicalDataSourceHelperTest {
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false);
 
-        assertThat(result).containsExactly(dataSource1Package2);
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package2, INSTANT_NOW_PLUS_TEN_SEC));
     }
 
     @Test
@@ -1507,6 +1511,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in background without background read perm, has write permission and
         // no read permissions.
@@ -1520,7 +1529,10 @@ public class MedicalDataSourceHelperTest {
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ true);
 
-        assertThat(result).containsExactly(dataSource1Package1, dataSource2Package1);
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW));
     }
 
     @Test
@@ -1541,6 +1553,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in background without background read perm, has write permission and
         // no read permissions.
@@ -1554,7 +1571,10 @@ public class MedicalDataSourceHelperTest {
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ true);
 
-        assertThat(result).containsExactly(dataSource1Package1, dataSource2Package1);
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW));
     }
 
     @Test
@@ -1610,6 +1630,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in background without background read perm, has write permission and
         // has read immunization permission.
@@ -1623,7 +1648,10 @@ public class MedicalDataSourceHelperTest {
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ true);
 
-        assertThat(result).containsExactly(dataSource1Package1, dataSource2Package1);
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW));
     }
 
     @Test
@@ -1644,6 +1672,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in background without background read perm, has write permission and
         // has read immunization permission.
@@ -1657,7 +1690,10 @@ public class MedicalDataSourceHelperTest {
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ true);
 
-        assertThat(result).containsExactly(dataSource1Package1, dataSource2Package1);
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW));
     }
 
     @Test
@@ -1713,6 +1749,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in background without background read perm, has no write permission and
         // has read immunization permission.
@@ -1726,7 +1767,9 @@ public class MedicalDataSourceHelperTest {
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ true);
 
-        assertThat(result).containsExactly(dataSource1Package1);
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC));
     }
 
     @Test
@@ -1760,7 +1803,7 @@ public class MedicalDataSourceHelperTest {
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ true);
 
-        assertThat(result).containsExactly(dataSource1Package1);
+        assertThat(result).containsExactly(addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW));
     }
 
     @Test
@@ -1816,6 +1859,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in background without background read perm, no write permission but has
         // immunization and allergy read permission.
@@ -1832,7 +1880,10 @@ public class MedicalDataSourceHelperTest {
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ true);
 
-        assertThat(result).containsExactly(dataSource1Package1, dataSource2Package1);
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW));
     }
 
     @Test
@@ -1853,6 +1904,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in background without background read perm, no write permission but has
         // immunization and allergy read permission. App can read dataSources belonging to
@@ -1867,7 +1923,10 @@ public class MedicalDataSourceHelperTest {
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ true);
 
-        assertThat(result).containsExactly(dataSource1Package1, dataSource2Package1);
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW));
     }
 
     @Test
@@ -1889,6 +1948,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, has write permission but
         // no read permission for any resource types.
@@ -1902,7 +1966,10 @@ public class MedicalDataSourceHelperTest {
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false);
 
-        assertThat(result).containsExactly(dataSource1Package1, dataSource2Package1);
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW));
     }
 
     @Test
@@ -1924,6 +1991,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, has write permission but
         // no read permission for any resource types.
@@ -1937,7 +2009,10 @@ public class MedicalDataSourceHelperTest {
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false);
 
-        assertThat(result).containsExactly(dataSource1Package1, dataSource2Package1);
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW));
     }
 
     @Test
@@ -1993,6 +2068,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentAllergyMedicalResource,
+                dataSource2Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, no write permission but
         // has allergy resource type read permission.
@@ -2006,7 +2086,10 @@ public class MedicalDataSourceHelperTest {
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ false);
 
-        assertThat(result).containsExactly(dataSource2Package1, dataSource2Package2);
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package2, INSTANT_NOW));
     }
 
     @Test
@@ -2027,6 +2110,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentAllergyMedicalResource,
+                dataSource2Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, no write permission but
         // has allergy resource type read permission.
@@ -2040,7 +2128,10 @@ public class MedicalDataSourceHelperTest {
                         /* hasWritePermission= */ false,
                         /* isCalledFromBgWithoutBgRead= */ false);
 
-        assertThat(result).containsExactly(dataSource2Package1, dataSource2Package2);
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package2, INSTANT_NOW));
     }
 
     @Test
@@ -2061,6 +2152,15 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentAllergyMedicalResource,
+                dataSource2Package1,
+                INSTANT_NOW_PLUS_TWENTY_SEC);
 
         // App is in foreground or background with background read perm, no write permission but
         // has allergy and immunization resource types read permission.
@@ -2079,10 +2179,10 @@ public class MedicalDataSourceHelperTest {
 
         assertThat(result)
                 .containsExactly(
-                        dataSource1Package1,
-                        dataSource2Package1,
-                        dataSource1Package2,
-                        dataSource2Package2);
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW_PLUS_TWENTY_SEC),
+                        addLastDataUpdateTime(dataSource1Package2, INSTANT_NOW),
+                        addLastDataUpdateTime(dataSource2Package2, INSTANT_NOW));
     }
 
     @Test
@@ -2103,6 +2203,15 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentAllergyMedicalResource,
+                dataSource2Package2,
+                INSTANT_NOW_PLUS_TWENTY_SEC);
 
         // App is in foreground or background with background read perm, no write permission but
         // has allergy and immunization resource types read permission.
@@ -2120,10 +2229,10 @@ public class MedicalDataSourceHelperTest {
 
         assertThat(result)
                 .containsExactly(
-                        dataSource1Package1,
-                        dataSource2Package1,
-                        dataSource1Package2,
-                        dataSource2Package2);
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW),
+                        addLastDataUpdateTime(dataSource1Package2, INSTANT_NOW),
+                        addLastDataUpdateTime(dataSource2Package2, INSTANT_NOW_PLUS_TWENTY_SEC));
     }
 
     @Test
@@ -2145,6 +2254,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, has write permission and
         // has immunization resource type read permission.
@@ -2160,7 +2274,10 @@ public class MedicalDataSourceHelperTest {
                         /* isCalledFromBgWithoutBgRead= */ false);
 
         assertThat(result)
-                .containsExactly(dataSource1Package1, dataSource2Package1, dataSource1Package2);
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW),
+                        addLastDataUpdateTime(dataSource1Package2, INSTANT_NOW));
     }
 
     @Test
@@ -2182,6 +2299,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package1,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, has write permission and
         // has immunization resource type read permission.
@@ -2197,7 +2319,10 @@ public class MedicalDataSourceHelperTest {
                         /* isCalledFromBgWithoutBgRead= */ false);
 
         assertThat(result)
-                .containsExactly(dataSource1Package1, dataSource2Package1, dataSource1Package2);
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2Package1, INSTANT_NOW),
+                        addLastDataUpdateTime(dataSource1Package2, INSTANT_NOW));
     }
 
     @Test
@@ -2219,6 +2344,11 @@ public class MedicalDataSourceHelperTest {
         mUtil.upsertResource(
                 PhrDataFactory::createImmunizationMedicalResource, dataSource1Package2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource2Package2);
+        // Insert more data with later modified time.
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1Package2,
+                INSTANT_NOW_PLUS_TEN_SEC);
 
         // App is in foreground or background with background read perm, has write permission and
         // has immunization resource type read permission.
@@ -2233,7 +2363,296 @@ public class MedicalDataSourceHelperTest {
                         /* hasWritePermission= */ true,
                         /* isCalledFromBgWithoutBgRead= */ false);
 
-        assertThat(result).containsExactly(dataSource1Package2);
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1Package2, INSTANT_NOW_PLUS_TEN_SEC));
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getMDSesByIdsWithoutPermissionChecks_multipleResourcesIns_correctDataUpdateTime() {
+        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
+        mTransactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1 =
+                createDataSource(
+                        DATA_SOURCE_FHIR_BASE_URI,
+                        DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
+                        DATA_SOURCE_PACKAGE_NAME);
+        upsertResourceAtTime(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1, INSTANT_NOW);
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1,
+                INSTANT_NOW_PLUS_TEN_SEC);
+        upsertResourceAtTime(
+                PhrDataFactory::createAllergyMedicalResource,
+                dataSource1,
+                INSTANT_NOW_PLUS_TEN_SEC);
+        MedicalDataSource dataSource2 =
+                createDataSource(
+                        DIFFERENT_DATA_SOURCE_BASE_URI,
+                        DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
+                        DATA_SOURCE_PACKAGE_NAME);
+        upsertResourceAtTime(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource2, INSTANT_NOW);
+        upsertResourceAtTime(
+                PhrDataFactory::createImmunizationMedicalResource,
+                dataSource2,
+                INSTANT_NOW_PLUS_TEN_SEC);
+        upsertResourceAtTime(
+                PhrDataFactory::createAllergyMedicalResource,
+                dataSource2,
+                INSTANT_NOW_PLUS_TWENTY_SEC);
+
+        List<MedicalDataSource> result =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        toUuids(List.of(dataSource1.getId(), dataSource2.getId())));
+
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2, INSTANT_NOW_PLUS_TWENTY_SEC));
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getMDSesByIdsWithoutPermissionChecks_deletedResource_notCountedForDataUpdateTime() {
+        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
+        mTransactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource =
+                createDataSource(
+                        DATA_SOURCE_FHIR_BASE_URI,
+                        DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
+                        DATA_SOURCE_PACKAGE_NAME);
+        Instant nowMinus10Seconds = INSTANT_NOW.minusSeconds(10);
+        upsertResourceAtTime(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource, nowMinus10Seconds);
+        MedicalResource resource2 =
+                upsertResourceAtTime(
+                        PhrDataFactory::createDifferentAllergyMedicalResource,
+                        dataSource,
+                        INSTANT_NOW);
+
+        List<MedicalDataSource> dataSourcesBeforeDelete =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        toUuids(List.of(dataSource.getId())));
+        mMedicalResourceHelper.deleteMedicalResourcesByIdsWithoutPermissionChecks(
+                List.of(resource2.getId()));
+        List<MedicalDataSource> dataSourcesAfterDelete =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        toUuids(List.of(dataSource.getId())));
+
+        assertThat(dataSourcesBeforeDelete)
+                .containsExactly(addLastDataUpdateTime(dataSource, INSTANT_NOW));
+        assertThat(dataSourcesAfterDelete)
+                .containsExactly(addLastDataUpdateTime(dataSource, nowMinus10Seconds));
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getMDSesByIdsWithoutPermissionChecks_noResourcesInserted_nullDataUpdateTime() {
+        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1 =
+                createDataSource(
+                        DATA_SOURCE_FHIR_BASE_URI,
+                        DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
+                        DATA_SOURCE_PACKAGE_NAME);
+
+        List<MedicalDataSource> result =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
+                        toUuids(List.of(dataSource1.getId())));
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getLastDataUpdateTime()).isNull();
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void
+            getMDSesByPackageWithoutPermissionChecks_multipleResourcesIns_correctDataUpdateTime() {
+        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
+        mTransactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource1 =
+                createDataSource(
+                        DATA_SOURCE_FHIR_BASE_URI,
+                        DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
+                        DATA_SOURCE_PACKAGE_NAME);
+        upsertResourceAtTime(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource1, INSTANT_NOW);
+        upsertResourceAtTime(
+                PhrDataFactory::createDifferentImmunizationMedicalResource,
+                dataSource1,
+                INSTANT_NOW_PLUS_TEN_SEC);
+        upsertResourceAtTime(
+                PhrDataFactory::createAllergyMedicalResource,
+                dataSource1,
+                INSTANT_NOW_PLUS_TEN_SEC);
+        MedicalDataSource dataSource2 =
+                createDataSource(
+                        DIFFERENT_DATA_SOURCE_BASE_URI,
+                        DIFFERENT_DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
+                        DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        upsertResourceAtTime(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource2, INSTANT_NOW);
+        upsertResourceAtTime(
+                PhrDataFactory::createImmunizationMedicalResource,
+                dataSource2,
+                INSTANT_NOW_PLUS_TEN_SEC);
+        upsertResourceAtTime(
+                PhrDataFactory::createAllergyMedicalResource,
+                dataSource2,
+                INSTANT_NOW_PLUS_TWENTY_SEC);
+
+        List<MedicalDataSource> result =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithoutPermissionChecks(
+                        Set.of(dataSource1.getPackageName(), dataSource2.getPackageName()));
+
+        assertThat(result)
+                .containsExactly(
+                        addLastDataUpdateTime(dataSource1, INSTANT_NOW_PLUS_TEN_SEC),
+                        addLastDataUpdateTime(dataSource2, INSTANT_NOW_PLUS_TWENTY_SEC));
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void
+            getMDSesByPackageWithoutPermissionChecks_deletedResource_notCountedForDataUpdateTime() {
+        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
+        mTransactionTestUtils.insertApp(DIFFERENT_DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource =
+                createDataSource(
+                        DATA_SOURCE_FHIR_BASE_URI,
+                        DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
+                        DATA_SOURCE_PACKAGE_NAME);
+        Instant nowMinus10Seconds = INSTANT_NOW.minusSeconds(10);
+        upsertResourceAtTime(
+                PhrDataFactory::createImmunizationMedicalResource, dataSource, nowMinus10Seconds);
+        MedicalResource resource2 =
+                upsertResourceAtTime(
+                        PhrDataFactory::createDifferentAllergyMedicalResource,
+                        dataSource,
+                        INSTANT_NOW);
+
+        List<MedicalDataSource> dataSourcesBeforeDelete =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithoutPermissionChecks(
+                        Set.of(dataSource.getPackageName()));
+        mMedicalResourceHelper.deleteMedicalResourcesByIdsWithoutPermissionChecks(
+                List.of(resource2.getId()));
+        List<MedicalDataSource> dataSourcesAfterDelete =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithoutPermissionChecks(
+                        Set.of(dataSource.getPackageName()));
+
+        assertThat(dataSourcesBeforeDelete)
+                .containsExactly(addLastDataUpdateTime(dataSource, INSTANT_NOW));
+        assertThat(dataSourcesAfterDelete)
+                .containsExactly(addLastDataUpdateTime(dataSource, nowMinus10Seconds));
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    public void getMDSesByPackageWithoutPermissionChecks_noResourcesInserted_nullDataUpdateTime() {
+        mTransactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
+        MedicalDataSource dataSource =
+                createDataSource(
+                        DATA_SOURCE_FHIR_BASE_URI,
+                        DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
+                        DATA_SOURCE_PACKAGE_NAME);
+
+        List<MedicalDataSource> result =
+                mMedicalDataSourceHelper.getMedicalDataSourcesByPackageWithoutPermissionChecks(
+                        Set.of(dataSource.getPackageName()));
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getLastDataUpdateTime()).isNull();
+    }
+
+    @Test
+    public void getReadQueryForDataSourcesFilterOnIdsAndAppIdsAndResourceTypes_correctQuery() {
+        UUID uuid1 = UUID.randomUUID();
+        UUID uuid2 = UUID.randomUUID();
+        List<UUID> dataSourceIds = List.of(uuid1, uuid2);
+        List<String> dataSourceIdsHexValues = List.of(getHexString(uuid1), getHexString(uuid2));
+        Set<Long> appInfoIds = Set.of(1L);
+        Set<Integer> resourceTypes = Set.of(MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES);
+        List<String> groupByColumnNames =
+                List.of(
+                        "medical_data_source_row_id",
+                        "display_name",
+                        "fhir_base_uri",
+                        "fhir_version",
+                        "data_source_uuid",
+                        "package_name");
+        String expectedQuery =
+                "SELECT MAX(medical_resource_table.last_modified_time) AS last_data_update_time,"
+                        + String.join(",", groupByColumnNames)
+                        + " FROM ( SELECT * FROM medical_data_source_table WHERE"
+                        + " medical_data_source_row_id IN (SELECT medical_data_source_row_id FROM ("
+                        + " SELECT * FROM medical_data_source_table WHERE data_source_uuid IN"
+                        + " ("
+                        + String.join(", ", dataSourceIdsHexValues)
+                        + ") AND app_info_id IN (1) ) AS inner_query_result  INNER JOIN"
+                        + " medical_resource_table ON inner_query_result.medical_data_source_row_id"
+                        + " = medical_resource_table.data_source_id  INNER JOIN ( SELECT * FROM"
+                        + " medical_resource_indices_table WHERE medical_resource_type IN (2))"
+                        + " medical_resource_indices_table ON"
+                        + " medical_resource_table.medical_resource_row_id ="
+                        + " medical_resource_indices_table.medical_resource_id)  ) AS"
+                        + " inner_query_result  INNER JOIN application_info_table ON"
+                        + " inner_query_result.app_info_id = application_info_table.row_id  LEFT"
+                        + " JOIN medical_resource_table ON"
+                        + " inner_query_result.medical_data_source_row_id ="
+                        + " medical_resource_table.data_source_id GROUP BY "
+                        + String.join(",", groupByColumnNames);
+
+        assertThat(
+                        getReadQueryForDataSourcesFilterOnIdsAndAppIdsAndResourceTypes(
+                                dataSourceIds, appInfoIds, resourceTypes))
+                .isEqualTo(expectedQuery);
+    }
+
+    @Test
+    public void getReadQueryForDataSources_withNullResourceType_correctQuery() {
+        UUID uuid1 = UUID.randomUUID();
+        UUID uuid2 = UUID.randomUUID();
+        List<UUID> dataSourceIds = List.of(uuid1, uuid2);
+        List<String> dataSourceIdsHexValues = List.of(getHexString(uuid1), getHexString(uuid2));
+        Set<Long> appInfoIds = Set.of(1L);
+        List<String> groupByColumnNames =
+                List.of(
+                        "medical_data_source_row_id",
+                        "display_name",
+                        "fhir_base_uri",
+                        "fhir_version",
+                        "data_source_uuid",
+                        "package_name");
+        String expectedQuery =
+                "SELECT MAX(medical_resource_table.last_modified_time) AS last_data_update_time,"
+                        + String.join(",", groupByColumnNames)
+                        + " FROM ( SELECT * FROM medical_data_source_table WHERE"
+                        + " medical_data_source_row_id IN (SELECT medical_data_source_row_id FROM"
+                        + " medical_data_source_table WHERE data_source_uuid IN"
+                        + " ("
+                        + String.join(", ", dataSourceIdsHexValues)
+                        + ")"
+                        + " AND app_info_id IN (1))  ) AS inner_query_result  INNER JOIN"
+                        + " application_info_table ON inner_query_result.app_info_id ="
+                        + " application_info_table.row_id  LEFT JOIN medical_resource_table ON"
+                        + " inner_query_result.medical_data_source_row_id ="
+                        + " medical_resource_table.data_source_id GROUP BY "
+                        + String.join(",", groupByColumnNames);
+
+        assertThat(
+                        getReadQueryForDataSourcesFilterOnIdsAndAppIdsAndResourceTypes(
+                                dataSourceIds, appInfoIds, null))
+                .isEqualTo(expectedQuery);
     }
 
     @Test
@@ -2568,7 +2987,7 @@ public class MedicalDataSourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
-    public void deleteMedicalResourcesByIdsWithoutPermCheck_appIdDoesNotExist_throws() {
+    public void deleteMedicalDataSourcesByIdsWithoutPermCheck_appIdDoesNotExist_throws() {
         assertThrows(
                 IllegalArgumentException.class,
                 () ->
@@ -2589,7 +3008,7 @@ public class MedicalDataSourceHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
-    public void deleteMedicalResourcesByIdsWithPermCheck_appIdDoesNotExist_throws() {
+    public void deleteMedicalDataSourcesByIdsWithPermCheck_appIdDoesNotExist_throws() {
         assertThrows(
                 IllegalArgumentException.class,
                 () ->
@@ -3008,6 +3427,25 @@ public class MedicalDataSourceHelperTest {
         return appInfo;
     }
 
+    /**
+     * Upsert a {@link MedicalResource} using the given {@link PhrTestUtils.MedicalResourceCreator}
+     * and the {@link MedicalDataSource} at the specified {@code upsertTime}.
+     */
+    public MedicalResource upsertResourceAtTime(
+            PhrTestUtils.MedicalResourceCreator creator,
+            MedicalDataSource dataSource,
+            Instant upsertTime) {
+        Instant currentTime = mFakeTimeSource.getInstantNow();
+
+        mFakeTimeSource.setInstant(upsertTime);
+        MedicalResource resource = mUtil.upsertResource(creator, dataSource);
+
+        // reset the mFakeTimeSource time to what it was before.
+        mFakeTimeSource.setInstant(currentTime);
+
+        return resource;
+    }
+
     private MedicalDataSource createDataSource(
             Uri baseUri, String displayName, FhirVersion fhirVersion, String packageName) {
         CreateMedicalDataSourceRequest request =
@@ -3031,5 +3469,20 @@ public class MedicalDataSourceHelperTest {
             } while (cursor.moveToNext());
         }
         return result;
+    }
+
+    /**
+     * Sets the {@code lastDataUpdateTime} on the provided data source at millisecond precision.
+     *
+     * <p>The {@code upsertTime} is converted to millisecond precision, as this is the precision
+     * that is stored in the database.
+     */
+    private static MedicalDataSource addLastDataUpdateTime(
+            MedicalDataSource dataSource, Instant lastDataUpdateTime) {
+        Instant lastDataUpdateTimeMillisPrecision =
+                Instant.ofEpochMilli(lastDataUpdateTime.toEpochMilli());
+        return new MedicalDataSource.Builder(dataSource)
+                .setLastDataUpdateTime(lastDataUpdateTimeMillisPrecision)
+                .build();
     }
 }

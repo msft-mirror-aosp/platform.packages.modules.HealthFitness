@@ -2639,6 +2639,20 @@ public class MedicalResourceHelperTest {
         mUtil.upsertResource(PhrDataFactory::createImmunizationMedicalResource, dataSource2);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource1);
         mUtil.upsertResource(PhrDataFactory::createAllergyMedicalResource, dataSource3);
+        Instant lastDataUpdateTime =
+                Instant.ofEpochMilli(mFakeTimeSource.getInstantNow().toEpochMilli());
+        MedicalDataSource expectedDataSource1 =
+                new MedicalDataSource.Builder(dataSource1)
+                        .setLastDataUpdateTime(lastDataUpdateTime)
+                        .build();
+        MedicalDataSource expectedDataSource2 =
+                new MedicalDataSource.Builder(dataSource2)
+                        .setLastDataUpdateTime(lastDataUpdateTime)
+                        .build();
+        MedicalDataSource expectedDataSource3 =
+                new MedicalDataSource.Builder(dataSource3)
+                        .setLastDataUpdateTime(lastDataUpdateTime)
+                        .build();
 
         Map<Integer, Set<MedicalDataSource>> response =
                 mMedicalResourceHelper.getMedicalResourceTypeToContributingDataSourcesMap();
@@ -2649,9 +2663,9 @@ public class MedicalResourceHelperTest {
                         MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
                         MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES);
         assertThat(response.get(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS))
-                .containsExactly(dataSource1, dataSource2);
+                .containsExactly(expectedDataSource1, expectedDataSource2);
         assertThat(response.get(MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES))
-                .containsExactly(dataSource1, dataSource3);
+                .containsExactly(expectedDataSource1, expectedDataSource3);
     }
 
     @Test
