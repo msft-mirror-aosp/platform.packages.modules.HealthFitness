@@ -187,7 +187,7 @@ class CombinedPermissionsFragmentTest {
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Health records")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Lab results, medications, immunizations and others"))
+        onView(withText("Lab results, medications, vaccines and others"))
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Additional access")).check(doesNotExist())

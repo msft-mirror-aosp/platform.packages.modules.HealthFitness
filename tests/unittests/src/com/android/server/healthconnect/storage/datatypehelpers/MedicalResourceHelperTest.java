@@ -425,6 +425,7 @@ public class MedicalResourceHelperTest {
 
         assertThat(result.getMedicalResources()).isEmpty();
         assertThat(result.getPageToken()).isEqualTo(null);
+        assertThat(result.getRemainingCount()).isEqualTo(0);
     }
 
     @Test
@@ -462,6 +463,7 @@ public class MedicalResourceHelperTest {
                                 .build());
         assertThat(result.getMedicalResources()).isEmpty();
         assertThat(result.getPageToken()).isEqualTo(null);
+        assertThat(result.getRemainingCount()).isEqualTo(0);
     }
 
     @Test
@@ -546,14 +548,17 @@ public class MedicalResourceHelperTest {
         assertThat(upsertedResources).containsExactly(immunization, differentImmunization, allergy);
         assertThat(allergyResult.getMedicalResources()).containsExactly(allergy);
         assertThat(allergyResult.getPageToken()).isEqualTo(null);
+        assertThat(allergyResult.getRemainingCount()).isEqualTo(0);
         assertThat(allImmunizationsResult.getMedicalResources())
                 .containsExactly(immunization, differentImmunization);
         assertThat(allImmunizationsResult.getPageToken()).isEqualTo(null);
+        assertThat(allImmunizationsResult.getRemainingCount()).isEqualTo(0);
         assertThat(immunizationsFromSameDataSourceResult.getMedicalResources())
                 .containsExactly(immunization, differentImmunization);
         assertThat(immunizationsFromSameDataSourceResult.getPageToken()).isEqualTo(null);
         assertThat(immunizationsFromDifferentDataSourceResult.getMedicalResources()).isEmpty();
         assertThat(immunizationsFromDifferentDataSourceResult.getPageToken()).isEqualTo(null);
+        assertThat(immunizationsFromDifferentDataSourceResult.getRemainingCount()).isEqualTo(0);
     }
 
     @Test
@@ -645,15 +650,19 @@ public class MedicalResourceHelperTest {
                 .containsExactly(immunizationDS1, differentImmunizationDS2, allergyDS1);
         assertThat(allergyResult.getMedicalResources()).containsExactly(allergyDS1);
         assertThat(allergyResult.getPageToken()).isEqualTo(null);
+        assertThat(allergyResult.getRemainingCount()).isEqualTo(0);
         assertThat(immunizationResult.getMedicalResources())
                 .containsExactly(immunizationDS1, differentImmunizationDS2);
         assertThat(immunizationResult.getPageToken()).isEqualTo(null);
+        assertThat(immunizationResult.getRemainingCount()).isEqualTo(0);
         assertThat(immunizationsFromDataSource1Result.getMedicalResources())
                 .containsExactly(immunizationDS1);
         assertThat(immunizationsFromDataSource1Result.getPageToken()).isEqualTo(null);
+        assertThat(immunizationsFromDataSource1Result.getRemainingCount()).isEqualTo(0);
         assertThat(immunizationsFromDataSource2Result.getMedicalResources())
                 .containsExactly(differentImmunizationDS2);
         assertThat(immunizationsFromDataSource2Result.getPageToken()).isEqualTo(null);
+        assertThat(immunizationsFromDataSource2Result.getRemainingCount()).isEqualTo(0);
     }
 
     @Test
@@ -1587,6 +1596,7 @@ public class MedicalResourceHelperTest {
         assertThat(pageToken1)
                 .isEqualTo(
                         initialPageTokenWrapper.cloneWithNewLastRowId(/* lastRowId= */ 2).encode());
+        assertThat(initialResult.getRemainingCount()).isEqualTo(4);
 
         ReadMedicalResourcesPageRequest pageRequest1 =
                 new ReadMedicalResourcesPageRequest.Builder(pageToken1).setPageSize(2).build();
@@ -1603,6 +1613,7 @@ public class MedicalResourceHelperTest {
         assertThat(pageToken2).isNotEmpty();
         assertThat(pageToken2)
                 .isEqualTo(pageTokenWrapper1.cloneWithNewLastRowId(/* lastRowId= */ 4).encode());
+        assertThat(pageResult.getRemainingCount()).isEqualTo(2);
 
         ReadMedicalResourcesPageRequest pageRequest2 =
                 new ReadMedicalResourcesPageRequest.Builder(pageToken2).setPageSize(2).build();
@@ -1617,6 +1628,7 @@ public class MedicalResourceHelperTest {
         assertThat(pageResult2.getMedicalResources())
                 .containsExactlyElementsIn(List.of(resources.get(4), resources.get(5)));
         assertThat(pageToken3).isNull();
+        assertThat(pageResult2.getRemainingCount()).isEqualTo(0);
     }
 
     @Test
@@ -1665,6 +1677,7 @@ public class MedicalResourceHelperTest {
         assertThat(pageToken1)
                 .isEqualTo(
                         initialPageTokenWrapper.cloneWithNewLastRowId(/* lastRowId= */ 2).encode());
+        assertThat(initialResult.getRemainingCount()).isEqualTo(2);
 
         ReadMedicalResourcesPageRequest pageRequest =
                 new ReadMedicalResourcesPageRequest.Builder(pageToken1).setPageSize(2).build();
@@ -1679,6 +1692,7 @@ public class MedicalResourceHelperTest {
         assertThat(pageResult.getMedicalResources())
                 .containsExactlyElementsIn(List.of(resources.get(2), resources.get(3)));
         assertThat(pageToken2).isNull();
+        assertThat(pageResult.getRemainingCount()).isEqualTo(0);
     }
 
     @Test
@@ -2068,6 +2082,7 @@ public class MedicalResourceHelperTest {
         assertThat(pageToken1).isNotEmpty();
         assertThat(pageToken1)
                 .isEqualTo(pageTokenWrapper.cloneWithNewLastRowId(/* lastRowId= */ 2).encode());
+        assertThat(initialResult.getRemainingCount()).isEqualTo(4);
 
         ReadMedicalResourcesPageRequest pageRequest1 =
                 new ReadMedicalResourcesPageRequest.Builder(pageToken1).setPageSize(2).build();
@@ -2081,6 +2096,7 @@ public class MedicalResourceHelperTest {
         assertThat(pageToken2).isNotEmpty();
         assertThat(pageToken2)
                 .isEqualTo(pageTokenWrapper1.cloneWithNewLastRowId(/* lastRowId= */ 4).encode());
+        assertThat(pageResult1.getRemainingCount()).isEqualTo(2);
 
         ReadMedicalResourcesPageRequest pageRequest2 =
                 new ReadMedicalResourcesPageRequest.Builder(pageToken2).setPageSize(2).build();
@@ -2092,6 +2108,7 @@ public class MedicalResourceHelperTest {
         assertThat(result2.getMedicalResources())
                 .containsExactlyElementsIn(List.of(resources.get(4), resources.get(5)));
         assertThat(pageToken3).isNull();
+        assertThat(result2.getRemainingCount()).isEqualTo(0);
     }
 
     @Test
@@ -2118,6 +2135,7 @@ public class MedicalResourceHelperTest {
         assertThat(upsertedMedicalResources).containsExactlyElementsIn(resources);
         assertThat(result.getMedicalResources()).containsExactlyElementsIn(resources);
         assertThat(result.getPageToken()).isEqualTo(null);
+        assertThat(result.getRemainingCount()).isEqualTo(0);
     }
 
     @Test

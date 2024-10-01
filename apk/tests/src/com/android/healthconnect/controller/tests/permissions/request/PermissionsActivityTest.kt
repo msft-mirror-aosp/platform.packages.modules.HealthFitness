@@ -105,7 +105,8 @@ class PermissionsActivityTest {
             arrayOf(READ_EXERCISE, READ_MEDICAL_DATA_IMMUNIZATIONS)
         private val fitnessAndAdditionalPermissions =
             arrayOf(WRITE_SLEEP, READ_HEALTH_DATA_IN_BACKGROUND)
-        private val medicalPermissions = arrayOf(READ_MEDICAL_DATA_IMMUNIZATIONS, WRITE_MEDICAL_DATA)
+        private val medicalPermissions =
+            arrayOf(READ_MEDICAL_DATA_IMMUNIZATIONS, WRITE_MEDICAL_DATA)
         private val medicalAndAdditionalPermissions =
             arrayOf(READ_MEDICAL_DATA_IMMUNIZATIONS, READ_HEALTH_DATA_IN_BACKGROUND)
         private val allThreeCombined =
@@ -612,8 +613,8 @@ class PermissionsActivityTest {
             .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
         Espresso.onIdle()
 
-        onView(withText("Immunizations")).check(matches(isDisplayed()))
-        onView(withText("Immunizations")).perform(click())
+        onView(withText("Vaccines")).check(matches(isDisplayed()))
+        onView(withText("Vaccines")).perform(click())
 
         scenario.onActivity { activity: PermissionsActivity ->
             activity.findViewById<Button>(R.id.allow).callOnClick()
@@ -664,8 +665,8 @@ class PermissionsActivityTest {
             .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
         Espresso.onIdle()
 
-        onView(withText("Immunizations")).check(matches(isDisplayed()))
-        onView(withText("Immunizations")).perform(click())
+        onView(withText("Vaccines")).check(matches(isDisplayed()))
+        onView(withText("Vaccines")).perform(click())
         scenario.onActivity { activity: PermissionsActivity ->
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
@@ -699,8 +700,8 @@ class PermissionsActivityTest {
             .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
         Espresso.onIdle()
 
-        onView(withText("Immunizations")).check(matches(isDisplayed()))
-        onView(withText("Immunizations")).perform(click())
+        onView(withText("Vaccines")).check(matches(isDisplayed()))
+        onView(withText("Vaccines")).perform(click())
         scenario.onActivity { activity: PermissionsActivity ->
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
