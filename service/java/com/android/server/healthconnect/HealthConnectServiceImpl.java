@@ -2306,7 +2306,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                         WRITE_MEDICAL_DATA),
                                                 isCalledFromBgWithoutBgRead,
                                                 mAppInfoHelper);
-                        // TODO(b/343921816): Creates access logs if necessary.
                     }
                     logger.setNumberOfRecords(medicalDataSources.size());
                     tryAndReturnResult(callback, medicalDataSources, logger);
@@ -2408,7 +2407,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                 grantedMedicalPermissions.contains(
                                                         WRITE_MEDICAL_DATA),
                                                 isCalledFromBgWithoutBgRead);
-                        // TODO(b/343921816): Creates access logs if necessary.
                     }
                     logger.setNumberOfRecords(medicalDataSources.size());
                     tryAndReturnResult(callback, medicalDataSources, logger);
@@ -2677,8 +2675,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     }
 
                     logger.setNumberOfRecords(medicalResources.size());
-
-                    // TODO(b/343921816): Creates access log.
 
                     callback.onResult(new ReadMedicalResourcesResponse(medicalResources, null, 0));
                     logger.setHealthDataServiceApiStatusSuccess();
