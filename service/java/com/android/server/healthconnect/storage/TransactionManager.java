@@ -514,6 +514,31 @@ public final class TransactionManager {
         return getReadableDb().rawQuery(request.getReadCommand(), null);
     }
 
+    /** Returns the count of rows that would be returned by the given request. */
+    public int count(ReadTableRequest request) {
+        return count(request, getReadableDb());
+    }
+
+    /**
+     * Returns the count of rows that would be returned by the given request.
+     *
+     * <p>Use {@link #count(ReadTableRequest)} unless you already have the database from a
+     * transaction.
+     */
+    public static int count(ReadTableRequest request, SQLiteDatabase db) {
+        String countSql = request.getCountCommand();
+        if (Constants.DEBUG) {
+            Slog.d(TAG, "Count query: " + countSql);
+        }
+        try (Cursor cursor = db.rawQuery(countSql, null)) {
+            if (cursor.moveToFirst()) {
+                return cursor.getInt(0);
+            } else {
+                throw new RuntimeException("Bad count SQL:" + countSql);
+            }
+        }
+    }
+
     /**
      * Do a read using {@link SQLiteDatabase#rawQuery(String, String[])}. This method should be used
      * in preference to {@link ReadTableRequest} when it is necessary to read using a query with

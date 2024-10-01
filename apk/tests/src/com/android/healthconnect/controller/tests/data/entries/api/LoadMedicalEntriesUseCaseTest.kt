@@ -93,7 +93,7 @@ class LoadMedicalEntriesUseCaseTest {
                 showDataOrigin = true,
             )
         val readMedicalResourcesResponse =
-            ReadMedicalResourcesResponse(emptyList(), "nextPageToken")
+            ReadMedicalResourcesResponse(emptyList(), "nextPageToken", 1)
         Mockito.doAnswer(prepareAnswer(readMedicalResourcesResponse))
             .`when`(healthConnectManager)
             .readMedicalResources(
@@ -120,6 +120,7 @@ class LoadMedicalEntriesUseCaseTest {
             ReadMedicalResourcesResponse(
                 listOf(TEST_MEDICAL_RESOURCE_IMMUNIZATION),
                 "nextPageToken",
+                2,
             )
         Mockito.doAnswer(prepareAnswer(readMedicalResourcesResponse))
             .`when`(healthConnectManager)
