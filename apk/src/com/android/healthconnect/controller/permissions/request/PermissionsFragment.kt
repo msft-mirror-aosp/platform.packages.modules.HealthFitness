@@ -46,7 +46,7 @@ abstract class PermissionsFragment : PreferenceFragmentCompat() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val rootView = inflater.inflate(R.layout.fragment_permissions_request, container, false)
         prefView = rootView.findViewById(R.id.preference_container)
@@ -90,7 +90,9 @@ abstract class PermissionsFragment : PreferenceFragmentCompat() {
 
         val result = Intent()
         result.putExtra(
-            PackageManager.EXTRA_REQUEST_PERMISSIONS_NAMES, permissionStrings.toTypedArray())
+            PackageManager.EXTRA_REQUEST_PERMISSIONS_NAMES,
+            permissionStrings.toTypedArray(),
+        )
         result.putExtra(PackageManager.EXTRA_REQUEST_PERMISSIONS_RESULTS, grants.toIntArray())
         requireActivity().setResult(RESULT_OK, result)
         requireActivity().finish()
