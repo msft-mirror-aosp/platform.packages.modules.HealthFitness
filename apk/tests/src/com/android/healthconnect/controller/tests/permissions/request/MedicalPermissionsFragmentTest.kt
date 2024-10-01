@@ -251,11 +251,11 @@ class MedicalPermissionsFragmentTest {
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(withText("Immunizations"))
+                    hasDescendant(withText("Vaccines"))
                 )
             )
         Espresso.onIdle()
-        onView(withText("Immunizations")).check(matches(isDisplayed()))
+        onView(withText("Vaccines")).check(matches(isDisplayed()))
 
         onView(withText("All health records")).check(doesNotExist())
     }
@@ -268,7 +268,7 @@ class MedicalPermissionsFragmentTest {
         }
         launchFragment<MedicalPermissionsFragment>(bundleOf())
 
-        onView(withText("Immunizations")).check(doesNotExist())
+        onView(withText("Vaccines")).check(doesNotExist())
 
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
@@ -294,11 +294,11 @@ class MedicalPermissionsFragmentTest {
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(withText("Immunizations"))
+                    hasDescendant(withText("Vaccines"))
                 )
             )
         Espresso.onIdle()
-        onView(withText("Immunizations")).perform(click())
+        onView(withText("Vaccines")).perform(click())
 
         verify(viewModel).updateHealthPermission(any(MedicalPermission::class.java), eq(true))
         verify(healthConnectLogger)
