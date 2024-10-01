@@ -169,8 +169,8 @@ public class HealthConnectManagerService extends SystemService {
         } else {
             appInfoHelper = AppInfoHelper.getInstance(mTransactionManager);
             accessLogsHelper = AccessLogsHelper.getInstance(mTransactionManager, appInfoHelper);
-            changeLogsHelper = new ChangeLogsHelper();
-            changeLogsRequestHelper = new ChangeLogsRequestHelper();
+            changeLogsHelper = new ChangeLogsHelper(mTransactionManager);
+            changeLogsRequestHelper = new ChangeLogsRequestHelper(mTransactionManager);
             healthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
             activityDateHelper = ActivityDateHelper.getInstance();
             firstGrantTimeManager =
