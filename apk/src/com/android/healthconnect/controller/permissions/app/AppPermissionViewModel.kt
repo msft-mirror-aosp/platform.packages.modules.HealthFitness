@@ -162,17 +162,6 @@ constructor(
             perm.permissionsAccessType == PermissionsAccessType.READ
         }
 
-    private fun atLeastOneFitnessReadPermissionDeclared(): Boolean =
-        _fitnessPermissions.value.orEmpty().any { perm ->
-            perm.permissionsAccessType == PermissionsAccessType.READ
-        }
-
-    private fun atLeastOneReadPermissionDeclared(): Boolean =
-        atLeastOneFitnessReadPermissionDeclared() ||
-            _medicalPermissions.value.orEmpty().any { perm ->
-                perm.medicalPermissionType != MedicalPermissionType.ALL_MEDICAL_DATA
-            }
-
     fun revokeFitnessShouldIncludeBackground(): Boolean =
         _additionalPermissions.value
             .orEmpty()
@@ -204,14 +193,12 @@ constructor(
     fun revokeAllShouldIncludeBackground(): Boolean =
         _additionalPermissions.value
             .orEmpty()
-            .contains(AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND) &&
-            atLeastOneReadPermissionDeclared()
+            .contains(AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND)
 
     fun revokeAllShouldIncludePastData(): Boolean =
         _additionalPermissions.value
             .orEmpty()
-            .contains(AdditionalPermission.READ_HEALTH_DATA_HISTORY) &&
-            atLeastOneFitnessReadPermissionDeclared()
+            .contains(AdditionalPermission.READ_HEALTH_DATA_HISTORY)
 
     private val _appInfo = MutableLiveData<AppMetadata>()
     val appInfo: LiveData<AppMetadata>
@@ -301,8 +288,7 @@ constructor(
                     .filterIsInstance<MedicalPermission>()
                     .toSet()
             )
-            // TODO (b/367626030) special-case here and hide additional permissions if no read
-            // fitness
+            // invalid additional permissions filtered in the useCase
             _additionalPermissions.postValue(
                 healthPermissionsList
                     .map { it.healthPermission }

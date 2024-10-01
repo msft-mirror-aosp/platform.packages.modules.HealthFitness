@@ -48,6 +48,7 @@ import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthfitness.flags.Flags.personalHealthRecord
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -115,10 +116,30 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
         }
 
         requestPermissionsViewModel.init(getPackageNameExtra(), getPermissionStrings())
-        if (requestPermissionsViewModel.isAnyPermissionUserFixed(
-            getPackageNameExtra(), getPermissionStrings())) {
-            Log.e(TAG, "App has at least one USER_FIXED permission, finishing!")
-            requestPermissionsViewModel.requestHealthPermissions(getPackageNameExtra())
+        if (
+            requestPermissionsViewModel.isAnyPermissionUserFixed(
+                getPackageNameExtra(),
+                getPermissionStrings(),
+            )
+        ) {
+            if (personalHealthRecord()) {
+                // First check if we are already in a permission request flow.
+                // Without this check, if any permissions from the previous screen
+                // were USER_FIXED, we would terminate the request without showing
+                // the subsequent screens.
+                if (
+                    requestPermissionsViewModel.isFitnessPermissionRequestConcluded() ||
+                        requestPermissionsViewModel.isMedicalPermissionRequestConcluded()
+                ) {
+                    return
+                }
+                Log.e(TAG, "App has at least one USER_FIXED permission, finishing!")
+                requestPermissionsViewModel.updatePermissionGrants()
+            } else {
+                Log.e(TAG, "App has at least one USER_FIXED permission, finishing!")
+                requestPermissionsViewModel.requestHealthPermissions(getPackageNameExtra())
+            }
+
             handlePermissionResults()
         }
 
@@ -135,7 +156,11 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
 
             // Case 1 - no permissions
             if (noMedicalRequest && noDataTypeRequest && noAdditionalRequest) {
-                requestPermissionsViewModel.requestHealthPermissions(getPackageNameExtra())
+                if (personalHealthRecord()) {
+                    requestPermissionsViewModel.updatePermissionGrants()
+                } else {
+                    requestPermissionsViewModel.requestHealthPermissions(getPackageNameExtra())
+                }
                 handlePermissionResults()
             }
 
@@ -154,7 +179,8 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
                 if (!requestPermissionsViewModel.isAnyReadPermissionGranted()) {
                     Log.e(
                         TAG,
-                        "No data type read permissions are granted, cannot request additional permissions.")
+                        "No data type read permissions are granted, cannot request additional permissions.",
+                    )
                     handlePermissionResults(RESULT_CANCELED)
                 }
 
@@ -225,20 +251,26 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
                 this,
                 getString(
                     R.string.migration_in_progress_permissions_dialog_content,
-                    requestPermissionsViewModel.appMetadata.value?.appName)) { _, _ ->
-                    finish()
-                }
-        } else if (migrationUiState in
-            listOf(
-                MigrationUiState.ALLOWED_PAUSED,
-                MigrationUiState.ALLOWED_NOT_STARTED,
-                MigrationUiState.MODULE_UPGRADE_REQUIRED,
-                MigrationUiState.APP_UPGRADE_REQUIRED)) {
+                    requestPermissionsViewModel.appMetadata.value?.appName,
+                ),
+            ) { _, _ ->
+                finish()
+            }
+        } else if (
+            migrationUiState in
+                listOf(
+                    MigrationUiState.ALLOWED_PAUSED,
+                    MigrationUiState.ALLOWED_NOT_STARTED,
+                    MigrationUiState.MODULE_UPGRADE_REQUIRED,
+                    MigrationUiState.APP_UPGRADE_REQUIRED,
+                )
+        ) {
             showMigrationPendingDialog(
                 this,
                 getString(
                     R.string.migration_pending_permissions_dialog_content,
-                    requestPermissionsViewModel.appMetadata.value?.appName),
+                    requestPermissionsViewModel.appMetadata.value?.appName,
+                ),
                 null,
             ) { _, _ ->
                 if (requestPermissionsViewModel.isFitnessPermissionRequestConcluded()) {
