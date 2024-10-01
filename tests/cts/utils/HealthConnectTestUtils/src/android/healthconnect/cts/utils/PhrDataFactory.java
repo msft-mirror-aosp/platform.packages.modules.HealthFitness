@@ -114,7 +114,10 @@ public class PhrDataFactory {
 
     public static final String FHIR_DATA_ALLERGY =
             "{\"resourceType\" : \"AllergyIntolerance\", \"id\" : \"Allergy1\"}";
+    public static final String DIFFERENT_FHIR_DATA_ALLERGY =
+            "{\"resourceType\" : \"AllergyIntolerance\", \"id\" : \"Allergy2\"}";
     public static final String FHIR_RESOURCE_ID_ALLERGY = "Allergy1";
+    public static final String DIFFERENT_FHIR_RESOURCE_ID_ALLERGY = "Allergy2";
 
     public static final String RESOURCE_ID_FIELD_NAME = "id";
 
@@ -126,13 +129,13 @@ public class PhrDataFactory {
                 DATA_SOURCE_ID,
                 DATA_SOURCE_PACKAGE_NAME,
                 DATA_SOURCE_FHIR_BASE_URI,
-                DATA_SOURCE_DISPLAY_NAME);
+                DATA_SOURCE_DISPLAY_NAME,
+                DATA_SOURCE_FHIR_VERSION);
     }
 
     /** Creates and returns a {@link MedicalDataSource.Builder} with default arguments. */
     public static MedicalDataSource.Builder getMedicalDataSourceBuilderWithOptionalFields() {
         return getMedicalDataSourceBuilderRequiredFieldsOnly()
-                .setFhirVersion(DATA_SOURCE_FHIR_VERSION)
                 .setLastDataUpdateTime(DATA_SOURCE_LAST_DATA_UPDATE_TIME);
     }
 
@@ -253,12 +256,27 @@ public class PhrDataFactory {
                 .build();
     }
 
-    /** Creates and returns a {@link FhirResource} with Allergy data. */
+    /**
+     * Creates and returns a {@link FhirResource} with {@link PhrDataFactory#FHIR_DATA_ALLERGY}
+     * data.
+     */
     public static FhirResource getFhirResourceAllergy() {
         return new FhirResource.Builder(
                         FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
                         FHIR_RESOURCE_ID_ALLERGY,
                         FHIR_DATA_ALLERGY)
+                .build();
+    }
+
+    /**
+     * Creates and returns a {@link FhirResource} with {@link
+     * PhrDataFactory#DIFFERENT_FHIR_DATA_ALLERGY} data.
+     */
+    public static FhirResource getFhirResourceDifferentAllergy() {
+        return new FhirResource.Builder(
+                        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                        DIFFERENT_FHIR_RESOURCE_ID_ALLERGY,
+                        DIFFERENT_FHIR_DATA_ALLERGY)
                 .build();
     }
 
@@ -328,8 +346,8 @@ public class PhrDataFactory {
 
     /**
      * Creates and returns a {@link MedicalResource} of type {@link
-     * MedicalResource#MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES} with the given {@code
-     * dataSource}.
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES} and {@link
+     * PhrDataFactory#FHIR_DATA_ALLERGY} data, with the given {@code dataSource}.
      */
     public static MedicalResource createAllergyMedicalResource(String dataSource) {
         return new MedicalResource.Builder(
@@ -337,6 +355,20 @@ public class PhrDataFactory {
                         dataSource,
                         FHIR_VERSION_R4,
                         getFhirResourceAllergy())
+                .build();
+    }
+
+    /**
+     * Creates and returns a {@link MedicalResource} of type {@link
+     * MedicalResource#MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES} and {@link
+     * PhrDataFactory#DIFFERENT_FHIR_DATA_ALLERGY} data, with the given {@code dataSource}.
+     */
+    public static MedicalResource createDifferentAllergyMedicalResource(String dataSource) {
+        return new MedicalResource.Builder(
+                        MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
+                        dataSource,
+                        FHIR_VERSION_R4,
+                        getFhirResourceDifferentAllergy())
                 .build();
     }
 
