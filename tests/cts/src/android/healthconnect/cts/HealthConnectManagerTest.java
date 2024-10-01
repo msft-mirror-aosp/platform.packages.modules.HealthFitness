@@ -37,6 +37,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE;
@@ -179,6 +180,7 @@ import java.time.Period;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -2066,7 +2068,7 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSourcesById_notPresent_returnsEmptyList() throws Exception {
         HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
         List<String> ids = List.of(DATA_SOURCE_ID);
@@ -2081,7 +2083,7 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSourcesById_onePresent_returnsIt() throws Exception {
         HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
         mManager.createMedicalDataSource(
@@ -2099,7 +2101,7 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSourcesByRequest_nothingPresent_returnsEmpty() throws Exception {
         HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
         GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
@@ -2115,7 +2117,7 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSourcesByRequest_onePresent_returnsIt() throws Exception {
         HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
         mManager.createMedicalDataSource(
@@ -2242,7 +2244,7 @@ public class HealthConnectManagerTest {
 
     // TODO(b/343923754): Add more upsert/readMedicalResources tests once deleteAll can be called.
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testUpsertMedicalResources_forOwnDataSource_succeeds() throws InterruptedException {
         MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
@@ -2258,7 +2260,7 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testUpsertMedicalResources_dataSourceOwnedByOtherApp_throws() throws Exception {
         // Create data source with different package name
         MedicalDataSource dataSource =
@@ -2277,7 +2279,7 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testUpsertMedicalResources_dataSourceDoesNotExist_throws()
             throws InterruptedException {
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
@@ -2320,7 +2322,7 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testUpsertMedicalResources_missingResourceId_throws() throws InterruptedException {
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
         UpsertMedicalResourceRequest upsertRequest =
@@ -2493,6 +2495,100 @@ public class HealthConnectManagerTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byIdsHappyPath_succeeds() throws InterruptedException {
+        // Create two data sources.
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
+        // Insert 3 Immunizations and 1 Allergy.
+        MedicalResource immunization1 =
+                upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource immunization2 =
+                upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        // Immunization 3 will not be checked for, but inserted to check that everything isn't read.
+        upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource allergy = upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+
+        mManager.readMedicalResources(
+                List.of(
+                        immunization1.getId(),
+                        immunization2.getId(),
+                        // leave out 3
+                        allergy.getId()),
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        assertThat(receiver.getResponse()).containsExactly(immunization1, immunization2, allergy);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byIdsHappyPathWithManageHealthDataPermission_succeeds()
+            throws InterruptedException {
+        // Create two data sources.
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
+        // Insert 3 Immunizations and 1 Allergy.
+        MedicalResource immunization1 =
+                upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource immunization2 =
+                upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        // Immunization 3 will not be checked for, but inserted to check that everything isn't read.
+        upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource allergy = upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.readMedicalResources(
+                                List.of(
+                                        immunization1.getId(),
+                                        immunization2.getId(),
+                                        // leave out 3
+                                        allergy.getId()),
+                                Executors.newSingleThreadExecutor(),
+                                receiver),
+                MANAGE_HEALTH_DATA);
+
+        assertThat(receiver.getResponse()).containsExactly(immunization1, immunization2, allergy);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byRequest_unknownTypeInInitialRequest_throws()
+            throws InterruptedException {
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_UNKNOWN)
+                        .build();
+
+        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byRequest_unknownTypeInPageRequest_throws()
+            throws InterruptedException {
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        // Encode a page token according to PhrPageTokenWrapper#encode(), with medicalResourceType
+        // being MEDICAL_RESOURCE_TYPE_UNKNOWN.
+        String pageTokenStringWithUnknownType = "2,0,";
+        Base64.Encoder encoder = Base64.getEncoder();
+        String pageToken = encoder.encodeToString(pageTokenStringWithUnknownType.getBytes());
+        ReadMedicalResourcesPageRequest request =
+                new ReadMedicalResourcesPageRequest.Builder(pageToken).build();
+
+        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_noData_returnsEmptyList()
             throws InterruptedException {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
@@ -2502,7 +2598,10 @@ public class HealthConnectManagerTest {
                         .build();
 
         mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-        assertThat(receiver.getResponse().getMedicalResources()).isEmpty();
+        ReadMedicalResourcesResponse response = receiver.getResponse();
+        assertThat(response.getMedicalResources()).isEmpty();
+        assertThat(response.getNextPageToken()).isNull();
+        assertThat(response.getRemainingCount()).isEqualTo(0);
     }
 
     @Test
@@ -2535,6 +2634,7 @@ public class HealthConnectManagerTest {
                 .containsExactly(immunization1, immunization2);
         String nextPageToken = receiver1.getResponse().getNextPageToken();
         assertThat(nextPageToken).isNotEmpty();
+        assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
 
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
                 new HealthConnectReceiver<>();
@@ -2545,6 +2645,7 @@ public class HealthConnectManagerTest {
 
         assertThat(receiver2.getResponse().getMedicalResources()).containsExactly(immunization3);
         assertThat(receiver2.getResponse().getNextPageToken()).isNull();
+        assertThat(receiver2.getResponse().getRemainingCount()).isEqualTo(0);
     }
 
     @Test
@@ -2579,6 +2680,7 @@ public class HealthConnectManagerTest {
                 .containsExactly(immunization1FromDataSource1);
         String nextPageToken = receiver1.getResponse().getNextPageToken();
         assertThat(nextPageToken).isNotEmpty();
+        assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
 
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
                 new HealthConnectReceiver<>();
@@ -2624,6 +2726,7 @@ public class HealthConnectManagerTest {
                 .containsExactly(immunizationFromDataSource1);
         String nextPageToken = receiver1.getResponse().getNextPageToken();
         assertThat(nextPageToken).isNotEmpty();
+        assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
 
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
                 new HealthConnectReceiver<>();
@@ -2638,7 +2741,7 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResources_byIdsNonExistent_succeeds() throws InterruptedException {
         MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
         List<MedicalResourceId> ids = new ArrayList<>(MAXIMUM_PAGE_SIZE + 1);
@@ -2657,7 +2760,7 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByIds_managementPermissionNoData_succeeds()
             throws InterruptedException {
         MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
@@ -2681,7 +2784,7 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByIds_anIdMissing_succeeds() throws InterruptedException {
         MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
         HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
@@ -2707,7 +2810,7 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByIds_managementPermissionAMissingId_succeeds()
             throws InterruptedException {
         MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
@@ -2913,7 +3016,7 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResources_byRequestNothingPresent_succeeds() throws Exception {
         // Insert a data source to ensure we have an appInfoId.
         createDataSource(getCreateMedicalDataSourceRequest());

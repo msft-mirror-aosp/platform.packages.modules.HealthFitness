@@ -304,8 +304,8 @@ class AccessFragmentTest {
         }
         launchFragment<AccessFragment>(immunizationBundle)
 
-        onView(withText("Can read immunizations")).check(matches(isDisplayed()))
-        onView(withText("Can write immunizations")).check(doesNotExist())
+        onView(withText("Can read vaccines")).check(matches(isDisplayed()))
+        onView(withText("Can write vaccines")).check(doesNotExist())
         onView(withText("Inactive apps")).check(doesNotExist())
         onView(
                 withText(
