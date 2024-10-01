@@ -342,18 +342,11 @@ public class MedicalDataSourceHelper {
     private int getMedicalDataSourcesCount(long appInfoId) {
         ReadTableRequest readTableRequest =
                 new ReadTableRequest(getMainTableName())
-                        .setColumnNames(List.of("COUNT(*)"))
                         .setJoinClause(getJoinClauseWithAppInfoTable());
         readTableRequest.setWhereClause(
                 new WhereClauses(AND)
                         .addWhereInLongsClause(APP_INFO_ID_COLUMN_NAME, List.of(appInfoId)));
-        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
-            if (cursor.moveToFirst()) {
-                return cursor.getInt(0);
-            } else {
-                throw new IllegalStateException("Could not get data sources count");
-            }
-        }
+        return mTransactionManager.count(readTableRequest);
     }
 
     /**

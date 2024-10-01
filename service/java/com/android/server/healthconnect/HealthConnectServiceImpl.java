@@ -30,6 +30,7 @@ import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalDataSource.validateMedicalDataSourceIds;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_DATA;
@@ -2601,7 +2602,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     }
 
                     if (medicalResourceIds.isEmpty()) {
-                        callback.onResult(new ReadMedicalResourcesResponse(List.of(), null));
+                        callback.onResult(new ReadMedicalResourcesResponse(List.of(), null, 0));
                         return;
                     }
 
@@ -2681,7 +2682,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                     // TODO(b/343921816): Creates access log.
 
-                    callback.onResult(new ReadMedicalResourcesResponse(medicalResources, null));
+                    callback.onResult(new ReadMedicalResourcesResponse(medicalResources, null, 0));
                     logger.setHealthDataServiceApiStatusSuccess();
                 },
                 logger,
@@ -2722,11 +2723,17 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         return;
                     }
 
+                    PhrPageTokenWrapper pageTokenWrapper = PhrPageTokenWrapper.from(request);
+                    if (pageTokenWrapper.getRequest().getMedicalResourceType()
+                            == MEDICAL_RESOURCE_TYPE_UNKNOWN) {
+                        throw new IllegalArgumentException(
+                                "Cannot read medical resources for MEDICAL_RESOURCE_TYPE_UNKNOWN.");
+                    }
+
                     enforceIsForegroundUser(userHandle);
                     verifyPackageNameFromUid(uid, attributionSource);
                     throwExceptionIfDataSyncInProgress();
 
-                    PhrPageTokenWrapper pageTokenWrapper = PhrPageTokenWrapper.from(request);
                     ReadMedicalResourcesInternalResponse response;
 
                     if (holdsDataManagementPermission) {
@@ -2781,7 +2788,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                     callback.onResult(
                             new ReadMedicalResourcesResponse(
-                                    medicalResources, response.getPageToken()));
+                                    medicalResources,
+                                    response.getPageToken(),
+                                    response.getRemainingCount()));
                     logger.setHealthDataServiceApiStatusSuccess();
                 },
                 logger,
@@ -3232,7 +3241,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         Map<Integer, Set<MedicalDataSource>> resourceTypeToDataSourcesMap =
                 mMedicalResourceHelper.getMedicalResourceTypeToContributingDataSourcesMap();
         return MedicalResource.VALID_TYPES.stream()
-                .filter(type -> type != MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN)
+                .filter(type -> type != MEDICAL_RESOURCE_TYPE_UNKNOWN)
                 .map(
                         medicalResourceType ->
                                 new MedicalResourceTypeInfo(
