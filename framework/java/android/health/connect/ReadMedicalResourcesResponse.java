@@ -38,6 +38,7 @@ import java.util.Objects;
 public final class ReadMedicalResourcesResponse implements Parcelable {
     @NonNull private final List<MedicalResource> mMedicalResources;
     @Nullable private final String mNextPageToken;
+    private final int mRemainingCount;
 
     /**
      * Constructs a new {@link ReadMedicalResourcesResponse} instance.
@@ -45,12 +46,26 @@ public final class ReadMedicalResourcesResponse implements Parcelable {
      * @param medicalResources List of {@link MedicalResource}s.
      * @param nextPageToken The token value of the read result which can be used as input token for
      *     next read request. {@code null} if there are no more pages available.
+     * @param remainingCount the total number of medical resources remaining, excluding the ones in
+     *     this response
      */
     public ReadMedicalResourcesResponse(
-            @NonNull List<MedicalResource> medicalResources, @Nullable String nextPageToken) {
+            @NonNull List<MedicalResource> medicalResources,
+            @Nullable String nextPageToken,
+            int remainingCount) {
         requireNonNull(medicalResources);
+        if (nextPageToken == null && remainingCount > 0) {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "Remaining count must be 0 to have a null next page token, but was %d",
+                            remainingCount));
+        }
+        if (nextPageToken != null && remainingCount == 0) {
+            throw new IllegalArgumentException("Next page token provided with no remaining data");
+        }
         mMedicalResources = medicalResources;
         mNextPageToken = nextPageToken;
+        mRemainingCount = remainingCount;
     }
 
     private ReadMedicalResourcesResponse(@NonNull Parcel in) {
@@ -60,6 +75,7 @@ public final class ReadMedicalResourcesResponse implements Parcelable {
         in.readParcelableList(
                 mMedicalResources, MedicalResource.class.getClassLoader(), MedicalResource.class);
         mNextPageToken = in.readString();
+        mRemainingCount = in.readInt();
     }
 
     @NonNull
@@ -91,6 +107,18 @@ public final class ReadMedicalResourcesResponse implements Parcelable {
         return mNextPageToken;
     }
 
+    /**
+     * Returns the count of medical resources still remaining which were not returned due to
+     * pagination.
+     *
+     * <p>For a response with a null next page token, this will be 0. This result is accurate at the
+     * time the request was made, and with the permissions when the request was made. However, the
+     * actual results may change if permissions change or resources are inserted or deleted.
+     */
+    public int getRemainingCount() {
+        return mRemainingCount;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -106,6 +134,7 @@ public final class ReadMedicalResourcesResponse implements Parcelable {
         requireNonNull(dest);
         dest.writeParcelableList(mMedicalResources, 0);
         dest.writeString(mNextPageToken);
+        dest.writeInt(mRemainingCount);
     }
 
     @Override
@@ -113,12 +142,13 @@ public final class ReadMedicalResourcesResponse implements Parcelable {
         if (this == o) return true;
         if (!(o instanceof ReadMedicalResourcesResponse that)) return false;
         return getMedicalResources().equals(that.getMedicalResources())
-                && Objects.equals(getNextPageToken(), that.getNextPageToken());
+                && Objects.equals(getNextPageToken(), that.getNextPageToken())
+                && mRemainingCount == that.getRemainingCount();
     }
 
     @Override
     public int hashCode() {
-        return hash(getMedicalResources(), getNextPageToken());
+        return hash(getMedicalResources(), getNextPageToken(), mRemainingCount);
     }
 
     @Override

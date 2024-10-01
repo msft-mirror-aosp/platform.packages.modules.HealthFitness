@@ -247,10 +247,10 @@ class SettingsMedicalAppFragmentTest {
         }
 
         onView(withText("Allow all")).check(matches(isDisplayed()))
-        onView(withText("Immunizations")).check(matches(isDisplayed()))
+        onView(withText("Vaccines")).check(matches(isDisplayed()))
         onView(withText("All health records")).check(matches(isDisplayed()))
-        onView(withText("Immunizations")).perform(click())
-        onView(withText("Immunizations")).check(matches(not(isChecked())))
+        onView(withText("Vaccines")).perform(click())
+        onView(withText("Vaccines")).check(matches(not(isChecked())))
 
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -259,7 +259,7 @@ class SettingsMedicalAppFragmentTest {
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(RecyclerViewActions.scrollToLastPosition<RecyclerView.ViewHolder>())
         onIdle()
-        onView(withText("Immunizations")).perform(scrollTo()).check(matches(not(isChecked())))
+        onView(withText("Vaccines")).perform(scrollTo()).check(matches(not(isChecked())))
     }
 
     @Test
