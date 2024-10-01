@@ -80,6 +80,7 @@ import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
+import com.android.healthfitness.flags.AconfigFlagHelperTestRule;
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.storage.PhrTestUtils;
@@ -106,6 +107,10 @@ import java.util.UUID;
 public class MedicalDataSourceHelperTest {
 
     private static final long APP_INFO_ID = 123;
+
+    @Rule(order = 0)
+    public final AconfigFlagHelperTestRule mAconfigFlagHelperTestRule =
+            new AconfigFlagHelperTestRule();
 
     // See b/344587256 for more context.
     @Rule(order = 1)
