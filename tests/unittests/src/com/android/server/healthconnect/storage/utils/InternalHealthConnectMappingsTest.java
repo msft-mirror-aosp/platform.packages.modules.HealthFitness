@@ -97,7 +97,7 @@ public class InternalHealthConnectMappingsTest {
 
         assertThat(recordHelpers.stream().map(Object::getClass).toList())
                 .containsExactlyElementsIn(
-                        RecordHelperProvider.getRecordHelpers().values().stream()
+                        RecordHelperProvider.getRecordHelpers().stream()
                                 .map(x -> x.getClass())
                                 .toList());
     }
