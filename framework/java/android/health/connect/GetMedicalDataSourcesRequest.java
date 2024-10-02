@@ -29,8 +29,11 @@ import android.os.Parcelable;
 import android.util.ArraySet;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A create request for {@link HealthConnectManager#getMedicalDataSources}.
@@ -41,6 +44,15 @@ import java.util.Set;
  */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class GetMedicalDataSourcesRequest implements Parcelable {
+    @NonNull private final Set<String> mPackageNames;
+
+    // A full Java-language-style package name for the Android app can contain uppercase
+    // or lowercase letters, numbers, and underscores ('_'). It must have at least two segments (one
+    // or more dots), and individual package name parts can only start with letters. See the
+    // <a
+    // href="https://developer.android.com/guide/topics/manifest/manifest-element.html#package">Android developer doc</a>.
+    private static final String PACKAGE_NAME_REGEX =
+            "^([A-Za-z][a-zA-Z0-9_]*\\.)+[A-Za-z][a-zA-Z0-9_]*$";
 
     @NonNull
     public static final Creator<GetMedicalDataSourcesRequest> CREATOR =
@@ -56,14 +68,13 @@ public final class GetMedicalDataSourcesRequest implements Parcelable {
                 }
             };
 
-    @NonNull private final Set<String> mPackageNames;
-
     /**
      * Creates a new instance of {@link GetMedicalDataSourcesRequest}. Please see {@link
      * GetMedicalDataSourcesRequest.Builder} for more detailed parameters information.
      */
     private GetMedicalDataSourcesRequest(@NonNull Set<String> packageNames) {
         Objects.requireNonNull(packageNames);
+        validatePackageNames(packageNames);
         mPackageNames = packageNames;
     }
 
@@ -74,6 +85,7 @@ public final class GetMedicalDataSourcesRequest implements Parcelable {
     private GetMedicalDataSourcesRequest(@NonNull Parcel in) {
         Objects.requireNonNull(in);
         mPackageNames = new ArraySet<>(requireNonNull(in.createStringArrayList()));
+        validatePackageNames(mPackageNames);
     }
 
     /**
@@ -83,6 +95,28 @@ public final class GetMedicalDataSourcesRequest implements Parcelable {
     @NonNull
     public Set<String> getPackageNames() {
         return new ArraySet<>(mPackageNames);
+    }
+
+    /**
+     * Validates all of the provided {@code packageNames} are valid, which matches with the {@link
+     * #PACKAGE_NAME_REGEX}.
+     *
+     * @throws IllegalArgumentException with all invalid package names if not all {@code
+     *     packageNames} are valid.
+     */
+    private static void validatePackageNames(Set<String> packageNames) {
+        Pattern pattern = Pattern.compile(PACKAGE_NAME_REGEX);
+
+        Set<String> invalidPackageNames = new HashSet<>();
+        for (String packageName : packageNames) {
+            Matcher matcher = pattern.matcher(packageName);
+            if (!matcher.matches()) {
+                invalidPackageNames.add(packageName);
+            }
+        }
+        if (!invalidPackageNames.isEmpty()) {
+            throw new IllegalArgumentException("Invalid package name(s): " + invalidPackageNames);
+        }
     }
 
     @Override
@@ -140,10 +174,13 @@ public final class GetMedicalDataSourcesRequest implements Parcelable {
          *
          * <p>If the list of package names is empty, {@link MedicalDataSource}s for all packages
          * will be requested. Otherwise only those for the added package names are requested.
+         *
+         * @throws IllegalArgumentException if the provided {@code packageName} is not valid.
          */
         @NonNull
         public Builder addPackageName(@NonNull String packageName) {
             Objects.requireNonNull(packageName);
+            validatePackageNames(Set.of(packageName));
             mPackageNames.add(packageName);
             return this;
         }

@@ -138,11 +138,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mActivityDateHelper;
         mChangeLogsHelper =
                 builder.mChangeLogsHelper == null
-                        ? new ChangeLogsHelper()
+                        ? new ChangeLogsHelper(mTransactionManager)
                         : builder.mChangeLogsHelper;
         mChangeLogsRequestHelper =
                 builder.mChangeLogsRequestHelper == null
-                        ? new ChangeLogsRequestHelper()
+                        ? new ChangeLogsRequestHelper(mTransactionManager)
                         : builder.mChangeLogsRequestHelper;
     }
 

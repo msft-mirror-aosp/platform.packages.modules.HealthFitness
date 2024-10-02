@@ -30,6 +30,7 @@ import android.health.connect.HealthPermissions.WRITE_DISTANCE
 import android.health.connect.HealthPermissions.WRITE_EXERCISE
 import android.health.connect.HealthPermissions.WRITE_PLANNED_EXERCISE
 import android.health.connect.HealthPermissions.WRITE_SKIN_TEMPERATURE
+import android.platform.test.flag.junit.SetFlagsRule
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.GetHealthPermissionsFlagsUseCase
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
@@ -82,6 +83,7 @@ import org.mockito.kotlin.whenever
 class RequestPermissionViewModelTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val setFlagsRule = SetFlagsRule()
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
     private val testDispatcher = TestCoroutineDispatcher()
 
@@ -659,6 +661,38 @@ class RequestPermissionViewModelTest {
                     fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND) to
                         PermissionState.NOT_GRANTED,
                     fromPermissionString(READ_EXERCISE_ROUTES) to PermissionState.GRANTED,
+                )
+            )
+    }
+
+    @Test
+    fun requestHealthPermissionsWithoutGrantingOrRevoking_doesNotUpdatePermissions() = runTest {
+        (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+            TEST_APP_PACKAGE_NAME,
+            listOf(READ_EXERCISE, READ_SLEEP, READ_HEALTH_DATA_HISTORY),
+        )
+        val permissions =
+            arrayOf(
+                READ_EXERCISE,
+                READ_SLEEP,
+                READ_HEALTH_DATA_HISTORY,
+                READ_HEALTH_DATA_IN_BACKGROUND,
+                READ_EXERCISE_ROUTES,
+            )
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+        viewModel.updatePermissionGrants()
+        assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
+            .containsExactly(READ_EXERCISE, READ_SLEEP, READ_HEALTH_DATA_HISTORY)
+        assertThat(viewModel.getPermissionGrants())
+            .isEqualTo(
+                mutableMapOf(
+                    fromPermissionString(READ_EXERCISE) to PermissionState.GRANTED,
+                    fromPermissionString(READ_SLEEP) to PermissionState.GRANTED,
+                    fromPermissionString(READ_HEALTH_DATA_HISTORY) to PermissionState.GRANTED,
+                    fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND) to
+                        PermissionState.NOT_GRANTED,
+                    fromPermissionString(READ_EXERCISE_ROUTES) to PermissionState.NOT_GRANTED,
                 )
             )
     }

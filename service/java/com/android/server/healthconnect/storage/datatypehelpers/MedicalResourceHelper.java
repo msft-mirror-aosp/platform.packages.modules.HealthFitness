@@ -29,7 +29,6 @@ import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDa
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getReadTableWhereClause;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getCreateMedicalResourceIndicesTableRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName;
-import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getTableName;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.SqlJoin.SQL_JOIN_INNER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
@@ -242,6 +241,14 @@ public final class MedicalResourceHelper {
 
     public static String getPrimaryColumn() {
         return MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME;
+    }
+
+    public static String getLastModifiedColumnName() {
+        return LAST_MODIFIED_TIME_COLUMN_NAME;
+    }
+
+    public static String getDataSourceIdColumnName() {
+        return DATA_SOURCE_ID_COLUMN_NAME;
     }
 
     private static List<Pair<String, String>> getColumnInfo() {
@@ -788,7 +795,7 @@ public final class MedicalResourceHelper {
     static SqlJoin joinWithMedicalResourceIndicesTable() {
         return new SqlJoin(
                         MEDICAL_RESOURCE_TABLE_NAME,
-                        getTableName(),
+                        MedicalResourceIndicesHelper.getTableName(),
                         MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME,
                         MedicalResourceIndicesHelper.getParentColumnReference())
                 .setJoinType(SQL_JOIN_INNER);

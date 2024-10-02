@@ -65,8 +65,6 @@ import java.util.stream.Collectors;
  *
  * @hide
  */
-// TODO(b/369517586): Add a constructor with dependencies and remove individual dependencies from
-// non-static functions
 public final class ChangeLogsHelper extends DatabaseHelper {
     public static final String TABLE_NAME = "change_logs_table";
     private static final String RECORD_TYPE_COLUMN_NAME = "record_type";
@@ -75,6 +73,12 @@ public final class ChangeLogsHelper extends DatabaseHelper {
     @VisibleForTesting public static final String OPERATION_TYPE_COLUMN_NAME = "operation_type";
     private static final String TIME_COLUMN_NAME = "time";
     private static final int NUM_COLS = 5;
+
+    private final TransactionManager mTransactionManager;
+
+    public ChangeLogsHelper(TransactionManager transactionManager) {
+        mTransactionManager = transactionManager;
+    }
 
     public static DeleteTableRequest getDeleteRequestForAutoDelete() {
         return new DeleteTableRequest(TABLE_NAME)
@@ -100,7 +104,6 @@ public final class ChangeLogsHelper extends DatabaseHelper {
     /** Returns change logs post the time when {@code changeLogTokenRequest} was generated */
     public ChangeLogsResponse getChangeLogs(
             AppInfoHelper appInfoHelper,
-            TransactionManager transactionManager,
             ChangeLogsRequestHelper.TokenRequest changeLogTokenRequest,
             ChangeLogsRequest changeLogsRequest,
             ChangeLogsRequestHelper changeLogsRequestHelper) {
@@ -129,7 +132,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         Map<Integer, ChangeLogs> operationToChangeLogMap = new ArrayMap<>();
         long nextChangesToken = DEFAULT_LONG;
         boolean hasMoreRecords = false;
-        try (Cursor cursor = transactionManager.read(readTableRequest)) {
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
             int count = 0;
             while (cursor.moveToNext()) {
                 if (count >= pageSize) {
@@ -144,14 +147,14 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         String nextToken =
                 nextChangesToken != DEFAULT_LONG
                         ? changeLogsRequestHelper.getNextPageToken(
-                                changeLogTokenRequest, transactionManager, nextChangesToken)
+                                changeLogTokenRequest, nextChangesToken)
                         : changeLogsRequest.getToken();
 
         return new ChangeLogsResponse(operationToChangeLogMap, nextToken, hasMoreRecords);
     }
 
-    public long getLatestRowId(TransactionManager transactionManager) {
-        return transactionManager.getLastRowIdFor(TABLE_NAME);
+    public long getLatestRowId() {
+        return mTransactionManager.getLastRowIdFor(TABLE_NAME);
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
