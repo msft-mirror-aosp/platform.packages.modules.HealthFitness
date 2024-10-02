@@ -2071,7 +2071,7 @@ public class HealthConnectManager {
      * {@link UpsertMedicalResourceRequest}.
      *
      * <p>For each {@link UpsertMedicalResourceRequest}, one {@link MedicalResource} will be
-     * returned.The returned list of {@link MedicalResource}s will be in the same order as the
+     * returned. The returned list of {@link MedicalResource}s will be in the same order as the
      * {@code requests}.
      *
      * <p>Medical data is represented using the <a href="https://hl7.org/fhir/">Fast Healthcare
@@ -2096,6 +2096,9 @@ public class HealthConnectManager {
      * <p>If any request is deemed invalid, the caller will receive an exception with code {@link
      * HealthConnectException#ERROR_INVALID_ARGUMENT} via {@code callback.onError()}, and none of
      * the {@code requests} will be upserted into the HealthConnect database.
+     *
+     * <p>If data for any {@link UpsertMedicalResourceRequest} fails to be upserted, then no data
+     * from any {@code requests} will be upserted into the database.
      *
      * <p>The uniqueness of each request is calculated comparing the combination of {@link
      * UpsertMedicalResourceRequest#getDataSourceId() data source id}, FHIR resource type and FHIR
