@@ -2560,6 +2560,9 @@ public class HealthConnectManager {
      * <ul>
      *   <li>If an empty {@link GetMedicalDataSourcesRequest#getPackageNames() list of package
      *       names} is passed, all permitted data sources from all apps will be returned. See below.
+     *   <li>If any package name in the {@link GetMedicalDataSourcesRequest#getPackageNames() list
+     *       of package names} is invalid, the caller will receive an error via the {@code
+     *       callback}.
      *   <li>If a non-empty {@link GetMedicalDataSourcesRequest#getPackageNames() list of package
      *       names} is specified in the request, then only the permitted data sources created by
      *       those packages will be returned. See below.

@@ -47,7 +47,7 @@ public final class MedicalDataSource implements Parcelable {
     @NonNull private final String mPackageName;
     @NonNull private final Uri mFhirBaseUri;
     @NonNull private final String mDisplayName;
-    @Nullable private final FhirVersion mFhirVersion;
+    @NonNull private final FhirVersion mFhirVersion;
     @Nullable private final Instant mLastDataUpdateTime;
 
     @NonNull
@@ -75,12 +75,13 @@ public final class MedicalDataSource implements Parcelable {
             @NonNull String packageName,
             @NonNull Uri fhirBaseUri,
             @NonNull String displayName,
-            @Nullable FhirVersion fhirVersion,
+            @NonNull FhirVersion fhirVersion,
             @Nullable Instant lastDataUpdateTime) {
         requireNonNull(id);
         requireNonNull(packageName);
         requireNonNull(fhirBaseUri);
         requireNonNull(displayName);
+        requireNonNull(fhirVersion);
 
         mId = id;
         mPackageName = packageName;
@@ -96,7 +97,9 @@ public final class MedicalDataSource implements Parcelable {
         mPackageName = requireNonNull(in.readString());
         mFhirBaseUri = requireNonNull(in.readParcelable(Uri.class.getClassLoader(), Uri.class));
         mDisplayName = requireNonNull(in.readString());
-        mFhirVersion = in.readParcelable(FhirVersion.class.getClassLoader(), FhirVersion.class);
+        mFhirVersion =
+                requireNonNull(
+                        in.readParcelable(FhirVersion.class.getClassLoader(), FhirVersion.class));
         long lastDataUpdateTimeMillis = in.readLong();
         mLastDataUpdateTime =
                 lastDataUpdateTimeMillis == 0
@@ -123,14 +126,17 @@ public final class MedicalDataSource implements Parcelable {
     }
 
     /** Returns the FHIR version of {@link MedicalResource}s from this source. */
-    @Nullable
+    @NonNull
     public FhirVersion getFhirVersion() {
         return mFhirVersion;
     }
 
     /**
      * Returns the time {@link MedicalResource}s linked to this data source were last updated, or
-     * {@code null} if no data has been written yet to this data source.
+     * {@code null} if the data source has no linked resources.
+     *
+     * <p>This time is based on resources that currently exist in HealthConnect, so does not reflect
+     * data deletion.
      */
     @Nullable
     public Instant getLastDataUpdateTime() {
@@ -190,7 +196,7 @@ public final class MedicalDataSource implements Parcelable {
                 && getPackageName().equals(that.getPackageName())
                 && getFhirBaseUri().equals(that.getFhirBaseUri())
                 && getDisplayName().equals(that.getDisplayName())
-                && Objects.equals(getFhirVersion(), that.getFhirVersion())
+                && getFhirVersion().equals(that.getFhirVersion())
                 && Objects.equals(getLastDataUpdateTime(), that.getLastDataUpdateTime());
     }
 
@@ -227,7 +233,7 @@ public final class MedicalDataSource implements Parcelable {
         @NonNull private String mPackageName;
         @NonNull private Uri mFhirBaseUri;
         @NonNull private String mDisplayName;
-        @Nullable private FhirVersion mFhirVersion;
+        @NonNull private FhirVersion mFhirVersion;
         @Nullable private Instant mLastDataUpdateTime;
 
         /**
@@ -237,21 +243,25 @@ public final class MedicalDataSource implements Parcelable {
          * @param packageName The package name of the owning app.
          * @param fhirBaseUri The FHIR base URI of the data source.
          * @param displayName The display name that describes the data source.
+         * @param fhirVersion The FHIR version of {@link MedicalResource}s linked to this source.
          */
         public Builder(
                 @NonNull String id,
                 @NonNull String packageName,
                 @NonNull Uri fhirBaseUri,
-                @NonNull String displayName) {
+                @NonNull String displayName,
+                @NonNull FhirVersion fhirVersion) {
             requireNonNull(id);
             requireNonNull(packageName);
             requireNonNull(fhirBaseUri);
             requireNonNull(displayName);
+            requireNonNull(fhirVersion);
 
             mId = id;
             mPackageName = packageName;
             mFhirBaseUri = fhirBaseUri;
             mDisplayName = displayName;
+            mFhirVersion = fhirVersion;
         }
 
         /** Constructs a clone of the other {@link MedicalDataSource.Builder}. */
@@ -313,7 +323,8 @@ public final class MedicalDataSource implements Parcelable {
 
         /** Sets the FHIR version of {@link MedicalResource}s linked to this source. */
         @NonNull
-        public Builder setFhirVersion(@Nullable FhirVersion fhirVersion) {
+        public Builder setFhirVersion(@NonNull FhirVersion fhirVersion) {
+            requireNonNull(fhirVersion);
             mFhirVersion = fhirVersion;
             return this;
         }

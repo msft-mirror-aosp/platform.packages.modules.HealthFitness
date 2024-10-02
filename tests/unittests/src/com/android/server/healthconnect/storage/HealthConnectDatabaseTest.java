@@ -34,6 +34,7 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.healthfitness.flags.AconfigFlagHelper;
+import com.android.healthfitness.flags.AconfigFlagHelperTestRule;
 import com.android.healthfitness.flags.Flags;
 
 import com.google.common.base.Preconditions;
@@ -47,7 +48,13 @@ import org.mockito.MockitoAnnotations;
 import java.io.File;
 
 public class HealthConnectDatabaseTest {
-    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+    @Rule(order = 0)
+    public final AconfigFlagHelperTestRule mAconfigFlagHelperTestRule =
+            new AconfigFlagHelperTestRule();
+
+    @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
     @Mock Context mContext;
     private HealthConnectDatabase mHealthConnectDatabase;
     private SQLiteDatabase mSQLiteDatabase;

@@ -48,6 +48,8 @@ import android.permission.PermissionManager;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
+import com.android.healthfitness.flags.AconfigFlagHelperTestRule;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -60,7 +62,12 @@ import java.util.Set;
 public class MedicalDataPermissionEnforcerTest {
     @Mock private PermissionManager mPermissionManager;
 
-    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+    @Rule(order = 0)
+    public final AconfigFlagHelperTestRule mAconfigFlagHelperTestRule =
+            new AconfigFlagHelperTestRule();
+
+    @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     private AttributionSource mAttributionSource;
 
