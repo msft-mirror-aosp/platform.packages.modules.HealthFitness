@@ -22,6 +22,7 @@ import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMIS
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 
+import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
 import static com.android.healthfitness.flags.Flags.FLAG_IMMEDIATE_EXPORT;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
@@ -62,9 +63,11 @@ import android.health.connect.aidl.IChangeLogsResponseCallback;
 import android.health.connect.aidl.IDataStagingFinishedCallback;
 import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IGetChangeLogTokenCallback;
+import android.health.connect.aidl.IGetChangesForBackupResponseCallback;
 import android.health.connect.aidl.IGetHealthConnectDataStateCallback;
 import android.health.connect.aidl.IGetHealthConnectMigrationUiStateCallback;
 import android.health.connect.aidl.IGetPriorityResponseCallback;
+import android.health.connect.aidl.IGetSettingsForBackupResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
@@ -81,6 +84,8 @@ import android.health.connect.aidl.RecordIdFiltersParcel;
 import android.health.connect.aidl.RecordTypeInfoResponseParcel;
 import android.health.connect.aidl.RecordsParcel;
 import android.health.connect.aidl.UpdatePriorityRequestParcel;
+import android.health.connect.backuprestore.GetChangesForBackupResponse;
+import android.health.connect.backuprestore.GetSettingsForBackupResponse;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogTokenResponse;
 import android.health.connect.changelog.ChangeLogsRequest;
@@ -2729,6 +2734,79 @@ public class HealthConnectManager {
                         @Override
                         public void onResult() {
                             returnResult(executor, null, callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * The changeToken returned by the previous call should be passed in to resume the upload. A
+     * null or empty changeToken means we are doing a fresh backup, and should start from the
+     * beginning.
+     *
+     * <p>If the changeToken is not found, it means that HealthConnect can no longer resume the
+     * backup from this point, and will respond with an Exception. The caller should restart the
+     * backup in this case.
+     *
+     * <p>If no changes are returned by the API, this means that the client has synced all changes
+     * as of now.
+     *
+     * @hide
+     */
+    @SuppressWarnings("NullAway") // TODO: b/178748627 - fix this suppression.
+    @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
+    public void getChangesForBackup(
+            @Nullable String changeToken,
+            @NonNull Executor executor,
+            @NonNull
+                    OutcomeReceiver<GetChangesForBackupResponse, HealthConnectException> callback) {
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+        try {
+            mService.getChangesForBackup(
+                    changeToken,
+                    new IGetChangesForBackupResponseCallback.Stub() {
+                        @Override
+                        public void onResult(GetChangesForBackupResponse response) {
+                            returnResult(executor, response, callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Returns all user settings bundled as a single byte array.
+     *
+     * @hide
+     */
+    @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
+    public void getSettingsForBackup(
+            @NonNull Executor executor,
+            @NonNull
+                    OutcomeReceiver<GetSettingsForBackupResponse, HealthConnectException>
+                            callback) {
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+        try {
+            mService.getSettingsForBackup(
+                    new IGetSettingsForBackupResponseCallback.Stub() {
+                        @Override
+                        public void onResult(GetSettingsForBackupResponse response) {
+                            returnResult(executor, response, callback);
                         }
 
                         @Override
