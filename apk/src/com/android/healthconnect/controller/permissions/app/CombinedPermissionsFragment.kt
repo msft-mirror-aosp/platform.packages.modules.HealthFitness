@@ -190,7 +190,7 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
 
         additionalAccessViewModel.loadAdditionalAccessPreferences(packageName)
         additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
-            if (state.isValid() && shouldAddAdditionalAccessPref()) {
+            if (state.isAvailable() && shouldAddAdditionalAccessPref()) {
                 val additionalAccessPref =
                     HealthPreference(requireContext()).also {
                         it.key = KEY_ADDITIONAL_ACCESS
@@ -209,7 +209,7 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
                 managePermissionsCategory.addPreference(additionalAccessPref)
             }
             managePermissionsCategory.children.find { it.key == KEY_ADDITIONAL_ACCESS }?.isVisible =
-                state.isValid()
+                state.isAvailable()
         }
     }
 

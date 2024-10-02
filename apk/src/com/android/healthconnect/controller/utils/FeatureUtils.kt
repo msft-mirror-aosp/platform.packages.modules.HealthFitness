@@ -2,7 +2,6 @@ package com.android.healthconnect.controller.utils
 
 import android.content.Context
 import android.provider.DeviceConfig
-import com.android.healthfitness.flags.AconfigFlagHelper
 import com.android.healthfitness.flags.Flags
 import dagger.Module
 import dagger.Provides
@@ -27,8 +26,6 @@ interface FeatureUtils {
     fun isSkinTemperatureEnabled(): Boolean
 
     fun isPlannedExerciseEnabled(): Boolean
-
-    fun isPersonalHealthRecordEnabled(): Boolean
 }
 
 class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnPropertiesChangedListener {
@@ -64,8 +61,6 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
         DeviceConfig.getBoolean(HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_ENTRY_POINTS_ENABLED, true)
 
     private var isNewInformationArchitectureEnabled = Flags.newInformationArchitecture()
-
-    private var isPersonalHealthRecordEnabled = AconfigFlagHelper.isPersonalHealthRecordEnabled()
 
     override fun isNewInformationArchitectureEnabled(): Boolean {
         synchronized(lock) {
@@ -112,12 +107,6 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
     override fun isSkinTemperatureEnabled(): Boolean {
         synchronized(lock) {
             return true
-        }
-    }
-
-    override fun isPersonalHealthRecordEnabled(): Boolean {
-        synchronized(lock) {
-            return isPersonalHealthRecordEnabled
         }
     }
 

@@ -42,6 +42,8 @@ import android.health.connect.internal.datatypes.utils.MedicalResourceTypePermis
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
+import com.android.healthfitness.flags.AconfigFlagHelperTestRule;
+
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -50,7 +52,12 @@ import java.util.stream.Collectors;
 
 @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
 public class MedicalResourceTypePermissionMapperTest {
-    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+    @Rule(order = 0)
+    public final AconfigFlagHelperTestRule mAconfigFlagHelperTestRule =
+            new AconfigFlagHelperTestRule();
+
+    @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Test
     public void testGetMedicalReadPermissionForResourceType_immunizationType_returns() {
