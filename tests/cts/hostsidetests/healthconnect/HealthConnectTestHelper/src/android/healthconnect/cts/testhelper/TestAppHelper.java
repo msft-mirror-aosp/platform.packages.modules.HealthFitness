@@ -19,6 +19,7 @@ package android.healthconnect.cts.testhelper;
 import static android.healthconnect.cts.lib.BundleHelper.CREATE_MEDICAL_DATA_SOURCE_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.DELETE_RECORDS_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.GET_CHANGE_LOG_TOKEN_QUERY;
+import static android.healthconnect.cts.lib.BundleHelper.GET_MEDICAL_DATA_SOURCES_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.INSERT_RECORDS_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.INTENT_EXCEPTION;
 import static android.healthconnect.cts.lib.BundleHelper.KILL_SELF_REQUEST;
@@ -79,6 +80,7 @@ final class TestAppHelper {
             case GET_CHANGE_LOG_TOKEN_QUERY -> handleGetChangeLogToken(context, bundle);
             case CREATE_MEDICAL_DATA_SOURCE_QUERY -> handleCreateMedicalDataSource(context, bundle);
             case UPSERT_MEDICAL_RESOURCES_QUERY -> handleUpsertMedicalResource(context, bundle);
+            case GET_MEDICAL_DATA_SOURCES_QUERY -> handleGetMedicalDataSources(context, bundle);
             case SELF_REVOKE_PERMISSION_REQUEST -> handleSelfRevoke(context, bundle);
             case KILL_SELF_REQUEST -> handleKillSelf();
             default ->
@@ -138,6 +140,15 @@ final class TestAppHelper {
         TestUtils.getHealthConnectManager(context)
                 .createMedicalDataSource(request, Executors.newSingleThreadExecutor(), receiver);
         return BundleHelper.fromMedicalDataSource(receiver.getResponse());
+    }
+
+    private static Bundle handleGetMedicalDataSources(Context context, Bundle bundle)
+            throws Exception {
+        List<String> ids = BundleHelper.toMedicalDataSourceIds(bundle);
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+        TestUtils.getHealthConnectManager(context)
+                .getMedicalDataSources(ids, Executors.newSingleThreadExecutor(), receiver);
+        return BundleHelper.fromMedicalDataSources(receiver.getResponse());
     }
 
     private static Bundle handleUpsertMedicalResource(Context context, Bundle bundle)
