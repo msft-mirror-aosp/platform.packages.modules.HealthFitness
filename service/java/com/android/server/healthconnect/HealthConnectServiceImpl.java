@@ -950,10 +950,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     callback.onResult(
                             new ChangeLogTokenResponse(
                                     mChangeLogsRequestHelper.getToken(
-                                            mChangeLogsHelper.getLatestRowId(mTransactionManager),
+                                            mChangeLogsHelper.getLatestRowId(),
                                             attributionSource.getPackageName(),
-                                            request,
-                                            mTransactionManager)));
+                                            request)));
                     logger.setHealthDataServiceApiStatusSuccess();
                 },
                 logger,
@@ -1002,7 +1001,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                     ChangeLogsRequestHelper.TokenRequest changeLogsTokenRequest =
                             mChangeLogsRequestHelper.getRequest(
-                                    callerPackageName, request.getToken(), mTransactionManager);
+                                    callerPackageName, request.getToken());
                     tryAcquireApiCallQuota(
                             uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, logger);
                     if (changeLogsTokenRequest.getRecordTypes().isEmpty()) {
@@ -1022,7 +1021,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     final ChangeLogsHelper.ChangeLogsResponse changeLogsResponse =
                             mChangeLogsHelper.getChangeLogs(
                                     mAppInfoHelper,
-                                    mTransactionManager,
                                     changeLogsTokenRequest,
                                     request,
                                     mChangeLogsRequestHelper);
@@ -2308,7 +2306,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                         WRITE_MEDICAL_DATA),
                                                 isCalledFromBgWithoutBgRead,
                                                 mAppInfoHelper);
-                        // TODO(b/343921816): Creates access logs if necessary.
                     }
                     logger.setNumberOfRecords(medicalDataSources.size());
                     tryAndReturnResult(callback, medicalDataSources, logger);
@@ -2410,7 +2407,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                 grantedMedicalPermissions.contains(
                                                         WRITE_MEDICAL_DATA),
                                                 isCalledFromBgWithoutBgRead);
-                        // TODO(b/343921816): Creates access logs if necessary.
                     }
                     logger.setNumberOfRecords(medicalDataSources.size());
                     tryAndReturnResult(callback, medicalDataSources, logger);
@@ -2679,8 +2675,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     }
 
                     logger.setNumberOfRecords(medicalResources.size());
-
-                    // TODO(b/343921816): Creates access log.
 
                     callback.onResult(new ReadMedicalResourcesResponse(medicalResources, null, 0));
                     logger.setHealthDataServiceApiStatusSuccess();

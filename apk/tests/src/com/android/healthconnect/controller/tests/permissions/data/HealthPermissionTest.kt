@@ -20,6 +20,11 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionTy
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.BLOOD_GLUCOSE
 import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.fromPermissionString
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isAdditionalPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isFitnessPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isFitnessReadPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isMedicalPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isMedicalReadPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
@@ -62,8 +67,7 @@ class HealthPermissionTest {
     fun fromPermissionString_canParseAllFitnessPermissions() {
         val allPermissions =
             healthPermissionReader.getHealthPermissions().filterNot { perm ->
-                healthPermissionReader.isAdditionalPermission(perm) ||
-                    healthPermissionReader.isMedicalPermission(perm)
+                isAdditionalPermission(perm) || isMedicalPermission(perm)
             }
         for (permissionString in allPermissions) {
             assertThat(fromPermissionString(permissionString).toString())
@@ -75,7 +79,7 @@ class HealthPermissionTest {
     fun fromPermissionString_canParseAllMedicalPermissions() {
         val medicalPermissions =
             healthPermissionReader.getHealthPermissions().filter { perm ->
-                healthPermissionReader.isMedicalPermission(perm)
+                isMedicalPermission(perm)
             }
         for (permissionString in medicalPermissions) {
             assertThat(fromPermissionString(permissionString).toString())
@@ -107,7 +111,9 @@ class HealthPermissionTest {
         assertThat(fromPermissionString("android.permission.health.READ_MEDICAL_DATA_CONDITIONS"))
             .isEqualTo(MedicalPermission(MedicalPermissionType.CONDITIONS))
 
-        assertThat(fromPermissionString("android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS"))
+        assertThat(
+                fromPermissionString("android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS")
+            )
             .isEqualTo(MedicalPermission(MedicalPermissionType.IMMUNIZATIONS))
 
         assertThat(
@@ -155,5 +161,70 @@ class HealthPermissionTest {
         assertThrows(IllegalArgumentException::class.java) {
             fromPermissionString("Unsupported_permission")
         }
+    }
+
+    @Test
+    fun isAdditionalPermission_whenAdditionalPermission_returnsTrue() {
+        val perm = AdditionalPermission(HealthPermissions.READ_EXERCISE_ROUTES)
+        assertThat(isAdditionalPermission(perm.toString())).isTrue()
+    }
+
+    @Test
+    fun isAdditionalPermission_whenNotAdditionalPermissions_returnsFalse() {
+        val perm = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
+        assertThat(isAdditionalPermission(perm.toString())).isFalse()
+    }
+
+    @Test
+    fun isMedicalPermission_whenMedicalPermission_returnsTrue() {
+        val perm = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
+        assertThat(isMedicalPermission(perm.toString())).isTrue()
+    }
+
+    @Test
+    fun isMedicalPermission_whenNotMedicalPermission_returnsFalse() {
+        val perm = AdditionalPermission(HealthPermissions.READ_EXERCISE_ROUTES)
+        assertThat(isMedicalPermission(perm.toString())).isFalse()
+    }
+
+    @Test
+    fun isFitnessPermission_whenFitnessPermission_returnsTrue() {
+        val perm =
+            FitnessPermission.fromPermissionString(HealthPermissions.READ_ACTIVE_CALORIES_BURNED)
+        assertThat(isFitnessPermission(perm.toString())).isTrue()
+    }
+
+    @Test
+    fun isFitnessPermission_whenNotFitnessPermission_returnsFalse() {
+        val perm = AdditionalPermission(HealthPermissions.READ_EXERCISE_ROUTES)
+        assertThat(isFitnessPermission(perm.toString())).isFalse()
+    }
+
+    @Test
+    fun isFitnessReadPermission_whenFitnessReadPermission_returnsTrue() {
+        val perm = FitnessPermission.fromPermissionString(HealthPermissions.READ_EXERCISE)
+        assertThat(isFitnessReadPermission(perm)).isTrue()
+        assertThat(isFitnessReadPermission(perm.toString())).isTrue()
+    }
+
+    @Test
+    fun isFitnessReadPermission_whenNotFitnessReadPermission_returnsFalse() {
+        val perm = FitnessPermission.fromPermissionString(HealthPermissions.WRITE_SLEEP)
+        assertThat(isFitnessReadPermission(perm)).isFalse()
+        assertThat(isFitnessReadPermission(perm.toString())).isFalse()
+    }
+
+    @Test
+    fun isMedicalReadPermission_whenMedicalReadPermission_returnsTrue() {
+        val perm = MedicalPermission(MedicalPermissionType.CONDITIONS)
+        assertThat(isMedicalReadPermission(perm)).isTrue()
+        assertThat(isMedicalReadPermission(perm.toString())).isTrue()
+    }
+
+    @Test
+    fun isMedicalReadPermission_whenNotMedicalReadPermission_returnsFalse() {
+        val perm = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
+        assertThat(isMedicalReadPermission(perm)).isFalse()
+        assertThat(isMedicalReadPermission(perm.toString())).isFalse()
     }
 }

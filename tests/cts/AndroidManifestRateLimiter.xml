@@ -39,8 +39,10 @@
     </instrumentation>
 
     <uses-permission android:name="android.permission.health.READ_HEART_RATE"/>
+    <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS"/>
     <uses-permission android:name="android.permission.health.READ_STEPS"/>
     <uses-permission android:name="android.permission.health.WRITE_HEART_RATE"/>
+    <uses-permission android:name="android.permission.health.WRITE_MEDICAL_DATA"/>
     <uses-permission android:name="android.permission.health.WRITE_STEPS"/>
 
     <!--  self-instrumenting test package. -->

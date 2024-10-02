@@ -1794,6 +1794,24 @@ public class HealthConnectManagerTest {
     }
 
     @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResourcesByIds_migrationInProgress_apiBlocked()
+            throws InterruptedException {
+        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalResource immunization =
+                upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+
+        startMigrationWithShellPermissionIdentity();
+        mManager.readMedicalResources(List.of(immunization.getId()), executor, receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
+        finishMigrationWithShellPermissionIdentity();
+    }
+
+    @Test
     public void testGetRecordTypeInfo_InsertRecords_correctContributingPackages() throws Exception {
         // Insert a set of test records for StepRecords, ExerciseSessionRecord, HeartRateRecord,
         // BasalMetabolicRateRecord.
@@ -2084,7 +2102,8 @@ public class HealthConnectManagerTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testGetMedicalDataSourcesById_onePresent_returnsIt() throws Exception {
+    public void testGetMedicalDataSourcesById_onePresentNoData_returnsItAndNullUpdateTime()
+            throws Exception {
         HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
         mManager.createMedicalDataSource(
                 getCreateMedicalDataSourceRequest(),
@@ -2098,6 +2117,29 @@ public class HealthConnectManagerTest {
 
         assertThat(receiver.getResponse()).containsExactly(dataSource);
         assertThat(dataSource.getLastDataUpdateTime()).isNull();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetMedicalDataSourcesById_onePresentWithData_returnsCorrectLastDataUpdateTime()
+            throws Exception {
+        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(
+                getCreateMedicalDataSourceRequest(),
+                Executors.newSingleThreadExecutor(),
+                createReceiver);
+        MedicalDataSource dataSource = createReceiver.getResponse();
+        Instant insertTime = Instant.now();
+        upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+
+        mManager.getMedicalDataSources(
+                List.of(dataSource.getId()), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).hasSize(1);
+        Instant lastDataUpdateTime = receiver.getResponse().get(0).getLastDataUpdateTime();
+        assertThat(lastDataUpdateTime).isAtLeast(insertTime);
+        assertThat(lastDataUpdateTime).isAtMost(Instant.now());
     }
 
     @Test
@@ -2118,7 +2160,8 @@ public class HealthConnectManagerTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testGetMedicalDataSourcesByRequest_onePresent_returnsIt() throws Exception {
+    public void testGetMedicalDataSourcesByRequest_onePresentNoData_returnsItAndNullUpdateTime()
+            throws Exception {
         HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
         mManager.createMedicalDataSource(
                 getCreateMedicalDataSourceRequest(),
@@ -2132,6 +2175,30 @@ public class HealthConnectManagerTest {
 
         assertThat(receiver.getResponse()).containsExactly(dataSource);
         assertThat(dataSource.getLastDataUpdateTime()).isNull();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void
+            testGetMedicalDataSourcesByRequest_onePresentWithData_returnsCorrectLastDataUpdateTime()
+                    throws Exception {
+        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(
+                getCreateMedicalDataSourceRequest(),
+                Executors.newSingleThreadExecutor(),
+                createReceiver);
+        MedicalDataSource dataSource = createReceiver.getResponse();
+        Instant insertTime = Instant.now();
+        upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
+
+        mManager.getMedicalDataSources(request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).hasSize(1);
+        Instant lastDataUpdateTime = receiver.getResponse().get(0).getLastDataUpdateTime();
+        assertThat(lastDataUpdateTime).isAtLeast(insertTime);
+        assertThat(lastDataUpdateTime).isAtMost(Instant.now());
     }
 
     @Test
@@ -2239,7 +2306,12 @@ public class HealthConnectManagerTest {
                 },
                 MANAGE_HEALTH_DATA);
         assertThat(readResourceReceiver.getResponse()).containsExactly(resource);
-        assertThat(getDataSourceReceiver.getResponse()).containsExactly(dataSource);
+        assertThat(getDataSourceReceiver.getResponse()).hasSize(1);
+        MedicalDataSource responseDataSourceWithoutUpdateTime =
+                new MedicalDataSource.Builder(getDataSourceReceiver.getResponse().get(0))
+                        .setLastDataUpdateTime(null)
+                        .build();
+        assertThat(responseDataSourceWithoutUpdateTime).isEqualTo(dataSource);
     }
 
     // TODO(b/343923754): Add more upsert/readMedicalResources tests once deleteAll can be called.
@@ -3039,6 +3111,7 @@ public class HealthConnectManagerTest {
         MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
         MedicalDataSource dataSource3 = createDataSource(getCreateMedicalDataSourceRequest("3"));
+        Instant upsertTime = Instant.now();
         upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
         upsertMedicalData(dataSource1.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
         upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
@@ -3053,7 +3126,30 @@ public class HealthConnectManagerTest {
                                 Executors.newSingleThreadExecutor(), receiver),
                 MANAGE_HEALTH_DATA);
 
-        assertThat(receiver.getResponse())
+        List<MedicalResourceTypeInfo> response = receiver.getResponse();
+        for (MedicalResourceTypeInfo info : response) {
+            info.getContributingDataSources()
+                    .forEach(
+                            source -> {
+                                assertThat(source.getLastDataUpdateTime()).isAtLeast(upsertTime);
+                                assertThat(source.getLastDataUpdateTime()).isAtMost(Instant.now());
+                            });
+        }
+        List<MedicalResourceTypeInfo> responseWithoutLastUpdateTime = new ArrayList<>();
+        for (MedicalResourceTypeInfo info : response) {
+            MedicalResourceTypeInfo infoWithoutLastDataUpdateTime =
+                    new MedicalResourceTypeInfo(
+                            info.getMedicalResourceType(),
+                            info.getContributingDataSources().stream()
+                                    .map(
+                                            source ->
+                                                    new MedicalDataSource.Builder(source)
+                                                            .setLastDataUpdateTime(null)
+                                                            .build())
+                                    .collect(Collectors.toSet()));
+            responseWithoutLastUpdateTime.add(infoWithoutLastDataUpdateTime);
+        }
+        assertThat(responseWithoutLastUpdateTime)
                 .containsExactly(
                         new MedicalResourceTypeInfo(
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
