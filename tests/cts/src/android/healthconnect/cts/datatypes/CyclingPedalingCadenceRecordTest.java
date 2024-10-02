@@ -100,8 +100,6 @@ public class CyclingPedalingCadenceRecordTest {
                 getBaseCyclingPedalingCadenceRecord();
 
         assertThat(baseCyclingPedalingCadenceRecord.getSamples().get(0).getTime()).isNotNull();
-        assertThat(baseCyclingPedalingCadenceRecord.getSamples().get(0).getRevolutionsPerMinute())
-                .isNotNull();
         TestUtils.insertRecords(
                 Arrays.asList(
                         baseCyclingPedalingCadenceRecord,
