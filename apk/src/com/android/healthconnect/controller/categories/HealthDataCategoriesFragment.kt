@@ -39,7 +39,6 @@ import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.AttributeResolver
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.CategoriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -65,7 +64,6 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
     }
 
     @Inject lateinit var logger: HealthConnectLogger
-    @Inject lateinit var featureUtils: FeatureUtils
 
     private val categoriesViewModel: HealthDataCategoryViewModel by viewModels()
     private val deletionViewModel: DeletionViewModel by activityViewModels()
@@ -92,7 +90,9 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
         mDeleteAllData?.setOnPreferenceClickListener {
             val deletionType = DeletionType.DeletionTypeAllData()
             childFragmentManager.setFragmentResult(
-                START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionType))
+                START_DELETION_EVENT,
+                bundleOf(DELETION_TYPE to deletionType),
+            )
             true
         }
         mDeleteAllData?.isEnabled = false
@@ -145,7 +145,8 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
         mBrowseDataCategory?.removeAll()
         if (sortedCategoriesList.isEmpty()) {
             mBrowseDataCategory?.addPreference(
-                Preference(requireContext()).also { it.setSummary(R.string.no_categories) })
+                Preference(requireContext()).also { it.setSummary(R.string.no_categories) }
+            )
         } else {
             sortedCategoriesList.forEach { categoryState ->
                 val newCategoryPreference =
@@ -157,7 +158,8 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
                             findNavController()
                                 .navigate(
                                     R.id.action_healthDataCategories_to_healthPermissionTypes,
-                                    bundleOf(CATEGORY_KEY to categoryState.category))
+                                    bundleOf(CATEGORY_KEY to categoryState.category),
+                                )
                             true
                         }
                     }
@@ -181,6 +183,7 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
                         .navigate(R.id.action_healthDataCategories_to_healthDataAllCategories)
                     true
                 }
-            })
+            }
+        )
     }
 }

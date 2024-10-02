@@ -27,23 +27,14 @@ import android.safetycenter.SafetySourceData
 import android.safetycenter.SafetySourceData.SEVERITY_LEVEL_UNSPECIFIED
 import android.safetycenter.SafetySourceStatus
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.utils.FeatureUtils
 import javax.inject.Inject
 
 class HealthConnectSafetySource
 @Inject
-constructor(
-    private val featureUtils: FeatureUtils,
-    private val safetyCenterManagerWrapper: SafetyCenterManagerWrapper
-) {
+constructor(private val safetyCenterManagerWrapper: SafetyCenterManagerWrapper) {
 
     fun setSafetySourceData(context: Context, safetyEvent: SafetyEvent) {
         if (!safetyCenterManagerWrapper.isEnabled(context)) {
-            return
-        }
-        if (!featureUtils.isEntryPointsEnabled()) {
-            safetyCenterManagerWrapper.setSafetySourceData(
-                context, HEALTH_CONNECT_SOURCE_ID, null, safetyEvent)
             return
         }
 
@@ -53,19 +44,26 @@ constructor(
                     SafetySourceStatus.Builder(
                             context.getString(R.string.app_label),
                             context.getString(R.string.health_connect_summary),
-                            SEVERITY_LEVEL_UNSPECIFIED)
+                            SEVERITY_LEVEL_UNSPECIFIED,
+                        )
                         .setPendingIntent(
                             PendingIntent.getActivity(
                                 context,
                                 /* requestCode= */ 0,
                                 Intent(HealthConnectManager.ACTION_HEALTH_HOME_SETTINGS),
-                                FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE))
-                        .build(),
+                                FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE,
+                            )
+                        )
+                        .build()
                 )
                 .build()
 
         safetyCenterManagerWrapper.setSafetySourceData(
-            context, HEALTH_CONNECT_SOURCE_ID, safetySourceData, safetyEvent)
+            context,
+            HEALTH_CONNECT_SOURCE_ID,
+            safetySourceData,
+            safetyEvent,
+        )
     }
 
     /** Companion object for [HealthConnectPrivacySource]. */

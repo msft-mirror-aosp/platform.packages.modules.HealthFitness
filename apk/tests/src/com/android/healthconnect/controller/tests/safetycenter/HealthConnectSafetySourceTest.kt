@@ -29,7 +29,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.safetycenter.HealthConnectSafetySource
 import com.android.healthconnect.controller.safetycenter.HealthConnectSafetySource.Companion.HEALTH_CONNECT_SOURCE_ID
 import com.android.healthconnect.controller.safetycenter.SafetyCenterManagerWrapper
-import com.android.healthconnect.controller.utils.FeatureUtils
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
@@ -40,18 +39,16 @@ import org.mockito.kotlin.whenever
 
 class HealthConnectSafetySourceTest {
 
-    private val mockFeatureUtils = mock(FeatureUtils::class.java)
     private val mockSafetyCenterManagerWrapper = mock(SafetyCenterManagerWrapper::class.java)
     private lateinit var safetySource: HealthConnectSafetySource
     private lateinit var context: Context
 
     @Before
     fun setup() {
-        safetySource = HealthConnectSafetySource(mockFeatureUtils, mockSafetyCenterManagerWrapper)
+        safetySource = HealthConnectSafetySource(mockSafetyCenterManagerWrapper)
         context = InstrumentationRegistry.getInstrumentation().context
 
         whenever(mockSafetyCenterManagerWrapper.isEnabled(context)).thenReturn(true)
-        whenever(mockFeatureUtils.isEntryPointsEnabled()).thenReturn(true)
     }
 
     @Test
@@ -62,21 +59,6 @@ class HealthConnectSafetySourceTest {
 
         verify(mockSafetyCenterManagerWrapper, never())
             .setSafetySourceData(any(), any(), any(), any())
-    }
-
-    @Test
-    fun setSafetySourceData_whenEntryPointsIsDisabled_setsNullData() {
-        whenever(mockFeatureUtils.isEntryPointsEnabled()).thenReturn(false)
-
-        safetySource.setSafetySourceData(context, EVENT_SOURCE_STATE_CHANGED)
-
-        verify(mockSafetyCenterManagerWrapper, times(1))
-            .setSafetySourceData(
-                context,
-                HEALTH_CONNECT_SOURCE_ID,
-                null,
-                EVENT_SOURCE_STATE_CHANGED,
-            )
     }
 
     @Test
