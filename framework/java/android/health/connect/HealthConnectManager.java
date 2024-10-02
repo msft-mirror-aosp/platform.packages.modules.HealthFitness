@@ -2192,7 +2192,8 @@ public class HealthConnectManager {
      * @param ids Identifiers on which to perform read operation.
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
-     * @throws IllegalArgumentException if the size of {@code ids} is more than 5000.
+     * @throws IllegalArgumentException if the size of {@code ids} is more than 5000 or if any id is
+     *     invalid.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public void readMedicalResources(

@@ -82,6 +82,22 @@ public class ReadMedicalResourcesRequestParcelTest {
     }
 
     @Test
+    public void testRestoreInvalidPageRequestFromParcel_nullPageToken_expectException()
+            throws NoSuchFieldException, IllegalAccessException {
+        ReadMedicalResourcesPageRequest original =
+                new ReadMedicalResourcesPageRequest.Builder(PAGE_TOKEN).setPageSize(100).build();
+        setFieldValueUsingReflection(original, "mPageToken", null);
+
+        Parcel parcel = Parcel.obtain();
+        original.toParcel().writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> ReadMedicalResourcesRequestParcel.CREATOR.createFromParcel(parcel));
+    }
+
+    @Test
     public void testRestoreInvalidMedicalResourceTypeFromParcel_expectException()
             throws NoSuchFieldException, IllegalAccessException {
         ReadMedicalResourcesRequestParcel original =
