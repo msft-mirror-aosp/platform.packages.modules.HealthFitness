@@ -32,6 +32,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.ratelimiter.RateLimiter.QuotaCategory.QUOTA_CATEGORY_WRITE;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_VERSION;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_UUID;
@@ -120,6 +121,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
+import com.android.healthfitness.flags.AconfigFlagHelperTestRule;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.LocalManagerRegistry;
 import com.android.server.appop.AppOpsManagerLocal;
@@ -242,7 +244,12 @@ public class HealthConnectServiceImplTest {
     private static final String TEST_URI = "content://com.android.server.healthconnect/testuri";
     private static final long DEFAULT_PACKAGE_APP_INFO = 123L;
 
-    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+    @Rule(order = 0)
+    public final AconfigFlagHelperTestRule mAconfigFlagHelperTestRule =
+            new AconfigFlagHelperTestRule();
+
+    @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
@@ -1707,7 +1714,8 @@ public class HealthConnectServiceImplTest {
                                 id.toString(),
                                 DATA_SOURCE_PACKAGE_NAME,
                                 DATA_SOURCE_FHIR_BASE_URI,
-                                DATA_SOURCE_DISPLAY_NAME)
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
                         .build();
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
                         List.of(id)))
@@ -1734,7 +1742,8 @@ public class HealthConnectServiceImplTest {
                                 id.toString(),
                                 DIFFERENT_DATA_SOURCE_PACKAGE_NAME,
                                 DATA_SOURCE_FHIR_BASE_URI,
-                                DATA_SOURCE_DISPLAY_NAME)
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
                         .build();
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
                         List.of(id)))
@@ -1764,7 +1773,8 @@ public class HealthConnectServiceImplTest {
                                 id.toString(),
                                 DATA_SOURCE_PACKAGE_NAME,
                                 DATA_SOURCE_FHIR_BASE_URI,
-                                DATA_SOURCE_DISPLAY_NAME)
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
                         .build();
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
                         List.of(id)))

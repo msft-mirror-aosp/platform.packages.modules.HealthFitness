@@ -217,7 +217,6 @@ public final class TransactionManager {
      *
      * @param request a delete request.
      */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public int deleteAll(
             DeleteTransactionRequest request,
             boolean shouldRecordDeleteAccessLogs,
@@ -246,21 +245,21 @@ public final class TransactionManager {
                                     db.rawQuery(deleteTableRequest.getReadCommand(), null)) {
                                 int numberOfUuidsToDelete = 0;
                                 while (cursor.moveToNext()) {
+                                    String packageColumnName =
+                                            requireNonNull(
+                                                    deleteTableRequest.getPackageColumnName());
+                                    String idColumnName =
+                                            requireNonNull(deleteTableRequest.getIdColumnName());
                                     numberOfUuidsToDelete++;
                                     long appInfoId =
-                                            StorageUtils.getCursorLong(
-                                                    cursor,
-                                                    deleteTableRequest.getPackageColumnName());
+                                            StorageUtils.getCursorLong(cursor, packageColumnName);
                                     if (deleteTableRequest.requiresPackageCheck()) {
                                         request.enforcePackageCheck(
-                                                StorageUtils.getCursorUUID(
-                                                        cursor,
-                                                        deleteTableRequest.getIdColumnName()),
+                                                StorageUtils.getCursorUUID(cursor, idColumnName),
                                                 appInfoId);
                                     }
                                     UUID deletedRecordUuid =
-                                            StorageUtils.getCursorUUID(
-                                                    cursor, deleteTableRequest.getIdColumnName());
+                                            StorageUtils.getCursorUUID(cursor, idColumnName);
                                     deletionChangelogs.addUUID(
                                             deleteTableRequest.getRecordType(),
                                             appInfoId,
@@ -277,8 +276,9 @@ public final class TransactionManager {
                                                 read(additionalChangelogUuidRequest);
                                         while (cursorAdditionalUuids.moveToNext()) {
                                             modificationChangelogs.addUUID(
-                                                    additionalChangelogUuidRequest
-                                                            .getRecordHelper()
+                                                    requireNonNull(
+                                                                    additionalChangelogUuidRequest
+                                                                            .getRecordHelper())
                                                             .getRecordIdentifier(),
                                                     StorageUtils.getCursorLong(
                                                             cursorAdditionalUuids,

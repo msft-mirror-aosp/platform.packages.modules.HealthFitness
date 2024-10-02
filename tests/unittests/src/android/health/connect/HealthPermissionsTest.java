@@ -50,6 +50,8 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import androidx.test.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.android.healthfitness.flags.AconfigFlagHelperTestRule;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -175,7 +177,12 @@ public class HealthPermissionsTest {
     private Context mContext;
     @Mock private PackageInfo mPackageInfo1;
 
-    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+    @Rule(order = 0)
+    public final AconfigFlagHelperTestRule mAconfigFlagHelperTestRule =
+            new AconfigFlagHelperTestRule();
+
+    @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Before
     public void setUp() {
