@@ -52,6 +52,7 @@ android_test {
         "cts-healthconnect-lib",
         "flag-junit",
     ],
+    target_sdk_version: "34",
     min_sdk_version: "34",
     sdk_version: "module_current",
     data: [
@@ -68,6 +69,7 @@ android_test_helper_app {
         "cts-healthconnect-test-helper",
     ],
     sdk_version: "test_current",
+    target_sdk_version: "34",
     min_sdk_version: "34",
 }
 
@@ -79,5 +81,6 @@ android_test_helper_app {
         "cts-healthconnect-test-helper",
     ],
     sdk_version: "test_current",
+    target_sdk_version: "34",
     min_sdk_version: "34",
 }
