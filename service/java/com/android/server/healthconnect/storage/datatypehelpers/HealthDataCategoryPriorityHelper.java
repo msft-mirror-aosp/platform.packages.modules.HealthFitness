@@ -33,6 +33,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.UserHandle;
 import android.util.Pair;
 import android.util.Slog;
@@ -80,6 +81,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
     private final TransactionManager mTransactionManager;
     private final PreferenceHelper mPreferenceHelper;
+    private final HealthConnectMappings mHealthConnectMappings;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private static volatile HealthDataCategoryPriorityHelper sHealthDataCategoryPriorityHelper;
@@ -96,12 +98,14 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
             TransactionManager transactionManager,
             HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
             PreferenceHelper preferenceHelper,
-            PackageInfoUtils packageInfoUtils) {
+            PackageInfoUtils packageInfoUtils,
+            HealthConnectMappings healthConnectMappings) {
         mAppInfoHelper = appInfoHelper;
         mPackageInfoUtils = packageInfoUtils;
         mHealthConnectDeviceConfigManager = healthConnectDeviceConfigManager;
         mTransactionManager = transactionManager;
         mPreferenceHelper = preferenceHelper;
+        mHealthConnectMappings = healthConnectMappings;
     }
 
     /**
@@ -398,7 +402,8 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
                 TransactionManager.getInitialisedInstance(),
                 HealthConnectDeviceConfigManager.getInitialisedInstance(),
                 PreferenceHelper.getInstance(),
-                PackageInfoUtils.getInstance());
+                PackageInfoUtils.getInstance(),
+                HealthConnectMappings.getInstance());
     }
 
     public static synchronized HealthDataCategoryPriorityHelper getInstance(
@@ -406,7 +411,8 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
             TransactionManager transactionManager,
             HealthConnectDeviceConfigManager healthConnectDeviceConfigManager,
             PreferenceHelper preferenceHelper,
-            PackageInfoUtils packageInfoUtils) {
+            PackageInfoUtils packageInfoUtils,
+            HealthConnectMappings healthConnectMappings) {
         if (sHealthDataCategoryPriorityHelper == null) {
             sHealthDataCategoryPriorityHelper =
                     new HealthDataCategoryPriorityHelper(
@@ -414,7 +420,8 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
                             transactionManager,
                             healthConnectDeviceConfigManager,
                             preferenceHelper,
-                            packageInfoUtils);
+                            packageInfoUtils,
+                            healthConnectMappings);
         }
 
         return sHealthDataCategoryPriorityHelper;

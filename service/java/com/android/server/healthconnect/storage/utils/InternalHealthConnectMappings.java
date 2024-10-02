@@ -67,7 +67,7 @@ public class InternalHealthConnectMappings {
     /** Returns a collection of all supported record helpers. */
     public Collection<RecordHelper<?>> getRecordHelpers() {
         if (!Flags.healthConnectMappings()) {
-            return RecordHelperProvider.getRecordHelpers().values();
+            return RecordHelperProvider.getRecordHelpers();
         }
         return mAllRecordHelpers;
     }

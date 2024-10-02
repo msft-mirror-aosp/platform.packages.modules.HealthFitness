@@ -69,7 +69,6 @@ import android.platform.test.flag.junit.SetFlagsRule;
 
 import androidx.annotation.NonNull;
 
-import com.android.healthfitness.flags.AconfigFlagHelperTestRule;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 
 import com.google.testing.junit.testparameterinjector.TestParameter;
@@ -87,13 +86,7 @@ import java.util.List;
 @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
 @RunWith(TestParameterInjector.class)
 public class MedicalResourceValidatorTest {
-
-    @Rule(order = 0)
-    public final AconfigFlagHelperTestRule mAconfigFlagHelperTestRule =
-            new AconfigFlagHelperTestRule();
-
-    @Rule(order = 1)
-    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Test
     public void testValidateAndCreateInternalRequest_validAndR4_populatesInternalRequest() {
