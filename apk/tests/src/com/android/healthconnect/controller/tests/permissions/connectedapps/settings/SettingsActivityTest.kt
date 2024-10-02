@@ -93,6 +93,7 @@ class SettingsActivityTest {
 
         whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(false) }
         whenever(viewModel.atLeastOneFitnessPermissionGranted).then { MediatorLiveData(false) }
+        whenever(viewModel.atLeastOneHealthPermissionGranted).then { MediatorLiveData(false) }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
         whenever(viewModel.loadAccessDate(Mockito.anyString())).thenReturn(accessDate)
 

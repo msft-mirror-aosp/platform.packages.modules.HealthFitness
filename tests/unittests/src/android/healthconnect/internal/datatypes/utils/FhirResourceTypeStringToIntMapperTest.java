@@ -29,12 +29,19 @@ import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
+import com.android.healthfitness.flags.AconfigFlagHelperTestRule;
+
 import org.junit.Rule;
 import org.junit.Test;
 
 public class FhirResourceTypeStringToIntMapperTest {
 
-    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+    @Rule(order = 0)
+    public final AconfigFlagHelperTestRule mAconfigFlagHelperTestRule =
+            new AconfigFlagHelperTestRule();
+
+    @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Test
     @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD)

@@ -15,6 +15,9 @@
  */
 package com.android.healthconnect.controller.tests.permissions.connectedapps
 
+ import android.platform.test.annotations.DisableFlags
+ import android.platform.test.annotations.EnableFlags
+ import android.platform.test.flag.junit.SetFlagsRule
 import android.health.connect.TimeInstantRangeFilter
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.api.DeleteAppDataUseCase
@@ -42,7 +45,8 @@ import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.di.FakeGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadExerciseRoute
 import com.android.healthconnect.controller.utils.FeatureUtils
-import com.google.common.truth.Truth.assertThat
+ import com.android.healthfitness.flags.Flags
+ import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
@@ -75,6 +79,7 @@ class AppPermissionViewModelTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val setFlagsRule = SetFlagsRule()
     private val testDispatcher = TestCoroutineDispatcher()
 
     private val healthPermissionReader: HealthPermissionReader = mock()
@@ -114,6 +119,9 @@ class AppPermissionViewModelTest {
         MockitoAnnotations.initMocks(this)
         hiltRule.inject()
         Dispatchers.setMain(testDispatcher)
+        whenever(healthPermissionReader.getValidHealthPermissions(any())).thenCallRealMethod()
+        whenever(healthPermissionReader.maybeFilterOutAdditionalIfNotValid(any()))
+            .thenCallRealMethod()
         loadAppPermissionsStatusUseCase =
             LoadAppPermissionsStatusUseCase(
                 getGrantedHealthPermissionsUseCase,
@@ -284,8 +292,8 @@ class AppPermissionViewModelTest {
     @Test
     fun whenPackageSupported_medicalOnly_loadAllPermissions() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
-            .thenReturn(listOf(readImmunization, writeMedicalData))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+            .thenReturn(listOf(readImmunization.toString(), writeMedicalData.toString()))
         getGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME,
             listOf(writeMedicalData.toString()),
@@ -347,13 +355,13 @@ class AppPermissionViewModelTest {
     @Test
     fun whenPackageNotSupported_fitnessOnly_loadOnlyGrantedPermissions() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(false)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -392,8 +400,8 @@ class AppPermissionViewModelTest {
     @Test
     fun whenPackageNotSupported_medicalOnly_loadOnlyGrantedPermissions() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(false)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
-            .thenReturn(listOf(writeMedicalData, readImmunization))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+            .thenReturn(listOf(writeMedicalData.toString(), readImmunization.toString()))
         getGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME,
             listOf(writeMedicalData.toString()),
@@ -429,15 +437,15 @@ class AppPermissionViewModelTest {
     @Test
     fun whenPackageNotSupported_fitnessAndMedical_loadOnlyGrantedPermissions() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(false)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    readImmunization,
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    writeMedicalData,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    readImmunization.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -556,18 +564,18 @@ class AppPermissionViewModelTest {
     fun updatePermissions_denyLastReadFitnessPermission_noReadMedicalGranted_updatesAdditionalPermissions() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-            whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
-                        readExercisePermission,
-                        readNutritionPermission,
-                        readExerciseRoutesPermission,
-                        readDataInBackgroundPermission,
-                        readHistoryDataPermission,
-                        writeSleepPermission,
-                        writeDistancePermission,
-                        readImmunization,
-                        writeMedicalData,
+                        readExercisePermission.toString(),
+                        readNutritionPermission.toString(),
+                        readExerciseRoutesPermission.toString(),
+                        readDataInBackgroundPermission.toString(),
+                        readHistoryDataPermission.toString(),
+                        writeSleepPermission.toString(),
+                        writeDistancePermission.toString(),
+                        readImmunization.toString(),
+                        writeMedicalData.toString(),
                     )
                 )
             getGrantedHealthPermissionsUseCase.updateData(
@@ -637,17 +645,17 @@ class AppPermissionViewModelTest {
     fun updatePermissions_denyLastReadFitnessPermission_noReadMedicalGranted_skipsERIfAlreadyAskEveryTime() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-            whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
-                        readExercisePermission,
-                        readNutritionPermission,
-                        readExerciseRoutesPermission,
-                        readDataInBackgroundPermission,
-                        readHistoryDataPermission,
-                        writeSleepPermission,
-                        writeDistancePermission,
-                        writeMedicalData,
+                        readExercisePermission.toString(),
+                        readNutritionPermission.toString(),
+                        readExerciseRoutesPermission.toString(),
+                        readDataInBackgroundPermission.toString(),
+                        readHistoryDataPermission.toString(),
+                        writeSleepPermission.toString(),
+                        writeDistancePermission.toString(),
+                        writeMedicalData.toString(),
                     )
                 )
             getGrantedHealthPermissionsUseCase.updateData(
@@ -716,18 +724,18 @@ class AppPermissionViewModelTest {
     fun updatePermissions_denyLastReadFitnessPermission_withMedicalGranted_doesNotUpdateAdditionalPermissions() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-            whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
-                        readExercisePermission,
-                        readNutritionPermission,
-                        readExerciseRoutesPermission,
-                        readDataInBackgroundPermission,
-                        readHistoryDataPermission,
-                        writeSleepPermission,
-                        writeDistancePermission,
-                        readImmunization,
-                        writeMedicalData,
+                        readExercisePermission.toString(),
+                        readNutritionPermission.toString(),
+                        readExerciseRoutesPermission.toString(),
+                        readDataInBackgroundPermission.toString(),
+                        readHistoryDataPermission.toString(),
+                        writeSleepPermission.toString(),
+                        writeDistancePermission.toString(),
+                        readImmunization.toString(),
+                        writeMedicalData.toString(),
                     )
                 )
             getGrantedHealthPermissionsUseCase.updateData(
@@ -798,18 +806,18 @@ class AppPermissionViewModelTest {
     fun updatePermissions_denyLastReadMedicalPermission_noReadFitnessGranted_updatesAdditionalPermissions() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-            whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
-                        readExercisePermission,
-                        readNutritionPermission,
-                        readExerciseRoutesPermission,
-                        readDataInBackgroundPermission,
-                        readHistoryDataPermission,
-                        writeSleepPermission,
-                        writeDistancePermission,
-                        readImmunization,
-                        writeMedicalData,
+                        readExercisePermission.toString(),
+                        readNutritionPermission.toString(),
+                        readExerciseRoutesPermission.toString(),
+                        readDataInBackgroundPermission.toString(),
+                        readHistoryDataPermission.toString(),
+                        writeSleepPermission.toString(),
+                        writeDistancePermission.toString(),
+                        readImmunization.toString(),
+                        writeMedicalData.toString(),
                     )
                 )
             getGrantedHealthPermissionsUseCase.updateData(
@@ -871,18 +879,18 @@ class AppPermissionViewModelTest {
     fun updatePermissions_denyLastReadMedicalPermission_withFitnessGranted_doesNotUpdateAdditionalPermissions() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-            whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
-                        readExercisePermission,
-                        readNutritionPermission,
-                        readExerciseRoutesPermission,
-                        readDataInBackgroundPermission,
-                        readHistoryDataPermission,
-                        writeSleepPermission,
-                        writeDistancePermission,
-                        readImmunization,
-                        writeMedicalData,
+                        readExercisePermission.toString(),
+                        readNutritionPermission.toString(),
+                        readExerciseRoutesPermission.toString(),
+                        readDataInBackgroundPermission.toString(),
+                        readHistoryDataPermission.toString(),
+                        writeSleepPermission.toString(),
+                        writeDistancePermission.toString(),
+                        readImmunization.toString(),
+                        writeMedicalData.toString(),
                     )
                 )
             getGrantedHealthPermissionsUseCase.updateData(
@@ -1241,16 +1249,16 @@ class AppPermissionViewModelTest {
     @Test
     fun revokeAllPermissions_fitnessAndAdditional_revokesFitnessAndAdditional() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    readExerciseRoutesPermission,
-                    readDataInBackgroundPermission,
-                    readHistoryDataPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    readExerciseRoutesPermission.toString(),
+                    readDataInBackgroundPermission.toString(),
+                    readHistoryDataPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -1312,15 +1320,15 @@ class AppPermissionViewModelTest {
     @Test
     fun revokeAllPermissions_fitnessAndMedical_revokesFitnessAndMedical() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    readImmunization,
-                    writeMedicalData,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readImmunization.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -1390,18 +1398,18 @@ class AppPermissionViewModelTest {
     fun revokeAllPermissions_fitnessAndMedicalAndAdditional_revokesFitnessAndMedicalAndAdditional() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-            whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
-                        readExercisePermission,
-                        readNutritionPermission,
-                        readExerciseRoutesPermission,
-                        readDataInBackgroundPermission,
-                        readHistoryDataPermission,
-                        writeSleepPermission,
-                        writeDistancePermission,
-                        readImmunization,
-                        writeMedicalData,
+                        readExercisePermission.toString(),
+                        readNutritionPermission.toString(),
+                        readExerciseRoutesPermission.toString(),
+                        readDataInBackgroundPermission.toString(),
+                        readHistoryDataPermission.toString(),
+                        writeSleepPermission.toString(),
+                        writeDistancePermission.toString(),
+                        readImmunization.toString(),
+                        writeMedicalData.toString(),
                     )
                 )
             getGrantedHealthPermissionsUseCase.updateData(
@@ -1481,13 +1489,13 @@ class AppPermissionViewModelTest {
     @Test
     fun revokeAllFitness_fitnessOnly_revokesFitnessOnly() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -1562,15 +1570,15 @@ class AppPermissionViewModelTest {
     @Test
     fun revokeAllFitness_fitnessAndMedical_revokesFitnessOnly() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    readImmunization,
-                    writeMedicalData,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readImmunization.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -1654,17 +1662,17 @@ class AppPermissionViewModelTest {
     fun revokeAllFitness_fitnessAndMedicalAndAdditional_medicalReadGranted_revokesFitnessOnly() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-            whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
-                        readExercisePermission,
-                        readNutritionPermission,
-                        writeSleepPermission,
-                        writeDistancePermission,
-                        readDataInBackgroundPermission,
-                        readHistoryDataPermission,
-                        readImmunization,
-                        writeMedicalData,
+                        readExercisePermission.toString(),
+                        readNutritionPermission.toString(),
+                        writeSleepPermission.toString(),
+                        writeDistancePermission.toString(),
+                        readDataInBackgroundPermission.toString(),
+                        readHistoryDataPermission.toString(),
+                        readImmunization.toString(),
+                        writeMedicalData.toString(),
                     )
                 )
             getGrantedHealthPermissionsUseCase.updateData(
@@ -1757,17 +1765,17 @@ class AppPermissionViewModelTest {
     fun revokeAllFitness_fitnessAndMedicalAndAdditional_medicalNotGranted_revokesFitnessAndAdditional() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-            whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
-                        readExercisePermission,
-                        readNutritionPermission,
-                        writeSleepPermission,
-                        writeDistancePermission,
-                        readDataInBackgroundPermission,
-                        readHistoryDataPermission,
-                        readImmunization,
-                        writeMedicalData,
+                        readExercisePermission.toString(),
+                        readNutritionPermission.toString(),
+                        writeSleepPermission.toString(),
+                        writeDistancePermission.toString(),
+                        readDataInBackgroundPermission.toString(),
+                        readHistoryDataPermission.toString(),
+                        readImmunization.toString(),
+                        writeMedicalData.toString(),
                     )
                 )
             getGrantedHealthPermissionsUseCase.updateData(
@@ -1861,8 +1869,14 @@ class AppPermissionViewModelTest {
     @Test
     fun revokeAllMedical_medicalOnly_revokesMedicalOnly() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
-            .thenReturn(listOf(readAllergies, readImmunization, writeMedicalData))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+            .thenReturn(
+                listOf(
+                    readAllergies.toString(),
+                    readImmunization.toString(),
+                    writeMedicalData.toString(),
+                )
+            )
         getGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME,
             listOf(readImmunization.toString(), writeMedicalData.toString()),
@@ -1926,14 +1940,14 @@ class AppPermissionViewModelTest {
     @Test
     fun revokeAllMedical_fitnessAndMedical_revokesMedicalOnly() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    readAllergies,
-                    readImmunization,
-                    writeMedicalData,
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    readAllergies.toString(),
+                    readImmunization.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -2008,18 +2022,18 @@ class AppPermissionViewModelTest {
     fun revokeAllMedical_fitnessAndMedicalAndAdditional_fitnessGranted_revokesMedicalOnly() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-            whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
-                        readExercisePermission,
-                        readNutritionPermission,
-                        writeSleepPermission,
-                        readExerciseRoutesPermission,
-                        readDataInBackgroundPermission,
-                        readHistoryDataPermission,
-                        readAllergies,
-                        readImmunization,
-                        writeMedicalData,
+                        readExercisePermission.toString(),
+                        readNutritionPermission.toString(),
+                        writeSleepPermission.toString(),
+                        readExerciseRoutesPermission.toString(),
+                        readDataInBackgroundPermission.toString(),
+                        readHistoryDataPermission.toString(),
+                        readAllergies.toString(),
+                        readImmunization.toString(),
+                        writeMedicalData.toString(),
                     )
                 )
             getGrantedHealthPermissionsUseCase.updateData(
@@ -2107,18 +2121,18 @@ class AppPermissionViewModelTest {
     fun revokeAllMedical_fitnessAndMedicalAndAdditional_fitnessReadNotGranted_revokesMedicalAndAdditional() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-            whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
-                        readExercisePermission,
-                        readNutritionPermission,
-                        writeSleepPermission,
-                        readExerciseRoutesPermission,
-                        readDataInBackgroundPermission,
-                        readHistoryDataPermission,
-                        readAllergies,
-                        readImmunization,
-                        writeMedicalData,
+                        readExercisePermission.toString(),
+                        readNutritionPermission.toString(),
+                        writeSleepPermission.toString(),
+                        readExerciseRoutesPermission.toString(),
+                        readDataInBackgroundPermission.toString(),
+                        readHistoryDataPermission.toString(),
+                        readAllergies.toString(),
+                        readImmunization.toString(),
+                        writeMedicalData.toString(),
                     )
                 )
             getGrantedHealthPermissionsUseCase.updateData(
@@ -2215,13 +2229,13 @@ class AppPermissionViewModelTest {
     @Test
     fun shouldNavigateToFragment_whenPackageNameSupported_returnsTrue() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(TEST_APP_PACKAGE_NAME, listOf())
@@ -2237,13 +2251,13 @@ class AppPermissionViewModelTest {
     @Test
     fun shouldNavigateToFragment_whenAnyPermissionGranted_returnsTrue() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(false)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -2263,13 +2277,13 @@ class AppPermissionViewModelTest {
     fun shouldNavigateToFragment_whenPackageNotSupported_andNoPermissionsGranted_returnsFalse() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(false)
-            whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
-                        readExercisePermission,
-                        readNutritionPermission,
-                        writeSleepPermission,
-                        writeDistancePermission,
+                        readExercisePermission.toString(),
+                        readNutritionPermission.toString(),
+                        writeSleepPermission.toString(),
+                        writeDistancePermission.toString(),
                     )
                 )
             getGrantedHealthPermissionsUseCase.updateData(TEST_APP_PACKAGE_NAME, listOf())
@@ -2349,16 +2363,16 @@ class AppPermissionViewModelTest {
     @Test
     fun revokeFitnessShouldIncludeBackground_whenBGNotDeclared_returnsFalse() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    readHistoryDataPermission,
-                    readImmunization,
-                    writeMedicalData,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readHistoryDataPermission.toString(),
+                    readImmunization.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -2380,23 +2394,47 @@ class AppPermissionViewModelTest {
     }
 
     @Test
+    fun revokeFitnessShouldIncludeBackground_whenNoReadPermissionDeclared_returnsFalse() = runTest {
+        whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+            .thenReturn(
+                listOf(
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    writeMedicalData.toString(),
+                    readDataInBackgroundPermission.toString(),
+                )
+            )
+        getGrantedHealthPermissionsUseCase.updateData(
+            TEST_APP_PACKAGE_NAME,
+            listOf(writeSleepPermission.toString(), writeMedicalData.toString()),
+        )
+        appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        val revokeFitnessShouldIncludeBackgroundResult =
+            appPermissionViewModel.revokeFitnessShouldIncludeBackground()
+        assertThat(revokeFitnessShouldIncludeBackgroundResult).isFalse()
+    }
+
+    @Test
     fun revokeFitnessShouldIncludeBackground_whenNoFitnessReadGranted_returnsFalse() = runTest {
         // If e.g. we revoke permissions for an app that has just write permissions
         // declared/granted,
         // Then we shouldn't revoke BG, because its only dependent on medical read
         // And if there is no medical read, then we can't have BG anyway
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    readDataInBackgroundPermission,
-                    readHistoryDataPermission,
-                    readImmunization,
-                    writeMedicalData,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readDataInBackgroundPermission.toString(),
+                    readHistoryDataPermission.toString(),
+                    readImmunization.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -2418,17 +2456,17 @@ class AppPermissionViewModelTest {
     @Test
     fun revokeFitnessShouldIncludeBackground_whenMedicalRead_returnsFalse() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    readDataInBackgroundPermission,
-                    readHistoryDataPermission,
-                    readImmunization,
-                    writeMedicalData,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readDataInBackgroundPermission.toString(),
+                    readHistoryDataPermission.toString(),
+                    readImmunization.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -2455,17 +2493,17 @@ class AppPermissionViewModelTest {
     fun revokeFitnessShouldIncludeBackground_whenBGDeclared_andFitnessRead_andNoMedicalRead_returnsTrue() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-            whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
-                        readExercisePermission,
-                        readNutritionPermission,
-                        writeSleepPermission,
-                        writeDistancePermission,
-                        readDataInBackgroundPermission,
-                        readHistoryDataPermission,
-                        readImmunization,
-                        writeMedicalData,
+                        readExercisePermission.toString(),
+                        readNutritionPermission.toString(),
+                        writeSleepPermission.toString(),
+                        writeDistancePermission.toString(),
+                        readDataInBackgroundPermission.toString(),
+                        readHistoryDataPermission.toString(),
+                        readImmunization.toString(),
+                        writeMedicalData.toString(),
                     )
                 )
             getGrantedHealthPermissionsUseCase.updateData(
@@ -2490,16 +2528,16 @@ class AppPermissionViewModelTest {
     @Test
     fun revokeFitnessShouldIncludePastData_whenPastDataNotDeclared_returnsFalse() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    readDataInBackgroundPermission,
-                    readImmunization,
-                    writeMedicalData,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readDataInBackgroundPermission.toString(),
+                    readImmunization.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -2521,17 +2559,48 @@ class AppPermissionViewModelTest {
     }
 
     @Test
-    fun revokeFitnessShouldIncludePastData_whenNoFitnessRead_returnsFalse() = runTest {
+    fun revokeFitnessShouldIncludePastData_whenNoFitnessReadDeclared_returnsFalse() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    readHistoryDataPermission,
-                    readDataInBackgroundPermission,
-                    readImmunization,
-                    writeMedicalData,
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readDataInBackgroundPermission.toString(),
+                    readHistoryDataPermission.toString(),
+                    readImmunization.toString(),
+                    writeMedicalData.toString(),
+                )
+            )
+        getGrantedHealthPermissionsUseCase.updateData(
+            TEST_APP_PACKAGE_NAME,
+            listOf(
+                writeSleepPermission.toString(),
+                readDataInBackgroundPermission.additionalPermission,
+                writeMedicalData.toString(),
+            ),
+        )
+
+        appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        val revokeFitnessShouldIncludePastDataResult =
+            appPermissionViewModel.revokeFitnessShouldIncludePastData()
+        assertThat(revokeFitnessShouldIncludePastDataResult).isFalse()
+    }
+
+    @Test
+    fun revokeFitnessShouldIncludePastData_whenNoFitnessRead_returnsFalse() = runTest {
+        whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+            .thenReturn(
+                listOf(
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readHistoryDataPermission.toString(),
+                    readDataInBackgroundPermission.toString(),
+                    readImmunization.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -2555,16 +2624,16 @@ class AppPermissionViewModelTest {
     @Test
     fun revokeFitnessShouldIncludePastData_whenMedicalRead_returnsFalse() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    readHistoryDataPermission,
-                    readDataInBackgroundPermission,
-                    readImmunization,
-                    writeMedicalData,
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readHistoryDataPermission.toString(),
+                    readDataInBackgroundPermission.toString(),
+                    readImmunization.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -2591,16 +2660,16 @@ class AppPermissionViewModelTest {
     fun revokeFitnessShouldIncludePastData_whenPastDataDeclared_andFitnessRead_andNoMedicalRead_returnsTrue() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-            whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
-                        readNutritionPermission,
-                        writeSleepPermission,
-                        writeDistancePermission,
-                        readHistoryDataPermission,
-                        readDataInBackgroundPermission,
-                        readImmunization,
-                        writeMedicalData,
+                        readNutritionPermission.toString(),
+                        writeSleepPermission.toString(),
+                        writeDistancePermission.toString(),
+                        readHistoryDataPermission.toString(),
+                        readDataInBackgroundPermission.toString(),
+                        readImmunization.toString(),
+                        writeMedicalData.toString(),
                     )
                 )
             getGrantedHealthPermissionsUseCase.updateData(
@@ -2625,16 +2694,16 @@ class AppPermissionViewModelTest {
     @Test
     fun revokeMedicalShouldIncludeBackground_whenBgNotDeclared_returnsFalse() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    readHistoryDataPermission,
-                    readImmunization,
-                    writeMedicalData,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readHistoryDataPermission.toString(),
+                    readImmunization.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -2657,18 +2726,43 @@ class AppPermissionViewModelTest {
     }
 
     @Test
-    fun revokeMedicalShouldIncludeBackground_whenNoMedicalRead_returnsFalse() = runTest {
+    fun revokeMedicalShouldIncludeBackground_whenNoReadPermissionDeclared_returnsFalse() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    readDataInBackgroundPermission,
-                    readHistoryDataPermission,
-                    writeMedicalData,
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readDataInBackgroundPermission.toString(),
+                    writeMedicalData.toString(),
+                )
+            )
+        getGrantedHealthPermissionsUseCase.updateData(
+            TEST_APP_PACKAGE_NAME,
+            listOf(writeSleepPermission.toString(), writeMedicalData.toString()),
+        )
+
+        appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        val revokeMedicalShouldIncludeBackgroundResult =
+            appPermissionViewModel.revokeMedicalShouldIncludeBackground()
+        assertThat(revokeMedicalShouldIncludeBackgroundResult).isFalse()
+    }
+
+    @Test
+    fun revokeMedicalShouldIncludeBackground_whenNoMedicalRead_returnsFalse() = runTest {
+        whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+            .thenReturn(
+                listOf(
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readDataInBackgroundPermission.toString(),
+                    readHistoryDataPermission.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -2692,17 +2786,17 @@ class AppPermissionViewModelTest {
     @Test
     fun revokeMedicalShouldIncludeBackground_whenFitnessRead_returnsFalse() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    readDataInBackgroundPermission,
-                    readHistoryDataPermission,
-                    readImmunization,
-                    writeMedicalData,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readDataInBackgroundPermission.toString(),
+                    readHistoryDataPermission.toString(),
+                    readImmunization.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -2729,17 +2823,17 @@ class AppPermissionViewModelTest {
     fun revokeMedicalShouldIncludeBackground_whenBgDeclared_andMedicalRead_andNoFitnessRead_returnsTrue() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-            whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
-                        readExercisePermission,
-                        readNutritionPermission,
-                        writeSleepPermission,
-                        writeDistancePermission,
-                        readDataInBackgroundPermission,
-                        readHistoryDataPermission,
-                        readImmunization,
-                        writeMedicalData,
+                        readExercisePermission.toString(),
+                        readNutritionPermission.toString(),
+                        writeSleepPermission.toString(),
+                        writeDistancePermission.toString(),
+                        readDataInBackgroundPermission.toString(),
+                        readHistoryDataPermission.toString(),
+                        readImmunization.toString(),
+                        writeMedicalData.toString(),
                     )
                 )
             getGrantedHealthPermissionsUseCase.updateData(
@@ -2764,16 +2858,16 @@ class AppPermissionViewModelTest {
     @Test
     fun revokeMedicalShouldIncludePastData_whenPastDataNotDeclared_returnsFalse() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    readDataInBackgroundPermission,
-                    readImmunization,
-                    writeMedicalData,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readDataInBackgroundPermission.toString(),
+                    readImmunization.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -2796,18 +2890,49 @@ class AppPermissionViewModelTest {
     }
 
     @Test
-    fun revokeMedicalShouldIncludePastData_whenNoMedicalRead_returnsFalse() = runTest {
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    fun revokeMedicalShouldIncludePastData_whenNoFitnessReadDeclared_returnsFalse() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    readHistoryDataPermission,
-                    readDataInBackgroundPermission,
-                    writeMedicalData,
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readHistoryDataPermission.toString(),
+                    readImmunization.toString(),
+                    writeMedicalData.toString(),
+                )
+            )
+        getGrantedHealthPermissionsUseCase.updateData(
+            TEST_APP_PACKAGE_NAME,
+            listOf(
+                writeSleepPermission.toString(),
+                readImmunization.toString(),
+                writeMedicalData.toString(),
+            ),
+        )
+
+        appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        val revokeMedicalShouldIncludePastDataResult =
+            appPermissionViewModel.revokeMedicalShouldIncludePastData()
+        assertThat(revokeMedicalShouldIncludePastDataResult).isFalse()
+    }
+
+    @Test
+    fun revokeMedicalShouldIncludePastData_whenNoMedicalRead_returnsFalse() = runTest {
+        whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+            .thenReturn(
+                listOf(
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readHistoryDataPermission.toString(),
+                    readDataInBackgroundPermission.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -2832,17 +2957,17 @@ class AppPermissionViewModelTest {
     @Test
     fun revokeMedicalShouldIncludePastData_whenFitnessRead_returnsFalse() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    readHistoryDataPermission,
-                    readDataInBackgroundPermission,
-                    readImmunization,
-                    writeMedicalData,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readHistoryDataPermission.toString(),
+                    readDataInBackgroundPermission.toString(),
+                    readImmunization.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -2869,17 +2994,17 @@ class AppPermissionViewModelTest {
     fun revokeMedicalShouldIncludePastData_whenPastDataDeclared_andMedicalRead_andNoFitnessRead_returnsTrue() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-            whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
-                        readExercisePermission,
-                        readNutritionPermission,
-                        writeSleepPermission,
-                        writeDistancePermission,
-                        readHistoryDataPermission,
-                        readDataInBackgroundPermission,
-                        readImmunization,
-                        writeMedicalData,
+                        readExercisePermission.toString(),
+                        readNutritionPermission.toString(),
+                        writeSleepPermission.toString(),
+                        writeDistancePermission.toString(),
+                        readHistoryDataPermission.toString(),
+                        readDataInBackgroundPermission.toString(),
+                        readImmunization.toString(),
+                        writeMedicalData.toString(),
                     )
                 )
             getGrantedHealthPermissionsUseCase.updateData(
@@ -2904,16 +3029,16 @@ class AppPermissionViewModelTest {
     @Test
     fun revokeAllShouldIncludeBackground_whenBgNotDeclared_returnsFalse() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    readHistoryDataPermission,
-                    readImmunization,
-                    writeMedicalData,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readHistoryDataPermission.toString(),
+                    readImmunization.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -2936,16 +3061,17 @@ class AppPermissionViewModelTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun revokeAllShouldIncludeBackground_whenNoReadPermissionDeclared_returnsFalse() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    readDataInBackgroundPermission,
-                    readHistoryDataPermission,
-                    writeMedicalData,
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readDataInBackgroundPermission.toString(),
+                    readHistoryDataPermission.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -2965,15 +3091,15 @@ class AppPermissionViewModelTest {
     fun revokeAllShouldIncludeBackground_whenBgDeclared_andAtLeastOneReadPermissionDeclared_returnsTrue() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-            whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
-                        readNutritionPermission,
-                        writeSleepPermission,
-                        writeDistancePermission,
-                        readHistoryDataPermission,
-                        readDataInBackgroundPermission,
-                        writeMedicalData,
+                        readNutritionPermission.toString(),
+                        writeSleepPermission.toString(),
+                        writeDistancePermission.toString(),
+                        readHistoryDataPermission.toString(),
+                        readDataInBackgroundPermission.toString(),
+                        writeMedicalData.toString(),
                     )
                 )
             getGrantedHealthPermissionsUseCase.updateData(
@@ -2997,14 +3123,14 @@ class AppPermissionViewModelTest {
     @Test
     fun revokeAllShouldIncludePastData_whenPastDataNotDeclared_returnsFalse() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    readDataInBackgroundPermission,
-                    writeMedicalData,
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    readDataInBackgroundPermission.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -3025,16 +3151,17 @@ class AppPermissionViewModelTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun revokeAllShouldIncludePastData_whenNoReadFitnessPermissionDeclared_returnsFalse() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-            whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
-                        writeSleepPermission,
-                        writeDistancePermission,
-                        readHistoryDataPermission,
-                        writeMedicalData,
+                        writeSleepPermission.toString(),
+                        writeDistancePermission.toString(),
+                        readHistoryDataPermission.toString(),
+                        writeMedicalData.toString(),
                     )
                 )
             getGrantedHealthPermissionsUseCase.updateData(
@@ -3054,14 +3181,14 @@ class AppPermissionViewModelTest {
     fun revokeAllShouldIncludePastData_whenPastDataDeclared_andAtLeastOneReadFitnessPermissionDeclared_returnsTrue() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-            whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
-                        readNutritionPermission,
-                        writeSleepPermission,
-                        writeDistancePermission,
-                        readHistoryDataPermission,
-                        writeMedicalData,
+                        readNutritionPermission.toString(),
+                        writeSleepPermission.toString(),
+                        writeDistancePermission.toString(),
+                        readHistoryDataPermission.toString(),
+                        writeMedicalData.toString(),
                     )
                 )
             getGrantedHealthPermissionsUseCase.updateData(
@@ -3079,13 +3206,13 @@ class AppPermissionViewModelTest {
 
     private fun setupDeclaredAndGrantedFitnessPermissions() {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    writeSleepPermission,
-                    writeDistancePermission,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(
@@ -3096,15 +3223,15 @@ class AppPermissionViewModelTest {
 
     private fun setupDeclaredAndGrantedFitnessAndMedicalPermissions() {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
-                    readExercisePermission,
-                    readNutritionPermission,
-                    readImmunization,
-                    writeSleepPermission,
-                    writeDistancePermission,
-                    writeMedicalData,
+                    readExercisePermission.toString(),
+                    readNutritionPermission.toString(),
+                    readImmunization.toString(),
+                    writeSleepPermission.toString(),
+                    writeDistancePermission.toString(),
+                    writeMedicalData.toString(),
                 )
             )
         getGrantedHealthPermissionsUseCase.updateData(

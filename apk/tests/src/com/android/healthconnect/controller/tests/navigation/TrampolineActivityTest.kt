@@ -171,6 +171,9 @@ class TrampolineActivityTest {
         whenever(appPermissionViewModel.atLeastOneFitnessPermissionGranted).then {
             MediatorLiveData(true)
         }
+        whenever(appPermissionViewModel.atLeastOneHealthPermissionGranted).then {
+            MediatorLiveData(true)
+        }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
         whenever(appPermissionViewModel.loadAccessDate(anyString())).thenReturn(accessDate)
         whenever(appPermissionViewModel.lastReadPermissionDisconnected).then {

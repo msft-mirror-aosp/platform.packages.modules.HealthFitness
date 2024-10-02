@@ -27,16 +27,25 @@ data class AdditionalPermissionStrings(
     @StringRes val requestTitle: Int,
     @StringRes val requestDescription: Int,
     @StringRes val permissionDescriptionFallback: Int = 0,
-    @StringRes val requestDescriptionFallback: Int = 0
+    @StringRes val requestDescriptionFallback: Int = 0,
 ) {
 
     companion object {
         fun fromAdditionalPermission(
-            additionalPermission: HealthPermission.AdditionalPermission
+            additionalPermission: HealthPermission.AdditionalPermission,
+            hasMedicalPermissions: Boolean = false,
         ): AdditionalPermissionStrings {
-            return ADDITIONAL_PERMISSION_STRINGS[additionalPermission.additionalPermission]
-                ?: throw IllegalArgumentException(
-                    "No strings for additional permission $additionalPermission")
+            return if (hasMedicalPermissions) {
+                ADDITIONAL_PERMISSION_MEDICAL_STRINGS[additionalPermission.additionalPermission]
+                    ?: throw IllegalArgumentException(
+                        "No strings for additional permission $additionalPermission"
+                    )
+            } else {
+                ADDITIONAL_PERMISSION_STRINGS[additionalPermission.additionalPermission]
+                    ?: throw IllegalArgumentException(
+                        "No strings for additional permission $additionalPermission"
+                    )
+            }
         }
     }
 }
@@ -49,7 +58,9 @@ private val ADDITIONAL_PERMISSION_STRINGS: ImmutableMap<String, AdditionalPermis
                 R.string.background_read_title,
                 R.string.background_read_description,
                 R.string.background_read_request_title,
-                R.string.background_read_request_description))
+                R.string.background_read_request_description,
+            ),
+        )
         .put(
             HealthPermissions.READ_HEALTH_DATA_HISTORY,
             AdditionalPermissionStrings(
@@ -58,5 +69,32 @@ private val ADDITIONAL_PERMISSION_STRINGS: ImmutableMap<String, AdditionalPermis
                 R.string.historic_access_request_title,
                 R.string.historic_access_request_description,
                 R.string.historic_access_description_fallback,
-                R.string.historic_access_request_description_fallback))
+                R.string.historic_access_request_description_fallback,
+            ),
+        )
+        .buildOrThrow()
+
+private val ADDITIONAL_PERMISSION_MEDICAL_STRINGS:
+    ImmutableMap<String, AdditionalPermissionStrings> =
+    ImmutableMap.Builder<String, AdditionalPermissionStrings>()
+        .put(
+            HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
+            AdditionalPermissionStrings(
+                R.string.background_read_medical_title,
+                R.string.background_read_medical_description,
+                R.string.background_read_medical_request_title,
+                R.string.background_read_medical_request_description,
+            ),
+        )
+        .put(
+            HealthPermissions.READ_HEALTH_DATA_HISTORY,
+            AdditionalPermissionStrings(
+                R.string.historic_access_medical_title,
+                R.string.historic_access_medical_description,
+                R.string.historic_access_medical_request_title,
+                R.string.historic_access_medical_request_description,
+                R.string.historic_access_medical_description_fallback,
+                R.string.historic_access_medical_request_description_fallback,
+            ),
+        )
         .buildOrThrow()

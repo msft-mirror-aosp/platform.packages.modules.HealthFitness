@@ -213,5 +213,10 @@
     {
        "name": "CtsHealthFitnessDeviceTestCasesRateLimiter"
     }
+  ],
+  "postsubmit": [
+    {
+       "name": "CtsHealthFitnessPhrTestCases"
+    }
   ]
 }
