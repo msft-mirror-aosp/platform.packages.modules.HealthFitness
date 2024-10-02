@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.injector;
 
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
+
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
@@ -96,6 +98,12 @@ public abstract class HealthConnectInjector {
 
     /** Getter for ChangeLogsRequestHelper instance initialised by the Health Connect Injector. */
     public abstract ChangeLogsRequestHelper getChangeLogsRequestHelper();
+
+    /**
+     * Returns an instance of {@link HealthConnectMappings} initialised by the Health Connect
+     * Injector.
+     */
+    public abstract HealthConnectMappings getHealthConnectMappings();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {
