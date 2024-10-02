@@ -86,6 +86,7 @@ import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.DataOrigin;
+import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
@@ -2069,12 +2070,28 @@ public class HealthConnectManager {
      * Inserts or updates a list of {@link MedicalResource}s into the HealthConnect database using
      * {@link UpsertMedicalResourceRequest}.
      *
-     * <p>Medical data is represented using the <a href="https://hl7.org/fhir/">Fast Healthcare
-     * Interoperability Resources (FHIR)</a> standard.
-     *
      * <p>For each {@link UpsertMedicalResourceRequest}, one {@link MedicalResource} will be
      * returned.The returned list of {@link MedicalResource}s will be in the same order as the
      * {@code requests}.
+     *
+     * <p>Medical data is represented using the <a href="https://hl7.org/fhir/">Fast Healthcare
+     * Interoperability Resources (FHIR)</a> standard. The FHIR resource provided in {@link
+     * UpsertMedicalResourceRequest#getData()} is expected to be valid FHIR in JSON representation
+     * for the specified {@link UpsertMedicalResourceRequest#getFhirVersion()} according to the <a
+     * href="https://hl7.org/fhir/resourcelist.html">FHIR spec</a>.
+     *
+     * <p>Each {@link UpsertMedicalResourceRequest} also has to meet the following requirements.
+     *
+     * <ul>
+     *   <li>The FHIR resource contains an "id" and "resourceType" field.
+     *   <li>The FHIR resource type is in our accepted list of resource types. See {@link
+     *       FhirResource} for the accepted types.
+     *   <li>The resource can be mapped to one of the READ_MEDICAL_DATA_ {@link HealthPermissions}
+     *       categories.
+     *   <li>The {@link UpsertMedicalResourceRequest#getDataSourceId()} is valid.
+     *   <li>The {@link UpsertMedicalResourceRequest#getFhirVersion()} matches the {@link
+     *       FhirVersion} of the {@link MedicalDataSource}.
+     * </ul>
      *
      * <p>If any request is deemed invalid, the caller will receive an exception with code {@link
      * HealthConnectException#ERROR_INVALID_ARGUMENT} via {@code callback.onError()}, and none of
@@ -2163,6 +2180,11 @@ public class HealthConnectManager {
      *   <li>In all other cases the caller is not permitted to get the given medical resource and it
      *       will not be returned.
      * </ol>
+     *
+     * <p>Each returned {@link MedicalResource} has passed the Health Connect FHIR validation checks
+     * at write time, but is not guaranteed to meet all requirements of the <a
+     * href="https://hl7.org/fhir/resourcelist.html">Fast Healthcare Interoperability Resources
+     * (FHIR) spec</a>. If required, clients should perform their own checks on the data.
      *
      * @param ids Identifiers on which to perform read operation.
      * @param executor Executor on which to invoke the callback.
