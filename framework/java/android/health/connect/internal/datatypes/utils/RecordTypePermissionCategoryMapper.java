@@ -153,7 +153,11 @@ public final class RecordTypePermissionCategoryMapper {
                 };
     }
 
-    /** Returns {@link HealthDataCategory} for the input {@link RecordTypeIdentifier.RecordType}. */
+    /**
+     * Returns {@link HealthDataCategory} for the input {@link RecordTypeIdentifier.RecordType}.
+     *
+     * @deprecated Use {@link HealthConnectMappings#getHealthPermissionCategoryForRecordType(int)}.
+     */
     @SuppressLint("LongLogTag")
     @HealthPermissionCategory.Type
     public static int getHealthPermissionCategoryForRecordType(
