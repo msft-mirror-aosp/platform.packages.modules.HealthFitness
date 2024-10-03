@@ -84,25 +84,6 @@ public final class HealthConnectPermissionHelper {
             Set<String> healthPermissions,
             HealthPermissionIntentAppsTracker permissionIntentTracker,
             FirstGrantTimeManager firstGrantTimeManager,
-            AppInfoHelper appInfoHelper,
-            HealthConnectMappings healthConnectMappings) {
-        this(
-                context,
-                packageManager,
-                healthPermissions,
-                permissionIntentTracker,
-                firstGrantTimeManager,
-                HealthDataCategoryPriorityHelper.getInstance(),
-                appInfoHelper,
-                healthConnectMappings);
-    }
-
-    public HealthConnectPermissionHelper(
-            Context context,
-            PackageManager packageManager,
-            Set<String> healthPermissions,
-            HealthPermissionIntentAppsTracker permissionIntentTracker,
-            FirstGrantTimeManager firstGrantTimeManager,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             AppInfoHelper appInfoHelper,
             HealthConnectMappings healthConnectMappings) {
@@ -307,7 +288,7 @@ public final class HealthConnectPermissionHelper {
         if (mHealthConnectMappings.isWritePermission(permissionName)) {
             mHealthDataCategoryPriorityHelper.appendToPriorityList(
                     packageName,
-                    HealthPermissions.getHealthDataCategoryForWritePermission(permissionName),
+                    mHealthConnectMappings.getHealthDataCategoryForWritePermission(permissionName),
                     mContext,
                     /* isInactiveApp= */ false);
         }
@@ -317,7 +298,7 @@ public final class HealthConnectPermissionHelper {
         if (mHealthConnectMappings.isWritePermission(permissionName)) {
             mHealthDataCategoryPriorityHelper.maybeRemoveAppFromPriorityList(
                     packageName,
-                    HealthPermissions.getHealthDataCategoryForWritePermission(permissionName),
+                    mHealthConnectMappings.getHealthDataCategoryForWritePermission(permissionName),
                     this,
                     mContext.getUser());
         }
