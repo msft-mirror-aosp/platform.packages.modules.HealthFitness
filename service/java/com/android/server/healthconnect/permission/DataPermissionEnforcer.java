@@ -25,8 +25,8 @@ import android.content.AttributionSource;
 import android.content.Context;
 import android.health.connect.HealthPermissions;
 import android.health.connect.internal.datatypes.RecordInternal;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
-import android.health.connect.internal.datatypes.utils.RecordTypePermissionCategoryMapper;
 import android.permission.PermissionManager;
 import android.util.ArrayMap;
 import android.util.ArraySet;
@@ -50,15 +50,18 @@ public class DataPermissionEnforcer {
     private final Context mContext;
     private final HealthConnectDeviceConfigManager mDeviceConfigManager;
     private final RecordMapper mRecordMapper;
+    private final HealthConnectMappings mHealthConnectMappings;
 
     public DataPermissionEnforcer(
             PermissionManager permissionManager,
             Context context,
-            HealthConnectDeviceConfigManager deviceConfigManager) {
+            HealthConnectDeviceConfigManager deviceConfigManager,
+            HealthConnectMappings healthConnectMappings) {
         mPermissionManager = permissionManager;
         mContext = context;
         mDeviceConfigManager = deviceConfigManager;
         mRecordMapper = RecordMapper.getInstance();
+        mHealthConnectMappings = healthConnectMappings;
     }
 
     /** Enforces default write permissions for given recordTypeIds */
@@ -72,9 +75,9 @@ public class DataPermissionEnforcer {
             List<Integer> recordTypeIds, AttributionSource attributionSource) {
         for (Integer recordTypeId : recordTypeIds) {
             String permissionName =
-                    HealthPermissions.getHealthReadPermission(
-                            RecordTypePermissionCategoryMapper
-                                    .getHealthPermissionCategoryForRecordType(recordTypeId));
+                    mHealthConnectMappings.getHealthReadPermission(
+                            mHealthConnectMappings.getHealthPermissionCategoryForRecordType(
+                                    recordTypeId));
             enforceRecordPermission(
                     permissionName, attributionSource, recordTypeId, /* isReadPermission= */ true);
         }
@@ -219,9 +222,9 @@ public class DataPermissionEnforcer {
             List<Integer> recordTypeIds, AttributionSource attributionSource) {
         for (Integer recordTypeId : recordTypeIds) {
             String permissionName =
-                    HealthPermissions.getHealthWritePermission(
-                            RecordTypePermissionCategoryMapper
-                                    .getHealthPermissionCategoryForRecordType(recordTypeId));
+                    mHealthConnectMappings.getHealthWritePermission(
+                            mHealthConnectMappings.getHealthPermissionCategoryForRecordType(
+                                    recordTypeId));
             enforceRecordPermission(
                     permissionName, attributionSource, recordTypeId, /* isReadPermission= */ false);
         }
