@@ -194,6 +194,31 @@ public class RateLimiterTest {
         assertThat(thrown.getMessage()).contains("API call quota exceeded");
     }
 
+    @Test
+    @ApiTest(apis = {"android.health.connect#getMedicalDataSourcesByIds"})
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetMedicalDataSourcesByIds_readLimitExceeded_throws()
+            throws InterruptedException {
+        HealthConnectManager manager = TestUtils.getHealthConnectManager();
+        MedicalDataSource dataSource = createMedicalDataSource(manager);
+        // Make the maximum number of calls allowed by quota
+        int maximumCalls = MAX_FOREGROUND_READ_CALL_15M / mLimitsAdjustmentForTesting;
+        for (int i = 0; i < maximumCalls; i++) {
+            HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+            manager.getMedicalDataSources(
+                    List.of(dataSource.getId()), Executors.newSingleThreadExecutor(), receiver);
+            receiver.verifyNoExceptionOrThrow();
+        }
+
+        // Make 1 extra call and check quota is exceeded
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+        manager.getMedicalDataSources(
+                List.of(dataSource.getId()), Executors.newSingleThreadExecutor(), receiver);
+
+        HealthConnectException exception = receiver.assertAndGetException();
+        assertThat(exception.getMessage()).contains("API call quota exceeded");
+    }
+
     // TODO(b/370731291): Add rate limit tests for MemoryRollingQuota, and
     // calling from background.
 
@@ -609,14 +634,19 @@ public class RateLimiterTest {
         TestUtils.readRecords(request.build());
     }
 
-    private static MedicalResource upsertMedicalData(HealthConnectManager manager, String data)
+    private static MedicalDataSource createMedicalDataSource(HealthConnectManager manager)
             throws InterruptedException {
         HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
         manager.createMedicalDataSource(
                 PhrDataFactory.getCreateMedicalDataSourceRequest(),
                 Executors.newSingleThreadExecutor(),
                 createReceiver);
-        MedicalDataSource dataSource = createReceiver.getResponse();
+        return createReceiver.getResponse();
+    }
+
+    private static MedicalResource upsertMedicalData(HealthConnectManager manager, String data)
+            throws InterruptedException {
+        MedicalDataSource dataSource = createMedicalDataSource(manager);
         String dataSourceId = dataSource.getId();
         HealthConnectReceiver<List<MedicalResource>> dataReceiver = new HealthConnectReceiver<>();
         UpsertMedicalResourceRequest request =

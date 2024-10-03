@@ -67,6 +67,7 @@ import android.annotation.SystemApi;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.health.connect.datatypes.ExerciseRoute;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 
@@ -954,7 +955,9 @@ public final class HealthPermissions {
     /**
      * @return true if {@code permissionName} is a write-permission
      * @hide
+     * @deprecated use {@link HealthConnectMappings#isWritePermission(String)}
      */
+    @Deprecated
     public static boolean isWritePermission(@NonNull String permissionName) {
         Objects.requireNonNull(permissionName);
 

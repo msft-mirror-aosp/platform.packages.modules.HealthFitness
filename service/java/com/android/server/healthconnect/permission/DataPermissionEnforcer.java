@@ -234,7 +234,7 @@ public class DataPermissionEnforcer {
             boolean isReadPermission) {
         if (!isPermissionGranted(permissionName, attributionSource)) {
             String prohibitedAction =
-                    isReadPermission ? "to read to record type" : " to write to record type ";
+                    isReadPermission ? " to read to record type" : " to write to record type ";
             throw new SecurityException(
                     "Caller doesn't have "
                             + permissionName
