@@ -27,6 +27,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissions;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.Binder;
 import android.os.UserHandle;
 import android.util.ArrayMap;
@@ -64,6 +65,7 @@ public final class HealthConnectPermissionHelper {
     private final FirstGrantTimeManager mFirstGrantTimeManager;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     private final AppInfoHelper mAppInfoHelper;
+    private final HealthConnectMappings mHealthConnectMappings;
 
     /**
      * Constructs a {@link HealthConnectPermissionHelper}.
@@ -82,8 +84,28 @@ public final class HealthConnectPermissionHelper {
             Set<String> healthPermissions,
             HealthPermissionIntentAppsTracker permissionIntentTracker,
             FirstGrantTimeManager firstGrantTimeManager,
+            AppInfoHelper appInfoHelper,
+            HealthConnectMappings healthConnectMappings) {
+        this(
+                context,
+                packageManager,
+                healthPermissions,
+                permissionIntentTracker,
+                firstGrantTimeManager,
+                HealthDataCategoryPriorityHelper.getInstance(),
+                appInfoHelper,
+                healthConnectMappings);
+    }
+
+    public HealthConnectPermissionHelper(
+            Context context,
+            PackageManager packageManager,
+            Set<String> healthPermissions,
+            HealthPermissionIntentAppsTracker permissionIntentTracker,
+            FirstGrantTimeManager firstGrantTimeManager,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
-            AppInfoHelper appInfoHelper) {
+            AppInfoHelper appInfoHelper,
+            HealthConnectMappings healthConnectMappings) {
         mContext = context;
         mPackageManager = packageManager;
         mHealthPermissions = healthPermissions;
@@ -91,6 +113,7 @@ public final class HealthConnectPermissionHelper {
         mFirstGrantTimeManager = firstGrantTimeManager;
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
         mAppInfoHelper = appInfoHelper;
+        mHealthConnectMappings = healthConnectMappings;
     }
 
     /**
@@ -281,7 +304,7 @@ public final class HealthConnectPermissionHelper {
     }
 
     private void addToPriorityListIfRequired(String packageName, String permissionName) {
-        if (HealthPermissions.isWritePermission(permissionName)) {
+        if (mHealthConnectMappings.isWritePermission(permissionName)) {
             mHealthDataCategoryPriorityHelper.appendToPriorityList(
                     packageName,
                     HealthPermissions.getHealthDataCategoryForWritePermission(permissionName),
@@ -291,7 +314,7 @@ public final class HealthConnectPermissionHelper {
     }
 
     private void removeFromPriorityListIfRequired(String packageName, String permissionName) {
-        if (HealthPermissions.isWritePermission(permissionName)) {
+        if (mHealthConnectMappings.isWritePermission(permissionName)) {
             mHealthDataCategoryPriorityHelper.maybeRemoveAppFromPriorityList(
                     packageName,
                     HealthPermissions.getHealthDataCategoryForWritePermission(permissionName),

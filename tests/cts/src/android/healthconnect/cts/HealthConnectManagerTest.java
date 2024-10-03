@@ -2102,6 +2102,72 @@ public class HealthConnectManagerTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetMedicalDataSourcesById_nonExistentId_returnsEmptyList() throws Exception {
+        createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+
+        // Testing the case where there exists dataSources in HC, but the user is requesting
+        // a valid dataSource ID that does not exist in HC.
+        mManager.getMedicalDataSources(
+                List.of(DATA_SOURCE_ID), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetMedicalDataSourcesById_withManageHealthDataPerm_getsAll() throws Exception {
+        // Data written by a different app.
+        MedicalDataSource dataSource1 =
+                APP_WRITE_PERMS_ONLY.createMedicalDataSource(getCreateMedicalDataSourceRequest());
+        // Data written by the reading app itself.
+        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+
+        // If app has MANAGE_HEALTH_DATA permission, it should be able to read all dataSources.
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.getMedicalDataSources(
+                                List.of(dataSource1.getId(), dataSource2.getId()),
+                                Executors.newSingleThreadExecutor(),
+                                receiver),
+                MANAGE_HEALTH_DATA);
+
+        assertThat(receiver.getResponse()).containsExactly(dataSource1, dataSource2);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetMedicalDataSourcesById_someValidAndInvalidIds_throws() throws Exception {
+        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+
+        // A mix of valid and invalid ids are given.
+        mManager.getMedicalDataSources(
+                List.of(dataSource.getId(), "foo"), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetMedicalDataSourcesById_migrationInProgress_apiBlocked() throws Exception {
+        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+
+        startMigrationWithShellPermissionIdentity();
+        mManager.getMedicalDataSources(
+                List.of(dataSource.getId()), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
+
+        finishMigrationWithShellPermissionIdentity();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSourcesById_onePresentNoData_returnsItAndNullUpdateTime()
             throws Exception {
         HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
@@ -2636,6 +2702,7 @@ public class HealthConnectManagerTest {
                         .build();
 
         mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+
         assertThat(receiver.assertAndGetException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
     }
@@ -2655,6 +2722,26 @@ public class HealthConnectManagerTest {
                 new ReadMedicalResourcesPageRequest.Builder(pageToken).build();
 
         mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byRequest_emptyPageTokenInPageRequest_throws()
+            throws InterruptedException {
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        // Encode a page token according to PhrPageTokenWrapper#encode(), with medicalResourceType
+        // being MEDICAL_RESOURCE_TYPE_UNKNOWN.
+        Base64.Encoder encoder = Base64.getEncoder();
+        String pageToken = encoder.encodeToString("".getBytes());
+        ReadMedicalResourcesPageRequest request =
+                new ReadMedicalResourcesPageRequest.Builder(pageToken).build();
+
+        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+
         assertThat(receiver.assertAndGetException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
     }
@@ -2670,6 +2757,26 @@ public class HealthConnectManagerTest {
                         .build();
 
         mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+
+        ReadMedicalResourcesResponse response = receiver.getResponse();
+        assertThat(response.getMedicalResources()).isEmpty();
+        assertThat(response.getNextPageToken()).isNull();
+        assertThat(response.getRemainingCount()).isEqualTo(0);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byRequest_noDataForResourceTypeAndDataSource_ReturnsEmpty()
+            throws InterruptedException {
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .addDataSourceId(UUID.randomUUID().toString())
+                        .build();
+
+        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+
         ReadMedicalResourcesResponse response = receiver.getResponse();
         assertThat(response.getMedicalResources()).isEmpty();
         assertThat(response.getNextPageToken()).isNull();
@@ -2680,10 +2787,9 @@ public class HealthConnectManagerTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_filtersByMedicalResourceType()
             throws InterruptedException {
-        // Create two data sources.
+        // Given we have three Immunizations and one Allergy in two data sources
         MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
-        // Insert 3 Immunizations and 1 Allergy.
         MedicalResource immunization1 =
                 upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource immunization2 =
@@ -2691,22 +2797,20 @@ public class HealthConnectManagerTest {
         MedicalResource immunization3 =
                 upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
         upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
-        // Read all Immunizations in 2 pages.
+
+        // When we read immunizations with a page size of 2 and use the nextPageToken to read
+        // remaining immunizations
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest allImmunizationsRequest =
                 new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .setPageSize(2)
                         .build();
-
         mManager.readMedicalResources(
                 allImmunizationsRequest, Executors.newSingleThreadExecutor(), receiver1);
 
-        assertThat(receiver1.getResponse().getMedicalResources())
-                .containsExactly(immunization1, immunization2);
         String nextPageToken = receiver1.getResponse().getNextPageToken();
         assertThat(nextPageToken).isNotEmpty();
-        assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
 
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
                 new HealthConnectReceiver<>();
@@ -2714,6 +2818,12 @@ public class HealthConnectManagerTest {
                 new ReadMedicalResourcesPageRequest.Builder(nextPageToken).build(),
                 Executors.newSingleThreadExecutor(),
                 receiver2);
+
+        // Then the response gives two pages containing immunizations only, with page token 1
+        // linking to page 2
+        assertThat(receiver1.getResponse().getMedicalResources())
+                .containsExactly(immunization1, immunization2);
+        assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
 
         assertThat(receiver2.getResponse().getMedicalResources()).containsExactly(immunization3);
         assertThat(receiver2.getResponse().getNextPageToken()).isNull();
@@ -2724,17 +2834,16 @@ public class HealthConnectManagerTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_filtersByMedicalResourceTypeAndOneDataSource()
             throws InterruptedException {
-        // Create two data sources.
+        // Given we have three Immunizations in two data sources
         MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
-        // Insert 3 Immunizations and 1 Allergy.
         MedicalResource immunization1FromDataSource1 =
                 upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource immunization2FromDataSource1 =
                 upsertMedicalData(dataSource1.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
         upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
-        upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
-        // Read Immunizations only from data source 1 in 2 pages.
+
+        // When we read Immunizations only from data source 1 in 2 pages.
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest immunizationsFromDataSource1Request =
@@ -2742,17 +2851,13 @@ public class HealthConnectManagerTest {
                         .addDataSourceId(dataSource1.getId())
                         .setPageSize(1)
                         .build();
-
         mManager.readMedicalResources(
                 immunizationsFromDataSource1Request,
                 Executors.newSingleThreadExecutor(),
                 receiver1);
 
-        assertThat(receiver1.getResponse().getMedicalResources())
-                .containsExactly(immunization1FromDataSource1);
         String nextPageToken = receiver1.getResponse().getNextPageToken();
         assertThat(nextPageToken).isNotEmpty();
-        assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
 
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
                 new HealthConnectReceiver<>();
@@ -2760,6 +2865,11 @@ public class HealthConnectManagerTest {
                 new ReadMedicalResourcesPageRequest.Builder(nextPageToken).build(),
                 Executors.newSingleThreadExecutor(),
                 receiver2);
+
+        // Then the response gives two pages with results filtered by Immunization and data source 1
+        assertThat(receiver1.getResponse().getMedicalResources())
+                .containsExactly(immunization1FromDataSource1);
+        assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
 
         assertThat(receiver2.getResponse().getMedicalResources())
                 .containsExactly(immunization2FromDataSource1);
@@ -2770,16 +2880,16 @@ public class HealthConnectManagerTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_filtersByMedicalResourceTypeAndBothDataSources()
             throws InterruptedException {
-        // Create two data sources.
+        // Given we have two Immunizations and one Allergy in two data sources
         MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
         MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
-        // Insert 2 Immunizations and 1 Allergy.
         MedicalResource immunizationFromDataSource1 =
                 upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource immunizationFromDataSource2 =
                 upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
         upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
-        // Read Immunizations only from both data sources in 2 pages.
+
+        // When we read Immunizations only from both data sources in 2 pages
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
                 new HealthConnectReceiver<>();
         ReadMedicalResourcesInitialRequest immunizationsFromBothDataSourcesRequest =
@@ -2788,17 +2898,13 @@ public class HealthConnectManagerTest {
                         .addDataSourceId(dataSource2.getId())
                         .setPageSize(1)
                         .build();
-
         mManager.readMedicalResources(
                 immunizationsFromBothDataSourcesRequest,
                 Executors.newSingleThreadExecutor(),
                 receiver1);
 
-        assertThat(receiver1.getResponse().getMedicalResources())
-                .containsExactly(immunizationFromDataSource1);
         String nextPageToken = receiver1.getResponse().getNextPageToken();
         assertThat(nextPageToken).isNotEmpty();
-        assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
 
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
                 new HealthConnectReceiver<>();
@@ -2807,9 +2913,216 @@ public class HealthConnectManagerTest {
                 Executors.newSingleThreadExecutor(),
                 receiver2);
 
+        // Then we receive 2 pages containing Immunizations from both data sources with page token
+        // 1 linking to page 2
+        assertThat(receiver1.getResponse().getMedicalResources())
+                .containsExactly(immunizationFromDataSource1);
+        assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
+
         assertThat(receiver2.getResponse().getMedicalResources())
                 .containsExactly(immunizationFromDataSource2);
         assertThat(receiver2.getResponse().getNextPageToken()).isNull();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byRequest_hasManagementPermission_succeeds()
+            throws InterruptedException {
+        // Given we have two Immunizations in one data source
+        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalResource immunization1 =
+                upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource immunization2 =
+                upsertMedicalData(dataSource.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+
+        // When we read Immunizations with MANAGE_HEALTH_DATA permission in 2 pages
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest immunizationsRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setPageSize(1)
+                        .build();
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.readMedicalResources(
+                                immunizationsRequest,
+                                Executors.newSingleThreadExecutor(),
+                                receiver1),
+                MANAGE_HEALTH_DATA);
+
+        String nextPageToken = receiver1.getResponse().getNextPageToken();
+        assertThat(nextPageToken).isNotEmpty();
+
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
+                new HealthConnectReceiver<>();
+        SystemUtil.runWithShellPermissionIdentity(
+                () ->
+                        mManager.readMedicalResources(
+                                new ReadMedicalResourcesPageRequest.Builder(nextPageToken).build(),
+                                Executors.newSingleThreadExecutor(),
+                                receiver2),
+                MANAGE_HEALTH_DATA);
+
+        // The we receive two pages containing all immunizations, with page token 1 linking to page
+        // 2
+        assertThat(receiver2.getResponse().getMedicalResources()).containsExactly(immunization2);
+        assertThat(receiver2.getResponse().getNextPageToken()).isNull();
+
+        assertThat(receiver1.getResponse().getMedicalResources()).containsExactly(immunization1);
+        assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byRequest_setPageSizeOnPageRequest_succeeds()
+            throws InterruptedException {
+        // Given we have six Immunizations in three data source
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
+        MedicalDataSource dataSource3 = createDataSource(getCreateMedicalDataSourceRequest("3"));
+        upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        upsertMedicalData(dataSource1.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
+        upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        upsertMedicalData(dataSource3.getId(), FHIR_DATA_IMMUNIZATION);
+        upsertMedicalData(dataSource3.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+
+        // When we read all immunizations in two pages and specify a page size on the page request
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest immunizationsRequestWithPageSize1 =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setPageSize(1)
+                        .build();
+        mManager.readMedicalResources(
+                immunizationsRequestWithPageSize1, Executors.newSingleThreadExecutor(), receiver1);
+
+        String nextPageToken = receiver1.getResponse().getNextPageToken();
+        assertThat(nextPageToken).isNotEmpty();
+
+        ReadMedicalResourcesPageRequest pageRequestWithPageSize2 =
+                new ReadMedicalResourcesPageRequest.Builder(nextPageToken).setPageSize(2).build();
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
+                new HealthConnectReceiver<>();
+        mManager.readMedicalResources(
+                pageRequestWithPageSize2, Executors.newSingleThreadExecutor(), receiver2);
+
+        // Then we receive two pages, with the correct page size
+        assertThat(receiver1.getResponse().getMedicalResources()).hasSize(1);
+        assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(5);
+
+        assertThat(receiver2.getResponse().getMedicalResources()).hasSize(2);
+        assertThat(receiver2.getResponse().getNextPageToken()).isNotEmpty();
+        assertThat(receiver2.getResponse().getRemainingCount()).isEqualTo(3);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byRequest_dataDeletedAfterInitialRequest_correctRemaining()
+            throws InterruptedException {
+        // Given we have three Immunizations in two data source
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
+        MedicalResource resource1 = upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource resource2 =
+                upsertMedicalData(dataSource1.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        MedicalResource resource3 = upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
+
+        // When we read the first Immunization and then delete all Immunizations
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest immunizationsRequestWithPageSize1 =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setPageSize(1)
+                        .build();
+        mManager.readMedicalResources(
+                immunizationsRequestWithPageSize1, Executors.newSingleThreadExecutor(), receiver1);
+
+        String nextPageToken = receiver1.getResponse().getNextPageToken();
+        assertThat(nextPageToken).isNotEmpty();
+
+        deleteResources(List.of(resource1.getId(), resource2.getId(), resource3.getId()));
+
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
+                new HealthConnectReceiver<>();
+        mManager.readMedicalResources(
+                new ReadMedicalResourcesPageRequest.Builder(nextPageToken).build(),
+                Executors.newSingleThreadExecutor(),
+                receiver2);
+
+        // Then the second page read will return no immunizations with 0 remaining
+        assertThat(receiver1.getResponse().getMedicalResources()).hasSize(1);
+        assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(2);
+
+        assertThat(receiver2.getResponse().getMedicalResources()).hasSize(0);
+        assertThat(receiver2.getResponse().getNextPageToken()).isNull();
+        assertThat(receiver2.getResponse().getRemainingCount()).isEqualTo(0);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byRequest_dataAddedAfterInitialRequest_correctRemaining()
+            throws InterruptedException {
+        // Given we have two Immunizations in two data source
+        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
+        upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        upsertMedicalData(dataSource1.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+
+        // When we read the first Immunization and then insert two moreImmunizations
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver1 =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest immunizationsRequestWithPageSize1 =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .setPageSize(1)
+                        .build();
+        mManager.readMedicalResources(
+                immunizationsRequestWithPageSize1, Executors.newSingleThreadExecutor(), receiver1);
+
+        String nextPageToken = receiver1.getResponse().getNextPageToken();
+        assertThat(nextPageToken).isNotEmpty();
+
+        upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
+        upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver2 =
+                new HealthConnectReceiver<>();
+        mManager.readMedicalResources(
+                new ReadMedicalResourcesPageRequest.Builder(nextPageToken).setPageSize(1).build(),
+                Executors.newSingleThreadExecutor(),
+                receiver2);
+
+        // Then the second page read will reflect the updated number of immunizations
+        assertThat(receiver1.getResponse().getMedicalResources()).hasSize(1);
+        assertThat(receiver1.getResponse().getRemainingCount()).isEqualTo(1);
+
+        assertThat(receiver2.getResponse().getMedicalResources()).hasSize(1);
+        assertThat(receiver2.getResponse().getNextPageToken()).isNotNull();
+        assertThat(receiver2.getResponse().getRemainingCount()).isEqualTo(2);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byRequest_onlyWritePermission_FiltersByOwnResources()
+            throws Exception {
+        MedicalDataSource dataSourceOwnPackage =
+                createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalDataSource dataSourceDifferentPackage =
+                APP_WRITE_PERMS_ONLY.createMedicalDataSource(getCreateMedicalDataSourceRequest());
+        MedicalResource ownImmunization =
+                upsertMedicalData(dataSourceOwnPackage.getId(), FHIR_DATA_IMMUNIZATION);
+        APP_WRITE_PERMS_ONLY.upsertMedicalResource(
+                dataSourceDifferentPackage.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        ReadMedicalResourcesInitialRequest allImmunizationsRequest =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .build();
+
+        mManager.readMedicalResources(
+                allImmunizationsRequest, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse().getMedicalResources()).containsExactly(ownImmunization);
     }
 
     @Test
@@ -3557,6 +3870,13 @@ public class HealthConnectManagerTest {
         mManager.createMedicalDataSource(
                 createRequest, Executors.newSingleThreadExecutor(), createReceiver);
         return createReceiver.getResponse();
+    }
+
+    private void deleteResources(List<MedicalResourceId> resourceIds) throws InterruptedException {
+        HealthConnectReceiver<Void> deleteReceiver = new HealthConnectReceiver<>();
+        mManager.deleteMedicalResources(
+                resourceIds, Executors.newSingleThreadExecutor(), deleteReceiver);
+        deleteReceiver.verifyNoExceptionOrThrow();
     }
 
     private MedicalResource upsertMedicalData(String dataSourceId, String data)
