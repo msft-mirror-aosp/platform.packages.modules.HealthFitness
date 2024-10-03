@@ -43,6 +43,7 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.UserHandle;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -145,7 +146,8 @@ public class HealthDataCategoryPriorityHelperTest {
                         mTransactionManager,
                         mHealthConnectDeviceConfigManager,
                         mPreferenceHelper,
-                        mPackageInfoUtils);
+                        mPackageInfoUtils,
+                        new HealthConnectMappings());
         // Clear data in case the singleton is already initialised.
         mHealthDataCategoryPriorityHelper.clearData(mTransactionManager);
         mContext = InstrumentationRegistry.getInstrumentation().getContext();

@@ -17,6 +17,7 @@
 package com.android.server.healthconnect.injector;
 
 import android.content.Context;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 
 import androidx.annotation.Nullable;
 
@@ -61,6 +62,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final AppInfoHelper mAppInfoHelper;
     private final AccessLogsHelper mAccessLogsHelper;
     private final ActivityDateHelper mActivityDateHelper;
+    private final HealthConnectMappings mHealthConnectMappings;
     private final ChangeLogsHelper mChangeLogsHelper;
     private final ChangeLogsRequestHelper mChangeLogsRequestHelper;
 
@@ -91,6 +93,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mPreferenceHelper == null
                         ? PreferenceHelper.getInstance(mTransactionManager)
                         : builder.mPreferenceHelper;
+        mHealthConnectMappings = new HealthConnectMappings();
         mHealthDataCategoryPriorityHelper =
                 builder.mHealthDataCategoryPriorityHelper == null
                         ? HealthDataCategoryPriorityHelper.getInstance(
@@ -98,7 +101,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 mTransactionManager,
                                 mHealthConnectDeviceConfigManager,
                                 mPreferenceHelper,
-                                mPackageInfoUtils)
+                                mPackageInfoUtils,
+                                mHealthConnectMappings)
                         : builder.mHealthDataCategoryPriorityHelper;
         mPriorityMigrationHelper =
                 builder.mPriorityMigrationHelper == null
@@ -219,6 +223,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     @Override
     public ChangeLogsRequestHelper getChangeLogsRequestHelper() {
         return mChangeLogsRequestHelper;
+    }
+
+    @Override
+    public HealthConnectMappings getHealthConnectMappings() {
+        return mHealthConnectMappings;
     }
 
     /**

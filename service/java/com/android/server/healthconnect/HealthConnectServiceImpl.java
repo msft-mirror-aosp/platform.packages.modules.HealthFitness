@@ -628,7 +628,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             mHealthDataCategoryPriorityHelper,
                                             mTransactionManager,
                                             startDateAccess)
-                                    .getAggregateDataResponseParcel(mAccessLogsHelper));
+                                    .getAggregateDataResponseParcel(
+                                            mAccessLogsHelper,
+                                            /* shouldRecordAccessLog= */
+                                            !holdsDataManagementPermission));
                     logger.setDataTypesFromRecordTypes(recordTypesToTest)
                             .setHealthDataServiceApiStatusSuccess();
                 },
@@ -764,7 +767,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             readTransactionRequest,
                                             mAppInfoHelper,
                                             mAccessLogsHelper,
-                                            mDeviceInfoHelper);
+                                            mDeviceInfoHelper,
+                                            /* shouldRecordAccessLog= */
+                                            !holdsDataManagementPermission);
                             pageToken = DEFAULT_LONG;
                         } else {
                             Pair<List<RecordInternal<?>>, PageTokenWrapper> readRecordsResponse =
@@ -772,7 +777,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             readTransactionRequest,
                                             mAppInfoHelper,
                                             mAccessLogsHelper,
-                                            mDeviceInfoHelper);
+                                            mDeviceInfoHelper,
+                                            /* shouldRecordDeleteAccessLogs= */
+                                            !holdsDataManagementPermission);
                             records = readRecordsResponse.first;
                             pageToken = readRecordsResponse.second.encode();
                         }
@@ -1049,7 +1056,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             isReadingSelfData),
                                     mAppInfoHelper,
                                     mAccessLogsHelper,
-                                    mDeviceInfoHelper);
+                                    mDeviceInfoHelper,
+                                    /* shouldRecordAccessLog= */ true);
 
                     List<DeletedLog> deletedLogs =
                             ChangeLogsHelper.getDeletedLogs(changeLogsResponse.getChangeLogsMap());
