@@ -19,6 +19,7 @@ package com.android.server.healthconnect;
 import android.annotation.Nullable;
 import android.content.Context;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.health.connect.ratelimiter.RateLimiter;
 import android.os.Process;
 import android.os.UserHandle;
@@ -127,6 +128,8 @@ public class HealthConnectManagerService extends SystemService {
         ChangeLogsHelper changeLogsHelper;
         ChangeLogsRequestHelper changeLogsRequestHelper;
 
+        HealthConnectMappings healthConnectMappings;
+
         if (Flags.dependencyInjection()) {
             Objects.requireNonNull(mHealthConnectInjector);
             appInfoHelper = mHealthConnectInjector.getAppInfoHelper();
@@ -144,6 +147,7 @@ public class HealthConnectManagerService extends SystemService {
                             mHealthConnectInjector.getPackageInfoUtils(),
                             healthDataCategoryPriorityHelper,
                             mMigrationStateManager);
+            healthConnectMappings = mHealthConnectInjector.getHealthConnectMappings();
             permissionHelper =
                     new HealthConnectPermissionHelper(
                             context,
@@ -152,7 +156,8 @@ public class HealthConnectManagerService extends SystemService {
                             permissionIntentTracker,
                             firstGrantTimeManager,
                             healthDataCategoryPriorityHelper,
-                            appInfoHelper);
+                            appInfoHelper,
+                            healthConnectMappings);
             mPermissionPackageChangesOrchestrator =
                     new PermissionPackageChangesOrchestrator(
                             permissionIntentTracker,
@@ -181,6 +186,7 @@ public class HealthConnectManagerService extends SystemService {
                             PackageInfoUtils.getInstance(),
                             healthDataCategoryPriorityHelper,
                             mMigrationStateManager);
+            healthConnectMappings = new HealthConnectMappings();
             permissionHelper =
                     new HealthConnectPermissionHelper(
                             context,
@@ -189,7 +195,8 @@ public class HealthConnectManagerService extends SystemService {
                             permissionIntentTracker,
                             firstGrantTimeManager,
                             healthDataCategoryPriorityHelper,
-                            appInfoHelper);
+                            appInfoHelper,
+                            healthConnectMappings);
             mPermissionPackageChangesOrchestrator =
                     new PermissionPackageChangesOrchestrator(
                             permissionIntentTracker,
