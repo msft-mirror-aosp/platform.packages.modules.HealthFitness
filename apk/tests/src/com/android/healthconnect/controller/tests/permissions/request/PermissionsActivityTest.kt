@@ -909,6 +909,7 @@ class PermissionsActivityTest {
 
     @Test
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @Ignore("b/363994647 - flaky rotation test")
     fun requestFitnessAndAdditionalPermissions_userFixSomeFitness_onRotate_showsAdditional() {
         val startActivityIntent =
             getPermissionScreenIntent(
