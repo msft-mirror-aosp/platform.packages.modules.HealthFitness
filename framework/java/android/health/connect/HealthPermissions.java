@@ -992,8 +992,12 @@ public final class HealthPermissions {
         return sDataCategoryToWritePermissionsMap.getOrDefault(dataCategory, new String[] {});
     }
 
-    /** @hide */
+    /**
+     * @deprecated Use {@link HealthConnectMappings#getHealthReadPermission(int)}.
+     * @hide
+     */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    @Deprecated
     public static String getHealthReadPermission(
             @HealthPermissionCategory.Type int permissionCategory) {
         if (sHealthCategoryToReadPermissionMap.isEmpty()) {
@@ -1003,7 +1007,11 @@ public final class HealthPermissions {
         return sHealthCategoryToReadPermissionMap.get(permissionCategory);
     }
 
-    /** @hide */
+    /**
+     * @deprecated Use {@link HealthConnectMappings#getHealthWritePermission(int)}.
+     * @hide
+     */
+    @Deprecated
     public static String getHealthWritePermission(
             @HealthPermissionCategory.Type int permissionCategory) {
         if (sHealthCategoryToWritePermissionMap.isEmpty()) {
