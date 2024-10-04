@@ -258,7 +258,8 @@ public class HealthConnectManagerService extends SystemService {
                         healthDataCategoryPriorityHelper,
                         activityDateHelper,
                         changeLogsHelper,
-                        changeLogsRequestHelper);
+                        changeLogsRequestHelper,
+                        healthConnectMappings);
     }
 
     @Override
