@@ -44,6 +44,8 @@
   <string name="request_additional_permissions">Request Additional Permissions</string>
   <string name="request_bg_read_permission">Request Background Read</string>
   <string name="request_history_read_permission">Request History Read</string>
+  <string name="request_medical_write">Request Medical Write</string>
+  <string name="request_medical_write_and_other_health_permissions">Request Medical Write + Other Health</string>
   <string name="toast_permission_filter_enabled">Intent Filter Enabled</string>
   <string name="toast_permission_filter_disabled">Intent Filter Disabled</string>
   <string name="toast_seed_data_success">Data inserted successfully</string>

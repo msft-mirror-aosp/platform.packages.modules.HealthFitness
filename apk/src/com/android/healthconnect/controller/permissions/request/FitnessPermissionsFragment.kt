@@ -96,7 +96,7 @@ class FitnessPermissionsFragment : Hilt_FitnessPermissionsFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         logger.setPageId(pageName)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -123,21 +123,17 @@ class FitnessPermissionsFragment : Hilt_FitnessPermissionsFragment() {
             writePermissionCategory?.title =
                 getString(R.string.write_permission_category, app.appName)
         }
-        viewModel.healthPermissionsList.observe(viewLifecycleOwner) { allPermissions ->
-            val fitnessPermissions =
-                allPermissions.filterIsInstance<HealthPermission.FitnessPermission>()
-            val additionalPermissions =
-                allPermissions.filterIsInstance<HealthPermission.AdditionalPermission>()
 
+        viewModel.fitnessPermissionsList.observe(viewLifecycleOwner) { fitnessPermissions ->
             updateDataList(fitnessPermissions)
             setupAllowAll()
 
-            setupAllowButton(additionalPermissions.isNotEmpty())
+            setupAllowButton()
             setupDontAllowButton()
         }
     }
 
-    private fun setupAllowButton(isCombinedPermissionRequest: Boolean) {
+    private fun setupAllowButton() {
         logger.logImpression(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
 
         if (!viewModel.isFitnessPermissionRequestConcluded()) {
@@ -146,29 +142,14 @@ class FitnessPermissionsFragment : Hilt_FitnessPermissionsFragment() {
             }
         }
 
-        if (isCombinedPermissionRequest) {
-            getAllowButton().setOnClickListener {
-                viewModel.setFitnessPermissionRequestConcluded(true)
-                // When fitness permissions are concluded we need to
-                // grant/revoke only the fitness permissions, to trigger the
-                // access date. We can't request all at once because we might accidentally
-                // set the additional permissions USER_FIXED
-                viewModel.requestFitnessPermissions(getPackageNameExtra())
-                logger.logInteraction(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
-                // navigate to additional permissions
-                requireActivity()
-                    .supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.permission_content, AdditionalPermissionsFragment())
-                    .commit()
-            }
-        } else {
-            // Just health permissions
-            getAllowButton().setOnClickListener {
-                logger.logInteraction(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
-                viewModel.requestFitnessPermissions(getPackageNameExtra())
-                this.handlePermissionResults(viewModel.getPermissionGrants())
-            }
+        getAllowButton().setOnClickListener {
+            viewModel.setFitnessPermissionRequestConcluded(true)
+            // When fitness permissions are concluded we need to
+            // grant/revoke only the fitness permissions, to trigger the
+            // access date. We can't request all at once because we might accidentally
+            // set the additional permissions USER_FIXED
+            viewModel.requestFitnessPermissions(getPackageNameExtra())
+            logger.logInteraction(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
         }
     }
 
@@ -176,10 +157,10 @@ class FitnessPermissionsFragment : Hilt_FitnessPermissionsFragment() {
         logger.logImpression(PermissionsElement.CANCEL_PERMISSIONS_BUTTON)
 
         getDontAllowButton().setOnClickListener {
+            viewModel.setFitnessPermissionRequestConcluded(true)
             logger.logInteraction(PermissionsElement.CANCEL_PERMISSIONS_BUTTON)
             viewModel.updateFitnessPermissions(false)
             viewModel.requestFitnessPermissions(getPackageNameExtra())
-            handlePermissionResults(viewModel.getPermissionGrants())
         }
     }
 
@@ -203,16 +184,19 @@ class FitnessPermissionsFragment : Hilt_FitnessPermissionsFragment() {
                 requireContext()
                     .getString(
                         FitnessPermissionStrings.fromPermissionType(it.fitnessPermissionType)
-                            .uppercaseLabel)
+                            .uppercaseLabel
+                    )
             }
             .forEach { permission ->
                 val value = viewModel.isPermissionLocallyGranted(permission)
                 if (PermissionsAccessType.READ == permission.permissionsAccessType) {
                     readPermissionCategory?.addPreference(
-                        getPermissionPreference(value, permission))
+                        getPermissionPreference(value, permission)
+                    )
                 } else if (PermissionsAccessType.WRITE == permission.permissionsAccessType) {
                     writePermissionCategory?.addPreference(
-                        getPermissionPreference(value, permission))
+                        getPermissionPreference(value, permission)
+                    )
                 }
             }
 
@@ -222,17 +206,19 @@ class FitnessPermissionsFragment : Hilt_FitnessPermissionsFragment() {
 
     private fun getPermissionPreference(
         defaultValue: Boolean,
-        permission: HealthPermission.FitnessPermission
+        permission: HealthPermission.FitnessPermission,
     ): Preference {
         return HealthSwitchPreference(requireContext()).also {
             val healthCategory =
                 HealthDataCategoryExtensions.fromFitnessPermissionType(
-                    permission.fitnessPermissionType)
+                    permission.fitnessPermissionType
+                )
             it.icon = healthCategory.icon(requireContext())
             it.setDefaultValue(defaultValue)
             it.setTitle(
                 FitnessPermissionStrings.fromPermissionType(permission.fitnessPermissionType)
-                    .uppercaseLabel)
+                    .uppercaseLabel
+            )
             it.logNameActive = PermissionsElement.PERMISSION_SWITCH
             it.logNameInactive = PermissionsElement.PERMISSION_SWITCH
             it.setOnPreferenceChangeListener { _, newValue ->
