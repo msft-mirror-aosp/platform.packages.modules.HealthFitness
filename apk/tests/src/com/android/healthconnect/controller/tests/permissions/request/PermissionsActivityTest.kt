@@ -38,7 +38,6 @@ import android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_CONDITIONS
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS
-import android.health.connect.HealthPermissions.READ_SKIN_TEMPERATURE
 import android.health.connect.HealthPermissions.READ_SLEEP
 import android.health.connect.HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED
 import android.health.connect.HealthPermissions.WRITE_EXERCISE
@@ -775,7 +774,7 @@ class PermissionsActivityTest {
         val startActivityIntent = getPermissionScreenIntent(permissions)
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
 
-        onView(withText("Access past data")).perform(click())
+        onView(withText("Access past fitness and wellness data")).perform(click())
         onView(withText("Allow")).perform(click())
         assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_OK)
         val returnedIntent = scenario.result.resultData
@@ -801,7 +800,7 @@ class PermissionsActivityTest {
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
 
         // This should not be granted even if it's toggled on
-        onView(withText("Access past data")).perform(click())
+        onView(withText("Access past fitness and wellness data")).perform(click())
         onView(withText("Don't allow")).perform(click())
         assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_OK)
         val returnedIntent = scenario.result.resultData
