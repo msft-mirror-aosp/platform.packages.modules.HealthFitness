@@ -1239,7 +1239,6 @@ package android.health.connect.datatypes {
     field public static final int MEDICAL_RESOURCE_TYPE_PREGNANCY = 3; // 0x3
     field public static final int MEDICAL_RESOURCE_TYPE_PROCEDURES = 8; // 0x8
     field public static final int MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY = 4; // 0x4
-    field public static final int MEDICAL_RESOURCE_TYPE_UNKNOWN = 0; // 0x0
     field public static final int MEDICAL_RESOURCE_TYPE_VISITS = 12; // 0xc
     field public static final int MEDICAL_RESOURCE_TYPE_VITAL_SIGNS = 5; // 0x5
   }
