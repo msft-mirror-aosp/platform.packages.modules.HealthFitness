@@ -267,51 +267,36 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"చర్మం ఉష్ణోగ్రత"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"చర్మం ఉష్ణోగ్రతను చదవండి"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"చర్మం ఉష్ణోగ్రత గురించి రాయండి"</string>
-    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"మొత్తం మెడికల్ డేటా"</string>
-    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"మొత్తం మెడికల్ డేటా"</string>
-    <string name="all_medical_data_content_description" msgid="6103488863059447886">"మొత్తం మెడికల్ డేటా గురించిన సమాచారాన్ని రాయండి"</string>
+    <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"హెల్త్ రికార్డ్‌లన్నీ"</string>
+    <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"హెల్త్ రికార్డ్‌లన్నీ"</string>
+    <string name="all_medical_data_content_description" msgid="4846586780533295022">"హెల్త్ రికార్డ్‌లన్నింటినీ రాయండి"</string>
     <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"అలర్జీలు"</string>
     <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"అలర్జీలు"</string>
     <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"అలర్జీల డేటాను చదువుతుంది"</string>
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"రోగ నిరోధకత సమాచారం"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"రోగ నిరోధకత సమాచారం"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"రోగ నిరోధకత సమాచారాన్ని చదవండి"</string>
-    <!-- no translation found for laboratory_results_uppercase_label (2521886562709901654) -->
-    <skip />
-    <!-- no translation found for laboratory_results_lowercase_label (6437932041744631964) -->
-    <skip />
-    <!-- no translation found for laboratory_results_content_description (5882338877203692484) -->
-    <skip />
-    <!-- no translation found for pregnancy_uppercase_label (5979925175194337864) -->
-    <skip />
-    <!-- no translation found for pregnancy_lowercase_label (810439290131044517) -->
-    <skip />
-    <!-- no translation found for pregnancy_content_description (3436773729243586287) -->
-    <skip />
-    <!-- no translation found for problems_uppercase_label (4047882613795113715) -->
-    <skip />
-    <!-- no translation found for problems_lowercase_label (6934298611508910866) -->
-    <skip />
-    <!-- no translation found for problems_content_description (1549418294742668962) -->
-    <skip />
-    <!-- no translation found for procedures_uppercase_label (9176087520132593261) -->
-    <skip />
-    <!-- no translation found for procedures_lowercase_label (5320804313946273234) -->
-    <skip />
-    <!-- no translation found for procedures_content_description (1086900373141440005) -->
-    <skip />
-    <!-- no translation found for social_history_uppercase_label (1731364502071035544) -->
-    <skip />
-    <!-- no translation found for social_history_lowercase_label (9027541979445736412) -->
-    <skip />
-    <!-- no translation found for social_history_content_description (7187059309389849831) -->
-    <skip />
-    <!-- no translation found for vital_signs_uppercase_label (214938594708280346) -->
-    <skip />
-    <!-- no translation found for vital_signs_lowercase_label (9141304492316454529) -->
-    <skip />
-    <!-- no translation found for vital_signs_content_description (914944352640528612) -->
-    <skip />
+    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"ల్యాబొరేటరీ ఫలితాలు"</string>
+    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"ల్యాబొరేటరీ ఫలితాలు"</string>
+    <string name="laboratory_results_content_description" msgid="5882338877203692484">"ల్యాబొరేటరీ ఫలితాలను చూసేందుకు అనుమతించండి"</string>
+    <string name="medications_uppercase_label" msgid="4783281053427990225">"మందులు"</string>
+    <string name="medications_lowercase_label" msgid="7808038774503092207">"మందులు"</string>
+    <string name="medications_content_description" msgid="6165382876281780190">"మందుల డేటాను చూసేందుకు అనుమతించండి"</string>
+    <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"గర్భధారణ"</string>
+    <string name="pregnancy_lowercase_label" msgid="810439290131044517">"గర్భధారణ"</string>
+    <string name="pregnancy_content_description" msgid="3436773729243586287">"గర్భధారణకు సంబంధించిన డేటాను చూసేందుకు అనుమతించండి"</string>
+    <string name="problems_uppercase_label" msgid="4047882613795113715">"సమస్యలు"</string>
+    <string name="problems_lowercase_label" msgid="6934298611508910866">"సమస్యలు"</string>
+    <string name="problems_content_description" msgid="1549418294742668962">"సమస్యలకు సంబంధించిన డేటాను చూసేందుకు అనుమతించండి"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"విధానాలు"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"విధానాలు"</string>
+    <string name="procedures_content_description" msgid="1086900373141440005">"చికిత్స విధానాలకు సంబంధించిన డేటాను చూసేందుకు అనుమతించండి"</string>
+    <string name="social_history_uppercase_label" msgid="1731364502071035544">"సోషల్ హిస్టరీ"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"సోషల్ హిస్టరీ"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"సోషల్ మీడియా డేటాను చూడటానికి అనుమతించండి"</string>
+    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"కీలక ఆరోగ్య కొలమానాల సంకేతాలు"</string>
+    <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"కీలక ఆరోగ్య కొలమానాల సంకేతాలు"</string>
+    <string name="vital_signs_content_description" msgid="914944352640528612">"కీలక ఆరోగ్య కొలమానాల సంకేతాలను చూడటానికి అనుమతించండి"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"బుద్ధికుశలత"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"బుద్ధికుశలత"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"బుద్ధికుశలతను చదివే వీలు కల్పిస్తుంది"</string>
@@ -335,29 +320,25 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ఇకపై గతంలోని డేటాతో సహా Health Connect నుండి ఏ డేటాను చదవలేదు లేదా రాయలేదు.\n\nఈ యాప్‌నకు ఉన్న లొకేషన్, కెమెరా, లేదా మైక్రోఫోన్ వంటి ఇతర అనుమతులను ఇది ప్రభావితం చేయదు."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ఇకపై బ్యాక్‌గ్రౌండ్, గతంలోని డేటతో సహా Health Connect నుండి ఏ డేటాను చదవలేదు లేదా రాయలేదు.\n\nఈ యాప్‌నకు ఉన్న లొకేషన్, కెమెరా, లేదా మైక్రోఫోన్ వంటి ఇతర అనుమతులను ఇది ప్రభావితం చేయదు."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Health Connect నుండి <xliff:g id="APP_NAME">%1$s</xliff:g> డేటాను కూడా తొలగించండి"</string>
-    <!-- no translation found for disconnect_all_health_permissions_title (3995410660376966233) -->
-    <skip />
-    <!-- no translation found for disconnect_all_medical_permissions_title (735315242997370168) -->
-    <skip />
-    <!-- no translation found for disconnect_all_fitness_permissions_title (7612364222525900592) -->
-    <skip />
-    <!-- no translation found for disconnect_all_health_no_additional_permissions_dialog_message (211728516196974197) -->
-    <skip />
-    <!-- no translation found for disconnect_all_health_and_background_permissions_dialog_message (654533675296670869) -->
-    <skip />
-    <!-- no translation found for disconnect_all_health_and_historical_permissions_dialog_message (6743215620789357899) -->
-    <skip />
-    <!-- no translation found for disconnect_all_health_and_additional_permissions_dialog_message (6062891741278986209) -->
-    <skip />
-    <!-- no translation found for disconnect_all_health_permissions_dialog_checkbox (762880061016391846) -->
-    <skip />
-    <!-- no translation found for disconnect_all_health_permissions_success_toast (9010063821116197894) -->
-    <skip />
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"అన్ని అనుమతులను తీసివేయాలా?"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"ఆరోగ్య సమాచారం అనుమతులన్నింటినీ తీసివేయాలా?"</string>
+    <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"ఫిట్‌నెస్, వెల్‌నెస్ అనుమతులు అన్నిటినీ తీసివేయాలా?"</string>
+    <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"<xliff:g id="APP_NAME">%1$s</xliff:g> ఇకపై Health Connect నుండి డేటాను చదవలేరు లేదా రాయలేదు.\n\nఇది ఈ యాప్‌కి ఉండే కెమెరా, మైక్రోఫోన్, లేదా లొకేషన్ వంటి ఇతర అనుమతులపై ప్రభావం చూపదు."</string>
+    <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"<xliff:g id="APP_NAME">%1$s</xliff:g> ఇకపై బ్యాక్‌గ్రౌండ్ డేటతో సహా Health Connect నుండి డేటాను చదవలేదు లేదా రాయలేదు.\n\nఈ యాప్‌నకు ఉన్న లొకేషన్, కెమెరా, లేదా మైక్రోఫోన్ వంటి ఇతర అనుమతులను ఇది ప్రభావితం చేయదు."</string>
+    <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"<xliff:g id="APP_NAME">%1$s</xliff:g> ఇకపై, గతంలోని డేటతో సహా Health Connect నుండి ఏ డేటాను చదవలేదు లేదా రాయలేదు.\n\nయాప్‌నకు ఉన్న కెమెరా, మైక్రోఫోన్ లేదా లొకేషన్, వంటి ఇతర అనుమతులను ఇది ప్రభావితం చేయదు."</string>
+    <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> ఇకపై బ్యాక్‌గ్రౌండ్, గతంలోని డేటాతో సహా Health Connect నుండి ఏ డేటాను చదవలేదు లేదా రాయలేదు.\n\nయాప్‌నకు ఉన్న కెమెరా, మైక్రోఫోన్ లేదా లొకేషన్, వంటి ఇతర అనుమతులను ఇది ప్రభావితం చేయదు."</string>
+    <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"<xliff:g id="APP_NAME">%1$s</xliff:g>లోని Health Connect నుండి ఫిట్‌నెస్ డేటాను, హెల్త్ రికార్డ్‌లను కూడా తొలగించండి"</string>
+    <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"ఈ యాప్‌కి అనుమతులు తీసివేయబడ్డాయి"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"తర్వాతి రోజు"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"ఎంచుకున్న రోజు"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"మునుపటి రోజు"</string>
     <string name="default_error" msgid="7966868260616403475">"ఏదో తప్పు జరిగింది. దయచేసి మళ్లీ ట్రై చేయండి."</string>
-    <string name="raw_fhir_content_description" msgid="4869120157736279594">"వివరణాత్మక ఆరోగ్య సమాచారం"</string>
+    <string name="unkwown_resource" msgid="7932225227431922125">"తెలియని రిసోర్స్"</string>
+    <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>తెరిచిన బ్రాకెట్."</string>
+    <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>మూసిన బ్రాకెట్."</string>
+    <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> ఫీల్డ్ <xliff:g id="FIELD">%2$s</xliff:g> విలువ"</string>
+    <string name="raw_fhir_value" msgid="8627152854130338531">"<xliff:g id="PREFIX">%1$s</xliff:g>: <xliff:g id="VALUE">%2$s</xliff:g>."</string>
+    <string name="raw_fhir_content_description" msgid="1491420802097635439">"వివరణాత్మక సోర్స్ కోడ్: <xliff:g id="SOURCE_CODE">%1$s</xliff:g>"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"ఈ అనుమతి ఉన్న యాప్‌లు మీ ఆరోగ్యానికి, ఫిట్‌నెస్‌కు చెందిన డేటాను రీడ్‌ చేసి, రైట్‌ చేయగలవు."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connectలో స్టోర్ చేయబడిన డేటాను ఏ యాప్‌లు యాక్సెస్ చేయవచ్చో కంట్రోల్ చేయండి. ఒక యాప్ చదవగలిగే లేదా రాయగల డేటాను రివ్యూ చేయడానికి సదరు యాప్‌ను ట్యాప్ చేయండి."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"యాక్సెస్ అనుమతించబడింది"</string>
@@ -374,8 +355,7 @@
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"అన్నీ తీసివేయండి"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"యాప్‌ను మేనేజ్ చేయండి"</string>
     <string name="see_app_data" msgid="3951030076195119476">"యాప్ డేటాను చూడండి"</string>
-    <!-- no translation found for remove_access_for_this_app (7701101420310711833) -->
-    <skip />
+    <string name="remove_access_for_this_app" msgid="7701101420310711833">"ఈ యాప్‌కి యాక్సెస్‌ను తీసివేయండి"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"యాప్ డేటాను తొలగించండి"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"ఇన్‌యాక్టివ్ యాప్‌లు"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"ఈ యాప్‌లకు ఇకపై యాక్సెస్ లేదు, కానీ Health Connect‌లో ఇప్పటికీ డేటా స్టోర్ అయ్యి ఉంటుంది"</string>
@@ -443,8 +423,7 @@
     <string name="export_destination_title" msgid="8352929396306002479">"షెడ్యూల్ చేసిన ఎగుమతిని ఎక్కడ సేవ్ చేయాలో ఎంచుకోండి"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"మీ డేటాను ఎగుమతి చేయడానికి దయచేసి క్లౌడ్ స్టోరేజ్ యాప్‌ను ఎంచుకోండి"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
-    <!-- no translation found for export_default_file_name_with_sequence (2380551038319211752) -->
-    <skip />
+    <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Health Connect (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
     <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"ఈ ఫైల్‌ను దిగుమతి చేయాలా?"</string>
     <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"<xliff:g id="FILE_NAME">%1$s</xliff:g>, Health Connectకు దిగుమతి అవుతుంది"</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"రద్దు చేయండి"</string>
@@ -531,8 +510,7 @@
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"<xliff:g id="APP_DATA">%2$s</xliff:g> ద్వారా జోడించబడిన మొత్తం <xliff:g id="DATA_TYPE">%1$s</xliff:g> డేటాను శాశ్వతంగా తొలగించాలా?"</string>
     <string name="confirming_question_single_entry" msgid="2064578008447638932">"Health Connect నుండి ఈ ఎంట్రీని శాశ్వతంగా తొలగించాలా?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"కనెక్ట్ చేయబడిన యాప్‌లు ఇకపై Health Connect నుండి ఈ డేటాను యాక్సెస్ చేయలేవు"</string>
-    <!-- no translation found for confirming_question_message_menstruation (944931041343695373) -->
-    <skip />
+    <string name="confirming_question_message_menstruation" msgid="944931041343695373">"<xliff:g id="START_DATE">%1$s</xliff:g> నుండి <xliff:g id="END_DATE">%2$s</xliff:g> వరకు ఉన్న పీరియడ్ ఎంట్రీలన్నింటినీ ఈ చర్య తొలగిస్తుంది."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"తొలగించండి"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"వెనుకకు వెళ్లండి"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"పూర్తయింది"</string>
@@ -1072,12 +1050,6 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"ఈ యాప్‌నకు సంబంధించిన బ్యాక్‌గ్రౌండ్ లేదా గతంలోని డేటాకు యాక్సెస్‌ను ఆన్ చేయడానికి కనీసం ఒక రీడ్ అనుమతిని ఎనేబుల్ చేయండి"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"ఈ యాప్‌నకు సంబంధించిన బ్యాక్‌గ్రౌండ్ యాక్సెస్‌ను ఆన్ చేయడానికి కనీసం ఒక రీడ్ అనుమతిని ఎనేబుల్ చేయండి"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"ఈ యాప్‌నకు సంబంధించిన గతంలోని డేటాకు యాక్సెస్‌ను ఆన్ చేయడానికి కనీసం ఒక రీడ్ అనుమతిని ఎనేబుల్ చేయండి"</string>
-    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Health Connect నుండి మొత్తం డేటాను శాశ్వతంగా తొలగించాలా?"</string>
-    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Health Connect నుండి ఎంచుకున్న డేటాను శాశ్వతంగా తొలగించాలా?"</string>
-    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"మొత్తం డేటా తొలగించబడింది"</string>
-    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> డేటా తొలగించబడింది"</string>
-    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> ఐటెమ్‌లు తొలగించబడ్డాయి"</string>
-    <string name="select_all" msgid="837499881590001166">"అన్నింటినీ ఎంచుకోండి"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connectను ఉపయోగించడాన్ని ప్రారంభించండి"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"మీ మొదటి యాప్స్ మధ్య ఆరోగ్యం, ఫిట్‌నెస్ డేటాను షేర్ చేయడానికి వాటిని సింక్ చేయండి"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"సెటప్ చేయండి"</string>
@@ -1087,4 +1059,24 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"అనుకూల యాప్స్‌ను చూడండి"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Health Connect ద్వారా <xliff:g id="APP_NAME">%s</xliff:g>‌తో సింక్ చేయడానికి మరిన్ని యాప్స్‌ను కనుగొనండి"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"యాప్ స్టోర్‌లో చూడండి"</string>
+    <string name="select_all" msgid="837499881590001166">"అన్నింటినీ ఎంచుకోండి"</string>
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"కనెక్ట్ అయి ఉన్న యాప్‌లు ఇకపై Health Connect నుండి ఈ డేటాను చదవలేవు"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"మొత్తం డేటాను శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"ఎంపిక చేసిన డేటాను శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"మొత్తం <xliff:g id="APP_NAME">%s</xliff:g> డేటాను శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"ఎంపిక చేసిన <xliff:g id="APP_NAME">%s</xliff:g> డేటాను శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>న పొందిన ఎంట్రీలన్నింటినీ శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> మధ్య పొందిన ఎంట్రీలన్నింటినీ శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>లో పొందిన ఎంట్రీలన్నింటినీ శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>న పొందిన ఎంపిక చేసిన ఎంట్రీలను శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> మధ్య పొందిన ఎంపిక చేసిన ఎంట్రీలను శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>లో పొందిన ఎంపిక చేసిన ఎంట్రీలను శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"ఈ ఎంట్రీని శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>న పొందిన <xliff:g id="APP_NAME">%1$s</xliff:g> ఎంట్రీలన్నింటినీ శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> మధ్య పొందిన <xliff:g id="APP_NAME">%1$s</xliff:g> ఎంట్రీలన్నింటినీ శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>లో పొందిన <xliff:g id="APP_NAME">%1$s</xliff:g> ఎంట్రీలన్నింటినీ శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>న పొందిన ఎంపిక చేసిన <xliff:g id="APP_NAME">%1$s</xliff:g> ఎంట్రీలను శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> మధ్య పొందిన ఎంపిక చేసిన <xliff:g id="APP_NAME">%1$s</xliff:g> ఎంట్రీలను శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>లో పొందిన ఎంపిక చేసిన <xliff:g id="APP_NAME">%1$s</xliff:g> ఎంట్రీలను శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"ఈ <xliff:g id="APP_NAME">%s</xliff:g> ఎంట్రీని శాశ్వతంగా తొలగించాలా?"</string>
 </resources>
