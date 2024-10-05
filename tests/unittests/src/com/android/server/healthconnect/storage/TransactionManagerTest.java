@@ -158,7 +158,8 @@ public class TransactionManagerTest {
                         readTransactionRequest,
                         mAppInfoHelper,
                         mAccessLogsHelper,
-                        mDeviceInfoHelper);
+                        mDeviceInfoHelper,
+                        /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(1);
         assertThat(records.get(0).getUuid()).isEqualTo(UUID.fromString(uuid));
     }
@@ -185,7 +186,11 @@ public class TransactionManagerTest {
 
         List<RecordInternal<?>> records =
                 mTransactionManager.readRecordsByIds(
-                        request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
+                        request,
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper,
+                        /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(2);
         assertThat(records.get(0).getUuid()).isEqualTo(UUID.fromString(uuids.get(0)));
         assertThat(records.get(1).getUuid()).isEqualTo(UUID.fromString(uuids.get(1)));
@@ -204,7 +209,11 @@ public class TransactionManagerTest {
         ReadTransactionRequest readTransactionRequest =
                 getReadTransactionRequest(request.toReadRecordsRequestParcel());
         mTransactionManager.readRecordsByIds(
-                readTransactionRequest, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
+                readTransactionRequest,
+                mAppInfoHelper,
+                mAccessLogsHelper,
+                mDeviceInfoHelper,
+                /* shouldRecordAccessLog= */ false);
 
         List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
         assertThat(result).isEmpty();
@@ -231,7 +240,8 @@ public class TransactionManagerTest {
                                         readTransactionRequest,
                                         mAppInfoHelper,
                                         mAccessLogsHelper,
-                                        mDeviceInfoHelper));
+                                        mDeviceInfoHelper,
+                                        /* shouldRecordAccessLog= */ false));
         assertThat(thrown).hasMessageThat().contains("Expect read by id request");
     }
 
@@ -263,7 +273,8 @@ public class TransactionManagerTest {
                         readTransactionRequest,
                         mAppInfoHelper,
                         mAccessLogsHelper,
-                        mDeviceInfoHelper);
+                        mDeviceInfoHelper,
+                        /* shouldRecordAccessLog= */ false);
         List<RecordInternal<?>> records = result.first;
         assertThat(records).hasSize(1);
         assertThat(result.first.get(0).getUuid()).isEqualTo(UUID.fromString(uuids.get(0)));
@@ -279,7 +290,11 @@ public class TransactionManagerTest {
         ReadTransactionRequest readTransactionRequest =
                 getReadTransactionRequest(request.toReadRecordsRequestParcel());
         mTransactionManager.readRecordsAndPageToken(
-                readTransactionRequest, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
+                readTransactionRequest,
+                mAppInfoHelper,
+                mAccessLogsHelper,
+                mDeviceInfoHelper,
+                /* shouldRecordAccessLog= */ true);
 
         List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
         assertThat(result).hasSize(1);
@@ -300,7 +315,11 @@ public class TransactionManagerTest {
         ReadTransactionRequest readTransactionRequest =
                 getReadTransactionRequest(request.toReadRecordsRequestParcel());
         mTransactionManager.readRecordsAndPageToken(
-                readTransactionRequest, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
+                readTransactionRequest,
+                mAppInfoHelper,
+                mAccessLogsHelper,
+                mDeviceInfoHelper,
+                /* shouldRecordAccessLog= */ true);
 
         List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
         assertThat(result).isEmpty();
@@ -323,7 +342,8 @@ public class TransactionManagerTest {
                                         readTransactionRequest,
                                         mAppInfoHelper,
                                         mAccessLogsHelper,
-                                        mDeviceInfoHelper));
+                                        mDeviceInfoHelper,
+                                        /* shouldRecordAccessLog= */ false));
         assertThat(thrown).hasMessageThat().contains("Expect read by filter request");
     }
 
@@ -475,7 +495,11 @@ public class TransactionManagerTest {
                         .setEndTime(Instant.ofEpochMilli(456))
                         .build());
         mTransactionManager.populateWithAggregation(
-                request, TEST_PACKAGE_NAME, Set.of(RECORD_TYPE_HEART_RATE), mAccessLogsHelper);
+                request,
+                TEST_PACKAGE_NAME,
+                Set.of(RECORD_TYPE_HEART_RATE),
+                mAccessLogsHelper,
+                /* shouldRecordAccessLog= */ true);
 
         List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
         AccessLog log = result.get(0);

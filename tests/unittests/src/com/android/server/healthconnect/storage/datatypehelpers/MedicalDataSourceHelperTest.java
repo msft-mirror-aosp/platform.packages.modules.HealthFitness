@@ -80,7 +80,6 @@ import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
-import com.android.healthfitness.flags.AconfigFlagHelperTestRule;
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.storage.PhrTestUtils;
@@ -107,10 +106,6 @@ import java.util.UUID;
 public class MedicalDataSourceHelperTest {
 
     private static final long APP_INFO_ID = 123;
-
-    @Rule(order = 0)
-    public final AconfigFlagHelperTestRule mAconfigFlagHelperTestRule =
-            new AconfigFlagHelperTestRule();
 
     // See b/344587256 for more context.
     @Rule(order = 1)
@@ -2661,7 +2656,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackage_expectAccessLogWhenDataSourceAccessedThroughReadPerm() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -2707,7 +2702,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackage_expectAccessLogWhenSelfDataAccessedThroughReadPerm() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -2746,7 +2741,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackage_expectAccessLogWhenDataSourceAccessedThroughReadPermEvenSelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -2790,7 +2785,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_expectAccessLogWhenDataSourceReadThroughReadPermNoSelfData() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -2834,7 +2829,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_expectNoAccessLogWhenSelfReadPerm() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -2877,7 +2872,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_inForegroundOrBgWithBgPermNoReadPermCanReadSelfDataNoAccessLog() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -2921,7 +2916,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_expectAccessLogWhenAppAccessesDataSourceThroughReadPerm() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1Package1 =
@@ -2964,7 +2959,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void getByPackages_expectNoAccessLogWhenNoDataSourcesRead() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
 
@@ -2991,7 +2986,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteMedicalDataSourcesByIdsWithoutPermCheck_appIdDoesNotExist_throws() {
         assertThrows(
                 IllegalArgumentException.class,
@@ -3001,7 +2996,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteByIdsWithoutPermCheck_deleteDataSourceThatDoesNotExist_throws() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
         assertThrows(
@@ -3012,7 +3007,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteMedicalDataSourcesByIdsWithPermCheck_appIdDoesNotExist_throws() {
         assertThrows(
                 IllegalArgumentException.class,
@@ -3022,7 +3017,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteByIdsWithPermCheck_deleteDataSourceBelongingToAnotherApp_throws() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
@@ -3040,7 +3035,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteByIdsWithPermCheck_deleteDataSourceThatDoesNotExist_throws() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
         assertThrows(
@@ -3051,7 +3046,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteDataSourcesByIdsWithoutPermissionChecks_noDeleteAccessLogs() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
@@ -3073,7 +3068,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteByIdsWithPermCheck_expectAccessLogForDeletedDataSourceAndResources() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
@@ -3103,7 +3098,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteByIdsWithPermCheck_dataSourceHasMultipleResources_correctAccessLogs() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
@@ -3137,7 +3132,7 @@ public class MedicalDataSourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD})
     public void deleteByIdsWithPermCheck_dataSourceHasNoResources_correctAccessLogs() {
         insertApps(List.of(DATA_SOURCE_PACKAGE_NAME, DIFFERENT_DATA_SOURCE_PACKAGE_NAME));
         MedicalDataSource dataSource1 =
