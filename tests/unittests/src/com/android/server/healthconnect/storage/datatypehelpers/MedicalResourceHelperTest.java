@@ -85,7 +85,6 @@ import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
-import com.android.healthfitness.flags.AconfigFlagHelperTestRule;
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectUserContext;
@@ -118,10 +117,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MedicalResourceHelperTest {
-
-    @Rule(order = 0)
-    public final AconfigFlagHelperTestRule mAconfigFlagHelperTestRule =
-            new AconfigFlagHelperTestRule();
 
     @Rule(order = 1)
     public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
@@ -732,7 +727,7 @@ public class MedicalResourceHelperTest {
     }
 
     @Test
-    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_DEVELOPMENT_DATABASE})
+    @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void upsertMedicalResources_fhirVersionDoesNotMatchDataSource_exceptionThrown() {
         MedicalDataSource dataSource =
                 mUtil.insertR4MedicalDataSource("id1", DATA_SOURCE_PACKAGE_NAME);

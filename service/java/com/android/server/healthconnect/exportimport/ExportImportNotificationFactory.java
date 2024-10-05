@@ -32,6 +32,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Icon;
+import android.health.connect.HealthConnectManager;
 import android.os.Binder;
 import android.util.Slog;
 
@@ -105,15 +106,14 @@ public class ExportImportNotificationFactory implements HealthConnectNotificatio
     private static final String EXPORT_NOTIFICATION_FREE_UP_SPACE_INTENT_BUTTON =
             "export_notification_free_up_space_intent_button";
 
-    private static final String HEALTH_CONNECT_HOME_ACTION =
-            "android.health.connect.action.HEALTH_HOME_SETTINGS";
     private static final String HEALTH_CONNECT_RESTART_IMPORT_ACTION =
             "android.health.connect.action.START_IMPORT_FLOW";
     private static final String HEALTH_CONNECT_RESTART_EXPORT_SETUP =
             "android.health.connect.action.START_EXPORT_SETUP";
     private static final String HEALTH_CONNECT_UPDATE_ACTION =
             "android.settings.SYSTEM_UPDATE_SETTINGS";
-    private static final Intent FALLBACK_INTENT = new Intent(HEALTH_CONNECT_HOME_ACTION);
+    private static final Intent FALLBACK_INTENT =
+            new Intent(HealthConnectManager.ACTION_HEALTH_HOME_SETTINGS);
 
     @VisibleForTesting static final String APP_ICON_DRAWABLE_NAME = "health_connect_logo";
 
@@ -290,7 +290,7 @@ public class ExportImportNotificationFactory implements HealthConnectNotificatio
     }
 
     private PendingIntent getImportCompletePendingIntent() {
-        Intent intent = new Intent(HEALTH_CONNECT_HOME_ACTION);
+        Intent intent = new Intent(HealthConnectManager.ACTION_MANAGE_HEALTH_DATA);
         ResolveInfo result = mContext.getPackageManager().resolveActivity(intent, 0);
         return result == null ? getPendingIntent(FALLBACK_INTENT) : getPendingIntent(intent);
     }

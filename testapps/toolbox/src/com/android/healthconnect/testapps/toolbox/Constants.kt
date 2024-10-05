@@ -181,6 +181,8 @@ object Constants {
             "android.permission.health.READ_MEDICAL_DATA_VITAL_SIGNS",
         )
 
+    val MEDICAL_WRITE_AND_OTHERS =
+        arrayOf(WRITE_ALL_MEDICAL_DATA) + DATA_TYPE_PERMISSIONS + ADDITIONAL_PERMISSIONS
     val HEALTH_PERMISSIONS = DATA_TYPE_PERMISSIONS + ADDITIONAL_PERMISSIONS + MEDICAL_PERMISSIONS
 
     /** Represents Category group for HealthConnect data. */
