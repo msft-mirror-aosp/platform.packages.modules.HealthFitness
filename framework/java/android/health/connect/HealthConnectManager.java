@@ -22,6 +22,7 @@ import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMIS
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 
+import static com.android.healthfitness.flags.Flags.FLAG_IMMEDIATE_EXPORT;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import android.Manifest;
@@ -1821,7 +1822,7 @@ public class HealthConnectManager {
     }
 
     /**
-     * Queries the status of a data import.
+     * Imports the given compressed database file.
      *
      * @throws RuntimeException for internal errors
      * @hide
@@ -1838,6 +1839,42 @@ public class HealthConnectManager {
         try {
             mService.runImport(
                     mContext.getUser(),
+                    file,
+                    new IEmptyResponseCallback.Stub() {
+                        @Override
+                        public void onResult() {
+                            Binder.clearCallingIdentity();
+                            executor.execute(() -> callback.onResult(null));
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Triggers an immediate export of health connect data.
+     *
+     * @throws RuntimeException for internal errors
+     * @hide
+     */
+    @WorkerThread
+    @FlaggedApi(FLAG_IMMEDIATE_EXPORT)
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
+    public void runImmediateExport(
+            @NonNull Uri file,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
+        Objects.requireNonNull(file);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+        try {
+            mService.runImmediateExport(
                     file,
                     new IEmptyResponseCallback.Stub() {
                         @Override

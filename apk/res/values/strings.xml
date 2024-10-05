@@ -451,8 +451,17 @@
     <string name="request_permissions_header_time_frame_desc" description="Text describing the time frame of data which an app will be able to access. [CHAR_LIMIT=NONE]">If you give read access, the app can read new data and data from the past 30 days</string>
     <string name="request_permissions_header_time_frame_history_desc" description="Text describing the time frame of data which an app with history read permission will be able to access. [CHAR_LIMIT=NONE]">If you give read access, the app can read new and past data</string>
     <string name="request_permissions_header_title" description="Title for screen to give permissions to an app to read or write users data. Note: Health Connect is the brand. [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access Health&#160;Connect?</string>
-    <string name="request_permissions_rationale" description="Text informing the user that data they share with an app is covered by that app's data privacy policy. Has a link to the app's privacy policy. [CHAR_LIMIT=NONE]">You can learn how <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> handles your data in the developer\'s <xliff:g example="privacy policy" id="privacy_policy_link">%2$s</xliff:g></string>
+    <string name="request_permissions_rationale" description="Text informing the user that data they share with an app is covered by that app's data privacy policy. Has a link to the app's privacy policy. [CHAR_LIMIT=NONE]">You can learn how <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> handles your data in their <xliff:g example="privacy policy" id="privacy_policy_link">%2$s</xliff:g></string>
     <string name="request_permissions_privacy_policy" description="Link text that open's a third party app's data privacy policy [CHAR_LIMIT=NONE]">privacy policy</string>
+    <!--endregion-->
+
+    <!-- region Medical permission request -->
+    <string name="medical_request_header" description="Title for screen to give medical permissions to an app [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access your health records?</string>
+    <string name="medical_request_header_desc" description="Text describing which medical data can be accessed by the app that is requesting medical permissions [CHAR_LIMIT=NONE]">If you give access, the app can read and write data such as allergies, lab results, vaccines and more\n<xliff:g example="About health records" id="about_health_records_link">%1$s</xliff:g></string>
+    <string name="medical_request_about_health_records" description="Link to a help page about health records [CHAR_LIMIT=NONE]">About health records</string>
+    <string name="medical_request_data_to_share" description="Title for section of the medical permission request screen which lists the data types accessed by this write permission [CHAR_LIMIT=NONE]">Data to share</string>
+    <string name="medical_request_share" description="Explanation than an app can access all health records when it requests medical write permissions [CHAR_LIMIT=NONE]">If you allow, <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> can share your health records with Health&#160;Connect.</string>
+    <string name="medical_request_footer" description="Footer for screen requesting medical write permissions for an app [CHAR_LIMIT=NONE]">Sync your health records from your different apps and sources to keep them in one place</string>
     <!--endregion-->
 
     <!-- region Fitness permissions (no medical) disconnect -->
