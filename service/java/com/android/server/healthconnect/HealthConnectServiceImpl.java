@@ -2123,6 +2123,28 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 });
     }
 
+    @Override
+    public void runImmediateExport(Uri file, IEmptyResponseCallback callback) {
+        checkParamsNonNull(file);
+
+        final int uid = Binder.getCallingUid();
+        final int pid = Binder.getCallingPid();
+        final UserHandle userHandle = Binder.getCallingUserHandle();
+        HealthConnectThreadScheduler.scheduleControllerTask(
+                () -> {
+                    try {
+                        enforceIsForegroundUser(userHandle);
+                        mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
+                        // TODO(b/370954019): Modify runExport to use specific file.
+                        mExportManager.runExport();
+                        callback.onResult();
+                    } catch (Exception exception) {
+                        throw new HealthConnectException(
+                                HealthConnectException.ERROR_IO, exception.toString());
+                    }
+                });
+    }
+
     /** Queries the document providers available to be used for export/import. */
     @Override
     public void queryDocumentProviders(UserHandle user, IQueryDocumentProvidersCallback callback) {
