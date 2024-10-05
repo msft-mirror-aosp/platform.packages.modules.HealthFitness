@@ -212,7 +212,11 @@ public class ImportManagerTest {
 
         List<RecordInternal<?>> records =
                 mTransactionManager.readRecordsByIds(
-                        request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
+                        request,
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper,
+                        /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(2);
         assertThat(records.get(0).getUuid()).isEqualTo(stepsUuids.get(0));
         assertThat(records.get(1).getUuid()).isEqualTo(bloodPressureUuids.get(0));
@@ -341,7 +345,11 @@ public class ImportManagerTest {
 
         List<RecordInternal<?>> records =
                 mTransactionManager.readRecordsByIds(
-                        request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
+                        request,
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper,
+                        /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(1);
         assertThat(records.get(0).getUuid()).isEqualTo(bloodPressureUuids.get(0));
     }

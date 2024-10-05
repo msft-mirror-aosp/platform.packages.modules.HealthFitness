@@ -180,3 +180,12 @@ flag {
     is_fixed_read_only: true
     is_exported: true
 }
+
+flag {
+    name: "cloud_backup_and_restore"
+    namespace: "health_fitness_aconfig"
+    description: "Enables cloud B&R."
+    bug: "369798725"
+    is_fixed_read_only: true
+    is_exported: true
+}

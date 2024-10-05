@@ -16,9 +16,6 @@
 
 package com.android.server.healthconnect.storage;
 
-import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION;
-import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION;
-import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_UNKNOWN;
 
@@ -58,6 +55,7 @@ import com.android.server.healthconnect.storage.request.DropTableRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -71,19 +69,13 @@ final class DatabaseUpgradeHelper {
             db -> forEachRecordHelper(it -> it.applyGeneratedLocalTimeUpgrade(db));
 
     private static final Upgrader UPGRADE_TO_SKIN_TEMPERATURE =
-            db ->
-                    DatabaseUpgradeHelper.<SkinTemperatureRecordHelper>getRecordHelper(
-                                    RECORD_TYPE_SKIN_TEMPERATURE)
-                            .applySkinTemperatureUpgrade(db);
+            db -> new SkinTemperatureRecordHelper().applySkinTemperatureUpgrade(db);
 
     private static final Upgrader UPGRADE_TO_PLANNED_EXERCISE_SESSIONS =
             DatabaseUpgradeHelper::applyPlannedExerciseDatabaseUpgrade;
 
     private static final Upgrader UPGRADE_TO_MINDFULNESS_SESSION =
-            db ->
-                    DatabaseUpgradeHelper.<MindfulnessSessionRecordHelper>getRecordHelper(
-                                    RECORD_TYPE_MINDFULNESS_SESSION)
-                            .applyMindfulnessSessionUpgrade(db);
+            db -> new MindfulnessSessionRecordHelper().applyMindfulnessSessionUpgrade(db);
 
     private static final Upgrader UPGRADE_TO_PERSONAL_HEALTH_RECORD =
             DatabaseUpgradeHelper::applyPersonalHealthRecordDatabaseUpgrade;
@@ -140,7 +132,7 @@ final class DatabaseUpgradeHelper {
             if (oldVersion < DB_VERSION_MINDFULNESS_SESSION) {
                 UPGRADE_TO_MINDFULNESS_SESSION.upgrade(db);
             }
-            if (oldVersion < DB_VERSION_PERSONAL_HEALTH_RECORD) {
+            if (shouldUpgrade(DB_VERSION_PERSONAL_HEALTH_RECORD, oldVersion, newVersion)) {
                 UPGRADE_TO_PERSONAL_HEALTH_RECORD.upgrade(db);
             }
         }
@@ -175,13 +167,14 @@ final class DatabaseUpgradeHelper {
 
         // Add all records that were part of the initial schema. This is everything added before
         // SKIN_TEMPERATURE.
-        Map<Integer, RecordHelper<?>> recordHelperMap = RecordHelperProvider.getRecordHelpers();
-        recordHelperMap.entrySet().stream()
+        Collection<RecordHelper<?>> recordHelpers = RecordHelperProvider.getRecordHelpers();
+        recordHelpers.stream()
                 .filter(
-                        entry ->
-                                entry.getKey() > RECORD_TYPE_UNKNOWN
-                                        && entry.getKey() < RECORD_TYPE_SKIN_TEMPERATURE)
-                .forEach(entry -> requests.add(entry.getValue().getCreateTableRequest()));
+                        helper ->
+                                helper.getRecordIdentifier() > RECORD_TYPE_UNKNOWN
+                                        && helper.getRecordIdentifier()
+                                                < RECORD_TYPE_SKIN_TEMPERATURE)
+                .forEach(helper -> requests.add(helper.getCreateTableRequest()));
 
         requests.add(DeviceInfoHelper.getCreateTableRequest());
         requests.add(AppInfoHelper.getCreateTableRequest());
@@ -198,12 +191,7 @@ final class DatabaseUpgradeHelper {
     }
 
     private static void forEachRecordHelper(Consumer<RecordHelper<?>> action) {
-        RecordHelperProvider.getRecordHelpers().values().forEach(action);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> T getRecordHelper(int recordTypeIdentifier) {
-        return (T) RecordHelperProvider.getRecordHelper(recordTypeIdentifier);
+        RecordHelperProvider.getRecordHelpers().forEach(action);
     }
 
     private static void applyPlannedExerciseDatabaseUpgrade(SQLiteDatabase db) {
@@ -213,16 +201,14 @@ final class DatabaseUpgradeHelper {
             // idempotent, as SQLite does not support ADD COLUMN IF NOT EXISTS.
             return;
         }
-        PlannedExerciseSessionRecordHelper recordHelper =
-                getRecordHelper(RECORD_TYPE_PLANNED_EXERCISE_SESSION);
+        PlannedExerciseSessionRecordHelper recordHelper = new PlannedExerciseSessionRecordHelper();
         HealthConnectDatabase.createTable(db, recordHelper.getCreateTableRequest());
         executeSqlStatements(
                 db,
                 recordHelper
                         .getAlterTableRequestForPlannedExerciseFeature()
                         .getAlterTableAddColumnsCommands());
-        ExerciseSessionRecordHelper exerciseRecordHelper =
-                getRecordHelper(RECORD_TYPE_EXERCISE_SESSION);
+        ExerciseSessionRecordHelper exerciseRecordHelper = new ExerciseSessionRecordHelper();
         executeSqlStatements(
                 db,
                 exerciseRecordHelper

@@ -114,7 +114,7 @@ class FitnessPermissionsFragmentTest {
 
     @Test
     fun displaysCategories() {
-        whenever(viewModel.healthPermissionsList).then {
+        whenever(viewModel.fitnessPermissionsList).then {
             val permissions =
                 listOf(fromPermissionString(READ_STEPS), fromPermissionString(WRITE_HEART_RATE))
             MutableLiveData(permissions)
@@ -133,7 +133,7 @@ class FitnessPermissionsFragmentTest {
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                    "You can learn how $TEST_APP_NAME handles your data in their privacy policy"
                 )
             )
             .check(matches(isDisplayed()))
@@ -164,7 +164,7 @@ class FitnessPermissionsFragmentTest {
 
     @Test
     fun whenHistoryReadPermissionAlreadyGranted_displaysCorrectText() {
-        whenever(viewModel.healthPermissionsList).then {
+        whenever(viewModel.fitnessPermissionsList).then {
             val permissions =
                 listOf(fromPermissionString(READ_STEPS), fromPermissionString(WRITE_HEART_RATE))
             MutableLiveData(permissions)
@@ -180,7 +180,7 @@ class FitnessPermissionsFragmentTest {
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                    "You can learn how $TEST_APP_NAME handles your data in their privacy policy"
                 )
             )
             .check(matches(isDisplayed()))
@@ -188,7 +188,7 @@ class FitnessPermissionsFragmentTest {
 
     @Test
     fun displaysReadPermissions() {
-        whenever(viewModel.healthPermissionsList).then {
+        whenever(viewModel.fitnessPermissionsList).then {
             val permissions =
                 listOf(fromPermissionString(READ_STEPS), fromPermissionString(READ_HEART_RATE))
             MutableLiveData(permissions)
@@ -216,7 +216,7 @@ class FitnessPermissionsFragmentTest {
 
     @Test
     fun displaysWritePermissions() {
-        whenever(viewModel.healthPermissionsList).then {
+        whenever(viewModel.fitnessPermissionsList).then {
             val permissions =
                 listOf(fromPermissionString(WRITE_DISTANCE), fromPermissionString(WRITE_EXERCISE))
             MutableLiveData(permissions)
@@ -244,7 +244,7 @@ class FitnessPermissionsFragmentTest {
 
     @Test
     fun togglesPermissions_callsUpdatePermissions() {
-        whenever(viewModel.healthPermissionsList).then {
+        whenever(viewModel.fitnessPermissionsList).then {
             val permissions =
                 listOf(fromPermissionString(READ_DISTANCE), fromPermissionString(WRITE_EXERCISE))
             MutableLiveData(permissions)
@@ -273,7 +273,7 @@ class FitnessPermissionsFragmentTest {
                 fromPermissionString(READ_HEART_RATE),
                 fromPermissionString(WRITE_HEART_RATE),
             )
-        whenever(viewModel.healthPermissionsList).then { MutableLiveData(permissions) }
+        whenever(viewModel.fitnessPermissionsList).then { MutableLiveData(permissions) }
 
         val activityScenario = launchFragment<FitnessPermissionsFragment>(bundleOf())
 
@@ -306,7 +306,7 @@ class FitnessPermissionsFragmentTest {
                 fromPermissionString(READ_HEART_RATE),
                 fromPermissionString(WRITE_HEART_RATE),
             )
-        whenever(viewModel.healthPermissionsList).then { MutableLiveData(permissions) }
+        whenever(viewModel.fitnessPermissionsList).then { MutableLiveData(permissions) }
         val activityScenario = launchFragment<FitnessPermissionsFragment>(bundleOf())
 
         activityScenario.onActivity { activity: TestActivity ->
@@ -328,9 +328,6 @@ class FitnessPermissionsFragmentTest {
     @Test
     fun allowButton_noFitnessPermissionsSelected_isDisabled() {
         val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, WRITE_DISTANCE, WRITE_EXERCISE)
-        whenever(viewModel.healthPermissionsList).then {
-            MutableLiveData(permissions.toPermissionsList())
-        }
         whenever(viewModel.fitnessPermissionsList).then {
             MutableLiveData(permissions.toPermissionsList())
         }
@@ -353,9 +350,6 @@ class FitnessPermissionsFragmentTest {
     @Test
     fun allowButton_fitnessPermissionsSelected_isEnabled() {
         val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, WRITE_DISTANCE, WRITE_EXERCISE)
-        whenever(viewModel.healthPermissionsList).then {
-            MutableLiveData(permissions.toPermissionsList())
-        }
         whenever(viewModel.fitnessPermissionsList).then {
             MutableLiveData(permissions.toPermissionsList())
         }

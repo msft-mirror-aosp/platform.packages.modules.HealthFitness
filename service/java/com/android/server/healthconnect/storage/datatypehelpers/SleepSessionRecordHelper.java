@@ -53,8 +53,6 @@ public final class SleepSessionRecordHelper
     private static final String NOTES_COLUMN_NAME = "notes";
     private static final String TITLE_COLUMN_NAME = "title";
 
-    private static final int NO_SLEEP_TABLE_DB_VERSION = 1;
-
     public SleepSessionRecordHelper() {
         super(RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION);
     }

@@ -20,6 +20,7 @@ import android.health.connect.HealthPermissions.READ_EXERCISE
 import android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES
 import android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY
 import android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS
 import android.health.connect.HealthPermissions.WRITE_DISTANCE
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
 import com.android.healthconnect.controller.permissions.additionalaccess.GetAdditionalPermissionUseCase
@@ -107,6 +108,7 @@ class AdditionalAccessViewModelTest {
                 getAdditionalPermissionUseCase,
                 getGrantedHealthPermissionsUseCase,
                 loadAccessDateUseCase,
+                loadDeclaredHealthPermissionUseCase,
             )
 
         whenever(loadAccessDateUseCase.invoke(anyString())).thenReturn(NOW)
@@ -159,20 +161,38 @@ class AdditionalAccessViewModelTest {
     }
 
     @Test
-    fun loadAdditionalAccessPreferences_loadsAllAdditionalAccess() = runTest {
+    fun whenMedicalDeclared_andFitnessReadGranted_loadsAllAdditionalAccess() = runTest {
+        whenever(loadDeclaredHealthPermissionUseCase.invoke(TEST_APP_PACKAGE_NAME))
+            .thenReturn(
+                listOf(
+                    READ_EXERCISE,
+                    WRITE_DISTANCE,
+                    READ_MEDICAL_DATA_IMMUNIZATIONS,
+                    READ_EXERCISE_ROUTES,
+                    READ_HEALTH_DATA_HISTORY,
+                    READ_HEALTH_DATA_IN_BACKGROUND,
+                )
+            )
         whenever(getGrantedHealthPermissionsUseCase.invoke(TEST_APP_PACKAGE_NAME))
             .thenReturn(listOf(READ_EXERCISE, READ_EXERCISE_ROUTES, READ_HEALTH_DATA_HISTORY))
 
         val additionalAccessStateObserver = TestObserver<AdditionalAccessViewModel.State>()
+        val screenStateObserver = TestObserver<AdditionalAccessViewModel.ScreenState>()
 
         additionalAccessViewModel.additionalAccessState.observeForever(
             additionalAccessStateObserver
         )
+        additionalAccessViewModel.screenState.observeForever(screenStateObserver)
         additionalAccessViewModel.loadAdditionalAccessPreferences(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
 
         val additionalAccessResult = additionalAccessStateObserver.getLastValue()
+        val screenStateResult = screenStateObserver.getLastValue()
 
+        assertThat(screenStateResult.state).isEqualTo(additionalAccessResult)
+        assertThat(screenStateResult.appHasGrantedFitnessReadPermission).isTrue()
+        assertThat(screenStateResult.appHasDeclaredMedicalPermissions).isTrue()
+        assertThat(screenStateResult.showMedicalPastDataFooter).isFalse()
         assertThat(additionalAccessResult.exercisePermissionUIState)
             .isEqualTo(PermissionUiState.ALWAYS_ALLOW)
         assertThat(additionalAccessResult.exerciseRoutePermissionUIState)
@@ -193,8 +213,8 @@ class AdditionalAccessViewModelTest {
                     isGranted = false,
                 )
             )
-        assertThat(additionalAccessResult.isValid()).isTrue()
-        assertThat(additionalAccessResult.showFooter()).isFalse()
+        assertThat(additionalAccessResult.isAvailable()).isTrue()
+        assertThat(additionalAccessResult.showEnableReadFooter()).isFalse()
         assertThat(
                 additionalAccessResult.isAdditionalPermissionDisabled(
                     additionalAccessResult.backgroundReadUIState
@@ -209,21 +229,29 @@ class AdditionalAccessViewModelTest {
             .isFalse()
     }
 
+    // TODO (b/370286053) will not be needed after cleanup
     @Test
-    fun loadAdditionalAccessPreferences_historyReadNotEnabled_doesNotReturnHistoryRead() = runTest {
+    fun whenHistoryReadNotEnabled_doesNotLoadHistoryRead() = runTest {
         (featureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(false)
         whenever(getGrantedHealthPermissionsUseCase.invoke(TEST_APP_PACKAGE_NAME))
             .thenReturn(listOf(READ_EXERCISE, READ_EXERCISE_ROUTES, READ_HEALTH_DATA_HISTORY))
         val additionalAccessStateObserver = TestObserver<AdditionalAccessViewModel.State>()
+        val screenStateObserver = TestObserver<AdditionalAccessViewModel.ScreenState>()
 
         additionalAccessViewModel.additionalAccessState.observeForever(
             additionalAccessStateObserver
         )
+        additionalAccessViewModel.screenState.observeForever(screenStateObserver)
         additionalAccessViewModel.loadAdditionalAccessPreferences(TEST_APP_PACKAGE_NAME)
         advanceUntilIdle()
 
         val additionalAccessResult = additionalAccessStateObserver.getLastValue()
+        val screenStateResult = screenStateObserver.getLastValue()
 
+        assertThat(screenStateResult.state).isEqualTo(additionalAccessResult)
+        assertThat(screenStateResult.appHasDeclaredMedicalPermissions).isFalse()
+        assertThat(screenStateResult.appHasGrantedFitnessReadPermission).isTrue()
+        assertThat(screenStateResult.showMedicalPastDataFooter).isFalse()
         assertThat(additionalAccessResult.exercisePermissionUIState)
             .isEqualTo(PermissionUiState.ALWAYS_ALLOW)
         assertThat(additionalAccessResult.exerciseRoutePermissionUIState)
@@ -244,8 +272,68 @@ class AdditionalAccessViewModelTest {
                     isGranted = false,
                 )
             )
-        assertThat(additionalAccessResult.isValid()).isTrue()
-        assertThat(additionalAccessResult.showFooter()).isFalse()
+        assertThat(additionalAccessResult.isAvailable()).isTrue()
+        assertThat(additionalAccessResult.showEnableReadFooter()).isFalse()
+        assertThat(
+                additionalAccessResult.isAdditionalPermissionDisabled(
+                    additionalAccessResult.backgroundReadUIState
+                )
+            )
+            .isFalse()
+        assertThat(
+                additionalAccessResult.isAdditionalPermissionDisabled(
+                    additionalAccessResult.historyReadUIState
+                )
+            )
+            .isFalse()
+    }
+
+    // TODO (b/370286053) will not be needed after cleanup
+    @Test
+    fun whenBackgroundReadNotEnabled_doesNotLoadBackgroundRead() = runTest {
+        (featureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(false)
+        whenever(getGrantedHealthPermissionsUseCase.invoke(TEST_APP_PACKAGE_NAME))
+            .thenReturn(listOf(READ_EXERCISE, READ_EXERCISE_ROUTES, READ_HEALTH_DATA_HISTORY))
+
+        val additionalAccessStateObserver = TestObserver<AdditionalAccessViewModel.State>()
+        val screenStateObserver = TestObserver<AdditionalAccessViewModel.ScreenState>()
+
+        additionalAccessViewModel.additionalAccessState.observeForever(
+            additionalAccessStateObserver
+        )
+        additionalAccessViewModel.screenState.observeForever(screenStateObserver)
+        additionalAccessViewModel.loadAdditionalAccessPreferences(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        val additionalAccessResult = additionalAccessStateObserver.getLastValue()
+        val screenStateResult = screenStateObserver.getLastValue()
+
+        assertThat(screenStateResult.state).isEqualTo(additionalAccessResult)
+        assertThat(screenStateResult.appHasDeclaredMedicalPermissions).isFalse()
+        assertThat(screenStateResult.appHasGrantedFitnessReadPermission).isTrue()
+        assertThat(screenStateResult.showMedicalPastDataFooter).isFalse()
+        assertThat(additionalAccessResult.exercisePermissionUIState)
+            .isEqualTo(PermissionUiState.ALWAYS_ALLOW)
+        assertThat(additionalAccessResult.exerciseRoutePermissionUIState)
+            .isEqualTo(PermissionUiState.ALWAYS_ALLOW)
+        assertThat(additionalAccessResult.historyReadUIState)
+            .isEqualTo(
+                AdditionalAccessViewModel.AdditionalPermissionState(
+                    isDeclared = true,
+                    isEnabled = true,
+                    isGranted = true,
+                )
+            )
+        assertThat(additionalAccessResult.backgroundReadUIState)
+            .isEqualTo(
+                AdditionalAccessViewModel.AdditionalPermissionState(
+                    isDeclared = false,
+                    isEnabled = false,
+                    isGranted = false,
+                )
+            )
+        assertThat(additionalAccessResult.isAvailable()).isTrue()
+        assertThat(additionalAccessResult.showEnableReadFooter()).isFalse()
         assertThat(
                 additionalAccessResult.isAdditionalPermissionDisabled(
                     additionalAccessResult.backgroundReadUIState
@@ -261,44 +349,129 @@ class AdditionalAccessViewModelTest {
     }
 
     @Test
-    fun loadAdditionalAccessPreferences_backgroundReadNotEnabled_doesNotReturnBackgroundRead() =
+    fun whenNoReadPermissionsGranted_additionalPermissionsDisabled() = runTest {
+        whenever(loadDeclaredHealthPermissionUseCase.invoke(TEST_APP_PACKAGE_NAME))
+            .thenReturn(
+                listOf(
+                    READ_EXERCISE,
+                    WRITE_DISTANCE,
+                    READ_EXERCISE_ROUTES,
+                    READ_HEALTH_DATA_IN_BACKGROUND,
+                    READ_HEALTH_DATA_HISTORY,
+                )
+            )
+        whenever(getGrantedHealthPermissionsUseCase.invoke(TEST_APP_PACKAGE_NAME))
+            .thenReturn(listOf(WRITE_DISTANCE))
+
+        val additionalAccessStateObserver = TestObserver<AdditionalAccessViewModel.State>()
+        val screenStateObserver = TestObserver<AdditionalAccessViewModel.ScreenState>()
+
+        additionalAccessViewModel.additionalAccessState.observeForever(
+            additionalAccessStateObserver
+        )
+        additionalAccessViewModel.screenState.observeForever(screenStateObserver)
+        additionalAccessViewModel.loadAdditionalAccessPreferences(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        val additionalAccessResult = additionalAccessStateObserver.getLastValue()
+        val screenStateResult = screenStateObserver.getLastValue()
+
+        assertThat(screenStateResult.state).isEqualTo(additionalAccessResult)
+        assertThat(screenStateResult.appHasDeclaredMedicalPermissions).isFalse()
+        assertThat(screenStateResult.appHasGrantedFitnessReadPermission).isFalse()
+        assertThat(screenStateResult.showMedicalPastDataFooter).isFalse()
+        assertThat(additionalAccessResult.exercisePermissionUIState)
+            .isEqualTo(PermissionUiState.ASK_EVERY_TIME)
+        assertThat(additionalAccessResult.exerciseRoutePermissionUIState)
+            .isEqualTo(PermissionUiState.ASK_EVERY_TIME)
+        assertThat(additionalAccessResult.historyReadUIState)
+            .isEqualTo(
+                AdditionalAccessViewModel.AdditionalPermissionState(
+                    isDeclared = true,
+                    isEnabled = false,
+                    isGranted = false,
+                )
+            )
+        assertThat(additionalAccessResult.backgroundReadUIState)
+            .isEqualTo(
+                AdditionalAccessViewModel.AdditionalPermissionState(
+                    isDeclared = true,
+                    isEnabled = false,
+                    isGranted = false,
+                )
+            )
+        assertThat(additionalAccessResult.isAvailable()).isTrue()
+        assertThat(additionalAccessResult.showEnableReadFooter()).isTrue()
+        assertThat(
+                additionalAccessResult.isAdditionalPermissionDisabled(
+                    additionalAccessResult.backgroundReadUIState
+                )
+            )
+            .isTrue()
+        assertThat(
+                additionalAccessResult.isAdditionalPermissionDisabled(
+                    additionalAccessResult.historyReadUIState
+                )
+            )
+            .isTrue()
+    }
+
+    @Test
+    fun whenMedicalAndHistoryReadDeclared_andMedicalReadGranted_shouldShowMedicalFooter() =
         runTest {
-            (featureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(false)
+            whenever(loadDeclaredHealthPermissionUseCase.invoke(TEST_APP_PACKAGE_NAME))
+                .thenReturn(
+                    listOf(
+                        READ_EXERCISE,
+                        WRITE_DISTANCE,
+                        READ_EXERCISE_ROUTES,
+                        READ_MEDICAL_DATA_IMMUNIZATIONS,
+                        READ_HEALTH_DATA_IN_BACKGROUND,
+                        READ_HEALTH_DATA_HISTORY,
+                    )
+                )
             whenever(getGrantedHealthPermissionsUseCase.invoke(TEST_APP_PACKAGE_NAME))
-                .thenReturn(listOf(READ_EXERCISE, READ_EXERCISE_ROUTES, READ_HEALTH_DATA_HISTORY))
+                .thenReturn(listOf(WRITE_DISTANCE, READ_MEDICAL_DATA_IMMUNIZATIONS))
 
             val additionalAccessStateObserver = TestObserver<AdditionalAccessViewModel.State>()
+            val screenStateObserver = TestObserver<AdditionalAccessViewModel.ScreenState>()
 
             additionalAccessViewModel.additionalAccessState.observeForever(
                 additionalAccessStateObserver
             )
+            additionalAccessViewModel.screenState.observeForever(screenStateObserver)
             additionalAccessViewModel.loadAdditionalAccessPreferences(TEST_APP_PACKAGE_NAME)
             advanceUntilIdle()
 
             val additionalAccessResult = additionalAccessStateObserver.getLastValue()
+            val screenStateResult = screenStateObserver.getLastValue()
 
+            assertThat(screenStateResult.state).isEqualTo(additionalAccessResult)
+            assertThat(screenStateResult.appHasDeclaredMedicalPermissions).isTrue()
+            assertThat(screenStateResult.appHasGrantedFitnessReadPermission).isFalse()
+            assertThat(screenStateResult.showMedicalPastDataFooter).isTrue()
             assertThat(additionalAccessResult.exercisePermissionUIState)
-                .isEqualTo(PermissionUiState.ALWAYS_ALLOW)
+                .isEqualTo(PermissionUiState.ASK_EVERY_TIME)
             assertThat(additionalAccessResult.exerciseRoutePermissionUIState)
-                .isEqualTo(PermissionUiState.ALWAYS_ALLOW)
+                .isEqualTo(PermissionUiState.ASK_EVERY_TIME)
             assertThat(additionalAccessResult.historyReadUIState)
                 .isEqualTo(
                     AdditionalAccessViewModel.AdditionalPermissionState(
                         isDeclared = true,
                         isEnabled = true,
-                        isGranted = true,
+                        isGranted = false,
                     )
                 )
             assertThat(additionalAccessResult.backgroundReadUIState)
                 .isEqualTo(
                     AdditionalAccessViewModel.AdditionalPermissionState(
-                        isDeclared = false,
-                        isEnabled = false,
+                        isDeclared = true,
+                        isEnabled = true,
                         isGranted = false,
                     )
                 )
-            assertThat(additionalAccessResult.isValid()).isTrue()
-            assertThat(additionalAccessResult.showFooter()).isFalse()
+            assertThat(additionalAccessResult.isAvailable()).isTrue()
+            assertThat(additionalAccessResult.showEnableReadFooter()).isFalse()
             assertThat(
                     additionalAccessResult.isAdditionalPermissionDisabled(
                         additionalAccessResult.backgroundReadUIState
@@ -311,58 +484,6 @@ class AdditionalAccessViewModelTest {
                     )
                 )
                 .isFalse()
-        }
-
-    @Test
-    fun loadAdditionalAccessPreferences_noReadPermissionsGranted_additionalPermissionsDisabled() =
-        runTest {
-            whenever(getGrantedHealthPermissionsUseCase.invoke(TEST_APP_PACKAGE_NAME))
-                .thenReturn(listOf(WRITE_DISTANCE))
-
-            val additionalAccessStateObserver = TestObserver<AdditionalAccessViewModel.State>()
-
-            additionalAccessViewModel.additionalAccessState.observeForever(
-                additionalAccessStateObserver
-            )
-            additionalAccessViewModel.loadAdditionalAccessPreferences(TEST_APP_PACKAGE_NAME)
-            advanceUntilIdle()
-
-            val additionalAccessResult = additionalAccessStateObserver.getLastValue()
-
-            assertThat(additionalAccessResult.exercisePermissionUIState)
-                .isEqualTo(PermissionUiState.ASK_EVERY_TIME)
-            assertThat(additionalAccessResult.exerciseRoutePermissionUIState)
-                .isEqualTo(PermissionUiState.ASK_EVERY_TIME)
-            assertThat(additionalAccessResult.historyReadUIState)
-                .isEqualTo(
-                    AdditionalAccessViewModel.AdditionalPermissionState(
-                        isDeclared = true,
-                        isEnabled = false,
-                        isGranted = false,
-                    )
-                )
-            assertThat(additionalAccessResult.backgroundReadUIState)
-                .isEqualTo(
-                    AdditionalAccessViewModel.AdditionalPermissionState(
-                        isDeclared = true,
-                        isEnabled = false,
-                        isGranted = false,
-                    )
-                )
-            assertThat(additionalAccessResult.isValid()).isTrue()
-            assertThat(additionalAccessResult.showFooter()).isTrue()
-            assertThat(
-                    additionalAccessResult.isAdditionalPermissionDisabled(
-                        additionalAccessResult.backgroundReadUIState
-                    )
-                )
-                .isTrue()
-            assertThat(
-                    additionalAccessResult.isAdditionalPermissionDisabled(
-                        additionalAccessResult.historyReadUIState
-                    )
-                )
-                .isTrue()
         }
 
     @Test

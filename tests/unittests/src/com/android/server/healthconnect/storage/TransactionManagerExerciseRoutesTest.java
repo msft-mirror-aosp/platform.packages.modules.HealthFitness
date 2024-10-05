@@ -139,7 +139,11 @@ public class TransactionManagerExerciseRoutesTest {
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsByIds(
-                        request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
+                        request,
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper,
+                        /* shouldRecordAccessLog= */ false);
 
         Map<String, ExerciseSessionRecordInternal> idToSessionMap =
                 returnedRecords.stream()
@@ -175,7 +179,11 @@ public class TransactionManagerExerciseRoutesTest {
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsByIds(
-                        request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
+                        request,
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper,
+                        /* shouldRecordAccessLog= */ false);
 
         assertThat(returnedRecords).hasSize(1);
         ExerciseSessionRecordInternal returnedRecord =
@@ -204,7 +212,11 @@ public class TransactionManagerExerciseRoutesTest {
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsByIds(
-                        request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
+                        request,
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper,
+                        /* shouldRecordAccessLog= */ false);
 
         assertThat(returnedRecords).hasSize(1);
         ExerciseSessionRecordInternal returnedRecord =
@@ -233,7 +245,11 @@ public class TransactionManagerExerciseRoutesTest {
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsByIds(
-                        request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
+                        request,
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper,
+                        /* shouldRecordAccessLog= */ false);
 
         assertThat(returnedRecords).hasSize(1);
         ExerciseSessionRecordInternal returnedRecord =
@@ -272,7 +288,11 @@ public class TransactionManagerExerciseRoutesTest {
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsAndPageToken(
-                                request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper)
+                                request,
+                                mAppInfoHelper,
+                                mAccessLogsHelper,
+                                mDeviceInfoHelper,
+                                /* shouldRecordAccessLog= */ false)
                         .first;
 
         Map<String, ExerciseSessionRecordInternal> idToSessionMap =
@@ -314,7 +334,11 @@ public class TransactionManagerExerciseRoutesTest {
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsAndPageToken(
-                                request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper)
+                                request,
+                                mAppInfoHelper,
+                                mAccessLogsHelper,
+                                mDeviceInfoHelper,
+                                /* shouldRecordAccessLog= */ false)
                         .first;
 
         assertThat(returnedRecords).hasSize(1);
@@ -348,7 +372,11 @@ public class TransactionManagerExerciseRoutesTest {
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsAndPageToken(
-                                request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper)
+                                request,
+                                mAppInfoHelper,
+                                mAccessLogsHelper,
+                                mDeviceInfoHelper,
+                                /* shouldRecordAccessLog= */ false)
                         .first;
 
         assertThat(returnedRecords).hasSize(1);
@@ -382,7 +410,11 @@ public class TransactionManagerExerciseRoutesTest {
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsAndPageToken(
-                                request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper)
+                                request,
+                                mAppInfoHelper,
+                                mAccessLogsHelper,
+                                mDeviceInfoHelper,
+                                /* shouldRecordAccessLog= */ false)
                         .first;
 
         assertThat(returnedRecords).hasSize(1);
