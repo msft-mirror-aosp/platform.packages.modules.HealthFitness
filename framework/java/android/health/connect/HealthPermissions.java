@@ -965,10 +965,12 @@ public final class HealthPermissions {
     }
 
     /**
+     * @deprecated Use {@link HealthConnectMappings#getHealthDataCategoryForWritePermission(String)}
      * @return {@link HealthDataCategory} for a WRITE {@code permissionName}. -1 if permission
      *     category for {@code permissionName} is not found (or if {@code permissionName} is READ)
      * @hide
      */
+    @Deprecated
     @HealthDataCategory.Type
     public static int getHealthDataCategoryForWritePermission(@Nullable String permissionName) {
         if (sWriteHealthPermissionToHealthDataCategoryMap.isEmpty()) {
