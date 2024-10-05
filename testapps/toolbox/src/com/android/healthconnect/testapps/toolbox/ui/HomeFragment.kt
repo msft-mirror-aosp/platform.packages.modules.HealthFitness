@@ -39,11 +39,14 @@ import com.android.healthconnect.testapps.toolbox.Constants.ADDITIONAL_PERMISSIO
 import com.android.healthconnect.testapps.toolbox.Constants.DATA_TYPE_PERMISSIONS
 import com.android.healthconnect.testapps.toolbox.Constants.HEALTH_PERMISSIONS
 import com.android.healthconnect.testapps.toolbox.Constants.MEDICAL_PERMISSIONS
+import com.android.healthconnect.testapps.toolbox.Constants.MEDICAL_WRITE_AND_OTHERS
 import com.android.healthconnect.testapps.toolbox.Constants.READ_HEALTH_DATA_HISTORY
 import com.android.healthconnect.testapps.toolbox.Constants.READ_HEALTH_DATA_IN_BACKGROUND
+import com.android.healthconnect.testapps.toolbox.Constants.WRITE_ALL_MEDICAL_DATA
 import com.android.healthconnect.testapps.toolbox.PerformanceTestingFragment
 import com.android.healthconnect.testapps.toolbox.R
 import com.android.healthconnect.testapps.toolbox.seed.SeedData
+import com.android.healthconnect.testapps.toolbox.viewmodels.HomeFragmentViewModel
 import com.android.healthconnect.testapps.toolbox.viewmodels.PerformanceTestingViewModel
 import kotlin.system.exitProcess
 
@@ -61,6 +64,7 @@ class HomeFragment : Fragment() {
     private lateinit var mRequestPermissionLauncher: ActivityResultLauncher<Array<String>>
     private lateinit var mNavigationController: NavController
     private val performanceTestingViewModel: PerformanceTestingViewModel by viewModels()
+    private val homeFragmentViewModel : HomeFragmentViewModel by viewModels()
 
     private val manager by lazy {
         requireContext().getSystemService(HealthConnectManager::class.java)
@@ -88,14 +92,20 @@ class HomeFragment : Fragment() {
 
         if (numberOfPermissionsMissing == 0) {
             Toast.makeText(
-                    this.requireContext(), R.string.all_permissions_success, Toast.LENGTH_SHORT)
+                    this.requireContext(),
+                    R.string.all_permissions_success,
+                    Toast.LENGTH_SHORT,
+                )
                 .show()
         } else {
             Toast.makeText(
                     this.requireContext(),
                     getString(
-                        R.string.number_of_permissions_not_granted, numberOfPermissionsMissing),
-                    Toast.LENGTH_SHORT)
+                        R.string.number_of_permissions_not_granted,
+                        numberOfPermissionsMissing,
+                    ),
+                    Toast.LENGTH_SHORT,
+                )
                 .show()
         }
     }
@@ -121,6 +131,9 @@ class HomeFragment : Fragment() {
         }
         view.requireViewById<Button>(R.id.seed_random_data_button).setOnClickListener {
             seedDataButtonPressed()
+        }
+        view.requireViewById<Button>(R.id.seed_all_data_button).setOnClickListener {
+            seedAllDataButtonPressed()
         }
         view.requireViewById<Button>(R.id.seed_performance_read_data_button).setOnClickListener {
             performanceTestingViewModel.beginReadingData()
@@ -158,10 +171,34 @@ class HomeFragment : Fragment() {
             requestHistoryReadPermission()
         }
 
+        view.findViewById<Button>(R.id.request_medical_write_permission).setOnClickListener {
+            requestMedicalWritePermission()
+        }
+
+        view
+            .findViewById<Button>(R.id.request_medical_write_and_other_health_permissions)
+            .setOnClickListener { requestMedicalWriteAndOtherPermissions() }
+
         // view
         //     .findViewById<Button>(R.id.seed_performance_insert_data_button_in_parallel)
         //     .setOnClickListener { performanceTestingViewModel.beginInsertingData(true) }
         mNavigationController = findNavController()
+
+        homeFragmentViewModel.seedAllDataState.observe(viewLifecycleOwner) { state ->
+            if(state is HomeFragmentViewModel.SeedAllDataState.Error){
+                Toast.makeText(
+                    context,
+                    state.errorMessage,
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(
+                    context,
+                    R.string.toast_seed_data_success,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 
     private fun launchHealthConnect() {
@@ -174,11 +211,18 @@ class HomeFragment : Fragment() {
         try {
             SeedData(requireContext(), manager).seedData()
             Toast.makeText(
-                    this.requireContext(), R.string.toast_seed_data_success, Toast.LENGTH_SHORT)
+                    this.requireContext(),
+                    R.string.toast_seed_data_success,
+                    Toast.LENGTH_SHORT,
+                )
                 .show()
         } catch (ex: Exception) {
             Toast.makeText(this.requireContext(), ex.localizedMessage, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun seedAllDataButtonPressed(){
+        homeFragmentViewModel.seedAllDataViewModel(requireContext(), manager)
     }
 
     private fun isPermissionGranted(permission: String): Boolean {
@@ -219,8 +263,10 @@ class HomeFragment : Fragment() {
         val compName = ComponentName(packageName, "$packageName.AliasMainActivity")
         val componentState = pm.getComponentEnabledSetting(compName)
         var desiredState = COMPONENT_ENABLED_STATE_ENABLED
-        if (componentState == COMPONENT_ENABLED_STATE_DEFAULT ||
-            componentState == COMPONENT_ENABLED_STATE_ENABLED) {
+        if (
+            componentState == COMPONENT_ENABLED_STATE_DEFAULT ||
+                componentState == COMPONENT_ENABLED_STATE_ENABLED
+        ) {
             desiredState = COMPONENT_ENABLED_STATE_DISABLED
         }
         pm.setComponentEnabledSetting(compName, desiredState, PackageManager.DONT_KILL_APP)
@@ -246,7 +292,8 @@ class HomeFragment : Fragment() {
         Toast.makeText(
                 this.requireContext(),
                 R.string.all_permissions_already_granted_toast,
-                Toast.LENGTH_LONG)
+                Toast.LENGTH_LONG,
+            )
             .show()
     }
 
@@ -258,7 +305,8 @@ class HomeFragment : Fragment() {
         Toast.makeText(
                 this.requireContext(),
                 R.string.all_permissions_already_granted_toast,
-                Toast.LENGTH_LONG)
+                Toast.LENGTH_LONG,
+            )
             .show()
     }
 
@@ -270,7 +318,8 @@ class HomeFragment : Fragment() {
         Toast.makeText(
                 this.requireContext(),
                 R.string.all_permissions_already_granted_toast,
-                Toast.LENGTH_LONG)
+                Toast.LENGTH_LONG,
+            )
             .show()
     }
 
@@ -282,7 +331,37 @@ class HomeFragment : Fragment() {
         Toast.makeText(
                 this.requireContext(),
                 R.string.all_permissions_already_granted_toast,
-                Toast.LENGTH_LONG)
+                Toast.LENGTH_LONG,
+            )
+            .show()
+    }
+
+    private fun requestMedicalWritePermission() {
+        if (!isPermissionGranted(WRITE_ALL_MEDICAL_DATA)) {
+            mRequestPermissionLauncher.launch(arrayOf(WRITE_ALL_MEDICAL_DATA))
+        }
+
+        Toast.makeText(
+                this.requireContext(),
+                R.string.all_permissions_already_granted_toast,
+                Toast.LENGTH_LONG,
+            )
+            .show()
+    }
+
+    private fun requestMedicalWriteAndOtherPermissions() {
+        if (
+            !isPermissionGranted(WRITE_ALL_MEDICAL_DATA) &&
+                isDataTypePermissionMissing() &&
+                isAdditionalPermissionMissing()
+        ) {
+            mRequestPermissionLauncher.launch(MEDICAL_WRITE_AND_OTHERS)
+        }
+        Toast.makeText(
+                this.requireContext(),
+                R.string.all_permissions_already_granted_toast,
+                Toast.LENGTH_LONG,
+            )
             .show()
     }
 

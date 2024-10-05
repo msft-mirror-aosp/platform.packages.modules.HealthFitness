@@ -48,7 +48,6 @@ android_test {
         "androidx.test.ext.truth",
         "cts-healthconnect-utils",
         "flag-junit",
-        "truth-java8-extension",
         "platform-parametric-runner-lib",
         "framework-annotations-lib",
     ],

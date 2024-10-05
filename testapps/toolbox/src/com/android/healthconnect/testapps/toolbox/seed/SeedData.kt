@@ -17,27 +17,24 @@ package com.android.healthconnect.testapps.toolbox.seed
 
 import android.content.Context
 import android.health.connect.HealthConnectManager
-import android.health.connect.datatypes.DataOrigin
-import android.health.connect.datatypes.Device
 import android.health.connect.datatypes.HeartRateRecord
 import android.health.connect.datatypes.MenstruationFlowRecord
 import android.health.connect.datatypes.MenstruationFlowRecord.MenstruationFlowType
 import android.health.connect.datatypes.MenstruationPeriodRecord
-import android.health.connect.datatypes.Metadata
 import android.health.connect.datatypes.SkinTemperatureRecord
 import android.health.connect.datatypes.StepsRecord
 import android.health.connect.datatypes.units.Temperature
 import android.health.connect.datatypes.units.TemperatureDelta
-import android.os.Build.MANUFACTURER
-import android.os.Build.MODEL
+import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils.Companion.getMetaData
 import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils.Companion.insertRecords
+import kotlinx.coroutines.runBlocking
 import java.time.Duration.ofDays
 import java.time.Duration.ofMinutes
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.Random
 import kotlin.random.Random as ktRandom
-import kotlinx.coroutines.runBlocking
+
 
 class SeedData(private val context: Context, private val manager: HealthConnectManager) {
 
@@ -64,6 +61,20 @@ class SeedData(private val context: Context, private val manager: HealthConnectM
         }
     }
 
+    fun seedAllData(){
+        try {
+            SeedActivityData(context, manager).seedActivityData()
+            SeedBodyMeasurementsData(context, manager).seedBodyMeasurementsData()
+            SeedCycleTrackingData(context, manager).seedCycleTrackingData()
+            SeedNutritionData(context, manager).seedNutritionData()
+            SeedSleepData(context, manager).seedSleepCategoryData()
+            SeedVitalsData(context, manager).seedVitalsData()
+            SeedWellnessData(context, manager).seedWellnessData()
+        }catch (ex: Exception) {
+            throw ex
+        }
+    }
+
     private suspend fun seedStepsData() {
         val start = Instant.now().truncatedTo(ChronoUnit.DAYS)
         val records = (1L..50).map { count -> getStepsRecord(count, start.plus(ofMinutes(count))) }
@@ -74,11 +85,11 @@ class SeedData(private val context: Context, private val manager: HealthConnectM
     private suspend fun seedMenstruationData() {
         val today = Instant.now()
         val periodRecord =
-            MenstruationPeriodRecord.Builder(getMetaData(), today.minus(ofDays(5L)), today).build()
+            MenstruationPeriodRecord.Builder(getMetaData(context), today.minus(ofDays(5L)), today).build()
         val flowRecords =
             (-5..0).map { days ->
                 MenstruationFlowRecord.Builder(
-                        getMetaData(),
+                        getMetaData(context),
                         today.plus(ofDays(days.toLong())),
                         MenstruationFlowType.FLOW_MEDIUM)
                     .build()
@@ -132,7 +143,7 @@ class SeedData(private val context: Context, private val manager: HealthConnectM
         startTime: Instant,
         endTime: Instant
     ): SkinTemperatureRecord {
-        return SkinTemperatureRecord.Builder(getMetaData(), startTime, endTime)
+        return SkinTemperatureRecord.Builder(getMetaData(context), startTime, endTime)
             .setDeltas(deltasList)
             .setBaseline(Temperature.fromCelsius(25.0))
             .setMeasurementLocation(VALID_READING_LOCATIONS.random())
@@ -149,7 +160,7 @@ class SeedData(private val context: Context, private val manager: HealthConnectM
         end: Instant,
     ): HeartRateRecord {
         return HeartRateRecord.Builder(
-                getMetaData(),
+                getMetaData(context),
                 start,
                 end,
                 heartRateValues.map { HeartRateRecord.HeartRateSample(it.first, it.second) })
@@ -161,13 +172,8 @@ class SeedData(private val context: Context, private val manager: HealthConnectM
     }
 
     private fun getStepsRecord(count: Long, time: Instant): StepsRecord {
-        return StepsRecord.Builder(getMetaData(), time, time.plusSeconds(30), count).build()
-    }
-
-    private fun getMetaData(): Metadata {
-        val device: Device =
-            Device.Builder().setManufacturer(MANUFACTURER).setModel(MODEL).setType(1).build()
-        val dataOrigin = DataOrigin.Builder().setPackageName(context.packageName).build()
-        return Metadata.Builder().setDevice(device).setDataOrigin(dataOrigin).build()
+        return StepsRecord.Builder(getMetaData(context), time, time.plusSeconds(30), count).build()
     }
 }
+
+

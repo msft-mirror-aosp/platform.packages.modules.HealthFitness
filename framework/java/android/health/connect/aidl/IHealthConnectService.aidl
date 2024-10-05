@@ -397,6 +397,13 @@ interface IHealthConnectService {
     void runImport(in UserHandle userHandle, in Uri file, in IEmptyResponseCallback callback);
 
     /**
+    * Triggers an immediate export of health connect data.
+    *
+    * @hide
+    */
+    void runImmediateExport(in Uri file, in IEmptyResponseCallback callback);
+
+    /**
      * Creates a {@code MedicalDataSource} in HealthConnect based on the {@code request} values.
      *
      * @param attributionSource attribution source for the data.

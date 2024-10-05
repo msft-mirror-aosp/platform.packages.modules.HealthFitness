@@ -149,6 +149,63 @@ class DisplayNameExtractorTest {
         assertEquals("Asthma", displayNameExtractor.getDisplayName(json))
     }
 
+    // Procedure tests
+    @Test
+    fun procedure_withoutCodeField() {
+        val json =
+            """{
+            "resourceType": "Procedure"
+        }"""
+        assertEquals("Unknown Resource", displayNameExtractor.getDisplayName(json))
+    }
+
+    @Test
+    fun procedure_withEmptyCodeField() {
+        val json =
+            """{
+            "resourceType": "Procedure",
+            "code": {}
+        }"""
+        assertEquals("Unknown Resource", displayNameExtractor.getDisplayName(json))
+    }
+
+    @Test
+    fun procedure_withCodeText() {
+        val json =
+            """{
+            "resourceType": "Procedure",
+            "code": {"text": "Excision of appendix"}
+        }"""
+        assertEquals("Excision of appendix", displayNameExtractor.getDisplayName(json))
+    }
+
+    @Test
+    fun procedure_withCodingSystemSnomed() {
+        val json =
+            """{
+            "resourceType": "Procedure",
+            "code": {
+                "coding": [{"system": "http://snomed.info/sct", "display": "Excision of appendix"}]
+            }
+        }"""
+        assertEquals("Excision of appendix", displayNameExtractor.getDisplayName(json))
+    }
+
+    @Test
+    fun procedure_withMultipleCodings() {
+        val json =
+            """{
+            "resourceType": "Procedure",
+            "code": {
+                "coding": [
+                    {"system": "http://other.system", "display": "Appendicectomy"},
+                    {"system": "http://snomed.info/sct", "display": "Excision of appendix"}
+                ]
+            }
+        }"""
+        assertEquals("Excision of appendix", displayNameExtractor.getDisplayName(json))
+    }
+
     // Encounter tests
     @Test
     fun encounter_withoutClassOrServiceType() {
@@ -175,21 +232,31 @@ class DisplayNameExtractorTest {
         val json =
             """{
             "resourceType": "Encounter",
-            "class": {"text": "Inpatient"},
+            "class": {"display": "Inpatient"},
             "serviceType": {"text": "Cardiology"}
         }"""
         assertEquals("Inpatient - Cardiology", displayNameExtractor.getDisplayName(json))
     }
 
     @Test
-    fun encounter_withClassCodingAndServiceTypeCoding() {
+    fun encounter_withClassAndServiceTypeCoding() {
         val json =
             """{
             "resourceType": "Encounter",
-            "class": {"coding": [{"display": "Outpatient"}]},
+            "class": {"display": "Outpatient"},
             "serviceType": {"coding": [{"display": "Radiology"}]}
         }"""
         assertEquals("Outpatient - Radiology", displayNameExtractor.getDisplayName(json))
+    }
+
+    @Test
+    fun encounter_withClassWithoutServiceType() {
+        val json =
+            """{
+            "resourceType": "Encounter",
+            "class": {"display": "Outpatient"}
+        }"""
+        assertEquals("Outpatient", displayNameExtractor.getDisplayName(json))
     }
 
     // Immunization tests
@@ -232,6 +299,36 @@ class DisplayNameExtractorTest {
             }
         }"""
         assertEquals("Influenza", displayNameExtractor.getDisplayName(json))
+    }
+
+    @Test
+    fun immunization_withCVXAndSnomedCoding() {
+        val json =
+            """{
+            "resourceType": "Immunization",
+            "vaccineCode": {
+                "coding": [
+                    {"system": "http://snomed.info/sct", "display": "Influenza vaccine"},
+                    {"system": "http://hl7.org/fhir/sid/cvx", "display": "Influenza"}
+                ]
+            }
+        }"""
+        assertEquals("Influenza", displayNameExtractor.getDisplayName(json))
+    }
+
+    @Test
+    fun immunization_withSnomedAndOtherCoding() {
+        val json =
+            """{
+            "resourceType": "Immunization",
+            "vaccineCode": {
+                "coding": [
+                    {"system": "http://other.system", "display": "Other Vaccine"},
+                    {"system": "http://snomed.info/sct", "display": "Influenza vaccine"}
+                ]
+            }
+        }"""
+        assertEquals("Influenza vaccine", displayNameExtractor.getDisplayName(json))
     }
 
     // Location tests
@@ -314,6 +411,31 @@ class DisplayNameExtractorTest {
             }
         }"""
         assertEquals("Ibuprofen", displayNameExtractor.getDisplayName(json))
+    }
+
+    @Test
+    fun medicationRequest_withMedicationReferenceText() {
+        val json =
+            """{
+            "resourceType": "MedicationRequest",
+            "medicationReference": {
+                "reference": "medication-1",
+                "display": "Azithromycin 250mg"
+            }
+        }"""
+        assertEquals("Azithromycin 250mg", displayNameExtractor.getDisplayName(json))
+    }
+
+    @Test
+    fun medicationRequest_withMedicationReferenceReferenceOnly() {
+        val json =
+            """{
+            "resourceType": "MedicationRequest",
+            "medicationReference": {
+                "reference": "medication-1"
+            }
+        }"""
+        assertEquals("Unknown Resource", displayNameExtractor.getDisplayName(json))
     }
 
     // Medication tests
@@ -401,4 +523,163 @@ class DisplayNameExtractorTest {
         }"""
         assertEquals("Blood Pressure", displayNameExtractor.getDisplayName(json))
     }
+
+    // Patient tests
+    @Test
+    fun patient_withoutNameField() {
+        val json =
+            """{
+            "resourceType": "Patient"
+        }"""
+        assertEquals("Unknown Resource", displayNameExtractor.getDisplayName(json))
+    }
+
+    @Test
+    fun patient_withEmptyNameField() {
+        val json =
+            """{
+            "resourceType": "Patient",
+            "name": []
+        }"""
+        assertEquals("Unknown Resource", displayNameExtractor.getDisplayName(json))
+    }
+
+    @Test
+    fun patient_withNameText() {
+        val json =
+            """{
+            "resourceType": "Patient",
+            "name": [
+                {"use": "maiden","text": "Anne Onymous"},
+                {"use": "usual", "text": "Anne Example"}
+            ]
+        }"""
+        assertEquals("Anne Example", displayNameExtractor.getDisplayName(json))
+    }
+
+    @Test
+    fun patient_withNameFamilyAndGiven() {
+        val json =
+            """{
+            "resourceType": "Patient",
+            "name": [{
+                "family": "Example",
+                "given": ["Anne", "Other"]
+            }]
+        }"""
+        assertEquals("Anne Example", displayNameExtractor.getDisplayName(json))
+    }
+
+    // Practitioner tests
+    @Test
+    fun practitioner_withoutNameField() {
+        val json =
+            """{
+            "resourceType": "Practitioner"
+        }"""
+        assertEquals("Unknown Resource", displayNameExtractor.getDisplayName(json))
+    }
+
+    @Test
+    fun practitioner_withEmptyNameField() {
+        val json =
+            """{
+            "resourceType": "Practitioner",
+            "name": []
+        }"""
+        assertEquals("Unknown Resource", displayNameExtractor.getDisplayName(json))
+    }
+
+    @Test
+    fun practitioner_withNameText() {
+        val json =
+            """{
+            "resourceType": "Practitioner",
+            "name": [
+                {"use": "old","text": "M Hernandez"},
+                {"use": "usual", "text": "Dr Maria Hernandez"}
+            ]
+        }"""
+        assertEquals("Dr Maria Hernandez", displayNameExtractor.getDisplayName(json))
+    }
+
+    @Test
+    fun practitioner_withNamePrefixFamilyAndGiven() {
+        val json =
+            """{
+            "resourceType": "Practitioner",
+            "name": [{
+                "family": "Hernandez",
+                "given": ["Maria"],
+                "prefix": ["Dr"]
+            }]
+        }"""
+        assertEquals("Dr Maria Hernandez", displayNameExtractor.getDisplayName(json))
+    }
+
+    // PractitionerRole tests
+    @Test
+    fun practitionerRole_withoutCodeOrSpecialty() {
+        val json =
+            """{
+            "resourceType": "PractitionerRole"
+        }"""
+        assertEquals("Unknown Resource", displayNameExtractor.getDisplayName(json))
+    }
+
+    @Test
+    fun practitionerRole_withCodeWithoutSpecialty() {
+        val json =
+            """{
+            "resourceType": "PractitionerRole",
+            "code": [{
+                "coding": [{
+                    "system": "http://terminology.hl7.org/CodeSystem/practitioner-role",
+                    "code": "doctor",
+                    "display": "Doctor"
+                }]
+            }]
+        }"""
+        assertEquals("Doctor", displayNameExtractor.getDisplayName(json))
+    }
+
+    @Test
+    fun practitionerRole_withSpecialtyWithoutCode() {
+        val json =
+            """{
+            "resourceType": "PractitionerRole",
+            "specialty": [{
+                "coding": [{
+                    "system": "http://snomed.info/sct",
+                    "code": "394583002",
+                    "display": "Endocrinology"
+                }]
+            }]
+        }"""
+        assertEquals("Endocrinology", displayNameExtractor.getDisplayName(json))
+    }
+
+    @Test
+    fun practitionerRole_withCodeAndSpecialty() {
+        val json =
+            """{
+            "resourceType": "PractitionerRole",
+            "code": [{
+                "coding": [{
+                    "system": "http://terminology.hl7.org/CodeSystem/practitioner-role",
+                    "code": "doctor",
+                    "display": "Doctor"
+                }]
+            }],
+            "specialty": [{
+                "coding": [{
+                    "system": "http://snomed.info/sct",
+                    "code": "394583002",
+                    "display": "Endocrinology"
+                }]
+            }]
+        }"""
+        assertEquals("Doctor - Endocrinology", displayNameExtractor.getDisplayName(json))
+    }
+
 }
