@@ -28,6 +28,7 @@ import android.util.Slog;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.server.SystemService;
+import com.android.server.healthconnect.backuprestore.CloudBackupManager;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
@@ -84,6 +85,7 @@ public class HealthConnectManagerService extends SystemService {
     private final PreferenceHelper mPreferenceHelper;
     private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
     private final MigrationStateManager mMigrationStateManager;
+    private final CloudBackupManager mCloudBackupManager;
 
     @Nullable private HealthConnectInjector mHealthConnectInjector;
 
@@ -171,6 +173,7 @@ public class HealthConnectManagerService extends SystemService {
                             mHealthConnectInjector.getPriorityMigrationHelper());
             mExportImportSettingsStorage = mHealthConnectInjector.getExportImportSettingsStorage();
             mExportManager = mHealthConnectInjector.getExportManager();
+            mCloudBackupManager = mHealthConnectInjector.getCloudBackupManager();
         } else {
             appInfoHelper = AppInfoHelper.getInstance(mTransactionManager);
             accessLogsHelper = AccessLogsHelper.getInstance(mTransactionManager, appInfoHelper);
@@ -214,6 +217,7 @@ public class HealthConnectManagerService extends SystemService {
                             Clock.systemUTC(),
                             mExportImportSettingsStorage,
                             mTransactionManager);
+            mCloudBackupManager = new CloudBackupManager();
         }
 
         mUserManager = context.getSystemService(UserManager.class);
@@ -259,7 +263,8 @@ public class HealthConnectManagerService extends SystemService {
                         activityDateHelper,
                         changeLogsHelper,
                         changeLogsRequestHelper,
-                        healthConnectMappings);
+                        healthConnectMappings,
+                        mCloudBackupManager);
     }
 
     @Override

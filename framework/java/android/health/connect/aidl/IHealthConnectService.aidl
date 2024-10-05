@@ -20,6 +20,8 @@ import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IGetChangeLogTokenCallback;
 import android.health.connect.aidl.IGetHealthConnectDataStateCallback;
+import android.health.connect.aidl.IGetChangesForBackupResponseCallback;
+import android.health.connect.aidl.IGetSettingsForBackupResponseCallback;
 import android.health.connect.aidl.IGetHealthConnectMigrationUiStateCallback;
 import android.health.connect.aidl.IGetPriorityResponseCallback;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
@@ -521,4 +523,10 @@ interface IHealthConnectService {
      * @param callback Callback to receive result of performing this operation.
      */
     void queryAllMedicalResourceTypeInfos(in IMedicalResourceTypeInfosCallback callback);
+
+    /** @hide */
+    void getChangesForBackup(in @nullable String changeToken, in IGetChangesForBackupResponseCallback callback);
+
+    /** @hide */
+    void getSettingsForBackup(in IGetSettingsForBackupResponseCallback callback);
 }
