@@ -41,6 +41,7 @@ import android.content.AttributionSource;
 import android.content.Context;
 import android.health.connect.internal.datatypes.ExerciseRouteInternal;
 import android.health.connect.internal.datatypes.ExerciseSessionRecordInternal;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.permission.PermissionManager;
 import android.util.ArrayMap;
 
@@ -62,6 +63,8 @@ public class DataPermissionEnforcerTest {
 
     @Mock private HealthConnectDeviceConfigManager mDeviceConfigManager;
 
+    private final HealthConnectMappings mHealthConnectMappings = new HealthConnectMappings();
+
     private AttributionSource mAttributionSource;
 
     private DataPermissionEnforcer mDataPermissionEnforcer;
@@ -73,7 +76,8 @@ public class DataPermissionEnforcerTest {
 
         mAttributionSource = buildAttributionSource();
         mDataPermissionEnforcer =
-                new DataPermissionEnforcer(mPermissionManager, mContext, mDeviceConfigManager);
+                new DataPermissionEnforcer(
+                        mPermissionManager, mContext, mDeviceConfigManager, mHealthConnectMappings);
     }
 
     /** enforceRecordIdsWritePermissions */

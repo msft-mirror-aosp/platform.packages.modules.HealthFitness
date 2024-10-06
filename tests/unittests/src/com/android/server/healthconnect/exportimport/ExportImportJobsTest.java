@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.exportimport;
 
-import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -36,7 +35,6 @@ import android.os.PersistableBundle;
 import android.os.UserHandle;
 import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
-import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.SetFlagsRule;
 
 import com.android.healthfitness.flags.Flags;
@@ -111,8 +109,8 @@ public class ExportImportJobsTest {
         verify(mJobScheduler, times(0)).schedule(any());
     }
 
-    @RequiresFlagsEnabled({FLAG_EXPORT_IMPORT_FAST_FOLLOW})
     @Test
+    @EnableFlags({Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW})
     public void schedulePeriodicExportJob_cancelsPreviousJob() {
         mExportImportSettingsStorage.configure(
                 new ScheduledExportSettings.Builder().setPeriodInDays(0).build());

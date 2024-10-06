@@ -149,7 +149,7 @@ class AllDataFragmentTest {
         launchMedicalAllDataFragment()
 
         onView(withText("Allergies")).check(matches(isDisplayed()))
-        onView(withText("Immunizations")).check(matches(isDisplayed()))
+        onView(withText("Vaccines")).check(matches(isDisplayed()))
         onView(withText("Distance")).check(doesNotExist())
         onView(withText("No data")).check(doesNotExist())
     }
@@ -191,8 +191,8 @@ class AllDataFragmentTest {
             Navigation.setViewNavController(this.requireView(), navHostController)
         }
 
-        onView(withText("Immunizations")).check(matches(isDisplayed()))
-        onView(withText("Immunizations")).perform(click())
+        onView(withText("Vaccines")).check(matches(isDisplayed()))
+        onView(withText("Vaccines")).perform(click())
         // TODO(b/342159144): Test interaction log.
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.entriesAndAccessFragment)
@@ -225,7 +225,7 @@ class AllDataFragmentTest {
         mockData(listOf(IMMUNIZATIONS, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
         val scenario = launchMedicalAllDataFragment()
         assertCheckboxNotShown("Allergies")
-        assertCheckboxNotShown("Immunizations")
+        assertCheckboxNotShown("Vaccines")
 
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
@@ -233,7 +233,7 @@ class AllDataFragmentTest {
         }
 
         assertCheckboxShown("Allergies")
-        assertCheckboxShown("Immunizations")
+        assertCheckboxShown("Vaccines")
         verify(healthConnectLogger).logImpression(AllDataElement.SELECT_ALL_BUTTON)
         verify(healthConnectLogger, atLeast(2))
             .logImpression(AllDataElement.PERMISSION_TYPE_BUTTON_WITH_CHECKBOX)
@@ -269,13 +269,13 @@ class AllDataFragmentTest {
             (fragment as AllDataFragment).triggerDeletionState(DELETE)
         }
 
-        onView(withText("Immunizations")).perform(click())
+        onView(withText("Vaccines")).perform(click())
         onIdle()
         assertThat(allDataViewModel.setOfPermissionTypesToBeDeleted.value)
             .containsExactlyElementsIn(setOf(IMMUNIZATIONS))
         verify(healthConnectLogger)
             .logInteraction(AllDataElement.PERMISSION_TYPE_BUTTON_WITH_CHECKBOX)
-        onView(withText("Immunizations")).perform(click())
+        onView(withText("Vaccines")).perform(click())
         assertThat(allDataViewModel.setOfPermissionTypesToBeDeleted.value).isEmpty()
     }
 
@@ -470,9 +470,9 @@ class AllDataFragmentTest {
         }
 
         assertCheckboxShown("Allergies")
-        assertCheckboxShown("Immunizations")
+        assertCheckboxShown("Vaccines")
         onView(withText("Allergies")).perform(click())
-        onView(withText("Immunizations")).perform(click())
+        onView(withText("Vaccines")).perform(click())
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("") as AllDataFragment
             val selectAllCheckboxPreference =

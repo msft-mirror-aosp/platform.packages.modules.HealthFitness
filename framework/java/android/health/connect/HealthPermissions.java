@@ -67,6 +67,7 @@ import android.annotation.SystemApi;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.health.connect.datatypes.ExerciseRoute;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 
@@ -954,7 +955,9 @@ public final class HealthPermissions {
     /**
      * @return true if {@code permissionName} is a write-permission
      * @hide
+     * @deprecated use {@link HealthConnectMappings#isWritePermission(String)}
      */
+    @Deprecated
     public static boolean isWritePermission(@NonNull String permissionName) {
         Objects.requireNonNull(permissionName);
 
@@ -962,10 +965,12 @@ public final class HealthPermissions {
     }
 
     /**
+     * @deprecated Use {@link HealthConnectMappings#getHealthDataCategoryForWritePermission(String)}
      * @return {@link HealthDataCategory} for a WRITE {@code permissionName}. -1 if permission
      *     category for {@code permissionName} is not found (or if {@code permissionName} is READ)
      * @hide
      */
+    @Deprecated
     @HealthDataCategory.Type
     public static int getHealthDataCategoryForWritePermission(@Nullable String permissionName) {
         if (sWriteHealthPermissionToHealthDataCategoryMap.isEmpty()) {
@@ -989,8 +994,12 @@ public final class HealthPermissions {
         return sDataCategoryToWritePermissionsMap.getOrDefault(dataCategory, new String[] {});
     }
 
-    /** @hide */
+    /**
+     * @deprecated Use {@link HealthConnectMappings#getHealthReadPermission(int)}.
+     * @hide
+     */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    @Deprecated
     public static String getHealthReadPermission(
             @HealthPermissionCategory.Type int permissionCategory) {
         if (sHealthCategoryToReadPermissionMap.isEmpty()) {
@@ -1000,7 +1009,11 @@ public final class HealthPermissions {
         return sHealthCategoryToReadPermissionMap.get(permissionCategory);
     }
 
-    /** @hide */
+    /**
+     * @deprecated Use {@link HealthConnectMappings#getHealthWritePermission(int)}.
+     * @hide
+     */
+    @Deprecated
     public static String getHealthWritePermission(
             @HealthPermissionCategory.Type int permissionCategory) {
         if (sHealthCategoryToWritePermissionMap.isEmpty()) {

@@ -44,7 +44,7 @@ public class DatabaseStatsCollector {
     /** Get the number of interval record entries in Health Connect database. */
     public long getNumberOfIntervalRecordRows() {
         long count = 0L;
-        for (RecordHelper<?> recordHelper : RecordHelperProvider.getRecordHelpers().values()) {
+        for (RecordHelper<?> recordHelper : RecordHelperProvider.getRecordHelpers()) {
             if (recordHelper instanceof IntervalRecordHelper
                     && !(recordHelper instanceof SeriesRecordHelper)) {
                 count +=
@@ -58,7 +58,7 @@ public class DatabaseStatsCollector {
     /** Get the number of series record entries in Health Connect database. */
     public long getNumberOfSeriesRecordRows() {
         long count = 0L;
-        for (RecordHelper<?> recordHelper : RecordHelperProvider.getRecordHelpers().values()) {
+        for (RecordHelper<?> recordHelper : RecordHelperProvider.getRecordHelpers()) {
             if (recordHelper instanceof SeriesRecordHelper) {
                 count +=
                         mTransactionManager.getNumberOfEntriesInTheTable(
@@ -71,7 +71,7 @@ public class DatabaseStatsCollector {
     /** Get the number of instant record entries in Health Connect database. */
     public long getNumberOfInstantRecordRows() {
         long count = 0L;
-        for (RecordHelper<?> recordHelper : RecordHelperProvider.getRecordHelpers().values()) {
+        for (RecordHelper<?> recordHelper : RecordHelperProvider.getRecordHelpers()) {
             if (recordHelper instanceof InstantRecordHelper) {
                 count +=
                         mTransactionManager.getNumberOfEntriesInTheTable(

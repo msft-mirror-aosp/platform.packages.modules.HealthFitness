@@ -127,6 +127,23 @@
     <!-- region permission ui labels -->
 
     <!-- Other health permissions -->
+    <!-- Apps with medical permissions -->
+    <string name="background_read_medical_title" description="Title for permission to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">Access all data in the background</string>
+    <string name="background_read_medical_request_title" description="Title for screen to give permission to an app to read health data in the background. when the app also has medical permissions [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access all data in the background?</string>
+    <string name="background_read_medical_description" description="Description for permission to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">Allow this app to access fitness and wellness data and health records data when you\'re not using the app</string>
+    <string name="background_read_medical_request_description" description="Description for screen to give permission to an app to read health data in the background when the app also has medical permissions. [CHAR_LIMIT=NONE]">If you allow, this app can access fitness and wellness data and health records data when you\'re not using the app.</string>
+
+    <string name="historic_access_medical_title" description="Title for permission to access past health data when the app also has medical permissions. [CHAR_LIMIT=NONE]">Access past fitness and wellness data</string>
+    <string name="historic_access_medical_request_title" description="Title for screen to give permission to an app to access past health data when the app also has medical permissions. [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access past fitness and wellness data?</string>
+    <string name="historic_access_medical_description" description="Description for permission to access past health data when the app also has medical permissions. [CHAR_LIMIT=NONE]">Allow this app to access data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g></string>
+    <string name="historic_access_medical_description_fallback" description="Description for permission to access past health data when the app also has medical permissions and when there is no access date [CHAR_LIMIT=NONE]">Allow this app to access all past data</string>
+    <string name="historic_access_medical_request_description" description="Description for screen to give permission to an app to access past health data when the app also has medical permissions. [CHAR_LIMIT=NONE]">If you allow, this app can access data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g>.</string>
+    <string name="historic_access_medical_request_description_fallback" description="Description for screen to give permission to an app to access past health data when the app also has medical permissions. [CHAR_LIMIT=NONE]">If you allow, this app can access all past data.</string>
+
+    <string name="historic_access_medical_warning" description="Message to inform the user that no fitness data is currently being read [CHAR_LIMIT=NONE]">No fitness data is currently being read because <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> has no read permissions on</string>
+    <!--endregion-->
+
+    <!-- Apps without medical permissions -->
     <string name="background_read_title" description="Title for permission to read health data in the background. [CHAR_LIMIT=NONE]">Access data in the background</string>
     <string name="background_read_request_title" description="Title for screen to give permission to an app to read health data in the background. [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access data in the background?</string>
     <string name="background_read_description" description="Description for permission to read health data in the background. [CHAR_LIMIT=NONE]">Allow this app to access Health&#160;Connect data when you\'re not using the app</string>
@@ -138,6 +155,8 @@
     <string name="historic_access_description_fallback" description="Description for permission to access past health data when there is no access date [CHAR_LIMIT=NONE]">Allow this app to access all past Health&#160;Connect data</string>
     <string name="historic_access_request_description" description="Description for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">If you allow, this app can access Health&#160;Connect data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g>.</string>
     <string name="historic_access_request_description_fallback" description="Description for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">If you allow, this app can access all past Health&#160;Connect data.</string>
+    <!--endregion-->
+
     <!--endregion-->
 
     <!-- region Activity data types -->
@@ -372,13 +391,13 @@
     <string name="conditions_lowercase_label" description="Lowercase label used to show the user's data about medical conditions [CHAR_LIMIT=50]">conditions</string>
     <string name="conditions_content_description" description="Content description for switch that enables permissions for reading the user's data about medical conditions [CHAR_LIMIT=NONE]">Read conditions</string>
 
-    <string name="immunizations_uppercase_label" description="Uppercase label used to show the user's immunization data [CHAR_LIMIT=50]">Immunizations</string>
-    <string name="immunizations_lowercase_label" description="Lowercase label used to show the user's immunization data [CHAR_LIMIT=50]">immunizations</string>
-    <string name="immunizations_content_description" description="Content description for switch that enables permissions for reading the user's immunization data [CHAR_LIMIT=NONE]">Read immunizations</string>
+    <string name="immunizations_uppercase_label" description="Uppercase label used to show the user's immunization data [CHAR_LIMIT=50]">Vaccines</string>
+    <string name="immunizations_lowercase_label" description="Lowercase label used to show the user's immunization data [CHAR_LIMIT=50]">vaccines</string>
+    <string name="immunizations_content_description" description="Content description for switch that enables permissions for reading the user's immunization data [CHAR_LIMIT=NONE]">Read vaccines</string>
 
-    <string name="laboratory_results_uppercase_label" description="Uppercase label used to show the user's laboratory results data [CHAR_LIMIT=50]">Laboratory Results</string>
-    <string name="laboratory_results_lowercase_label" description="Lowercase label used to show the user's laboratory results data [CHAR_LIMIT=50]">laboratory results</string>
-    <string name="laboratory_results_content_description" description="Content description for switch that enables permissions for reading the user's laboratory results data [CHAR_LIMIT=NONE]">Read laboratory results</string>
+    <string name="laboratory_results_uppercase_label" description="Uppercase label used to show the user's laboratory results data [CHAR_LIMIT=50]">Lab results</string>
+    <string name="laboratory_results_lowercase_label" description="Lowercase label used to show the user's laboratory results data [CHAR_LIMIT=50]">lab results</string>
+    <string name="laboratory_results_content_description" description="Content description for switch that enables permissions for reading the user's laboratory results data [CHAR_LIMIT=NONE]">Read lab results</string>
 
     <string name="medications_uppercase_label" description="Uppercase label used to show the user's medications data [CHAR_LIMIT=50]">Medications</string>
     <string name="medications_lowercase_label" description="Lowercase label used to show the user's medications data [CHAR_LIMIT=50]">medications</string>
@@ -400,7 +419,7 @@
     <string name="procedures_lowercase_label" description="Lowercase label used to show the user's procedure data [CHAR_LIMIT=50]">procedures</string>
     <string name="procedures_content_description" description="Content description for switch that enables permissions for reading the user's procedure data [CHAR_LIMIT=NONE]">Read procedures</string>
 
-    <string name="social_history_uppercase_label" description="Uppercase label used to show the user's social history data [CHAR_LIMIT=50]">Social History</string>
+    <string name="social_history_uppercase_label" description="Uppercase label used to show the user's social history data [CHAR_LIMIT=50]">Social history</string>
     <string name="social_history_lowercase_label" description="Lowercase label used to show the user's social history data [CHAR_LIMIT=50]">social history</string>
     <string name="social_history_content_description" description="Content description for switch that enables permissions for reading the user's social history data [CHAR_LIMIT=NONE]">Read social history</string>
 
@@ -408,7 +427,7 @@
     <string name="visits_lowercase_label" description="Lowercase label used to show the user's visits to a doctor or other encounters with a medical professional [CHAR_LIMIT=50]">visits</string>
     <string name="visits_content_description" description="Content description for switch that enables permissions for reading the user's visits to a doctor or other encounters with a medical professional [CHAR_LIMIT=NONE]">Read visits</string>
 
-    <string name="vital_signs_uppercase_label" description="Uppercase label used to show the user's vital signs data [CHAR_LIMIT=50]">Vital Signs</string>
+    <string name="vital_signs_uppercase_label" description="Uppercase label used to show the user's vital signs data [CHAR_LIMIT=50]">Vital signs</string>
     <string name="vital_signs_lowercase_label" description="Lowercase label used to show the user's vital signs data [CHAR_LIMIT=50]">vital signs</string>
     <string name="vital_signs_content_description" description="Content description for switch that enables permissions for reading the user's vital signs data [CHAR_LIMIT=NONE]">Read vital signs</string>
     <!--endregion-->
@@ -432,8 +451,17 @@
     <string name="request_permissions_header_time_frame_desc" description="Text describing the time frame of data which an app will be able to access. [CHAR_LIMIT=NONE]">If you give read access, the app can read new data and data from the past 30 days</string>
     <string name="request_permissions_header_time_frame_history_desc" description="Text describing the time frame of data which an app with history read permission will be able to access. [CHAR_LIMIT=NONE]">If you give read access, the app can read new and past data</string>
     <string name="request_permissions_header_title" description="Title for screen to give permissions to an app to read or write users data. Note: Health Connect is the brand. [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access Health&#160;Connect?</string>
-    <string name="request_permissions_rationale" description="Text informing the user that data they share with an app is covered by that app's data privacy policy. Has a link to the app's privacy policy. [CHAR_LIMIT=NONE]">You can learn how <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> handles your data in the developer\'s <xliff:g example="privacy policy" id="privacy_policy_link">%2$s</xliff:g></string>
+    <string name="request_permissions_rationale" description="Text informing the user that data they share with an app is covered by that app's data privacy policy. Has a link to the app's privacy policy. [CHAR_LIMIT=NONE]">You can learn how <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> handles your data in their <xliff:g example="privacy policy" id="privacy_policy_link">%2$s</xliff:g></string>
     <string name="request_permissions_privacy_policy" description="Link text that open's a third party app's data privacy policy [CHAR_LIMIT=NONE]">privacy policy</string>
+    <!--endregion-->
+
+    <!-- region Medical permission request -->
+    <string name="medical_request_header" description="Title for screen to give medical permissions to an app [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access your health records?</string>
+    <string name="medical_request_header_desc" description="Text describing which medical data can be accessed by the app that is requesting medical permissions [CHAR_LIMIT=NONE]">If you give access, the app can read and write data such as allergies, lab results, vaccines and more\n<xliff:g example="About health records" id="about_health_records_link">%1$s</xliff:g></string>
+    <string name="medical_request_about_health_records" description="Link to a help page about health records [CHAR_LIMIT=NONE]">About health records</string>
+    <string name="medical_request_data_to_share" description="Title for section of the medical permission request screen which lists the data types accessed by this write permission [CHAR_LIMIT=NONE]">Data to share</string>
+    <string name="medical_request_share" description="Explanation than an app can access all health records when it requests medical write permissions [CHAR_LIMIT=NONE]">If you allow, <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> can share your health records with Health&#160;Connect.</string>
+    <string name="medical_request_footer" description="Footer for screen requesting medical write permissions for an app [CHAR_LIMIT=NONE]">Sync your health records from your different apps and sources to keep them in one place</string>
     <!--endregion-->
 
     <!-- region Fitness permissions (no medical) disconnect -->
@@ -527,9 +555,9 @@
     <string name="permissions_header" description="Title shown for section that lists permissions. [CHAR_LIMIT=40]">Permissions</string>
     <string name="fitness_permissions" description="Label of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Fitness and wellness</string>
     <string name="fitness_permissions_summary" description="Summary of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Exercise, sleep, nutrition and others</string>
-    <string name="medical_permissions" description="Uppercase name of medical data category that contains lab results, immunizations, medications, etc. [CHAR_LIMIT=40]">Health records</string>
-    <string name="medical_permissions_lowercase" description="Lowercase name of medical data category that contains lab results, immunizations, medications, etc. [CHAR_LIMIT=40]">health records</string>
-    <string name="medical_permissions_summary" description="Summary of a button that opens the medical permissions screen. [CHAR_LIMIT=40]">Lab results, medications, immunizations and others</string>
+    <string name="medical_permissions" description="Uppercase name of medical data category that contains lab results, vaccines, medications, etc. [CHAR_LIMIT=40]">Health records</string>
+    <string name="medical_permissions_lowercase" description="Lowercase name of medical data category that contains lab results, vaccines, medications, etc. [CHAR_LIMIT=40]">health records</string>
+    <string name="medical_permissions_summary" description="Summary of a button that opens the medical permissions screen. [CHAR_LIMIT=40]">Lab results, medications, vaccines and others</string>
     <!--endregion-->
 
     <!--region Denied Apps -->
@@ -647,7 +675,7 @@
     <!--region Onboarding -->
     <string name="onboarding_title" description="Label used to show the title of onboarding page when user opens Health Connect app for the fist time">Get started with Health&#160;Connect</string>
     <string name="onboarding_description" description="Content description of Health Connect app on the onboarding page">Health&#160;Connect stores your health and fitness data, giving you a simple way to sync the different apps on your device</string>
-    <string name="onboarding_description_health_records" description="Content description of Health Connect app on the onboarding page that includes health records">Health&#160;Connect stores and syncs your health and fitness data from different apps.\n\n<b>Fitness and wellness data,</b> including exercise sessions, steps, nutrition, sleep and more\n\n<b>Health records,</b> including immunizations, lab results and more</string>
+    <string name="onboarding_description_health_records" description="Content description of Health Connect app on the onboarding page that includes health records">Health&#160;Connect stores and syncs your health and fitness data from different apps.\n\n<b>Fitness and wellness data,</b> including exercise sessions, steps, nutrition, sleep and more\n\n<b>Health records,</b> including vaccines, lab results and more</string>
     <string name="onboarding_description_with_health_connect" description="Content description of Health Connect app on the onboarding page that explains what the user can do with this app">With Health&#160;Connect you can</string>
     <string name="share_data" description="Label used to show how the user can share data with apps">Share data with your apps</string>
     <string name="share_data_description" description="Content description for how the user can share data with apps">Choose the data each app can read or write to Health&#160;Connect</string>
@@ -1474,6 +1502,8 @@
     <string name="additional_access_combined_footer" description="Footer of screen to manage additional permissions for an app when no read fitness permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on background or past data access for this app</string>
     <string name="additional_access_background_footer" description="Footer of screen to manage additional permissions for an app when no read fitness permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on background access for this app</string>
     <string name="additional_access_history_footer" description="Footer of screen to manage additional permissions for an app when no read fitness permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on past data access for this app</string>
+    <string name="additional_access_medical_read_footer" description="Footer of screen to manage additional permissions for an app when medical read permissions are granted [CHAR_LIMIT=NONE]"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> can already access past data for your health records. To change this, turn off health record permissions for this app</string>
+    <string name="additional_access_medical_read_footer_link" description="Link to manage health records permissions in footer of screen showing the additional permissions of an app [CHAR_LIMIT=NONE]">Manage health record permissions</string>
     <!--  endregion -->
 
     <!-- region Onboarding -->

@@ -209,7 +209,7 @@ class MedicalAppFragmentTest {
             assertThat(readCategory?.preferenceCount).isEqualTo(1)
             assertThat(writeCategory?.preferenceCount).isEqualTo(0)
         }
-        onView(withText("Immunizations")).check(matches(isDisplayed()))
+        onView(withText("Vaccines")).check(matches(isDisplayed()))
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
@@ -277,7 +277,7 @@ class MedicalAppFragmentTest {
             assertThat(writeCategory?.preferenceCount).isEqualTo(1)
         }
         onView(withText("All health records")).check(matches(isDisplayed()))
-        onView(withText("Immunizations")).check(matches(isDisplayed()))
+        onView(withText("Vaccines")).check(matches(isDisplayed()))
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
 
         verify(healthConnectLogger, atLeast(1)).setPageId(PageName.UNKNOWN_PAGE)
@@ -414,7 +414,7 @@ class MedicalAppFragmentTest {
             .logInteraction(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
 
         onView(withText("All health records")).check(matches(not(isChecked())))
-        onView(withText("Immunizations")).check(matches(not(isChecked())))
+        onView(withText("Vaccines")).check(matches(not(isChecked())))
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 

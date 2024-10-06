@@ -17,11 +17,13 @@
 package com.android.server.healthconnect.injector;
 
 import android.content.Context;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 
 import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.backuprestore.CloudBackupManager;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
@@ -61,8 +63,10 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final AppInfoHelper mAppInfoHelper;
     private final AccessLogsHelper mAccessLogsHelper;
     private final ActivityDateHelper mActivityDateHelper;
+    private final HealthConnectMappings mHealthConnectMappings;
     private final ChangeLogsHelper mChangeLogsHelper;
     private final ChangeLogsRequestHelper mChangeLogsRequestHelper;
+    private final CloudBackupManager mCloudBackupManager;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -91,6 +95,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mPreferenceHelper == null
                         ? PreferenceHelper.getInstance(mTransactionManager)
                         : builder.mPreferenceHelper;
+        mHealthConnectMappings = new HealthConnectMappings();
         mHealthDataCategoryPriorityHelper =
                 builder.mHealthDataCategoryPriorityHelper == null
                         ? HealthDataCategoryPriorityHelper.getInstance(
@@ -98,7 +103,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 mTransactionManager,
                                 mHealthConnectDeviceConfigManager,
                                 mPreferenceHelper,
-                                mPackageInfoUtils)
+                                mPackageInfoUtils,
+                                mHealthConnectMappings)
                         : builder.mHealthDataCategoryPriorityHelper;
         mPriorityMigrationHelper =
                 builder.mPriorityMigrationHelper == null
@@ -138,12 +144,16 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mActivityDateHelper;
         mChangeLogsHelper =
                 builder.mChangeLogsHelper == null
-                        ? new ChangeLogsHelper()
+                        ? new ChangeLogsHelper(mTransactionManager)
                         : builder.mChangeLogsHelper;
         mChangeLogsRequestHelper =
                 builder.mChangeLogsRequestHelper == null
-                        ? new ChangeLogsRequestHelper()
+                        ? new ChangeLogsRequestHelper(mTransactionManager)
                         : builder.mChangeLogsRequestHelper;
+        mCloudBackupManager =
+                builder.mCloudBackupManager == null
+                        ? new CloudBackupManager()
+                        : builder.mCloudBackupManager;
     }
 
     @Override
@@ -221,6 +231,16 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         return mChangeLogsRequestHelper;
     }
 
+    @Override
+    public HealthConnectMappings getHealthConnectMappings() {
+        return mHealthConnectMappings;
+    }
+
+    @Override
+    public CloudBackupManager getCloudBackupManager() {
+        return mCloudBackupManager;
+    }
+
     /**
      * Returns a new Builder of Health Connect Injector
      *
@@ -255,6 +275,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private ActivityDateHelper mActivityDateHelper;
         @Nullable private ChangeLogsHelper mChangeLogsHelper;
         @Nullable private ChangeLogsRequestHelper mChangeLogsRequestHelper;
+        @Nullable private CloudBackupManager mCloudBackupManager;
 
         private Builder(Context context) {
             mHealthConnectUserContext = new HealthConnectUserContext(context, context.getUser());
@@ -361,10 +382,17 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
             return this;
         }
 
-        /** Set fake or custom ActivityDateHelper */
+        /** Set fake or custom ChangeLogsRequestHelper */
         public Builder setChangeLogsRequestHelper(ChangeLogsRequestHelper changeLogsRequestHelper) {
             Objects.requireNonNull(changeLogsRequestHelper);
             mChangeLogsRequestHelper = changeLogsRequestHelper;
+            return this;
+        }
+
+        /** Set fake or custom CloudBackupManager */
+        public Builder setCloudBackupManager(CloudBackupManager cloudBackupManager) {
+            Objects.requireNonNull(cloudBackupManager);
+            mCloudBackupManager = cloudBackupManager;
             return this;
         }
 

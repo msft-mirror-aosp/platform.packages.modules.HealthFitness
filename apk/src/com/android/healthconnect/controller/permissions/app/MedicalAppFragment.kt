@@ -218,7 +218,7 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
         )
         additionalAccessViewModel.loadAdditionalAccessPreferences(packageName)
         additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
-            if (state.isValid() && shouldAddAdditionalAccessPref()) {
+            if (state.isAvailable() && shouldAddAdditionalAccessPref()) {
                 val additionalAccessPref =
                     HealthPreference(requireContext()).also {
                         it.key = KEY_ADDITIONAL_ACCESS
@@ -237,7 +237,7 @@ class MedicalAppFragment : Hilt_MedicalAppFragment() {
                 manageDataCategory.addPreference(additionalAccessPref)
             }
             manageDataCategory.children.find { it.key == KEY_ADDITIONAL_ACCESS }?.isVisible =
-                state.isValid()
+                state.isAvailable()
         }
     }
 

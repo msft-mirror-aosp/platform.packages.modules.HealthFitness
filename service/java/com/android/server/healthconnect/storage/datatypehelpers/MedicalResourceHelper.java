@@ -29,7 +29,6 @@ import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDa
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getReadTableWhereClause;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getCreateMedicalResourceIndicesTableRequest;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName;
-import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper.getTableName;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.SqlJoin.SQL_JOIN_INNER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
@@ -242,6 +241,14 @@ public final class MedicalResourceHelper {
 
     public static String getPrimaryColumn() {
         return MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME;
+    }
+
+    public static String getLastModifiedColumnName() {
+        return LAST_MODIFIED_TIME_COLUMN_NAME;
+    }
+
+    public static String getDataSourceIdColumnName() {
+        return DATA_SOURCE_ID_COLUMN_NAME;
     }
 
     private static List<Pair<String, String>> getColumnInfo() {
@@ -528,13 +535,13 @@ public final class MedicalResourceHelper {
     public ReadMedicalResourcesInternalResponse
             readMedicalResourcesByRequestWithoutPermissionChecks(
                     PhrPageTokenWrapper pageTokenWrapper, int pageSize) {
-        ReadMedicalResourcesInternalResponse response;
-        ReadTableRequest readTableRequest =
+        ReadTableRequest request =
                 getReadTableRequestUsingRequestFilters(pageTokenWrapper, pageSize);
-        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
-            response = getMedicalResources(cursor, pageTokenWrapper, pageSize);
-        }
-        return response;
+
+        return mTransactionManager.runAsTransaction(
+                (db) -> {
+                    return getMedicalResources(db, request, pageTokenWrapper, pageSize);
+                });
     }
 
     /**
@@ -561,9 +568,8 @@ public final class MedicalResourceHelper {
                                     pageSize,
                                     callingPackageName,
                                     enforceSelfRead);
-                    try (Cursor cursor = mTransactionManager.read(db, readTableRequest)) {
-                        response = getMedicalResources(cursor, pageTokenWrapper, pageSize);
-                    }
+                    response =
+                            getMedicalResources(db, readTableRequest, pageTokenWrapper, pageSize);
                     if (!enforceSelfRead) {
                         mAccessLogsHelper.addAccessLog(
                                 db,
@@ -789,7 +795,7 @@ public final class MedicalResourceHelper {
     static SqlJoin joinWithMedicalResourceIndicesTable() {
         return new SqlJoin(
                         MEDICAL_RESOURCE_TABLE_NAME,
-                        getTableName(),
+                        MedicalResourceIndicesHelper.getTableName(),
                         MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME,
                         MedicalResourceIndicesHelper.getParentColumnReference())
                 .setJoinType(SQL_JOIN_INNER);
@@ -1034,11 +1040,45 @@ public final class MedicalResourceHelper {
     }
 
     /**
-     * Returns a {@link ReadMedicalResourcesInternalResponse}. If the cursor contains more
-     * than @link MAXIMUM_ALLOWED_CURSOR_COUNT} records, it throws {@link IllegalArgumentException}.
+     * Returns a {@link ReadMedicalResourcesInternalResponse}.
+     *
+     * <p>This should be run within a transaction as it does multiple requests using the db passed
+     * for the transaction.
+     *
+     * @param request the specification for the rows to read
+     * @param pageSize the number of results to return in this page
+     * @param pageTokenWrapper the page token for the query
+     * @throws IllegalArgumentException if the cursor contains more than @link
+     *     MAXIMUM_ALLOWED_CURSOR_COUNT} records.
      */
     private static ReadMedicalResourcesInternalResponse getMedicalResources(
-            Cursor cursor, PhrPageTokenWrapper pageTokenWrapper, int pageSize) {
+            SQLiteDatabase db,
+            ReadTableRequest request,
+            PhrPageTokenWrapper pageTokenWrapper,
+            int pageSize) {
+        ReadMedicalResourcesInternalResponse response;
+        // Get the count from a requests with no limit,
+        Integer originalLimit = request.getLimit();
+        request.setLimit(null);
+        int totalRowCount = TransactionManager.count(request, db);
+        request.setLimit(originalLimit);
+        try (Cursor cursor = db.rawQuery(request.getReadCommand(), null)) {
+            response = getMedicalResources(cursor, pageTokenWrapper, pageSize, totalRowCount);
+        }
+        return response;
+    }
+
+    /**
+     * Returns a {@link ReadMedicalResourcesInternalResponse}.
+     *
+     * @param pageSize the number of results to return in this page
+     * @param totalRowCount the number of rows that would have been returned if this query was
+     *     executed with no limit
+     * @throws IllegalArgumentException if the cursor contains more than @link
+     *     MAXIMUM_ALLOWED_CURSOR_COUNT} records.
+     */
+    private static ReadMedicalResourcesInternalResponse getMedicalResources(
+            Cursor cursor, PhrPageTokenWrapper pageTokenWrapper, int pageSize, int totalRowCount) {
         // TODO(b/356613483): remove these checks in the helpers and instead validate pageSize
         // in the service.
         if (cursor.getCount() > MAXIMUM_ALLOWED_CURSOR_COUNT) {
@@ -1059,7 +1099,10 @@ public final class MedicalResourceHelper {
                 lastRowId = getCursorLong(cursor, MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME);
             } while (cursor.moveToNext());
         }
-        return new ReadMedicalResourcesInternalResponse(medicalResources, nextPageToken);
+
+        int remainingCount = totalRowCount - medicalResources.size();
+        return new ReadMedicalResourcesInternalResponse(
+                medicalResources, nextPageToken, remainingCount);
     }
 
     /**

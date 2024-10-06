@@ -226,9 +226,9 @@ class SettingsMedicalAppFragment : Hilt_SettingsMedicalAppFragment() {
             return
         }
         additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
-            manageAppCategory.isVisible = state.isValid()
+            manageAppCategory.isVisible = state.isAvailable()
             manageAppCategory.removeAll()
-            if (state.isValid()) {
+            if (state.isAvailable()) {
                 val additionalAccessPref =
                     HealthPreference(requireContext()).also {
                         it.key = KEY_ADDITIONAL_ACCESS
