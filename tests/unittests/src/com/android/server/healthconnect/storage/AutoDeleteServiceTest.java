@@ -180,7 +180,7 @@ public class AutoDeleteServiceTest {
 
         when(mPreferenceHelper.getPreference(AUTO_DELETE_DURATION_RECORDS_KEY))
                 .thenReturn(String.valueOf(30));
-        when(RecordHelperProvider.getRecordHelpers()).thenReturn(getRecordHelpers());
+        when(RecordHelperProvider.getRecordHelpers()).thenReturn(getRecordHelpers().values());
 
         AutoDeleteService.startAutoDelete(
                 mContext,

@@ -22,6 +22,8 @@ import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMIS
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 
+import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
+import static com.android.healthfitness.flags.Flags.FLAG_IMMEDIATE_EXPORT;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import android.Manifest;
@@ -61,9 +63,11 @@ import android.health.connect.aidl.IChangeLogsResponseCallback;
 import android.health.connect.aidl.IDataStagingFinishedCallback;
 import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IGetChangeLogTokenCallback;
+import android.health.connect.aidl.IGetChangesForBackupResponseCallback;
 import android.health.connect.aidl.IGetHealthConnectDataStateCallback;
 import android.health.connect.aidl.IGetHealthConnectMigrationUiStateCallback;
 import android.health.connect.aidl.IGetPriorityResponseCallback;
+import android.health.connect.aidl.IGetSettingsForBackupResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
@@ -80,12 +84,15 @@ import android.health.connect.aidl.RecordIdFiltersParcel;
 import android.health.connect.aidl.RecordTypeInfoResponseParcel;
 import android.health.connect.aidl.RecordsParcel;
 import android.health.connect.aidl.UpdatePriorityRequestParcel;
+import android.health.connect.backuprestore.GetChangesForBackupResponse;
+import android.health.connect.backuprestore.GetSettingsForBackupResponse;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogTokenResponse;
 import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.DataOrigin;
+import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
@@ -1820,7 +1827,7 @@ public class HealthConnectManager {
     }
 
     /**
-     * Queries the status of a data import.
+     * Imports the given compressed database file.
      *
      * @throws RuntimeException for internal errors
      * @hide
@@ -1837,6 +1844,42 @@ public class HealthConnectManager {
         try {
             mService.runImport(
                     mContext.getUser(),
+                    file,
+                    new IEmptyResponseCallback.Stub() {
+                        @Override
+                        public void onResult() {
+                            Binder.clearCallingIdentity();
+                            executor.execute(() -> callback.onResult(null));
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Triggers an immediate export of health connect data.
+     *
+     * @throws RuntimeException for internal errors
+     * @hide
+     */
+    @WorkerThread
+    @FlaggedApi(FLAG_IMMEDIATE_EXPORT)
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
+    public void runImmediateExport(
+            @NonNull Uri file,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
+        Objects.requireNonNull(file);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+        try {
+            mService.runImmediateExport(
                     file,
                     new IEmptyResponseCallback.Stub() {
                         @Override
@@ -2069,16 +2112,35 @@ public class HealthConnectManager {
      * Inserts or updates a list of {@link MedicalResource}s into the HealthConnect database using
      * {@link UpsertMedicalResourceRequest}.
      *
-     * <p>Medical data is represented using the <a href="https://hl7.org/fhir/">Fast Healthcare
-     * Interoperability Resources (FHIR)</a> standard.
-     *
      * <p>For each {@link UpsertMedicalResourceRequest}, one {@link MedicalResource} will be
-     * returned.The returned list of {@link MedicalResource}s will be in the same order as the
+     * returned. The returned list of {@link MedicalResource}s will be in the same order as the
      * {@code requests}.
+     *
+     * <p>Medical data is represented using the <a href="https://hl7.org/fhir/">Fast Healthcare
+     * Interoperability Resources (FHIR)</a> standard. The FHIR resource provided in {@link
+     * UpsertMedicalResourceRequest#getData()} is expected to be valid FHIR in JSON representation
+     * for the specified {@link UpsertMedicalResourceRequest#getFhirVersion()} according to the <a
+     * href="https://hl7.org/fhir/resourcelist.html">FHIR spec</a>.
+     *
+     * <p>Each {@link UpsertMedicalResourceRequest} also has to meet the following requirements.
+     *
+     * <ul>
+     *   <li>The FHIR resource contains an "id" and "resourceType" field.
+     *   <li>The FHIR resource type is in our accepted list of resource types. See {@link
+     *       FhirResource} for the accepted types.
+     *   <li>The resource can be mapped to one of the READ_MEDICAL_DATA_ {@link HealthPermissions}
+     *       categories.
+     *   <li>The {@link UpsertMedicalResourceRequest#getDataSourceId()} is valid.
+     *   <li>The {@link UpsertMedicalResourceRequest#getFhirVersion()} matches the {@link
+     *       FhirVersion} of the {@link MedicalDataSource}.
+     * </ul>
      *
      * <p>If any request is deemed invalid, the caller will receive an exception with code {@link
      * HealthConnectException#ERROR_INVALID_ARGUMENT} via {@code callback.onError()}, and none of
      * the {@code requests} will be upserted into the HealthConnect database.
+     *
+     * <p>If data for any {@link UpsertMedicalResourceRequest} fails to be upserted, then no data
+     * from any {@code requests} will be upserted into the database.
      *
      * <p>The uniqueness of each request is calculated comparing the combination of {@link
      * UpsertMedicalResourceRequest#getDataSourceId() data source id}, FHIR resource type and FHIR
@@ -2163,6 +2225,11 @@ public class HealthConnectManager {
      *   <li>In all other cases the caller is not permitted to get the given medical resource and it
      *       will not be returned.
      * </ol>
+     *
+     * <p>Each returned {@link MedicalResource} has passed the Health Connect FHIR validation checks
+     * at write time, but is not guaranteed to meet all requirements of the <a
+     * href="https://hl7.org/fhir/resourcelist.html">Fast Healthcare Interoperability Resources
+     * (FHIR) spec</a>. If required, clients should perform their own checks on the data.
      *
      * @param ids Identifiers on which to perform read operation.
      * @param executor Executor on which to invoke the callback.
@@ -2560,6 +2627,9 @@ public class HealthConnectManager {
      * <ul>
      *   <li>If an empty {@link GetMedicalDataSourcesRequest#getPackageNames() list of package
      *       names} is passed, all permitted data sources from all apps will be returned. See below.
+     *   <li>If any package name in the {@link GetMedicalDataSourcesRequest#getPackageNames() list
+     *       of package names} is invalid, the caller will receive an error via the {@code
+     *       callback}.
      *   <li>If a non-empty {@link GetMedicalDataSourcesRequest#getPackageNames() list of package
      *       names} is specified in the request, then only the permitted data sources created by
      *       those packages will be returned. See below.
@@ -2664,6 +2734,79 @@ public class HealthConnectManager {
                         @Override
                         public void onResult() {
                             returnResult(executor, null, callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * The changeToken returned by the previous call should be passed in to resume the upload. A
+     * null or empty changeToken means we are doing a fresh backup, and should start from the
+     * beginning.
+     *
+     * <p>If the changeToken is not found, it means that HealthConnect can no longer resume the
+     * backup from this point, and will respond with an Exception. The caller should restart the
+     * backup in this case.
+     *
+     * <p>If no changes are returned by the API, this means that the client has synced all changes
+     * as of now.
+     *
+     * @hide
+     */
+    @SuppressWarnings("NullAway") // TODO: b/178748627 - fix this suppression.
+    @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
+    public void getChangesForBackup(
+            @Nullable String changeToken,
+            @NonNull Executor executor,
+            @NonNull
+                    OutcomeReceiver<GetChangesForBackupResponse, HealthConnectException> callback) {
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+        try {
+            mService.getChangesForBackup(
+                    changeToken,
+                    new IGetChangesForBackupResponseCallback.Stub() {
+                        @Override
+                        public void onResult(GetChangesForBackupResponse response) {
+                            returnResult(executor, response, callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Returns all user settings bundled as a single byte array.
+     *
+     * @hide
+     */
+    @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
+    public void getSettingsForBackup(
+            @NonNull Executor executor,
+            @NonNull
+                    OutcomeReceiver<GetSettingsForBackupResponse, HealthConnectException>
+                            callback) {
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+        try {
+            mService.getSettingsForBackup(
+                    new IGetSettingsForBackupResponseCallback.Stub() {
+                        @Override
+                        public void onResult(GetSettingsForBackupResponse response) {
+                            returnResult(executor, response, callback);
                         }
 
                         @Override

@@ -304,6 +304,22 @@ public final class TestUtils {
         return receiver.getResponse();
     }
 
+    /**
+     * Given {@link PermissionHelper#MANAGE_HEALTH_DATA} permission, invokes {@link
+     * HealthConnectManager#aggregate} with the given {@code request}.
+     */
+    public static <T> AggregateRecordsResponse<T> getAggregateResponseWithManagePermission(
+            AggregateRecordsRequest<T> request) throws InterruptedException {
+        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+
+        try {
+            return getAggregateResponse(request);
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
+    }
+
     public static <T> AggregateRecordsResponse<T> getAggregateResponse(
             AggregateRecordsRequest<T> request) throws InterruptedException {
         HealthConnectReceiver<AggregateRecordsResponse<T>> receiver =
@@ -345,6 +361,22 @@ public final class TestUtils {
                 .aggregateGroupByPeriod(
                         request, period, Executors.newSingleThreadExecutor(), receiver);
         return receiver.getResponse();
+    }
+
+    /**
+     * Given {@link PermissionHelper#MANAGE_HEALTH_DATA} permission, invokes {@link
+     * HealthConnectManager#readRecords} with the given {@code request}.
+     */
+    public static <T extends Record> List<T> readRecordsWithManagePermission(
+            ReadRecordsRequest<T> request) throws InterruptedException {
+        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+
+        try {
+            return readRecords(request);
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
     }
 
     public static <T extends Record> List<T> readRecords(ReadRecordsRequest<T> request)

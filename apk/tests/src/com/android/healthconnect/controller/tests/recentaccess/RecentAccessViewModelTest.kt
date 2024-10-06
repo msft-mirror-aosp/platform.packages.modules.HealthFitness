@@ -44,7 +44,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.TestTimeSource
-import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.di.FakeHealthPermissionAppsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeRecentAccessUseCase
 import com.android.healthconnect.controller.utils.FeatureUtils
@@ -538,10 +537,9 @@ class RecentAccessViewModelTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun loadRecentAccessApps_medicalPermissionsEnabled_returnsCorrectAppPermissionsType() =
         runTest {
-            (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
-
             val packageName = TEST_APP_PACKAGE_NAME
 
             val time1 = MIDNIGHT.plusSeconds(60)

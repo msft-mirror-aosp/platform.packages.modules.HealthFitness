@@ -51,6 +51,8 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.TestUtils;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -138,6 +140,9 @@ public class HealthDataCategoryPriorityHelperTest {
         when(mCursor.getColumnIndex(eq(APP_ID_PRIORITY_ORDER_COLUMN_NAME)))
                 .thenReturn(APP_ID_PRIORITY_ORDER_COLUMN_INDEX);
 
+        mContext = InstrumentationRegistry.getInstrumentation().getContext();
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext).build();
         HealthDataCategoryPriorityHelper.clearInstanceForTest();
         mHealthDataCategoryPriorityHelper =
                 HealthDataCategoryPriorityHelper.getInstance(
@@ -145,17 +150,14 @@ public class HealthDataCategoryPriorityHelperTest {
                         mTransactionManager,
                         mHealthConnectDeviceConfigManager,
                         mPreferenceHelper,
-                        mPackageInfoUtils);
-        // Clear data in case the singleton is already initialised.
-        mHealthDataCategoryPriorityHelper.clearData(mTransactionManager);
-        mContext = InstrumentationRegistry.getInstrumentation().getContext();
+                        mPackageInfoUtils,
+                        healthConnectInjector.getHealthConnectMappings());
     }
 
     @After
     public void tearDown() throws Exception {
         TestUtils.waitForAllScheduledTasksToComplete();
         reset(mPackageInfo1, mPackageInfo2, mPackageInfo3);
-        mHealthDataCategoryPriorityHelper.clearData(mTransactionManager);
         clearInvocations(mPreferenceHelper);
         clearInvocations(mTransactionManager);
         clearInvocations(mHealthConnectDeviceConfigManager);

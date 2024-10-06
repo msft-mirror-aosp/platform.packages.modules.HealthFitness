@@ -32,6 +32,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.ratelimiter.RateLimiter.QuotaCategory.QUOTA_CATEGORY_WRITE;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_VERSION;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_UUID;
@@ -219,7 +220,10 @@ public class HealthConnectServiceImplTest {
                     "upsertMedicalResources",
                     "readMedicalResourcesByIds",
                     "readMedicalResourcesByRequest",
-                    "queryAllMedicalResourceTypeInfos");
+                    "queryAllMedicalResourceTypeInfos",
+                    "runImmediateExport",
+                    "getChangesForBackup",
+                    "getSettingsForBackup");
 
     /** Health connect service APIs that do not block calls when data sync is in progress. */
     public static final Set<String> DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST =
@@ -347,7 +351,9 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getHealthDataCategoryPriorityHelper(),
                         healthConnectInjector.getActivityDateHelper(),
                         healthConnectInjector.getChangeLogsHelper(),
-                        healthConnectInjector.getChangeLogsRequestHelper());
+                        healthConnectInjector.getChangeLogsRequestHelper(),
+                        healthConnectInjector.getHealthConnectMappings(),
+                        healthConnectInjector.getCloudBackupManager());
     }
 
     @After
@@ -1707,7 +1713,8 @@ public class HealthConnectServiceImplTest {
                                 id.toString(),
                                 DATA_SOURCE_PACKAGE_NAME,
                                 DATA_SOURCE_FHIR_BASE_URI,
-                                DATA_SOURCE_DISPLAY_NAME)
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
                         .build();
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
                         List.of(id)))
@@ -1734,7 +1741,8 @@ public class HealthConnectServiceImplTest {
                                 id.toString(),
                                 DIFFERENT_DATA_SOURCE_PACKAGE_NAME,
                                 DATA_SOURCE_FHIR_BASE_URI,
-                                DATA_SOURCE_DISPLAY_NAME)
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
                         .build();
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
                         List.of(id)))
@@ -1764,7 +1772,8 @@ public class HealthConnectServiceImplTest {
                                 id.toString(),
                                 DATA_SOURCE_PACKAGE_NAME,
                                 DATA_SOURCE_FHIR_BASE_URI,
-                                DATA_SOURCE_DISPLAY_NAME)
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
                         .build();
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
                         List.of(id)))
@@ -2043,10 +2052,10 @@ public class HealthConnectServiceImplTest {
                 .thenReturn(List.of());
         when(mMedicalResourceHelper.readMedicalResourcesByRequestWithoutPermissionChecks(
                         any(), anyInt()))
-                .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null));
+                .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null, 0));
         when(mMedicalResourceHelper.readMedicalResourcesByRequestWithPermissionChecks(
                         any(), anyInt(), anyString(), anyBoolean()))
-                .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null));
+                .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null, 0));
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(any()))
                 .thenReturn(List.of());
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(

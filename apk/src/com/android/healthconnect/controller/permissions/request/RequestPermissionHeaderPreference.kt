@@ -21,6 +21,7 @@ import android.widget.TextView
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.boldAppName
 import com.android.healthconnect.controller.utils.convertTextViewIntoLink
 
@@ -34,11 +35,13 @@ constructor(
 ) : Preference(context, attrs, defStyleAttr, defStyleRes) {
 
     private lateinit var title: TextView
-    private lateinit var historyAccess: TextView
+    private lateinit var accessInfo: TextView
     private lateinit var privacyPolicy: TextView
     private var appName: String? = null
     private var onRationaleLinkClicked: (() -> Unit)? = null
+    private var onAboutHealthRecordsClicked: (() -> Unit)? = null
     private var historyAccessGranted: Boolean = false
+    private var isMedicalRequest: Boolean = false
 
     init {
         layoutResource = R.layout.widget_request_permission_header
@@ -49,8 +52,8 @@ constructor(
         super.onBindViewHolder(holder)
         title = holder.findViewById(R.id.title) as TextView
         updateTitle()
-        historyAccess = holder.findViewById(R.id.history_access) as TextView
-        updateHistoryAccess()
+        accessInfo = holder.findViewById(R.id.access_info) as TextView
+        updateAccessInfo()
         privacyPolicy = holder.findViewById(R.id.privacy_policy) as TextView
         updatePrivacyString()
     }
@@ -62,18 +65,71 @@ constructor(
         notifyChanged()
     }
 
+    fun bindMedical(
+        appName: String,
+        onAboutHealthRecordsClicked: () -> Unit,
+        onRationaleLinkClicked: () -> Unit,
+    ) {
+        this.appName = appName
+        this.isMedicalRequest = true
+        this.onRationaleLinkClicked = onRationaleLinkClicked
+        this.onAboutHealthRecordsClicked = onAboutHealthRecordsClicked
+        notifyChanged()
+    }
+
     private fun updateTitle() {
-        val text = context.getString(R.string.request_permissions_header_title, appName)
+        val text =
+            if (isMedicalRequest) {
+                context.getString(R.string.medical_request_header, appName)
+            } else {
+                context.getString(R.string.request_permissions_header_title, appName)
+            }
+
         title.text = boldAppName(appName, text)
     }
 
+    private fun updateAccessInfo() {
+        if (!isMedicalRequest) {
+            updateHistoryAccess()
+        } else {
+            updateHealthRecordsAccess()
+        }
+    }
+
     private fun updateHistoryAccess() {
+        accessInfo.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            AttributeResolver.getNullableDrawable(context, R.attr.accessHistoryIcon),
+            null,
+            null,
+            null,
+        )
         if (historyAccessGranted) {
-            historyAccess.text =
+            accessInfo.text =
                 context.getString(R.string.request_permissions_header_time_frame_history_desc)
         } else {
-            historyAccess.text =
-                context.getString(R.string.request_permissions_header_time_frame_desc)
+            accessInfo.text = context.getString(R.string.request_permissions_header_time_frame_desc)
+        }
+    }
+
+    private fun updateHealthRecordsAccess() {
+        accessInfo.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            AttributeResolver.getNullableDrawable(context, R.attr.medicalServicesIcon),
+            null,
+            null,
+            null,
+        )
+        val aboutHealthRecordsString =
+            context.getString(R.string.medical_request_about_health_records)
+        val accessInfoText =
+            context.getString(R.string.medical_request_header_desc, aboutHealthRecordsString)
+        accessInfo.text = accessInfoText
+        convertTextViewIntoLink(
+            accessInfo,
+            accessInfoText,
+            accessInfoText.indexOf(aboutHealthRecordsString),
+            accessInfoText.indexOf(aboutHealthRecordsString) + aboutHealthRecordsString.length,
+        ) {
+            onAboutHealthRecordsClicked?.invoke()
         }
     }
 
@@ -81,13 +137,17 @@ constructor(
         val policyString = context.getString(R.string.request_permissions_privacy_policy)
         val rationaleText =
             context.resources.getString(
-                R.string.request_permissions_rationale, appName, policyString)
+                R.string.request_permissions_rationale,
+                appName,
+                policyString,
+            )
         convertTextViewIntoLink(
             privacyPolicy,
             rationaleText,
             rationaleText.indexOf(policyString),
-            rationaleText.indexOf(policyString) + policyString.length) {
-                onRationaleLinkClicked?.invoke()
-            }
+            rationaleText.indexOf(policyString) + policyString.length,
+        ) {
+            onRationaleLinkClicked?.invoke()
+        }
     }
 }
