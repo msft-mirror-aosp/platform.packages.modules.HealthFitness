@@ -28,10 +28,12 @@ import static org.mockito.Mockito.when;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.platform.test.annotations.DisableFlags;
+import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.healthfitness.flags.Flags;
 
 import com.google.common.base.Preconditions;
@@ -58,6 +60,38 @@ public class HealthConnectDatabaseTest {
                         InstrumentationRegistry.getInstrumentation()
                                 .getContext()
                                 .getDatabasePath("mock"));
+    }
+
+    @Test
+    @DisableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void onCreate_dbWithLatestSchemaCreated() {
+        initializeDatabase();
+
+        assertThat(mHealthConnectDatabase).isNotNull();
+        assertThat(mSQLiteDatabase).isNotNull();
+        assertNumberOfTables(mSQLiteDatabase, NUM_OF_TABLES);
+        assertThat(mSQLiteDatabase.getVersion()).isEqualTo(LAST_ROLLED_OUT_DB_VERSION);
+    }
+
+    @Test
+    @DisableFlags(Flags.FLAG_INFRA_TO_GUARD_DB_CHANGES)
+    public void onCreate_infraFlagDisabled_expectCorrectDbVersion() {
+        initializeDatabase();
+
+        assertThat(mSQLiteDatabase.getVersion()).isAtMost(AconfigFlagHelper.getDbVersion());
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_INFRA_TO_GUARD_DB_CHANGES)
+    public void onCreate_infraFlagEnabled_expectCorrectDbVersion() {
+        initializeDatabase();
+
+        assertThat(mSQLiteDatabase.getVersion()).isAtMost(AconfigFlagHelper.getDbVersion());
+    }
+
+    // The database needs to be initialized after the flags have been set by the annotations,
+    // hence this methods needs to be called in individual tests rather than in @Before method.
+    private void initializeDatabase() {
         mHealthConnectDatabase = new HealthConnectDatabase(mContext);
 
         // Make sure there is nothing there already.
@@ -66,14 +100,5 @@ public class HealthConnectDatabaseTest {
             Preconditions.checkState(databasePath.delete());
         }
         mSQLiteDatabase = mHealthConnectDatabase.getWritableDatabase();
-    }
-
-    @Test
-    @DisableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void onCreate_dbWithLatestSchemaCreated() {
-        assertThat(mHealthConnectDatabase).isNotNull();
-        assertThat(mSQLiteDatabase).isNotNull();
-        assertNumberOfTables(mSQLiteDatabase, NUM_OF_TABLES);
-        assertThat(mSQLiteDatabase.getVersion()).isEqualTo(LAST_ROLLED_OUT_DB_VERSION);
     }
 }

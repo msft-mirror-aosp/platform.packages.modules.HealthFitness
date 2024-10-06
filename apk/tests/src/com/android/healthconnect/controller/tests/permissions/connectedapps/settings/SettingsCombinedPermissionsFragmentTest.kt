@@ -193,7 +193,7 @@ class SettingsCombinedPermissionsFragmentTest {
         onView(withText("Fitness and wellness")).check(matches(isDisplayed()))
         onView(withText("Exercise, sleep, nutrition and others")).check(matches(isDisplayed()))
         onView(withText("Health records")).check(matches(isDisplayed()))
-        onView(withText("Lab results, medications, immunizations and others"))
+        onView(withText("Lab results, medications, vaccines and others"))
             .check(matches(isDisplayed()))
         onView(withText("Additional access")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Manage app")).perform(scrollTo()).check(matches(isDisplayed()))

@@ -770,11 +770,12 @@ class LoadEntriesHelperUseCaseTest {
         return ReadMedicalResourcesResponse(
             listOf(TEST_MEDICAL_RESOURCE_IMMUNIZATION),
             "nextPageToken",
+            1
         )
     }
 
     private fun getEmptyMedicalResource(): ReadMedicalResourcesResponse {
-        return ReadMedicalResourcesResponse(listOf(), "nextPageToken")
+        return ReadMedicalResourcesResponse(listOf(), "nextPageToken", 1)
     }
 
     private fun setupReadRecordTest(

@@ -188,6 +188,8 @@ public class ExportImportApiTest {
         assertThat(isExportImportJobScheduled()).isFalse();
     }
 
+    // TODO(b/370954019): Add test for immediate export.
+
     private boolean isExportImportJobScheduled() throws Exception {
         String dumpsysOutput = TestUtils.runShellCommand("dumpsys jobscheduler");
         return dumpsysOutput.contains("HEALTH_CONNECT_IMPORT_EXPORT_JOBS:");

@@ -35,6 +35,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 public class AconfigFlagHelperTest {
     @ClassRule public static final SetFlagsRule.ClassRule mClassRule = new SetFlagsRule.ClassRule();
@@ -49,7 +50,7 @@ public class AconfigFlagHelperTest {
     @DisableFlags({Flags.FLAG_INFRA_TO_GUARD_DB_CHANGES})
     public void infraToGuardDbChangesDisabled() {
         // putting a very high DB version mapping to true to the map
-        DB_VERSION_TO_DB_FLAG_MAP.put(1000_000, true);
+        DB_VERSION_TO_DB_FLAG_MAP.put(1000_000, () -> true);
 
         // since FLAG_INFRA_TO_GUARD_DB_CHANGES is disabled, that very high version shouldn't be
         // taken into account.
@@ -83,9 +84,9 @@ public class AconfigFlagHelperTest {
     public void testGetDbVersion_true_true_true() {
         // initialize DB_VERSION_TO_DB_FLAG_MAP, so it won't be empty when getDbVersion() is called,
         // so the entries created in this test will be used.
-        DB_VERSION_TO_DB_FLAG_MAP.put(1, true);
-        DB_VERSION_TO_DB_FLAG_MAP.put(2, true);
-        DB_VERSION_TO_DB_FLAG_MAP.put(3, true);
+        DB_VERSION_TO_DB_FLAG_MAP.put(1, () -> true);
+        DB_VERSION_TO_DB_FLAG_MAP.put(2, () -> true);
+        DB_VERSION_TO_DB_FLAG_MAP.put(3, () -> true);
 
         assertThat(getDbVersion()).isEqualTo(3);
     }
@@ -95,9 +96,9 @@ public class AconfigFlagHelperTest {
     public void testGetDbVersion_true_false_true() {
         // initialize DB_VERSION_TO_DB_FLAG_MAP, so it won't be empty when getDbVersion() is called,
         // so the entries created in this test will be used.
-        DB_VERSION_TO_DB_FLAG_MAP.put(1, true);
-        DB_VERSION_TO_DB_FLAG_MAP.put(2, false);
-        DB_VERSION_TO_DB_FLAG_MAP.put(3, true);
+        DB_VERSION_TO_DB_FLAG_MAP.put(1, () -> true);
+        DB_VERSION_TO_DB_FLAG_MAP.put(2, () -> false);
+        DB_VERSION_TO_DB_FLAG_MAP.put(3, () -> true);
 
         assertThat(getDbVersion()).isEqualTo(1);
     }
@@ -107,9 +108,9 @@ public class AconfigFlagHelperTest {
     public void testGetDbVersion_true_false_false() {
         // initialize DB_VERSION_TO_DB_FLAG_MAP, so it won't be empty when getDbVersion() is called,
         // so the entries created in this test will be used.
-        DB_VERSION_TO_DB_FLAG_MAP.put(1, true);
-        DB_VERSION_TO_DB_FLAG_MAP.put(2, false);
-        DB_VERSION_TO_DB_FLAG_MAP.put(3, false);
+        DB_VERSION_TO_DB_FLAG_MAP.put(1, () -> true);
+        DB_VERSION_TO_DB_FLAG_MAP.put(2, () -> false);
+        DB_VERSION_TO_DB_FLAG_MAP.put(3, () -> false);
 
         assertThat(getDbVersion()).isEqualTo(1);
     }
@@ -127,9 +128,9 @@ public class AconfigFlagHelperTest {
         // - DB_VERSION_TO_DB_FLAG_MAP contains a single entry of 15 => false
         // Now, if a version X = 16 is added to DatabaseVersions.java, and X is assigned to
         // LAST_ROLLED_OUT_DB_VERSION, then this test would fail.
-        for (Map.Entry<Integer, Boolean> entry : DB_VERSION_TO_DB_FLAG_MAP.entrySet()) {
+        for (Map.Entry<Integer, BooleanSupplier> entry : DB_VERSION_TO_DB_FLAG_MAP.entrySet()) {
             int dbVersion = entry.getKey();
-            boolean flagValue = entry.getValue();
+            boolean flagValue = entry.getValue().getAsBoolean();
             if (!flagValue) { // flagValue being `false` means the feature hasn't been rolled out
                 // If a feature hasn't been rolled out, then its DB version must be greater than
                 // the last rolled out DB version.

@@ -30,6 +30,8 @@ import android.health.connect.HealthPermissions.WRITE_DISTANCE
 import android.health.connect.HealthPermissions.WRITE_EXERCISE
 import android.health.connect.HealthPermissions.WRITE_PLANNED_EXERCISE
 import android.health.connect.HealthPermissions.WRITE_SKIN_TEMPERATURE
+import android.platform.test.flag.junit.SetFlagsRule
+import com.android.healthconnect.controller.permissions.additionalaccess.LoadDeclaredHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.GetHealthPermissionsFlagsUseCase
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
@@ -43,7 +45,6 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission.Fi
 import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.permissions.request.RequestPermissionViewModel
 import com.android.healthconnect.controller.service.HealthPermissionManagerModule
-import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
@@ -82,6 +83,7 @@ import org.mockito.kotlin.whenever
 class RequestPermissionViewModelTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val setFlagsRule = SetFlagsRule()
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
     private val testDispatcher = TestCoroutineDispatcher()
 
@@ -93,9 +95,9 @@ class RequestPermissionViewModelTest {
     @Inject lateinit var revokeHealthPermissionUseCase: RevokeHealthPermissionUseCase
     @Inject lateinit var getGrantHealthPermissionUseCase: GetGrantedHealthPermissionsUseCase
     @Inject lateinit var getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase
+    @Inject lateinit var loadDeclaredHealthPermissionUseCase: LoadDeclaredHealthPermissionUseCase
     @BindValue var loadAccessDateUseCase: LoadAccessDateUseCase = mock()
 
-    @Inject lateinit var healthPermissionReader: HealthPermissionReader
     lateinit var viewModel: RequestPermissionViewModel
 
     @Before
@@ -113,7 +115,7 @@ class RequestPermissionViewModelTest {
                 getGrantHealthPermissionUseCase,
                 getHealthPermissionsFlagsUseCase,
                 loadAccessDateUseCase,
-                healthPermissionReader,
+                loadDeclaredHealthPermissionUseCase,
             )
         whenever(loadAccessDateUseCase.invoke(eq(TEST_APP_PACKAGE_NAME))).thenReturn(NOW)
     }
@@ -168,21 +170,14 @@ class RequestPermissionViewModelTest {
                     fromPermissionString(WRITE_EXERCISE),
                 )
             )
-        assertThat(additionalPermissionObserver.getLastValue())
-            .isEqualTo(
-                listOf(
-                    fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND),
-                    fromPermissionString(READ_HEALTH_DATA_HISTORY),
-                )
-            )
+        // additional permissions are empty unless at least one read permission is granted
+        assertThat(additionalPermissionObserver.getLastValue()).isEmpty()
         assertThat(healthPermissionObserver.getLastValue())
             .isEqualTo(
                 listOf(
                     fromPermissionString(READ_EXERCISE),
                     fromPermissionString(READ_SLEEP),
                     fromPermissionString(WRITE_EXERCISE),
-                    fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND),
-                    fromPermissionString(READ_HEALTH_DATA_HISTORY),
                 )
             )
     }
@@ -204,6 +199,10 @@ class RequestPermissionViewModelTest {
 
     @Test
     fun initPermissions_filtersOutUndeclaredPermissions() = runTest {
+        (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+            TEST_APP_PACKAGE_NAME,
+            listOf(READ_EXERCISE),
+        )
         viewModel.init(
             TEST_APP_PACKAGE_NAME,
             arrayOf(READ_STEPS, READ_HEART_RATE, READ_HEALTH_DATA_IN_BACKGROUND),
@@ -238,13 +237,10 @@ class RequestPermissionViewModelTest {
         val testObserver = TestObserver<List<HealthPermission>>()
         viewModel.healthPermissionsList.observeForever(testObserver)
         advanceUntilIdle()
+        // No BG permission because no read permission has been granted yet
         assertThat(testObserver.getLastValue())
             .isEqualTo(
-                listOf(
-                    fromPermissionString(READ_EXERCISE),
-                    fromPermissionString(READ_SLEEP),
-                    fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND),
-                )
+                listOf(fromPermissionString(READ_EXERCISE), fromPermissionString(READ_SLEEP))
             )
     }
 
@@ -524,6 +520,10 @@ class RequestPermissionViewModelTest {
 
     @Test
     fun updateAdditionalPermissions_grant_updatesGrantedAdditionalPermissions() = runTest {
+        (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+            TEST_APP_PACKAGE_NAME,
+            listOf(READ_EXERCISE),
+        )
         val permissions =
             arrayOf(
                 READ_EXERCISE,
@@ -606,6 +606,10 @@ class RequestPermissionViewModelTest {
 
     @Test
     fun requestAdditionalPermissions_updatesPermissionState() {
+        (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+            TEST_APP_PACKAGE_NAME,
+            listOf(READ_EXERCISE),
+        )
         val permissions =
             arrayOf(
                 READ_EXERCISE,
@@ -618,11 +622,15 @@ class RequestPermissionViewModelTest {
 
         viewModel.requestAdditionalPermissions(TEST_APP_PACKAGE_NAME)
         assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
-            .containsExactly(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
+            .containsExactly(
+                READ_EXERCISE,
+                READ_HEALTH_DATA_HISTORY,
+                READ_HEALTH_DATA_IN_BACKGROUND,
+            )
         assertThat(viewModel.getPermissionGrants())
             .isEqualTo(
                 mutableMapOf(
-                    fromPermissionString(READ_EXERCISE) to PermissionState.NOT_GRANTED,
+                    fromPermissionString(READ_EXERCISE) to PermissionState.GRANTED,
                     fromPermissionString(READ_SLEEP) to PermissionState.NOT_GRANTED,
                     fromPermissionString(READ_HEALTH_DATA_HISTORY) to PermissionState.GRANTED,
                     fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND) to PermissionState.GRANTED,
@@ -659,6 +667,38 @@ class RequestPermissionViewModelTest {
                     fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND) to
                         PermissionState.NOT_GRANTED,
                     fromPermissionString(READ_EXERCISE_ROUTES) to PermissionState.GRANTED,
+                )
+            )
+    }
+
+    @Test
+    fun requestHealthPermissionsWithoutGrantingOrRevoking_doesNotUpdatePermissions() = runTest {
+        (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+            TEST_APP_PACKAGE_NAME,
+            listOf(READ_EXERCISE, READ_SLEEP, READ_HEALTH_DATA_HISTORY),
+        )
+        val permissions =
+            arrayOf(
+                READ_EXERCISE,
+                READ_SLEEP,
+                READ_HEALTH_DATA_HISTORY,
+                READ_HEALTH_DATA_IN_BACKGROUND,
+                READ_EXERCISE_ROUTES,
+            )
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+        viewModel.updatePermissionGrants()
+        assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
+            .containsExactly(READ_EXERCISE, READ_SLEEP, READ_HEALTH_DATA_HISTORY)
+        assertThat(viewModel.getPermissionGrants())
+            .isEqualTo(
+                mutableMapOf(
+                    fromPermissionString(READ_EXERCISE) to PermissionState.GRANTED,
+                    fromPermissionString(READ_SLEEP) to PermissionState.GRANTED,
+                    fromPermissionString(READ_HEALTH_DATA_HISTORY) to PermissionState.GRANTED,
+                    fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND) to
+                        PermissionState.NOT_GRANTED,
+                    fromPermissionString(READ_EXERCISE_ROUTES) to PermissionState.NOT_GRANTED,
                 )
             )
     }

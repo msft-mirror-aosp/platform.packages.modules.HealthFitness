@@ -108,12 +108,16 @@ public final class AggregateTransactionRequest {
      * @return Compute and return aggregations
      */
     public AggregateDataResponseParcel getAggregateDataResponseParcel(
-            AccessLogsHelper accessLogsHelper) {
+            AccessLogsHelper accessLogsHelper, boolean shouldRecordAccessLog) {
         Map<AggregationType<?>, List<AggregateResult<?>>> results = new ArrayMap<>();
         for (AggregateTableRequest aggregateTableRequest : mAggregateTableRequests) {
             // Compute aggregations and record read access log
             mTransactionManager.populateWithAggregation(
-                    aggregateTableRequest, mPackageName, mRecordTypeIds, accessLogsHelper);
+                    aggregateTableRequest,
+                    mPackageName,
+                    mRecordTypeIds,
+                    accessLogsHelper,
+                    shouldRecordAccessLog);
             results.put(
                     aggregateTableRequest.getAggregationType(),
                     aggregateTableRequest.getAggregateResults());

@@ -289,10 +289,11 @@ package android.health.connect {
   }
 
   @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class ReadMedicalResourcesResponse implements android.os.Parcelable {
-    ctor public ReadMedicalResourcesResponse(@NonNull java.util.List<android.health.connect.datatypes.MedicalResource>, @Nullable String);
+    ctor public ReadMedicalResourcesResponse(@NonNull java.util.List<android.health.connect.datatypes.MedicalResource>, @Nullable String, int);
     method public int describeContents();
     method @NonNull public java.util.List<android.health.connect.datatypes.MedicalResource> getMedicalResources();
     method @Nullable public String getNextPageToken();
+    method public int getRemainingCount();
     method public void writeToParcel(@NonNull android.os.Parcel, int);
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.ReadMedicalResourcesResponse> CREATOR;
   }
@@ -1198,7 +1199,7 @@ package android.health.connect.datatypes {
     method public int describeContents();
     method @NonNull public String getDisplayName();
     method @NonNull public android.net.Uri getFhirBaseUri();
-    method @Nullable public android.health.connect.datatypes.FhirVersion getFhirVersion();
+    method @NonNull public android.health.connect.datatypes.FhirVersion getFhirVersion();
     method @NonNull public String getId();
     method @Nullable public java.time.Instant getLastDataUpdateTime();
     method @NonNull public String getPackageName();
@@ -1207,13 +1208,13 @@ package android.health.connect.datatypes {
   }
 
   public static final class MedicalDataSource.Builder {
-    ctor public MedicalDataSource.Builder(@NonNull String, @NonNull String, @NonNull android.net.Uri, @NonNull String);
+    ctor public MedicalDataSource.Builder(@NonNull String, @NonNull String, @NonNull android.net.Uri, @NonNull String, @NonNull android.health.connect.datatypes.FhirVersion);
     ctor public MedicalDataSource.Builder(@NonNull android.health.connect.datatypes.MedicalDataSource.Builder);
     ctor public MedicalDataSource.Builder(@NonNull android.health.connect.datatypes.MedicalDataSource);
     method @NonNull public android.health.connect.datatypes.MedicalDataSource build();
     method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setDisplayName(@NonNull String);
     method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setFhirBaseUri(@NonNull android.net.Uri);
-    method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setFhirVersion(@Nullable android.health.connect.datatypes.FhirVersion);
+    method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setFhirVersion(@NonNull android.health.connect.datatypes.FhirVersion);
     method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setId(@NonNull String);
     method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setLastDataUpdateTime(@Nullable java.time.Instant);
     method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setPackageName(@NonNull String);

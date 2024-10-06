@@ -19,6 +19,7 @@ package com.android.server.healthconnect;
 import android.annotation.Nullable;
 import android.content.Context;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.health.connect.ratelimiter.RateLimiter;
 import android.os.Process;
 import android.os.UserHandle;
@@ -27,6 +28,7 @@ import android.util.Slog;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.server.SystemService;
+import com.android.server.healthconnect.backuprestore.CloudBackupManager;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
@@ -83,6 +85,7 @@ public class HealthConnectManagerService extends SystemService {
     private final PreferenceHelper mPreferenceHelper;
     private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
     private final MigrationStateManager mMigrationStateManager;
+    private final CloudBackupManager mCloudBackupManager;
 
     @Nullable private HealthConnectInjector mHealthConnectInjector;
 
@@ -127,6 +130,8 @@ public class HealthConnectManagerService extends SystemService {
         ChangeLogsHelper changeLogsHelper;
         ChangeLogsRequestHelper changeLogsRequestHelper;
 
+        HealthConnectMappings healthConnectMappings;
+
         if (Flags.dependencyInjection()) {
             Objects.requireNonNull(mHealthConnectInjector);
             appInfoHelper = mHealthConnectInjector.getAppInfoHelper();
@@ -144,6 +149,7 @@ public class HealthConnectManagerService extends SystemService {
                             mHealthConnectInjector.getPackageInfoUtils(),
                             healthDataCategoryPriorityHelper,
                             mMigrationStateManager);
+            healthConnectMappings = mHealthConnectInjector.getHealthConnectMappings();
             permissionHelper =
                     new HealthConnectPermissionHelper(
                             context,
@@ -152,7 +158,8 @@ public class HealthConnectManagerService extends SystemService {
                             permissionIntentTracker,
                             firstGrantTimeManager,
                             healthDataCategoryPriorityHelper,
-                            appInfoHelper);
+                            appInfoHelper,
+                            healthConnectMappings);
             mPermissionPackageChangesOrchestrator =
                     new PermissionPackageChangesOrchestrator(
                             permissionIntentTracker,
@@ -166,11 +173,12 @@ public class HealthConnectManagerService extends SystemService {
                             mHealthConnectInjector.getPriorityMigrationHelper());
             mExportImportSettingsStorage = mHealthConnectInjector.getExportImportSettingsStorage();
             mExportManager = mHealthConnectInjector.getExportManager();
+            mCloudBackupManager = mHealthConnectInjector.getCloudBackupManager();
         } else {
             appInfoHelper = AppInfoHelper.getInstance(mTransactionManager);
             accessLogsHelper = AccessLogsHelper.getInstance(mTransactionManager, appInfoHelper);
-            changeLogsHelper = new ChangeLogsHelper();
-            changeLogsRequestHelper = new ChangeLogsRequestHelper();
+            changeLogsHelper = new ChangeLogsHelper(mTransactionManager);
+            changeLogsRequestHelper = new ChangeLogsRequestHelper(mTransactionManager);
             healthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
             activityDateHelper = ActivityDateHelper.getInstance();
             firstGrantTimeManager =
@@ -181,6 +189,7 @@ public class HealthConnectManagerService extends SystemService {
                             PackageInfoUtils.getInstance(),
                             healthDataCategoryPriorityHelper,
                             mMigrationStateManager);
+            healthConnectMappings = new HealthConnectMappings();
             permissionHelper =
                     new HealthConnectPermissionHelper(
                             context,
@@ -189,7 +198,8 @@ public class HealthConnectManagerService extends SystemService {
                             permissionIntentTracker,
                             firstGrantTimeManager,
                             healthDataCategoryPriorityHelper,
-                            appInfoHelper);
+                            appInfoHelper,
+                            healthConnectMappings);
             mPermissionPackageChangesOrchestrator =
                     new PermissionPackageChangesOrchestrator(
                             permissionIntentTracker,
@@ -207,6 +217,7 @@ public class HealthConnectManagerService extends SystemService {
                             Clock.systemUTC(),
                             mExportImportSettingsStorage,
                             mTransactionManager);
+            mCloudBackupManager = new CloudBackupManager();
         }
 
         mUserManager = context.getSystemService(UserManager.class);
@@ -251,7 +262,9 @@ public class HealthConnectManagerService extends SystemService {
                         healthDataCategoryPriorityHelper,
                         activityDateHelper,
                         changeLogsHelper,
-                        changeLogsRequestHelper);
+                        changeLogsRequestHelper,
+                        healthConnectMappings,
+                        mCloudBackupManager);
     }
 
     @Override

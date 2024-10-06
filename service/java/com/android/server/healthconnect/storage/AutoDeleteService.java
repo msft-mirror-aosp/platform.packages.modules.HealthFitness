@@ -99,7 +99,6 @@ public class AutoDeleteService {
             // 0 represents that no period is set,to delete only if not 0 else don't do anything
             List<DeleteTableRequest> deleteTableRequests = new ArrayList<>();
             RecordHelperProvider.getRecordHelpers()
-                    .values()
                     .forEach(
                             (recordHelper) -> {
                                 DeleteTableRequest request =

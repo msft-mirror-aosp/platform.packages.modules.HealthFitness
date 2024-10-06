@@ -217,7 +217,6 @@ public final class TransactionManager {
      *
      * @param request a delete request.
      */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public int deleteAll(
             DeleteTransactionRequest request,
             boolean shouldRecordDeleteAccessLogs,
@@ -246,21 +245,21 @@ public final class TransactionManager {
                                     db.rawQuery(deleteTableRequest.getReadCommand(), null)) {
                                 int numberOfUuidsToDelete = 0;
                                 while (cursor.moveToNext()) {
+                                    String packageColumnName =
+                                            requireNonNull(
+                                                    deleteTableRequest.getPackageColumnName());
+                                    String idColumnName =
+                                            requireNonNull(deleteTableRequest.getIdColumnName());
                                     numberOfUuidsToDelete++;
                                     long appInfoId =
-                                            StorageUtils.getCursorLong(
-                                                    cursor,
-                                                    deleteTableRequest.getPackageColumnName());
+                                            StorageUtils.getCursorLong(cursor, packageColumnName);
                                     if (deleteTableRequest.requiresPackageCheck()) {
                                         request.enforcePackageCheck(
-                                                StorageUtils.getCursorUUID(
-                                                        cursor,
-                                                        deleteTableRequest.getIdColumnName()),
+                                                StorageUtils.getCursorUUID(cursor, idColumnName),
                                                 appInfoId);
                                     }
                                     UUID deletedRecordUuid =
-                                            StorageUtils.getCursorUUID(
-                                                    cursor, deleteTableRequest.getIdColumnName());
+                                            StorageUtils.getCursorUUID(cursor, idColumnName);
                                     deletionChangelogs.addUUID(
                                             deleteTableRequest.getRecordType(),
                                             appInfoId,
@@ -277,8 +276,9 @@ public final class TransactionManager {
                                                 read(additionalChangelogUuidRequest);
                                         while (cursorAdditionalUuids.moveToNext()) {
                                             modificationChangelogs.addUUID(
-                                                    additionalChangelogUuidRequest
-                                                            .getRecordHelper()
+                                                    requireNonNull(
+                                                                    additionalChangelogUuidRequest
+                                                                            .getRecordHelper())
                                                             .getRecordIdentifier(),
                                                     StorageUtils.getCursorLong(
                                                             cursorAdditionalUuids,
@@ -329,7 +329,8 @@ public final class TransactionManager {
             AggregateTableRequest aggregateTableRequest,
             String packageName,
             Set<Integer> recordTypeIds,
-            AccessLogsHelper accessLogsHelper) {
+            AccessLogsHelper accessLogsHelper,
+            boolean shouldRecordAccessLog) {
         final SQLiteDatabase db = getReadableDb();
         try (Cursor cursor = db.rawQuery(aggregateTableRequest.getAggregationCommand(), null);
                 Cursor metaDataCursor =
@@ -337,7 +338,7 @@ public final class TransactionManager {
                                 aggregateTableRequest.getCommandToFetchAggregateMetadata(), null)) {
             aggregateTableRequest.onResultsFetched(cursor, metaDataCursor);
         }
-        if (Flags.addMissingAccessLogs()) {
+        if (Flags.addMissingAccessLogs() && shouldRecordAccessLog) {
             accessLogsHelper.recordReadAccessLog(getWritableDb(), packageName, recordTypeIds);
         }
     }
@@ -355,7 +356,8 @@ public final class TransactionManager {
             ReadTransactionRequest request,
             AppInfoHelper appInfoHelper,
             AccessLogsHelper accessLogsHelper,
-            DeviceInfoHelper deviceInfoHelper)
+            DeviceInfoHelper deviceInfoHelper,
+            boolean shouldRecordAccessLog)
             throws SQLiteException {
         // TODO(b/308158714): Make this build time check once we have different classes.
         checkArgument(
@@ -373,9 +375,11 @@ public final class TransactionManager {
             }
         }
 
-        if (Flags.addMissingAccessLogs() && !request.isReadingSelfData()) {
-            accessLogsHelper.recordReadAccessLog(
-                    getWritableDb(), request.getPackageName(), request.getRecordTypeIds());
+        if (Flags.addMissingAccessLogs()) {
+            if (!request.isReadingSelfData() && shouldRecordAccessLog) {
+                accessLogsHelper.recordReadAccessLog(
+                        getWritableDb(), request.getPackageName(), request.getRecordTypeIds());
+            }
         }
         return recordInternals;
     }
@@ -396,7 +400,8 @@ public final class TransactionManager {
             ReadTransactionRequest request,
             AppInfoHelper appInfoHelper,
             AccessLogsHelper accessLogsHelper,
-            DeviceInfoHelper deviceInfoHelper)
+            DeviceInfoHelper deviceInfoHelper,
+            boolean shouldRecordDeleteAccessLogs)
             throws SQLiteException {
         // TODO(b/308158714): Make these build time checks once we have different classes.
         checkArgument(
@@ -425,9 +430,11 @@ public final class TransactionManager {
             populateInternalRecordsWithExtraData(recordInternalList, readTableRequest);
         }
 
-        if (Flags.addMissingAccessLogs() && !request.isReadingSelfData()) {
-            accessLogsHelper.recordReadAccessLog(
-                    getWritableDb(), request.getPackageName(), request.getRecordTypeIds());
+        if (Flags.addMissingAccessLogs()) {
+            if (!request.isReadingSelfData() && shouldRecordDeleteAccessLogs) {
+                accessLogsHelper.recordReadAccessLog(
+                        getWritableDb(), request.getPackageName(), request.getRecordTypeIds());
+            }
         }
         return Pair.create(recordInternalList, pageToken);
     }
@@ -512,6 +519,31 @@ public final class TransactionManager {
             Slog.d(TAG, "Read query: " + request.getReadCommand());
         }
         return getReadableDb().rawQuery(request.getReadCommand(), null);
+    }
+
+    /** Returns the count of rows that would be returned by the given request. */
+    public int count(ReadTableRequest request) {
+        return count(request, getReadableDb());
+    }
+
+    /**
+     * Returns the count of rows that would be returned by the given request.
+     *
+     * <p>Use {@link #count(ReadTableRequest)} unless you already have the database from a
+     * transaction.
+     */
+    public static int count(ReadTableRequest request, SQLiteDatabase db) {
+        String countSql = request.getCountCommand();
+        if (Constants.DEBUG) {
+            Slog.d(TAG, "Count query: " + countSql);
+        }
+        try (Cursor cursor = db.rawQuery(countSql, null)) {
+            if (cursor.moveToFirst()) {
+                return cursor.getInt(0);
+            } else {
+                throw new RuntimeException("Bad count SQL:" + countSql);
+            }
+        }
     }
 
     /**

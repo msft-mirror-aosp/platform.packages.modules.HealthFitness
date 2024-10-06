@@ -606,6 +606,7 @@ val TEST_MEDICAL_DATA_SOURCE: MedicalDataSource =
             TEST_APP_PACKAGE_NAME,
             /* fhirBaseUri= */ Uri.parse("fhir.base.uri"),
             /* displayName= */ "App A Data Source",
+            /* fhirVersion= */ TEST_FHIR_VERSION,
         )
         .build()
 val TEST_MEDICAL_DATA_SOURCE_2: MedicalDataSource =
@@ -614,6 +615,7 @@ val TEST_MEDICAL_DATA_SOURCE_2: MedicalDataSource =
             TEST_APP_PACKAGE_NAME,
             /* fhirBaseUri= */ Uri.parse("fhir.base.uri"),
             /* displayName= */ "App A Data Source 2",
+            /* fhirVersion= */ TEST_FHIR_VERSION,
         )
         .build()
 val TEST_MEDICAL_DATA_SOURCE_DIFFERENT_APP: MedicalDataSource =
@@ -622,6 +624,7 @@ val TEST_MEDICAL_DATA_SOURCE_DIFFERENT_APP: MedicalDataSource =
             TEST_APP_PACKAGE_NAME_2,
             /* fhirBaseUri= */ Uri.parse("fhir.base.uri"),
             /* displayName= */ "App B Data Source",
+            /* fhirVersion= */ TEST_FHIR_VERSION,
         )
         .build()
 // endregion

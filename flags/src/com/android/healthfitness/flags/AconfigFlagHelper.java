@@ -24,6 +24,7 @@ import com.android.internal.annotations.VisibleForTesting;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.BooleanSupplier;
 
 /**
  * A helper class to act as the source of truth for whether a feature is enabled or not by taking
@@ -39,7 +40,9 @@ public final class AconfigFlagHelper {
     // framework. See
     // https://groups.google.com/a/google.com/g/android-chatty-eng/c/TymmRzs3UcY/m/_JeFcynRBwAJ.
     @VisibleForTesting(visibility = PRIVATE)
-    public static final TreeMap<Integer, Boolean> DB_VERSION_TO_DB_FLAG_MAP = new TreeMap<>();
+    // Using BooleanSupplier instead of Boolean due to b/370447278#comment2
+    public static final TreeMap<Integer, BooleanSupplier> DB_VERSION_TO_DB_FLAG_MAP =
+            new TreeMap<>();
 
     /**
      * Returns the DB version based on DB flag values, this DB version is used to initialize {@link
@@ -51,8 +54,8 @@ public final class AconfigFlagHelper {
         }
 
         int dbVersion = LAST_ROLLED_OUT_DB_VERSION;
-        for (Map.Entry<Integer, Boolean> entry : getDbVersionToDbFlagMap().entrySet()) {
-            if (!entry.getValue()) {
+        for (Map.Entry<Integer, BooleanSupplier> entry : getDbVersionToDbFlagMap().entrySet()) {
+            if (!entry.getValue().getAsBoolean()) {
                 break;
             }
             dbVersion = entry.getKey();
@@ -113,13 +116,13 @@ public final class AconfigFlagHelper {
      * the <code>@EnableFlags</code> annotations won't work in unit tests due to its evaluation
      * being done after the map has already been initialized.
      */
-    private static Map<Integer, Boolean> getDbVersionToDbFlagMap() {
+    private static Map<Integer, BooleanSupplier> getDbVersionToDbFlagMap() {
         if (!DB_VERSION_TO_DB_FLAG_MAP.isEmpty()) {
             return DB_VERSION_TO_DB_FLAG_MAP;
         }
 
         DB_VERSION_TO_DB_FLAG_MAP.put(
-                DB_VERSION_PERSONAL_HEALTH_RECORD, Flags.personalHealthRecordDatabase());
+                DB_VERSION_PERSONAL_HEALTH_RECORD, Flags::personalHealthRecordDatabase);
 
         return DB_VERSION_TO_DB_FLAG_MAP;
     }
