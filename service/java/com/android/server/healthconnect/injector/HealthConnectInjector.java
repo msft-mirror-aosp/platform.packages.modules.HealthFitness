@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+import com.android.server.healthconnect.backuprestore.CloudBackupManager;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
@@ -104,6 +105,9 @@ public abstract class HealthConnectInjector {
      * Injector.
      */
     public abstract HealthConnectMappings getHealthConnectMappings();
+
+    /** Getter for CloudBackupManager instance initialised by the Health Connect Injector. */
+    public abstract CloudBackupManager getCloudBackupManager();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {
