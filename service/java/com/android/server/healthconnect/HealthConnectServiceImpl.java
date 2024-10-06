@@ -87,9 +87,11 @@ import android.health.connect.aidl.IChangeLogsResponseCallback;
 import android.health.connect.aidl.IDataStagingFinishedCallback;
 import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IGetChangeLogTokenCallback;
+import android.health.connect.aidl.IGetChangesForBackupResponseCallback;
 import android.health.connect.aidl.IGetHealthConnectDataStateCallback;
 import android.health.connect.aidl.IGetHealthConnectMigrationUiStateCallback;
 import android.health.connect.aidl.IGetPriorityResponseCallback;
+import android.health.connect.aidl.IGetSettingsForBackupResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
@@ -157,6 +159,7 @@ import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.LocalManagerRegistry;
 import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
+import com.android.server.healthconnect.backuprestore.CloudBackupManager;
 import com.android.server.healthconnect.exportimport.DocumentProvidersManager;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
@@ -234,6 +237,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Nullable private final ImportManager mImportManager;
 
     private final TransactionManager mTransactionManager;
+    private final CloudBackupManager mCloudBackupManager;
     private final HealthConnectDeviceConfigManager mDeviceConfigManager;
     private final HealthConnectPermissionHelper mPermissionHelper;
     private final FirstGrantTimeManager mFirstGrantTimeManager;
@@ -288,7 +292,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ActivityDateHelper activityDateHelper,
             ChangeLogsHelper changeLogsHelper,
             ChangeLogsRequestHelper changeLogsRequestHelper,
-            HealthConnectMappings healthConnectMappings) {
+            HealthConnectMappings healthConnectMappings,
+            CloudBackupManager cloudBackupManager) {
         this(
                 transactionManager,
                 deviceConfigManager,
@@ -307,7 +312,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 activityDateHelper,
                 changeLogsHelper,
                 changeLogsRequestHelper,
-                healthConnectMappings);
+                healthConnectMappings,
+                cloudBackupManager);
     }
 
     @VisibleForTesting
@@ -329,7 +335,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ActivityDateHelper activityDateHelper,
             ChangeLogsHelper changeLogsHelper,
             ChangeLogsRequestHelper changeLogsRequestHelper,
-            HealthConnectMappings healthConnectMappings) {
+            HealthConnectMappings healthConnectMappings,
+            CloudBackupManager cloudBackupManager) {
         mAccessLogsHelper = accessLogsHelper;
         mTransactionManager = transactionManager;
         mPreferenceHelper = PreferenceHelper.getInstance();
@@ -383,6 +390,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mChangeLogsHelper = changeLogsHelper;
         mMigrationEntityHelper = new MigrationEntityHelper();
         mHealthConnectMappings = healthConnectMappings;
+        mCloudBackupManager = cloudBackupManager;
     }
 
     public void onUserSwitching(UserHandle currentForegroundUser) {
@@ -3073,6 +3081,35 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 healthConnectException.getErrorCode());
                     } catch (Exception exception) {
                         tryAndThrowException(errorCallback, exception, ERROR_INTERNAL);
+                    }
+                });
+    }
+
+    @Override
+    public void getChangesForBackup(
+            @Nullable String changeToken, IGetChangesForBackupResponseCallback callback) {
+        checkParamsNonNull(callback);
+        final ErrorCallback errorCallback = callback::onError;
+        HealthConnectThreadScheduler.scheduleControllerTask(
+                () -> {
+                    try {
+                        callback.onResult(mCloudBackupManager.getChangesForBackup(changeToken));
+                    } catch (Exception e) {
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
+                    }
+                });
+    }
+
+    @Override
+    public void getSettingsForBackup(IGetSettingsForBackupResponseCallback callback) {
+        checkParamsNonNull(callback);
+        final ErrorCallback errorCallback = callback::onError;
+        HealthConnectThreadScheduler.scheduleControllerTask(
+                () -> {
+                    try {
+                        callback.onResult(mCloudBackupManager.getSettingsForBackup());
+                    } catch (Exception e) {
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     }
                 });
     }
