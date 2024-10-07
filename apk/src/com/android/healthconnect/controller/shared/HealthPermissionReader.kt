@@ -30,8 +30,8 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission.Co
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isMedicalReadPermission
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.utils.FeatureUtils
+import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
 import com.android.healthfitness.flags.Flags
-import com.android.healthfitness.flags.Flags.personalHealthRecord
 import com.google.common.annotations.VisibleForTesting
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -168,7 +168,7 @@ constructor(
             val permissions = getDeclaredHealthPermissions(packageName)
             val declaredPermissions =
                 permissions.mapNotNull { permission -> parsePermission(permission) }
-            if (personalHealthRecord()) {
+            if (isPersonalHealthRecordEnabled()) {
                 maybeFilterOutAdditionalIfNotValid(declaredPermissions)
             } else {
                 declaredPermissions
@@ -258,7 +258,7 @@ constructor(
      * When PHR flag is off, returns additional permissions that are declared.
      */
     fun getAdditionalPermissions(packageName: String): List<String> {
-        return if (personalHealthRecord()) {
+        return if (isPersonalHealthRecordEnabled()) {
             getValidHealthPermissions(packageName)
                 .map { it.toString() }
                 .filter { perm -> isAdditionalPermission(perm) && !shouldHidePermission(perm) }
@@ -352,7 +352,7 @@ constructor(
     }
 
     private fun shouldHideMedicalPermission(permission: String): Boolean {
-        return permission in medicalPermissions && !personalHealthRecord()
+        return permission in medicalPermissions && !isPersonalHealthRecordEnabled()
     }
 
     private fun getRationaleIntent(packageName: String? = null): Intent {
