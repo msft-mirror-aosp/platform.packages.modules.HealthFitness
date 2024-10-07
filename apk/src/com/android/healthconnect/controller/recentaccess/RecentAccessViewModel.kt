@@ -31,7 +31,7 @@ import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
 import com.android.healthconnect.controller.shared.safelyDataTypeToCategory
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.postValueIfUpdated
-import com.android.healthfitness.flags.Flags.personalHealthRecord
+import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Duration
 import java.time.Instant
@@ -229,7 +229,7 @@ constructor(
             accessLog.recordTypes.mapNotNull { safelyDataTypeToCategory(it)?.uppercaseTitle() }
         )
 
-        if (personalHealthRecord() && accessLog.medicalResourceTypes.isNotEmpty()) {
+        if (isPersonalHealthRecordEnabled() && accessLog.medicalResourceTypes.isNotEmpty()) {
             accessedData.add(R.string.medical_permissions)
         }
     }

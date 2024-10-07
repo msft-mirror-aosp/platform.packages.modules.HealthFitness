@@ -1315,12 +1315,27 @@ public final class TestUtils {
 
     /**
      * Sets value for a field using reflection. This can be used to set fields for immutable class.
+     *
+     * <p>This method recursively looks for the field in the object's class and its superclasses.
      */
     public static void setFieldValueUsingReflection(Object object, String fieldName, Object value)
             throws NoSuchFieldException, IllegalAccessException {
-        Field field = object.getClass().getDeclaredField(fieldName);
+        Field field = findFieldUsingReflection(object.getClass(), fieldName);
         field.setAccessible(true);
         field.set(object, value);
+    }
+
+    private static Field findFieldUsingReflection(Class<?> type, String fieldName) {
+        try {
+            return type.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            // If field isn't present, recursively look for it in the class's superclass.
+            Class<?> superClass = type.getSuperclass();
+            if (superClass != null) {
+                return findFieldUsingReflection(superClass, fieldName);
+            }
+        }
+        throw new IllegalArgumentException("Could not find field " + fieldName);
     }
 
     // TODO(b/328228842): Avoid using reflection once we have Builder(Record) constructors
