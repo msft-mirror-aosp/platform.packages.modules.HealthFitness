@@ -25,6 +25,7 @@ import static android.healthconnect.cts.lib.BundleHelper.INTENT_EXCEPTION;
 import static android.healthconnect.cts.lib.BundleHelper.KILL_SELF_REQUEST;
 import static android.healthconnect.cts.lib.BundleHelper.QUERY_TYPE;
 import static android.healthconnect.cts.lib.BundleHelper.READ_CHANGE_LOGS_QUERY;
+import static android.healthconnect.cts.lib.BundleHelper.READ_MEDICAL_RESOURCES_BY_REQUEST_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.READ_RECORDS_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.READ_RECORDS_USING_IDS_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.SELF_REVOKE_PERMISSION_REQUEST;
@@ -34,6 +35,8 @@ import static android.healthconnect.cts.lib.BundleHelper.UPSERT_MEDICAL_RESOURCE
 import android.content.Context;
 import android.content.Intent;
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.ReadMedicalResourcesRequest;
+import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
@@ -81,6 +84,8 @@ final class TestAppHelper {
             case CREATE_MEDICAL_DATA_SOURCE_QUERY -> handleCreateMedicalDataSource(context, bundle);
             case UPSERT_MEDICAL_RESOURCES_QUERY -> handleUpsertMedicalResource(context, bundle);
             case GET_MEDICAL_DATA_SOURCES_QUERY -> handleGetMedicalDataSources(context, bundle);
+            case READ_MEDICAL_RESOURCES_BY_REQUEST_QUERY ->
+                    handleReadMedicalResourcesByRequest(context, bundle);
             case SELF_REVOKE_PERMISSION_REQUEST -> handleSelfRevoke(context, bundle);
             case KILL_SELF_REQUEST -> handleKillSelf();
             default ->
@@ -159,6 +164,16 @@ final class TestAppHelper {
         TestUtils.getHealthConnectManager(context)
                 .upsertMedicalResources(requests, Executors.newSingleThreadExecutor(), receiver);
         return BundleHelper.fromMedicalResources(receiver.getResponse());
+    }
+
+    private static Bundle handleReadMedicalResourcesByRequest(Context context, Bundle bundle)
+            throws Exception {
+        ReadMedicalResourcesRequest request = BundleHelper.toReadMedicalResourcesRequest(bundle);
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        TestUtils.getHealthConnectManager(context)
+                .readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+        return BundleHelper.fromReadMedicalResourcesResponse(receiver.getResponse());
     }
 
     private static Bundle handleSelfRevoke(Context context, Bundle bundle) throws Exception {

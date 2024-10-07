@@ -28,6 +28,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.ReadMedicalResourcesRequest;
+import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
@@ -194,6 +196,17 @@ public class TestAppProxy {
         Bundle requestBundle = BundleHelper.fromUpsertMedicalResourceRequests(List.of(request));
         Bundle responseBundle = getFromTestApp(requestBundle);
         return BundleHelper.toMedicalResources(responseBundle).get(0);
+    }
+
+    /**
+     * Reads a list of {@link MedicalResource}s for the provided {@code request} on behalf of the
+     * app.
+     */
+    public ReadMedicalResourcesResponse readMedicalResources(ReadMedicalResourcesRequest request)
+            throws Exception {
+        Bundle requestBundle = BundleHelper.fromReadMedicalResourcesRequest(request);
+        Bundle responseBundle = getFromTestApp(requestBundle);
+        return BundleHelper.toReadMedicalResourcesResponse(responseBundle);
     }
 
     /** Instructs the app to self-revokes the specified permission. */
