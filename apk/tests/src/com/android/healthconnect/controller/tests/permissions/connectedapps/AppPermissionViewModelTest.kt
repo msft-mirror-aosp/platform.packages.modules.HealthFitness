@@ -15,9 +15,8 @@
  */
 package com.android.healthconnect.controller.tests.permissions.connectedapps
 
- import android.platform.test.annotations.DisableFlags
- import android.platform.test.annotations.EnableFlags
- import android.platform.test.flag.junit.SetFlagsRule
+import android.platform.test.annotations.EnableFlags
+import android.platform.test.flag.junit.SetFlagsRule
 import com.android.healthconnect.controller.deletion.api.DeleteAppDataUseCase as OldDeleteAppDataUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState
@@ -45,8 +44,8 @@ import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.di.FakeGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadExerciseRoute
 import com.android.healthconnect.controller.utils.FeatureUtils
- import com.android.healthfitness.flags.Flags
- import com.google.common.truth.Truth.assertThat
+import com.android.healthfitness.flags.Flags
+import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
@@ -2891,7 +2890,7 @@ class AppPermissionViewModelTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun revokeMedicalShouldIncludePastData_whenNoFitnessReadDeclared_returnsFalse() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
         whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
@@ -3062,7 +3061,7 @@ class AppPermissionViewModelTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun revokeAllShouldIncludeBackground_whenNoReadPermissionDeclared_returnsFalse() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
         whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
@@ -3152,7 +3151,7 @@ class AppPermissionViewModelTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun revokeAllShouldIncludePastData_whenNoReadFitnessPermissionDeclared_returnsFalse() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
