@@ -208,8 +208,8 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                 }
             }
             is DeletionType.DeleteAppData -> {
-                // TODO
-                ""
+                val appName = deletionType.appName
+                getString(R.string.all_app_data_selected_deletion_confirmation_dialog, appName)
             }
         }
     }
