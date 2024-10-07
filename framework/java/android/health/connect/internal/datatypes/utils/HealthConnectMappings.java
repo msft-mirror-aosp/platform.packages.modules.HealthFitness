@@ -281,7 +281,7 @@ public final class HealthConnectMappings {
     /** Returns a set of all supported data categories. */
     public Set<Integer> getAllHealthDataCategories() {
         if (!Flags.healthConnectMappings()) {
-            List.of(
+            return Set.of(
                     HealthDataCategory.ACTIVITY,
                     HealthDataCategory.BODY_MEASUREMENTS,
                     HealthDataCategory.CYCLE_TRACKING,
