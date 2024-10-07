@@ -21,7 +21,6 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
@@ -31,9 +30,9 @@ import android.health.connect.internal.datatypes.TotalCaloriesBurnedRecordIntern
 import android.util.Pair;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
-import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -74,7 +73,6 @@ public final class TotalCaloriesBurnedRecordHelper
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return TOTAL_CALORIES_BURNED_RECORD_TABLE_NAME;
     }
@@ -95,18 +93,17 @@ public final class TotalCaloriesBurnedRecordHelper
 
     @Override
     void populateSpecificRecordValue(
-            @NonNull Cursor cursor,
-            @NonNull TotalCaloriesBurnedRecordInternal totalCaloriesBurnedRecord) {
+            Cursor cursor, TotalCaloriesBurnedRecordInternal totalCaloriesBurnedRecord) {
         totalCaloriesBurnedRecord.setEnergy(getCursorDouble(cursor, ENERGY_COLUMN_NAME));
     }
 
     @Override
-    public double[] deriveAggregate(Cursor cursor, AggregateTableRequest request) {
+    public double[] deriveAggregate(
+            Cursor cursor, AggregateTableRequest request, TransactionManager transactionManager) {
         int index = 0;
         List<Pair<Long, Long>> groupIntervals = request.getGroupSplitIntervals();
 
-        List<Long> priorityList =
-                StorageUtils.getAppIdPriorityList(RECORD_TYPE_TOTAL_CALORIES_BURNED);
+        List<Long> priorityList = request.getAppIdPriorityList(RECORD_TYPE_TOTAL_CALORIES_BURNED);
         MergeDataHelper mergeDataHelper =
                 new MergeDataHelper(
                         cursor,
@@ -119,7 +116,8 @@ public final class TotalCaloriesBurnedRecordHelper
                         groupIntervals.get(0).first,
                         groupIntervals.get(groupIntervals.size() - 1).second,
                         priorityList,
-                        request.getUseLocalTime());
+                        request.getUseLocalTime(),
+                        transactionManager);
         double[] totalCaloriesBurnedArray = new double[groupIntervals.size()];
         for (Pair<Long, Long> groupInterval : groupIntervals) {
             long groupStartTime = groupInterval.first;
@@ -145,13 +143,12 @@ public final class TotalCaloriesBurnedRecordHelper
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues,
-            @NonNull TotalCaloriesBurnedRecordInternal totalCaloriesBurnedRecord) {
+            ContentValues contentValues,
+            TotalCaloriesBurnedRecordInternal totalCaloriesBurnedRecord) {
         contentValues.put(ENERGY_COLUMN_NAME, totalCaloriesBurnedRecord.getEnergy());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getIntervalRecordColumnInfo() {
         return Collections.singletonList(new Pair<>(ENERGY_COLUMN_NAME, REAL));
     }

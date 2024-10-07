@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.notifications;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -39,16 +38,14 @@ public interface HealthConnectNotificationFactory {
     /** Returns a {@link Notification} depending on the specified type. */
     @Nullable
     Notification createNotification(
-            @HealthConnectNotificationSender.HealthConnectNotificationType int notificationType,
-            @NonNull String channelId);
+            @HealthConnectNotificationSender.HealthConnectNotificationType int notificationType);
 
     /** Returns a string defined by the string identifier. */
-    @NonNull
-    String getStringResource(@NonNull String name);
+    String getStringResource(String name);
 
     /** Returns a {@link PendingIntent} associated with a notification's actions. */
     @Nullable
-    default PendingIntent getPendingIntent(@NonNull Context context, @NonNull Intent intent) {
+    default PendingIntent getPendingIntent(Context context, Intent intent) {
         final long callingId = Binder.clearCallingIdentity();
         try {
             return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
@@ -59,11 +56,9 @@ public interface HealthConnectNotificationFactory {
 
     /** Returns an {@link Icon} to be displayed on the notification. */
     @VisibleForTesting
-    @NonNull
     Optional<Icon> getAppIcon();
 
     /** Returns a list of string identifiers associated with a notification - e.g. the title. */
-    @NonNull
     @VisibleForTesting
     String[] getNotificationStringResources();
 }

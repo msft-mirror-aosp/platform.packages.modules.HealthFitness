@@ -57,6 +57,7 @@ public class HealthConnectDatabaseTestRule extends ExternalResource {
     private HealthConnectUserContext mContext;
     private TransactionManager mTransactionManager;
 
+    // Mock Environment using ExtendedMockitoRule in the test using this rule.
     public HealthConnectDatabaseTestRule() {}
 
     @Override

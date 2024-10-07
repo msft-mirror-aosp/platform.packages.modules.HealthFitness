@@ -16,23 +16,23 @@
 
 package com.android.server.healthconnect.storage;
 
-import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION;
-import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION;
-import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_UNKNOWN;
 
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_GENERATED_LOCAL_TIME;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_MINDFULNESS_SESSION;
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_PLANNED_EXERCISE_SESSIONS;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_SKIN_TEMPERATURE;
 import static com.android.healthfitness.flags.DatabaseVersions.MIN_SUPPORTED_DB_VERSION;
+import static com.android.server.healthconnect.storage.TransactionManager.runAsTransaction;
+import static com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper.getAlterTableRequestForPhrAccessLogs;
 import static com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper.PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME;
 
-import android.annotation.NonNull;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
@@ -42,6 +42,8 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsReques
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ExerciseSessionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MindfulnessSessionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper;
@@ -53,13 +55,44 @@ import com.android.server.healthconnect.storage.request.DropTableRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Consumer;
 
 /** Class that contains all database upgrades. */
 final class DatabaseUpgradeHelper {
     private static final String SQLITE_MASTER_TABLE_NAME = "sqlite_master";
+
+    private static final Upgrader UPGRADE_TO_GENERATED_LOCAL_TIME =
+            db -> forEachRecordHelper(it -> it.applyGeneratedLocalTimeUpgrade(db));
+
+    private static final Upgrader UPGRADE_TO_SKIN_TEMPERATURE =
+            db -> new SkinTemperatureRecordHelper().applySkinTemperatureUpgrade(db);
+
+    private static final Upgrader UPGRADE_TO_PLANNED_EXERCISE_SESSIONS =
+            DatabaseUpgradeHelper::applyPlannedExerciseDatabaseUpgrade;
+
+    private static final Upgrader UPGRADE_TO_MINDFULNESS_SESSION =
+            db -> new MindfulnessSessionRecordHelper().applyMindfulnessSessionUpgrade(db);
+
+    private static final Upgrader UPGRADE_TO_PERSONAL_HEALTH_RECORD =
+            DatabaseUpgradeHelper::applyPersonalHealthRecordDatabaseUpgrade;
+
+    /**
+     * A list of db version -> Upgrader to upgrade the db from the previous version to the version.
+     * The upgrades must be executed one by one in the numeric order of db versions, hence TreeMap.
+     */
+    private static final TreeMap<Integer, Upgrader> UPGRADERS =
+            new TreeMap<>(
+                    Map.of(
+                            DB_VERSION_GENERATED_LOCAL_TIME, UPGRADE_TO_GENERATED_LOCAL_TIME,
+                            DB_VERSION_SKIN_TEMPERATURE, UPGRADE_TO_SKIN_TEMPERATURE,
+                            DB_VERSION_PLANNED_EXERCISE_SESSIONS,
+                                    UPGRADE_TO_PLANNED_EXERCISE_SESSIONS,
+                            DB_VERSION_MINDFULNESS_SESSION, UPGRADE_TO_MINDFULNESS_SESSION,
+                            DB_VERSION_PERSONAL_HEALTH_RECORD, UPGRADE_TO_PERSONAL_HEALTH_RECORD));
 
     /**
      * Applies db upgrades to bring the current schema to the latest supported version.
@@ -74,30 +107,34 @@ final class DatabaseUpgradeHelper {
      *
      * <p>See go/hc-handling-database-upgrades for things to be taken care of when upgrading.
      */
-    static void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
+    static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (isUnsupported(oldVersion)) {
             dropInitialSetOfTables(db);
         }
-
         if (oldVersion < MIN_SUPPORTED_DB_VERSION) {
             createTablesForMinSupportedVersion(db);
         }
-        if (oldVersion < DB_VERSION_GENERATED_LOCAL_TIME) {
-            forEachRecordHelper(it -> it.applyGeneratedLocalTimeUpgrade(db));
-        }
-        if (oldVersion < DB_VERSION_SKIN_TEMPERATURE) {
-            DatabaseUpgradeHelper.<SkinTemperatureRecordHelper>getRecordHelper(
-                            RECORD_TYPE_SKIN_TEMPERATURE)
-                    .applySkinTemperatureUpgrade(db);
-        }
 
-        if (oldVersion < DB_VERSION_PLANNED_EXERCISE_SESSIONS) {
-            applyPlannedExerciseDatabaseUpgrade(db);
-        }
-        if (oldVersion < DB_VERSION_MINDFULNESS_SESSION) {
-            MindfulnessSessionRecordHelper mindfulnessRecordHelper =
-                    getRecordHelper(RECORD_TYPE_MINDFULNESS_SESSION);
-            mindfulnessRecordHelper.applyMindfulnessSessionUpgrade(db);
+        if (Flags.infraToGuardDbChanges()) {
+            UPGRADERS.entrySet().stream()
+                    .filter(entry -> shouldUpgrade(entry.getKey(), oldVersion, newVersion))
+                    .forEach(entry -> entry.getValue().upgrade(db));
+        } else {
+            if (oldVersion < DB_VERSION_GENERATED_LOCAL_TIME) {
+                UPGRADE_TO_GENERATED_LOCAL_TIME.upgrade(db);
+            }
+            if (oldVersion < DB_VERSION_SKIN_TEMPERATURE) {
+                UPGRADE_TO_SKIN_TEMPERATURE.upgrade(db);
+            }
+            if (oldVersion < DB_VERSION_PLANNED_EXERCISE_SESSIONS) {
+                UPGRADE_TO_PLANNED_EXERCISE_SESSIONS.upgrade(db);
+            }
+            if (oldVersion < DB_VERSION_MINDFULNESS_SESSION) {
+                UPGRADE_TO_MINDFULNESS_SESSION.upgrade(db);
+            }
+            if (shouldUpgrade(DB_VERSION_PERSONAL_HEALTH_RECORD, oldVersion, newVersion)) {
+                UPGRADE_TO_PERSONAL_HEALTH_RECORD.upgrade(db);
+            }
         }
     }
 
@@ -105,7 +142,11 @@ final class DatabaseUpgradeHelper {
         return version != 0 && version < MIN_SUPPORTED_DB_VERSION;
     }
 
-    private static void createTablesForMinSupportedVersion(@NonNull SQLiteDatabase db) {
+    private static boolean shouldUpgrade(int upgradeVersion, int oldVersion, int newVersion) {
+        return oldVersion < upgradeVersion && upgradeVersion <= newVersion;
+    }
+
+    private static void createTablesForMinSupportedVersion(SQLiteDatabase db) {
         for (CreateTableRequest createTableRequest : getInitialCreateTableRequests()) {
             HealthConnectDatabase.createTable(db, createTableRequest);
         }
@@ -126,13 +167,14 @@ final class DatabaseUpgradeHelper {
 
         // Add all records that were part of the initial schema. This is everything added before
         // SKIN_TEMPERATURE.
-        Map<Integer, RecordHelper<?>> recordHelperMap = RecordHelperProvider.getRecordHelpers();
-        recordHelperMap.entrySet().stream()
+        Collection<RecordHelper<?>> recordHelpers = RecordHelperProvider.getRecordHelpers();
+        recordHelpers.stream()
                 .filter(
-                        entry ->
-                                entry.getKey() > RECORD_TYPE_UNKNOWN
-                                        && entry.getKey() < RECORD_TYPE_SKIN_TEMPERATURE)
-                .forEach(entry -> requests.add(entry.getValue().getCreateTableRequest()));
+                        helper ->
+                                helper.getRecordIdentifier() > RECORD_TYPE_UNKNOWN
+                                        && helper.getRecordIdentifier()
+                                                < RECORD_TYPE_SKIN_TEMPERATURE)
+                .forEach(helper -> requests.add(helper.getCreateTableRequest()));
 
         requests.add(DeviceInfoHelper.getCreateTableRequest());
         requests.add(AppInfoHelper.getCreateTableRequest());
@@ -149,29 +191,24 @@ final class DatabaseUpgradeHelper {
     }
 
     private static void forEachRecordHelper(Consumer<RecordHelper<?>> action) {
-        RecordHelperProvider.getRecordHelpers().values().forEach(action);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> T getRecordHelper(int recordTypeIdentifier) {
-        return (T) RecordHelperProvider.getRecordHelper(recordTypeIdentifier);
+        RecordHelperProvider.getRecordHelpers().forEach(action);
     }
 
     private static void applyPlannedExerciseDatabaseUpgrade(SQLiteDatabase db) {
         if (doesTableAlreadyExist(db, PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME)) {
             // Upgrade has already been applied. Return early.
+            // This is necessary as the ALTER TABLE ... ADD COLUMN statements below are not
+            // idempotent, as SQLite does not support ADD COLUMN IF NOT EXISTS.
             return;
         }
-        PlannedExerciseSessionRecordHelper recordHelper =
-                getRecordHelper(RECORD_TYPE_PLANNED_EXERCISE_SESSION);
+        PlannedExerciseSessionRecordHelper recordHelper = new PlannedExerciseSessionRecordHelper();
         HealthConnectDatabase.createTable(db, recordHelper.getCreateTableRequest());
         executeSqlStatements(
                 db,
                 recordHelper
                         .getAlterTableRequestForPlannedExerciseFeature()
                         .getAlterTableAddColumnsCommands());
-        ExerciseSessionRecordHelper exerciseRecordHelper =
-                getRecordHelper(RECORD_TYPE_EXERCISE_SESSION);
+        ExerciseSessionRecordHelper exerciseRecordHelper = new ExerciseSessionRecordHelper();
         executeSqlStatements(
                 db,
                 exerciseRecordHelper
@@ -179,17 +216,23 @@ final class DatabaseUpgradeHelper {
                         .getAlterTableAddColumnsCommands());
     }
 
+    private static void applyPersonalHealthRecordDatabaseUpgrade(SQLiteDatabase db) {
+        if (doesTableAlreadyExist(db, MedicalResourceHelper.getMainTableName())) {
+            // Upgrade has already been applied. Return early.
+            // This is necessary as the ALTER TABLE ... ADD COLUMN statements below are not
+            // idempotent, as SQLite does not support ADD COLUMN IF NOT EXISTS.
+            return;
+        }
+
+        MedicalDataSourceHelper.onInitialUpgrade(db);
+        MedicalResourceHelper.onInitialUpgrade(db);
+        DatabaseUpgradeHelper.executeSqlStatements(
+                db, getAlterTableRequestForPhrAccessLogs().getAlterTableAddColumnsCommands());
+    }
+
     /** Executes a list of SQL statements one after another, in a transaction. */
     public static void executeSqlStatements(SQLiteDatabase db, List<String> statements) {
-        db.beginTransaction();
-        try {
-            for (String statement : statements) {
-                db.execSQL(statement);
-            }
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
-        }
+        runAsTransaction(db, unused -> statements.forEach(db::execSQL));
     }
 
     private static boolean doesTableAlreadyExist(SQLiteDatabase db, String tableName) {
@@ -200,5 +243,10 @@ final class DatabaseUpgradeHelper {
                         /* selection= */ "type = 'table' AND name == '" + tableName + "'",
                         /* selectionArgs= */ null);
         return numEntries > 0;
+    }
+
+    /** Interface to implement upgrade actions from one db version to the next. */
+    private interface Upgrader {
+        void upgrade(SQLiteDatabase db);
     }
 }

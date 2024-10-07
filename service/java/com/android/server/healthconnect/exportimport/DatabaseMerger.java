@@ -32,7 +32,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 
 import static java.util.Objects.requireNonNull;
 
-import android.annotation.NonNull;
 import android.content.Context;
 import android.database.Cursor;
 import android.health.connect.PageTokenWrapper;
@@ -48,6 +47,7 @@ import android.util.Slog;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -57,6 +57,7 @@ import com.android.server.healthconnect.storage.request.UpsertTransactionRequest
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +79,7 @@ public final class DatabaseMerger {
     private final AppInfoHelper mAppInfoHelper;
     private final RecordMapper mRecordMapper;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private final DeviceInfoHelper mDeviceInfoHelper;
 
     /*
      * Record types in this list will always be migrated such that the ordering here is respected.
@@ -92,13 +94,19 @@ public final class DatabaseMerger {
                     // exist so that the foreign key constraints are not violated.
                     List.of(RECORD_TYPE_PLANNED_EXERCISE_SESSION, RECORD_TYPE_EXERCISE_SESSION));
 
-    public DatabaseMerger(@NonNull Context context) {
+    public DatabaseMerger(
+            AppInfoHelper appInfoHelper,
+            Context context,
+            DeviceInfoHelper deviceInfoHelper,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            TransactionManager transactionManager) {
         requireNonNull(context);
         mContext = context;
-        mTransactionManager = TransactionManager.getInitialisedInstance();
-        mAppInfoHelper = AppInfoHelper.getInstance();
+        mTransactionManager = transactionManager;
+        mAppInfoHelper = appInfoHelper;
         mRecordMapper = RecordMapper.getInstance();
-        mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
+        mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
+        mDeviceInfoHelper = deviceInfoHelper;
     }
 
     /** Merge data */
@@ -117,8 +125,8 @@ public final class DatabaseMerger {
                 // If this package is not installed on the target device and is not present in the
                 // health db, then fill the health db with the info from source db. According to the
                 // security review b/341253579, we should not parse the imported icon.
-                mAppInfoHelper.addOrUpdateAppInfoIfNotInstalled(
-                        mContext, packageName, appName, false /* onlyReplace */);
+                mAppInfoHelper.addOrUpdateAppInfoIfNoAppInfoEntryExists(
+                        mContext, packageName, appName);
             }
         }
 
@@ -171,13 +179,14 @@ public final class DatabaseMerger {
 
         if (exportImport()) {
             Slog.i(TAG, "Merging priority list");
-            mergePriorityList(stagedDatabase);
+            mergePriorityList(stagedDatabase, stagedPackageNamesByAppIds);
         }
 
         Slog.i(TAG, "Merging done");
     }
 
-    private void mergePriorityList(HealthConnectDatabase stagedDatabase) {
+    private void mergePriorityList(
+            HealthConnectDatabase stagedDatabase, Map<Long, String> importedAppInfo) {
         Map<Integer, List<String>> importPriorityMap = new HashMap<>();
         try (Cursor cursor = read(stagedDatabase, new ReadTableRequest(PRIORITY_TABLE_NAME))) {
             while (cursor.moveToNext()) {
@@ -187,8 +196,9 @@ public final class DatabaseMerger {
                 List<Long> appIdsInOrder =
                         StorageUtils.getCursorLongList(
                                 cursor, APP_ID_PRIORITY_ORDER_COLUMN_NAME, DELIMITER);
+                Slog.i(TAG, "Priority count for " + dataCategory + ": " + appIdsInOrder.size());
                 importPriorityMap.put(
-                        dataCategory, AppInfoHelper.getInstance().getPackageNames(appIdsInOrder));
+                        dataCategory, getPackageNamesFromImport(appIdsInOrder, importedAppInfo));
             }
         }
 
@@ -261,10 +271,12 @@ public final class DatabaseMerger {
                     new UpsertTransactionRequest(
                             null /* packageName */,
                             records,
+                            mDeviceInfoHelper,
                             mContext,
                             true /* isInsertRequest */,
                             true /* useProvidedUuid */,
-                            true /* skipPackageNameAndLogs */);
+                            true /* skipPackageName */,
+                            mAppInfoHelper);
             mTransactionManager.insertAll(upsertTransactionRequest.getUpsertRequests());
 
             currentToken = token;
@@ -287,7 +299,8 @@ public final class DatabaseMerger {
                         null /* packageFilters */,
                         DEFAULT_LONG /* startTime */,
                         DEFAULT_LONG /* endTime */,
-                        false /* useLocalTimeFilter */);
+                        false /* useLocalTimeFilter */,
+                        mAppInfoHelper);
 
         stagedDatabase.getWritableDatabase().execSQL(deleteTableRequest.getDeleteCommand());
     }
@@ -312,6 +325,7 @@ public final class DatabaseMerger {
         @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         ReadTransactionRequest readTransactionRequest =
                 new ReadTransactionRequest(
+                        mAppInfoHelper,
                         null,
                         readRecordsRequest.toReadRecordsRequestParcel(),
                         // Avoid time based filtering.
@@ -327,21 +341,21 @@ public final class DatabaseMerger {
         try (Cursor cursor = read(stagedDatabase, readTableRequest)) {
             Pair<List<RecordInternal<?>>, PageTokenWrapper> readResult =
                     recordHelper.getNextInternalRecordsPageAndToken(
+                            mDeviceInfoHelper,
                             cursor,
                             readTransactionRequest.getPageSize().orElse(MAXIMUM_PAGE_SIZE),
                             requireNonNull(readTransactionRequest.getPageToken()),
-                            stagedPackageNamesByAppIds);
+                            stagedPackageNamesByAppIds,
+                            mAppInfoHelper);
             recordInternalList = readResult.first;
             token = readResult.second;
             if (readTableRequest.getExtraReadRequests() != null) {
+                RecordHelper<?> mainRecordHelper =
+                        requireNonNull(readTableRequest.getRecordHelper());
                 for (ReadTableRequest extraDataRequest : readTableRequest.getExtraReadRequests()) {
                     Cursor cursorExtraData = read(stagedDatabase, extraDataRequest);
-                    readTableRequest
-                            .getRecordHelper()
-                            .updateInternalRecordsWithExtraFields(
-                                    recordInternalList,
-                                    cursorExtraData,
-                                    extraDataRequest.getTableName());
+                    mainRecordHelper.updateInternalRecordsWithExtraFields(
+                            recordInternalList, cursorExtraData, extraDataRequest.getTableName());
                 }
             }
         }
@@ -355,5 +369,24 @@ public final class DatabaseMerger {
                 stagedDatabase.getReadableDatabase().rawQuery(request.getReadCommand(), null);
         Slog.d(TAG, "Cursor count: " + cursor.getCount());
         return cursor;
+    }
+
+    /**
+     * Returns a list of package names, mapped from the passed-in {@code packageIds} list using the
+     * mapping from the import file.
+     */
+    private static List<String> getPackageNamesFromImport(
+            List<Long> packageIds, Map<Long, String> importedPackageNameMapping) {
+        List<String> packageNames = new ArrayList<>();
+        if (packageIds == null || packageIds.isEmpty() || importedPackageNameMapping.isEmpty()) {
+            return packageNames;
+        }
+        packageIds.forEach(
+                (packageId) -> {
+                    String packageName = importedPackageNameMapping.get(packageId);
+                    requireNonNull(packageName);
+                    packageNames.add(packageName);
+                });
+        return packageNames;
     }
 }

@@ -21,13 +21,12 @@ import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKG
 
 import static java.util.stream.Collectors.toSet;
 
-import android.annotation.NonNull;
 import android.content.AttributionSource;
 import android.content.Context;
 import android.health.connect.HealthPermissions;
 import android.health.connect.internal.datatypes.RecordInternal;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
-import android.health.connect.internal.datatypes.utils.RecordTypePermissionCategoryMapper;
 import android.permission.PermissionManager;
 import android.util.ArrayMap;
 import android.util.ArraySet;
@@ -51,15 +50,18 @@ public class DataPermissionEnforcer {
     private final Context mContext;
     private final HealthConnectDeviceConfigManager mDeviceConfigManager;
     private final RecordMapper mRecordMapper;
+    private final HealthConnectMappings mHealthConnectMappings;
 
     public DataPermissionEnforcer(
-            @NonNull PermissionManager permissionManager,
-            @NonNull Context context,
-            @NonNull HealthConnectDeviceConfigManager deviceConfigManager) {
+            PermissionManager permissionManager,
+            Context context,
+            HealthConnectDeviceConfigManager deviceConfigManager,
+            HealthConnectMappings healthConnectMappings) {
         mPermissionManager = permissionManager;
         mContext = context;
         mDeviceConfigManager = deviceConfigManager;
         mRecordMapper = RecordMapper.getInstance();
+        mHealthConnectMappings = healthConnectMappings;
     }
 
     /** Enforces default write permissions for given recordTypeIds */
@@ -73,9 +75,9 @@ public class DataPermissionEnforcer {
             List<Integer> recordTypeIds, AttributionSource attributionSource) {
         for (Integer recordTypeId : recordTypeIds) {
             String permissionName =
-                    HealthPermissions.getHealthReadPermission(
-                            RecordTypePermissionCategoryMapper
-                                    .getHealthPermissionCategoryForRecordType(recordTypeId));
+                    mHealthConnectMappings.getHealthReadPermission(
+                            mHealthConnectMappings.getHealthPermissionCategoryForRecordType(
+                                    recordTypeId));
             enforceRecordPermission(
                     permissionName, attributionSource, recordTypeId, /* isReadPermission= */ true);
         }
@@ -141,7 +143,6 @@ public class DataPermissionEnforcer {
                 recordTypeIdToExtraPerms.put(recordTypeId, new ArraySet<>());
             }
 
-            recordHelper.checkRecordOperationsAreEnabled(recordInternal);
             recordTypeIdToExtraPerms
                     .get(recordTypeId)
                     .addAll(recordHelper.getRequiredExtraWritePermissions(recordInternal));
@@ -164,7 +165,7 @@ public class DataPermissionEnforcer {
     }
 
     /** Enforces that caller has any of given permissions. */
-    public void enforceAnyOfPermissions(@NonNull String... permissions) {
+    public void enforceAnyOfPermissions(String... permissions) {
         for (var permission : permissions) {
             if (mContext.checkCallingPermission(permission) == PERMISSION_GRANTED) {
                 return;
@@ -180,7 +181,7 @@ public class DataPermissionEnforcer {
      * HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} permission if the flag is enabled,
      * otherwise throws {@link SecurityException}.
      */
-    public void enforceBackgroundReadRestrictions(int uid, int pid, @NonNull String errorMessage) {
+    public void enforceBackgroundReadRestrictions(int uid, int pid, String errorMessage) {
         if (mDeviceConfigManager.isBackgroundReadFeatureEnabled()) {
             mContext.enforcePermission(READ_HEALTH_DATA_IN_BACKGROUND, pid, uid, errorMessage);
         } else {
@@ -221,9 +222,9 @@ public class DataPermissionEnforcer {
             List<Integer> recordTypeIds, AttributionSource attributionSource) {
         for (Integer recordTypeId : recordTypeIds) {
             String permissionName =
-                    HealthPermissions.getHealthWritePermission(
-                            RecordTypePermissionCategoryMapper
-                                    .getHealthPermissionCategoryForRecordType(recordTypeId));
+                    mHealthConnectMappings.getHealthWritePermission(
+                            mHealthConnectMappings.getHealthPermissionCategoryForRecordType(
+                                    recordTypeId));
             enforceRecordPermission(
                     permissionName, attributionSource, recordTypeId, /* isReadPermission= */ false);
         }
@@ -236,7 +237,7 @@ public class DataPermissionEnforcer {
             boolean isReadPermission) {
         if (!isPermissionGranted(permissionName, attributionSource)) {
             String prohibitedAction =
-                    isReadPermission ? "to read to record type" : " to write to record type ";
+                    isReadPermission ? " to read to record type" : " to write to record type ";
             throw new SecurityException(
                     "Caller doesn't have "
                             + permissionName

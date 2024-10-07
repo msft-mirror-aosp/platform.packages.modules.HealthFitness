@@ -17,12 +17,16 @@ package com.android.healthconnect.controller.data.entries.api
 
 import android.content.Context
 import android.health.connect.HealthConnectManager
+import android.health.connect.ReadMedicalResourcesInitialRequest
+import android.health.connect.ReadMedicalResourcesResponse
 import android.health.connect.ReadRecordsRequestUsingFilters
 import android.health.connect.ReadRecordsResponse
 import android.health.connect.TimeInstantRangeFilter
 import android.health.connect.datatypes.DataOrigin
 import android.health.connect.datatypes.InstantRecord
 import android.health.connect.datatypes.IntervalRecord
+import android.health.connect.datatypes.MedicalDataSource
+import android.health.connect.datatypes.MedicalResource
 import android.health.connect.datatypes.Record
 import android.util.Log
 import androidx.core.os.asOutcomeReceiver
@@ -31,7 +35,9 @@ import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.data.entries.datenavigation.toPeriod
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
+import com.android.healthconnect.controller.permissions.data.toMedicalResourceType
 import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
+import com.android.healthconnect.controller.shared.app.MedicalDataSourceReader
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.SystemTimeSource
 import com.android.healthconnect.controller.utils.TimeSource
@@ -57,7 +63,8 @@ constructor(
     @ApplicationContext private val context: Context,
     private val healthDataEntryFormatter: HealthDataEntryFormatter,
     private val healthConnectManager: HealthConnectManager,
-    private val timeSource: TimeSource = SystemTimeSource
+    private val dataSourceReader: MedicalDataSourceReader,
+    private val timeSource: TimeSource = SystemTimeSource,
 ) {
     private val dateFormatter = LocalDateTimeFormatter(context)
 
@@ -73,15 +80,23 @@ constructor(
         timeFilterRange: TimeInstantRangeFilter,
         packageName: String?,
         ascending: Boolean = true,
-        pageSize: Int = 1000
+        pageSize: Int = 1000,
     ): List<Record> {
         val filter =
             buildReadRecordsRequestUsingFilters(
-                data, timeFilterRange, packageName, ascending, pageSize)
+                data,
+                timeFilterRange,
+                packageName,
+                ascending,
+                pageSize,
+            )
         val records =
             suspendCancellableCoroutine<ReadRecordsResponse<*>> { continuation ->
                     healthConnectManager.readRecords(
-                        filter, Runnable::run, continuation.asOutcomeReceiver())
+                        filter,
+                        Runnable::run,
+                        continuation.asOutcomeReceiver(),
+                    )
                 }
                 .records
                 .sortedByDescending { record -> getStartTime(record) }
@@ -108,9 +123,40 @@ constructor(
         return dataTypes
             .map { dataType ->
                 readDataType(
-                    dataType, timeFilterRange, input.packageName, ascending = false, pageSize = 1)
+                    dataType,
+                    timeFilterRange,
+                    input.packageName,
+                    ascending = false,
+                    pageSize = 1,
+                )
             }
             .flatten()
+    }
+
+    /** Returns a list of records from a MedicalPermissionType. */
+    suspend fun readMedicalRecords(input: LoadMedicalEntriesInput): List<MedicalResource> {
+        val medicalResourceType = toMedicalResourceType(input.medicalPermissionType)
+        if (medicalResourceType == MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN) {
+            return emptyList()
+        }
+        val filter =
+            input.packageName?.let {
+                buildMedicalResourceRequest(
+                    medicalResourceType,
+                    dataSourceReader.fromPackageName(it),
+                )
+            } ?: buildMedicalResourceRequest(medicalResourceType)
+        val medicalResources =
+            suspendCancellableCoroutine<ReadMedicalResourcesResponse> { continuation ->
+                    healthConnectManager.readMedicalResources(
+                        filter,
+                        Runnable::run,
+                        continuation.asOutcomeReceiver(),
+                    )
+                }
+                .medicalResources
+        // TODO(b/362672526): Sort by descending time.
+        return medicalResources
     }
 
     /**
@@ -120,7 +166,7 @@ constructor(
     suspend fun maybeAddDateSectionHeaders(
         entries: List<Record>,
         period: DateNavigationPeriod,
-        showDataOrigin: Boolean
+        showDataOrigin: Boolean,
     ): List<FormattedEntry> {
         if (entries.isEmpty()) {
             return listOf()
@@ -190,7 +236,7 @@ constructor(
 
     private suspend fun getFormatterRecord(
         record: Record,
-        showDataOrigin: Boolean
+        showDataOrigin: Boolean,
     ): FormattedEntry? {
         return try {
             healthDataEntryFormatter.format(record, showDataOrigin)
@@ -203,7 +249,7 @@ constructor(
     fun getTimeFilter(
         startTime: Instant,
         period: DateNavigationPeriod,
-        endTimeExclusive: Boolean
+        endTimeExclusive: Boolean,
     ): TimeInstantRangeFilter {
 
         val start =
@@ -230,7 +276,7 @@ constructor(
         timeFilterRange: TimeInstantRangeFilter,
         packageName: String?,
         ascending: Boolean = true,
-        pageSize: Int = 1000
+        pageSize: Int = 1000,
     ): ReadRecordsRequestUsingFilters<out Record> {
         val filter =
             ReadRecordsRequestUsingFilters.Builder(data)
@@ -240,6 +286,22 @@ constructor(
         if (packageName != null) {
             filter.addDataOrigins(DataOrigin.Builder().setPackageName(packageName).build()).build()
         }
+        return filter.build()
+    }
+
+    @VisibleForTesting
+    fun buildMedicalResourceRequest(
+        medicalResourceType: Int,
+        dataSources: List<MedicalDataSource>,
+    ): ReadMedicalResourcesInitialRequest {
+        val filter = ReadMedicalResourcesInitialRequest.Builder(medicalResourceType)
+        dataSources.map { it.id }.forEach { filter.addDataSourceId(it) }
+        return filter.build()
+    }
+
+    @VisibleForTesting
+    fun buildMedicalResourceRequest(medicalResourceType: Int): ReadMedicalResourcesInitialRequest {
+        val filter = ReadMedicalResourcesInitialRequest.Builder(medicalResourceType)
         return filter.build()
     }
 }

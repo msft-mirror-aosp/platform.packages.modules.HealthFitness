@@ -16,13 +16,14 @@
 
 package com.android.server.healthconnect.storage.request;
 
-import android.annotation.NonNull;
+import android.database.SQLException;
 import android.util.Pair;
 import android.util.Slog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -32,6 +33,7 @@ import java.util.Map;
  */
 public final class AlterTableRequest {
     public static final String TAG = "HealthConnectAlter";
+    private static final String NOT_NULL = "NOT NULL";
     private static final String ALTER_TABLE_COMMAND = "ALTER TABLE ";
     private static final String ADD_COLUMN_COMMAND = " ADD COLUMN ";
     private final String mTableName;
@@ -48,7 +50,6 @@ public final class AlterTableRequest {
      * Adds a foreign key constraint between one column and another. Deletion behavior is to set
      * dangling references to null.
      */
-    @NonNull
     public AlterTableRequest addForeignKeyConstraint(
             String column, String referencedTable, String referencedColumn) {
         mForeignKeyConstraints.put(column, new Pair<>(referencedTable, referencedColumn));
@@ -78,6 +79,10 @@ public final class AlterTableRequest {
         }
         Slog.d(TAG, "Alter table: " + statements);
 
+        // Check on the final commands for now as it's more broad. Should this become a problem
+        // later, we can change/move the check to narrow scope such as only check on the
+        // `columnInfo` list passed to the constructor
+        checkNoNotNullColumns(statements);
         return statements;
     }
 
@@ -96,5 +101,20 @@ public final class AlterTableRequest {
 
         Slog.d(TAG, "Alter table generated: " + request);
         return request;
+    }
+
+    private static void checkNoNotNullColumns(List<String> alterTableCommands) {
+        for (String command : alterTableCommands) {
+            if (command == null) {
+                continue;
+            }
+            String upperCased = command.toUpperCase(Locale.ROOT);
+            if (upperCased.contains(NOT_NULL)) {
+                throw new SQLException(
+                        String.format(
+                                "Alter table command \"%s\" must not contain \"%s\"",
+                                upperCased, NOT_NULL));
+            }
+        }
     }
 }

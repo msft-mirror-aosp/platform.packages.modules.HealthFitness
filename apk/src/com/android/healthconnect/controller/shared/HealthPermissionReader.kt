@@ -24,8 +24,14 @@ import android.content.pm.PackageManager.ResolveInfoFlags
 import android.health.connect.HealthConnectManager
 import android.health.connect.HealthPermissions
 import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isAdditionalPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isFitnessReadPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isMedicalReadPermission
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.utils.FeatureUtils
+import com.android.healthfitness.flags.Flags
+import com.android.healthfitness.flags.Flags.personalHealthRecord
 import com.google.common.annotations.VisibleForTesting
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -40,7 +46,7 @@ class HealthPermissionReader
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
-    private val featureUtils: FeatureUtils
+    private val featureUtils: FeatureUtils,
 ) {
 
     companion object {
@@ -65,12 +71,25 @@ constructor(
             setOf(
                 HealthPermissions.READ_EXERCISE_ROUTES,
                 HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
-                HealthPermissions.READ_HEALTH_DATA_HISTORY)
+                HealthPermissions.READ_HEALTH_DATA_HISTORY,
+            )
 
         private val medicalPermissions =
             setOf(
                 HealthPermissions.WRITE_MEDICAL_DATA,
-                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION)
+                HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
+                HealthPermissions.READ_MEDICAL_DATA_CONDITIONS,
+                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS,
+                HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS,
+                HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS,
+                HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS,
+                HealthPermissions.READ_MEDICAL_DATA_PRACTITIONER_DETAILS,
+                HealthPermissions.READ_MEDICAL_DATA_PREGNANCY,
+                HealthPermissions.READ_MEDICAL_DATA_PROCEDURES,
+                HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                HealthPermissions.READ_MEDICAL_DATA_VISITS,
+                HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS,
+            )
     }
 
     /**
@@ -101,8 +120,8 @@ constructor(
         return try {
             appsWithDeclaredIntent().filter {
                 getValidHealthPermissions(it)
-                        .filterIsInstance<HealthPermission.MedicalPermission>()
-                        .isNotEmpty()
+                    .filterIsInstance<HealthPermission.MedicalPermission>()
+                    .isNotEmpty()
             }
         } catch (e: Exception) {
             emptyList()
@@ -111,10 +130,9 @@ constructor(
 
     private fun appsWithDeclaredIntent(): List<String> {
         return context.packageManager
-                        .queryIntentActivities(
-                                getRationaleIntent(), ResolveInfoFlags.of(RESOLVE_INFO_FLAG))
-                        .map { it.activityInfo.packageName }
-                        .distinct()
+            .queryIntentActivities(getRationaleIntent(), ResolveInfoFlags.of(RESOLVE_INFO_FLAG))
+            .map { it.activityInfo.packageName }
+            .distinct()
     }
 
     /**
@@ -141,14 +159,61 @@ constructor(
         }
     }
 
-    /** Returns a list of health permissions declared by an app that can be rendered in our UI. */
+    /**
+     * Returns a list of health permissions declared by an app that can be rendered in our UI. This
+     * also filters out invalid additional permissions.
+     */
     fun getValidHealthPermissions(packageName: String): List<HealthPermission> {
         return try {
             val permissions = getDeclaredHealthPermissions(packageName)
-            permissions.mapNotNull { permission -> parsePermission(permission) }
+            val declaredPermissions =
+                permissions.mapNotNull { permission -> parsePermission(permission) }
+            if (personalHealthRecord()) {
+                maybeFilterOutAdditionalIfNotValid(declaredPermissions)
+            } else {
+                declaredPermissions
+            }
         } catch (e: NameNotFoundException) {
             emptyList()
         }
+    }
+
+    /**
+     * Filers out invalid additional permissions. READ_HEALTH_DATA_HISTORY is valid if at least one
+     * FITNESS READ permission is declared. READ_HEALTH_DATA_IN_BACKGROUND is valid if at least one
+     * HEALTH READ permission is declared.
+     */
+    @VisibleForTesting
+    fun maybeFilterOutAdditionalIfNotValid(
+        declaredPermissions: List<HealthPermission>
+    ): List<HealthPermission> {
+        val historyReadDeclared =
+            declaredPermissions.filterIsInstance<AdditionalPermission>().any {
+                it == AdditionalPermission.READ_HEALTH_DATA_HISTORY
+            }
+        val backgroundReadDeclared =
+            declaredPermissions.filterIsInstance<AdditionalPermission>().any {
+                it == AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND
+            }
+        val atLeastOneFitnessReadDeclared = declaredPermissions.any { isFitnessReadPermission(it) }
+        val atLeastOneMedicalReadDeclared = declaredPermissions.any { isMedicalReadPermission(it) }
+        val atLeastOneHealthReadDeclared =
+            atLeastOneFitnessReadDeclared || atLeastOneMedicalReadDeclared
+
+        var result = declaredPermissions.toMutableList()
+        if (historyReadDeclared && !atLeastOneFitnessReadDeclared) {
+            result =
+                result
+                    .filterNot { it == AdditionalPermission.READ_HEALTH_DATA_HISTORY }
+                    .toMutableList()
+        }
+        if (backgroundReadDeclared && !atLeastOneHealthReadDeclared) {
+            result =
+                result
+                    .filterNot { it == AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND }
+                    .toMutableList()
+        }
+        return result.toList()
     }
 
     /** Returns a list of health permissions that are declared by an app. */
@@ -156,7 +221,9 @@ constructor(
         return try {
             val appInfo =
                 context.packageManager.getPackageInfo(
-                    packageName, PackageInfoFlags.of(PACKAGE_INFO_PERMISSIONS_FLAG))
+                    packageName,
+                    PackageInfoFlags.of(PACKAGE_INFO_PERMISSIONS_FLAG),
+                )
             val healthPermissions = getHealthPermissions()
             appInfo.requestedPermissions?.filter { it in healthPermissions }.orEmpty()
         } catch (e: NameNotFoundException) {
@@ -164,10 +231,12 @@ constructor(
         }
     }
 
-    fun getAppPermissionsType(packageName: String) : AppPermissionsType {
+    fun getAppPermissionsType(packageName: String): AppPermissionsType {
         val permissions = getValidHealthPermissions(packageName)
-        val hasAtLeastOneFitnessPermission = permissions.firstOrNull { it is HealthPermission.FitnessPermission} != null
-        val hasAtLeastOneMedicalPermission = permissions.firstOrNull { it is HealthPermission.MedicalPermission} != null
+        val hasAtLeastOneFitnessPermission =
+            permissions.firstOrNull { it is HealthPermission.FitnessPermission } != null
+        val hasAtLeastOneMedicalPermission =
+            permissions.firstOrNull { it is HealthPermission.MedicalPermission } != null
 
         return if (hasAtLeastOneFitnessPermission && hasAtLeastOneMedicalPermission) {
             AppPermissionsType.COMBINED_PERMISSIONS
@@ -176,14 +245,27 @@ constructor(
         } else if (hasAtLeastOneMedicalPermission) {
             AppPermissionsType.MEDICAL_PERMISSIONS_ONLY
         } else {
-            // All Fitness, Medical and Combined screens handle the empty state so any of those can be returned here.
+            // All Fitness, Medical and Combined screens handle the empty state so any of those can
+            // be returned here.
             AppPermissionsType.FITNESS_PERMISSIONS_ONLY
         }
     }
 
+    /**
+     * When PHR flag is on, returns valid additional permissions that we can display in our UI. An
+     * additional permission is valid if the correct read permissions are declared.
+     *
+     * When PHR flag is off, returns additional permissions that are declared.
+     */
     fun getAdditionalPermissions(packageName: String): List<String> {
-        return getDeclaredHealthPermissions(packageName).filter { perm ->
-            isAdditionalPermission(perm) && !shouldHidePermission(perm)
+        return if (personalHealthRecord()) {
+            getValidHealthPermissions(packageName)
+                .map { it.toString() }
+                .filter { perm -> isAdditionalPermission(perm) && !shouldHidePermission(perm) }
+        } else {
+            getDeclaredHealthPermissions(packageName).filter { perm ->
+                isAdditionalPermission(perm) && !shouldHidePermission(perm)
+            }
         }
     }
 
@@ -191,7 +273,9 @@ constructor(
         val intent = getRationaleIntent(packageName)
         val resolvedInfo =
             context.packageManager.queryIntentActivities(
-                intent, ResolveInfoFlags.of(RESOLVE_INFO_FLAG))
+                intent,
+                ResolveInfoFlags.of(RESOLVE_INFO_FLAG),
+            )
         return resolvedInfo.any { info -> info.activityInfo.packageName == packageName }
     }
 
@@ -199,7 +283,9 @@ constructor(
         val intent = getRationaleIntent(packageName)
         val resolvedInfo =
             context.packageManager.queryIntentActivities(
-                intent, ResolveInfoFlags.of(RESOLVE_INFO_FLAG))
+                intent,
+                ResolveInfoFlags.of(RESOLVE_INFO_FLAG),
+            )
         resolvedInfo.forEach { info -> intent.setClassName(packageName, info.activityInfo.name) }
         return intent
     }
@@ -220,18 +306,6 @@ constructor(
                 .queryPermissionsByGroup("android.permission-group.HEALTH", 0)
                 .map { permissionInfo -> permissionInfo.name }
         return permissions.filterNot { permission -> shouldHidePermission(permission) }
-    }
-
-    fun isAdditionalPermission(permission: String): Boolean {
-        return additionalPermissions.contains(permission)
-    }
-
-    fun isMedicalPermission(permission: String): Boolean {
-        return medicalPermissions.contains(permission)
-    }
-
-    fun isFitnessPermission(permission: String): Boolean {
-        return !isAdditionalPermission(permission) && !isMedicalPermission(permission)
     }
 
     fun shouldHidePermission(permission: String): Boolean {
@@ -257,6 +331,10 @@ constructor(
     }
 
     private fun shouldHideMindfulnessSessionPermissions(permission: String): Boolean {
+        if (Flags.mindfulness()) {
+            return false
+        }
+
         return permission == HealthPermissions.READ_MINDFULNESS ||
             permission == HealthPermissions.WRITE_MINDFULNESS
     }
@@ -274,7 +352,7 @@ constructor(
     }
 
     private fun shouldHideMedicalPermission(permission: String): Boolean {
-        return permission in medicalPermissions && !featureUtils.isPersonalHealthRecordEnabled()
+        return permission in medicalPermissions && !personalHealthRecord()
     }
 
     private fun getRationaleIntent(packageName: String? = null): Intent {

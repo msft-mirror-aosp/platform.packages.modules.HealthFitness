@@ -16,32 +16,58 @@
 
 package android.health.connect;
 
+import static android.health.connect.datatypes.MedicalDataSource.validateMedicalDataSourceIds;
+import static android.health.connect.datatypes.MedicalResource.validateMedicalResourceType;
+
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import static java.util.Objects.hash;
+import static java.util.Objects.requireNonNull;
 
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
+import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 /**
- * Request to delete Medical resources using {@link HealthConnectManager#deleteMedicalResources}.
+ * A delete request for {@link HealthConnectManager#deleteMedicalResources}.
+ *
+ * <p>Each field in the request acts as a cumulative filter. So if a set of data sources and a set
+ * of types are specified, then only resources which are both from data sources in the given set and
+ * of types in the given set are deleted.
+ *
+ * <p>At least one filter must be specified - you cannot construct a request to say delete
+ * everything. And for any given requirement set, it must be a non-empty set (empty means the filter
+ * does not exist).
  */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class DeleteMedicalResourcesRequest implements Parcelable {
     @NonNull private final Set<String> mDataSourceIds;
+    @NonNull @MedicalResourceType private final Set<Integer> mMedicalResourceTypes;
 
-    private DeleteMedicalResourcesRequest(@NonNull Set<String> dataSourceIds) {
-        if (dataSourceIds.isEmpty()) {
-            throw new IllegalArgumentException("Data source list is empty");
+    /**
+     * Creates a new instance of {@link DeleteMedicalResourcesRequest}. Please see {@link
+     * DeleteMedicalResourcesRequest.Builder} for more detailed parameters information.
+     */
+    private DeleteMedicalResourcesRequest(
+            @NonNull Set<String> dataSourceIds,
+            @NonNull @MedicalResourceType Set<Integer> medicalResourceTypes) {
+        if (dataSourceIds.isEmpty() && medicalResourceTypes.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "No restrictions specified for delete. The request must restrict by data source"
+                            + " or resource type");
         }
+        validateMedicalDataSourceIds(dataSourceIds);
+        medicalResourceTypes.forEach(MedicalResource::validateMedicalResourceType);
         mDataSourceIds = dataSourceIds;
+        mMedicalResourceTypes = medicalResourceTypes;
     }
 
     /**
@@ -49,12 +75,19 @@ public final class DeleteMedicalResourcesRequest implements Parcelable {
      * order as {@link DeleteMedicalResourcesRequest#writeToParcel}.
      */
     private DeleteMedicalResourcesRequest(@NonNull Parcel in) {
-        Objects.requireNonNull(in);
-        ArrayList<String> dataSourceIdList = in.createStringArrayList();
-        if (dataSourceIdList.isEmpty()) {
-            throw new IllegalArgumentException("Empty datasources in parcel");
+        requireNonNull(in);
+        ArrayList<String> dataSourceIdList = requireNonNull(in.createStringArrayList());
+        int[] resourceTypes = requireNonNull(in.createIntArray());
+        if (dataSourceIdList.isEmpty() && resourceTypes.length == 0) {
+            throw new IllegalArgumentException("Empty data sources and resource types in parcel");
         }
         mDataSourceIds = new HashSet<>(dataSourceIdList);
+        validateMedicalDataSourceIds(mDataSourceIds);
+        mMedicalResourceTypes = new HashSet<>();
+        for (int resourceType : resourceTypes) {
+            validateMedicalResourceType(resourceType);
+            mMedicalResourceTypes.add(resourceType);
+        }
     }
 
     @NonNull
@@ -72,14 +105,27 @@ public final class DeleteMedicalResourcesRequest implements Parcelable {
             };
 
     /**
-     * Gets the ids for the datasources that are being requested to delete.
+     * Returns the IDs for the {@link MedicalDataSource} that are being requested to delete.
      *
-     * <p>These ids should core from {@link HealthConnectManager#createMedicalDataSource}, or other
-     * {@link HealthConnectManager} datasource methods.
+     * <p>These IDs should come from {@link HealthConnectManager#createMedicalDataSource}, or other
+     * {@link HealthConnectManager} data source methods.
+     *
+     * <p>If the set is empty it means resources from any data source should be deleted.
      */
     @NonNull
     public Set<String> getDataSourceIds() {
-        return mDataSourceIds;
+        return new HashSet<>(mDataSourceIds);
+    }
+
+    /**
+     * Returns the {@link MedicalResource} types that should be deleted.
+     *
+     * <p>If the set is empty it means resources of all types should be deleted.
+     */
+    @NonNull
+    @MedicalResourceType
+    public Set<Integer> getMedicalResourceTypes() {
+        return new HashSet<>(mMedicalResourceTypes);
     }
 
     @Override
@@ -90,18 +136,20 @@ public final class DeleteMedicalResourcesRequest implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeStringList(new ArrayList<>(mDataSourceIds));
+        dest.writeIntArray(mMedicalResourceTypes.stream().mapToInt(Integer::intValue).toArray());
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof DeleteMedicalResourcesRequest that)) return false;
-        return mDataSourceIds.equals(that.mDataSourceIds);
+        return mDataSourceIds.equals(that.mDataSourceIds)
+                && mMedicalResourceTypes.equals(that.mMedicalResourceTypes);
     }
 
     @Override
     public int hashCode() {
-        return hash(mDataSourceIds);
+        return hash(mDataSourceIds, mMedicalResourceTypes);
     }
 
     @Override
@@ -109,6 +157,7 @@ public final class DeleteMedicalResourcesRequest implements Parcelable {
         StringBuilder sb = new StringBuilder();
         sb.append(this.getClass().getSimpleName()).append("{");
         sb.append("dataSourceIds=").append(mDataSourceIds);
+        sb.append(",medicalResourceTypes=").append(mMedicalResourceTypes);
         sb.append("}");
         return sb.toString();
     }
@@ -116,26 +165,75 @@ public final class DeleteMedicalResourcesRequest implements Parcelable {
     /** Builder class for {@link DeleteMedicalResourcesRequest}. */
     public static final class Builder {
         private final Set<String> mDataSourceIds = new HashSet<>();
+        @MedicalResourceType private final Set<Integer> mMedicalResourceTypes = new HashSet<>();
 
-        /** Constructs a new {@link Builder} with no datasources set. */
+        /** Constructs a new {@link DeleteMedicalResourcesRequest.Builder} with no filters. */
         public Builder() {}
 
-        /** Constructs a new {@link Builder} copying all settings from {@code other}. */
+        /** Constructs a clone of the other {@link DeleteMedicalResourcesRequest.Builder}. */
         public Builder(@NonNull Builder other) {
             mDataSourceIds.addAll(other.mDataSourceIds);
+            mMedicalResourceTypes.addAll(other.mMedicalResourceTypes);
         }
 
-        /** Add the data source ID to request to delete. */
+        /** Constructs a clone of the other {@link DeleteMedicalResourcesRequest} instance. */
+        public Builder(@NonNull DeleteMedicalResourcesRequest other) {
+            mDataSourceIds.addAll(other.getDataSourceIds());
+            mMedicalResourceTypes.addAll(other.getMedicalResourceTypes());
+        }
+
+        /**
+         * Adds the data source ID to request to delete. This should be an ID of the existing {@link
+         * MedicalDataSource}.
+         *
+         * <p>If the set of data source IDs is empty, it means resources from any data source should
+         * be deleted.
+         *
+         * @throws IllegalArgumentException if the provided {@code dataSourceId} is not a valid ID.
+         */
         @NonNull
         public Builder addDataSourceId(@NonNull String dataSourceId) {
-            mDataSourceIds.add(Objects.requireNonNull(dataSourceId));
+            mDataSourceIds.add(requireNonNull(dataSourceId));
+            validateMedicalDataSourceIds(Set.of(dataSourceId));
             return this;
         }
 
-        /** Builds a {@link DeleteMedicalResourcesRequest} from this Builder. */
+        /**
+         * Adds the medical resource type to request to delete.
+         *
+         * @throws IllegalArgumentException if the provided {@code resourceType} is not supported.
+         */
+        @NonNull
+        public Builder addMedicalResourceType(@MedicalResourceType int resourceType) {
+            validateMedicalResourceType(resourceType);
+            mMedicalResourceTypes.add(resourceType);
+            return this;
+        }
+
+        /** Clears all data source IDs. */
+        @NonNull
+        public Builder clearDataSourceIds() {
+            mDataSourceIds.clear();
+            return this;
+        }
+
+        /** Clears all medical resource types. */
+        @NonNull
+        public Builder clearMedicalResourceTypes() {
+            mMedicalResourceTypes.clear();
+            return this;
+        }
+
+        /**
+         * Returns a new instance of {@link DeleteMedicalResourcesRequest} with the specified
+         * parameters.
+         *
+         * @throws IllegalArgumentException if no data source IDs or medical resource types have
+         *     been added.
+         */
         @NonNull
         public DeleteMedicalResourcesRequest build() {
-            return new DeleteMedicalResourcesRequest(mDataSourceIds);
+            return new DeleteMedicalResourcesRequest(mDataSourceIds, mMedicalResourceTypes);
         }
     }
 }

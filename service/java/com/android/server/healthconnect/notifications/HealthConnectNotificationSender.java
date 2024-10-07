@@ -19,7 +19,6 @@ package com.android.server.healthconnect.notifications;
 import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
 
 import android.annotation.FlaggedApi;
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -82,7 +81,7 @@ public final class HealthConnectNotificationSender {
         private boolean mIsEnabled;
 
         /** provide notification sender with context */
-        public Builder setContext(@NonNull Context context) {
+        public Builder setContext(Context context) {
             this.mContext = context;
             return this;
         }
@@ -98,7 +97,7 @@ public final class HealthConnectNotificationSender {
 
         /** provide notification sender with notification factory */
         public Builder setNotificationFactory(
-                @NonNull HealthConnectNotificationFactory notificationFactory) {
+                HealthConnectNotificationFactory notificationFactory) {
             this.mNotificationFactory = notificationFactory;
             return this;
         }
@@ -110,31 +109,30 @@ public final class HealthConnectNotificationSender {
         }
 
         /** set the identifying tag for notifications */
-        public Builder setNotificationTag(@NonNull String notificationTag) {
+        public Builder setNotificationTag(String notificationTag) {
             this.mNotificationTag = notificationTag;
             return this;
         }
 
         /** set the notification channel ID */
-        public Builder setChannelId(@NonNull String channelId) {
+        public Builder setChannelId(String channelId) {
             this.mChannelId = channelId;
             return this;
         }
 
         /** set the notification channel group ID */
-        public Builder setChannelGroupId(@NonNull String channelGroupId) {
+        public Builder setChannelGroupId(String channelGroupId) {
             this.mChannelGroupId = channelGroupId;
             return this;
         }
 
         /** set the name of the notification channel */
-        public Builder setChannelNameResource(@NonNull String channelNameResource) {
+        public Builder setChannelNameResource(String channelNameResource) {
             this.mChannelNameResource = channelNameResource;
             return this;
         }
 
         /** build the notification sender */
-        @NonNull
         public HealthConnectNotificationSender build() {
             if (this.mChannelGroupId == null
                     || this.mChannelId == null
@@ -150,7 +148,7 @@ public final class HealthConnectNotificationSender {
 
     /** Creates a notification determined by the passed-in type and displays it to the user. */
     public void sendNotificationAsUser(
-            @HealthConnectNotificationType int notificationType, @NonNull UserHandle userHandle) {
+            @HealthConnectNotificationType int notificationType, UserHandle userHandle) {
 
         Slog.i(TAG, "Sending notification as user.");
 
@@ -160,29 +158,27 @@ public final class HealthConnectNotificationSender {
         }
 
         createNotificationChannel(userHandle);
-        Notification notification =
-                mNotificationFactory.createNotification(notificationType, mChannelId);
+        Notification notification = mNotificationFactory.createNotification(notificationType);
         if (notification == null) return;
         NotificationManager notificationManager = getNotificationManagerForUser(userHandle);
         notifyFromSystem(notificationManager, notification);
     }
 
     /** Cancels all Health Connect notifications on this channel. */
-    public void clearNotificationsAsUser(@NonNull UserHandle userHandle) {
+    public void clearNotificationsAsUser(UserHandle userHandle) {
         if (!mIsEnabled) return;
         NotificationManager notificationManager = getNotificationManagerForUser(userHandle);
         cancelFromSystem(notificationManager);
     }
 
     /** Returns a {@link NotificationManager} which will send notifications to the given user. */
-    @NonNull
-    private NotificationManager getNotificationManagerForUser(@NonNull UserHandle userHandle) {
+    private NotificationManager getNotificationManagerForUser(UserHandle userHandle) {
         Context contextAsUser = mContext.createContextAsUser(userHandle, 0);
         return Objects.requireNonNull(contextAsUser.getSystemService(NotificationManager.class));
     }
 
     private void notifyFromSystem(
-            @NonNull NotificationManager notificationManager, @NonNull Notification notification) {
+            NotificationManager notificationManager, Notification notification) {
         final long callingId = Binder.clearCallingIdentity();
         try {
             notificationManager.notify(mNotificationTag, mFixedNotificationId, notification);
@@ -193,7 +189,7 @@ public final class HealthConnectNotificationSender {
         }
     }
 
-    private void cancelFromSystem(@NonNull NotificationManager notificationManager) {
+    private void cancelFromSystem(NotificationManager notificationManager) {
         final long callingId = Binder.clearCallingIdentity();
         try {
             notificationManager.cancel(mNotificationTag, mFixedNotificationId);
@@ -204,7 +200,7 @@ public final class HealthConnectNotificationSender {
         }
     }
 
-    private void createNotificationChannel(@NonNull UserHandle userHandle) {
+    private void createNotificationChannel(UserHandle userHandle) {
         CharSequence channelName = mNotificationFactory.getStringResource(mChannelNameResource);
 
         NotificationChannelGroup group = new NotificationChannelGroup(mChannelGroupId, channelName);

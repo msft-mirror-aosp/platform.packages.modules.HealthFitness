@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.storage;
 
-import android.annotation.NonNull;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -24,10 +23,6 @@ import android.util.Log;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper;
 
 /**
  * Code to manage development features of the Health Connect database before they are ready for
@@ -39,14 +34,14 @@ import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceI
  *
  * @hide
  */
-public class DevelopmentDatabaseHelper {
+public final class DevelopmentDatabaseHelper {
     private static final String TAG = "HealthConnectDevDb";
 
     /**
      * The current version number for the development database features. Increment this whenever you
      * make a breaking schema change to a development feature.
      */
-    @VisibleForTesting static final int CURRENT_VERSION = 2;
+    @VisibleForTesting static final int CURRENT_VERSION = 10;
 
     /** The name of the table to store development specific key value pairs. */
     private static final String SETTINGS_TABLE_NAME = "development_database_settings";
@@ -68,14 +63,14 @@ public class DevelopmentDatabaseHelper {
      * android.database.sqlite.SQLiteOpenHelper#onDowngrade} but uses different versioning which
      * only depends on features still in development.
      */
-    public static void onOpen(@NonNull SQLiteDatabase db) {
+    public static void onOpen(SQLiteDatabase db) {
         if (db.isReadOnly()) {
             return;
         }
         if (!Flags.developmentDatabase()) {
             // Use straight SQL to isolate development infrastructure from prod code.
             try {
-                dropTableIfExists(db, SETTINGS_TABLE_NAME);
+                dropDevelopmentSettingsTable(db);
             } catch (SQLException ex) {
                 // In the event of failure for a non development user, carry on silently.
                 // There is nothing that can be done.
@@ -92,14 +87,15 @@ public class DevelopmentDatabaseHelper {
 
         // Beyond this point are the development database changes
         dropAndCreateDevelopmentSettingsTable(db, CURRENT_VERSION);
-        phrForceUpdate(db);
+
+        // Code for under development schema changes goes in this method but below this comment
     }
 
     @VisibleForTesting
-    static void dropAndCreateDevelopmentSettingsTable(@NonNull SQLiteDatabase db, int version) {
+    static void dropAndCreateDevelopmentSettingsTable(SQLiteDatabase db, int version) {
         // We are now on a development device moving either from a prod version to a development
         // version, or between two development versions. Drop and recreate the relevant tables.
-        dropTableIfExists(db, SETTINGS_TABLE_NAME);
+        dropDevelopmentSettingsTable(db);
         db.execSQL(
                 "CREATE TABLE IF NOT EXISTS "
                         + SETTINGS_TABLE_NAME
@@ -109,36 +105,24 @@ public class DevelopmentDatabaseHelper {
                 new Object[] {VERSION_KEY, Integer.toString(version)});
     }
 
-    private static void phrForceUpdate(@NonNull SQLiteDatabase db) {
-        dropTableIfExists(db, MedicalResourceIndicesHelper.getTableName());
-        dropTableIfExists(db, MedicalResourceHelper.getMainTableName());
-        dropTableIfExists(db, MedicalDataSourceHelper.getMainTableName());
-        MedicalDataSourceHelper.onInitialUpgrade(db);
-        MedicalResourceHelper.onInitialUpgrade(db);
-        addPhrColumnsToAccessLogsTable(db);
-    }
-
-    private static void addPhrColumnsToAccessLogsTable(@NonNull SQLiteDatabase db) {
-        // Alter the table to add new columns.
-        DatabaseUpgradeHelper.executeSqlStatements(
-                db,
-                AccessLogsHelper.getAlterTableRequestForPhrAccessLogs()
-                        .getAlterTableAddColumnsCommands());
+    @VisibleForTesting
+    static void dropDevelopmentSettingsTable(SQLiteDatabase db) {
+        dropTableIfExists(db, SETTINGS_TABLE_NAME);
     }
 
     @VisibleForTesting
-    static int getOldVersionIfExists(@NonNull SQLiteDatabase db) {
+    static int getOldVersionIfExists(SQLiteDatabase db) {
         if (!settingsTableExists(db)) {
             return NO_DEV_VERSION;
         }
         return readIntSetting(db, NO_DEV_VERSION);
     }
 
-    private static void dropTableIfExists(@NonNull SQLiteDatabase db, String table) {
+    private static void dropTableIfExists(SQLiteDatabase db, String table) {
         db.execSQL("DROP TABLE IF EXISTS " + table);
     }
 
-    private static int readIntSetting(@NonNull SQLiteDatabase db, int defaultValue) {
+    private static int readIntSetting(SQLiteDatabase db, int defaultValue) {
         try (Cursor cursor =
                 db.rawQuery(
                         "SELECT value FROM " + SETTINGS_TABLE_NAME + " WHERE name=?",
@@ -155,7 +139,7 @@ public class DevelopmentDatabaseHelper {
         }
     }
 
-    private static boolean settingsTableExists(@NonNull SQLiteDatabase db) {
+    private static boolean settingsTableExists(SQLiteDatabase db) {
         try (Cursor cursor =
                 db.rawQuery(
                         "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",

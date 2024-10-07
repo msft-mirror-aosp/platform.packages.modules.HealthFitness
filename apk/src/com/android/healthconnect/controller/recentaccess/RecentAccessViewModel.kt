@@ -21,15 +21,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.RecentAccessState.Loading
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
-import com.android.healthconnect.controller.shared.dataTypeToCategory
+import com.android.healthconnect.controller.shared.safelyDataTypeToCategory
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.postValueIfUpdated
+import com.android.healthfitness.flags.Flags.personalHealthRecord
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Duration
 import java.time.Instant
@@ -44,7 +46,7 @@ constructor(
     private val healthPermissionsReader: HealthPermissionReader,
     private val loadHealthPermissionApps: ILoadHealthPermissionApps,
     private val loadRecentAccessUseCase: ILoadRecentAccessUseCase,
-    private val timeSource: TimeSource
+    private val timeSource: TimeSource,
 ) : ViewModel() {
 
     companion object {
@@ -81,28 +83,32 @@ constructor(
                 .map { connectedAppMetadata -> connectedAppMetadata.appMetadata.packageName }
 
         val clusters = clusterEntries(accessLogs, maxNumEntries)
+
         val filteredClusters = mutableListOf<RecentAccessEntry>()
         clusters.forEach {
             if (inactiveApps.contains(it.metadata.packageName)) {
                 it.isInactive = true
             }
-            if (inactiveApps.contains(it.metadata.packageName) ||
-                appInfoReader.isAppEnabled(it.metadata.packageName)) {
+            if (
+                inactiveApps.contains(it.metadata.packageName) ||
+                    appInfoReader.isAppEnabled(it.metadata.packageName)
+            ) {
                 filteredClusters.add(it)
             }
         }
+
         return filteredClusters
     }
 
     private data class DataAccessEntryCluster(
         val latestTime: Instant,
         var earliestTime: Instant,
-        val recentDataAccessEntry: RecentAccessEntry
+        val recentDataAccessEntry: RecentAccessEntry,
     )
 
     private suspend fun clusterEntries(
         accessLogs: List<AccessLog>,
-        maxNumEntries: Int
+        maxNumEntries: Int,
     ): List<RecentAccessEntry> {
         if (accessLogs.isEmpty()) {
             return listOf()
@@ -119,7 +125,9 @@ constructor(
             if (currentCluster == null) {
                 // If no cluster started for this app yet, init one with the current log
                 currentDataAccessEntryClusters.put(
-                    currentPackageName, initDataAccessEntryCluster(currentLog))
+                    currentPackageName,
+                    initDataAccessEntryCluster(currentLog),
+                )
             } else if (logBelongsToCluster(currentLog, currentCluster)) {
                 updateDataAccessEntryCluster(currentCluster, currentLog)
             } else {
@@ -132,16 +140,20 @@ constructor(
                 currentDataAccessEntryClusters.remove(currentPackageName)
 
                 currentDataAccessEntryClusters.put(
-                    currentPackageName, initDataAccessEntryCluster(currentLog))
+                    currentPackageName,
+                    initDataAccessEntryCluster(currentLog),
+                )
 
                 // If we have enough entries already and all clusters that are still being
                 // accumulated are
                 // already earlier than the ones we completed, we can finish and return what we have
                 if (maxNumEntries != -1 && dataAccessEntries.size >= maxNumEntries) {
                     val earliestDataAccessEntryTime = dataAccessEntries.minOf { it.instantTime }
-                    if (currentDataAccessEntryClusters.values.none {
-                        it.earliestTime.isAfter(earliestDataAccessEntryTime)
-                    }) {
+                    if (
+                        currentDataAccessEntryClusters.values.none {
+                            it.earliestTime.isAfter(earliestDataAccessEntryTime)
+                        }
+                    ) {
                         break
                     }
                 }
@@ -173,7 +185,10 @@ constructor(
                             appInfoReader.getAppMetadata(packageName = accessLog.packageName),
                         appPermissionsType =
                             healthPermissionsReader.getAppPermissionsType(
-                                packageName = accessLog.packageName)))
+                                packageName = accessLog.packageName
+                            ),
+                    ),
+            )
 
         updateDataAccessEntryCluster(newCluster, accessLog)
         return newCluster
@@ -181,7 +196,7 @@ constructor(
 
     private fun logBelongsToCluster(
         accessLog: AccessLog,
-        cluster: DataAccessEntryCluster
+        cluster: DataAccessEntryCluster,
     ): Boolean =
         Duration.between(accessLog.accessTime, cluster.latestTime)
             .compareTo(MAX_CLUSTER_DURATION) <= 0 &&
@@ -190,7 +205,7 @@ constructor(
 
     private fun updateDataAccessEntryCluster(
         cluster: DataAccessEntryCluster,
-        accessLog: AccessLog
+        accessLog: AccessLog,
     ) {
         val midnight =
             timeSource
@@ -203,12 +218,19 @@ constructor(
         cluster.recentDataAccessEntry.instantTime = accessLog.accessTime
         cluster.recentDataAccessEntry.isToday = (!accessLog.accessTime.isBefore(midnight))
 
-        if (accessLog.operationType == AccessLog.OperationType.OPERATION_TYPE_READ) {
-            cluster.recentDataAccessEntry.dataTypesRead.addAll(
-                accessLog.recordTypes.map { dataTypeToCategory(it).uppercaseTitle() })
-        } else {
-            cluster.recentDataAccessEntry.dataTypesWritten.addAll(
-                accessLog.recordTypes.map { dataTypeToCategory(it).uppercaseTitle() })
+        val accessedData =
+            if (accessLog.operationType == AccessLog.OperationType.OPERATION_TYPE_READ) {
+                cluster.recentDataAccessEntry.dataTypesRead
+            } else {
+                cluster.recentDataAccessEntry.dataTypesWritten
+            }
+
+        accessedData.addAll(
+            accessLog.recordTypes.mapNotNull { safelyDataTypeToCategory(it)?.uppercaseTitle() }
+        )
+
+        if (personalHealthRecord() && accessLog.medicalResourceTypes.isNotEmpty()) {
+            accessedData.add(R.string.medical_permissions)
         }
     }
 

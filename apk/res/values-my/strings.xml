@@ -67,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"ရာသီလာခြင်းမှတ်တမ်း"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"အာဟာရ"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"အာဟာရ"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"ကျန်းမာကြံ့ခိုင်ရေး"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"ကျန်းမာကြံ့ခိုင်ရေး"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"ဒေတာကြည့်ရှုခြင်း"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"ဒေတာစီမံခြင်း"</string>
     <string name="export_data_button" msgid="7783329820434117744">"ဒေတာထုတ်ယူရန်"</string>
@@ -265,12 +267,60 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"အရေပြားအပူချိန်"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"အရေပြားအပူချိန် ဖတ်ရန်"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"အရေပြားအပူချိန် ရေးရန်"</string>
-    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"ဆေးကုသမှုဆိုင်ရာ ဒေတာအားလုံး"</string>
-    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"ဆေးကုသမှုဆိုင်ရာ ဒေတာအားလုံး"</string>
-    <string name="all_medical_data_content_description" msgid="6103488863059447886">"ဆေးကုသမှုဆိုင်ရာ ဒေတာအားလုံး ရေးရန်"</string>
+    <!-- no translation found for all_medical_data_uppercase_label (2380759160541898783) -->
+    <skip />
+    <!-- no translation found for all_medical_data_lowercase_label (6293814928992081842) -->
+    <skip />
+    <!-- no translation found for all_medical_data_content_description (4846586780533295022) -->
+    <skip />
+    <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"ဓာတ်မတည့်မှုများ"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"ဓာတ်မတည့်မှုများ"</string>
+    <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"ဓာတ်မတည့်မှုများကို ဖတ်ရန်"</string>
+    <!-- no translation found for conditions_uppercase_label (5260404343402770877) -->
+    <skip />
+    <!-- no translation found for conditions_lowercase_label (2678248918552246997) -->
+    <skip />
+    <!-- no translation found for conditions_content_description (3230552343616193829) -->
+    <skip />
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"ကာကွယ်ဆေးထိုးခြင်း"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"ကာကွယ်ဆေးထိုးခြင်း"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"ကာကွယ်ဆေးထိုးခြင်းကို ဖတ်ရန်"</string>
+    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"ဓာတ်ခွဲခန်း ရလဒ်များ"</string>
+    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"ဓာတ်ခွဲခန်း ရလဒ်များ"</string>
+    <string name="laboratory_results_content_description" msgid="5882338877203692484">"ဓာတ်ခွဲခန်း ရလဒ်များကို ဖတ်ရန်"</string>
+    <string name="medications_uppercase_label" msgid="4783281053427990225">"ဆေးဝါးများ"</string>
+    <string name="medications_lowercase_label" msgid="7808038774503092207">"ဆေးဝါးများ"</string>
+    <string name="medications_content_description" msgid="6165382876281780190">"ဆေးဝါးများအကြောင်း ဖတ်ရန်"</string>
+    <!-- no translation found for personal_details_uppercase_label (7241635933310394120) -->
+    <skip />
+    <!-- no translation found for personal_details_lowercase_label (1907848447611775151) -->
+    <skip />
+    <!-- no translation found for personal_details_content_description (3191211304673909831) -->
+    <skip />
+    <!-- no translation found for practitioner_details_uppercase_label (2940667649808082510) -->
+    <skip />
+    <!-- no translation found for practitioner_details_lowercase_label (8195591077717971542) -->
+    <skip />
+    <!-- no translation found for practitioner_details_content_description (8775396516928504185) -->
+    <skip />
+    <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"ကိုယ်ဝန်ဆောင်ခြင်း"</string>
+    <string name="pregnancy_lowercase_label" msgid="810439290131044517">"ကိုယ်ဝန်ဆောင်ခြင်း"</string>
+    <string name="pregnancy_content_description" msgid="3436773729243586287">"ကိုယ်ဝန်ဆောင်ခြင်းကို ဖတ်ရန်"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"လုပ်ငန်းစဉ်များ"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"လုပ်ငန်းစဉ်များ"</string>
+    <string name="procedures_content_description" msgid="1086900373141440005">"လုပ်ငန်းစဉ်များကို ဖတ်ရန်"</string>
+    <string name="social_history_uppercase_label" msgid="1731364502071035544">"လူနေမှုမှတ်တမ်း"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"လူနေမှုမှတ်တမ်း"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"လူနေမှုမှတ်တမ်းကို ဖတ်ရန်"</string>
+    <!-- no translation found for visits_uppercase_label (8532619758336375886) -->
+    <skip />
+    <!-- no translation found for visits_lowercase_label (2545887061364564151) -->
+    <skip />
+    <!-- no translation found for visits_content_description (6336796415049565697) -->
+    <skip />
+    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"အဓိကကိုယ်တွင်းအင်္ဂါအခြေအနေ လက္ခဏာများ"</string>
+    <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"အဓိကကိုယ်တွင်းအင်္ဂါအခြေအနေ လက္ခဏာများ"</string>
+    <string name="vital_signs_content_description" msgid="914944352640528612">"အဓိကကိုယ်တွင်းအင်္ဂါအခြေအနေ လက္ခဏာများကို ဖတ်ရန်"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"သတိရှိမှု"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"သတိရှိမှု"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"သတိရှိမှုစက်ရှင် ဒေတာဖတ်ရန်"</string>
@@ -294,10 +344,33 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> သည် ယခင်ဒေတာအပါအဝင် Health Connect မှ ဒေတာများကို ဖတ်နိုင် (သို့) ရေးနိုင်တော့မည် မဟုတ်ပါ။\n\n၎င်းသည် ဤအက်ပ်တွင်ရှိနိုင်သော တည်နေရာ၊ ကင်မရာ (သို့) မိုက်ခရိုဖုန်းကဲ့သို့ အခြားခွင့်ပြုချက်များပေါ် သက်ရောက်မှုမရှိပါ။"</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> သည် နောက်ခံတွင်အသုံးပြုသောဒေတာနှင့် ယခင်ဒေတာအပါအဝင် Health Connect မှ ဒေတာများကို ဖတ်နိုင် (သို့) ရေးနိုင်တော့မည် မဟုတ်ပါ။\n\n၎င်းသည် ဤအက်ပ်တွင်ရှိနိုင်သော တည်နေရာ၊ ကင်မရာ (သို့) မိုက်ခရိုဖုန်းကဲ့သို့ အခြားခွင့်ပြုချက်များပေါ် သက်ရောက်မှုမရှိပါ။"</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Health Connect မှ <xliff:g id="APP_NAME">%1$s</xliff:g> ဒေတာကိုလည်း ဖျက်ရန်"</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"ခွင့်ပြုချက်အားလုံး ဖယ်ရှားမလား။"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"ကျန်းမာရေး မှတ်တမ်း ခွင့်ပြုချက်အားလုံးကို ဖယ်ရှားမလား။"</string>
+    <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"ကျန်းမာကြံ့ခိုင်ရေး ခွင့်ပြုချက်အားလုံးကို ဖယ်ရှားမလား။"</string>
+    <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"<xliff:g id="APP_NAME">%1$s</xliff:g> သည် Health Connect မှ ဒေတာများကို ဖတ်နိုင် (သို့) ရေးနိုင်တော့မည် မဟုတ်ပါ။\n\n၎င်းသည် ဤအက်ပ်တွင်ရှိနိုင်သော ကင်မရာ၊ မိုက်ခရိုဖုန်း (သို့) တည်နေရာကဲ့သို့ အခြားခွင့်ပြုချက်များပေါ် သက်ရောက်မှုမရှိပါ။"</string>
+    <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"<xliff:g id="APP_NAME">%1$s</xliff:g> သည် နောက်ခံတွင်အသုံးပြုသောဒေတာ အပါအဝင် Health Connect မှ ဒေတာများကို ဖတ်နိုင် (သို့) ရေးနိုင်တော့မည် မဟုတ်ပါ။\n\n၎င်းသည် ဤအက်ပ်တွင်ရှိနိုင်သော ကင်မရာ၊ မိုက်ခရိုဖုန်း (သို့) တည်နေရာကဲ့သို့ အခြားခွင့်ပြုချက်များပေါ် သက်ရောက်မှုမရှိပါ။"</string>
+    <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"<xliff:g id="APP_NAME">%1$s</xliff:g> သည် ယခင်ဒေတာ အပါအဝင် Health Connect မှ ဒေတာများကို ဖတ်နိုင် (သို့) ရေးနိုင်တော့မည် မဟုတ်ပါ။\n\n၎င်းသည် ဤအက်ပ်တွင်ရှိနိုင်သော ကင်မရာ၊ မိုက်ခရိုဖုန်း (သို့) တည်နေရာကဲ့သို့ အခြားခွင့်ပြုချက်များအပေါ် သက်ရောက်မှုမရှိပါ။"</string>
+    <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> သည် နောက်ခံတွင်အသုံးပြုသောဒေတာနှင့် ယခင်ဒေတာ အပါအဝင် Health Connect မှ ဒေတာများကို ဖတ်နိုင် (သို့) ရေးနိုင်တော့မည် မဟုတ်ပါ။\n\n၎င်းသည် ဤအက်ပ်တွင်ရှိနိုင်သော ကင်မရာ၊ မိုက်ခရိုဖုန်း (သို့) တည်နေရာကဲ့သို့ အခြားခွင့်ပြုချက်များအပေါ် သက်ရောက်မှုမရှိပါ။"</string>
+    <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Health Connect မှ <xliff:g id="APP_NAME">%1$s</xliff:g> ရှိ ကြံ့ခိုင်မှု ဒေတာနှင့် ကျန်းမာရေး မှတ်တမ်းများကိုလည်း ဖျက်ရန်"</string>
+    <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"ဤအက်ပ်အတွက် ခွင့်ပြုချက်များကို ဖယ်ရှားပြီးပါပြီ"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"နောက်ရက်"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"ရွေးထားသောနေ့"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"ယခင်ရက်"</string>
     <string name="default_error" msgid="7966868260616403475">"တစ်ခုခုမှားသွားသည်။ ထပ်စမ်းကြည့်ပါ။"</string>
+    <!-- no translation found for unkwown_resource (7932225227431922125) -->
+    <skip />
+    <!-- no translation found for raw_fhir_title (1295744907036066319) -->
+    <skip />
+    <!-- no translation found for raw_fhir_open_bracket (7974657451368655325) -->
+    <skip />
+    <!-- no translation found for raw_fhir_closed_bracket (9084379463440675078) -->
+    <skip />
+    <!-- no translation found for raw_fhir_field_value (369633095565031835) -->
+    <skip />
+    <!-- no translation found for raw_fhir_value (8627152854130338531) -->
+    <skip />
+    <!-- no translation found for raw_fhir_content_description (1491420802097635439) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"ဤခွင့်ပြုချက်ရှိသောအက်ပ်များသည် သင်၏ကျန်းမာရေးနှင့် ကြံ့ခိုင်ရေးဒေတာကို ဖတ်ပြီး ရေးနိုင်သည်။"</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connect တွင် သိမ်းထားသောဒေတာကို မည်သည့်အက်ပ်က သုံးနိုင်ကြောင်း သတ်မှတ်နိုင်သည်။ အက်ပ်ကဖတ်နိုင် (သို့) ရေးနိုင်သော ဒေတာများ ပြန်ကြည့်ရန် ၎င်းကိုတို့ပါ။"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"ခွင့်ပြုထားသည်များ"</string>
@@ -314,6 +387,7 @@
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"အားလုံး ဖယ်ရှားရန်"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"အက်ပ်စီမံခြင်း"</string>
     <string name="see_app_data" msgid="3951030076195119476">"အက်ပ်ဒေတာ ကြည့်ရန်"</string>
+    <string name="remove_access_for_this_app" msgid="7701101420310711833">"ဤအက်ပ်အတွက် သုံးခွင့်ကို ဖယ်ရှားရန်"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"အက်ပ်ဒေတာ ဖျက်ရန်"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"အသုံးမပြုသော အက်ပ်များ"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"ဤအက်ပ်များက သုံးခွင့်မရှိတော့သော်လည်း Health Connect တွင် ဒေတာများ သိမ်းထားသေးသည်"</string>
@@ -349,6 +423,10 @@
     <string name="next_export_text" msgid="6726252793571403846">"နောက်ထပ်ထုတ်ယူမှု စတင်ပါတော့မည်"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"အရန်သိမ်းခြင်း၊ ပြန်ယူခြင်း"</string>
     <string name="last_export_time" msgid="9205875050823594041">"နောက်ဆုံးထုတ်ယူချိန်- <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="last_export_time_now" msgid="31498024135933750">"နောက်ဆုံးထုတ်ယူချိန်- ယခု"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{နောက်ဆုံးထုတ်ယူမှု- ပြီးခဲ့သော ၁ မိနစ်}other{နောက်ဆုံးထုတ်ယူမှု- ပြီးခဲ့သော # မိနစ်}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{နောက်ဆုံးထုတ်ယူမှု- ပြီးခဲ့သော ၁ နာရီ}other{နောက်ဆုံးထုတ်ယူမှု- ပြီးခဲ့သော # နာရီ}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"နောက်ဆုံး ထုတ်ယူမှု- မရှိပါ"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"စီစဉ်ထားသည့် ထုတ်ယူခြင်း"</string>
     <string name="import_data" msgid="404502315533233094">"ဒေတာထည့်သွင်းရန်"</string>
@@ -377,14 +455,14 @@
     <string name="export_destination_title" msgid="8352929396306002479">"စီစဉ်ထားသောထုတ်ယူမှု သိမ်းရန်နေရာရွေးပါ"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"သင့်ဒေတာ ထုတ်ယူရန်အတွက် cloud သိုလှောင်ခန်း အက်ပ်ကို ရွေးပါ"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
+    <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Health Connect (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
     <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"ဤဖိုင်ကို ထည့်သွင်းမလား။"</string>
     <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"<xliff:g id="FILE_NAME">%1$s</xliff:g> ကို Health Connect သို့ ထည့်သွင်းပါမည်"</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"မလုပ်တော့"</string>
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"ထည့်သွင်းရန်"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect ပြန်ယူနေသည်"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect ပြန်ယူပြီးပြီ"</string>
-    <!-- no translation found for import_in_progress_toast_text (3363548588078895706) -->
-    <skip />
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"ပြန်ယူနေဆဲဖြစ်သည်"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"ဒေတာ ပြန်ယူပြီးပါပြီ"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect သည် ဒေတာကို ပြန်ယူ၍မရပါ"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"နောက်ထပ်နေရာလွတ် လိုသည်"</string>
@@ -397,6 +475,13 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"ဖွင့်ရန်"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"ဖိုင်ရွေးချယ်ရန်"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"နေရာလွတ်ပြုလုပ်ပါ"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"စီစဉ်ထားသော ထုတ်ယူမှုကို ဖွင့်ထားသည်"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect သည် ဒေတာထုတ်ယူ၍ မရလိုက်ပါ"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"နောက်ထပ်နေရာလွတ် လိုအပ်သည်"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"<xliff:g id="DATE">%1$s</xliff:g> အတွက် ထုတ်ယူမှုတွင် ပြဿနာရှိသည်။ စီစဉ်ထားသော ထုတ်ယူမှုအသစ်ကို သတ်မှတ်ပြီး ထပ်စမ်းကြည့်ပါ။"</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Health Connect သည် စီစဉ်ထားသော ထုတ်ယူမှုကို ဆက်လုပ်ရန်အတွက် သင့်ဖုန်းရှိ သိုလှောင်ခန်းနေရာ <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> လိုအပ်သည်။"</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"သတ်မှတ်ရန်"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"နေရာလွတ် ပြုလုပ်ရန်"</string>
     <string name="export_back_button" msgid="3550795479165524982">"နောက်သို့"</string>
     <string name="export_next_button" msgid="657930567137105172">"ရှေ့သို့"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"မလုပ်တော့"</string>
@@ -413,6 +498,10 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Store သို့ သွားရန်"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect စတင်အသုံးပြုခြင်း"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect သည် သင့်စက်ပေါ်ရှိ အက်ပ်အမျိုးမျိုး ရိုးရှင်းစွာစင့်ခ်လုပ်နည်းကို ပေးပြီး သင်၏ကျန်းမာရေးနှင့် ကြံ့ခိုင်ရေးဒေတာကို သိမ်းသည်"</string>
+    <!-- no translation found for onboarding_description_health_records (6816666836571797870) -->
+    <skip />
+    <!-- no translation found for onboarding_description_with_health_connect (8751881078749676542) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"သင့်အက်ပ်များနှင့် ဒေတာမျှဝေရန်"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Health Connect တွင် အက်ပ်တစ်ခုစီက ဖတ်နိုင် (သို့) ရေးနိုင်မည့် ဒေတာကို သင်ရွေးနိုင်သည်"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"သင့်ဆက်တင်များနှင့် ကိုယ်ရေးအချက်အလက်လုံခြုံမှုကို စီမံရန်"</string>
@@ -457,7 +546,7 @@
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"<xliff:g id="APP_DATA">%2$s</xliff:g> က ထည့်ထားသော <xliff:g id="DATA_TYPE">%1$s</xliff:g> ဒေတာအားလုံးကို အပြီးဖျက်မလား။"</string>
     <string name="confirming_question_single_entry" msgid="2064578008447638932">"Health Connect မှ ဤထည့်သွင်းမှုကို အပြီးဖျက်မလား။"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"ချိတ်ဆက်ထားသည့်အက်ပ်များက Health Connect မှ ဤဒေတာကို သုံးနိုင်တော့မည်မဟုတ်ပါ"</string>
-    <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"၎င်းက <xliff:g id="START_DATE">%1$s</xliff:g> မှ <xliff:g id="END_DATE">%2$s</xliff:g> အထိ ဓမ္မတာလာခြင်း ထည့်သွင်းမှုအားလုံးကို ဖျက်မည်။"</string>
+    <string name="confirming_question_message_menstruation" msgid="944931041343695373">"၎င်းက <xliff:g id="START_DATE">%1$s</xliff:g> မှ <xliff:g id="END_DATE">%2$s</xliff:g> အထိ ဓမ္မတာလာခြင်း ထည့်သွင်းမှုအားလုံးကို ဖျက်မည်။"</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"ဖျက်ရန်"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"နောက်သို့"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"ပြီးပြီ"</string>
@@ -654,6 +743,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"မှေးနေချိန်"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"နှစ်နှစ်ခြိုက်ခြိုက်အိပ်ချိန်"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"မသိပါ"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"အသက်ရှူခြင်း"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"တရားထိုင်ခြင်း"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"လှုပ်ရှားမှု"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"တေးဂီတ"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"အခြား"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"လမ်းမညွှန်"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g>m"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g>h <xliff:g id="MIN">%2$s</xliff:g>m"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g>h"</string>
@@ -991,15 +1086,8 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"ဤအက်ပ်အတွက် နောက်ခံတွင်အသုံးပြုသောဒေတာ (သို့) ယခင်ဒေတာသုံးခွင့် ဖွင့်ရန် အနည်းဆုံး ဖတ်ခွင့်တစ်ခုပေးပါ"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"ဤအက်ပ်အတွက် နောက်ကွယ်၌ အသုံးပြုခွင့် ဖွင့်ရန် အနည်းဆုံး ဖတ်ခွင့်တစ်ခုပေးပါ"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"ဤအက်ပ်အတွက် ယခင်ဒေတာသုံးခွင့် ဖွင့်ရန် အနည်းဆုံး ဖတ်ခွင့်တစ်ခု ပေးပါ"</string>
-    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Health Connect မှ ဒေတာအားလုံးကို အပြီးဖျက်မလား။"</string>
-    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"ရွေးထားသောဒေတာကို Health Connect မှ အပြီးဖျက်မလား။"</string>
-    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"ဒေတာအားလုံး ဖျက်လိုက်ပြီ"</string>
-    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ဒေတာ ဖျက်လိုက်ပြီ"</string>
-    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"အမျိုးအစား <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> ခု ဖျက်လိုက်ပြီ"</string>
-    <string name="select_all" msgid="837499881590001166">"အားလုံး ရွေးရန်"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connect စသုံးခြင်း"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"အက်ပ်များအကြား ကျန်းမာရေးနှင့် ကြံ့ခိုင်ရေးဒေတာ မျှဝေရန် သင့်ပထမဆုံးအက်ပ်များကို စင့်ခ်လုပ်ပါ"</string>
-    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"ယခုမလုပ်ပါ"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"စနစ်ထည့်သွင်းရန်"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"နောက်ထပ် အက်ပ်များ ချိတ်ဆက်ခြင်း"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"<xliff:g id="APP_NAME">%s</xliff:g> နှင့် သင့်ဖုန်းရှိ ကျန်းမာရေးအက်ပ်များအကြား ဒေတာမျှဝေခြင်း စတင်ပါ"</string>
@@ -1007,4 +1095,43 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"တွဲသုံးနိုင်သော အက်ပ်များကို ကြည့်ခြင်း"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Health Connect မှတစ်ဆင့် <xliff:g id="APP_NAME">%s</xliff:g> ဖြင့် စင့်ခ်လုပ်ရန် နောက်ထပ်အက်ပ်များ ရှာပါ"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"အက်ပ်စတိုးတွင် ကြည့်ရန်"</string>
+    <string name="select_all" msgid="837499881590001166">"အားလုံး ရွေးရန်"</string>
+    <!-- no translation found for deletion_confirmation_dialog_body (7643182907084645805) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (2103387413531373305) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (2466281529240054537) -->
+    <skip />
+    <!-- no translation found for all_app_data_selected_deletion_confirmation_dialog (1077157006579195958) -->
+    <skip />
+    <!-- no translation found for some_app_data_selected_deletion_confirmation_dialog (5378172524112070270) -->
+    <skip />
+    <!-- no translation found for all_entries_selected_day_deletion_confirmation_dialog (2887646600541520444) -->
+    <skip />
+    <!-- no translation found for all_entries_selected_week_deletion_confirmation_dialog (6759608395185369048) -->
+    <skip />
+    <!-- no translation found for all_entries_selected_month_deletion_confirmation_dialog (6030161837387559132) -->
+    <skip />
+    <!-- no translation found for some_entries_selected_day_deletion_confirmation_dialog (3481363886097542565) -->
+    <skip />
+    <!-- no translation found for some_entries_selected_week_deletion_confirmation_dialog (7150217982297131340) -->
+    <skip />
+    <!-- no translation found for some_entries_selected_month_deletion_confirmation_dialog (3712014725077445591) -->
+    <skip />
+    <!-- no translation found for one_entry_selected_deletion_confirmation_dialog (4642573082594021789) -->
+    <skip />
+    <!-- no translation found for all_app_entries_selected_day_deletion_confirmation_dialog (2342034541791960151) -->
+    <skip />
+    <!-- no translation found for all_app_entries_selected_week_deletion_confirmation_dialog (24289763841770386) -->
+    <skip />
+    <!-- no translation found for all_app_entries_selected_month_deletion_confirmation_dialog (3240581815583269052) -->
+    <skip />
+    <!-- no translation found for some_app_entries_selected_day_deletion_confirmation_dialog (1030347169774815676) -->
+    <skip />
+    <!-- no translation found for some_app_entries_selected_week_deletion_confirmation_dialog (8009352719322914060) -->
+    <skip />
+    <!-- no translation found for some_app_entries_selected_month_deletion_confirmation_dialog (6617805533334875710) -->
+    <skip />
+    <!-- no translation found for one_app_entry_selected_deletion_confirmation_dialog (7101939753210640660) -->
+    <skip />
 </resources>

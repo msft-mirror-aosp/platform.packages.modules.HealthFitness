@@ -28,8 +28,13 @@ import android.os.Environment;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
+import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.StepsRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -59,14 +64,24 @@ public class NoMockAutoDeleteServiceTest {
 
     private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
+    private HealthConnectInjector mHealthConnectInjector;
 
     @Before
     public void setup() throws Exception {
+        PreferenceHelper.clearInstanceForTest();
+
         HealthConnectUserContext context = testRule.getUserContext();
         mTransactionManager = testRule.getTransactionManager();
         DatabaseHelper.clearAllData(mTransactionManager);
         mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
+        DeviceInfoHelper.resetInstanceForTest();
+        AppInfoHelper.resetInstanceForTest();
+
+        mHealthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(context)
+                        .setTransactionManager(mTransactionManager)
+                        .build();
     }
 
     @Test
@@ -77,17 +92,36 @@ public class NoMockAutoDeleteServiceTest {
                         .get(0);
         RecordHelper<?> helper = new StepsRecordHelper();
         try (Cursor cursor = mTransactionManager.read(new ReadTableRequest(STEPS_TABLE_NAME))) {
-            List<RecordInternal<?>> records = helper.getInternalRecords(cursor);
+            List<RecordInternal<?>> records =
+                    helper.getInternalRecords(
+                            cursor,
+                            mHealthConnectInjector.getDeviceInfoHelper(),
+                            mHealthConnectInjector.getAppInfoHelper());
             assertThat(records).hasSize(1);
             assertThat(records.get(0).getUuid()).isEqualTo(UUID.fromString(uuid));
         }
 
-        AutoDeleteService.setRecordRetentionPeriodInDays(30);
-        assertThat(AutoDeleteService.getRecordRetentionPeriodInDays()).isEqualTo(30);
-        AutoDeleteService.startAutoDelete(testRule.getUserContext());
+        AutoDeleteService.setRecordRetentionPeriodInDays(
+                30, mHealthConnectInjector.getPreferenceHelper());
+        assertThat(
+                        AutoDeleteService.getRecordRetentionPeriodInDays(
+                                mHealthConnectInjector.getPreferenceHelper()))
+                .isEqualTo(30);
+        AutoDeleteService.startAutoDelete(
+                testRule.getUserContext(),
+                mHealthConnectInjector.getHealthDataCategoryPriorityHelper(),
+                mHealthConnectInjector.getPreferenceHelper(),
+                mHealthConnectInjector.getAppInfoHelper(),
+                mHealthConnectInjector.getTransactionManager(),
+                mHealthConnectInjector.getAccessLogsHelper(),
+                mHealthConnectInjector.getActivityDateHelper());
 
         try (Cursor cursor = mTransactionManager.read(new ReadTableRequest(STEPS_TABLE_NAME))) {
-            List<RecordInternal<?>> records = helper.getInternalRecords(cursor);
+            List<RecordInternal<?>> records =
+                    helper.getInternalRecords(
+                            cursor,
+                            mHealthConnectInjector.getDeviceInfoHelper(),
+                            mHealthConnectInjector.getAppInfoHelper());
             assertThat(records).isEmpty();
         }
 

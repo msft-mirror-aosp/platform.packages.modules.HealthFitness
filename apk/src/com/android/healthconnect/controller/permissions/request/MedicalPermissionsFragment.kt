@@ -32,6 +32,7 @@ import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
+import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -39,6 +40,10 @@ import com.android.healthconnect.controller.utils.logging.PermissionsElement
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+/**
+ * Fragment for displaying a medical permission request, when an app is requesting at least one
+ * medical read permission.
+ */
 @AndroidEntryPoint(PermissionsFragment::class)
 class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
 
@@ -55,6 +60,7 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
 
     private val viewModel: RequestPermissionViewModel by activityViewModels()
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
+    @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
 
     private val header: RequestPermissionHeaderPreference? by lazy {
         preferenceScreen.findPreference(HEADER)
@@ -96,7 +102,7 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         logger.setPageId(pageName)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -113,34 +119,35 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.appMetadata.observe(viewLifecycleOwner) { app ->
             logger.logImpression(PermissionsElement.APP_RATIONALE_LINK)
-            header?.bind(app.appName, /* historyAccessGranted= */ true) {
+            val onAboutHealthRecordsClicked = {
+                deviceInfoUtils.openHCGetStartedLink(requireActivity())
+            }
+            val onRationaleLinkClicked = {
                 val startRationaleIntent =
                     healthPermissionReader.getApplicationRationaleIntent(app.packageName)
                 logger.logInteraction(PermissionsElement.APP_RATIONALE_LINK)
                 startActivity(startRationaleIntent)
             }
+            header?.bindMedical(
+                appName = app.appName,
+                onAboutHealthRecordsClicked,
+                onRationaleLinkClicked,
+            )
             readPermissionCategory?.title =
                 getString(R.string.read_permission_category, app.appName)
             writePermissionCategory?.title =
                 getString(R.string.write_permission_category, app.appName)
         }
-        viewModel.healthPermissionsList.observe(viewLifecycleOwner) { allPermissions ->
-            val medicalPermissions =
-                allPermissions.filterIsInstance<HealthPermission.MedicalPermission>()
-            val fitnessPermissions =
-                allPermissions.filterIsInstance<HealthPermission.FitnessPermission>()
-            val additionalPermissions =
-                allPermissions.filterIsInstance<HealthPermission.AdditionalPermission>()
-
+        viewModel.medicalPermissionsList.observe(viewLifecycleOwner) { medicalPermissions ->
             updateDataList(medicalPermissions)
             setupAllowAll()
 
-            setupAllowButton(fitnessPermissions.isNotEmpty(), additionalPermissions.isNotEmpty())
+            setupAllowButton()
             setupDontAllowButton()
         }
     }
 
-    private fun setupAllowButton(isDataTypeNotEmpty: Boolean, isAdditionalNotEmpty: Boolean) {
+    private fun setupAllowButton() {
         // TODO(b/342159144): Update visual element.
         logger.logImpression(ErrorPageElement.UNKNOWN_ELEMENT)
 
@@ -150,39 +157,15 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
             }
         }
 
-        if (isDataTypeNotEmpty || isAdditionalNotEmpty) {
-            getAllowButton().setOnClickListener {
-                viewModel.setMedicalPermissionRequestConcluded(true)
-                // When medical permissions are concluded we need to
-                // grant/revoke only the medical permissions, to trigger the
-                // access date. We can't request all at once because we might accidentally
-                // set the data type and additional permissions USER_FIXED
-                viewModel.requestMedicalPermissions(getPackageNameExtra())
-                // TODO(b/342159144): Update visual element.
-                logger.logInteraction(ErrorPageElement.UNKNOWN_ELEMENT)
-                // navigate to the next permission screen
-                if (isDataTypeNotEmpty) {
-                    requireActivity()
-                        .supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.permission_content, FitnessPermissionsFragment())
-                        .commit()
-                } else {
-                    requireActivity()
-                        .supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.permission_content, AdditionalPermissionsFragment())
-                        .commit()
-                }
-            }
-        } else {
-            // Just medical permissions
-            getAllowButton().setOnClickListener {
-                // TODO(b/342159144): Update visual element.
-                logger.logInteraction(ErrorPageElement.UNKNOWN_ELEMENT)
-                viewModel.requestMedicalPermissions(getPackageNameExtra())
-                this.handlePermissionResults(viewModel.getPermissionGrants())
-            }
+        getAllowButton().setOnClickListener {
+            viewModel.setMedicalPermissionRequestConcluded(true)
+            // When medical permissions are concluded we need to
+            // grant/revoke only the medical permissions, to trigger the
+            // access date. We can't request all at once because we might accidentally
+            // set the data type and additional permissions USER_FIXED
+            viewModel.requestMedicalPermissions(getPackageNameExtra())
+            // TODO(b/342159144): Update visual element.
+            logger.logInteraction(ErrorPageElement.UNKNOWN_ELEMENT)
         }
     }
 
@@ -191,11 +174,15 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
         logger.logImpression(ErrorPageElement.UNKNOWN_ELEMENT)
 
         getDontAllowButton().setOnClickListener {
+            viewModel.updateMedicalPermissions(false)
+            viewModel.setMedicalPermissionRequestConcluded(true)
+            // When medical permissions are concluded we need to
+            // grant/revoke only the medical permissions, to trigger the
+            // access date. We can't request all at once because we might accidentally
+            // set the data type and additional permissions USER_FIXED
+            viewModel.requestMedicalPermissions(getPackageNameExtra())
             // TODO(b/342159144): Update visual element.
             logger.logInteraction(ErrorPageElement.UNKNOWN_ELEMENT)
-            viewModel.updateMedicalPermissions(false)
-            viewModel.requestMedicalPermissions(getPackageNameExtra())
-            handlePermissionResults(viewModel.getPermissionGrants())
         }
     }
 
@@ -219,16 +206,19 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
                 requireContext()
                     .getString(
                         MedicalPermissionStrings.fromPermissionType(it.medicalPermissionType)
-                            .uppercaseLabel)
+                            .uppercaseLabel
+                    )
             }
             .forEach { permission ->
                 val value = viewModel.isPermissionLocallyGranted(permission)
                 if (permission.medicalPermissionType == MedicalPermissionType.ALL_MEDICAL_DATA) {
                     writePermissionCategory?.addPreference(
-                        getPermissionPreference(value, permission))
+                        getPermissionPreference(value, permission)
+                    )
                 } else {
                     readPermissionCategory?.addPreference(
-                        getPermissionPreference(value, permission))
+                        getPermissionPreference(value, permission)
+                    )
                 }
             }
 
@@ -238,14 +228,15 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
 
     private fun getPermissionPreference(
         defaultValue: Boolean,
-        permission: HealthPermission.MedicalPermission
+        permission: HealthPermission.MedicalPermission,
     ): Preference {
         return HealthSwitchPreference(requireContext()).also {
-            // TODO(b/342156345): Add icons.
+            it.icon = permission.medicalPermissionType.icon(requireContext())
             it.setDefaultValue(defaultValue)
             it.setTitle(
                 MedicalPermissionStrings.fromPermissionType(permission.medicalPermissionType)
-                    .uppercaseLabel)
+                    .uppercaseLabel
+            )
             it.logNameActive = PermissionsElement.PERMISSION_SWITCH
             it.logNameInactive = PermissionsElement.PERMISSION_SWITCH
             it.setOnPreferenceChangeListener { _, newValue ->

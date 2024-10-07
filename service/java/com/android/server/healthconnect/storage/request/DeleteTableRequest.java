@@ -21,7 +21,6 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.health.connect.Constants;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -56,12 +55,9 @@ public class DeleteTableRequest {
     private boolean mRequiresUuId;
     @Nullable private List<String> mIds;
     private boolean mEnforcePackageCheck;
-    private int mNumberOfUuidsToDelete;
-    @Nullable private String mInnerReadColumnName;
-    @Nullable private ReadTableRequest mInnerReadRequest;
+    private final WhereClauses mExtraWhereClauses = new WhereClauses(AND);
 
-    public DeleteTableRequest(
-            @NonNull String tableName, @RecordTypeIdentifier.RecordType int recordType) {
+    public DeleteTableRequest(String tableName, @RecordTypeIdentifier.RecordType int recordType) {
         Objects.requireNonNull(tableName);
 
         mTableName = tableName;
@@ -69,7 +65,7 @@ public class DeleteTableRequest {
     }
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    public DeleteTableRequest(@NonNull String tableName) {
+    public DeleteTableRequest(String tableName) {
         Objects.requireNonNull(tableName);
 
         mTableName = tableName;
@@ -93,7 +89,7 @@ public class DeleteTableRequest {
         return this;
     }
 
-    public DeleteTableRequest setIds(@NonNull String idColumnName, @NonNull List<String> ids) {
+    public DeleteTableRequest setIds(String idColumnName, List<String> ids) {
         Objects.requireNonNull(ids);
         Objects.requireNonNull(idColumnName);
 
@@ -102,7 +98,7 @@ public class DeleteTableRequest {
         return this;
     }
 
-    public DeleteTableRequest setId(@NonNull String idColumnName, @NonNull String id) {
+    public DeleteTableRequest setId(String idColumnName, String id) {
         Objects.requireNonNull(id);
         Objects.requireNonNull(idColumnName);
 
@@ -115,7 +111,7 @@ public class DeleteTableRequest {
         return mRequiresUuId || mEnforcePackageCheck;
     }
 
-    public DeleteTableRequest setRequiresUuId(@NonNull String idColumnName) {
+    public DeleteTableRequest setRequiresUuId(String idColumnName) {
         Objects.requireNonNull(idColumnName);
 
         mRequiresUuId = true;
@@ -138,12 +134,10 @@ public class DeleteTableRequest {
         return mIds;
     }
 
-    @NonNull
     public String getTableName() {
         return mTableName;
     }
 
-    @NonNull
     public DeleteTableRequest setPackageFilter(
             String packageColumnName, List<Long> packageFilters) {
         mPackageFilters = packageFilters;
@@ -152,23 +146,12 @@ public class DeleteTableRequest {
         return this;
     }
 
-    /**
-     * Add a restriction on the delete that {@code innerReadColumnName} has a value in the values
-     * read by the {@code innerRead} {@link ReadTableRequest}.
-     *
-     * @param columnName the column to restrict the delete on.
-     * @param innerReadRequest a request that will SELECT the values to restrict on.
-     * @return this Request with the values set.
-     */
-    @NonNull
-    public DeleteTableRequest setInnerSqlRequestFilter(
-            String columnName, ReadTableRequest innerReadRequest) {
-        mInnerReadColumnName = columnName;
-        mInnerReadRequest = innerReadRequest;
+    /** Adds an extra {@link WhereClauses} that filters the rows to be deleted. */
+    public DeleteTableRequest addExtraWhereClauses(WhereClauses whereClauses) {
+        mExtraWhereClauses.addNestedWhereClauses(whereClauses);
         return this;
     }
 
-    @NonNull
     public String getDeleteCommand() {
         return "DELETE FROM " + mTableName + getWhereCommand();
     }
@@ -185,13 +168,10 @@ public class DeleteTableRequest {
 
     public String getWhereCommand() {
         WhereClauses whereClauses = new WhereClauses(AND);
+        whereClauses.addNestedWhereClauses(mExtraWhereClauses);
         whereClauses.addWhereInLongsClause(mPackageColumnName, mPackageFilters);
         whereClauses.addWhereBetweenTimeClause(mTimeColumnName, mStartTime, mEndTime);
         whereClauses.addWhereInClauseWithoutQuotes(mIdColumnName, mIds);
-
-        if (mInnerReadColumnName != null && mInnerReadRequest != null) {
-            whereClauses.addWhereInSQLRequestClause(mInnerReadColumnName, mInnerReadRequest);
-        }
 
         if (Constants.DEBUG) {
             Slog.d(
@@ -205,9 +185,7 @@ public class DeleteTableRequest {
         return whereClauses.get(true);
     }
 
-    @NonNull
-    public DeleteTableRequest setTimeFilter(
-            @NonNull String timeColumnName, long startTime, long endTime) {
+    public DeleteTableRequest setTimeFilter(String timeColumnName, long startTime, long endTime) {
         Objects.requireNonNull(timeColumnName);
 
         // Return if the params will result in no impact on the query
@@ -220,32 +198,5 @@ public class DeleteTableRequest {
         mTimeColumnName = timeColumnName;
 
         return this;
-    }
-
-    /**
-     * Sets total number of UUIDs being deleted by this request.
-     *
-     * @param numberOfUuidsToDelete Number of UUIDs being deleted
-     */
-    public void setNumberOfUuidsToDelete(int numberOfUuidsToDelete) {
-        this.mNumberOfUuidsToDelete = numberOfUuidsToDelete;
-    }
-
-    /**
-     * Total number of records deleted.
-     *
-     * <p>This method should only be called in a state after a delete, when either a pre-read has
-     * been done, or a list of ids set.
-     *
-     * @return Number of records deleted by this request
-     */
-    public int getTotalNumberOfRecordsDeleted() {
-        if (requiresRead()) {
-            return mNumberOfUuidsToDelete;
-        }
-        if (mIds == null) {
-            throw new IllegalStateException("Called with no required reads and no list of ids set");
-        }
-        return mIds.size();
     }
 }

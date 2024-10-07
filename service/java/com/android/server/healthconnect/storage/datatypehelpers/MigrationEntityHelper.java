@@ -21,14 +21,11 @@ import static com.android.server.healthconnect.storage.request.UpsertTableReques
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL_UNIQUE;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.util.Pair;
 
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
-import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 
 import java.util.ArrayList;
@@ -46,13 +43,7 @@ public final class MigrationEntityHelper extends DatabaseHelper {
     @VisibleForTesting public static final String TABLE_NAME = "migration_entity_table";
     private static final String COLUMN_ENTITY_ID = "entity_id";
 
-    /** Clears all data related to this helper. */
-    public void clearData(@NonNull TransactionManager transactionManager) {
-        transactionManager.delete(new DeleteTableRequest(TABLE_NAME));
-    }
-
     /** Returns a request to create a table for this helper. */
-    @NonNull
     public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
@@ -71,8 +62,7 @@ public final class MigrationEntityHelper extends DatabaseHelper {
     }
 
     /** Returns a request to insert the provided {@code entityId}. */
-    @NonNull
-    public static UpsertTableRequest getInsertRequest(@NonNull String entityId) {
+    public UpsertTableRequest getInsertRequest(String entityId) {
         final ContentValues values = new ContentValues();
         values.put(COLUMN_ENTITY_ID, entityId);
         return new UpsertTableRequest(

@@ -30,9 +30,16 @@ public final class DatabaseVersions {
     public static final int DB_VERSION_PLANNED_EXERCISE_SESSIONS_FLAG_RELEASE = 13;
     public static final int DB_VERSION_MINDFULNESS_SESSION = 14;
 
-    // TODO(b/357076280): add g3doc link
+    /** The DB version in which the schema changes for PHR MVP were added. */
+    public static final int DB_VERSION_PERSONAL_HEALTH_RECORD = 15;
+
     // For historical reasons, we do not support versions below this
+    // See go/hc-mainline-dev/trunk_stable/db-and-aconfig#a-bit-of-history
     public static final int MIN_SUPPORTED_DB_VERSION = DB_VERSION_UUID_BLOB;
+
+    // DB version of the last feature that has been fully rolled out to public.
+    // See go/hc-mainline-dev/trunk_stable/db-and-aconfig#last-rolled-out-db-version
+    public static final int LAST_ROLLED_OUT_DB_VERSION = DB_VERSION_MINDFULNESS_SESSION;
 
     private DatabaseVersions() {}
 }

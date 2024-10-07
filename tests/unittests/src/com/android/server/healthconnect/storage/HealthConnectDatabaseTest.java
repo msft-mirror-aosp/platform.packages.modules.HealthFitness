@@ -16,21 +16,27 @@
 
 package com.android.server.healthconnect.storage;
 
+import static com.android.healthfitness.flags.DatabaseVersions.LAST_ROLLED_OUT_DB_VERSION;
+import static com.android.server.healthconnect.storage.DatabaseTestUtils.NUM_OF_TABLES;
+import static com.android.server.healthconnect.storage.DatabaseTestUtils.assertNumberOfTables;
+
+import static com.google.common.truth.Truth.assertThat;
+
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.platform.test.annotations.DisableFlags;
+import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.healthfitness.flags.Flags;
 
 import com.google.common.base.Preconditions;
-import com.google.common.truth.Truth;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -42,9 +48,6 @@ import java.io.File;
 
 public class HealthConnectDatabaseTest {
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
-    // This number can only increase, as we are not allowed to make changes that remove tables or
-    // columns. However, exclude development tables as the number of these can fluctuate.
-    private static final int NUM_OF_TABLES = 64;
     @Mock Context mContext;
     private HealthConnectDatabase mHealthConnectDatabase;
     private SQLiteDatabase mSQLiteDatabase;
@@ -57,28 +60,45 @@ public class HealthConnectDatabaseTest {
                         InstrumentationRegistry.getInstrumentation()
                                 .getContext()
                                 .getDatabasePath("mock"));
-        mHealthConnectDatabase = new HealthConnectDatabase(mContext);
-        // Make sure there is nothing there already.
+    }
 
+    @Test
+    @DisableFlags({Flags.FLAG_DEVELOPMENT_DATABASE, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void onCreate_dbWithLatestSchemaCreated() {
+        initializeDatabase();
+
+        assertThat(mHealthConnectDatabase).isNotNull();
+        assertThat(mSQLiteDatabase).isNotNull();
+        assertNumberOfTables(mSQLiteDatabase, NUM_OF_TABLES);
+        assertThat(mSQLiteDatabase.getVersion()).isEqualTo(LAST_ROLLED_OUT_DB_VERSION);
+    }
+
+    @Test
+    @DisableFlags(Flags.FLAG_INFRA_TO_GUARD_DB_CHANGES)
+    public void onCreate_infraFlagDisabled_expectCorrectDbVersion() {
+        initializeDatabase();
+
+        assertThat(mSQLiteDatabase.getVersion()).isAtMost(AconfigFlagHelper.getDbVersion());
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_INFRA_TO_GUARD_DB_CHANGES)
+    public void onCreate_infraFlagEnabled_expectCorrectDbVersion() {
+        initializeDatabase();
+
+        assertThat(mSQLiteDatabase.getVersion()).isAtMost(AconfigFlagHelper.getDbVersion());
+    }
+
+    // The database needs to be initialized after the flags have been set by the annotations,
+    // hence this methods needs to be called in individual tests rather than in @Before method.
+    private void initializeDatabase() {
+        mHealthConnectDatabase = new HealthConnectDatabase(mContext);
+
+        // Make sure there is nothing there already.
         File databasePath = mHealthConnectDatabase.getDatabasePath();
         if (databasePath.exists()) {
             Preconditions.checkState(databasePath.delete());
         }
         mSQLiteDatabase = mHealthConnectDatabase.getWritableDatabase();
-    }
-
-    @Test
-    @DisableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
-    public void testCreateTable() {
-        Truth.assertThat(mHealthConnectDatabase).isNotNull();
-        Truth.assertThat(mSQLiteDatabase).isNotNull();
-        Cursor cursor =
-                mSQLiteDatabase.rawQuery(
-                        "SELECT count(*) FROM sqlite_master WHERE type = 'table' AND"
-                                + " name != 'android_metadata' AND name != 'sqlite_sequence';",
-                        null);
-
-        cursor.moveToNext();
-        Truth.assertThat(cursor.getInt(0)).isEqualTo(NUM_OF_TABLES);
     }
 }

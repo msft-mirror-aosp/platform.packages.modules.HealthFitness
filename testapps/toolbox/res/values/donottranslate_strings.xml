@@ -15,7 +15,7 @@
 -->
 
 <resources>
-  <string name="app_label">Health Connect Toolbox</string>
+  <string name="app_label">HC Toolbox</string>
   <string name="not_implemented">Not implemented</string>
   <string name="insert_data">Insert Data</string>
   <string name="update_data">Update Data</string>
@@ -44,6 +44,8 @@
   <string name="request_additional_permissions">Request Additional Permissions</string>
   <string name="request_bg_read_permission">Request Background Read</string>
   <string name="request_history_read_permission">Request History Read</string>
+  <string name="request_medical_write">Request Medical Write</string>
+  <string name="request_medical_write_and_other_health_permissions">Request Medical Write + Other Health</string>
   <string name="toast_permission_filter_enabled">Intent Filter Enabled</string>
   <string name="toast_permission_filter_disabled">Intent Filter Disabled</string>
   <string name="toast_seed_data_success">Data inserted successfully</string>
@@ -55,6 +57,7 @@
   <string name="vitals_category" description="Title for vitals category, displaying user data related to vitals (such as heart rate, blood pressure, etc.) [CHAR LIMIT=30]">Vitals</string>
   <string name="cycle_tracking_category" description="Title for cycle tracking category, displaying user data related to cycle tracking (such as cervical mucus, menstrual flow, etc.) [CHAR LIMIT=30]">Cycle tracking</string>
   <string name="nutrition_category" description="Title for nutrition category, displaying user data related to nutrition (such as calories consumed, hydration, etc.) [CHAR LIMIT=30]">Nutrition</string>
+  <string name="wellness_category" description="Title for wellness category, displaying user data related to wellness (such as mindfulness, etc.) [CHAR LIMIT=30]">Wellness</string>
 
   <!-- region Data Types -->
   <!-- region Activity data types -->
@@ -115,6 +118,7 @@
   <string name="respiratory_rate_label" description="Label used to show the user's respiratory rate data [CHAR_LIMIT=50]">Respiratory rate</string>
   <string name="resting_heart_rate_label" description="Label used to show the user's resting heart rate data [CHAR_LIMIT=50]">Resting heart rate</string>
   <string name="skin_temperature_label" description="Label used to show the user's skin temperature data [CHAR_LIMIT=50]">Skin temperature</string>
+  <string name="mindfulness_label" description="Label used to show the user's mindfulness data [CHAR_LIMIT=50]">Mindfulness</string>
   <!--endregion-->
   <!--endregion-->
 
@@ -139,10 +143,13 @@
 
   <!-- region Phr Options screen -->
   <string name="phr_options_title">PHR Options</string>
+  <string name="phr_options_ingest_title">Ingest PHR data</string>
   <string name="phr_options_create_data_source">Create data source</string>
   <string name="phr_options_data_source_id_placeholder">Create data source to see the id</string>
-  <string name="phr_options_insert_immunization">Insert immunization</string>
-  <string name="phr_options_resource_id_placeholder">Insert immunization to see the id</string>
+  <string name="phr_options_insert_immunization">Insert vaccines</string>
+  <string name="phr_options_immunization_id_placeholder">Insert vaccines to see the id</string>
+  <string name="phr_options_insert_allergy">Insert allergy</string>
+  <string name="phr_options_allergy_id_placeholder">Insert allergy to see the id</string>
   <string name="phr_options_read_by_id">Read FHIR Resource For Id</string>
   <string name="phr_options_seed_fhir_jsons">Seed FHIR JSONs</string>
   <string name="phr_options_request_immunization">Request read immunization permission</string>

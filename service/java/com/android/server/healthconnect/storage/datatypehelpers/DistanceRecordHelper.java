@@ -20,7 +20,6 @@ import static android.health.connect.datatypes.AggregationType.AggregationTypeId
 import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 
-import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.AggregationType;
@@ -43,12 +42,12 @@ import java.util.List;
 public final class DistanceRecordHelper extends IntervalRecordHelper<DistanceRecordInternal> {
     private static final String DISTANCE_RECORD_TABLE_NAME = "distance_record_table";
     private static final String DISTANCE_COLUMN_NAME = "distance";
+
     public DistanceRecordHelper() {
         super(RecordTypeIdentifier.RECORD_TYPE_DISTANCE);
     }
 
     @Override
-    @NonNull
     public String getMainTableName() {
         return DISTANCE_RECORD_TABLE_NAME;
     }
@@ -68,19 +67,17 @@ public final class DistanceRecordHelper extends IntervalRecordHelper<DistanceRec
     }
 
     @Override
-    void populateSpecificRecordValue(
-            @NonNull Cursor cursor, @NonNull DistanceRecordInternal distanceRecord) {
+    void populateSpecificRecordValue(Cursor cursor, DistanceRecordInternal distanceRecord) {
         distanceRecord.setDistance(getCursorDouble(cursor, DISTANCE_COLUMN_NAME));
     }
 
     @Override
     void populateSpecificContentValues(
-            @NonNull ContentValues contentValues, @NonNull DistanceRecordInternal distanceRecord) {
+            ContentValues contentValues, DistanceRecordInternal distanceRecord) {
         contentValues.put(DISTANCE_COLUMN_NAME, distanceRecord.getDistance());
     }
 
     @Override
-    @NonNull
     protected List<Pair<String, String>> getIntervalRecordColumnInfo() {
         return Collections.singletonList(new Pair<>(DISTANCE_COLUMN_NAME, REAL));
     }

@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.migration;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -40,6 +39,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
@@ -67,16 +67,20 @@ public final class DataMigrationManager {
     private final AppInfoHelper mAppInfoHelper;
     private final PriorityMigrationHelper mPriorityMigrationHelper;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private final PreferenceHelper mPreferenceHelper;
+    private final MigrationEntityHelper mMigrationEntityHelper;
 
     public DataMigrationManager(
-            @NonNull Context userContext,
-            @NonNull TransactionManager transactionManager,
-            @NonNull HealthConnectPermissionHelper permissionHelper,
-            @NonNull FirstGrantTimeManager firstGrantTimeManager,
-            @NonNull DeviceInfoHelper deviceInfoHelper,
-            @NonNull AppInfoHelper appInfoHelper,
-            @NonNull HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
-            @NonNull PriorityMigrationHelper priorityMigrationHelper) {
+            Context userContext,
+            TransactionManager transactionManager,
+            HealthConnectPermissionHelper permissionHelper,
+            FirstGrantTimeManager firstGrantTimeManager,
+            DeviceInfoHelper deviceInfoHelper,
+            AppInfoHelper appInfoHelper,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            PriorityMigrationHelper priorityMigrationHelper,
+            PreferenceHelper preferenceHelper,
+            MigrationEntityHelper migrationEntityHelper) {
         mUserContext = userContext;
         mTransactionManager = transactionManager;
         mPermissionHelper = permissionHelper;
@@ -85,6 +89,8 @@ public final class DataMigrationManager {
         mAppInfoHelper = appInfoHelper;
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
         mPriorityMigrationHelper = priorityMigrationHelper;
+        mPreferenceHelper = preferenceHelper;
+        mMigrationEntityHelper = migrationEntityHelper;
     }
 
     /**
@@ -92,7 +98,7 @@ public final class DataMigrationManager {
      *
      * @param entities a collection of {@link MigrationEntity} to be applied.
      */
-    public void apply(@NonNull Collection<MigrationEntity> entities) throws EntityWriteException {
+    public void apply(Collection<MigrationEntity> entities) throws EntityWriteException {
         synchronized (sLock) {
             mTransactionManager.runAsTransaction(
                     db -> {
@@ -109,7 +115,7 @@ public final class DataMigrationManager {
 
     /** Migrates the provided {@link MigrationEntity}. Must be called inside a DB transaction. */
     @GuardedBy("sLock")
-    private void migrateEntity(@NonNull SQLiteDatabase db, @NonNull MigrationEntity entity)
+    private void migrateEntity(SQLiteDatabase db, MigrationEntity entity)
             throws EntityWriteException {
         try {
             if (checkEntityForDuplicates(db, entity)) {
@@ -136,8 +142,7 @@ public final class DataMigrationManager {
     }
 
     @GuardedBy("sLock")
-    private void migrateRecord(
-            @NonNull SQLiteDatabase db, @NonNull RecordMigrationPayload payload) {
+    private void migrateRecord(SQLiteDatabase db, RecordMigrationPayload payload) {
         long recordRowId = mTransactionManager.insertOrIgnore(db, parseRecord(payload));
         if (recordRowId != -1) {
             mTransactionManager.insertOrIgnore(
@@ -145,8 +150,7 @@ public final class DataMigrationManager {
         }
     }
 
-    @NonNull
-    private UpsertTableRequest parseRecord(@NonNull RecordMigrationPayload payload) {
+    private UpsertTableRequest parseRecord(RecordMigrationPayload payload) {
         final RecordInternal<?> record = payload.getRecordInternal();
         mAppInfoHelper.populateAppInfoId(record, mUserContext, false);
         mDeviceInfoHelper.populateDeviceInfoId(record);
@@ -160,7 +164,7 @@ public final class DataMigrationManager {
     }
 
     @GuardedBy("sLock")
-    private void migratePermissions(@NonNull PermissionMigrationPayload payload) {
+    private void migratePermissions(PermissionMigrationPayload payload) {
         final String packageName = payload.getHoldingPackageName();
         final List<String> permissions = payload.getPermissions();
         final UserHandle userHandle = mUserContext.getUser();
@@ -199,7 +203,7 @@ public final class DataMigrationManager {
     }
 
     @GuardedBy("sLock")
-    private void migrateAppInfo(@NonNull AppInfoMigrationPayload payload) {
+    private void migrateAppInfo(AppInfoMigrationPayload payload) {
         mAppInfoHelper.addOrUpdateAppInfoIfNotInstalled(
                 mUserContext,
                 payload.getPackageName(),
@@ -219,8 +223,7 @@ public final class DataMigrationManager {
      *     otherwise.
      */
     @GuardedBy("sLock")
-    private boolean checkEntityForDuplicates(
-            @NonNull SQLiteDatabase db, @NonNull MigrationEntity entity) {
+    private boolean checkEntityForDuplicates(SQLiteDatabase db, MigrationEntity entity) {
         final MigrationPayload payload = entity.getPayload();
 
         if (payload instanceof RecordMigrationPayload) {
@@ -237,9 +240,8 @@ public final class DataMigrationManager {
      * @return {@code true} if inserted successfully, {@code false} otherwise.
      */
     @GuardedBy("sLock")
-    private boolean insertEntityIdIfNotPresent(
-            @NonNull SQLiteDatabase db, @NonNull String entityId) {
-        final UpsertTableRequest request = MigrationEntityHelper.getInsertRequest(entityId);
+    private boolean insertEntityIdIfNotPresent(SQLiteDatabase db, String entityId) {
+        final UpsertTableRequest request = mMigrationEntityHelper.getInsertRequest(entityId);
         return mTransactionManager.insertOrIgnore(db, request) != -1;
     }
 
@@ -247,7 +249,7 @@ public final class DataMigrationManager {
     public static final class EntityWriteException extends Exception {
         private final String mEntityId;
 
-        private EntityWriteException(@NonNull String entityId, @Nullable Throwable cause) {
+        private EntityWriteException(String entityId, @Nullable Throwable cause) {
             super("Error writing entity: " + entityId, cause);
 
             mEntityId = entityId;
@@ -257,7 +259,6 @@ public final class DataMigrationManager {
          * Returns an identifier of the failed entity, as specified in {@link
          * MigrationEntity#getEntityId()}.
          */
-        @NonNull
         public String getEntityId() {
             return mEntityId;
         }
@@ -268,7 +269,7 @@ public final class DataMigrationManager {
      *
      * @param priorityMigrationPayload contains data category and priority list
      */
-    private void migratePriority(@NonNull PriorityMigrationPayload priorityMigrationPayload) {
+    private void migratePriority(PriorityMigrationPayload priorityMigrationPayload) {
         if (priorityMigrationPayload.getDataOrigins().isEmpty()) {
             return;
         }
@@ -308,6 +309,7 @@ public final class DataMigrationManager {
      * @param payload of type MetadataMigrationPayload having retention period.
      */
     private void migrateMetadata(MetadataMigrationPayload payload) {
-        AutoDeleteService.setRecordRetentionPeriodInDays(payload.getRecordRetentionPeriodDays());
+        AutoDeleteService.setRecordRetentionPeriodInDays(
+                payload.getRecordRetentionPeriodDays(), mPreferenceHelper);
     }
 }

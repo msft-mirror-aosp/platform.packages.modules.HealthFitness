@@ -30,7 +30,6 @@ import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_
 
 import static java.util.Objects.requireNonNull;
 
-import android.annotation.NonNull;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -43,6 +42,9 @@ import com.android.server.healthconnect.notifications.HealthConnectNotificationS
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -64,25 +66,52 @@ public final class ImportManager {
     private final DatabaseMerger mDatabaseMerger;
     private final TransactionManager mTransactionManager;
     private final HealthConnectNotificationSender mNotificationSender;
+    private final ExportImportSettingsStorage mExportImportSettingsStorage;
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public ImportManager(@NonNull Context context) {
-        this(context, ExportImportNotificationSender.createSender(context));
+    public ImportManager(
+            AppInfoHelper appInfoHelper,
+            Context context,
+            ExportImportSettingsStorage exportImportSettingsStorage,
+            TransactionManager transactionManager,
+            DeviceInfoHelper deviceInfoHelper,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
+        this(
+                appInfoHelper,
+                context,
+                ExportImportNotificationSender.createSender(context),
+                exportImportSettingsStorage,
+                transactionManager,
+                deviceInfoHelper,
+                healthDataCategoryPriorityHelper);
     }
 
     public ImportManager(
-            @NonNull Context context, HealthConnectNotificationSender notificationSender) {
+            AppInfoHelper appInfoHelper,
+            Context context,
+            HealthConnectNotificationSender notificationSender,
+            ExportImportSettingsStorage exportImportSettingsStorage,
+            TransactionManager transactionManager,
+            DeviceInfoHelper deviceInfoHelper,
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
         requireNonNull(context);
         mContext = context;
-        mDatabaseMerger = new DatabaseMerger(context);
-        mTransactionManager = TransactionManager.getInitialisedInstance();
+        mDatabaseMerger =
+                new DatabaseMerger(
+                        appInfoHelper,
+                        context,
+                        deviceInfoHelper,
+                        healthDataCategoryPriorityHelper,
+                        transactionManager);
+        mTransactionManager = transactionManager;
         mNotificationSender = notificationSender;
+        mExportImportSettingsStorage = exportImportSettingsStorage;
     }
 
     /** Reads and merges the backup data from a local file. */
     public synchronized void runImport(UserHandle userHandle, Uri uri) {
         Slog.i(TAG, "Import started.");
-        ExportImportSettingsStorage.setImportOngoing(true);
+        mExportImportSettingsStorage.setImportOngoing(true);
         mNotificationSender.sendNotificationAsUser(
                 NOTIFICATION_TYPE_IMPORT_IN_PROGRESS, userHandle);
         Context userContext = mContext.createContextAsUser(userHandle, 0);
@@ -100,7 +129,7 @@ public final class ImportManager {
                 mNotificationSender.clearNotificationsAsUser(userHandle);
                 mNotificationSender.sendNotificationAsUser(
                         NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_INVALID_FILE, userHandle);
-                ExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_WRONG_FILE);
+                mExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_WRONG_FILE);
                 return;
             } catch (Exception e) {
                 Slog.e(
@@ -110,7 +139,7 @@ public final class ImportManager {
                 mNotificationSender.clearNotificationsAsUser(userHandle);
                 mNotificationSender.sendNotificationAsUser(
                         NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_GENERIC_ERROR, userHandle);
-                ExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_UNKNOWN);
+                mExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_UNKNOWN);
                 return;
             }
 
@@ -125,24 +154,24 @@ public final class ImportManager {
                 mNotificationSender.clearNotificationsAsUser(userHandle);
                 mNotificationSender.sendNotificationAsUser(
                         NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_INVALID_FILE, userHandle);
-                ExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_WRONG_FILE);
+                mExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_WRONG_FILE);
                 return;
             } catch (IllegalStateException e) {
                 Slog.i(TAG, "Import failed: " + e);
                 mNotificationSender.clearNotificationsAsUser(userHandle);
                 mNotificationSender.sendNotificationAsUser(
                         NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_VERSION_MISMATCH, userHandle);
-                ExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_VERSION_MISMATCH);
+                mExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_VERSION_MISMATCH);
                 return;
             } catch (Exception e) {
                 Slog.i(TAG, "Import failed: " + e);
                 mNotificationSender.clearNotificationsAsUser(userHandle);
                 mNotificationSender.sendNotificationAsUser(
                         NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_GENERIC_ERROR, userHandle);
-                ExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_UNKNOWN);
+                mExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_UNKNOWN);
                 return;
             }
-            ExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_NONE);
+            mExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_NONE);
             Slog.i(TAG, "Import completed");
             mNotificationSender.clearNotificationsAsUser(userHandle);
             mNotificationSender.sendNotificationAsUser(
@@ -151,7 +180,7 @@ public final class ImportManager {
             // Delete the staged db as we are done merging.
             Slog.i(TAG, "Deleting staged db after merging");
             SQLiteDatabase.deleteDatabase(importDbFile);
-            ExportImportSettingsStorage.setImportOngoing(false);
+            mExportImportSettingsStorage.setImportOngoing(false);
         }
     }
 

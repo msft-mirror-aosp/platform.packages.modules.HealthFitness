@@ -304,6 +304,22 @@ public final class TestUtils {
         return receiver.getResponse();
     }
 
+    /**
+     * Given {@link PermissionHelper#MANAGE_HEALTH_DATA} permission, invokes {@link
+     * HealthConnectManager#aggregate} with the given {@code request}.
+     */
+    public static <T> AggregateRecordsResponse<T> getAggregateResponseWithManagePermission(
+            AggregateRecordsRequest<T> request) throws InterruptedException {
+        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+
+        try {
+            return getAggregateResponse(request);
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
+    }
+
     public static <T> AggregateRecordsResponse<T> getAggregateResponse(
             AggregateRecordsRequest<T> request) throws InterruptedException {
         HealthConnectReceiver<AggregateRecordsResponse<T>> receiver =
@@ -345,6 +361,22 @@ public final class TestUtils {
                 .aggregateGroupByPeriod(
                         request, period, Executors.newSingleThreadExecutor(), receiver);
         return receiver.getResponse();
+    }
+
+    /**
+     * Given {@link PermissionHelper#MANAGE_HEALTH_DATA} permission, invokes {@link
+     * HealthConnectManager#readRecords} with the given {@code request}.
+     */
+    public static <T extends Record> List<T> readRecordsWithManagePermission(
+            ReadRecordsRequest<T> request) throws InterruptedException {
+        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+
+        try {
+            return readRecords(request);
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
     }
 
     public static <T extends Record> List<T> readRecords(ReadRecordsRequest<T> request)
@@ -450,7 +482,7 @@ public final class TestUtils {
     }
 
     /**
-     * Delete all medical data (datasources, resources etc) stored in the Health Connect database.
+     * Delete all health records (datasources, resources etc) stored in the Health Connect database.
      */
     public static void deleteAllMedicalData() throws InterruptedException {
         if (!isPersonalHealthRecordEnabled()) {
@@ -910,7 +942,7 @@ public final class TestUtils {
     }
 
     @NonNull
-    private static HealthConnectManager getHealthConnectManager(Context context) {
+    public static HealthConnectManager getHealthConnectManager(Context context) {
         return requireNonNull(context.getSystemService(HealthConnectManager.class));
     }
 
@@ -1279,6 +1311,16 @@ public final class TestUtils {
         for (int i = 0; i < from.size(); i++) {
             copyRecordIdViaReflection(from.get(i), to.get(i));
         }
+    }
+
+    /**
+     * Sets value for a field using reflection. This can be used to set fields for immutable class.
+     */
+    public static void setFieldValueUsingReflection(Object object, String fieldName, Object value)
+            throws NoSuchFieldException, IllegalAccessException {
+        Field field = object.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(object, value);
     }
 
     // TODO(b/328228842): Avoid using reflection once we have Builder(Record) constructors

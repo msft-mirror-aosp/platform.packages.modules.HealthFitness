@@ -46,6 +46,7 @@ import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class AutoDeleteFragmentTest {
@@ -68,16 +69,20 @@ class AutoDeleteFragmentTest {
     @Test
     @Throws(java.lang.Exception::class)
     fun autoDeleteFragment_isDisplayed() {
-        Mockito.`when`(viewModel.storedAutoDeleteRange).then {
+        whenever(viewModel.storedAutoDeleteRange).then {
             MutableLiveData(
                 AutoDeleteViewModel.AutoDeleteState.WithData(
-                    AutoDeleteRange.AUTO_DELETE_RANGE_NEVER))
+                    AutoDeleteRange.AUTO_DELETE_RANGE_NEVER
+                )
+            )
         }
         launchFragment<AutoDeleteFragment>(Bundle())
 
         onView(
                 withText(
-                    "Control how long your data is stored in Health\u00A0Connect by scheduling it to delete after a set time"))
+                    "Control how long your data is stored in Health\u00A0Connect by scheduling it to delete after a set time"
+                )
+            )
             .check(matches(isDisplayed()))
         // Need to provide id as well, otherwise both TextView and TextLinkView are found.
         onView(allOf(withText("Learn more about auto-delete"), withId(R.id.header_link)))
@@ -88,7 +93,9 @@ class AutoDeleteFragmentTest {
         onView(withText("Never")).check(matches(isDisplayed()))
         onView(
                 withText(
-                    "When you change these settings, Health\u00A0Connect deletes existing data to reflect your new preferences"))
+                    "When you change these settings, Health\u00A0Connect deletes existing data to reflect your new preferences"
+                )
+            )
             .check(matches(isDisplayed()))
 
         verify(healthConnectLogger, atLeast(1)).setPageId(PageName.AUTO_DELETE_PAGE)
@@ -101,15 +108,17 @@ class AutoDeleteFragmentTest {
     @Test
     @Throws(java.lang.Exception::class)
     fun autoDelete_checkDefaultRange_defaultRange() {
-        Mockito.`when`(viewModel.storedAutoDeleteRange).then {
+        whenever(viewModel.storedAutoDeleteRange).then {
             MutableLiveData(
                 AutoDeleteViewModel.AutoDeleteState.WithData(
-                    AutoDeleteRange.AUTO_DELETE_RANGE_NEVER))
+                    AutoDeleteRange.AUTO_DELETE_RANGE_NEVER
+                )
+            )
         }
-        Mockito.`when`(viewModel.newAutoDeleteRange).then {
+        whenever(viewModel.newAutoDeleteRange).then {
             MutableLiveData(AutoDeleteRange.AUTO_DELETE_RANGE_THREE_MONTHS)
         }
-        Mockito.`when`(viewModel.oldAutoDeleteRange).then {
+        whenever(viewModel.oldAutoDeleteRange).then {
             MutableLiveData(AutoDeleteRange.AUTO_DELETE_RANGE_NEVER)
         }
         launchFragment<AutoDeleteFragment>(Bundle())
@@ -119,15 +128,17 @@ class AutoDeleteFragmentTest {
     @Test
     @Throws(java.lang.Exception::class)
     fun autoDelete_setRangeTo3Months_saveChanges() {
-        Mockito.`when`(viewModel.storedAutoDeleteRange).then {
+        whenever(viewModel.storedAutoDeleteRange).then {
             MutableLiveData(
                 AutoDeleteViewModel.AutoDeleteState.WithData(
-                    AutoDeleteRange.AUTO_DELETE_RANGE_NEVER))
+                    AutoDeleteRange.AUTO_DELETE_RANGE_NEVER
+                )
+            )
         }
-        Mockito.`when`(viewModel.newAutoDeleteRange).then {
+        whenever(viewModel.newAutoDeleteRange).then {
             MutableLiveData(AutoDeleteRange.AUTO_DELETE_RANGE_THREE_MONTHS)
         }
-        Mockito.`when`(viewModel.oldAutoDeleteRange).then {
+        whenever(viewModel.oldAutoDeleteRange).then {
             MutableLiveData(AutoDeleteRange.AUTO_DELETE_RANGE_NEVER)
         }
         launchFragment<AutoDeleteFragment>(Bundle())
@@ -138,7 +149,9 @@ class AutoDeleteFragmentTest {
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "This also deletes data older than 3 months from Health\u00A0Connect.\n\nIf you want to completely delete the data from your connected apps, check each app where your data may be saved."))
+                    "This also deletes data older than 3 months from Health\u00A0Connect.\n\nIf you want to completely delete the data from your connected apps, check each app where your data may be saved."
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Set auto-delete")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -160,15 +173,17 @@ class AutoDeleteFragmentTest {
     @Test
     @Throws(java.lang.Exception::class)
     fun autoDelete_setRangeTo18Months_saveChanges() {
-        Mockito.`when`(viewModel.storedAutoDeleteRange).then {
+        whenever(viewModel.storedAutoDeleteRange).then {
             MutableLiveData(
                 AutoDeleteViewModel.AutoDeleteState.WithData(
-                    AutoDeleteRange.AUTO_DELETE_RANGE_NEVER))
+                    AutoDeleteRange.AUTO_DELETE_RANGE_NEVER
+                )
+            )
         }
-        Mockito.`when`(viewModel.newAutoDeleteRange).then {
+        whenever(viewModel.newAutoDeleteRange).then {
             MutableLiveData(AutoDeleteRange.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS)
         }
-        Mockito.`when`(viewModel.oldAutoDeleteRange).then {
+        whenever(viewModel.oldAutoDeleteRange).then {
             MutableLiveData(AutoDeleteRange.AUTO_DELETE_RANGE_NEVER)
         }
         launchFragment<AutoDeleteFragment>(Bundle())
@@ -179,7 +194,9 @@ class AutoDeleteFragmentTest {
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "This also deletes data older than 18 months from Health\u00A0Connect.\n\nIf you want to completely delete the data from your connected apps, check each app where your data may be saved."))
+                    "This also deletes data older than 18 months from Health\u00A0Connect.\n\nIf you want to completely delete the data from your connected apps, check each app where your data may be saved."
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Set auto-delete")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -200,10 +217,12 @@ class AutoDeleteFragmentTest {
 
     @Test
     fun autoDeleteFragment_learnMoreButton_isClickable() {
-        Mockito.`when`(viewModel.storedAutoDeleteRange).then {
+        whenever(viewModel.storedAutoDeleteRange).then {
             MutableLiveData(
                 AutoDeleteViewModel.AutoDeleteState.WithData(
-                    AutoDeleteRange.AUTO_DELETE_RANGE_NEVER))
+                    AutoDeleteRange.AUTO_DELETE_RANGE_NEVER
+                )
+            )
         }
         launchFragment<AutoDeleteFragment>(Bundle())
 

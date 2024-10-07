@@ -67,6 +67,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"dövrün izlənməsi"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Qidalanma"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"qidalanma"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"Rifah"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"rifah"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"Datanı axtarın"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Datanı idarə edin"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Datanı eksport edin"</string>
@@ -265,12 +267,60 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"dəri temperaturu"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Dəri temperaturunun oxunması"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Dəri temperaturunun yazılması"</string>
-    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Bütün tibbi data"</string>
-    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"bütün tibbi data"</string>
-    <string name="all_medical_data_content_description" msgid="6103488863059447886">"Bütün tibbi datanın yazılması"</string>
+    <!-- no translation found for all_medical_data_uppercase_label (2380759160541898783) -->
+    <skip />
+    <!-- no translation found for all_medical_data_lowercase_label (6293814928992081842) -->
+    <skip />
+    <!-- no translation found for all_medical_data_content_description (4846586780533295022) -->
+    <skip />
+    <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"Allergiyalar"</string>
+    <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"allergiyalar"</string>
+    <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"Allergiyalar haqqında oxuyun"</string>
+    <!-- no translation found for conditions_uppercase_label (5260404343402770877) -->
+    <skip />
+    <!-- no translation found for conditions_lowercase_label (2678248918552246997) -->
+    <skip />
+    <!-- no translation found for conditions_content_description (3230552343616193829) -->
+    <skip />
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Peyvənd"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"peyvənd"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Peyvəndin oxunması"</string>
+    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"Laboratoriya Nəticələri"</string>
+    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"laboratoriya nəticələri"</string>
+    <string name="laboratory_results_content_description" msgid="5882338877203692484">"Laboratoriya nəticələrini oxuyun"</string>
+    <string name="medications_uppercase_label" msgid="4783281053427990225">"Dərmanlar"</string>
+    <string name="medications_lowercase_label" msgid="7808038774503092207">"dərmanlar"</string>
+    <string name="medications_content_description" msgid="6165382876281780190">"Dərmanları oxuyun"</string>
+    <!-- no translation found for personal_details_uppercase_label (7241635933310394120) -->
+    <skip />
+    <!-- no translation found for personal_details_lowercase_label (1907848447611775151) -->
+    <skip />
+    <!-- no translation found for personal_details_content_description (3191211304673909831) -->
+    <skip />
+    <!-- no translation found for practitioner_details_uppercase_label (2940667649808082510) -->
+    <skip />
+    <!-- no translation found for practitioner_details_lowercase_label (8195591077717971542) -->
+    <skip />
+    <!-- no translation found for practitioner_details_content_description (8775396516928504185) -->
+    <skip />
+    <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Hamiləlik"</string>
+    <string name="pregnancy_lowercase_label" msgid="810439290131044517">"hamiləlik"</string>
+    <string name="pregnancy_content_description" msgid="3436773729243586287">"Hamiləlik haqqında oxuyun"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"Prosedurlar"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"prosedurlar"</string>
+    <string name="procedures_content_description" msgid="1086900373141440005">"Prosedurları oxuyun"</string>
+    <string name="social_history_uppercase_label" msgid="1731364502071035544">"Sosial Tarixçə"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"sosial tarixçə"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"Sosial tarixçəni oxuyun"</string>
+    <!-- no translation found for visits_uppercase_label (8532619758336375886) -->
+    <skip />
+    <!-- no translation found for visits_lowercase_label (2545887061364564151) -->
+    <skip />
+    <!-- no translation found for visits_content_description (6336796415049565697) -->
+    <skip />
+    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"Həyati Əlamətlər"</string>
+    <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"həyati əlamətlər"</string>
+    <string name="vital_signs_content_description" msgid="914944352640528612">"Həyati əlamətləri oxuyun"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Zehinlilik"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"zehinlilik"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Zehinliliyin oxunması"</string>
@@ -294,10 +344,33 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> Health Connect-dən keçmiş dataya giriş daxil olmaqla heç bir datanı oxumayacaq və ya yazmayacaq.\n\nTətbiqin məkan, kamera və ya mikrofon kimi digər icazələrinə təsir etmir."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> Health Connect-dən arxa fon və keçmiş data da daxil olmaqla heç bir datanı oxumayacaq və ya yazmayacaq.\n\nTətbiqin məkan, kamera və ya mikrofon kimi digər icazələrinə təsir etmir."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Həmçinin Health Connect\'dən <xliff:g id="APP_NAME">%1$s</xliff:g> datasını silin"</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"Bütün icazələr silinsin?"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Bütün sağlamlıq qeydi icazələri silinsin?"</string>
+    <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"Bütün fitnes və sağlamlıq icazələri silinsin?"</string>
+    <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"<xliff:g id="APP_NAME">%1$s</xliff:g> artıq Health Connect-dən datanı oxuya və ya yaza bilməyəcək.\n\nBu, bu tətbiqin kamera, mikrofon və ya məkan kimi malik ola biləcəyi digər icazələrə təsir etmir."</string>
+    <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"Arxa fon datası daxil olmaqla <xliff:g id="APP_NAME">%1$s</xliff:g> artıq Health Connect-dən datanı oxuya və ya yaza bilməyəcək.\n\nBu, bu tətbiqin kamera, mikrofon və ya məkan kimi malik ola biləcəyi digər icazələrə təsir etmir."</string>
+    <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"Keçmiş data daxil olmaqla <xliff:g id="APP_NAME">%1$s</xliff:g> artıq Health Connect-dən datanı oxuya və ya yaza bilməyəcək.\n\nBu, bu tətbiqin kamera, mikrofon və ya məkan kimi malik ola biləcəyi digər icazələrə təsir etmir."</string>
+    <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"Arxa fon və keçmiş data daxil olmaqla <xliff:g id="APP_NAME">%1$s</xliff:g> artıq Health Connect-dən datanı oxuya və ya yaza bilməyəcək.\n\nBu, bu tətbiqin kamera, mikrofon və ya məkan kimi malik ola biləcəyi digər icazələrə təsir etmir."</string>
+    <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Həmçinin Health Connect vasitəsilə <xliff:g id="APP_NAME">%1$s</xliff:g> tətbiqindən fitnes datası və sağlamlıq qeydlərini silin"</string>
+    <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Bu tətbiq üçün silinən icazələr"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Növbəti gün"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Seçilmiş gün"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Əvvəlki gün"</string>
     <string name="default_error" msgid="7966868260616403475">"Xəta oldu. Yenidən cəhd edin."</string>
+    <!-- no translation found for unkwown_resource (7932225227431922125) -->
+    <skip />
+    <!-- no translation found for raw_fhir_title (1295744907036066319) -->
+    <skip />
+    <!-- no translation found for raw_fhir_open_bracket (7974657451368655325) -->
+    <skip />
+    <!-- no translation found for raw_fhir_closed_bracket (9084379463440675078) -->
+    <skip />
+    <!-- no translation found for raw_fhir_field_value (369633095565031835) -->
+    <skip />
+    <!-- no translation found for raw_fhir_value (8627152854130338531) -->
+    <skip />
+    <!-- no translation found for raw_fhir_content_description (1491420802097635439) -->
+    <skip />
     <string name="health_permission_header_description" msgid="7497601695462373927">"Bu icazəsi olan tətbiqlər sağlamlıq və fitnes datasını oxuyub, yaza bilər."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connect\'də saxlanılan dataya hansı tətbiqlərin giriş edə biləcəyinə nəzarət edin. Tətbiqin oxuya və ya yaza biləcəyi məlumatları nəzərdən keçirmək üçün ona toxunun."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Girişə icazə verilib"</string>
@@ -314,6 +387,7 @@
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Hamısını silin"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Tətbiqi idarə edin"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Tətbiq datasına baxın"</string>
+    <string name="remove_access_for_this_app" msgid="7701101420310711833">"Bu tətbiq üçün girişi silin"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"Tətbiq datasını silin"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"İnaktiv tətbiqlər"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Bu tətbiqlərin artıq girişi yoxdur, lakin hələ də Health Connect\'də data saxlayırlar"</string>
@@ -349,6 +423,10 @@
     <string name="next_export_text" msgid="6726252793571403846">"Növbəti eksport tezliklə başlayacaq"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Yedəkləmə və bərpa"</string>
     <string name="last_export_time" msgid="9205875050823594041">"Sonuncu eksport: <xliff:g id="DATE">%1$s</xliff:g>"</string>
+    <string name="last_export_time_now" msgid="31498024135933750">"Son eksport: indi"</string>
+    <string name="last_export_time_minutes_ago" msgid="5279296486877765961">"{count,plural, =1{Son eksport: 1 dəqiqə əvvəl}other{Son eksport: # dəqiqə əvvəl}}"</string>
+    <string name="last_export_time_hours_ago" msgid="3174986640795245343">"{count,plural, =1{Son eksport: 1 saat əvvəl}other{Son eksport: # saat əvvəl}}"</string>
+    <string name="no_last_export_message" msgid="8138900854579872667">"Son eksport: yoxdur"</string>
     <string name="last_export_file_location" msgid="4069435932524304633">"<xliff:g id="EXPORT_APP_NAME">%1$s</xliff:g> • <xliff:g id="EXPORT_FILE_NAME">%2$s</xliff:g>"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Planlaşdırılmış eksport"</string>
     <string name="import_data" msgid="404502315533233094">"Datanı import edin"</string>
@@ -377,14 +455,14 @@
     <string name="export_destination_title" msgid="8352929396306002479">"Eksportun saxlanma yerini seçin"</string>
     <string name="export_invalid_storage" msgid="1459055934301871321">"Datanızı eksport etmək üçün bulud yaddaşı tətbiqi seçin"</string>
     <string name="export_default_file_name" msgid="1146984404965754445">"Health Connect"</string>
+    <string name="export_default_file_name_with_sequence" msgid="2380551038319211752">"Health Connect (<xliff:g id="EXPORT_SEQUENTIAL_NUMBER">%1$s</xliff:g>)"</string>
     <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Bu fayl import edilsin?"</string>
     <string name="import_confirmation_dialog_text" msgid="7274564242039735667">"<xliff:g id="FILE_NAME">%1$s</xliff:g> Health Connect-ə import ediləcək"</string>
     <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Ləğv edin"</string>
     <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"İmport edin"</string>
     <string name="import_notification_import_in_progress_title" msgid="4657602436278942808">"Health Connect bərpası davam edir"</string>
     <string name="import_notification_import_complete_title" msgid="7493223782222480412">"Health Connect bərpası tamamlandı"</string>
-    <!-- no translation found for import_in_progress_toast_text (3363548588078895706) -->
-    <skip />
+    <string name="import_in_progress_toast_text" msgid="3363548588078895706">"Bərpa davam edir"</string>
     <string name="import_complete_toast_text" msgid="7730872919621230959">"Datanın bərpası dayandırıldı"</string>
     <string name="import_notification_error_generic_error_title" msgid="19162830551127433">"Health Connect datanı bərpa edə bilmədi"</string>
     <string name="import_notification_error_more_space_needed_title" msgid="240259612132385794">"Daha çox yer lazımdır"</string>
@@ -397,6 +475,13 @@
     <string name="import_notification_open_intent_button" msgid="2739924648846724969">"Açın"</string>
     <string name="import_notification_choose_file_intent_button" msgid="2249671128440758769">"Fayl seçin"</string>
     <string name="import_notification_free_up_space_intent_button" msgid="4665571334602539807">"Yer boşaldın"</string>
+    <string name="scheduled_export_on_toast_text" msgid="945186472588537310">"Planlaşdırılmış eksport:"</string>
+    <string name="export_notification_error_generic_error_title" msgid="7940091379629095465">"Health Connect datanı eksport edə bilmədi"</string>
+    <string name="export_notification_error_more_space_needed_title" msgid="5089783781556500431">"Daha çox yer lazımdır"</string>
+    <string name="export_notification_error_generic_error_body_text" msgid="4161925150551602640">"<xliff:g id="DATE">%1$s</xliff:g> üzrə eksport ilə bağlı problem oldu. Planlaşdırılmış yeni eksport ayarlayın və yenidən cəhd edin."</string>
+    <string name="export_notification_error_more_space_needed_body_text" msgid="5519192430780383427">"Health Connect planlaşdırılmış eksporta davam etmək üçün telefonda <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> yaddaş yeri tələb edir."</string>
+    <string name="export_notification_set_up_intent_button" msgid="1484836974815713693">"Ayarlayın"</string>
+    <string name="export_notification_free_up_space_intent_button" msgid="2902823222861202203">"Yer boşaldın"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Geri"</string>
     <string name="export_next_button" msgid="657930567137105172">"Növbəti"</string>
     <string name="export_cancel_button" msgid="1952360582645412410">"Ləğv edin"</string>
@@ -413,6 +498,10 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Marketə keçin"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ilə başlayın"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect sağlamlıq və fitnes datanızı saxlayaraq cihazdakı müxtəlif tətbiqləri sinxronlaşdırmaq üçün sadə yol təqdim edir"</string>
+    <!-- no translation found for onboarding_description_health_records (6816666836571797870) -->
+    <skip />
+    <!-- no translation found for onboarding_description_with_health_connect (8751881078749676542) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"Tətbiqlərinizlə data paylaşın"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Hər bir tətbiqin Health Connect\'də oxuya və ya yaza biləcəyi datanı seçin"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Ayarlarınızı və məxfiliyinizi idarə edin"</string>
@@ -457,7 +546,7 @@
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"<xliff:g id="APP_DATA">%2$s</xliff:g> tərəfindən əlavə edilmiş bütün <xliff:g id="DATA_TYPE">%1$s</xliff:g> datası birdəfəlik silinsin?"</string>
     <string name="confirming_question_single_entry" msgid="2064578008447638932">"Bu daxiletmə Health Connect-dən həmişəlik silinsin?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Qoşulmuş tətbiqlər artıq Health Connect\'dən bu dataya giriş edə bilməyəcək"</string>
-    <string name="confirming_question_message_menstruation" msgid="5286956266565962430">"<xliff:g id="START_DATE">%1$s</xliff:g>-<xliff:g id="END_DATE">%2$s</xliff:g> aralığındakı bütün menstruasiya daxiletmələri silinəcək."</string>
+    <string name="confirming_question_message_menstruation" msgid="944931041343695373">"<xliff:g id="START_DATE">%1$s</xliff:g>-<xliff:g id="END_DATE">%2$s</xliff:g> aralığındakı bütün menstruasiya dövrü daxiletmələri silinəcək."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Silin"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Geri qayıdın"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Hazırdır"</string>
@@ -654,6 +743,12 @@
     <string name="sleep_stage_light" msgid="1070117964678317880">"yüngül yuxu"</string>
     <string name="sleep_stage_deep" msgid="3134557407657258364">"dərin yuxu"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"naməlum"</string>
+    <string name="mindfulness_type_breathing" msgid="3175952922332753437">"Nəfəsalma"</string>
+    <string name="mindfulness_type_meditation" msgid="4453014833652749254">"Meditasiya"</string>
+    <string name="mindfulness_type_movement" msgid="600930756800362680">"Hərəkət"</string>
+    <string name="mindfulness_type_music" msgid="7041364137895485917">"Musiqi"</string>
+    <string name="mindfulness_type_other" msgid="793524328911038908">"Digər"</string>
+    <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Təlimatsız"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> d"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> s <xliff:g id="MIN">%2$s</xliff:g> dəq"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> s"</string>
@@ -991,15 +1086,8 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Bu tətbiq üçün arxa fon və ya keçmiş dataya girişi yandırmaq məqsədilə ən az bir oxumaq icazəsini aktivləşdirin"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Bu tətbiq üçün arxa fonda girişi yandırmaq məqsədilə ən az bir oxumaq icazəsini aktivləşdirin"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Bu tətbiq üçün keçmiş dataya girişi yandırmaq məqsədilə ən az bir oxumaq icazəsini aktivləşdirin"</string>
-    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Health Connect-dən bütün datalar həmişəlik silinsin?"</string>
-    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Seçilmiş data Health Connect-dən həmişəlik silinsin?"</string>
-    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Bütün datalar silindi"</string>
-    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> data silindi"</string>
-    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> element silindi"</string>
-    <string name="select_all" msgid="837499881590001166">"Hamısını seçin"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connect istifadəsinə başlayın"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sağlamlıq və fitnes datanızı paylaşmaq üçün ilk tətbiqləri sinxronlaşdırın"</string>
-    <string name="start_using_hc_not_now_button" msgid="5540360101949104994">"İndi yox"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Ayarlayın"</string>
     <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Daha çox tətbiq qoşun"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"<xliff:g id="APP_NAME">%s</xliff:g> və telefondakı sağlamlıq tətbiqləri arasında data paylaşımına başlayın"</string>
@@ -1007,4 +1095,43 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Uyğun tətbiqlərə baxın"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Health Connect vasitəsilə <xliff:g id="APP_NAME">%s</xliff:g> ilə sinxronlaşdırmaq üçün digər tətbiqləri tapın"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Tətbiq mağazasında baxın"</string>
+    <string name="select_all" msgid="837499881590001166">"Hamısını seçin"</string>
+    <!-- no translation found for deletion_confirmation_dialog_body (7643182907084645805) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (2103387413531373305) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (2466281529240054537) -->
+    <skip />
+    <!-- no translation found for all_app_data_selected_deletion_confirmation_dialog (1077157006579195958) -->
+    <skip />
+    <!-- no translation found for some_app_data_selected_deletion_confirmation_dialog (5378172524112070270) -->
+    <skip />
+    <!-- no translation found for all_entries_selected_day_deletion_confirmation_dialog (2887646600541520444) -->
+    <skip />
+    <!-- no translation found for all_entries_selected_week_deletion_confirmation_dialog (6759608395185369048) -->
+    <skip />
+    <!-- no translation found for all_entries_selected_month_deletion_confirmation_dialog (6030161837387559132) -->
+    <skip />
+    <!-- no translation found for some_entries_selected_day_deletion_confirmation_dialog (3481363886097542565) -->
+    <skip />
+    <!-- no translation found for some_entries_selected_week_deletion_confirmation_dialog (7150217982297131340) -->
+    <skip />
+    <!-- no translation found for some_entries_selected_month_deletion_confirmation_dialog (3712014725077445591) -->
+    <skip />
+    <!-- no translation found for one_entry_selected_deletion_confirmation_dialog (4642573082594021789) -->
+    <skip />
+    <!-- no translation found for all_app_entries_selected_day_deletion_confirmation_dialog (2342034541791960151) -->
+    <skip />
+    <!-- no translation found for all_app_entries_selected_week_deletion_confirmation_dialog (24289763841770386) -->
+    <skip />
+    <!-- no translation found for all_app_entries_selected_month_deletion_confirmation_dialog (3240581815583269052) -->
+    <skip />
+    <!-- no translation found for some_app_entries_selected_day_deletion_confirmation_dialog (1030347169774815676) -->
+    <skip />
+    <!-- no translation found for some_app_entries_selected_week_deletion_confirmation_dialog (8009352719322914060) -->
+    <skip />
+    <!-- no translation found for some_app_entries_selected_month_deletion_confirmation_dialog (6617805533334875710) -->
+    <skip />
+    <!-- no translation found for one_app_entry_selected_deletion_confirmation_dialog (7101939753210640660) -->
+    <skip />
 </resources>

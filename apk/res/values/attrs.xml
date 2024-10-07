@@ -42,6 +42,7 @@
     <attr name="nutritionCategoryIcon" format="reference"/>
     <attr name="sleepCategoryIcon" format="reference"/>
     <attr name="vitalsCategoryIcon" format="reference"/>
+    <attr name="wellnessCategoryIcon" format="reference"/>
 
     <!-- Permission types page -->
     <attr name="appPriorityIcon" format="reference"/>
@@ -92,6 +93,20 @@
     <attr name="warningIcon" format="reference"/>
     <attr name="infoIcon" format="reference"/>
 
+    <!-- Medical data -->
+    <attr name="allergiesIcon" format="reference"/>
+    <attr name="conditionsIcon" format="reference" />
+    <attr name="immunizationIcon" format="reference"/>
+    <attr name="labResultsIcon" format="reference" />
+    <attr name="medicalServicesIcon" format="reference"/>
+    <attr name="medicationsIcon" format="reference" />
+    <attr name="pastVisitsIcon" format="reference" />
+    <attr name="patientInfoIcon" format="reference" />
+    <attr name="pregnancyIcon" format="reference" />
+    <attr name="practitionerDetailsIcon" format="reference"/>
+    <attr name="proceduresIcon" format="reference"/>
+    <attr name="vitalsIcon" format="reference"/>
+    <attr name="socialHistoryIcon" format="reference"/>
     <!-- END REGION -->
 
     <!-- REGION DIALOG GRAVITY -->
@@ -130,6 +145,7 @@
     <attr name="permissionGrantButtonList" format="reference"/>
     <attr name="permissionGrantButtonTop" format="reference"/>
     <attr name="permissionGrantButtonBottom" format="reference"/>
+    <attr name="disabledSpinner" format="reference" />
 
     <!-- Dialogs -->
     <attr name="alertDialogTheme" format="reference"/>

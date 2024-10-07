@@ -20,7 +20,6 @@ import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
 
 import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
-import android.annotation.NonNull;
 import android.content.Context;
 
 import com.android.server.healthconnect.notifications.HealthConnectNotificationSender;
@@ -44,10 +43,10 @@ public class ExportImportNotificationSender {
     private static final String CHANNEL_NAME_RESOURCE = "app_label";
 
     /** Create an instance of HealthConnectNotificationSender, setup for export-import. */
-    public static HealthConnectNotificationSender createSender(@NonNull Context context) {
+    public static HealthConnectNotificationSender createSender(Context context) {
         return new HealthConnectNotificationSender.Builder()
                 .setContext(context)
-                .setNotificationFactory(new ExportImportNotificationFactory(context))
+                .setNotificationFactory(new ExportImportNotificationFactory(context, CHANNEL_ID))
                 .setChannelGroupId(CHANNEL_GROUP_ID)
                 .setChannelNameResource(CHANNEL_NAME_RESOURCE)
                 .setChannelId(CHANNEL_ID)
@@ -63,6 +62,8 @@ public class ExportImportNotificationSender {
     public static final int NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_INVALID_FILE = 3;
     public static final int NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_NOT_ENOUGH_SPACE = 4;
     public static final int NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_VERSION_MISMATCH = 5;
+    public static final int NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR = 6;
+    public static final int NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_NOT_ENOUGH_SPACE = 7;
 
     /** @hide */
     @FlaggedApi(FLAG_EXPORT_IMPORT)
@@ -73,7 +74,9 @@ public class ExportImportNotificationSender {
         NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_GENERIC_ERROR,
         NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_INVALID_FILE,
         NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_NOT_ENOUGH_SPACE,
-        NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_VERSION_MISMATCH
+        NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_VERSION_MISMATCH,
+        NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR,
+        NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_NOT_ENOUGH_SPACE
     })
     public @interface ExportImportNotificationType {}
 }

@@ -28,6 +28,7 @@ import android.util.Log
 import androidx.test.uiautomator.*
 import com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity
 import com.android.compatibility.common.util.UiAutomatorUtils2.*
+import com.android.compatibility.common.util.UiDumpUtils
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.TimeoutException
@@ -41,6 +42,7 @@ object UiTestUtils {
 
     private val WAIT_TIMEOUT = Duration.ofSeconds(5)
     private val NOT_DISPLAYED_TIMEOUT = Duration.ofMillis(500)
+    private val FIND_OBJECT_TIMEOUT = Duration.ofMillis(500)
 
     private val TAG = UiTestUtils::class.java.simpleName
 
@@ -62,11 +64,16 @@ object UiTestUtils {
 
     /**
      * Waits for the given [selector] to be displayed and performs the given [uiObjectAction] on it.
+     *
+     * If the object is not visible attempts to find the object by scrolling down while possible. If
+     * scrolling reached the bottom attempts to find the object by scrolling up.
+     *
+     * @throws AssertionError if the object can't be found within [waitTimeout]
      */
     fun waitDisplayed(
         selector: BySelector,
         waitTimeout: Duration = WAIT_TIMEOUT,
-        uiObjectAction: (UiObject2) -> Unit = {}
+        uiObjectAction: (UiObject2) -> Unit = {},
     ) {
         waitFor("$selector to be displayed", waitTimeout) {
             uiObjectAction(waitFindObject(selector, it.toMillis()))
@@ -74,28 +81,113 @@ object UiTestUtils {
         }
     }
 
+    /**
+     * Returns an object if it's visible on the screen or returns null otherwise.
+     *
+     * This method does _not_ scroll in an attempt to find the object.
+     */
+    private fun findObjectOrNull(
+        selector: BySelector,
+        timeout: Duration = FIND_OBJECT_TIMEOUT,
+    ): UiObject2? {
+        return getUiDevice().wait(Until.findObject(selector), timeout.toMillis())
+    }
+
+    /**
+     * Returns an object if it's visible on the screen or throws otherwise.
+     *
+     * Use this if the object is expected to be visible on the screen without scrolling.
+     */
+    fun findObject(selector: BySelector, timeout: Duration = FIND_OBJECT_TIMEOUT): UiObject2 {
+        return findObjectOrNull(selector, timeout)
+            ?: throw objectNotFoundExceptionWithDump("Object not found $selector")
+    }
+
+    /**
+     * Clicks on an object if it's visible on the screen or throws otherwise.
+     *
+     * Use this if the object is expected to be visible on the screen without scrolling.
+     */
+    fun findObjectAndClick(selector: BySelector) {
+        findObject(selector).click()
+        getUiDevice().waitForIdle()
+    }
+
+    /**
+     * Returns an object with given text if it's visible on the screen or throws otherwise.
+     *
+     * Use this if the text label is expected to be visible on the screen without scrolling.
+     */
+    fun findText(text: String): UiObject2 {
+        return findObject(By.text(text))
+    }
+
+    /**
+     * Clicks on a text label if it's visible on the screen or throws otherwise.
+     *
+     * Use this if the text label is expected to be visible on the screen without scrolling.
+     */
+    fun findTextAndClick(text: String) {
+        findObjectAndClick(By.text(text))
+    }
+
+    /** Throws an exception if given object is visible on the screen. */
+    fun verifyObjectNotFound(selector: BySelector) {
+        if (findObjectOrNull(selector) != null) {
+            throw AssertionError("assertObjectNotFound: did not expect object $selector")
+        }
+    }
+
+    /** Throws an exception if given text label is visible on the screen. */
+    fun verifyTextNotFound(text: String) {
+        verifyObjectNotFound(By.text(text))
+    }
+
+    /**
+     * Waits for given object to become non visible on the screen.
+     *
+     * @throws TimeoutException if the object is visible on the screen after [timeout].
+     */
+    fun waitForObjectNotFound(selector: BySelector, timeout: Duration = NOT_DISPLAYED_TIMEOUT) {
+        waitFor("$selector not to be found", timeout) { findObjectOrNull(selector) == null }
+    }
+
+    /** Quickly scrolls down to the bottom. */
+    fun scrollToEnd() {
+        val scrollable = UiScrollable(UiSelector().scrollable(true))
+        if (!scrollable.waitForExists(FIND_OBJECT_TIMEOUT.toMillis())) {
+            // Scrollable either doesn't exist or the view fully fits inside the screen.
+            return
+        }
+        scrollable.flingToEnd(Integer.MAX_VALUE)
+    }
+
     fun scrollDownTo(selector: BySelector) {
         waitFindObject(By.scrollable(true)).scrollUntil(Direction.DOWN, Until.findObject(selector))
     }
 
+    fun scrollUpTo(selector: BySelector) {
+        waitFindObject(By.scrollable(true)).scrollUntil(Direction.UP, Until.findObject(selector))
+    }
+
     fun scrollDownToAndClick(selector: BySelector) {
-        getUiDevice()
-            .findObject(By.scrollable(true))
-            .scrollUntil(Direction.DOWN, Until.findObject(selector))
-            .click()
+        try {
+            waitDisplayed(selector) { it.click() }
+        } catch (e: Exception) {
+            getUiDevice()
+                .findObject(By.scrollable(true))
+                .scrollUntil(Direction.DOWN, Until.findObject(selector))
+                .click()
+        }
         getUiDevice().waitForIdle()
     }
 
     fun skipOnboardingIfAppears() {
-        try {
-            clickOnText("Get started")
-        } catch (e: Exception) {
-            try {
-                clickOnText("GET STARTED")
-            } catch (e: Exception) {
-                // No-op if onboarding was not displayed.
-            }
-        }
+        val uiObject = findObjectOrNull(By.text("Get started"))
+        uiObject?.click()
+
+        val uiObject2 = findObjectOrNull(By.text("GET STARTED"))
+        uiObject2?.click()
     }
 
     /** Clicks on [UiObject2] with given [text]. */
@@ -152,6 +244,10 @@ object UiTestUtils {
         waitDisplayed(By.desc(string)) { it.click() }
     }
 
+    fun waitTextDisplayed(text: String) {
+        waitDisplayed(By.text(text))
+    }
+
     /** Waits for all the given [textToFind] to be displayed. */
     fun waitAllTextDisplayed(vararg textToFind: CharSequence?) {
         for (text in textToFind) {
@@ -160,8 +256,8 @@ object UiTestUtils {
     }
 
     /** Waits for the given [selector] not to be displayed. */
-    fun waitNotDisplayed(selector: BySelector) {
-        waitFor("$selector not to be displayed", NOT_DISPLAYED_TIMEOUT) {
+    fun waitNotDisplayed(selector: BySelector, timeout: Duration = NOT_DISPLAYED_TIMEOUT) {
+        waitFor("$selector not to be displayed", timeout) {
             waitFindObjectOrNull(selector, it.toMillis()) == null
         }
     }
@@ -231,6 +327,10 @@ object UiTestUtils {
         throw TimeoutException("Timed out waiting for $message")
     }
 
+    private fun objectNotFoundExceptionWithDump(message: String): Exception {
+        return UiDumpUtils.wrapWithUiDump(UiObjectNotFoundException(message))
+    }
+
     fun stepsRecordFromTestApp(): StepsRecord {
         return stepsRecord(TEST_APP_PACKAGE_NAME, /* stepCount= */ 10)
     }
@@ -241,7 +341,11 @@ object UiTestUtils {
 
     fun stepsRecordFromTestApp(startTime: Instant): StepsRecord {
         return stepsRecord(
-            TEST_APP_PACKAGE_NAME, /* stepCount= */ 10, startTime, startTime.plusSeconds(100))
+            TEST_APP_PACKAGE_NAME,
+            /* stepCount= */ 10,
+            startTime,
+            startTime.plusSeconds(100),
+        )
     }
 
     fun stepsRecordFromTestApp(stepCount: Long, startTime: Instant): StepsRecord {
@@ -272,7 +376,7 @@ object UiTestUtils {
         packageName: String,
         stepCount: Long,
         startTime: Instant,
-        endTime: Instant
+        endTime: Instant,
     ): StepsRecord {
         val dataOrigin: DataOrigin = DataOrigin.Builder().setPackageName(packageName).build()
         val testMetadataBuilder: Metadata.Builder = Metadata.Builder()
@@ -285,14 +389,18 @@ object UiTestUtils {
     private fun distanceRecord(
         packageName: String,
         startTime: Instant,
-        endTime: Instant
+        endTime: Instant,
     ): DistanceRecord {
         val dataOrigin: DataOrigin = DataOrigin.Builder().setPackageName(packageName).build()
         val testMetadataBuilder: Metadata.Builder = Metadata.Builder()
         testMetadataBuilder.setDevice(TEST_DEVICE).setDataOrigin(dataOrigin)
         testMetadataBuilder.setClientRecordId("SR" + Math.random())
         return DistanceRecord.Builder(
-                testMetadataBuilder.build(), startTime, endTime, Length.fromMeters(500.0))
+                testMetadataBuilder.build(),
+                startTime,
+                endTime,
+                Length.fromMeters(500.0),
+            )
             .build()
     }
 
@@ -305,7 +413,8 @@ object UiTestUtils {
                 testMetadataBuilder.build(),
                 Instant.now().minusMillis(1000),
                 Instant.now(),
-                Length.fromMeters(500.0))
+                Length.fromMeters(500.0),
+            )
             .build()
     }
 
@@ -316,7 +425,8 @@ object UiTestUtils {
         }
         runWithShellPermissionIdentity(
             { pm.grantRuntimePermission(packageName, permName, context.user) },
-            Manifest.permission.GRANT_RUNTIME_PERMISSIONS)
+            Manifest.permission.GRANT_RUNTIME_PERMISSIONS,
+        )
     }
 
     fun revokePermissionViaPackageManager(context: Context, packageName: String, permName: String) {
@@ -330,20 +440,20 @@ object UiTestUtils {
                         packageName,
                         MASK_PERMISSION_FLAGS,
                         PackageManager.FLAG_PERMISSION_USER_SET,
-                        context.user)
+                        context.user,
+                    )
                 },
-                REVOKE_RUNTIME_PERMISSIONS)
+                REVOKE_RUNTIME_PERMISSIONS,
+            )
             return
         }
         runWithShellPermissionIdentity(
             { pm.revokeRuntimePermission(packageName, permName, context.user, /* reason= */ "") },
-            REVOKE_RUNTIME_PERMISSIONS)
+            REVOKE_RUNTIME_PERMISSIONS,
+        )
     }
 
     fun setFont(device: UiDevice) {
-        with(device) {
-            executeShellCommand(
-                "shell settings put system font_scale 0.85")
-        }
+        with(device) { executeShellCommand("shell settings put system font_scale 0.85") }
     }
 }

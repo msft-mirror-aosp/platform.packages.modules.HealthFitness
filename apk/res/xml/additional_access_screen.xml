@@ -29,6 +29,10 @@
         app:isPreferenceVisible="false"
         />
 
+    <com.android.healthconnect.controller.shared.preference.WarningPreference
+        android:key="key_warning"
+        app:isPreferenceVisible="false" />
+
     <com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
         android:key="key_background_read"
         android:title="@string/background_read_title"

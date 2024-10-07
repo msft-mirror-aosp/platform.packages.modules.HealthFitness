@@ -26,10 +26,10 @@ android_test {
     ],
 
     libs: [
-        "android.test.runner",
-        "android.test.base",
-        "framework-configinfrastructure",
-        "framework-sdkextensions",
+        "android.test.runner.stubs.system",
+        "android.test.base.stubs.system",
+        "framework-configinfrastructure.stubs.module_lib",
+        "framework-sdkextensions.stubs.module_lib",
         "framework-healthfitness.impl",
     ],
 
@@ -110,6 +110,7 @@ android_test {
         "androidx.test.ext.truth",
         "cts-healthconnect-utils",
         "healthconnect-documentprovider-utils",
+        "healthfitness-exported-aconfig-flags-lib",
     ],
     srcs: [
         "src/android/healthconnect/tests/exportimport/*.java",

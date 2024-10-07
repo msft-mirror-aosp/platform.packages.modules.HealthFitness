@@ -48,13 +48,18 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.FakePreferenceHelper;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.notifications.HealthConnectNotificationSender;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -87,6 +92,9 @@ public class ImportManagerTest {
     private static final String TEST_DIRECTORY_NAME = "test";
     private static final UserHandle DEFAULT_USER_HANDLE = UserHandle.of(UserHandle.myUserId());
 
+    private static final String TEST_PACKAGE_NAME_2 = "other.app";
+    private static final String TEST_PACKAGE_NAME_3 = "another.app";
+
     private static final String CHANNEL_ID = "healthconnect-channel";
 
     @Rule(order = 1)
@@ -109,6 +117,10 @@ public class ImportManagerTest {
 
     private ImportManager mImportManager;
     private HealthConnectNotificationSender mNotificationSender;
+    private ExportImportSettingsStorage mExportImportSettingsStorage;
+    private AppInfoHelper mAppInfoHelper;
+    private AccessLogsHelper mAccessLogsHelper;
+    private DeviceInfoHelper mDeviceInfoHelper;
 
     @Before
     public void setUp() throws Exception {
@@ -120,9 +132,31 @@ public class ImportManagerTest {
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(mContext, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
-        mTransactionTestUtils.insertApp("other.app");
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_3);
         mNotificationSender = mock(HealthConnectNotificationSender.class);
-        mImportManager = new ImportManager(mContext, mNotificationSender);
+        AppInfoHelper.resetInstanceForTest();
+
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                        .setPreferenceHelper(new FakePreferenceHelper())
+                        .setTransactionManager(mTransactionManager)
+                        .build();
+
+        mExportImportSettingsStorage = healthConnectInjector.getExportImportSettingsStorage();
+        mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
+        mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
+        mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
+
+        mImportManager =
+                new ImportManager(
+                        healthConnectInjector.getAppInfoHelper(),
+                        mContext,
+                        mNotificationSender,
+                        mExportImportSettingsStorage,
+                        mTransactionManager,
+                        healthConnectInjector.getDeviceInfoHelper(),
+                        healthConnectInjector.getHealthDataCategoryPriorityHelper());
         HealthConnectDeviceConfigManager.initializeInstance(mContext);
 
         mPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
@@ -176,11 +210,17 @@ public class ImportManagerTest {
                                 RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE,
                                 bloodPressureUuids));
 
-        List<RecordInternal<?>> records = mTransactionManager.readRecordsByIds(request);
+        List<RecordInternal<?>> records =
+                mTransactionManager.readRecordsByIds(
+                        request,
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper,
+                        /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(2);
         assertThat(records.get(0).getUuid()).isEqualTo(stepsUuids.get(0));
         assertThat(records.get(1).getUuid()).isEqualTo(bloodPressureUuids.get(0));
-        assertThat(ExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
                 .isEqualTo(DATA_IMPORT_ERROR_NONE);
     }
 
@@ -188,20 +228,20 @@ public class ImportManagerTest {
     public void mergesPriorityList() throws Exception {
         // Insert data so that getPriorityOrder doesn't remove apps from priority list.
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 345, 100));
-        mTransactionTestUtils.insertRecords("other.app", createStepsRecord(234, 432, 200));
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME_2, createStepsRecord(234, 432, 200));
         AppInfoHelper.getInstance().syncAppInfoRecordTypesUsed();
 
         mPriorityHelper.setPriorityOrder(
-                HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME, "other.app"));
+                HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2));
         assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
-                .containsExactly(TEST_PACKAGE_NAME, "other.app")
+                .containsExactly(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2)
                 .inOrder();
 
         File zipToImport = zipExportedDb(exportCurrentDb());
 
-        mPriorityHelper.setPriorityOrder(HealthDataCategory.ACTIVITY, List.of("other.app"));
+        mPriorityHelper.setPriorityOrder(HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME_2));
         assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
-                .containsExactly("other.app")
+                .containsExactly(TEST_PACKAGE_NAME_2)
                 .inOrder();
 
         mImportManager.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
@@ -216,7 +256,45 @@ public class ImportManagerTest {
                         DEFAULT_USER_HANDLE);
 
         assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
-                .containsExactly("other.app", TEST_PACKAGE_NAME)
+                .containsExactly(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME)
+                .inOrder();
+    }
+
+    @Test
+    public void mergesPriorityList_handlesDifferentPackageNames() throws Exception {
+        // Insert data so that getPriorityOrder doesn't remove apps from priority list.
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 345, 100));
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME_2, createStepsRecord(234, 432, 200));
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME_3, createStepsRecord(400, 510, 305));
+        AppInfoHelper.getInstance().syncAppInfoRecordTypesUsed();
+
+        mPriorityHelper.setPriorityOrder(
+                HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2));
+        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+                .containsExactly(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2)
+                .inOrder();
+
+        File zipToImport = zipExportedDb(exportCurrentDb());
+
+        mPriorityHelper.setPriorityOrder(
+                HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME_3));
+        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+                .containsExactly(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME_3)
+                .inOrder();
+
+        mImportManager.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+
+        verify(mNotificationSender, times(1))
+                .sendNotificationAsUser(
+                        ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_IN_PROGRESS,
+                        DEFAULT_USER_HANDLE);
+        verify(mNotificationSender, times(1))
+                .sendNotificationAsUser(
+                        ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_COMPLETE,
+                        DEFAULT_USER_HANDLE);
+
+        assertThat(mPriorityHelper.getPriorityOrder(HealthDataCategory.ACTIVITY, mContext))
+                .containsExactly(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME_3, TEST_PACKAGE_NAME)
                 .inOrder();
     }
 
@@ -265,7 +343,13 @@ public class ImportManagerTest {
                                 RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE,
                                 bloodPressureUuids));
 
-        List<RecordInternal<?>> records = mTransactionManager.readRecordsByIds(request);
+        List<RecordInternal<?>> records =
+                mTransactionManager.readRecordsByIds(
+                        request,
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper,
+                        /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(1);
         assertThat(records.get(0).getUuid()).isEqualTo(bloodPressureUuids.get(0));
     }
@@ -311,7 +395,7 @@ public class ImportManagerTest {
                                 .NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_INVALID_FILE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(ExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
                 .isEqualTo(DATA_IMPORT_ERROR_WRONG_FILE);
     }
 
@@ -337,7 +421,7 @@ public class ImportManagerTest {
                                 .NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_INVALID_FILE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(ExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
                 .isEqualTo(DATA_IMPORT_ERROR_WRONG_FILE);
     }
 
@@ -363,7 +447,7 @@ public class ImportManagerTest {
                                 .NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_VERSION_MISMATCH,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(ExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
                 .isEqualTo(DATA_IMPORT_ERROR_VERSION_MISMATCH);
     }
 
@@ -382,7 +466,7 @@ public class ImportManagerTest {
                         ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_COMPLETE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(ExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
                 .isEqualTo(DATA_IMPORT_ERROR_NONE);
     }
 

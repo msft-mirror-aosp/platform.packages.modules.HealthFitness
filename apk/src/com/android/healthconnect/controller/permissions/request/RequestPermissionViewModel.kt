@@ -26,6 +26,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.healthconnect.controller.permissions.additionalaccess.LoadDeclaredHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.GetHealthPermissionsFlagsUseCase
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
@@ -33,13 +34,18 @@ import com.android.healthconnect.controller.permissions.api.LoadAccessDateUseCas
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isAdditionalPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isFitnessPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isFitnessReadPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isMedicalPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isMedicalReadPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionState
-import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
-import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
+import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -55,7 +61,7 @@ constructor(
     private val getGrantedHealthPermissionsUseCase: GetGrantedHealthPermissionsUseCase,
     private val getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase,
     private val loadAccessDateUseCase: LoadAccessDateUseCase,
-    private val healthPermissionReader: HealthPermissionReader
+    private val loadDeclaredHealthPermissionUseCase: LoadDeclaredHealthPermissionUseCase,
 ) : ViewModel() {
 
     companion object {
@@ -86,6 +92,10 @@ constructor(
     val healthPermissionsList: LiveData<List<HealthPermission>>
         get() = _healthPermissionsList
 
+    private val _permissionsActivityState = MutableLiveData<PermissionsActivityState>()
+    val permissionsActivityState: LiveData<PermissionsActivityState>
+        get() = _permissionsActivityState
+
     /** [FitnessPermission]s that have been granted locally via a toggle, but not yet requested */
     private val _grantedFitnessPermissions = MutableLiveData<Set<FitnessPermission>>(emptySet())
     val grantedFitnessPermissions: LiveData<Set<FitnessPermission>>
@@ -109,11 +119,13 @@ constructor(
         MediatorLiveData(false).apply {
             addSource(_fitnessPermissionsList) {
                 postValue(
-                    areAllPermissionsGranted(fitnessPermissionsList, grantedFitnessPermissions))
+                    areAllPermissionsGranted(fitnessPermissionsList, grantedFitnessPermissions)
+                )
             }
             addSource(_grantedFitnessPermissions) {
                 postValue(
-                    areAllPermissionsGranted(fitnessPermissionsList, grantedFitnessPermissions))
+                    areAllPermissionsGranted(fitnessPermissionsList, grantedFitnessPermissions)
+                )
             }
         }
     val allFitnessPermissionsGranted: LiveData<Boolean>
@@ -124,11 +136,13 @@ constructor(
         MediatorLiveData(false).apply {
             addSource(_medicalPermissionsList) {
                 postValue(
-                    areAllPermissionsGranted(medicalPermissionsList, grantedMedicalPermissions))
+                    areAllPermissionsGranted(medicalPermissionsList, grantedMedicalPermissions)
+                )
             }
             addSource(_grantedFitnessPermissions) {
                 postValue(
-                    areAllPermissionsGranted(medicalPermissionsList, grantedMedicalPermissions))
+                    areAllPermissionsGranted(medicalPermissionsList, grantedMedicalPermissions)
+                )
             }
         }
     val allMedicalPermissionsGranted: LiveData<Boolean>
@@ -142,11 +156,15 @@ constructor(
         MediatorLiveData<AdditionalPermissionsInfo>().apply {
             addSource(_additionalPermissionsList) { additionalPermissionsList ->
                 this.postValue(
-                    AdditionalPermissionsInfo(additionalPermissionsList, _appMetaData.value))
+                    AdditionalPermissionsInfo(additionalPermissionsList, _appMetaData.value)
+                )
             }
             addSource(_appMetaData) { appMetadata ->
+                val additionalPermissionsRequestList =
+                    additionalPermissionsList.value.orEmpty().toMutableList()
                 this.postValue(
-                    AdditionalPermissionsInfo(_additionalPermissionsList.value, appMetadata))
+                    AdditionalPermissionsInfo(additionalPermissionsRequestList, appMetadata)
+                )
             }
         }
 
@@ -187,6 +205,8 @@ constructor(
 
     fun isAnyReadPermissionGranted(): Boolean = anyReadPermissionsGranted
 
+    private var anyFitnessReadPermissionsGranted: Boolean = false
+
     /** Whether to modify the historic access text on the [FitnessPermissionsFragment] */
     private var historyAccessGranted: Boolean = false
 
@@ -194,7 +214,12 @@ constructor(
 
     fun loadAccessDate(packageName: String) = loadAccessDateUseCase.invoke(packageName)
 
+    private var initialRequestedPermissions: Array<out String> = arrayOf<String>()
+    private lateinit var packageName: String
+
     fun init(packageName: String, permissions: Array<out String>) {
+        initialRequestedPermissions = permissions
+        this.packageName = packageName
         loadAppInfo(packageName)
         loadPermissions(packageName, permissions)
     }
@@ -216,10 +241,20 @@ constructor(
 
     /** Returns true if any of the requested permissions is USER_FIXED, false otherwise. */
     fun isAnyPermissionUserFixed(packageName: String, permissions: Array<out String>): Boolean {
-        return getHealthPermissionsFlagsUseCase.invoke(packageName, permissions.toList()).any {
-            (_, flags) ->
-            flags.and(PackageManager.FLAG_PERMISSION_USER_FIXED) != 0
+        val declaredPermissions = loadDeclaredHealthPermissionUseCase.invoke(packageName)
+        val validPermissions = permissions.filter { declaredPermissions.contains(it) }
+        val permissionFlags =
+            getHealthPermissionsFlagsUseCase.invoke(packageName, validPermissions.toList())
+        val userFixedPermissions =
+            permissionFlags
+                .filter { (_, flags) -> flags.and(PackageManager.FLAG_PERMISSION_USER_FIXED) != 0 }
+                .keys
+                .toList()
+        if (userFixedPermissions.isNotEmpty()) {
+            Log.e(TAG, "Permissions are user-fixed: $userFixedPermissions")
+            return true
         }
+        return false
     }
 
     /** Mark a permission as locally granted */
@@ -267,6 +302,9 @@ constructor(
             .forEach { (permission, permissionState) ->
                 internalGrantOrRevokePermission(packageName, permission, permissionState)
             }
+        if (isPersonalHealthRecordEnabled()) {
+            reloadPermissions()
+        }
     }
 
     /** Grants/Revokes all the [MedicalPermission]s sent by the caller. */
@@ -276,6 +314,9 @@ constructor(
             .forEach { (permission, permissionState) ->
                 internalGrantOrRevokePermission(packageName, permission, permissionState)
             }
+        if (isPersonalHealthRecordEnabled()) {
+            reloadPermissions()
+        }
     }
 
     /** Grants/Revokes all the [AdditionalPermission]s sent by the caller. */
@@ -296,6 +337,18 @@ constructor(
     }
 
     /**
+     * Updates the internal grants map without granting or revoking permissions. This is used when
+     * the request permissions screen is not shown because a permission is USER_FIXED or no valid
+     * permissions are requested. In that case, we don't want to revoke other permissions, e.g.
+     * Exercise Routes, because the user hasn't specifically fixed them.
+     */
+    fun updatePermissionGrants() {
+        requestedPermissions.forEach { (permission, permissionState) ->
+            updateGrants(permission, permissionState)
+        }
+    }
+
+    /**
      * Returns a map of all [HealthPermission]s that have been requested by the caller and their
      * current grant state. A permission may be granted if it was already granted when the request
      * was made, or if it was granted during this permission request. Similarly for not granted
@@ -309,7 +362,7 @@ constructor(
 
     private fun <T> areAllPermissionsGranted(
         permissionsListLiveData: LiveData<List<T>>,
-        grantedPermissionsLiveData: LiveData<Set<T>>
+        grantedPermissionsLiveData: LiveData<Set<T>>,
     ): Boolean {
         val permissionsList = permissionsListLiveData.value.orEmpty()
         val grantedPermissions = grantedPermissionsLiveData.value.orEmpty()
@@ -320,33 +373,33 @@ constructor(
         }
     }
 
-    private fun isDataTypeReadPermission(permission: String): Boolean {
-        val healthPermission = HealthPermission.fromPermissionString(permission)
-        return ((healthPermission is FitnessPermission) &&
-            healthPermission.permissionsAccessType == PermissionsAccessType.READ)
-    }
-
     private fun isHistoryReadPermission(permission: String): Boolean {
         return permission == HealthPermissions.READ_HEALTH_DATA_HISTORY
+    }
+
+    /** Reloads permissions after one type of permissions have been granted in a flow */
+    private fun reloadPermissions() {
+        loadPermissions(packageName, initialRequestedPermissions)
     }
 
     private fun loadPermissions(packageName: String, permissions: Array<out String>) {
         val grantedPermissions = getGrantedHealthPermissionsUseCase.invoke(packageName)
 
+        anyFitnessReadPermissionsGranted =
+            grantedPermissions.any { permission -> isFitnessReadPermission(permission) }
+
         anyReadPermissionsGranted =
-            grantedPermissions.any { permission -> isDataTypeReadPermission(permission) }
+            anyFitnessReadPermissionsGranted ||
+                grantedPermissions.any { permission -> isMedicalReadPermission(permission) }
+
         historyAccessGranted =
             grantedPermissions.any { permission -> isHistoryReadPermission(permission) }
-        val declaredPermissions = healthPermissionReader.getDeclaredHealthPermissions(packageName)
+        val validPermissions = loadDeclaredHealthPermissionUseCase.invoke(packageName)
 
         val filteredPermissions =
             permissions
-                // Do not show hidden permissions
-                .filterNot { permission -> healthPermissionReader.shouldHidePermission(permission) }
-                // Do not show undeclared permissions
-                .filter { permission -> declaredPermissions.contains(permission) }
-                // Filter invalid health permissions
-                // This will also transform each permission into DataType or Medical or Additional
+                // Do not show undeclared or invalid permissions
+                .filter { permission -> validPermissions.contains(permission) }
                 .mapNotNull { permissionString ->
                     try {
                         HealthPermission.fromPermissionString(permissionString)
@@ -359,44 +412,74 @@ constructor(
                 .onEach { permission -> addToRequestedPermissions(grantedPermissions, permission) }
                 // Finally, filter out the granted permissions
                 .filterNot { permission -> grantedPermissions.contains(permission.toString()) }
+                .toMutableList()
 
-        val dataTypeNotGrantedPermissions =
-            filteredPermissions
-                .filter { permission ->
-                    healthPermissionReader.isFitnessPermission(permission.toString())
-                }
-                .map { permission -> permission as FitnessPermission }
+        val fitnessNotGrantedPermissions =
+            if (isFitnessPermissionRequestConcluded()) emptyList()
+            else
+                filteredPermissions
+                    .filter { permission -> isFitnessPermission(permission.toString()) }
+                    .map { permission -> permission as FitnessPermission }
 
         val medicalNotGrantedPermissions =
-            filteredPermissions
-                .filter { permission ->
-                    healthPermissionReader.isMedicalPermission(permission.toString())
-                }
-                .map { permission -> permission as MedicalPermission }
+            if (isMedicalPermissionRequestConcluded()) emptyList()
+            else
+                filteredPermissions
+                    .filter { permission -> isMedicalPermission(permission.toString()) }
+                    .map { permission -> permission as MedicalPermission }
 
         val additionalNotGrantedPermissions =
             filteredPermissions
-                .filter { permission ->
-                    healthPermissionReader.isAdditionalPermission(permission.toString())
-                }
+                .filter { permission -> isAdditionalPermission(permission.toString()) }
                 .filterNot { permission ->
                     permission.toString() == HealthPermissions.READ_EXERCISE_ROUTES
                 }
                 .map { permission -> permission as AdditionalPermission }
+                // Filter out additional permissions if the correct read permissions were not
+                // granted
+                .filterNot { permission ->
+                    !anyFitnessReadPermissionsGranted &&
+                        permission == AdditionalPermission.READ_HEALTH_DATA_HISTORY
+                }
+                .filterNot { permission ->
+                    !anyReadPermissionsGranted &&
+                        permission == AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND
+                }
 
-        _fitnessPermissionsList.value = dataTypeNotGrantedPermissions
+        _fitnessPermissionsList.value = fitnessNotGrantedPermissions
         _medicalPermissionsList.value = medicalNotGrantedPermissions
         _additionalPermissionsList.value = additionalNotGrantedPermissions
         _healthPermissionsList.value =
-            dataTypeNotGrantedPermissions +
+            fitnessNotGrantedPermissions +
                 medicalNotGrantedPermissions +
                 additionalNotGrantedPermissions
+
+        val anyMedicalRequested = medicalNotGrantedPermissions.isNotEmpty()
+        val anyFitnessRequested = fitnessNotGrantedPermissions.isNotEmpty()
+        val anyAdditionalRequested = additionalNotGrantedPermissions.isNotEmpty()
+
+        val permissionsActivityState =
+            if (anyMedicalRequested) {
+                val isMedicalOnlyWrite =
+                    medicalNotGrantedPermissions.size == 1 &&
+                        medicalNotGrantedPermissions.contains(
+                            MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
+                        )
+                PermissionsActivityState.ShowMedical(isMedicalOnlyWrite)
+            } else if (anyFitnessRequested) {
+                PermissionsActivityState.ShowFitness
+            } else if (anyAdditionalRequested) {
+                PermissionsActivityState.ShowAdditional
+            } else {
+                PermissionsActivityState.NoPermissions
+            }
+        _permissionsActivityState.value = permissionsActivityState
     }
 
     /** Adds a permission to the [requestedPermissions] map with its original granted state */
     private fun addToRequestedPermissions(
         grantedPermissions: List<String>,
-        permission: HealthPermission
+        permission: HealthPermission,
     ) {
         val isPermissionGranted = grantedPermissions.contains(permission.toString())
         if (isPermissionGranted) {
@@ -442,10 +525,22 @@ constructor(
         viewModelScope.launch { _appMetaData.postValue(appInfoReader.getAppMetadata(packageName)) }
     }
 
+    /** Updates grants without granting or revoking permissions. */
+    private fun updateGrants(permission: HealthPermission, permissionState: PermissionState) {
+        val granted =
+            isPermissionLocallyGranted(permission) || permissionState == PermissionState.GRANTED
+
+        if (granted) {
+            grants[permission] = PermissionState.GRANTED
+        } else {
+            grants[permission] = PermissionState.NOT_GRANTED
+        }
+    }
+
     private fun internalGrantOrRevokePermission(
         packageName: String,
         permission: HealthPermission,
-        permissionState: PermissionState
+        permissionState: PermissionState,
     ) {
         val granted =
             isPermissionLocallyGranted(permission) || permissionState == PermissionState.GRANTED
@@ -468,5 +563,15 @@ constructor(
 
 data class AdditionalPermissionsInfo(
     val additionalPermissions: List<AdditionalPermission>?,
-    val appInfo: AppMetadata?
+    val appInfo: AppMetadata?,
 )
+
+sealed class PermissionsActivityState {
+    data class ShowMedical(val isWriteOnly: Boolean) : PermissionsActivityState()
+
+    data object ShowFitness : PermissionsActivityState()
+
+    data object ShowAdditional : PermissionsActivityState()
+
+    data object NoPermissions : PermissionsActivityState()
+}

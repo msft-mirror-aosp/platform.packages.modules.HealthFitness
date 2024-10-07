@@ -26,8 +26,7 @@ import androidx.preference.Preference.OnPreferenceClickListener
 import androidx.preference.PreferenceViewHolder
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.connectedapps.ComparablePreference
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.utils.logging.ElementName
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -45,7 +44,7 @@ class DeletionPermissionTypesPreference(context: Context) :
     private var widgetFrame: ViewGroup? = null
     private var checkBox: CheckBox? = null
     private var isChecked: Boolean = false
-    private lateinit var mFitnessPermissionType: FitnessPermissionType
+    private lateinit var mHealthPermissionType: HealthPermissionType
 
     private lateinit var logNameNoCheckbox: ElementName
     private lateinit var logNameCheckbox: ElementName
@@ -56,7 +55,9 @@ class DeletionPermissionTypesPreference(context: Context) :
 
         val hiltEntryPoint =
             EntryPointAccessors.fromApplication(
-                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
+                context.applicationContext,
+                HealthConnectLoggerEntryPoint::class.java,
+            )
         logger = hiltEntryPoint.logger()
     }
 
@@ -69,9 +70,7 @@ class DeletionPermissionTypesPreference(context: Context) :
 
         checkBox?.isChecked = this.isChecked
 
-        checkBox?.contentDescription =
-            context.getString(
-                FitnessPermissionStrings.fromPermissionType(mFitnessPermissionType).uppercaseLabel)
+        checkBox?.contentDescription = context.getString(mHealthPermissionType.upperCaseLabel())
 
         checkBox?.setOnClickListener(checkboxButtonListener)
 
@@ -80,13 +79,14 @@ class DeletionPermissionTypesPreference(context: Context) :
             widgetFrameParent.paddingStart,
             widgetFrameParent.paddingTop,
             /* end = */ 0,
-            widgetFrameParent.paddingBottom)
+            widgetFrameParent.paddingBottom,
+        )
     }
 
     /** Set a click listener to check the checkbox */
     fun setOnPreferenceClickListener(
         method: () -> Unit,
-        onPreferenceClickListener: OnPreferenceClickListener
+        onPreferenceClickListener: OnPreferenceClickListener,
     ) {
         val clickListener = OnPreferenceClickListener {
             if (isShowCheckbox) {
@@ -111,12 +111,12 @@ class DeletionPermissionTypesPreference(context: Context) :
         super.setOnPreferenceClickListener(clickListener)
     }
 
-    fun setHealthPermissionType(fitnessPermissionType: FitnessPermissionType) {
-        this.mFitnessPermissionType = fitnessPermissionType
+    fun setHealthPermissionType(healthPermissionType: HealthPermissionType) {
+        this.mHealthPermissionType = healthPermissionType
     }
 
-    fun getHealthPermissionType(): FitnessPermissionType {
-        return mFitnessPermissionType
+    fun getHealthPermissionType(): HealthPermissionType {
+        return mHealthPermissionType
     }
 
     /** Display or hide checkbox */

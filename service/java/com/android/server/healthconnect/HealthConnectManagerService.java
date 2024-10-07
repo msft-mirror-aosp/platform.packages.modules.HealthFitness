@@ -16,10 +16,10 @@
 
 package com.android.server.healthconnect;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.Context;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.health.connect.ratelimiter.RateLimiter;
 import android.os.Process;
 import android.os.UserHandle;
@@ -28,7 +28,9 @@ import android.util.Slog;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.server.SystemService;
+import com.android.server.healthconnect.backuprestore.CloudBackupManager;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
+import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
@@ -42,14 +44,24 @@ import com.android.server.healthconnect.permission.FirstGrantTimeDatastore;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
+import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.permission.PermissionPackageChangesOrchestrator;
+import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.utils.TimeSource;
+import com.android.server.healthconnect.utils.TimeSourceImpl;
 
+import java.time.Clock;
 import java.util.Objects;
 
 /**
@@ -68,6 +80,12 @@ public class HealthConnectManagerService extends SystemService {
     private UserHandle mCurrentForegroundUser;
     private MigrationUiStateManager mMigrationUiStateManager;
     private final MigrationNotificationSender mMigrationNotificationSender;
+    private final ExportImportSettingsStorage mExportImportSettingsStorage;
+    private final ExportManager mExportManager;
+    private final PreferenceHelper mPreferenceHelper;
+    private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
+    private final MigrationStateManager mMigrationStateManager;
+    private final CloudBackupManager mCloudBackupManager;
 
     @Nullable private HealthConnectInjector mHealthConnectInjector;
 
@@ -75,26 +93,63 @@ public class HealthConnectManagerService extends SystemService {
         super(context);
         mContext = context;
         mCurrentForegroundUser = context.getUser();
-        HealthConnectDeviceConfigManager healthConnectDeviceConfigManager =
-                HealthConnectDeviceConfigManager.initializeInstance(context);
-        MigrationStateManager migrationStateManager =
-                MigrationStateManager.initializeInstance(mCurrentForegroundUser.getIdentifier());
+        // This is needed now because MigrationStatedManager uses PreferenceHelper and
+        // PreferenceHelper after refactoring needs TransactionManager in the constructor.
+        // This will be cleaned up once DI is launched.
+        if (Flags.dependencyInjection()) {
+            HealthConnectInjector.setInstance(new HealthConnectInjectorImpl(context));
+            mHealthConnectInjector = HealthConnectInjector.getInstance();
+            mHealthConnectDeviceConfigManager =
+                    mHealthConnectInjector.getHealthConnectDeviceConfigManager();
+            mTransactionManager = mHealthConnectInjector.getTransactionManager();
+            mPreferenceHelper = mHealthConnectInjector.getPreferenceHelper();
+            mMigrationStateManager = mHealthConnectInjector.getMigrationStateManager();
+        } else {
+            mHealthConnectDeviceConfigManager =
+                    HealthConnectDeviceConfigManager.initializeInstance(context);
+            mTransactionManager =
+                    TransactionManager.initializeInstance(
+                            new HealthConnectUserContext(mContext, mCurrentForegroundUser));
+            mPreferenceHelper = PreferenceHelper.getInstance();
+            mMigrationStateManager =
+                    MigrationStateManager.initializeInstance(
+                            mCurrentForegroundUser.getIdentifier(),
+                            mHealthConnectDeviceConfigManager,
+                            mPreferenceHelper);
+        }
 
         HealthPermissionIntentAppsTracker permissionIntentTracker =
                 new HealthPermissionIntentAppsTracker(context);
         FirstGrantTimeManager firstGrantTimeManager;
         HealthConnectPermissionHelper permissionHelper;
+        MigrationCleaner migrationCleaner;
+        AppInfoHelper appInfoHelper;
+        AccessLogsHelper accessLogsHelper;
+        HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper;
+        ActivityDateHelper activityDateHelper;
+        ChangeLogsHelper changeLogsHelper;
+        ChangeLogsRequestHelper changeLogsRequestHelper;
+
+        HealthConnectMappings healthConnectMappings;
 
         if (Flags.dependencyInjection()) {
-            mHealthConnectInjector = new HealthConnectInjectorImpl(mContext);
-            mTransactionManager = mHealthConnectInjector.getTransactionManager();
+            Objects.requireNonNull(mHealthConnectInjector);
+            appInfoHelper = mHealthConnectInjector.getAppInfoHelper();
+            accessLogsHelper = mHealthConnectInjector.getAccessLogsHelper();
+            healthDataCategoryPriorityHelper =
+                    mHealthConnectInjector.getHealthDataCategoryPriorityHelper();
+            activityDateHelper = mHealthConnectInjector.getActivityDateHelper();
+            changeLogsHelper = mHealthConnectInjector.getChangeLogsHelper();
+            changeLogsRequestHelper = mHealthConnectInjector.getChangeLogsRequestHelper();
             firstGrantTimeManager =
                     new FirstGrantTimeManager(
                             context,
                             permissionIntentTracker,
                             FirstGrantTimeDatastore.createInstance(),
                             mHealthConnectInjector.getPackageInfoUtils(),
-                            mHealthConnectInjector.getHealthDataCategoryPriorityHelper());
+                            healthDataCategoryPriorityHelper,
+                            mMigrationStateManager);
+            healthConnectMappings = mHealthConnectInjector.getHealthConnectMappings();
             permissionHelper =
                     new HealthConnectPermissionHelper(
                             context,
@@ -102,74 +157,123 @@ public class HealthConnectManagerService extends SystemService {
                             HealthConnectManager.getHealthPermissions(context),
                             permissionIntentTracker,
                             firstGrantTimeManager,
-                            mHealthConnectInjector.getHealthDataCategoryPriorityHelper());
+                            healthDataCategoryPriorityHelper,
+                            appInfoHelper,
+                            healthConnectMappings);
             mPermissionPackageChangesOrchestrator =
                     new PermissionPackageChangesOrchestrator(
                             permissionIntentTracker,
                             firstGrantTimeManager,
                             permissionHelper,
                             mCurrentForegroundUser,
-                            mHealthConnectInjector.getHealthDataCategoryPriorityHelper());
+                            healthDataCategoryPriorityHelper);
+            migrationCleaner =
+                    new MigrationCleaner(
+                            mHealthConnectInjector.getTransactionManager(),
+                            mHealthConnectInjector.getPriorityMigrationHelper());
+            mExportImportSettingsStorage = mHealthConnectInjector.getExportImportSettingsStorage();
+            mExportManager = mHealthConnectInjector.getExportManager();
+            mCloudBackupManager = mHealthConnectInjector.getCloudBackupManager();
         } else {
-            mTransactionManager =
-                    TransactionManager.initializeInstance(
-                            new HealthConnectUserContext(mContext, mCurrentForegroundUser));
+            appInfoHelper = AppInfoHelper.getInstance(mTransactionManager);
+            accessLogsHelper = AccessLogsHelper.getInstance(mTransactionManager, appInfoHelper);
+            changeLogsHelper = new ChangeLogsHelper(mTransactionManager);
+            changeLogsRequestHelper = new ChangeLogsRequestHelper(mTransactionManager);
+            healthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
+            activityDateHelper = ActivityDateHelper.getInstance();
             firstGrantTimeManager =
                     new FirstGrantTimeManager(
                             context,
                             permissionIntentTracker,
-                            FirstGrantTimeDatastore.createInstance());
+                            FirstGrantTimeDatastore.createInstance(),
+                            PackageInfoUtils.getInstance(),
+                            healthDataCategoryPriorityHelper,
+                            mMigrationStateManager);
+            healthConnectMappings = new HealthConnectMappings();
             permissionHelper =
                     new HealthConnectPermissionHelper(
                             context,
                             context.getPackageManager(),
                             HealthConnectManager.getHealthPermissions(context),
                             permissionIntentTracker,
-                            firstGrantTimeManager);
+                            firstGrantTimeManager,
+                            healthDataCategoryPriorityHelper,
+                            appInfoHelper,
+                            healthConnectMappings);
             mPermissionPackageChangesOrchestrator =
                     new PermissionPackageChangesOrchestrator(
                             permissionIntentTracker,
                             firstGrantTimeManager,
                             permissionHelper,
-                            mCurrentForegroundUser);
+                            mCurrentForegroundUser,
+                            healthDataCategoryPriorityHelper);
+            migrationCleaner =
+                    new MigrationCleaner(
+                            mTransactionManager, PriorityMigrationHelper.getInstance());
+            mExportImportSettingsStorage = new ExportImportSettingsStorage(mPreferenceHelper);
+            mExportManager =
+                    new ExportManager(
+                            context,
+                            Clock.systemUTC(),
+                            mExportImportSettingsStorage,
+                            mTransactionManager);
+            mCloudBackupManager = new CloudBackupManager();
         }
 
         mUserManager = context.getSystemService(UserManager.class);
         mMigrationBroadcastScheduler =
-                new MigrationBroadcastScheduler(mCurrentForegroundUser.getIdentifier());
-        migrationStateManager.setMigrationBroadcastScheduler(mMigrationBroadcastScheduler);
-        final MigrationCleaner migrationCleaner =
-                new MigrationCleaner(mTransactionManager, PriorityMigrationHelper.getInstance());
-        mMigrationNotificationSender = new MigrationNotificationSender(context);
+                new MigrationBroadcastScheduler(
+                        mCurrentForegroundUser.getIdentifier(),
+                        mHealthConnectDeviceConfigManager,
+                        mMigrationStateManager);
+        mMigrationStateManager.setMigrationBroadcastScheduler(mMigrationBroadcastScheduler);
+        mMigrationNotificationSender =
+                new MigrationNotificationSender(context, mHealthConnectDeviceConfigManager);
         mMigrationUiStateManager =
                 new MigrationUiStateManager(
                         mContext,
                         mCurrentForegroundUser,
-                        migrationStateManager,
+                        mMigrationStateManager,
                         mMigrationNotificationSender);
+        TimeSource timeSource = new TimeSourceImpl();
         MedicalDataSourceHelper medicalDataSourceHelper =
-                new MedicalDataSourceHelper(mTransactionManager, AppInfoHelper.getInstance());
+                new MedicalDataSourceHelper(
+                        mTransactionManager, appInfoHelper, timeSource, accessLogsHelper);
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mTransactionManager,
-                        healthConnectDeviceConfigManager,
+                        mHealthConnectDeviceConfigManager,
                         permissionHelper,
                         migrationCleaner,
                         firstGrantTimeManager,
-                        migrationStateManager,
+                        mMigrationStateManager,
                         mMigrationUiStateManager,
+                        new MedicalResourceHelper(
+                                mTransactionManager,
+                                appInfoHelper,
+                                medicalDataSourceHelper,
+                                timeSource,
+                                accessLogsHelper),
+                        medicalDataSourceHelper,
                         mContext,
-                        new MedicalResourceHelper(mTransactionManager, medicalDataSourceHelper),
-                        medicalDataSourceHelper);
+                        mExportManager,
+                        mExportImportSettingsStorage,
+                        accessLogsHelper,
+                        healthDataCategoryPriorityHelper,
+                        activityDateHelper,
+                        changeLogsHelper,
+                        changeLogsRequestHelper,
+                        healthConnectMappings,
+                        mCloudBackupManager);
     }
 
     @Override
     public void onStart() {
         mPermissionPackageChangesOrchestrator.registerBroadcastReceiver(mContext);
-        new MigratorPackageChangesReceiver(MigrationStateManager.getInitialisedInstance())
+        new MigratorPackageChangesReceiver(mMigrationStateManager)
                 .registerBroadcastReceiver(mContext);
         publishBinderService(Context.HEALTHCONNECT_SERVICE, mHealthConnectService);
-        HealthConnectDeviceConfigManager.getInitialisedInstance().updateRateLimiterValues();
+        mHealthConnectDeviceConfigManager.updateRateLimiterValues();
     }
 
     /**
@@ -177,7 +281,7 @@ public class HealthConnectManagerService extends SystemService {
      * switchToSetupForUser which is only called once DB is in usable state.
      */
     @Override
-    public void onUserSwitching(@Nullable TargetUser from, @NonNull TargetUser to) {
+    public void onUserSwitching(@Nullable TargetUser from, TargetUser to) {
         if (from != null && mUserManager.isUserUnlocked(from.getUserHandle())) {
             // We need to cancel any pending timers for the foreground user before it goes into the
             // background.
@@ -189,9 +293,7 @@ public class HealthConnectManagerService extends SystemService {
         mTransactionManager.onUserSwitching();
         RateLimiter.clearCache();
         HealthConnectThreadScheduler.resetThreadPools();
-        MigrationStateManager migrationStateManager =
-                MigrationStateManager.getInitialisedInstance();
-        migrationStateManager.onUserSwitching(mContext, to.getUserHandle().getIdentifier());
+        mMigrationStateManager.onUserSwitching(mContext, to.getUserHandle().getIdentifier());
 
         mCurrentForegroundUser = to.getUserHandle();
 
@@ -208,7 +310,7 @@ public class HealthConnectManagerService extends SystemService {
     // such cases onUserSwitching will be triggered for {@code user} and this code will be
     // triggered then.
     @Override
-    public void onUserUnlocked(@NonNull TargetUser user) {
+    public void onUserUnlocked(TargetUser user) {
         Objects.requireNonNull(user);
         if (!user.getUserHandle().equals(mCurrentForegroundUser)) {
             // Ignore unlocking requests for non-foreground users
@@ -219,7 +321,7 @@ public class HealthConnectManagerService extends SystemService {
     }
 
     @Override
-    public boolean isUserSupported(@NonNull TargetUser user) {
+    public boolean isUserSupported(TargetUser user) {
         UserManager userManager =
                 getUserContext(mContext, user.getUserHandle()).getSystemService(UserManager.class);
         return !(Objects.requireNonNull(userManager).isProfile());
@@ -234,6 +336,13 @@ public class HealthConnectManagerService extends SystemService {
         mMigrationBroadcastScheduler.setUserId(mCurrentForegroundUser.getIdentifier());
         mMigrationUiStateManager.setUserHandle(mCurrentForegroundUser);
         mPermissionPackageChangesOrchestrator.setUserHandle(mCurrentForegroundUser);
+
+        if (Flags.clearCachesAfterSwitchingUser()) {
+            // Clear preferences cache again after the user switching is done as there's a race
+            // condition with tasks re-populating the preferences cache between clearing the cache
+            // and TransactionManager switching user, see b/355426144.
+            mPreferenceHelper.clearCache();
+        }
 
         HealthConnectDailyJobs.cancelAllJobs(mContext);
 
@@ -259,8 +368,7 @@ public class HealthConnectManagerService extends SystemService {
         HealthConnectThreadScheduler.scheduleInternalTask(
                 () -> {
                     try {
-                        MigrationStateManager.getInitialisedInstance()
-                                .switchToSetupForUser(mContext);
+                        mMigrationStateManager.switchToSetupForUser(mContext);
                     } catch (Exception e) {
                         Slog.e(TAG, "Failed to start user unlocked state changes actions", e);
                     }
@@ -268,7 +376,7 @@ public class HealthConnectManagerService extends SystemService {
         HealthConnectThreadScheduler.scheduleInternalTask(
                 () -> {
                     try {
-                        PreferenceHelper.getInstance().initializePreferences();
+                        mPreferenceHelper.initializePreferences();
                     } catch (Exception e) {
                         Slog.e(TAG, "Failed to initialize preferences cache", e);
                     }
@@ -277,16 +385,18 @@ public class HealthConnectManagerService extends SystemService {
         HealthConnectThreadScheduler.scheduleInternalTask(
                 () -> {
                     try {
-                        ExportImportJobs.schedulePeriodicExportJob(
-                                mContext, mCurrentForegroundUser.getIdentifier());
+                        ExportImportJobs.schedulePeriodicJobIfNotScheduled(
+                                mCurrentForegroundUser.getIdentifier(),
+                                mContext,
+                                mExportImportSettingsStorage,
+                                mExportManager);
                     } catch (Exception e) {
                         Slog.e(TAG, "Failed to schedule periodic export job.", e);
                     }
                 });
     }
 
-    @NonNull
-    private static Context getUserContext(@NonNull Context context, @NonNull UserHandle user) {
+    private static Context getUserContext(Context context, UserHandle user) {
         if (Process.myUserHandle().equals(user)) {
             return context;
         } else {

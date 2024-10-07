@@ -18,18 +18,24 @@ package android.healthconnect.cts.datatypes;
 
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_VERSION;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_LAST_DATA_UPDATE_TIME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_BASE_URI;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_DISPLAY_NAME;
+import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_FHIR_VERSION;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_LAST_DATA_UPDATE_TIME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_PACKAGE_NAME;
-import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalDataSource;
-import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalDataSourceBuilder;
+import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalDataSourceBuilderWithOptionalFields;
+import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalDataSourceRequiredFieldsOnly;
+import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalDataSourceWithOptionalFields;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.datatypes.MedicalDataSource;
+import android.net.Uri;
 import android.os.Parcel;
 import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
@@ -56,34 +62,41 @@ public class MedicalDataSourceTest {
                                 DATA_SOURCE_ID,
                                 DATA_SOURCE_PACKAGE_NAME,
                                 DATA_SOURCE_FHIR_BASE_URI,
-                                DATA_SOURCE_DISPLAY_NAME)
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
                         .build();
 
         assertThat(dataSource.getId()).isEqualTo(DATA_SOURCE_ID);
         assertThat(dataSource.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(dataSource.getFhirBaseUri()).isEqualTo(DATA_SOURCE_FHIR_BASE_URI);
         assertThat(dataSource.getDisplayName()).isEqualTo(DATA_SOURCE_DISPLAY_NAME);
+        assertThat(dataSource.getFhirVersion()).isEqualTo(DATA_SOURCE_FHIR_VERSION);
+        assertThat(dataSource.getLastDataUpdateTime()).isNull();
     }
 
     @Test
     public void testMedicalDataSourceBuilder_setAllFields() {
         MedicalDataSource dataSource =
-                new MedicalDataSource.Builder("", "", "", "")
+                new MedicalDataSource.Builder("", "", Uri.EMPTY, "", DATA_SOURCE_FHIR_VERSION)
                         .setId(DATA_SOURCE_ID)
                         .setPackageName(DATA_SOURCE_PACKAGE_NAME)
                         .setFhirBaseUri(DATA_SOURCE_FHIR_BASE_URI)
                         .setDisplayName(DATA_SOURCE_DISPLAY_NAME)
+                        .setFhirVersion(DIFFERENT_DATA_SOURCE_FHIR_VERSION)
+                        .setLastDataUpdateTime(DATA_SOURCE_LAST_DATA_UPDATE_TIME)
                         .build();
 
         assertThat(dataSource.getId()).isEqualTo(DATA_SOURCE_ID);
         assertThat(dataSource.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(dataSource.getFhirBaseUri()).isEqualTo(DATA_SOURCE_FHIR_BASE_URI);
         assertThat(dataSource.getDisplayName()).isEqualTo(DATA_SOURCE_DISPLAY_NAME);
+        assertThat(dataSource.getFhirVersion()).isEqualTo(DIFFERENT_DATA_SOURCE_FHIR_VERSION);
+        assertThat(dataSource.getLastDataUpdateTime()).isEqualTo(DATA_SOURCE_LAST_DATA_UPDATE_TIME);
     }
 
     @Test
     public void testMedicalDataSourceBuilder_fromExistingBuilder() {
-        MedicalDataSource.Builder original = getMedicalDataSourceBuilder();
+        MedicalDataSource.Builder original = getMedicalDataSourceBuilderWithOptionalFields();
 
         MedicalDataSource dataSource = new MedicalDataSource.Builder(original).build();
 
@@ -92,7 +105,7 @@ public class MedicalDataSourceTest {
 
     @Test
     public void testMedicalDataSourceBuilder_fromExistingInstance() {
-        MedicalDataSource original = getMedicalDataSource();
+        MedicalDataSource original = getMedicalDataSourceWithOptionalFields();
 
         MedicalDataSource dataSource = new MedicalDataSource.Builder(original).build();
 
@@ -106,15 +119,46 @@ public class MedicalDataSourceTest {
                                 DATA_SOURCE_ID,
                                 DATA_SOURCE_PACKAGE_NAME,
                                 DATA_SOURCE_FHIR_BASE_URI,
-                                DATA_SOURCE_DISPLAY_NAME)
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
+                        .setLastDataUpdateTime(DATA_SOURCE_LAST_DATA_UPDATE_TIME)
+                        .build();
+        String idString = "id=" + DATA_SOURCE_ID;
+        String packageNameString = "packageName=" + DATA_SOURCE_PACKAGE_NAME;
+        String fhirBaseUriString = "fhirBaseUri=" + DATA_SOURCE_FHIR_BASE_URI;
+        String displayNameString = "displayName=" + DATA_SOURCE_DISPLAY_NAME;
+        String fhirVersionString = "fhirVersion=" + DATA_SOURCE_FHIR_VERSION;
+        String lastDataUpdateTimeString = "lastDataUpdateTime=" + DATA_SOURCE_LAST_DATA_UPDATE_TIME;
+
+        assertThat(dataSource.toString()).contains(idString);
+        assertThat(dataSource.toString()).contains(packageNameString);
+        assertThat(dataSource.toString()).contains(fhirBaseUriString);
+        assertThat(dataSource.toString()).contains(displayNameString);
+        assertThat(dataSource.toString()).contains(fhirVersionString);
+        assertThat(dataSource.toString()).contains(lastDataUpdateTimeString);
+    }
+
+    @Test
+    public void testMedicalDataSource_toStringWithOptionalParamsNull() {
+        MedicalDataSource dataSource =
+                new MedicalDataSource.Builder(
+                                DATA_SOURCE_ID,
+                                DATA_SOURCE_PACKAGE_NAME,
+                                DATA_SOURCE_FHIR_BASE_URI,
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
+                        .setLastDataUpdateTime(null)
                         .build();
         String expectedPropertiesString =
                 String.format(
-                        "id=%s,packageName=%s,fhirBaseUri=%s,displayName=%s",
+                        "id=%s,packageName=%s,fhirBaseUri=%s,displayName=%s,fhirVersion=%s,"
+                                + "lastDataUpdateTime=%s",
                         DATA_SOURCE_ID,
                         DATA_SOURCE_PACKAGE_NAME,
                         DATA_SOURCE_FHIR_BASE_URI,
-                        DATA_SOURCE_DISPLAY_NAME);
+                        DATA_SOURCE_DISPLAY_NAME,
+                        DATA_SOURCE_FHIR_VERSION,
+                        null);
 
         assertThat(dataSource.toString())
                 .isEqualTo(String.format("MedicalDataSource{%s}", expectedPropertiesString));
@@ -122,8 +166,17 @@ public class MedicalDataSourceTest {
 
     @Test
     public void testMedicalDataSource_equals() {
-        MedicalDataSource dataSource1 = getMedicalDataSource();
-        MedicalDataSource dataSource2 = getMedicalDataSource();
+        MedicalDataSource dataSource1 = getMedicalDataSourceRequiredFieldsOnly();
+        MedicalDataSource dataSource2 = getMedicalDataSourceRequiredFieldsOnly();
+
+        assertThat(dataSource1.equals(dataSource2)).isTrue();
+        assertThat(dataSource1.hashCode()).isEqualTo(dataSource2.hashCode());
+    }
+
+    @Test
+    public void testMedicalDataSource_withOptionalParams_equals() {
+        MedicalDataSource dataSource1 = getMedicalDataSourceWithOptionalFields();
+        MedicalDataSource dataSource2 = getMedicalDataSourceWithOptionalFields();
 
         assertThat(dataSource1.equals(dataSource2)).isTrue();
         assertThat(dataSource1.hashCode()).isEqualTo(dataSource2.hashCode());
@@ -131,7 +184,7 @@ public class MedicalDataSourceTest {
 
     @Test
     public void testMedicalDataSource_equals_comparesAllValues() {
-        MedicalDataSource dataSource = getMedicalDataSource();
+        MedicalDataSource dataSource = getMedicalDataSourceWithOptionalFields();
         MedicalDataSource dataSourceDifferentBaseUri =
                 new MedicalDataSource.Builder(dataSource)
                         .setFhirBaseUri(DIFFERENT_DATA_SOURCE_BASE_URI)
@@ -140,26 +193,52 @@ public class MedicalDataSourceTest {
                 new MedicalDataSource.Builder(dataSource)
                         .setDisplayName(DIFFERENT_DATA_SOURCE_DISPLAY_NAME)
                         .build();
+        MedicalDataSource dataSourceDifferentFhirVersion =
+                new MedicalDataSource.Builder(dataSource)
+                        .setFhirVersion(DIFFERENT_DATA_SOURCE_FHIR_VERSION)
+                        .build();
         MedicalDataSource dataSourceDifferentId =
                 new MedicalDataSource.Builder(dataSource).setId(DIFFERENT_DATA_SOURCE_ID).build();
         MedicalDataSource dataSourceDifferentPackageName =
                 new MedicalDataSource.Builder(dataSource)
                         .setPackageName(DIFFERENT_DATA_SOURCE_PACKAGE_NAME)
                         .build();
+        MedicalDataSource dataSourceDifferentLastDataUpdateTime =
+                new MedicalDataSource.Builder(dataSource)
+                        .setLastDataUpdateTime(DIFFERENT_DATA_SOURCE_LAST_DATA_UPDATE_TIME)
+                        .build();
 
         assertThat(dataSourceDifferentBaseUri.equals(dataSource)).isFalse();
         assertThat(dataSourceDifferentDisplayName.equals(dataSource)).isFalse();
+        assertThat(dataSourceDifferentFhirVersion.equals(dataSource)).isFalse();
         assertThat(dataSourceDifferentId.equals(dataSource)).isFalse();
         assertThat(dataSourceDifferentPackageName.equals(dataSource)).isFalse();
+        assertThat(dataSourceDifferentLastDataUpdateTime.equals(dataSource)).isFalse();
         assertThat(dataSourceDifferentBaseUri.hashCode()).isNotEqualTo(dataSource.hashCode());
         assertThat(dataSourceDifferentDisplayName.hashCode()).isNotEqualTo(dataSource.hashCode());
+        assertThat(dataSourceDifferentFhirVersion.hashCode()).isNotEqualTo(dataSource.hashCode());
         assertThat(dataSourceDifferentId.hashCode()).isNotEqualTo(dataSource.hashCode());
         assertThat(dataSourceDifferentPackageName.hashCode()).isNotEqualTo(dataSource.hashCode());
+        assertThat(dataSourceDifferentLastDataUpdateTime.hashCode())
+                .isNotEqualTo(dataSource.hashCode());
     }
 
     @Test
     public void testWriteToParcelThenRestore_objectsAreIdentical() {
-        MedicalDataSource original = getMedicalDataSource();
+        MedicalDataSource original = getMedicalDataSourceRequiredFieldsOnly();
+
+        Parcel parcel = Parcel.obtain();
+        original.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+        MedicalDataSource restored = MedicalDataSource.CREATOR.createFromParcel(parcel);
+
+        assertThat(restored).isEqualTo(original);
+        parcel.recycle();
+    }
+
+    @Test
+    public void testWriteToParcelThenRestore_withOptionalValues_objectsAreIdentical() {
+        MedicalDataSource original = getMedicalDataSourceWithOptionalFields();
 
         Parcel parcel = Parcel.obtain();
         original.writeToParcel(parcel, 0);

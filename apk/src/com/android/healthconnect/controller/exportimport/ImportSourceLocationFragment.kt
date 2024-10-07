@@ -62,7 +62,7 @@ class ImportSourceLocationFragment : Hilt_ImportSourceLocationFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         logger.setPageId(PageName.IMPORT_SOURCE_LOCATION_PAGE)
         val view = inflater.inflate(R.layout.import_source_location_screen, container, false)
@@ -116,23 +116,28 @@ class ImportSourceLocationFragment : Hilt_ImportSourceLocationFragment() {
                         providers.providers,
                         viewModel.selectedDocumentProvider.value,
                         viewModel.selectedDocumentProviderRoot.value,
+                        viewModel.selectedRootsForDocumentProviders,
                         documentProvidersList,
-                        inflater) { provider, root ->
-                            viewModel.updateSelectedDocumentProvider(provider, root)
-                            nextButton.setOnClickListener {
-                                logger.logInteraction(
-                                    ImportSourceLocationElement.IMPORT_SOURCE_LOCATION_NEXT_BUTTON)
-                                saveResultLauncher.launch(
-                                    Intent(Intent.ACTION_OPEN_DOCUMENT)
-                                        .addFlags(
-                                            Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION or
-                                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                                        .setType("application/zip")
-                                        .addCategory(Intent.CATEGORY_OPENABLE)
-                                        .putExtra(DocumentsContract.EXTRA_INITIAL_URI, root.uri))
-                            }
-                            nextButton.setEnabled(true)
+                        inflater,
+                    ) { provider, root ->
+                        viewModel.updateSelectedDocumentProvider(provider, root)
+                        nextButton.setOnClickListener {
+                            logger.logInteraction(
+                                ImportSourceLocationElement.IMPORT_SOURCE_LOCATION_NEXT_BUTTON
+                            )
+                            saveResultLauncher.launch(
+                                Intent(Intent.ACTION_OPEN_DOCUMENT)
+                                    .addFlags(
+                                        Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION or
+                                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                                    )
+                                    .setType("application/zip")
+                                    .addCategory(Intent.CATEGORY_OPENABLE)
+                                    .putExtra(DocumentsContract.EXTRA_INITIAL_URI, root.uri)
+                            )
                         }
+                        nextButton.setEnabled(true)
+                    }
 
                     if (providers.providers.size > 1) {
                         footerView.setVisibility(GONE)
@@ -168,7 +173,9 @@ class ImportSourceLocationFragment : Hilt_ImportSourceLocationFragment() {
                 // TODO: b/339189778 - Add test when import API is done.
                 val bundle = Bundle()
                 bundle.putString(
-                    ImportConfirmationDialogFragment.IMPORT_FILE_URI_KEY, fileUri.toString())
+                    ImportConfirmationDialogFragment.IMPORT_FILE_URI_KEY,
+                    fileUri.toString(),
+                )
                 val dialogFragment = ImportConfirmationDialogFragment()
                 dialogFragment.arguments = bundle
                 dialogFragment.show(childFragmentManager, ImportConfirmationDialogFragment.TAG)

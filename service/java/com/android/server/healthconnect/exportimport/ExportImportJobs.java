@@ -17,6 +17,7 @@
 package com.android.server.healthconnect.exportimport;
 
 import static com.android.healthfitness.flags.Flags.exportImport;
+import static com.android.healthfitness.flags.Flags.exportImportFastFollow;
 
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -46,9 +47,42 @@ public class ExportImportJobs {
 
     public static final String PERIODIC_EXPORT_JOB_NAME = "periodic_export_job";
 
+    /** Checks if the rescheduling is needed and schedules the periodic export job if so. */
+    public static void schedulePeriodicJobIfNotScheduled(
+            int userId,
+            Context context,
+            ExportImportSettingsStorage exportImportSettingsStorage,
+            ExportManager exportManager) {
+        if (!exportImportFastFollow()
+                || Objects.requireNonNull(context.getSystemService(JobScheduler.class))
+                        .forNamespace(NAMESPACE)
+                        .getAllPendingJobs()
+                        .isEmpty()) {
+            schedulePeriodicExportJob(userId, context, exportImportSettingsStorage, exportManager);
+        }
+    }
+
     /** Schedule the periodic export job. */
-    public static void schedulePeriodicExportJob(Context context, int userId) {
-        int periodInDays = ExportImportSettingsStorage.getScheduledExportPeriodInDays();
+    public static void schedulePeriodicExportJob(
+            int userId,
+            Context context,
+            ExportImportSettingsStorage exportImportSettingsStorage,
+            ExportManager exportManager) {
+        int periodInDays = exportImportSettingsStorage.getScheduledExportPeriodInDays();
+        if (exportImportFastFollow()) {
+            // We should always cancel the job as we are persisting the job now.
+            Objects.requireNonNull(context.getSystemService(JobScheduler.class))
+                    .forNamespace(NAMESPACE)
+                    .cancelAll();
+
+            // TODO(b/364855153): Move to next condition once fast follow flag is enabled.
+            // If export is off we try to delete the local files, just in case it happened the
+            // rare case where those files weren't delete after the last export.
+            if (periodInDays <= 0) {
+                exportManager.deleteLocalExportFiles();
+            }
+        }
+        // If period is 0 the user has turned export off, we should no longer schedule a new job
         if (periodInDays <= 0) {
             return;
         }
@@ -63,9 +97,10 @@ public class ExportImportJobs {
             // For weekly / monthly export, allow export to happen at least one day before.
             flexInMillis = Duration.ofDays(1).toMillis();
         }
-        if (ExportImportSettingsStorage.getLastSuccessfulExportTime() == null
-                || !ExportImportSettingsStorage.getUri()
-                        .equals(ExportImportSettingsStorage.getLastSuccessfulExportUri())) {
+        if (exportImportSettingsStorage.getLastSuccessfulExportTime() == null
+                || !exportImportSettingsStorage
+                        .getUri()
+                        .equals(exportImportSettingsStorage.getLastSuccessfulExportUri())) {
 
             // Shorten the period for the first export to any new URI.
             // This will be changed back once the first export to any new location is done.
@@ -93,6 +128,9 @@ public class ExportImportJobs {
                                 // Flex is the max of the specified time, or 5% of periodInMillis.
                                 flexInMillis)
                         .setExtras(extras);
+        if (exportImportFastFollow()) {
+            builder = builder.setPersisted(true);
+        }
 
         HealthConnectDailyService.schedule(
                 Objects.requireNonNull(context.getSystemService(JobScheduler.class))
@@ -107,20 +145,23 @@ public class ExportImportJobs {
      */
     // TODO(b/318484778): Use dependency injection instead of passing an instance to the method.
     public static boolean executePeriodicExportJob(
-            Context context, int userId, PersistableBundle extras, ExportManager exportManager) {
-        if (!exportImport() || ExportImportSettingsStorage.getScheduledExportPeriodInDays() <= 0) {
+            Context context,
+            int userId,
+            PersistableBundle extras,
+            ExportManager exportManager,
+            ExportImportSettingsStorage exportImportSettingsStorage) {
+        if (!exportImport() || exportImportSettingsStorage.getScheduledExportPeriodInDays() <= 0) {
             // If there is no need to run the export, it counts like a success regarding job
             // reschedule.
             return true;
         }
+
         boolean exportSuccess = exportManager.runExport();
         boolean firstExport = extras.getBoolean(IS_FIRST_EXPORT, false);
         if (exportSuccess && firstExport) {
-            schedulePeriodicExportJob(context, userId);
+            schedulePeriodicExportJob(userId, context, exportImportSettingsStorage, exportManager);
         }
         return exportSuccess;
-
-        // TODO(b/325599089): Cancel job if flag is off.
 
         // TODO(b/325599089): Do we need an additional periodic / one-off task to make sure a single
         //  export completes? We need to test if JobScheduler will call the job again if jobFinished
