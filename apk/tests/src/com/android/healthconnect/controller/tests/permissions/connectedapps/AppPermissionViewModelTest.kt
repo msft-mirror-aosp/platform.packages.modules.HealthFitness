@@ -18,9 +18,7 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
  import android.platform.test.annotations.DisableFlags
  import android.platform.test.annotations.EnableFlags
  import android.platform.test.flag.junit.SetFlagsRule
-import android.health.connect.TimeInstantRangeFilter
-import com.android.healthconnect.controller.deletion.DeletionType
-import com.android.healthconnect.controller.deletion.api.DeleteAppDataUseCase
+import com.android.healthconnect.controller.deletion.api.DeleteAppDataUseCase as OldDeleteAppDataUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
@@ -35,6 +33,8 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission.Fi
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
+import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteAppData
+import com.android.healthconnect.controller.selectabledeletion.api.DeleteAppDataUseCase
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
@@ -85,7 +85,8 @@ class AppPermissionViewModelTest {
     private val healthPermissionReader: HealthPermissionReader = mock()
     private val getGrantedHealthPermissionsUseCase = FakeGetGrantedHealthPermissionsUseCase()
     private val loadAccessDateUseCase: LoadAccessDateUseCase = mock()
-    private val deleteAppDateUseCase: DeleteAppDataUseCase = mock()
+    private val deleteAppDataUseCase: DeleteAppDataUseCase = mock()
+    private val oldDeleteAppDataUseCase: OldDeleteAppDataUseCase = mock()
     private val revokeAllHealthPermissionsUseCase: RevokeAllHealthPermissionsUseCase = mock()
     private val revokePermissionStatusUseCase: RevokeHealthPermissionUseCase = mock()
     private val grantPermissionsUseCase: GrantHealthPermissionUseCase = mock()
@@ -111,8 +112,7 @@ class AppPermissionViewModelTest {
         FitnessPermission(FitnessPermissionType.DISTANCE, PermissionsAccessType.WRITE)
     private val writeMedicalData = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
 
-    @Captor lateinit var appDataCaptor: ArgumentCaptor<DeletionType.DeletionTypeAppData>
-    @Captor lateinit var timeFilterCaptor: ArgumentCaptor<TimeInstantRangeFilter>
+    @Captor lateinit var appDataCaptor: ArgumentCaptor<DeleteAppData>
 
     @Before
     fun setup() {
@@ -135,7 +135,8 @@ class AppPermissionViewModelTest {
                 grantPermissionsUseCase,
                 revokePermissionStatusUseCase,
                 revokeAllHealthPermissionsUseCase,
-                deleteAppDateUseCase,
+                deleteAppDataUseCase,
+                oldDeleteAppDataUseCase,
                 loadAccessDateUseCase,
                 getGrantedHealthPermissionsUseCase,
                 loadExerciseRoutePermissionUseCase,
@@ -2223,7 +2224,7 @@ class AppPermissionViewModelTest {
         appPermissionViewModel.deleteAppData(TEST_APP_PACKAGE_NAME, TEST_APP_NAME)
         advanceUntilIdle()
 
-        verify(deleteAppDateUseCase).invoke(appDataCaptor.capture(), timeFilterCaptor.capture())
+        verify(deleteAppDataUseCase).invoke(appDataCaptor.capture())
     }
 
     @Test

@@ -75,7 +75,8 @@ constructor(
             currentDeletionParameters()
                 .copy(
                     showTimeRangePickerDialog = showTimeRangePickerDialog,
-                    deletionType = deletionType)
+                    deletionType = deletionType,
+                )
     }
 
     fun setChosenRange(chosenRange: ChosenRange) {
@@ -144,7 +145,10 @@ constructor(
                     is DeletionType.DeletionTypeAppData -> {
                         deletionParameters.value?.let {
                             deleteAppDataUseCase.invoke(
-                                deletionType, timeRangeFilter, _removePermissions)
+                                deletionType,
+                                timeRangeFilter,
+                                _removePermissions,
+                            )
                             if (_removePermissions) {
                                 _appPermissionReloadNeeded.value = true
                             }
@@ -165,5 +169,9 @@ constructor(
                 setDeletionState(DeletionState.STATE_PROGRESS_INDICATOR_CAN_END)
             }
         }
+    }
+
+    fun resetAppPermissionReloadNeeded() {
+        _appPermissionReloadNeeded.postValue(false)
     }
 }
