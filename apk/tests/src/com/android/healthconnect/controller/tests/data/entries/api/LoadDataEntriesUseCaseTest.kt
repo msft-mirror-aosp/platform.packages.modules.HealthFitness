@@ -29,6 +29,7 @@ import com.android.healthconnect.controller.data.entries.api.LoadDataEntriesInpu
 import com.android.healthconnect.controller.data.entries.api.LoadDataEntriesUseCase
 import com.android.healthconnect.controller.data.entries.api.LoadEntriesHelper
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
+import com.android.healthconnect.controller.dataentries.formatters.MenstruationPeriodFormatter
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.app.MedicalDataSourceReader
@@ -63,6 +64,7 @@ class LoadDataEntriesUseCaseTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @Inject lateinit var healthDataEntryFormatter: HealthDataEntryFormatter
+    @Inject lateinit var menstruationPeriodFormatter: MenstruationPeriodFormatter
     @Inject lateinit var dataSourceReader: MedicalDataSourceReader
     private val healthConnectManager: HealthConnectManager =
         Mockito.mock(HealthConnectManager::class.java)
@@ -81,6 +83,7 @@ class LoadDataEntriesUseCaseTest {
             LoadEntriesHelper(
                 context,
                 healthDataEntryFormatter,
+                menstruationPeriodFormatter,
                 healthConnectManager,
                 dataSourceReader,
             )
