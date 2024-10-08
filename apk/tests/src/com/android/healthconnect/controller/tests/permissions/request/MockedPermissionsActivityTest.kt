@@ -77,12 +77,10 @@ import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
-import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.showOnboarding
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.MigrationElement
@@ -92,7 +90,6 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import javax.inject.Inject
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -126,7 +123,6 @@ class MockedPermissionsActivityTest {
     @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
     @BindValue
     val healthPermissionReader: HealthPermissionReader = mock(HealthPermissionReader::class.java)
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
 
     private lateinit var context: Context
 
@@ -173,8 +169,6 @@ class MockedPermissionsActivityTest {
 
         whenever(healthPermissionReader.isRationaleIntentDeclared(anyString())).thenReturn(true)
 
-        (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
         (deviceInfoUtils as FakeDeviceInfoUtils).setHealthConnectAvailable(true)
         showOnboarding(context, false)
         // disable animations

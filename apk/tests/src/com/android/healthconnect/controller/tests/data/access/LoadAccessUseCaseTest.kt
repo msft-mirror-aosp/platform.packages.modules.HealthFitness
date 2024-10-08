@@ -40,7 +40,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
 import com.android.healthconnect.controller.tests.utils.di.FakeGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadFitnessTypeContributorAppsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadMedicalTypeContributorAppsUseCase
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -70,7 +69,6 @@ class LoadAccessUseCaseTest {
 
     @Inject lateinit var appInfoReader: AppInfoReader
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
 
     @Before
     fun setup() {

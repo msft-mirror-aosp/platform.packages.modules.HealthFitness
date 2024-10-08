@@ -23,9 +23,7 @@ import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IM
 import android.health.connect.datatypes.RecordTypeIdentifier
 import android.health.connect.datatypes.StepsRecord
 import android.health.connect.datatypes.WeightRecord
-import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
-import android.platform.test.flag.junit.SetFlagsRule
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.recentaccess.RecentAccessEntry
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel
@@ -46,7 +44,6 @@ import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.TestTimeSource
 import com.android.healthconnect.controller.tests.utils.di.FakeHealthPermissionAppsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeRecentAccessUseCase
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -70,7 +67,6 @@ import org.junit.Test
 @HiltAndroidTest
 class RecentAccessViewModelTest {
 
-    @get:Rule val setFlagsRule = SetFlagsRule()
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -78,7 +74,6 @@ class RecentAccessViewModelTest {
 
     @Inject lateinit var appInfoReader: AppInfoReader
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
 
     private val timeSource = TestTimeSource
     private val fakeRecentAccessUseCase = FakeRecentAccessUseCase()
@@ -782,116 +777,6 @@ class RecentAccessViewModelTest {
                     isToday = true,
                     dataTypesWritten = mutableSetOf(R.string.wellness_category_uppercase),
                     dataTypesRead = mutableSetOf(),
-                )
-            )
-        assertRecentAccessEquality(actual, expected)
-    }
-
-    @DisableFlags(Flags.FLAG_MINDFULNESS)
-    @Test
-    fun loadRecentAccessApps_mindfulness_flagDisabled() = runTest {
-        val packageName = TEST_APP_PACKAGE_NAME
-
-        val accessTime = Instant.ofEpochMilli(timeSource.currentTimeMillis()).minusSeconds(1)
-        val accessLogs =
-            listOf(
-                    AccessLog(
-                        packageName,
-                        listOf(RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION),
-                        accessTime.toEpochMilli(),
-                        Constants.UPSERT,
-                    ),
-                    AccessLog(
-                        packageName,
-                        listOf(RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION),
-                        accessTime.toEpochMilli(),
-                        Constants.READ,
-                    ),
-                    AccessLog(
-                        packageName,
-                        listOf(RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION),
-                        accessTime.toEpochMilli(),
-                        Constants.DELETE,
-                    ),
-                )
-                .sortedByDescending { it.accessTime }
-
-        fakeRecentAccessUseCase.updateList(accessLogs)
-        val testObserver = TestObserver<RecentAccessState>()
-        viewModel.recentAccessApps.observeForever(testObserver)
-        viewModel.loadRecentAccessApps()
-        advanceUntilIdle()
-
-        val actual = testObserver.getLastValue()
-        val expected =
-            listOf(
-                RecentAccessEntry(
-                    metadata = TEST_APP,
-                    instantTime = accessTime,
-                    isToday = true,
-                    dataTypesWritten = mutableSetOf(),
-                    dataTypesRead = mutableSetOf(),
-                )
-            )
-        assertRecentAccessEquality(actual, expected)
-    }
-
-    @DisableFlags(Flags.FLAG_MINDFULNESS)
-    @Test
-    fun loadRecentAccessApps_mindfulness_withOtherDataTypes_flagDisabled() = runTest {
-        val packageName = TEST_APP_PACKAGE_NAME
-
-        val accessTime = Instant.ofEpochMilli(timeSource.currentTimeMillis()).minusSeconds(1)
-        val accessLogs =
-            listOf(
-                    AccessLog(
-                        packageName,
-                        listOf(RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION),
-                        accessTime.toEpochMilli(),
-                        Constants.UPSERT,
-                    ),
-                    AccessLog(
-                        packageName,
-                        listOf(RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION),
-                        accessTime.toEpochMilli(),
-                        Constants.UPSERT,
-                    ),
-                    AccessLog(
-                        packageName,
-                        listOf(RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION),
-                        accessTime.toEpochMilli(),
-                        Constants.READ,
-                    ),
-                    AccessLog(
-                        packageName,
-                        listOf(RecordTypeIdentifier.RECORD_TYPE_MINDFULNESS_SESSION),
-                        accessTime.toEpochMilli(),
-                        Constants.DELETE,
-                    ),
-                    AccessLog(
-                        packageName,
-                        listOf(RecordTypeIdentifier.RECORD_TYPE_NUTRITION),
-                        accessTime.toEpochMilli(),
-                        Constants.READ,
-                    ),
-                )
-                .sortedByDescending { it.accessTime }
-
-        fakeRecentAccessUseCase.updateList(accessLogs)
-        val testObserver = TestObserver<RecentAccessState>()
-        viewModel.recentAccessApps.observeForever(testObserver)
-        viewModel.loadRecentAccessApps()
-        advanceUntilIdle()
-
-        val actual = testObserver.getLastValue()
-        val expected =
-            listOf(
-                RecentAccessEntry(
-                    metadata = TEST_APP,
-                    instantTime = accessTime,
-                    isToday = true,
-                    dataTypesWritten = mutableSetOf(R.string.activity_category_uppercase),
-                    dataTypesRead = mutableSetOf(R.string.nutrition_category_uppercase),
                 )
             )
         assertRecentAccessEquality(actual, expected)

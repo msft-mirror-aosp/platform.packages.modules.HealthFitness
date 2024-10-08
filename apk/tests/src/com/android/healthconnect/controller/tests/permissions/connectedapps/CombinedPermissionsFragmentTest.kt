@@ -53,7 +53,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.google.common.truth.Truth.assertThat
@@ -63,7 +62,6 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
-import javax.inject.Inject
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -76,7 +74,6 @@ import org.mockito.kotlin.whenever
 class CombinedPermissionsFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
 
     @BindValue val viewModel: AppPermissionViewModel = mock()
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
