@@ -22,6 +22,7 @@
     <string name="home_subtitle" description="Description on the home screen of the app. [CHAR_LIMIT=NONE]">Manage the health and fitness data on your device, and control which apps can access it</string>
     <string name="data_title" description="Label for a button that takes the user to the data management screens. [CHAR_LIMIT=40]">Data and access</string>
     <string name="browse_medical_data" description="Label for a button that navigates to a screen with medical data. [CHAR_LIMIT=50]">Browse health records</string>
+    <string name="browse_medical_data_subtitle" description="Description for a button that navigates to a screen with medical data. [CHAR_LIMIT=NONE]">View your health records and which apps can access them</string>
     <string name="all_categories_title" description="Title of a screen that lists all health data categories. [CHAR_LIMIT=40]">All categories</string>
     <string name="see_all_categories" description="Label for a button that takes the user to the all categories screens. [CHAR_LIMIT=40]">See all categories</string>
     <string name="no_data" description="Label that is displayed when the given health data category does not have any data.">No data</string>
@@ -551,6 +552,7 @@
     <string name="app_access_title" description="Title of screen for a user to manage the health and fitness data a particular app has access to [CHAR_LIMIT=40]">App access</string>
     <string name="connected_apps_empty_list_section_title" description="Title of section when there are no connected apps">You don\'t currently have any compatible apps installed</string>
     <string name="additional_access_label" description="Label of a button that opens additional permissions access for an app. [CHAR_LIMIT=40]">Additional access</string>
+    <string name="additional_access_summary" description="Summary of a button that opens the additional permissions screen. [CHAR_LIMIT=40]">Past data, background data</string>
     <string name="removed_additional_permissions_toast" description="Message letting the user know that additional permissions have also been removed for this app">Removed additional permissions for this app</string>
     <string name="permissions_header" description="Title shown for section that lists permissions. [CHAR_LIMIT=40]">Permissions</string>
     <string name="fitness_permissions" description="Label of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Fitness and wellness</string>
