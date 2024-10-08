@@ -32,7 +32,6 @@ import android.content.pm.PackageInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.health.connect.HealthDataCategory;
-import android.health.connect.HealthPermissions;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.UserHandle;
 import android.util.Pair;
@@ -176,7 +175,8 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
 
         final List<String> grantedPermissions =
                 permissionHelper.getGrantedHealthPermissions(packageName, userHandle);
-        for (String permission : HealthPermissions.getWriteHealthPermissionsFor(dataCategory)) {
+        for (String permission :
+                mHealthConnectMappings.getWriteHealthPermissionsFor(dataCategory)) {
             if (grantedPermissions.contains(permission)) {
                 return;
             }
@@ -557,14 +557,8 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
      * contributing apps present.
      */
     private synchronized void maybeAddContributingAppsIfEmpty(Context context) {
-        List.of(
-                        HealthDataCategory.ACTIVITY,
-                        HealthDataCategory.BODY_MEASUREMENTS,
-                        HealthDataCategory.CYCLE_TRACKING,
-                        HealthDataCategory.NUTRITION,
-                        HealthDataCategory.SLEEP,
-                        HealthDataCategory.VITALS,
-                        HealthDataCategory.WELLNESS)
+        mHealthConnectMappings
+                .getAllHealthDataCategories()
                 .forEach(
                         (category) ->
                                 getHealthDataCategoryToAppIdPriorityMap()
