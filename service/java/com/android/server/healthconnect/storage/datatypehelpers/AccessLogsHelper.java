@@ -16,10 +16,12 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_DELETE;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
 
+import static com.android.internal.util.Preconditions.checkArgument;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BOOLEAN_FALSE_VALUE;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BOOLEAN_TRUE_VALUE;
@@ -189,8 +191,14 @@ public final class AccessLogsHelper extends DatabaseHelper {
             String packageName,
             @RecordTypeIdentifier.RecordType List<Integer> recordTypeList,
             @OperationType.OperationTypes int operationType) {
+        long appInfoId = mAppInfoHelper.getAppInfoId(packageName);
+        if (appInfoId == DEFAULT_LONG) {
+            // TODO(b/371210803): Add server side log for this error
+            Slog.w(TAG, "invalid package name " + packageName + " used for access log");
+            return;
+        }
         UpsertTableRequest request =
-                getUpsertTableRequest(packageName, recordTypeList, operationType);
+                getUpsertTableRequest(appInfoId, recordTypeList, operationType);
         mTransactionManager.insert(request);
     }
 
@@ -204,24 +212,28 @@ public final class AccessLogsHelper extends DatabaseHelper {
             @MedicalResourceType Set<Integer> medicalResourceTypes,
             @OperationType.OperationTypes int operationType,
             boolean accessedMedicalDataSource) {
+        long appInfoId = mAppInfoHelper.getAppInfoId(packageName);
+        if (appInfoId == DEFAULT_LONG) {
+            // TODO(b/371210803): Add server side log for this error
+            Slog.w(TAG, "invalid package name " + packageName + " used for access log");
+            return;
+        }
         UpsertTableRequest request =
                 getUpsertTableRequestForPhr(
-                        packageName,
-                        medicalResourceTypes,
-                        operationType,
-                        accessedMedicalDataSource);
+                        appInfoId, medicalResourceTypes, operationType, accessedMedicalDataSource);
         mTransactionManager.insert(db, request);
     }
 
-    private UpsertTableRequest getUpsertTableRequestForPhr(
-            String packageName,
+    private static UpsertTableRequest getUpsertTableRequestForPhr(
+            long appInfoId,
             Set<Integer> medicalResourceTypes,
             @OperationType.OperationTypes int operationType,
             boolean isMedicalDataSource) {
+        checkArgument(appInfoId != DEFAULT_LONG, "unknown app id");
         // We need to populate RECORD_TYPE_COLUMN_NAME with an empty list, as the column is set
         // to NOT_NULL.
         ContentValues contentValues =
-                populateCommonColumns(packageName, /* recordTypeList= */ List.of(), operationType);
+                populateCommonColumns(appInfoId, /* recordTypeList= */ List.of(), operationType);
         contentValues.put(
                 MEDICAL_RESOURCE_TYPE_COLUMN_NAME, concatDataTypeIds(medicalResourceTypes));
         contentValues.put(
@@ -230,12 +242,13 @@ public final class AccessLogsHelper extends DatabaseHelper {
         return new UpsertTableRequest(TABLE_NAME, contentValues);
     }
 
-    private UpsertTableRequest getUpsertTableRequest(
-            String packageName,
+    private static UpsertTableRequest getUpsertTableRequest(
+            long appInfoId,
             List<Integer> recordTypeList,
             @OperationType.OperationTypes int operationType) {
+        checkArgument(appInfoId != DEFAULT_LONG, "unknown app id");
         ContentValues contentValues =
-                populateCommonColumns(packageName, recordTypeList, operationType);
+                populateCommonColumns(appInfoId, recordTypeList, operationType);
         return new UpsertTableRequest(TABLE_NAME, contentValues);
     }
 
@@ -262,18 +275,27 @@ public final class AccessLogsHelper extends DatabaseHelper {
             String packageName,
             Set<Integer> recordTypeIds,
             @OperationType.OperationTypes int operationType) {
+        long appInfoId = mAppInfoHelper.getAppInfoId(packageName);
+        if (appInfoId == DEFAULT_LONG) {
+            // TODO(b/371210803): Add server side log for this error
+            Slog.w(TAG, "invalid package name " + packageName + " used for access log");
+            return;
+        }
         ContentValues contentValues =
-                populateCommonColumns(packageName, recordTypeIds.stream().toList(), operationType);
+                populateCommonColumns(appInfoId, recordTypeIds.stream().toList(), operationType);
         UpsertTableRequest request = new UpsertTableRequest(TABLE_NAME, contentValues);
         mTransactionManager.insertRecord(db, request);
     }
 
-    private ContentValues populateCommonColumns(
-            String packageName,
+    @VisibleForTesting
+    static ContentValues populateCommonColumns(
+            long appInfoId,
             List<Integer> recordTypeList,
             @OperationType.OperationTypes int operationType) {
+        checkArgument(appInfoId != DEFAULT_LONG, "unknown app id");
+
         ContentValues contentValues = new ContentValues();
-        contentValues.put(APP_ID_COLUMN_NAME, mAppInfoHelper.getAppInfoId(packageName));
+        contentValues.put(APP_ID_COLUMN_NAME, appInfoId);
         contentValues.put(ACCESS_TIME_COLUMN_NAME, Instant.now().toEpochMilli());
         contentValues.put(OPERATION_TYPE_COLUMN_NAME, operationType);
         contentValues.put(

@@ -537,7 +537,7 @@ class RecentAccessViewModelTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun loadRecentAccessApps_medicalPermissionsEnabled_returnsCorrectAppPermissionsType() =
         runTest {
             val packageName = TEST_APP_PACKAGE_NAME
