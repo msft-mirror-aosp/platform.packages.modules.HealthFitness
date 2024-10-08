@@ -66,9 +66,8 @@ public class ExerciseSessionInternalTest {
     }
 
     @Test
-    public void testSessionHashCode_getHashCode_noExceptionsAndNotNull() {
-        assertThat(TestUtils.buildExerciseSessionInternal().toExternalRecord().hashCode())
-                .isNotNull();
+    public void testSessionHashCode_getHashCode_noExceptions() {
+        int unused = TestUtils.buildExerciseSessionInternal().toExternalRecord().hashCode();
     }
 
     private ExerciseSessionRecordInternal writeAndRestoreFromParcel(
