@@ -742,6 +742,7 @@ class HomeFragmentTest {
         setupFragmentForNavigation()
 
         onView(withText("Browse health records")).check(doesNotExist())
+        onView(withText("View your health records and which apps can access them")).check(doesNotExist())
     }
 
     @Test

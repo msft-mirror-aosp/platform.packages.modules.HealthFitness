@@ -191,6 +191,7 @@ class CombinedPermissionsFragmentTest {
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Additional access")).check(doesNotExist())
+        onView(withText("Past data, background data")).check(doesNotExist())
         onView(withText("Manage app")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Remove access for this app"))
@@ -256,6 +257,7 @@ class CombinedPermissionsFragmentTest {
         )
 
         onView(withText("Additional access")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Past data, background data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
     @Test
@@ -278,6 +280,7 @@ class CombinedPermissionsFragmentTest {
         )
 
         onView(withText("Additional access")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Past data, background data")).perform(scrollTo()).check(matches(isDisplayed()))
         verify(healthConnectLogger).logImpression(AppAccessElement.ADDITIONAL_ACCESS_BUTTON)
     }
 
