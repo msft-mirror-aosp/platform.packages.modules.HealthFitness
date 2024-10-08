@@ -281,21 +281,21 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
             mHealthConnectUserContext = new HealthConnectUserContext(context, context.getUser());
         }
 
-        /** Set fake or custom PackageInfoUtils */
+        /** Set fake or custom {@link PackageInfoUtils} */
         public Builder setPackageInfoUtils(PackageInfoUtils packageInfoUtils) {
             Objects.requireNonNull(packageInfoUtils);
             mPackageInfoUtils = packageInfoUtils;
             return this;
         }
 
-        /** Set fake or custom TransactionManager */
+        /** Set fake or custom {@link TransactionManager} */
         public Builder setTransactionManager(TransactionManager transactionManager) {
             Objects.requireNonNull(transactionManager);
             mTransactionManager = transactionManager;
             return this;
         }
 
-        /** Set fake or custom HealthDataCategoryPriorityHelper */
+        /** Set fake or custom {@link HealthDataCategoryPriorityHelper} */
         public Builder setHealthDataCategoryPriorityHelper(
                 HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
             Objects.requireNonNull(healthDataCategoryPriorityHelper);
@@ -303,21 +303,21 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
             return this;
         }
 
-        /** Set fake or custom PriorityMigrationHelper */
+        /** Set fake or custom {@link PriorityMigrationHelper} */
         public Builder setPriorityMigrationHelper(PriorityMigrationHelper priorityMigrationHelper) {
             Objects.requireNonNull(priorityMigrationHelper);
             mPriorityMigrationHelper = priorityMigrationHelper;
             return this;
         }
 
-        /** Set fake or custom PreferenceHelper */
+        /** Set fake or custom {@link PreferenceHelper} */
         public Builder setPreferenceHelper(PreferenceHelper preferenceHelper) {
             Objects.requireNonNull(preferenceHelper);
             mPreferenceHelper = preferenceHelper;
             return this;
         }
 
-        /** Set fake or custom ExportImportSettingsStorage */
+        /** Set fake or custom {@link ExportImportSettingsStorage} */
         public Builder setExportImportSettingsStorage(
                 ExportImportSettingsStorage exportImportSettingsStorage) {
             Objects.requireNonNull(exportImportSettingsStorage);
@@ -325,14 +325,14 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
             return this;
         }
 
-        /** Set fake or custom ExportManager */
+        /** Set fake or custom {@link ExportManager} */
         public Builder setExportManager(ExportManager exportManager) {
             Objects.requireNonNull(exportManager);
             mExportManager = exportManager;
             return this;
         }
 
-        /** Set fake or custom HealthConnectDeviceConfigManager */
+        /** Set fake or custom {@link HealthConnectDeviceConfigManager} */
         public Builder setHealthConnectDeviceConfigManager(
                 HealthConnectDeviceConfigManager healthConnectDeviceConfigManager) {
             Objects.requireNonNull(healthConnectDeviceConfigManager);
@@ -340,56 +340,56 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
             return this;
         }
 
-        /** Set fake or custom MigrationStateManager */
+        /** Set fake or custom {@link MigrationStateManager} */
         public Builder setMigrationStateManager(MigrationStateManager migrationStateManager) {
             Objects.requireNonNull(migrationStateManager);
             mMigrationStateManager = migrationStateManager;
             return this;
         }
 
-        /** Set fake or custom DeviceInfoHelper */
+        /** Set fake or custom {@link DeviceInfoHelper} */
         public Builder setDeviceInfoHelper(DeviceInfoHelper deviceInfoHelper) {
             Objects.requireNonNull(deviceInfoHelper);
             mDeviceInfoHelper = deviceInfoHelper;
             return this;
         }
 
-        /** Set fake or custom AppInfoHelper */
+        /** Set fake or custom {@link AppInfoHelper} */
         public Builder setAppInfoHelper(AppInfoHelper appInfoHelper) {
             Objects.requireNonNull(appInfoHelper);
             mAppInfoHelper = appInfoHelper;
             return this;
         }
 
-        /** Set fake or custom AccessLogsHelper */
+        /** Set fake or custom {@link AccessLogsHelper} */
         public Builder setAccessLogsHelper(AccessLogsHelper accessLogsHelper) {
             Objects.requireNonNull(accessLogsHelper);
             mAccessLogsHelper = accessLogsHelper;
             return this;
         }
 
-        /** Set fake or custom ActivityDateHelper */
+        /** Set fake or custom {@link ActivityDateHelper} */
         public Builder setActivityDateHelper(ActivityDateHelper activityDateHelper) {
             Objects.requireNonNull(activityDateHelper);
             mActivityDateHelper = activityDateHelper;
             return this;
         }
 
-        /** Set fake or custom ChangeLogsHelper */
+        /** Set fake or custom {@link ChangeLogsHelper} */
         public Builder setChangeLogsHelper(ChangeLogsHelper changeLogsHelper) {
             Objects.requireNonNull(changeLogsHelper);
             mChangeLogsHelper = changeLogsHelper;
             return this;
         }
 
-        /** Set fake or custom ChangeLogsRequestHelper */
+        /** Set fake or custom {@link ChangeLogsRequestHelper} */
         public Builder setChangeLogsRequestHelper(ChangeLogsRequestHelper changeLogsRequestHelper) {
             Objects.requireNonNull(changeLogsRequestHelper);
             mChangeLogsRequestHelper = changeLogsRequestHelper;
             return this;
         }
 
-        /** Set fake or custom CloudBackupManager */
+        /** Set fake or custom {@link CloudBackupManager} */
         public Builder setCloudBackupManager(CloudBackupManager cloudBackupManager) {
             Objects.requireNonNull(cloudBackupManager);
             mCloudBackupManager = cloudBackupManager;

@@ -24,7 +24,6 @@ import com.android.healthconnect.controller.permissions.data.AdditionalPermissio
 import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.logging.ElementName
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -58,7 +57,6 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
 
     private val dateFormatter by lazy { LocalDateTimeFormatter(requireContext()) }
 
-    @Inject lateinit var featureUtils: FeatureUtils
     @Inject lateinit var logger: HealthConnectLogger
 
     override fun onResume() {

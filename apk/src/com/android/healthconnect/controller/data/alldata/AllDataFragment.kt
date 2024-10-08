@@ -23,6 +23,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commitNow
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
@@ -83,7 +84,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
 
     @HealthDataCategoryInt private var category: Int = 0
 
-    private val viewModel: AllDataViewModel by activityViewModels()
+    private val viewModel: AllDataViewModel by viewModels()
 
     private val deletionViewModel: DeletionViewModel by activityViewModels()
 

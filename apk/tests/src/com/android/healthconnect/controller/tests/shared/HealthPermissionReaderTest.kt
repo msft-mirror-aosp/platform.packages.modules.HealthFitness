@@ -20,8 +20,6 @@ import com.android.healthconnect.controller.tests.utils.OLD_PERMISSIONS_TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
 import com.android.healthconnect.controller.tests.utils.UNSUPPORTED_TEST_APP_PACKAGE_NAME
-import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -39,7 +37,6 @@ class HealthPermissionReaderTest {
     @get:Rule val setFlagsRule = SetFlagsRule()
 
     @Inject lateinit var permissionReader: HealthPermissionReader
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
     private lateinit var context: Context
 
     @Before
@@ -50,24 +47,7 @@ class HealthPermissionReaderTest {
 
     @Test
     @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
-    fun getValidHealthPermissions_hidesSessionTypesIfDisabled() = runTest {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsSessionTypesEnabled(false)
-
-        assertThat(permissionReader.getValidHealthPermissions(TEST_APP_PACKAGE_NAME))
-            .containsExactly(
-                HealthPermissions.WRITE_EXERCISE_ROUTE.toHealthPermission(),
-                HealthPermissions.READ_ACTIVE_CALORIES_BURNED.toHealthPermission(),
-                HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED.toHealthPermission(),
-                HealthPermission.AdditionalPermission.READ_EXERCISE_ROUTES,
-            )
-    }
-
-    @Test
-    @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun getValidHealthPermissions_phrFlagOff_returnsFitnessAndAdditionalPermissions() = runTest {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
-
         assertThat(permissionReader.getValidHealthPermissions(TEST_APP_PACKAGE_NAME))
             .containsExactly(
                 HealthPermissions.READ_ACTIVE_CALORIES_BURNED.toHealthPermission(),
@@ -80,14 +60,16 @@ class HealthPermissionReaderTest {
                 HealthPermissions.WRITE_EXERCISE_ROUTE.toHealthPermission(),
                 HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
                 HealthPermission.AdditionalPermission.READ_HEALTH_DATA_HISTORY,
+                HealthPermissions.READ_SKIN_TEMPERATURE.toHealthPermission(),
+                HealthPermissions.WRITE_SKIN_TEMPERATURE.toHealthPermission(),
+                HealthPermissions.READ_PLANNED_EXERCISE.toHealthPermission(),
+                HealthPermissions.WRITE_PLANNED_EXERCISE.toHealthPermission(),
             )
     }
 
     @Test
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun getValidHealthPermissions_phrFlagOn_returnsAllHealthAndAdditionalPermissions() = runTest {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
         assertThat(permissionReader.getValidHealthPermissions(TEST_APP_PACKAGE_NAME))
             .containsExactly(
                 HealthPermissions.READ_ACTIVE_CALORIES_BURNED.toHealthPermission(),
@@ -113,6 +95,10 @@ class HealthPermissionReaderTest {
                 HealthPermissions.READ_MEDICAL_DATA_VISITS.toHealthPermission(),
                 HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS.toHealthPermission(),
                 HealthPermissions.WRITE_MEDICAL_DATA.toHealthPermission(),
+                HealthPermissions.READ_SKIN_TEMPERATURE.toHealthPermission(),
+                HealthPermissions.WRITE_SKIN_TEMPERATURE.toHealthPermission(),
+                HealthPermissions.READ_PLANNED_EXERCISE.toHealthPermission(),
+                HealthPermissions.WRITE_PLANNED_EXERCISE.toHealthPermission(),
             )
     }
 
@@ -129,13 +115,18 @@ class HealthPermissionReaderTest {
                 HealthPermissions.READ_ACTIVE_CALORIES_BURNED.toHealthPermission(),
                 HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED.toHealthPermission(),
                 HealthPermission.AdditionalPermission.READ_EXERCISE_ROUTES,
+                HealthPermissions.READ_SKIN_TEMPERATURE.toHealthPermission(),
+                HealthPermissions.WRITE_SKIN_TEMPERATURE.toHealthPermission(),
+                HealthPermissions.READ_PLANNED_EXERCISE.toHealthPermission(),
+                HealthPermissions.WRITE_PLANNED_EXERCISE.toHealthPermission(),
+                HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND.toHealthPermission(),
+                HealthPermissions.READ_HEALTH_DATA_HISTORY.toHealthPermission(),
             )
     }
 
     @Test
     @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun getDeclaredHealthPermissions_phrFlagOff_returnsAllFitnessAndAdditionalPermissions() {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
         assertThat(permissionReader.getDeclaredHealthPermissions(TEST_APP_PACKAGE_NAME))
             .containsExactly(
                 HealthPermissions.READ_ACTIVE_CALORIES_BURNED,
@@ -147,13 +138,17 @@ class HealthPermissionReaderTest {
                 HealthPermissions.READ_EXERCISE_ROUTES,
                 HealthPermissions.WRITE_EXERCISE_ROUTE,
                 HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
+                HealthPermissions.READ_SKIN_TEMPERATURE,
+                HealthPermissions.WRITE_SKIN_TEMPERATURE,
+                HealthPermissions.READ_PLANNED_EXERCISE,
+                HealthPermissions.WRITE_PLANNED_EXERCISE,
+                HealthPermissions.READ_HEALTH_DATA_HISTORY,
             )
     }
 
     @Test
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun getDeclaredHealthPermissions_medicalFlagOn_returnsAllHealthAndAdditionalPermissions() {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
         assertThat(permissionReader.getDeclaredHealthPermissions(TEST_APP_PACKAGE_NAME))
             .containsExactly(
                 HealthPermissions.READ_ACTIVE_CALORIES_BURNED,
@@ -178,6 +173,11 @@ class HealthPermissionReaderTest {
                 HealthPermissions.READ_MEDICAL_DATA_VISITS,
                 HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS,
                 HealthPermissions.WRITE_MEDICAL_DATA,
+                HealthPermissions.READ_SKIN_TEMPERATURE,
+                HealthPermissions.WRITE_SKIN_TEMPERATURE,
+                HealthPermissions.READ_PLANNED_EXERCISE,
+                HealthPermissions.WRITE_PLANNED_EXERCISE,
+                HealthPermissions.READ_HEALTH_DATA_HISTORY,
             )
     }
 
@@ -286,20 +286,7 @@ class HealthPermissionReaderTest {
     }
 
     @Test
-    fun shouldHidePermission_whenFeatureNotEnabled_returnsTrue() = runTest {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsSkinTemperatureEnabled(false)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPlannedExerciseEnabled(false)
-        assertThat(permissionReader.shouldHidePermission(READ_SKIN_TEMPERATURE)).isTrue()
-        assertThat(permissionReader.shouldHidePermission(WRITE_SKIN_TEMPERATURE)).isTrue()
-
-        assertThat(permissionReader.shouldHidePermission(READ_PLANNED_EXERCISE)).isTrue()
-        assertThat(permissionReader.shouldHidePermission(WRITE_PLANNED_EXERCISE)).isTrue()
-    }
-
-    @Test
     fun shouldHidePermission_whenFeatureEnabled_returnsFalse() = runTest {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsSkinTemperatureEnabled(true)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPlannedExerciseEnabled(true)
         assertThat(permissionReader.shouldHidePermission(READ_SKIN_TEMPERATURE)).isFalse()
         assertThat(permissionReader.shouldHidePermission(WRITE_SKIN_TEMPERATURE)).isFalse()
 

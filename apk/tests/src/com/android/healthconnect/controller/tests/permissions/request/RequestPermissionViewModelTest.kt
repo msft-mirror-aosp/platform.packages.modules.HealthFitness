@@ -52,10 +52,7 @@ import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TestObserver
-import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.di.FakeHealthPermissionManager
-import com.android.healthconnect.controller.utils.FeatureUtils
-import com.android.healthconnect.controller.utils.FeaturesModule
 import com.google.common.truth.Truth.*
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -78,7 +75,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@UninstallModules(HealthPermissionManagerModule::class, FeaturesModule::class)
+@UninstallModules(HealthPermissionManagerModule::class)
 @HiltAndroidTest
 class RequestPermissionViewModelTest {
 
@@ -88,7 +85,6 @@ class RequestPermissionViewModelTest {
     private val testDispatcher = TestCoroutineDispatcher()
 
     @BindValue val permissionManager: HealthPermissionManager = FakeHealthPermissionManager()
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
 
     @Inject lateinit var appInfoReader: AppInfoReader
     @Inject lateinit var grantHealthPermissionUseCase: GrantHealthPermissionUseCase
@@ -105,8 +101,6 @@ class RequestPermissionViewModelTest {
         hiltRule.inject()
         permissionManager.revokeAllHealthPermissions(TEST_APP_PACKAGE_NAME)
         Dispatchers.setMain(testDispatcher)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
         viewModel =
             RequestPermissionViewModel(
                 appInfoReader,
@@ -124,8 +118,6 @@ class RequestPermissionViewModelTest {
     fun tearDown() {
         Dispatchers.resetMain()
         testDispatcher.cleanupTestCoroutines()
-        (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(false)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(false)
     }
 
     @Test
@@ -215,39 +207,7 @@ class RequestPermissionViewModelTest {
     }
 
     @Test
-    fun initPermissions_whenPermissionsHidden_filtersOutHiddenPermissions() = runTest {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsSkinTemperatureEnabled(false)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPlannedExerciseEnabled(false)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(false)
-
-        viewModel.init(
-            TEST_APP_PACKAGE_NAME,
-            arrayOf(
-                READ_EXERCISE,
-                READ_SLEEP,
-                READ_SKIN_TEMPERATURE,
-                WRITE_SKIN_TEMPERATURE,
-                READ_PLANNED_EXERCISE,
-                WRITE_PLANNED_EXERCISE,
-                READ_HEALTH_DATA_HISTORY,
-                READ_HEALTH_DATA_IN_BACKGROUND,
-            ),
-        )
-
-        val testObserver = TestObserver<List<HealthPermission>>()
-        viewModel.healthPermissionsList.observeForever(testObserver)
-        advanceUntilIdle()
-        // No BG permission because no read permission has been granted yet
-        assertThat(testObserver.getLastValue())
-            .isEqualTo(
-                listOf(fromPermissionString(READ_EXERCISE), fromPermissionString(READ_SLEEP))
-            )
-    }
-
-    @Test
     fun initPermissions_whenPermissionsNotHidden_doesNotFilterOutPermissions() = runTest {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsSkinTemperatureEnabled(true)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPlannedExerciseEnabled(true)
 
         viewModel.init(
             TEST_APP_PACKAGE_NAME,
