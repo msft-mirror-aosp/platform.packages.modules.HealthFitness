@@ -17,6 +17,7 @@
 package android.healthconnect.cts.lib;
 
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesInitialRequest;
 import android.health.connect.ReadMedicalResourcesPageRequest;
 import android.health.connect.ReadMedicalResourcesRequest;
@@ -89,6 +90,8 @@ public final class BundleHelper {
             PREFIX + "UPSERT_MEDICAL_RESOURCE_QUERY";
     public static final String READ_MEDICAL_RESOURCES_BY_REQUEST_QUERY =
             PREFIX + "READ_MEDICAL_RESOURCES_BY_REQUEST_QUERY";
+    public static final String READ_MEDICAL_RESOURCES_BY_IDS_QUERY =
+            PREFIX + "READ_MEDICAL_RESOURCES_BY_IDS_QUERY";
 
     private static final String CREATE_MEDICAL_DATA_SOURCE_REQUEST =
             PREFIX + "CREATE_MEDICAL_DATA_SOURCE_REQUEST";
@@ -108,6 +111,7 @@ public final class BundleHelper {
             PREFIX + "READ_MEDICAL_RESOURCES_REQUEST_PAGE_TOKEN";
     private static final String READ_MEDICAL_RESOURCES_REQUEST_PAGE_SIZE =
             PREFIX + "READ_MEDICAL_RESOURCES_REQUEST_PAGE_SIZE";
+    private static final String MEDICAL_RESOURCE_IDS = PREFIX + "MEDICAL_RESOURCE_IDS";
     public static final String MEDICAL_RESOURCES_RESPONSE = PREFIX + "MEDICAL_RESOURCE_RESPONSE";
     public static final String READ_MEDICAL_RESOURCES_RESPONSE =
             PREFIX + "READ_MEDICAL_RESOURCES_RESPONSE";
@@ -567,6 +571,19 @@ public final class BundleHelper {
                     .setPageSize(pageSize)
                     .build();
         }
+    }
+
+    /** Converts a list of {@link MedicalResourceId}s from a bundle. */
+    public static List<MedicalResourceId> toMedicalResourceIds(Bundle bundle) {
+        return bundle.getParcelableArrayList(MEDICAL_RESOURCE_IDS, MedicalResourceId.class);
+    }
+
+    /** Converts a list of {@link MedicalResourceId}s into a bundle. */
+    public static Bundle fromMedicalResourceIds(List<MedicalResourceId> ids) {
+        Bundle bundle = new Bundle();
+        bundle.putString(QUERY_TYPE, READ_MEDICAL_RESOURCES_BY_IDS_QUERY);
+        bundle.putParcelableArrayList(MEDICAL_RESOURCE_IDS, new ArrayList<>(ids));
+        return bundle;
     }
 
     /**
