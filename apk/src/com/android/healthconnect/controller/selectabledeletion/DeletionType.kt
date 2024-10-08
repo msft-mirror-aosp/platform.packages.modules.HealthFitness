@@ -53,5 +53,5 @@ sealed class DeletionType {
             DeleteEntries(idsToDataTypes, totalEntries, period, startTime)
     }
 
-    data class DeleteAppData(val packageName: String) : DeletionType()
+    data class DeleteAppData(val packageName: String, val appName: String) : DeletionType()
 }

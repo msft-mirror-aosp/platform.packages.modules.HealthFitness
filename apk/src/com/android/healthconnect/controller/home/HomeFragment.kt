@@ -62,10 +62,10 @@ import com.android.healthconnect.controller.utils.logging.HomePageElement
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
+import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
 import com.android.healthfitness.flags.Flags.exportImport
 import com.android.healthfitness.flags.Flags.newInformationArchitecture
 import com.android.healthfitness.flags.Flags.onboarding
-import com.android.healthfitness.flags.Flags.personalHealthRecord
 import com.android.settingslib.widget.TopIntroPreference
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
@@ -168,7 +168,7 @@ class HomeFragment : Hilt_HomeFragment() {
             mManageDataPreference?.summary = getString(R.string.manage_data_summary)
         }
 
-        if (personalHealthRecord()) {
+        if (isPersonalHealthRecordEnabled()) {
             // TODO(b/343148212): Add logname.
             mBrowseMedicalDataPreference?.setOnPreferenceClickListener {
                 findNavController()
@@ -194,7 +194,7 @@ class HomeFragment : Hilt_HomeFragment() {
         if (exportImport()) {
             exportStatusViewModel.loadScheduledExportStatus()
         }
-        if (personalHealthRecord()) {
+        if (isPersonalHealthRecordEnabled()) {
             allDataViewModel.loadAllMedicalData()
         }
     }
@@ -241,7 +241,7 @@ class HomeFragment : Hilt_HomeFragment() {
                 }
             }
         }
-        if (personalHealthRecord()) {
+        if (isPersonalHealthRecordEnabled()) {
             allDataViewModel.loadAllMedicalData()
             allDataViewModel.isAnyMedicalData.observe(viewLifecycleOwner) { isAnyMedicalData ->
                 mBrowseMedicalDataPreference?.isVisible = isAnyMedicalData

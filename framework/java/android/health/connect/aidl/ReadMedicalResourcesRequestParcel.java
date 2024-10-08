@@ -46,23 +46,27 @@ import java.util.Set;
  * @hide
  */
 public class ReadMedicalResourcesRequestParcel implements Parcelable {
+    private boolean mIsPageRequest;
     @MedicalResource.MedicalResourceType private int mMedicalResourceType;
     @NonNull private Set<String> mDataSourceIds = Set.of();
     @Nullable private String mPageToken = null;
     private final int mPageSize;
 
     public ReadMedicalResourcesRequestParcel(ReadMedicalResourcesInitialRequest request) {
+        mIsPageRequest = false;
         mMedicalResourceType = request.getMedicalResourceType();
         mDataSourceIds = request.getDataSourceIds();
         mPageSize = request.getPageSize();
     }
 
     public ReadMedicalResourcesRequestParcel(ReadMedicalResourcesPageRequest request) {
+        mIsPageRequest = true;
         mPageToken = request.getPageToken();
         mPageSize = request.getPageSize();
     }
 
     private ReadMedicalResourcesRequestParcel(Parcel in) {
+        mIsPageRequest = in.readBoolean();
         mMedicalResourceType = in.readInt();
         validateMedicalResourceType(mMedicalResourceType);
         mDataSourceIds = new HashSet<>(requireNonNull(in.createStringArrayList()));
@@ -70,6 +74,11 @@ public class ReadMedicalResourcesRequestParcel implements Parcelable {
         mPageToken = in.readString();
         mPageSize = in.readInt();
         requireInRange(mPageSize, MINIMUM_PAGE_SIZE, MAXIMUM_PAGE_SIZE, "pageSize");
+
+        if (mIsPageRequest && mPageToken == null) {
+            throw new IllegalArgumentException(
+                    "pageToken cannot be null when reading Parcel from page request.");
+        }
     }
 
     public static final Creator<ReadMedicalResourcesRequestParcel> CREATOR =
@@ -112,6 +121,7 @@ public class ReadMedicalResourcesRequestParcel implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeBoolean(mIsPageRequest);
         dest.writeInt(mMedicalResourceType);
         dest.writeStringList(new ArrayList<>(mDataSourceIds));
         dest.writeString(mPageToken);

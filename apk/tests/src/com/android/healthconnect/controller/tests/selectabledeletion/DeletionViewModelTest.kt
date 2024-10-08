@@ -21,6 +21,7 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionTy
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
+import com.android.healthconnect.controller.selectabledeletion.api.DeleteAppDataUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteEntriesUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesFromAppUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeletePermissionTypesUseCase
@@ -57,7 +58,7 @@ class DeletionViewModelTest {
     private val deletePermissionTypesUseCase: DeletePermissionTypesUseCase =
         mock(DeletePermissionTypesUseCase::class.java)
     private val deleteEntriesUseCase: DeleteEntriesUseCase = mock(DeleteEntriesUseCase::class.java)
-
+    private val deleteAppDataUseCase: DeleteAppDataUseCase = mock(DeleteAppDataUseCase::class.java)
     private val deletePermissionTypesFromAppUseCase: DeletePermissionTypesFromAppUseCase =
         mock(DeletePermissionTypesFromAppUseCase::class.java)
 
@@ -69,6 +70,7 @@ class DeletionViewModelTest {
         Dispatchers.setMain(testDispatcher)
         viewModel =
             DeletionViewModel(
+                deleteAppDataUseCase,
                 deletePermissionTypesUseCase,
                 deleteEntriesUseCase,
                 deletePermissionTypesFromAppUseCase,
@@ -234,6 +236,16 @@ class DeletionViewModelTest {
         viewModel.delete()
         advanceUntilIdle()
         verify(deleteEntriesUseCase).invoke(deletionType.toDeleteEntries())
+    }
+
+    @Test
+    fun appData_delete_deletionInvokesCorrectly() = runTest {
+        val deletionType = DeletionType.DeleteAppData("package.name", "appName")
+
+        viewModel.setDeletionType(deletionType)
+        viewModel.delete()
+        advanceUntilIdle()
+        verify(deleteAppDataUseCase).invoke(deletionType)
     }
 }
 
