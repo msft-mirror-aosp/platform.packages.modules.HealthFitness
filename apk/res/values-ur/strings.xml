@@ -92,6 +92,17 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"اپنی صحت سے متعلق ڈیٹا تک رسائی حاصل کریں"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"برن کی گئی کیلوریز پڑھیں"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"برن کی گئی کیلوریز کا ڈیٹا پڑھنے کے لیے ایپس کو اجازت دیتی ہے"</string>
+    <string name="background_read_medical_title" msgid="378446129450196253">"پس منظر میں تمام ڈیٹا تک رسائی حاصل کریں"</string>
+    <string name="background_read_medical_request_title" msgid="5388067032484069722">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> کو پس منظر میں سبھی ڈیٹا تک رسائی کی اجازت دیں؟"</string>
+    <string name="background_read_medical_description" msgid="4205144207056391848">"ایپ استعمال نہ کرنے پر، اس ایپ کو تندرستی اور فلاح و بہبود کے ڈیٹا اور صحت کے ریکارڈز کے ڈیٹا تک رسائی حاصل کرنے کی اجازت دیں"</string>
+    <string name="background_read_medical_request_description" msgid="6135447220241108032">"اگر آپ اجازت دیتے ہیں تو یہ ایپ تندرستی اور فلاح و بہبود کے ڈیٹا اور صحت کے ریکارڈز کے ڈیٹا تک رسائی حاصل کر سکتی ہے جب آپ ایپ استعمال نہیں کر رہے ہوں۔"</string>
+    <string name="historic_access_medical_title" msgid="1198466488695524014">"ماضی کی تندرستی اور فلاح و بہبود کے ڈیٹا تک رسائی حاصل کریں"</string>
+    <string name="historic_access_medical_request_title" msgid="4927886483832141584">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> کو تندرستی اور فلاح و بہبود کے ماضی کے ڈیٹا تک رسائی کی اجازت دیں؟"</string>
+    <string name="historic_access_medical_description" msgid="513689388911992345">"اس ایپ کو <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> سے پہلے شامل کردہ ڈیٹا تک رسائی کی اجازت دیں"</string>
+    <string name="historic_access_medical_description_fallback" msgid="1596909285259037066">"اس ایپ کو ماضی کے تمام ڈیٹا تک رسائی کی اجازت دیں"</string>
+    <string name="historic_access_medical_request_description" msgid="6938665708764487963">"اگر آپ اجازت دیتے ہیں تو یہ ایپ <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> سے پہلے شامل کردہ ڈیٹا تک رسائی حاصل کر سکتی ہے۔"</string>
+    <string name="historic_access_medical_request_description_fallback" msgid="1075934237674126677">"اگر آپ اجازت دیتے ہیں تو یہ ایپ ماضی کے تمام ڈیٹا تک رسائی حاصل کر سکتی ہے۔"</string>
+    <string name="historic_access_medical_warning" msgid="6691110601538756473">"فی الحال کوئی تندرستی کا ڈیٹا نہیں پڑھا جا رہا ہے کیونکہ <xliff:g id="APP_NAME">%1$s</xliff:g> میں پڑھنے کی اجازتیں آن نہیں ہیں"</string>
     <string name="background_read_title" msgid="5061383169517186234">"پس منظر میں ڈیٹا تک رسائی حاصل کریں"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"ایپ <xliff:g id="APP_NAME">%1$s</xliff:g> کو پس منظر میں ڈیٹا تک رسائی کی اجازت دیں؟"</string>
     <string name="background_read_description" msgid="3203594555849969283">"اس ایپ کو Health Connect ڈیٹا تک رسائی کی اجازت دیں جب آپ ایپ استعمال نہیں کر رہے ہوں"</string>
@@ -267,58 +278,43 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"جلد کا درجہ حرارت"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"جلد کا درجہ حرارت پڑھیں"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"جلد کا درجہ حرارت لکھیں"</string>
-    <!-- no translation found for all_medical_data_uppercase_label (2380759160541898783) -->
-    <skip />
-    <!-- no translation found for all_medical_data_lowercase_label (6293814928992081842) -->
-    <skip />
-    <!-- no translation found for all_medical_data_content_description (4846586780533295022) -->
-    <skip />
-    <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"الرجیز"</string>
-    <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"الرجیز"</string>
-    <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"الرجیز پڑھیں"</string>
-    <!-- no translation found for conditions_uppercase_label (5260404343402770877) -->
-    <skip />
-    <!-- no translation found for conditions_lowercase_label (2678248918552246997) -->
-    <skip />
-    <!-- no translation found for conditions_content_description (3230552343616193829) -->
-    <skip />
-    <string name="immunization_uppercase_label" msgid="1467176749064014020">"امیونائزیشن"</string>
-    <string name="immunization_lowercase_label" msgid="6464922369026887687">"امیونائزیشن"</string>
-    <string name="immunization_content_description" msgid="2910674919337229803">"امیونائزیشن کو پڑھیں"</string>
-    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"لیبارٹری کے نتائج"</string>
-    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"لیبارٹری کے نتائج"</string>
-    <string name="laboratory_results_content_description" msgid="5882338877203692484">"لیبارٹری کے نتائج کے ڈیٹا کے بارے میں پڑھیں"</string>
+    <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"صحت کے تمام ریکارڈز"</string>
+    <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"صحت کے تمام ریکارڈز"</string>
+    <string name="all_medical_data_content_description" msgid="4846586780533295022">"صحت کے تمام ریکارڈز لکھیں"</string>
+    <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"الرجیز"</string>
+    <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"الرجیز"</string>
+    <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"الرجیز پڑھیں"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"حالات"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"حالات"</string>
+    <string name="conditions_content_description" msgid="3230552343616193829">"حالات پڑھیں"</string>
+    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"ویکسینز"</string>
+    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"ویکسینز"</string>
+    <string name="immunizations_content_description" msgid="2239351886343062194">"ویکسینز پڑھیں"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"لیب کے نتائج"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"لیب کے نتائج"</string>
+    <string name="laboratory_results_content_description" msgid="7888886103734085841">"لیب کے نتائج پڑھیں"</string>
     <string name="medications_uppercase_label" msgid="4783281053427990225">"ادویات"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"ادویات"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"ادویات کے ڈیٹا کو پڑھیں"</string>
-    <!-- no translation found for personal_details_uppercase_label (7241635933310394120) -->
-    <skip />
-    <!-- no translation found for personal_details_lowercase_label (1907848447611775151) -->
-    <skip />
-    <!-- no translation found for personal_details_content_description (3191211304673909831) -->
-    <skip />
-    <!-- no translation found for practitioner_details_uppercase_label (2940667649808082510) -->
-    <skip />
-    <!-- no translation found for practitioner_details_lowercase_label (8195591077717971542) -->
-    <skip />
-    <!-- no translation found for practitioner_details_content_description (8775396516928504185) -->
-    <skip />
+    <string name="personal_details_uppercase_label" msgid="7241635933310394120">"ذاتی تفصیلات"</string>
+    <string name="personal_details_lowercase_label" msgid="1907848447611775151">"ذاتی تفصیلات"</string>
+    <string name="personal_details_content_description" msgid="3191211304673909831">"ذاتی تفصیلات پڑھ سکتے ہیں"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"پریکٹیشنر کی تفصیلات"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"پریکٹیشنر کی تفصیلات"</string>
+    <string name="practitioner_details_content_description" msgid="8775396516928504185">"پریکٹیشنر کی تفصیلات پڑھ سکتے ہیں"</string>
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"حمل"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"حمل"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"حمل ڈیٹا کے بارے میں پڑھیں"</string>
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"پروسیجرز"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"پروسیجرز"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"پروسیجرز پڑھیں"</string>
-    <string name="social_history_uppercase_label" msgid="1731364502071035544">"سوشل سرگزشت کا ڈیٹا"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"سوشل سرگزشت کا ڈیٹا"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"سوشل سرگزشت کا ڈیٹا"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"سوشل سرگزشت کا ڈیٹا پڑھیں"</string>
-    <!-- no translation found for visits_uppercase_label (8532619758336375886) -->
-    <skip />
-    <!-- no translation found for visits_lowercase_label (2545887061364564151) -->
-    <skip />
-    <!-- no translation found for visits_content_description (6336796415049565697) -->
-    <skip />
-    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"اہم علامتیں"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"ملاقاتیں"</string>
+    <string name="visits_lowercase_label" msgid="2545887061364564151">"ملاقاتیں"</string>
+    <string name="visits_content_description" msgid="6336796415049565697">"ملاقاتوں کو پڑھ سکتے ہیں"</string>
+    <string name="vital_signs_uppercase_label" msgid="289862347143374640">"اہم علامتیں"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"اہم علامتیں"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"اہم علامتوں کے ڈیٹا کے بارے میں پڑھیں"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"ارتکازِ توجہ"</string>
@@ -335,8 +331,21 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"اگر آپ پڑھنے کی رسائی دیتے ہیں تو ایپ نیا ڈیٹا اور گزشتہ 30 دن کا ڈیٹا پڑھ سکتی ہے"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"اگر آپ پڑھنے کی رسائی دیتے ہیں تو ایپ نئے اور گزشتہ ڈیٹا کو پڑھ سکتی ہے"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"<xliff:g id="APP_NAME">%1$s</xliff:g> کو Health Connect تک رسائی کی اجازت دیں؟"</string>
-    <string name="request_permissions_rationale" msgid="6154280355215802538">"آپ ڈویلپر کی <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> میں یہ جان سکتے ہیں کہ <xliff:g id="APP_NAME">%1$s</xliff:g> آپ کے ڈیٹا کو کیسے ہینڈل کرتی ہے"</string>
+    <!-- no translation found for request_permissions_rationale (2642076968583316986) -->
+    <skip />
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"رازداری کی پالیسی"</string>
+    <!-- no translation found for medical_request_header (2300521519021510027) -->
+    <skip />
+    <!-- no translation found for medical_request_header_desc (5721171305631983663) -->
+    <skip />
+    <!-- no translation found for medical_request_about_health_records (7204918218748362687) -->
+    <skip />
+    <!-- no translation found for medical_request_data_to_share (2208383833492573960) -->
+    <skip />
+    <!-- no translation found for medical_request_share (6237397362923728514) -->
+    <skip />
+    <!-- no translation found for medical_request_footer (6533749932770903089) -->
+    <skip />
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"تمام اجازتیں ہٹائیں؟"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"سبھی ہٹائیں"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> Health Connect سے مزید کوئی ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nیہ دوسری اجازتیں جو اس ایپ کی ہو سکتی ہیں، جیسے کیمرا، مائیکروفون یا مقام کو متاثر نہیں کرتی ہے۔"</string>
@@ -344,9 +353,15 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ماضی کے ڈیٹا سمیت Health Connect سے مزید کوئی ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nاس سے اس ایپ کی دوسری اجازتیں متاثر نہیں ہوتی ہیں جیسے مقام، کیمرا یا مائیکروفون۔"</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> پس منظر اور ماضی کے ڈیٹا سمیت Health Connect سے مزید کوئی ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nاس سے اس ایپ کی دوسری اجازتیں متاثر نہیں ہوتی ہیں جیسے مقام، کیمرا یا مائیکروفون۔"</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"نیز Health Connect سے <xliff:g id="APP_NAME">%1$s</xliff:g> کا ڈیٹا حذف کریں"</string>
-    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"تمام اجازتیں ہٹائیں؟"</string>
-    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"صحت کے ریکارڈ کی سبھی اجازتیں ہٹائیں؟"</string>
     <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"تندرستی اور فلاح و بہبود کی تمام اجازتیں ہٹائیں؟"</string>
+    <string name="disconnect_all_fitness_permissions_dialog_checkbox" msgid="8808559689899914478">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> پر موجود تندرستی کا ڈیٹا بھی Health Connect سے حذف کریں"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"صحت کے ریکارڈ کی سبھی اجازتیں ہٹائیں؟"</string>
+    <string name="disconnect_all_medical_permissions_dialog_checkbox" msgid="7782158941871987263">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> پر موجود صحت کے ریکارڈز کو بھی Health Connect سے حذف کریں"</string>
+    <string name="disconnect_all_fitness_or_medical_no_additional_permissions_dialog_message" msgid="6610810945930258582">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> Health Connect کا یہ ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nیہ دوسری اجازتیں جو اس ایپ کی ہو سکتی ہیں، جیسے کیمرا، مائیکروفون یا مقام کو متاثر نہیں کرتی ہے۔"</string>
+    <string name="disconnect_all_fitness_or_medical_and_background_permissions_dialog_message" msgid="7138878481421234556">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> پس منظر کا ڈیٹا سمیت، Health Connect کا یہ ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nیہ دوسری اجازتیں جو اس ایپ کی ہو سکتی ہیں، جیسے کیمرا، مائیکروفون یا مقام کو متاثر نہیں کرتی ہے۔"</string>
+    <string name="disconnect_all_fitness_or_medical_and_historical_permissions_dialog_message" msgid="1519496566456028625">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> Health Connect کا یہ ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nیہ دوسری اجازتیں جو اس ایپ کی ہو سکتی ہیں، جیسے کیمرا، مائیکروفون یا مقام کو متاثر نہیں کرتی ہے۔"</string>
+    <string name="disconnect_all_fitness_or_medical_and_additional_permissions_dialog_message" msgid="5147728456578218902">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> پس منظر اور ماضی کے ڈیٹا سمیت، Health Connect کا یہ ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nیہ دوسری اجازتیں جو اس ایپ کی ہو سکتی ہیں، جیسے کیمرا، مائیکروفون یا مقام کو متاثر نہیں کرتی ہے۔"</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"تمام اجازتیں ہٹائیں؟"</string>
     <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> Health Connect سے مزید ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nیہ دوسری اجازتیں جو اس ایپ کی ہو سکتی ہیں، جیسے کیمرا، مائیکروفون یا مقام کو متاثر نہیں کرتی ہے۔"</string>
     <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"<xliff:g id="APP_NAME">%1$s</xliff:g> پس منظر کا ڈیٹا سمیت، Health Connect سے مزید ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nیہ دوسری اجازتیں جو اس ایپ کی ہو سکتی ہیں، جیسے کیمرا، مائیکروفون یا مقام کو متاثر نہیں کرتی ہے۔"</string>
     <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> Health Connect سے مزید ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nیہ دوسری اجازتیں جو اس ایپ کی ہو سکتی ہیں، جیسے کیمرا، مائیکروفون یا مقام کو متاثر نہیں کرتی ہے۔"</string>
@@ -357,20 +372,13 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"منتخب کردہ یوم"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"پچھلا دن"</string>
     <string name="default_error" msgid="7966868260616403475">"کچھ غلط ہو گیا۔ براہ کرم دوبارہ کوشش کریں۔"</string>
-    <!-- no translation found for unkwown_resource (7932225227431922125) -->
-    <skip />
-    <!-- no translation found for raw_fhir_title (1295744907036066319) -->
-    <skip />
-    <!-- no translation found for raw_fhir_open_bracket (7974657451368655325) -->
-    <skip />
-    <!-- no translation found for raw_fhir_closed_bracket (9084379463440675078) -->
-    <skip />
-    <!-- no translation found for raw_fhir_field_value (369633095565031835) -->
-    <skip />
-    <!-- no translation found for raw_fhir_value (8627152854130338531) -->
-    <skip />
-    <!-- no translation found for raw_fhir_content_description (1491420802097635439) -->
-    <skip />
+    <string name="unkwown_resource" msgid="7932225227431922125">"نامعلوم وسیلہ"</string>
+    <string name="raw_fhir_title" msgid="1295744907036066319">"ماخذ ڈیٹا"</string>
+    <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>کھلی بریکٹ۔"</string>
+    <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>بند بریکٹ۔"</string>
+    <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> فیلڈ <xliff:g id="FIELD">%2$s</xliff:g> قدر"</string>
+    <string name="raw_fhir_value" msgid="8627152854130338531">"<xliff:g id="PREFIX">%1$s</xliff:g>: <xliff:g id="VALUE">%2$s</xliff:g>۔"</string>
+    <string name="raw_fhir_content_description" msgid="1491420802097635439">"تفصیلی ماخذ کوڈ: <xliff:g id="SOURCE_CODE">%1$s</xliff:g>"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"اس اجازت کے ساتھ ایپس آپ کی صحت اور تندرستی سے متعلق تمام ڈیٹا کو پڑھ اور لکھ سکتی ہیں۔"</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"کنٹرول کریں کہ Health Connect میں اسٹور کردہ ڈیٹا تک کن ایپس کی رسائی ہے۔ وہ ڈیٹا جسے ایپ پڑھ یا لکھ سکتی ہے کا جائزہ لینے کے لیے ایپ پر تھپتھپائیں۔"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"اجازت یافتہ رسائی"</string>
@@ -406,7 +414,7 @@
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"ورزش، نیند، غذائیت اور دیگر"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"صحت کے ریکارڈز"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"صحت کے ریکارڈز"</string>
-    <string name="medical_permissions_summary" msgid="5553982055903211592">"لیب کے نتائج، ادویات، حفاظتی ٹیکے و دیگر"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"لیب کے نتائج، ادویات، ویکسینز اور دیگر"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"ایپ کی اجازتیں ہٹا دی گئیں"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect نے <xliff:g id="APP_DATA">%s</xliff:g> کے لیے اجازتیں ہٹا دیں"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect نے <xliff:g id="APP_DATA_0">%1$s</xliff:g> اور <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> کے لیے اجازتیں ہٹا دیں"</string>
@@ -498,10 +506,8 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"‫Play اسٹور پر جائیں"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect کے ساتھ شروع کریں"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"‫Health Connect ایپ آپ کے صحت اور تندرستی کے ڈیٹا کو اسٹور کرتی ہے جو آپ کے آلہ پر مختلف ایپس کو سِنک کرنے کا ایک آسان طریقہ فراہم کرتا ہے"</string>
-    <!-- no translation found for onboarding_description_health_records (6816666836571797870) -->
-    <skip />
-    <!-- no translation found for onboarding_description_with_health_connect (8751881078749676542) -->
-    <skip />
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"‫Health Connect مختلف ایپس کے آپ کی صحت اور تندرستی کے ڈیٹا کو اسٹور کرتی ہے اور مطابقت پذیر بناتی ہے۔\n\n"<b>"صحت اور فلاح و بہبود کا ڈیٹا،"</b>" بشمول ورزش کے سیشنز، قدموں کی تعداد، غذائیت اور نیند وغیرہ\n\n"<b>"صحت کے ریکارڈز،"</b>" بشمول ویکسینز اور لیب کے نتائج وغیرہ"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"‫Health Connect کے ساتھ آپ درج ذیل چیزیں کر سکتے ہیں"</string>
     <string name="share_data" msgid="3481932156368883946">"اپنی ایپس کے ساتھ ڈیٹا کا اشتراک کریں"</string>
     <string name="share_data_description" msgid="2919871301634375092">"وہ ڈیٹا منتخب کریں جسے ہر ایپ Health Connect پر پڑھ یا لکھ سکتی ہے"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"اپنی ترتیبات اور رازداری کا نظم کریں"</string>
@@ -1086,6 +1092,8 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"اس ایپ کے لیے پس منظر یا ماضی کے ڈیٹا تک رسائی کو آن کرنے کے لیے کم از کم ایک پڑھنے کی اجازت کو فعال کریں"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"اس ایپ کے لیے پس منظر میں ہونے پر رسائی کو آن کرنے کی خاطر کم از کم ایک پڑھنے کی اجازت کو فعال کریں"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"اس ایپ کے لیے ماضی کے ڈیٹا تک رسائی کو آن کرنے کے لیے کم از کم ایک پڑھنے کی اجازت کو فعال کریں"</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> پہلے سے ہی آپ کے صحت کے ریکارڈز کے ماضی کے ڈیٹا تک رسائی حاصل کر سکتی ہے۔ اسے تبدیل کرنے کے لیے، اس ایپ کے لیے صحت کے ریکارڈ کی اجازتیں بند کریں"</string>
+    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"صحت کے ریکارڈ کی اجازتوں کا نظم کریں"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"‫Health Connect کو استعمال کرنا شروع کریں"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"اپنی پہلی ایپس کو ان کے درمیان صحت اور تندرستی کے ڈیٹا کا اشتراک کرنے کیلئے مطابقت پذیر بنائیں"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"سیٹ اپ کریں"</string>
@@ -1096,42 +1104,23 @@
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"‫Health Connect کے ذریعے <xliff:g id="APP_NAME">%s</xliff:g> کے ساتھ مطابقت پذیری کرنے کیلئے مزید ایپس تلاش کریں"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"‫App اسٹور پر دیکھیں"</string>
     <string name="select_all" msgid="837499881590001166">"سبھی کو منتخب کریں"</string>
-    <!-- no translation found for deletion_confirmation_dialog_body (7643182907084645805) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (2103387413531373305) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (2466281529240054537) -->
-    <skip />
-    <!-- no translation found for all_app_data_selected_deletion_confirmation_dialog (1077157006579195958) -->
-    <skip />
-    <!-- no translation found for some_app_data_selected_deletion_confirmation_dialog (5378172524112070270) -->
-    <skip />
-    <!-- no translation found for all_entries_selected_day_deletion_confirmation_dialog (2887646600541520444) -->
-    <skip />
-    <!-- no translation found for all_entries_selected_week_deletion_confirmation_dialog (6759608395185369048) -->
-    <skip />
-    <!-- no translation found for all_entries_selected_month_deletion_confirmation_dialog (6030161837387559132) -->
-    <skip />
-    <!-- no translation found for some_entries_selected_day_deletion_confirmation_dialog (3481363886097542565) -->
-    <skip />
-    <!-- no translation found for some_entries_selected_week_deletion_confirmation_dialog (7150217982297131340) -->
-    <skip />
-    <!-- no translation found for some_entries_selected_month_deletion_confirmation_dialog (3712014725077445591) -->
-    <skip />
-    <!-- no translation found for one_entry_selected_deletion_confirmation_dialog (4642573082594021789) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_day_deletion_confirmation_dialog (2342034541791960151) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_week_deletion_confirmation_dialog (24289763841770386) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_month_deletion_confirmation_dialog (3240581815583269052) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_day_deletion_confirmation_dialog (1030347169774815676) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_week_deletion_confirmation_dialog (8009352719322914060) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_month_deletion_confirmation_dialog (6617805533334875710) -->
-    <skip />
-    <!-- no translation found for one_app_entry_selected_deletion_confirmation_dialog (7101939753210640660) -->
-    <skip />
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"منسلک ایپس Health Connect سے اس ڈیٹا کو مزید نہیں پڑھ سکیں گی"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"تمام ڈیٹا مستقل طور پر حذف کریں؟"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"منتخب ڈیٹا مستقل طور پر حذف کریں؟"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"<xliff:g id="APP_NAME">%s</xliff:g> کا تمام ڈیٹا مستقل طور پر حذف کریں؟"</string>
+    <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"منتخب <xliff:g id="APP_NAME">%s</xliff:g> کا ڈیٹا مستقل طور پر حذف کریں؟"</string>
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> کے لیے تمام اندراجات کو مستقل طور پر حذف کریں؟"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> کے ہفتے کے لیے تمام اندراجات کو مستقل طور پر حذف کریں؟"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> کے لیے تمام اندراجات کو مستقل طور پر حذف کریں؟"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> کے لیے منتخب اندراجات کو مستقل طور پر حذف کریں؟"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> کے ہفتے کے لیے منتخب اندراجات کو مستقل طور پر حذف کریں۔"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> کے لیے منتخب اندراجات کو مستقل طور پر حذف کریں؟"</string>
+    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"مستقل طور پر اس اندراج کو حذف کریں؟"</string>
+    <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> کے لیے <xliff:g id="APP_NAME">%1$s</xliff:g> کے تمام اندراجات کو مستقل طور پر حذف کریں؟"</string>
+    <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> کے ہفتے کے لیے <xliff:g id="APP_NAME">%1$s</xliff:g> کے تمام اندراجات کو مستقل طور پر حذف کریں؟"</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> کے لیے <xliff:g id="APP_NAME">%1$s</xliff:g> کے تمام اندراجات کو مستقل طور پر حذف کریں؟"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> کے لیے <xliff:g id="APP_NAME">%1$s</xliff:g> کے منتخب اندراجات کو مستقل طور پر حذف کریں؟"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> کے ہفتے کے لیے <xliff:g id="APP_NAME">%1$s</xliff:g> کے منتخب اندراجات کو مستقل طور پر حذف کریں؟"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> کے لیے <xliff:g id="APP_NAME">%1$s</xliff:g> کے منتخب اندراجات کو مستقل طور پر حذف کریں؟"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"مستقل طور پر اس <xliff:g id="APP_NAME">%s</xliff:g> کے اندراج کو حذف کریں؟"</string>
 </resources>
