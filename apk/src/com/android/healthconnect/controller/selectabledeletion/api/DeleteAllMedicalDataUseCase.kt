@@ -15,32 +15,38 @@
  */
 package com.android.healthconnect.controller.selectabledeletion.api
 
+import android.health.connect.HealthConnectManager
 import com.android.healthconnect.controller.service.IoDispatcher
-import com.android.healthfitness.flags.Flags.personalHealthRecord
+import com.android.healthconnect.controller.shared.HealthPermissionReader
+import com.android.healthconnect.controller.shared.app.MedicalDataSourceReader
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
-/** Use case to delete all records stored in Health Connect without any filter. */
+/**
+ * Use case to delete all [MedicalDataSource]s and corresponding [MedicalResource]s stored in Health
+ * Connect.
+ */
 @Singleton
-class DeleteAllDataUseCase
+class DeleteAllMedicalDataUseCase
 @Inject
 constructor(
-    private val deleteAllFitnessDataUseCase: DeleteAllFitnessDataUseCase,
-    private val deleteAllMedicalDataUseCase: DeleteAllMedicalDataUseCase,
+    private val healthConnectManager: HealthConnectManager,
+    private val healthPermissionReader: HealthPermissionReader,
+    private val medicalDataSourceReader: MedicalDataSourceReader,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
     suspend fun invoke() =
         withContext(dispatcher) {
-            val deleteFitnessData = async { deleteAllFitnessDataUseCase.invoke() }
-            val deleteMedicalData = async {
-                if (personalHealthRecord()) {
-                    deleteAllMedicalDataUseCase.invoke()
+            healthPermissionReader
+                .getAppsWithMedicalPermissions()
+                .flatMap { medicalDataSourceReader.fromPackageName(it) }
+                .forEach { dataSource ->
+                    healthConnectManager.deleteMedicalDataSourceWithData(
+                        dataSource.id,
+                        Runnable::run,
+                    ) {}
                 }
-            }
-            deleteFitnessData.await()
-            deleteMedicalData.await()
         }
 }
