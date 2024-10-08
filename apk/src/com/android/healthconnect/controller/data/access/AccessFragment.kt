@@ -19,18 +19,21 @@ import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commitNow
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
-import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_TYPE
-import com.android.healthconnect.controller.deletion.DeletionConstants.START_DELETION_EVENT
-import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.permissions.connectedapps.HealthAppPreference
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.fromPermissionTypeName
+import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.START_DELETION_KEY
+import com.android.healthconnect.controller.selectabledeletion.DeletionFragment
+import com.android.healthconnect.controller.selectabledeletion.DeletionType
+import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.inactiveapp.InactiveAppPreference
@@ -38,9 +41,7 @@ import com.android.healthconnect.controller.shared.preference.HealthPreferenceFr
 import com.android.healthconnect.controller.utils.logging.DataAccessElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
-import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.setTitle
-import com.android.healthconnect.controller.utils.setupMenu
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -52,6 +53,7 @@ class AccessFragment : Hilt_AccessFragment() {
         private const val CAN_READ_SECTION = "can_read"
         private const val CAN_WRITE_SECTION = "can_write"
         private const val INACTIVE_SECTION = "inactive"
+        private const val DELETION_TAG = "DeletionTag"
     }
 
     init {
@@ -61,6 +63,7 @@ class AccessFragment : Hilt_AccessFragment() {
     @Inject lateinit var logger: HealthConnectLogger
 
     private val viewModel: AccessViewModel by viewModels()
+    private val deletionViewModel: DeletionViewModel by activityViewModels()
 
     private lateinit var permissionType: HealthPermissionType
 
@@ -84,6 +87,9 @@ class AccessFragment : Hilt_AccessFragment() {
                 arguments?.getString(PERMISSION_TYPE_NAME_KEY)
                     ?: throw IllegalArgumentException("PERMISSION_TYPE_NAME_KEY can't be null!")
             permissionType = fromPermissionTypeName(permissionTypeName)
+        }
+        if (childFragmentManager.findFragmentByTag(DELETION_TAG) == null) {
+            childFragmentManager.commitNow { add(DeletionFragment(), DELETION_TAG) }
         }
 
         mCanReadSection?.isVisible = false
@@ -117,21 +123,6 @@ class AccessFragment : Hilt_AccessFragment() {
                     setLoading(isLoading = false, animate = false)
                     updateDataAccess(state.appMetadata)
                 }
-            }
-        }
-
-        setupMenu(R.menu.set_data_units_with_send_feedback_and_help, viewLifecycleOwner, logger) {
-            menuItem ->
-            when (menuItem.itemId) {
-                R.id.menu_open_units -> {
-                    logger.logImpression(ToolbarElement.TOOLBAR_UNITS_BUTTON)
-                    // TODO(b/291249677): Enable in an upcoming CL.
-                    //                    findNavController()
-                    //
-                    // .navigate(R.id.action_entriesAndAccessFragment_to_unitFragment)
-                    true
-                }
-                else -> false
             }
         }
     }
@@ -171,8 +162,10 @@ class AccessFragment : Hilt_AccessFragment() {
                         it.summary =
                             getString(
                                 R.string.inactive_apps_message,
-                                getString(permissionType.lowerCaseLabel()))
-                    })
+                                getString(permissionType.lowerCaseLabel()),
+                            )
+                    }
+                )
                 appMetadataMap[AppAccessState.Inactive]?.forEach { appAccessMetadata ->
                     val appMetadata = appAccessMetadata.appMetadata
                     mInactiveSection?.addPreference(
@@ -181,14 +174,20 @@ class AccessFragment : Hilt_AccessFragment() {
                             it.icon = appMetadata.icon
                             it.logName = DataAccessElement.DATA_ACCESS_INACTIVE_APP_BUTTON
                             it.setOnDeleteButtonClickListener {
-                                // TODO(b/291249677): Update when new deletion flows are ready.
-                                val deletionType =
-                                    DeletionType.DeletionTypeAppData(
-                                        appMetadata.packageName, appMetadata.appName)
+                                deletionViewModel.setDeletionType(
+                                    DeletionType.DeleteInactiveAppData(
+                                        healthPermissionType = permissionType,
+                                        packageName = appMetadata.packageName,
+                                        appName = appMetadata.appName,
+                                    )
+                                )
                                 childFragmentManager.setFragmentResult(
-                                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionType))
+                                    START_DELETION_KEY,
+                                    bundleOf(),
+                                )
                             }
-                        })
+                        }
+                    )
                 }
             }
         }
@@ -220,6 +219,8 @@ class AccessFragment : Hilt_AccessFragment() {
                 navigationId,
                 bundleOf(
                     EXTRA_PACKAGE_NAME to appAccessMetadata.appMetadata.packageName,
-                    EXTRA_APP_NAME to appAccessMetadata.appMetadata.appName))
+                    EXTRA_APP_NAME to appAccessMetadata.appMetadata.appName,
+                ),
+            )
     }
 }

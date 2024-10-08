@@ -626,7 +626,6 @@ constructor(
         } else {
             oldDeleteAppData(packageName, appName)
         }
-        viewModelScope.launch { deleteAppDataUseCase.invoke(DeleteAppData(packageName, appName)) }
     }
 
     private fun newDeleteAppData(packageName: String, appName: String) {
