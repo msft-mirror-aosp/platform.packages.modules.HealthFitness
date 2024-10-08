@@ -2621,6 +2621,48 @@ public class HealthConnectManagerTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byIds_invalidResourceTypeByReflection_throws()
+            throws NoSuchFieldException, IllegalAccessException {
+        MedicalResourceId id =
+                new MedicalResourceId(
+                        DATA_SOURCE_ID,
+                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                        FHIR_RESOURCE_ID_IMMUNIZATION);
+
+        setFieldValueUsingReflection(id, "mFhirResourceType", 100);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mManager.readMedicalResources(
+                                List.of(id),
+                                Executors.newSingleThreadExecutor(),
+                                new HealthConnectReceiver<>()));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byIds_invalidDataSourceIdByReflection_throws()
+            throws NoSuchFieldException, IllegalAccessException {
+        MedicalResourceId id =
+                new MedicalResourceId(
+                        DATA_SOURCE_ID,
+                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                        FHIR_RESOURCE_ID_IMMUNIZATION);
+
+        setFieldValueUsingReflection(id, "mDataSourceId", "invalid id");
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mManager.readMedicalResources(
+                                List.of(id),
+                                Executors.newSingleThreadExecutor(),
+                                new HealthConnectReceiver<>()));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_noData_returnsEmptyList()
             throws InterruptedException {
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
@@ -2744,6 +2786,80 @@ public class HealthConnectManagerTest {
 
         assertThat(receiver.assertAndGetException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byRequest_invalidDataSourceIdsByReflection_throws()
+            throws NoSuchFieldException, IllegalAccessException {
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_UNKNOWN)
+                        .build();
+
+        setFieldValueUsingReflection(request, "mDataSourceIds", Set.of("invalid id"));
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mManager.readMedicalResources(
+                                request,
+                                Executors.newSingleThreadExecutor(),
+                                new HealthConnectReceiver<>()));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byRequest_invalidResourceTypeByReflection_throws()
+            throws NoSuchFieldException, IllegalAccessException {
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_UNKNOWN)
+                        .build();
+
+        setFieldValueUsingReflection(request, "mMedicalResourceType", 100);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mManager.readMedicalResources(
+                                request,
+                                Executors.newSingleThreadExecutor(),
+                                new HealthConnectReceiver<>()));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byRequest_invalidPageSizeByReflection_throws()
+            throws NoSuchFieldException, IllegalAccessException {
+        ReadMedicalResourcesPageRequest request =
+                new ReadMedicalResourcesPageRequest.Builder("").build();
+
+        setFieldValueUsingReflection(request, "mPageSize", MAXIMUM_PAGE_SIZE + 1);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mManager.readMedicalResources(
+                                request,
+                                Executors.newSingleThreadExecutor(),
+                                new HealthConnectReceiver<>()));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byRequest_nullPageTokenInPageRequestByReflection_throws()
+            throws NoSuchFieldException, IllegalAccessException {
+        ReadMedicalResourcesPageRequest request =
+                new ReadMedicalResourcesPageRequest.Builder("").build();
+
+        setFieldValueUsingReflection(request, "mPageToken", null);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mManager.readMedicalResources(
+                                request,
+                                Executors.newSingleThreadExecutor(),
+                                new HealthConnectReceiver<>()));
     }
 
     @Test
