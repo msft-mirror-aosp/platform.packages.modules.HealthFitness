@@ -129,7 +129,6 @@ import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
-import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.health.connect.internal.datatypes.utils.MedicalResourceTypePermissionMapper;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.health.connect.migration.HealthConnectMigrationUiState;
@@ -198,6 +197,7 @@ import com.android.server.healthconnect.storage.request.DeleteTransactionRequest
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
@@ -273,7 +273,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final ChangeLogsHelper mChangeLogsHelper;
     private final ChangeLogsRequestHelper mChangeLogsRequestHelper;
     private final MigrationEntityHelper mMigrationEntityHelper;
-    private final HealthConnectMappings mHealthConnectMappings;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings;
 
     private volatile UserHandle mCurrentForegroundUser;
 
@@ -295,7 +295,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ActivityDateHelper activityDateHelper,
             ChangeLogsHelper changeLogsHelper,
             ChangeLogsRequestHelper changeLogsRequestHelper,
-            HealthConnectMappings healthConnectMappings,
+            InternalHealthConnectMappings internalHealthConnectMappings,
             CloudBackupManager cloudBackupManager) {
         this(
                 transactionManager,
@@ -315,7 +315,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 activityDateHelper,
                 changeLogsHelper,
                 changeLogsRequestHelper,
-                healthConnectMappings,
+                internalHealthConnectMappings,
                 cloudBackupManager);
     }
 
@@ -338,7 +338,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ActivityDateHelper activityDateHelper,
             ChangeLogsHelper changeLogsHelper,
             ChangeLogsRequestHelper changeLogsRequestHelper,
-            HealthConnectMappings healthConnectMappings,
+            InternalHealthConnectMappings internalHealthConnectMappings,
             CloudBackupManager cloudBackupManager) {
         mAccessLogsHelper = accessLogsHelper;
         mTransactionManager = transactionManager;
@@ -356,7 +356,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
         mDataPermissionEnforcer =
                 new DataPermissionEnforcer(
-                        mPermissionManager, mContext, deviceConfigManager, healthConnectMappings);
+                        mPermissionManager,
+                        mContext,
+                        deviceConfigManager,
+                        internalHealthConnectMappings.getExternalMappings());
         mMedicalDataPermissionEnforcer = new MedicalDataPermissionEnforcer(mPermissionManager);
         mAppOpsManagerLocal = LocalManagerRegistry.getManager(AppOpsManagerLocal.class);
         mAppInfoHelper = AppInfoHelper.getInstance();
@@ -396,7 +399,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mMedicalDataSourceHelper = medicalDataSourceHelper;
         mChangeLogsHelper = changeLogsHelper;
         mMigrationEntityHelper = new MigrationEntityHelper();
-        mHealthConnectMappings = healthConnectMappings;
+        mInternalHealthConnectMappings = internalHealthConnectMappings;
         mCloudBackupManager = cloudBackupManager;
     }
 
@@ -649,6 +652,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             attributionSource.getPackageName(),
                                             request,
                                             mHealthDataCategoryPriorityHelper,
+                                            mInternalHealthConnectMappings,
                                             mTransactionManager,
                                             startDateAccess)
                                     .getAggregateDataResponseParcel(
