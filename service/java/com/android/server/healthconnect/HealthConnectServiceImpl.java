@@ -204,6 +204,8 @@ import com.android.server.healthconnect.storage.utils.StorageUtils;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -3012,7 +3014,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     } catch (IllegalArgumentException illegalArgumentException) {
                         logger.setHealthDataServiceApiStatusError(
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
-                        Slog.e(TAG, "IllegalArgumentException: ", illegalArgumentException);
+                        if (Flags.logcatCensorIae()) {
+                            Slog.e(TAG, getStackTraceOnlyString(illegalArgumentException));
+                        } else {
+                            Slog.e(TAG, "IllegalArgumentException: ", illegalArgumentException);
+                        }
                         tryAndThrowException(
                                 errorCallback,
                                 illegalArgumentException,
@@ -3039,6 +3045,42 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 },
                 uid,
                 isController);
+    }
+
+    /**
+     * Returns a string from an exception that contains the stack trace but not the message.
+     *
+     * <p>The message for an exception may reveal privacy sensitive information. So this method
+     * returns the stack trace as a string including the cause chain for the exception, if it
+     * exists. The stack trace is not communicated through Binder, so is lost to if it is not
+     * logged.
+     */
+    private static String getStackTraceOnlyString(Throwable ex) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw, false);
+        pw.println(ex.getClass().getName());
+        printStackTrace(ex, pw);
+        Throwable cause = ex.getCause();
+        while (cause != null) {
+            pw.println(String.format("Caused by: %s", cause.getClass().getName()));
+            printStackTrace(cause, pw);
+            cause = cause.getCause();
+        }
+        pw.flush();
+        return sw.toString();
+    }
+
+    private static void printStackTrace(Throwable ex, PrintWriter pw) {
+        StackTraceElement[] stackTraceElements = ex.getStackTrace();
+        for (StackTraceElement element : stackTraceElements) {
+            pw.println(
+                    String.format(
+                            " at %s.%s(%s:%s)",
+                            element.getClassName(),
+                            element.getMethodName(),
+                            element.getFileName(),
+                            element.getLineNumber()));
+        }
     }
 
     /**
