@@ -21,7 +21,7 @@
     android:versionName="1.0">
 
     <uses-permission android:name="android.permission.health.WRITE_MEDICAL_DATA"/>
-    <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION"/>
+    <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS"/>
 
     <application android:label="CtsPhrTestHelperApp1">
         <activity android:name="android.healthconnect.cts.testhelper.TestAppActivity"

@@ -92,6 +92,17 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"salomatlik axborotiga kirish"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Sarflangan kaloriyani oʻqish"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Ilovaga sarflangan kaloriyalar miqdorini oʻqish uchun ruxsat beradi"</string>
+    <string name="background_read_medical_title" msgid="378446129450196253">"Orqa fonda barcha maʼlumotlarga ruxsat"</string>
+    <string name="background_read_medical_request_title" msgid="5388067032484069722">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga orqa fonda barcha maʼlumotlarga kirish uchun ruxsat berilsinmi?"</string>
+    <string name="background_read_medical_description" msgid="4205144207056391848">"Ilovadan foydalanmayotgan paytda ham, ushbu ilovaga fitnes va salomatlik maʼlumotlari hamda tibbiy qaydlaringiz uchun ruxsat berish"</string>
+    <string name="background_read_medical_request_description" msgid="6135447220241108032">"Ruxsat bersangiz, ilovadan foydalanmayotgan paytda ham, u fitnes va salomatlik maʼlumotlari hamda tibbiy qaydlaringizga kira oladi."</string>
+    <string name="historic_access_medical_title" msgid="1198466488695524014">"Eski fitnes va salomatlik maʼlumotlariga ruxsat berish"</string>
+    <string name="historic_access_medical_request_title" msgid="4927886483832141584">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga eski fitnes va salomatlik maʼlumotlari uchun ruxsat berilsinmi?"</string>
+    <string name="historic_access_medical_description" msgid="513689388911992345">"Bu ilovaga <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> sanasidan oldin qoʻshilgan maʼlumotlar uchun ruxsat berish"</string>
+    <string name="historic_access_medical_description_fallback" msgid="1596909285259037066">"Bu ilovaga barcha eski maʼlumotlar uchun ruxsat berish"</string>
+    <string name="historic_access_medical_request_description" msgid="6938665708764487963">"Ruxsat bersangiz, bu ilova <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> sanasidan oldin qoʻshilgan maʼlumotlarga kira oladi."</string>
+    <string name="historic_access_medical_request_description_fallback" msgid="1075934237674126677">"Ruxsat bersangiz, bu ilova barcha eski maʼlumotlarga kira oladi."</string>
+    <string name="historic_access_medical_warning" msgid="6691110601538756473">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga oʻqish ruxsati berilmagani sababli, hozirda hech qanday fitnes maʼlumotlari oʻqilmayapti"</string>
     <string name="background_read_title" msgid="5061383169517186234">"Orqa fonda maʼlumotlarga kirish"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga orqa fonda maʼlumotlarga kirish uchun ruxsat berilsinmi?"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Ilovadan foydalanmayotganingizda unga Health Connect maʼlumotlariga kirishiga ruxsat bering"</string>
@@ -267,58 +278,43 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"tana harorati"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Tana haroratini oʻqish uchun ruxsat"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Tana harorati haqida maʼlumotlarni yozish"</string>
-    <!-- no translation found for all_medical_data_uppercase_label (2380759160541898783) -->
-    <skip />
-    <!-- no translation found for all_medical_data_lowercase_label (6293814928992081842) -->
-    <skip />
-    <!-- no translation found for all_medical_data_content_description (4846586780533295022) -->
-    <skip />
-    <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"Allergiyalar"</string>
-    <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"allergiyalar"</string>
-    <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"Allergiyalarni oʻqish"</string>
-    <!-- no translation found for conditions_uppercase_label (5260404343402770877) -->
-    <skip />
-    <!-- no translation found for conditions_lowercase_label (2678248918552246997) -->
-    <skip />
-    <!-- no translation found for conditions_content_description (3230552343616193829) -->
-    <skip />
-    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Emlash"</string>
-    <string name="immunization_lowercase_label" msgid="6464922369026887687">"emlash"</string>
-    <string name="immunization_content_description" msgid="2910674919337229803">"Emlash axborotini oʻqish"</string>
-    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"Laboratoriya natijalari"</string>
-    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"laboratoriya natijalari"</string>
-    <string name="laboratory_results_content_description" msgid="5882338877203692484">"Laboratoriya natijalarini oʻqish"</string>
+    <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Barcha tibbiy qaydlar"</string>
+    <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"barcha tibbiy qaydlar"</string>
+    <string name="all_medical_data_content_description" msgid="4846586780533295022">"Barcha tibbiy qaydlarni yozish"</string>
+    <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Allergiyalar"</string>
+    <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"allergiyalar"</string>
+    <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Allergiyalarni oʻqish"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Shartlar"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"shartlar"</string>
+    <string name="conditions_content_description" msgid="3230552343616193829">"Shartlarni oʻqish"</string>
+    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Vaksinalar"</string>
+    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"vaksinalar"</string>
+    <string name="immunizations_content_description" msgid="2239351886343062194">"Vaksinalarni oʻqish"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Laboratoriya natijalari"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"laboratoriya natijalari"</string>
+    <string name="laboratory_results_content_description" msgid="7888886103734085841">"Laboratoriya natijalarini oʻqish"</string>
     <string name="medications_uppercase_label" msgid="4783281053427990225">"Dori-darmon"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"dori-darmon"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"Dorilar axborotini oʻqish"</string>
-    <!-- no translation found for personal_details_uppercase_label (7241635933310394120) -->
-    <skip />
-    <!-- no translation found for personal_details_lowercase_label (1907848447611775151) -->
-    <skip />
-    <!-- no translation found for personal_details_content_description (3191211304673909831) -->
-    <skip />
-    <!-- no translation found for practitioner_details_uppercase_label (2940667649808082510) -->
-    <skip />
-    <!-- no translation found for practitioner_details_lowercase_label (8195591077717971542) -->
-    <skip />
-    <!-- no translation found for practitioner_details_content_description (8775396516928504185) -->
-    <skip />
+    <string name="personal_details_uppercase_label" msgid="7241635933310394120">"Shaxsiy maʼlumotlar"</string>
+    <string name="personal_details_lowercase_label" msgid="1907848447611775151">"shaxsiy maʼlumotlar"</string>
+    <string name="personal_details_content_description" msgid="3191211304673909831">"Shaxsiy maʼlumotlarni oʻqish"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Amaliyotchi tafsilotlari"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"amaliyotchi tafsilotlari"</string>
+    <string name="practitioner_details_content_description" msgid="8775396516928504185">"Amaliyotchi tafsilotlarini oʻqish"</string>
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Homiladorlik"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"homiladorlik"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"Homiladorlik axborotini oʻqish"</string>
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"Muolajalar"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"muolajalar"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Muolajalar axborotini oʻqish"</string>
-    <string name="social_history_uppercase_label" msgid="1731364502071035544">"Ijtimoiy anamnez"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Ijtimoiy anamnez"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"ijtimoiy anamnez"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"Ijtimoiy anamnez axborotini oʻqish"</string>
-    <!-- no translation found for visits_uppercase_label (8532619758336375886) -->
-    <skip />
-    <!-- no translation found for visits_lowercase_label (2545887061364564151) -->
-    <skip />
-    <!-- no translation found for visits_content_description (6336796415049565697) -->
-    <skip />
-    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"Organizm holati"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"Tashriflar"</string>
+    <string name="visits_lowercase_label" msgid="2545887061364564151">"tashriflar"</string>
+    <string name="visits_content_description" msgid="6336796415049565697">"Tashriflarni oʻqish"</string>
+    <string name="vital_signs_uppercase_label" msgid="289862347143374640">"Organizm holati"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"organizm holati"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"Organizm holati axborotini oʻqish"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Xabardorlik"</string>
@@ -335,8 +331,21 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Oʻqishga ruxsat bersangiz, ilova yangi maʼlumotlar va oxirgi 30 kunlik maʼlumotlarni oʻqiy oladi"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Oʻqishga ruxsat bersangiz, ilova yangi va eski maʼlumotlarni oʻqiy oladi"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"<xliff:g id="APP_NAME">%1$s</xliff:g> Health Connectga ulanishiga ruxsat berilsinmi?"</string>
-    <string name="request_permissions_rationale" msgid="6154280355215802538">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi maʼlumotlaringizni qanday qayta ishlashi haqida dastur ishlab chiquvchining <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> orqali tanishishingiz mumkin"</string>
+    <!-- no translation found for request_permissions_rationale (2642076968583316986) -->
+    <skip />
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"maxfiylik siyosati"</string>
+    <!-- no translation found for medical_request_header (2300521519021510027) -->
+    <skip />
+    <!-- no translation found for medical_request_header_desc (5721171305631983663) -->
+    <skip />
+    <!-- no translation found for medical_request_about_health_records (7204918218748362687) -->
+    <skip />
+    <!-- no translation found for medical_request_data_to_share (2208383833492573960) -->
+    <skip />
+    <!-- no translation found for medical_request_share (6237397362923728514) -->
+    <skip />
+    <!-- no translation found for medical_request_footer (6533749932770903089) -->
+    <skip />
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Barcha ruxsatlar taqiqlansinmi?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Hammasini tozalash"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"Endi <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi Health Connect xizmatidagi axborotlarni oʻqishi yoki yozishi imkonsiz.\n\nBu mazkur ilova oladigan joylashuv, kamera yoki mikrofon kabi boshqa ruxsatlarga taʼsir qilmaydi."</string>
@@ -344,9 +353,15 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"Endi <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi Health Connect maʼlumotlarini, jumladan, oldingi maʼlumotlarni oʻqiy olmaydi yoki yoza olmaydi.\n\nBu ushbu ilova oladigan joylashuv, kamera yoki mikrofon kabi boshqa ruxsatlarga taʼsir qilmaydi."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Endi <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi Health Connect maʼlumotlarini, jumladan, fondagi va oldingi maʼlumotlarni oʻqiy olmaydi yoki yoza olmaydi.\n\nBu ushbu ilova oladigan joylashuv, kamera yoki mikrofon kabi boshqa ruxsatlarga taʼsir qilmaydi."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Health Connect ilovasidan <xliff:g id="APP_NAME">%1$s</xliff:g> maʼlumotlarini oʻchirish"</string>
-    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"Barcha ruxsatlar olib tashlansinmi?"</string>
-    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Salomatlikka oid barcha ruxsatlar olib tashlansinmi?"</string>
     <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"Barcha salomatlik va fitnes ruxsatlari olib tashlansinmi?"</string>
+    <string name="disconnect_all_fitness_permissions_dialog_checkbox" msgid="8808559689899914478">"Health Connect xizmatidan <xliff:g id="APP_NAME">%1$s</xliff:g> saqlagan fitnes maʼlumotlarini ham oʻchirish"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Salomatlikka oid barcha ruxsatlar olib tashlansinmi?"</string>
+    <string name="disconnect_all_medical_permissions_dialog_checkbox" msgid="7782158941871987263">"Health Connect xizmatidan <xliff:g id="APP_NAME">%1$s</xliff:g> saqlagan tibbiy qaydlarni ham oʻchirish"</string>
+    <string name="disconnect_all_fitness_or_medical_no_additional_permissions_dialog_message" msgid="6610810945930258582">"Endi <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi Health Connect xizmatidagi axborotlarni oʻqishi yoki yozishi imkonsiz.\n\nBu ilovaning kamera, mikrofon yoki joylashuv kabi boshqa ruxsatlariga taʼsir qilmaydi."</string>
+    <string name="disconnect_all_fitness_or_medical_and_background_permissions_dialog_message" msgid="7138878481421234556">"Endi <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi Health Connect bu maʼlumotlarini, jumladan, fondagi maʼlumotlarni oʻqiy olmaydi yoki yoza olmaydi.\n\nBu ilovaning kamera, mikrofon yoki joylashuv kabi boshqa ruxsatlariga taʼsir qilmaydi."</string>
+    <string name="disconnect_all_fitness_or_medical_and_historical_permissions_dialog_message" msgid="1519496566456028625">"Endi <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi Health Connect bu maʼlumotlarini, jumladan, avvalgi maʼlumotlarni oʻqiy olmaydi yoki yoza olmaydi.\n\nBu ilovaning kamera, mikrofon yoki joylashuv kabi boshqa ruxsatlariga taʼsir qilmaydi."</string>
+    <string name="disconnect_all_fitness_or_medical_and_additional_permissions_dialog_message" msgid="5147728456578218902">"Endi <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi Health Connect bu maʼlumotlarini, jumladan, fondagi va avvalgi maʼlumotlarni oʻqiy olmaydi yoki yoza olmaydi.\n\nBu ilovaning kamera, mikrofon yoki joylashuv kabi boshqa ruxsatlariga taʼsir qilmaydi."</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"Barcha ruxsatlar olib tashlansinmi?"</string>
     <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"Endi <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi Health Connect xizmatidagi axborotlarni oʻqishi yoki yozishi imkonsiz.\n\nBu mazkur ilova oladigan joylashuv, kamera yoki mikrofon kabi boshqa ruxsatlarga taʼsir qilmaydi."</string>
     <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"Endi <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi Health Connect maʼlumotlarini, jumladan, fondagi maʼlumotlarni oʻqiy olmaydi yoki yoza olmaydi.\n\nBu ushbu ilova oladigan joylashuv, kamera yoki mikrofon kabi boshqa ruxsatlarga taʼsir qilmaydi."</string>
     <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"Endi <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi Health Connect maʼlumotlarini, jumladan, oldingi maʼlumotlarni oʻqiy olmaydi yoki yoza olmaydi.\n\nBu ushbu ilova oladigan joylashuv, kamera yoki mikrofon kabi boshqa ruxsatlarga taʼsir qilmaydi."</string>
@@ -357,19 +372,13 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Tanlangan kun"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Avvalgi kun"</string>
     <string name="default_error" msgid="7966868260616403475">"Nimadir xato ketdi. Qayta urining."</string>
-    <!-- no translation found for unkwown_resource (7932225227431922125) -->
-    <skip />
+    <string name="unkwown_resource" msgid="7932225227431922125">"Notanish resurs"</string>
     <string name="raw_fhir_title" msgid="1295744907036066319">"Manba kodi"</string>
-    <!-- no translation found for raw_fhir_open_bracket (7974657451368655325) -->
-    <skip />
-    <!-- no translation found for raw_fhir_closed_bracket (9084379463440675078) -->
-    <skip />
-    <!-- no translation found for raw_fhir_field_value (369633095565031835) -->
-    <skip />
-    <!-- no translation found for raw_fhir_value (8627152854130338531) -->
-    <skip />
-    <!-- no translation found for raw_fhir_content_description (1491420802097635439) -->
-    <skip />
+    <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>Ochiluvchi qavs."</string>
+    <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>Yopiluvchi qavs."</string>
+    <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> Maydon <xliff:g id="FIELD">%2$s</xliff:g> Qiymat"</string>
+    <string name="raw_fhir_value" msgid="8627152854130338531">"<xliff:g id="PREFIX">%1$s</xliff:g>: <xliff:g id="VALUE">%2$s</xliff:g>."</string>
+    <string name="raw_fhir_content_description" msgid="1491420802097635439">"Batafsil manba kodi: <xliff:g id="SOURCE_CODE">%1$s</xliff:g>"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Bu ruxsatga ega ilovalar salomatlik va fitnes maʼlumotlaringizni oʻqishi va yozishi mumkin."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connectdagi axborotlar bilan qaysi ilovalar ishlashi mumkinligini boshqaring. Ilova oʻqishi yoki yozishi mumkin boʻlgan maʼlumotlarni koʻrib chiqish uchun ustiga bosing."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Ruxsat berilgan"</string>
@@ -405,7 +414,7 @@
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Mashq, uyqu, ovqatlanish va boshqalar"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Tibbiy qaydlar"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"tibbiy qaydlar"</string>
-    <string name="medical_permissions_summary" msgid="5553982055903211592">"Laboratoriya, dori, emlash va hokazo"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"Laboratoriya, dori, vaksinalar va hokazo"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Ilovadan olingan ruxsatlar"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect <xliff:g id="APP_DATA">%s</xliff:g> ruxsatlarini olib tashladi"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect <xliff:g id="APP_DATA_0">%1$s</xliff:g> va <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> ruxsatlarini olib tashladi"</string>
@@ -497,10 +506,8 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Google Play Marketni ochish"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect bilan ishlashni boshlash"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect salomatlik va fitnes maʼlumotlaringizni xavfsiz saqlaydi va qurilmadagi boshqa ilovalarga oson sinxronlash imkonini beradi"</string>
-    <!-- no translation found for onboarding_description_health_records (6816666836571797870) -->
-    <skip />
-    <!-- no translation found for onboarding_description_with_health_connect (8751881078749676542) -->
-    <skip />
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect salomatlik va fitnes axborotlaringizni turli ilovalardan saqlaydi va sinxronlaydi.\n\n"<b>"Fitnes va salomatlik maʼlumotlari,"</b>" jumladan, mashq seanslari, qadamlar, ovqatlanish, uyqu va boshqa maʼlumotlar\n\n"<b>"Tibbiy qaydlar,"</b>" jumladan, vaksinalar, laboratoriya natijalari va boshqalar"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect yordamida siz quyidagilarni bajara olasiz:"</string>
     <string name="share_data" msgid="3481932156368883946">"Ilovalarga axborot ulashish"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Har bir ilova Health Connect xizmatining qaysi axborotlarni oʻqishi va yozishini tanlang."</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Sozlamalar va maxfiylikni boshqarish"</string>
@@ -1085,6 +1092,8 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Bu ilovaga orqa fonda yoki avvalgi maʼlumotlarga kirishga ruxsat berish uchun kamida bitta oʻqish ruxsatini faollashtiring"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Bu ilovaga fon rejimida ruxsat berish uchun kamida bitta oʻqish ruxsatini faollashtiring"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Bu ilovaga avvalgi maʼlumotlarga kirishga ruxsat berish uchun kamida bitta oʻqish ruxsatini faollashtiring"</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga allaqachon tibbiy qaydingizning eski maʼlumotlari uchun ruxsat berilgan. Buni oʻzgartirish uchun ushbu ilovaning tibbiy qaydlarga ruxsatini faolsizlantiring"</string>
+    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"Tibbiy qayd ruxsatlarini boshqarish"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connect ishlatishni boshlash"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Salomatlik va fitnes maʼlumotlarni oʻzaro ulashadigan ilk ilovalaringizni sinxronlang"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Sozlash"</string>
@@ -1095,42 +1104,23 @@
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Health Connect orqali <xliff:g id="APP_NAME">%s</xliff:g> bilan sinxronlash uchun boshqa ilovalar toping"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"App Store orqali koʻrish"</string>
     <string name="select_all" msgid="837499881590001166">"Hammasini tanlash"</string>
-    <!-- no translation found for deletion_confirmation_dialog_body (7643182907084645805) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (2103387413531373305) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (2466281529240054537) -->
-    <skip />
-    <!-- no translation found for all_app_data_selected_deletion_confirmation_dialog (1077157006579195958) -->
-    <skip />
-    <!-- no translation found for some_app_data_selected_deletion_confirmation_dialog (5378172524112070270) -->
-    <skip />
-    <!-- no translation found for all_entries_selected_day_deletion_confirmation_dialog (2887646600541520444) -->
-    <skip />
-    <!-- no translation found for all_entries_selected_week_deletion_confirmation_dialog (6759608395185369048) -->
-    <skip />
-    <!-- no translation found for all_entries_selected_month_deletion_confirmation_dialog (6030161837387559132) -->
-    <skip />
-    <!-- no translation found for some_entries_selected_day_deletion_confirmation_dialog (3481363886097542565) -->
-    <skip />
-    <!-- no translation found for some_entries_selected_week_deletion_confirmation_dialog (7150217982297131340) -->
-    <skip />
-    <!-- no translation found for some_entries_selected_month_deletion_confirmation_dialog (3712014725077445591) -->
-    <skip />
-    <!-- no translation found for one_entry_selected_deletion_confirmation_dialog (4642573082594021789) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_day_deletion_confirmation_dialog (2342034541791960151) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_week_deletion_confirmation_dialog (24289763841770386) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_month_deletion_confirmation_dialog (3240581815583269052) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_day_deletion_confirmation_dialog (1030347169774815676) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_week_deletion_confirmation_dialog (8009352719322914060) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_month_deletion_confirmation_dialog (6617805533334875710) -->
-    <skip />
-    <!-- no translation found for one_app_entry_selected_deletion_confirmation_dialog (7101939753210640660) -->
-    <skip />
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Ulangan ilovalar keyin Health Connect xizmatidan ushbu axborotni ololmaydi"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Barcha maʼlumotlar butunlay oʻchirilsinmi?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Tanlangan maʼlumotlar butunlay oʻchirib tashlansinmi?"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Barcha <xliff:g id="APP_NAME">%s</xliff:g> maʼlumotlari oʻchirib tashlansinmi?"</string>
+    <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Tanlangan <xliff:g id="APP_NAME">%s</xliff:g> maʼlumotlari butunlay oʻchirib tashlansinmi?"</string>
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>dagi barcha maʼlumotlar butunlay oʻchirilsinmi?"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> haftasidagi barcha yozuvlar oʻchirib tashlansinmi?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>dagi barcha maʼlumotlar butunlay oʻchirilsinmi?"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>dagi tanlangan maʼlumotlar butunlay oʻchirib tashlansinmi?"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> haftasidagi tanlangan maʼlumotlar butunlay oʻchirib tashlansinmi?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>dagi tanlangan maʼlumotlar butunlay oʻchirib tashlansinmi?"</string>
+    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Bu yozuv butunlay oʻchirib tashlansinmi?"</string>
+    <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>dagi barcha <xliff:g id="APP_NAME">%1$s</xliff:g> yozuvlari oʻchirib tashlansinmi?"</string>
+    <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> haftasidagi barcha <xliff:g id="APP_NAME">%1$s</xliff:g> yozuvlari oʻchirib tashlansinmi?"</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>dagi barcha <xliff:g id="APP_NAME">%1$s</xliff:g> yozuvlari oʻchirib tashlansinmi?"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>dagi tanlangan <xliff:g id="APP_NAME">%1$s</xliff:g> yozuvlari butunlay oʻchirib tashlansinmi?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> haftasidagi tanlangan <xliff:g id="APP_NAME">%1$s</xliff:g> yozuvlari oʻchirib tashlansinmi?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>dagi tanlangan <xliff:g id="APP_NAME">%1$s</xliff:g> yozuvlari butunlay oʻchirib tashlansinmi?"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Bu <xliff:g id="APP_NAME">%s</xliff:g> yozuvi butunlay oʻchirib tashlansinmi?"</string>
 </resources>

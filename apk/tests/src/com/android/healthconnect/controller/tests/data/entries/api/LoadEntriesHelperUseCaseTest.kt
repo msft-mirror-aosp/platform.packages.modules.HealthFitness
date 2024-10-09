@@ -44,6 +44,7 @@ import com.android.healthconnect.controller.data.entries.api.LoadDataEntriesInpu
 import com.android.healthconnect.controller.data.entries.api.LoadEntriesHelper
 import com.android.healthconnect.controller.data.entries.api.LoadMedicalEntriesInput
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
+import com.android.healthconnect.controller.dataentries.formatters.MenstruationPeriodFormatter
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
@@ -123,6 +124,7 @@ class LoadEntriesHelperUseCaseTest {
         Mockito.mock(HealthConnectManager::class.java)
 
     @Inject lateinit var healthDataEntryFormatter: HealthDataEntryFormatter
+    @Inject lateinit var menstruationPeriodFormatter: MenstruationPeriodFormatter
     @Inject lateinit var dataSourceReader: MedicalDataSourceReader
 
     private lateinit var context: Context
@@ -162,6 +164,7 @@ class LoadEntriesHelperUseCaseTest {
             LoadEntriesHelper(
                 context,
                 healthDataEntryFormatter,
+                menstruationPeriodFormatter,
                 healthConnectManager,
                 dataSourceReader,
                 timeSource,
@@ -770,7 +773,7 @@ class LoadEntriesHelperUseCaseTest {
         return ReadMedicalResourcesResponse(
             listOf(TEST_MEDICAL_RESOURCE_IMMUNIZATION),
             "nextPageToken",
-            1
+            1,
         )
     }
 

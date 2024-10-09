@@ -21,9 +21,11 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 import android.content.Intent
 import android.content.pm.PackageManager.FLAG_PERMISSION_USER_SET
 import android.health.connect.HealthPermissions
+import android.platform.test.annotations.DisableFlags
 import androidx.core.os.bundleOf
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
@@ -35,16 +37,14 @@ import com.android.healthconnect.controller.service.HealthPermissionManagerModul
 import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
-import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.isAbove
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.utils.FeatureUtils
+import com.android.healthfitness.flags.Flags
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import javax.inject.Inject
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -60,15 +60,11 @@ import org.mockito.kotlin.whenever
 class MockedFitnessAppFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
     @BindValue val healthPermissionManager: HealthPermissionManager = mock()
 
     @Before
     fun setup() {
         hiltRule.inject()
-        (fakeFeatureUtils as FakeFeatureUtils).setIsNewInformationArchitectureEnabled(false)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsExerciseRoutesReadAllEnabled(true)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
         toggleAnimation(false)
     }
 
@@ -96,7 +92,7 @@ class MockedFitnessAppFragmentTest {
             )
         )
 
-        onView(allOf(withText("Exercise"), isAbove(withText("Allowed to write")))).perform(click())
+        onView(allOf(withText("Exercise"))).perform(scrollTo()).perform(click())
 
         // check for dialog
         onView(withText("Disable both data types?"))
@@ -161,7 +157,7 @@ class MockedFitnessAppFragmentTest {
             )
         )
 
-        onView(allOf(withText("Exercise"), isAbove(withText("Allowed to write")))).perform(click())
+        onView(allOf(withText("Exercise"))).perform(scrollTo()).perform(click())
 
         // check for dialog
         onView(withText("Disable both data types?"))
@@ -214,7 +210,7 @@ class MockedFitnessAppFragmentTest {
             )
         )
 
-        onView(allOf(withText("Exercise"), isAbove(withText("Allowed to write")))).perform(click())
+        onView(allOf(withText("Exercise"))).perform(scrollTo()).perform(click())
 
         // check for dialog
         onView(withText("Disable both data types?")).check(doesNotExist())
