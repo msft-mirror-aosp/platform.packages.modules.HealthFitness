@@ -40,7 +40,7 @@ constructor(
     private val deleteAppDataUseCase: DeleteAppDataUseCase,
     private val deletePermissionTypesUseCase: DeletePermissionTypesUseCase,
     private val deleteEntriesUseCase: DeleteEntriesUseCase,
-    private val deletesPermissionTypesFromAppUseCase: DeletePermissionTypesFromAppUseCase,
+    private val deletePermissionTypesFromAppUseCase: DeletePermissionTypesFromAppUseCase,
 ) : ViewModel() {
 
     companion object {
@@ -58,6 +58,8 @@ constructor(
     private var _appEntriesReloadNeeded = MutableLiveData(false)
 
     private var _connectedAppsReloadNeeded = MutableLiveData(false)
+
+    private var _inactiveAppsReloadNeeded = MutableLiveData(false)
 
     private var _deletionProgress = MutableLiveData(DeletionProgress.NOT_STARTED)
 
@@ -79,6 +81,9 @@ constructor(
     val connectedAppsReloadNeeded: LiveData<Boolean>
         get() = _connectedAppsReloadNeeded
 
+    val inactiveAppsReloadNeeded: LiveData<Boolean>
+        get() = _inactiveAppsReloadNeeded
+
     fun delete() {
         viewModelScope.launch {
             _deletionProgress.value = (DeletionProgress.STARTED)
@@ -98,7 +103,7 @@ constructor(
                         _entriesReloadNeeded.postValue(true)
                     }
                     is DeleteHealthPermissionTypesFromApp -> {
-                        deletesPermissionTypesFromAppUseCase.invoke(
+                        deletePermissionTypesFromAppUseCase.invoke(
                             deletionType as DeleteHealthPermissionTypesFromApp
                         )
                         _appPermissionTypesReloadNeeded.postValue(true)
@@ -113,8 +118,12 @@ constructor(
                         deleteAppDataUseCase.invoke((deletionType as DeleteAppData))
                         _connectedAppsReloadNeeded.postValue(true)
                     }
-                    else -> {
-                        // do nothing
+                    is DeletionType.DeleteInactiveAppData -> {
+                        deletePermissionTypesFromAppUseCase.invoke(
+                            (deletionType as DeletionType.DeleteInactiveAppData)
+                                .toDeleteHealthPermissionTypesFromApp()
+                        )
+                        _inactiveAppsReloadNeeded.postValue(true)
                     }
                 }
 
