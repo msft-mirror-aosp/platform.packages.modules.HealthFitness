@@ -23,8 +23,6 @@ import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.readAllRecords;
 
-import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW;
-
 import static com.google.common.truth.Truth.assertThat;
 
 import android.content.Context;
@@ -41,18 +39,18 @@ import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.net.Uri;
 import android.os.OutcomeReceiver;
-import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.annotations.EnableFlags;
 import android.util.Slog;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.compatibility.common.util.SystemUtil;
+import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.exportimport.DatabaseContext;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -156,9 +154,8 @@ public class ExportImportApiTest {
         assertThat(stepsRecordsAfterImport).isEqualTo(stepsRecords);
     }
 
-    @Ignore("TODO(b/364855153): Fix before flag is enabled.")
-    @RequiresFlagsEnabled({FLAG_EXPORT_IMPORT_FAST_FOLLOW})
     @Test
+    @EnableFlags({Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW})
     public void exportOn_thenExportOff_noJobScheduled() throws Exception {
         SystemUtil.runWithShellPermissionIdentity(
                 () -> {

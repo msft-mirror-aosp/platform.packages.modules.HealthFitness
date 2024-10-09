@@ -198,7 +198,8 @@ class SettingsCombinedPermissionsFragment : Hilt_SettingsCombinedPermissionsFrag
                     HealthPreference(requireContext()).also {
                         it.key = KEY_ADDITIONAL_ACCESS
                         it.logName = AppAccessElement.ADDITIONAL_ACCESS_BUTTON
-                        it.setTitle(R.string.additional_access_label)
+                        it.title = getString(R.string.additional_access_label)
+                        it.summary = getString(R.string.additional_access_summary)
                         it.setOnPreferenceClickListener { _ ->
                             val extras = bundleOf(EXTRA_PACKAGE_NAME to packageName)
                             navigationUtils.navigate(

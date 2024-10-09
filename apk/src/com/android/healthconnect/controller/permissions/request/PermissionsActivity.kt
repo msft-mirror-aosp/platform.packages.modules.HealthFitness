@@ -44,7 +44,6 @@ import com.android.healthconnect.controller.onboarding.OnboardingActivity.Compan
 import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
@@ -64,8 +63,6 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
-
-    @Inject lateinit var featureUtils: FeatureUtils
 
     private val requestPermissionsViewModel: RequestPermissionViewModel by viewModels()
 

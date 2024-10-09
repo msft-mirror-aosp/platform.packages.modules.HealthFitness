@@ -16,6 +16,9 @@
   // healthfitness module.
   "healthfitness-mainline-presubmit": [
     {
+      "name": "CtsHealthFitnessPhrTestCases"
+    },
+    {
       "name": "CtsHealthFitnessDeviceTestCases"
     },
     {
@@ -139,6 +142,9 @@
   // (e.g. aosp_cf_x86_64_only_phone-trunk_staging-userdebug.)
   "presubmit": [
     {
+      "name": "CtsHealthFitnessPhrTestCases"
+    },
+    {
       "name": "CtsHealthFitnessDeviceTestCases"
     },
     {
@@ -212,11 +218,6 @@
     },
     {
        "name": "CtsHealthFitnessDeviceTestCasesRateLimiter"
-    }
-  ],
-  "postsubmit": [
-    {
-       "name": "CtsHealthFitnessPhrTestCases"
     }
   ]
 }

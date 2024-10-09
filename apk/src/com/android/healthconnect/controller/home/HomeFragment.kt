@@ -54,7 +54,6 @@ import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
@@ -97,7 +96,6 @@ class HomeFragment : Hilt_HomeFragment() {
         this.setPageName(PageName.HOME_PAGE)
     }
 
-    @Inject lateinit var featureUtils: FeatureUtils
     @Inject lateinit var timeSource: TimeSource
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
 

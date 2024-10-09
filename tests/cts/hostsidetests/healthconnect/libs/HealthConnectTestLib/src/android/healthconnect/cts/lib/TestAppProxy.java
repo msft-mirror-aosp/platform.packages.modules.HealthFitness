@@ -173,6 +173,13 @@ public class TestAppProxy {
         return BundleHelper.toMedicalDataSource(responseBundle);
     }
 
+    /** Gets a list of {@link MedicalDataSource}s given a list of ids on behalf of the app. */
+    public List<MedicalDataSource> getMedicalDataSources(List<String> ids) throws Exception {
+        Bundle requestBundle = BundleHelper.fromMedicalDataSourceIds(ids);
+        Bundle responseBundle = getFromTestApp(requestBundle);
+        return BundleHelper.toMedicalDataSources(responseBundle);
+    }
+
     /**
      * Upserts a Medical Resource to HC on behalf of the app.
      *
