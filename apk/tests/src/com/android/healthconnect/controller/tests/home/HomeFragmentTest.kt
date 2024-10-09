@@ -66,7 +66,6 @@ import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -84,8 +83,6 @@ import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
-import javax.inject.Inject
-import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -128,7 +125,6 @@ class HomeFragmentTest {
     @BindValue val timeSource = TestTimeSource
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
     private lateinit var navHostController: TestNavHostController
     @BindValue val navigationUtils: NavigationUtils = Mockito.mock(NavigationUtils::class.java)
 
@@ -742,6 +738,7 @@ class HomeFragmentTest {
         setupFragmentForNavigation()
 
         onView(withText("Browse health records")).check(doesNotExist())
+        onView(withText("View your health records and which apps can access them")).check(doesNotExist())
     }
 
     @Test

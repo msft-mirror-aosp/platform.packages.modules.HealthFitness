@@ -77,12 +77,16 @@ public final class BundleHelper {
     public static final String GET_CHANGE_LOG_TOKEN_QUERY = PREFIX + "GET_CHANGE_LOG_TOKEN_QUERY";
     public static final String CREATE_MEDICAL_DATA_SOURCE_QUERY =
             PREFIX + "CREATE_MEDICAL_DATA_SOURCE_QUERY";
+    public static final String GET_MEDICAL_DATA_SOURCES_QUERY =
+            PREFIX + "GET_MEDICAL_DATA_SOURCE_QUERY";
     public static final String UPSERT_MEDICAL_RESOURCES_QUERY =
             PREFIX + "UPSERT_MEDICAL_RESOURCE_QUERY";
 
     private static final String CREATE_MEDICAL_DATA_SOURCE_REQUEST =
             PREFIX + "CREATE_MEDICAL_DATA_SOURCE_REQUEST";
     public static final String MEDICAL_DATA_SOURCE_RESPONSE =
+            PREFIX + "MEDICAL_DATA_SOURCE_RESPONSE";
+    public static final String MEDICAL_DATA_SOURCES_RESPONSE =
             PREFIX + "MEDICAL_DATA_SOURCE_RESPONSE";
     private static final String UPSERT_MEDICAL_RESOURCE_REQUESTS =
             PREFIX + "UPSERT_MEDICAL_RESOURCE_REQUEST";
@@ -105,6 +109,7 @@ public final class BundleHelper {
     private static final String PACKAGE_NAME = PREFIX + "PACKAGE_NAME";
     private static final String CLIENT_ID = PREFIX + "CLIENT_ID";
     private static final String RECORD_ID = PREFIX + "RECORD_ID";
+    private static final String MEDICAL_DATA_SOURCE_ID = PREFIX + "MEDICAL_DATA_SOURCE_ID";
     private static final String METADATA = PREFIX + "METADATA";
     private static final String DEVICE = PREFIX + "DEVICE";
     private static final String DEVICE_TYPE = PREFIX + "DEVICE_TYPE";
@@ -419,6 +424,33 @@ public final class BundleHelper {
         bundle.putString(QUERY_TYPE, CREATE_MEDICAL_DATA_SOURCE_QUERY);
         bundle.putParcelable(CREATE_MEDICAL_DATA_SOURCE_REQUEST, request);
         return bundle;
+    }
+
+    /** Converts a list of UUID strings into a bundle. */
+    public static Bundle fromMedicalDataSourceIds(List<String> ids) {
+        Bundle bundle = new Bundle();
+        bundle.putString(QUERY_TYPE, GET_MEDICAL_DATA_SOURCES_QUERY);
+        bundle.putStringArrayList(MEDICAL_DATA_SOURCE_ID, new ArrayList<>(ids));
+        return bundle;
+    }
+
+    /** Converts a list of UUID strings back from a bundle. */
+    public static List<String> toMedicalDataSourceIds(Bundle bundle) {
+        return bundle.getStringArrayList(MEDICAL_DATA_SOURCE_ID);
+    }
+
+    /** Converts a list of {@link MedicalDataSource}s into a bundle. */
+    public static Bundle fromMedicalDataSources(List<MedicalDataSource> medicalDataSources) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(
+                MEDICAL_DATA_SOURCES_RESPONSE, new ArrayList<>(medicalDataSources));
+        return bundle;
+    }
+
+    /** Converts a list of {@link MedicalDataSource}s back from a bundle. */
+    public static List<MedicalDataSource> toMedicalDataSources(Bundle bundle) {
+        return bundle.getParcelableArrayList(
+                MEDICAL_DATA_SOURCES_RESPONSE, MedicalDataSource.class);
     }
 
     /**

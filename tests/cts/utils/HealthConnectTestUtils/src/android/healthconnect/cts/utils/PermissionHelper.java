@@ -275,28 +275,6 @@ public final class PermissionHelper {
         }
     }
 
-    /**
-     * Sets the device config value for the duration of the supplier.
-     *
-     * <p>Kills the HC controller after each device config update as the most reliable way of making
-     * sure the controller picks up the updated value. Otherwise the callback which the controller
-     * uses to listen to device config changes might arrive late (and usually does).
-     */
-    public static <T> T runWithDeviceConfigForController(
-            String key, String value, ThrowingSupplier<T> supplier) throws Exception {
-        DeviceConfigRule rule = new DeviceConfigRule(key, value);
-        try {
-            rule.before();
-            killHealthConnectController();
-            return supplier.get();
-        } catch (Throwable e) {
-            throw new Exception(e);
-        } finally {
-            rule.after();
-            killHealthConnectController();
-        }
-    }
-
     /** Kills Health Connect controller. */
     private static void killHealthConnectController() {
         SystemUtil.runShellCommandOrThrow(

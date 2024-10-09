@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.tests.permissions.connectedapps
 
+
 import android.platform.test.annotations.EnableFlags
 import android.platform.test.flag.junit.SetFlagsRule
 import com.android.healthconnect.controller.deletion.api.DeleteAppDataUseCase as OldDeleteAppDataUseCase
@@ -33,8 +34,8 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission.Me
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteAppData
-import com.android.healthconnect.controller.selectabledeletion.api.DeleteAppDataUseCase
-import com.android.healthconnect.controller.shared.HealthPermissionReader
+ import com.android.healthconnect.controller.selectabledeletion.api.DeleteAppDataUseCase
+ import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.NOW
@@ -43,7 +44,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.di.FakeGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadExerciseRoute
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -94,7 +94,6 @@ class AppPermissionViewModelTest {
     private lateinit var loadAppPermissionsStatusUseCase: LoadAppPermissionsStatusUseCase
     private lateinit var appPermissionViewModel: AppPermissionViewModel
     @Inject lateinit var appInfoReader: AppInfoReader
-    @Inject lateinit var featureUtils: FeatureUtils
 
     private val readExercisePermission =
         FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.READ)
@@ -140,7 +139,6 @@ class AppPermissionViewModelTest {
                 getGrantedHealthPermissionsUseCase,
                 loadExerciseRoutePermissionUseCase,
                 healthPermissionReader,
-                featureUtils,
                 Dispatchers.Main,
             )
     }

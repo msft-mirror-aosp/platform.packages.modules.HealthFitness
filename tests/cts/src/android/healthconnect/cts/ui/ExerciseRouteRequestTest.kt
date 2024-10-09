@@ -29,12 +29,10 @@ import android.health.connect.datatypes.ExerciseSessionType
 import android.healthconnect.cts.lib.TestAppProxy
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
-import android.healthconnect.cts.lib.UiTestUtils.waitNotDisplayed
 import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
 import android.healthconnect.cts.utils.PermissionHelper.READ_EXERCISE_ROUTES
 import android.healthconnect.cts.utils.PermissionHelper.getDeclaredHealthPermissions
 import android.healthconnect.cts.utils.PermissionHelper.grantPermission
-import android.healthconnect.cts.utils.PermissionHelper.runWithDeviceConfigForController
 import android.healthconnect.cts.utils.PermissionHelper.runWithRevokedPermission
 import android.healthconnect.cts.utils.PermissionHelper.runWithUserFixedPermission
 import android.healthconnect.cts.utils.ProxyActivity
@@ -59,7 +57,6 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
         RevokedHealthPermissionRule(ROUTE_READER_WRITER_APP.getPackageName(), READ_EXERCISE_ROUTES)
 
     companion object {
-        private const val READ_ROUTES_ALL_FEATURE_FLAG = "exercise_routes_read_all_enable"
         private val ROUTE_READER_WRITER_APP =
             TestAppProxy.forPackageName("android.healthconnect.cts.testapp.readWritePerms.A")
 
@@ -399,31 +396,6 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
         assertThat(result.resultCode).isEqualTo(Activity.RESULT_CANCELED)
         val extras = result.resultData.extras!!
         assertThat(extras.keySet()).containsExactly(EXTRA_SESSION_ID)
-        assertThat(extras.getString(EXTRA_SESSION_ID)).isEqualTo(recordId)
-    }
-
-    @Test
-    @Ignore("b/322300333#comment5")
-    fun requestRoute_allowAllFeatureOff_allowAllNotDisplayed() {
-        val record = getExerciseSessionWithRoute()
-        val recordId = insertRecordAndGetId(record)
-        val requestIntent =
-            Intent(ACTION_REQUEST_EXERCISE_ROUTE).putExtra(EXTRA_SESSION_ID, recordId)
-
-        val result =
-            runWithDeviceConfigForController(READ_ROUTES_ALL_FEATURE_FLAG, "false") {
-                ROUTE_READER_WRITER_APP.startActivityForResult(requestIntent) {
-                    waitNotDisplayed(By.text("Allow all routes"))
-                    waitDisplayed(By.text("Don't allow"))
-                    clickOnText("Allow this route")
-                }
-            }
-
-        assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
-        val extras = result.resultData.extras!!
-        assertThat(extras.keySet()).containsExactly(EXTRA_EXERCISE_ROUTE, EXTRA_SESSION_ID)
-        assertThat(extras.getParcelable(EXTRA_EXERCISE_ROUTE, ExerciseRoute::class.java))
-            .isEqualTo(record.route)
         assertThat(extras.getString(EXTRA_SESSION_ID)).isEqualTo(recordId)
     }
 

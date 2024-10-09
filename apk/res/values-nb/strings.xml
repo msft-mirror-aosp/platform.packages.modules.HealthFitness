@@ -92,6 +92,17 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"bruke helsedataene dine"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Les forbrente kalorier"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Gir appen tillatelse til å lese forbrente kalorier"</string>
+    <string name="background_read_medical_title" msgid="378446129450196253">"lese alle data i bakgrunnen"</string>
+    <string name="background_read_medical_request_title" msgid="5388067032484069722">"Vil du gi <xliff:g id="APP_NAME">%1$s</xliff:g> tilgang til alle data i bakgrunnen?"</string>
+    <string name="background_read_medical_description" msgid="4205144207056391848">"Gi denne appen tilgang til trenings- og velværedata og helsejournaldata når du ikke bruker appen"</string>
+    <string name="background_read_medical_request_description" msgid="6135447220241108032">"Hvis du tillater det, har denne appen tilgang til trenings- og velværedata og helsejournaldata når du ikke bruker appen."</string>
+    <string name="historic_access_medical_title" msgid="1198466488695524014">"lese tidligere trenings- og velværedata"</string>
+    <string name="historic_access_medical_request_title" msgid="4927886483832141584">"Vil du gi <xliff:g id="APP_NAME">%1$s</xliff:g> tilgang til tidligere trenings- og velværedata?"</string>
+    <string name="historic_access_medical_description" msgid="513689388911992345">"Gi denne appen tilgang til data som ble lagt til før <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_medical_description_fallback" msgid="1596909285259037066">"Gi denne appen tilgang til alle tidligere data"</string>
+    <string name="historic_access_medical_request_description" msgid="6938665708764487963">"Hvis du tillater det, har denne appen tilgang til data som ble lagt til før <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_medical_request_description_fallback" msgid="1075934237674126677">"Hvis du tillater det, har denne appen tilgang til alle tidligere data."</string>
+    <string name="historic_access_medical_warning" msgid="6691110601538756473">"Ingen treningsdata leses for øyeblikket, fordi <xliff:g id="APP_NAME">%1$s</xliff:g> ikke har lesetillatelser"</string>
     <string name="background_read_title" msgid="5061383169517186234">"Bruk data i bakgrunnen"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"Vil du la <xliff:g id="APP_NAME">%1$s</xliff:g> bruke data i bakgrunnen?"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Gi denne appen tilgang til Health Connect-data når du ikke bruker appen"</string>
@@ -267,58 +278,43 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"hudtemperatur"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Les hudtemperatur"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Skriv hudtemperatur"</string>
-    <!-- no translation found for all_medical_data_uppercase_label (2380759160541898783) -->
-    <skip />
-    <!-- no translation found for all_medical_data_lowercase_label (6293814928992081842) -->
-    <skip />
-    <!-- no translation found for all_medical_data_content_description (4846586780533295022) -->
-    <skip />
-    <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"Allergier"</string>
-    <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"allergier"</string>
-    <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"Lesing av allergier"</string>
-    <!-- no translation found for conditions_uppercase_label (5260404343402770877) -->
-    <skip />
-    <!-- no translation found for conditions_lowercase_label (2678248918552246997) -->
-    <skip />
-    <!-- no translation found for conditions_content_description (3230552343616193829) -->
-    <skip />
-    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Vaksinering"</string>
-    <string name="immunization_lowercase_label" msgid="6464922369026887687">"vaksinering"</string>
-    <string name="immunization_content_description" msgid="2910674919337229803">"Les vaksinering"</string>
-    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"Laboratorieresultater"</string>
-    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"laboratorieresultater"</string>
-    <string name="laboratory_results_content_description" msgid="5882338877203692484">"Lesing av laboratorieresultater"</string>
+    <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Alle helsejournaler"</string>
+    <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"alle helsejournaler"</string>
+    <string name="all_medical_data_content_description" msgid="4846586780533295022">"Skriv alle helsejournaler"</string>
+    <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Allergier"</string>
+    <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"allergier"</string>
+    <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Lesing av allergier"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Tilstander"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"tilstander"</string>
+    <string name="conditions_content_description" msgid="3230552343616193829">"Les tilstander"</string>
+    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Vaksiner"</string>
+    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"vaksiner"</string>
+    <string name="immunizations_content_description" msgid="2239351886343062194">"Lesing av vaksiner"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Laboratorieresultater"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"laboratorieresultater"</string>
+    <string name="laboratory_results_content_description" msgid="7888886103734085841">"Lesing av laboratorieresultater"</string>
     <string name="medications_uppercase_label" msgid="4783281053427990225">"Medisiner"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"medisiner"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"Les medisiner"</string>
-    <!-- no translation found for personal_details_uppercase_label (7241635933310394120) -->
-    <skip />
-    <!-- no translation found for personal_details_lowercase_label (1907848447611775151) -->
-    <skip />
-    <!-- no translation found for personal_details_content_description (3191211304673909831) -->
-    <skip />
-    <!-- no translation found for practitioner_details_uppercase_label (2940667649808082510) -->
-    <skip />
-    <!-- no translation found for practitioner_details_lowercase_label (8195591077717971542) -->
-    <skip />
-    <!-- no translation found for practitioner_details_content_description (8775396516928504185) -->
-    <skip />
+    <string name="personal_details_uppercase_label" msgid="7241635933310394120">"Personlige opplysninger"</string>
+    <string name="personal_details_lowercase_label" msgid="1907848447611775151">"personlige opplysninger"</string>
+    <string name="personal_details_content_description" msgid="3191211304673909831">"Les personlige opplysninger"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Informasjon om lege"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"informasjon om lege"</string>
+    <string name="practitioner_details_content_description" msgid="8775396516928504185">"Les informasjon om lege"</string>
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Graviditet"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"graviditet"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"Lesing av graviditet"</string>
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"Prosedyrer"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"prosedyrer"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Lesing av prosedyrer"</string>
-    <string name="social_history_uppercase_label" msgid="1731364502071035544">"Sosiallogg"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Sosiallogg"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"sosiallogg"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"Lesing av sosialloggen"</string>
-    <!-- no translation found for visits_uppercase_label (8532619758336375886) -->
-    <skip />
-    <!-- no translation found for visits_lowercase_label (2545887061364564151) -->
-    <skip />
-    <!-- no translation found for visits_content_description (6336796415049565697) -->
-    <skip />
-    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"Vitale tegn"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"Besøk"</string>
+    <string name="visits_lowercase_label" msgid="2545887061364564151">"besøk"</string>
+    <string name="visits_content_description" msgid="6336796415049565697">"Les besøk"</string>
+    <string name="vital_signs_uppercase_label" msgid="289862347143374640">"Vitale tegn"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"vitale tegn"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"Lesing av vitale tegn"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Oppmerksomt nærvær"</string>
@@ -335,8 +331,21 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Hvis du gir lesetilgang, kan appen lese nye data og data fra de siste 30 dagene"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Hvis du gir lesetilgang, kan appen lese nye og tidligere data"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Vil du gi <xliff:g id="APP_NAME">%1$s</xliff:g> tilgang til Health Connect?"</string>
-    <string name="request_permissions_rationale" msgid="6154280355215802538">"Du kan finne ut hvordan <xliff:g id="APP_NAME">%1$s</xliff:g> håndterer dataene dine, i utviklerens <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
+    <!-- no translation found for request_permissions_rationale (2642076968583316986) -->
+    <skip />
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"personvernregler"</string>
+    <!-- no translation found for medical_request_header (2300521519021510027) -->
+    <skip />
+    <!-- no translation found for medical_request_header_desc (5721171305631983663) -->
+    <skip />
+    <!-- no translation found for medical_request_about_health_records (7204918218748362687) -->
+    <skip />
+    <!-- no translation found for medical_request_data_to_share (2208383833492573960) -->
+    <skip />
+    <!-- no translation found for medical_request_share (6237397362923728514) -->
+    <skip />
+    <!-- no translation found for medical_request_footer (6533749932770903089) -->
+    <skip />
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Vil du fjerne alle tillatelsene?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Fjern alle"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan ikke lenger lese eller skrive data fra Health Connect.\n\nDette påvirker ikke andre tillatelser appen har, for eksempel kamera, mikrofon eller posisjon."</string>
@@ -344,9 +353,15 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan ikke lenger lese eller skrive data fra Health Connect, inkludert tidligere data.\n\nDette påvirker ikke andre tillatelser appen har, for eksempel posisjon, kamera eller mikrofon."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan ikke lenger lese eller skrive data fra Health Connect, inkludert bakgrunnsdata eller tidligere data.\n\nDette påvirker ikke andre tillatelser appen har, for eksempel posisjon, kamera eller mikrofon."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Slett også <xliff:g id="APP_NAME">%1$s</xliff:g>-data fra Health Connect"</string>
-    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"Vil du fjerne alle tillatelser?"</string>
-    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Vil du fjerne alle tillatelser til helsejournalen?"</string>
     <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"Vil du fjerne alle tillatelser for trening og velvære?"</string>
+    <string name="disconnect_all_fitness_permissions_dialog_checkbox" msgid="8808559689899914478">"Slett også treningsdata fra <xliff:g id="APP_NAME">%1$s</xliff:g> fra Health Connect"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Vil du fjerne alle tillatelser til helsejournalen?"</string>
+    <string name="disconnect_all_medical_permissions_dialog_checkbox" msgid="7782158941871987263">"Slett også helsejournalen fra <xliff:g id="APP_NAME">%1$s</xliff:g> fra Health Connect"</string>
+    <string name="disconnect_all_fitness_or_medical_no_additional_permissions_dialog_message" msgid="6610810945930258582">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan ikke lenger lese eller skrive disse dataene fra Health Connect.\n\nDette påvirker ikke andre tillatelser appen kanskje har, for eksempel kamera, mikrofon eller posisjon."</string>
+    <string name="disconnect_all_fitness_or_medical_and_background_permissions_dialog_message" msgid="7138878481421234556">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan ikke lenger lese eller skrive disse dataene fra Health Connect, inkludert bakgrunnsdata.\n\nDette påvirker ikke andre tillatelser appen kanskje har, for eksempel kamera, mikrofon eller posisjon."</string>
+    <string name="disconnect_all_fitness_or_medical_and_historical_permissions_dialog_message" msgid="1519496566456028625">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan ikke lenger lese eller skrive disse dataene fra Health Connect, inkludert tidligere data.\n\nDette påvirker ikke andre tillatelser appen kanskje har, for eksempel kamera, mikrofon eller posisjon."</string>
+    <string name="disconnect_all_fitness_or_medical_and_additional_permissions_dialog_message" msgid="5147728456578218902">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan ikke lenger lese eller skrive disse dataene fra Health Connect, inkludert bakgrunnsdata og tidligere data.\n\nDette påvirker ikke andre tillatelser appen kanskje har, for eksempel kamera, mikrofon eller posisjon."</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"Vil du fjerne alle tillatelser?"</string>
     <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan ikke lenger lese eller skrive data fra Health Connect.\n\nDette påvirker ikke andre tillatelser appen kanskje har, for eksempel kamera, mikrofon eller posisjon."</string>
     <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan ikke lenger lese eller skrive data fra Health Connect, inkludert bakgrunnsdata.\n\nDette påvirker ikke andre tillatelser appen kanskje har, for eksempel kamera, mikrofon eller posisjon."</string>
     <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan ikke lenger lese eller skrive data fra Health Connect, inkludert tidligere data.\n\nDette påvirker ikke andre tillatelser appen kanskje har, for eksempel kamera, mikrofon eller posisjon."</string>
@@ -357,20 +372,13 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Valgt dag"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Forrige dag"</string>
     <string name="default_error" msgid="7966868260616403475">"Noe gikk galt. Prøv igjen."</string>
-    <!-- no translation found for unkwown_resource (7932225227431922125) -->
-    <skip />
-    <!-- no translation found for raw_fhir_title (1295744907036066319) -->
-    <skip />
-    <!-- no translation found for raw_fhir_open_bracket (7974657451368655325) -->
-    <skip />
-    <!-- no translation found for raw_fhir_closed_bracket (9084379463440675078) -->
-    <skip />
-    <!-- no translation found for raw_fhir_field_value (369633095565031835) -->
-    <skip />
-    <!-- no translation found for raw_fhir_value (8627152854130338531) -->
-    <skip />
-    <!-- no translation found for raw_fhir_content_description (1491420802097635439) -->
-    <skip />
+    <string name="unkwown_resource" msgid="7932225227431922125">"Ukjent ressurs"</string>
+    <string name="raw_fhir_title" msgid="1295744907036066319">"Kildedata"</string>
+    <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>Venstre krøllparentes."</string>
+    <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>Høyre krøllparentes."</string>
+    <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> feltverdi for <xliff:g id="FIELD">%2$s</xliff:g>"</string>
+    <string name="raw_fhir_value" msgid="8627152854130338531">"<xliff:g id="PREFIX">%1$s</xliff:g>: <xliff:g id="VALUE">%2$s</xliff:g>."</string>
+    <string name="raw_fhir_content_description" msgid="1491420802097635439">"Detaljert kildekode: <xliff:g id="SOURCE_CODE">%1$s</xliff:g>"</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Apper med denne tillatelsen kan lese og skrive helse- og treningsdata."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Kontroller hvilke apper som har tilgang til dataene som er lagret i Health Connect. Trykk på en app for å se hvilke data den kan lese eller skrive."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Har tilgang"</string>
@@ -406,7 +414,7 @@
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Trening, søvn, ernæring og annet"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Helsejournaler"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"helsejournaler"</string>
-    <string name="medical_permissions_summary" msgid="5553982055903211592">"Labresultater/medisiner/vaksinering m.m."</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"Lab.-resultater/medisiner/vaksiner m.m."</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Fjernet apptillatelser"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect fjernet tillatelser for <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect fjernet tillatelser for <xliff:g id="APP_DATA_0">%1$s</xliff:g> og <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -498,10 +506,8 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Gå til Play Butikk"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Kom i gang med Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect lagrer helse- og treningsdataene dine, slik at du enkelt kan synkronisere de forskjellige appene på enheten"</string>
-    <!-- no translation found for onboarding_description_health_records (6816666836571797870) -->
-    <skip />
-    <!-- no translation found for onboarding_description_with_health_connect (8751881078749676542) -->
-    <skip />
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect lagrer og synkroniserer helse- og treningsdataene dine fra forskjellige apper.\n\n"<b>"Trenings- og velværedata,"</b>" inkludert treningsøkter, skritt, ernæring, søvn med mer\n\n"<b>"Helsejournaler,"</b>" inkludert vaksiner, laboratorieresultater med mer"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Med Health Connect kan du"</string>
     <string name="share_data" msgid="3481932156368883946">"Del data med appene"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Velg dataene hver app kan lese eller skrive til Health Connect"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Innstillinger og personvern"</string>
@@ -1086,6 +1092,8 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Gi minst én lesetillatelse for å slå på tilgang i bakgrunnen eller tilgang til tidligere data for denne appen"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Gi minst én lesetillatelse for å slå på tilgang i bakgrunnen for denne appen"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Gi minst én lesetillatelse for å slå på tilgang til tidligere data for denne appen"</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> har allerede tilgang til tidligere data for helsejournalen din. For å endre dette, slå av helsejournal-tillatelser for denne appen"</string>
+    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"Administrer helsejournal-tillatelser"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Begynn å bruke Health Connect"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Synkroniser de første appene dine for å dele helse- og treningsdata mellom dem"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Konfigurer"</string>
@@ -1096,42 +1104,23 @@
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Finn flere apper å synkronisere med <xliff:g id="APP_NAME">%s</xliff:g> via Health Connect"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Se i appbutikken"</string>
     <string name="select_all" msgid="837499881590001166">"Merk alt"</string>
-    <!-- no translation found for deletion_confirmation_dialog_body (7643182907084645805) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (2103387413531373305) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (2466281529240054537) -->
-    <skip />
-    <!-- no translation found for all_app_data_selected_deletion_confirmation_dialog (1077157006579195958) -->
-    <skip />
-    <!-- no translation found for some_app_data_selected_deletion_confirmation_dialog (5378172524112070270) -->
-    <skip />
-    <!-- no translation found for all_entries_selected_day_deletion_confirmation_dialog (2887646600541520444) -->
-    <skip />
-    <!-- no translation found for all_entries_selected_week_deletion_confirmation_dialog (6759608395185369048) -->
-    <skip />
-    <!-- no translation found for all_entries_selected_month_deletion_confirmation_dialog (6030161837387559132) -->
-    <skip />
-    <!-- no translation found for some_entries_selected_day_deletion_confirmation_dialog (3481363886097542565) -->
-    <skip />
-    <!-- no translation found for some_entries_selected_week_deletion_confirmation_dialog (7150217982297131340) -->
-    <skip />
-    <!-- no translation found for some_entries_selected_month_deletion_confirmation_dialog (3712014725077445591) -->
-    <skip />
-    <!-- no translation found for one_entry_selected_deletion_confirmation_dialog (4642573082594021789) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_day_deletion_confirmation_dialog (2342034541791960151) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_week_deletion_confirmation_dialog (24289763841770386) -->
-    <skip />
-    <!-- no translation found for all_app_entries_selected_month_deletion_confirmation_dialog (3240581815583269052) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_day_deletion_confirmation_dialog (1030347169774815676) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_week_deletion_confirmation_dialog (8009352719322914060) -->
-    <skip />
-    <!-- no translation found for some_app_entries_selected_month_deletion_confirmation_dialog (6617805533334875710) -->
-    <skip />
-    <!-- no translation found for one_app_entry_selected_deletion_confirmation_dialog (7101939753210640660) -->
-    <skip />
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Tilknyttede apper mister muligheten til å lese disse dataene fra Health Connect"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Vil du slette alle data permanent?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Vil du slette de valgte dataene permanent?"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Vil du slette alle <xliff:g id="APP_NAME">%s</xliff:g>-data permanent?"</string>
+    <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Vil du slette de valgte <xliff:g id="APP_NAME">%s</xliff:g>-dataene permanent?"</string>
+    <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Vil du slette alle oppføringer for <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> permanent?"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Vil du slette alle oppføringer for uken som startet <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>, permanent?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Vil du slette alle oppføringer for <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> permanent?"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Vil du slette de valgte oppføringene for <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> permanent?"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Vil du slette de valgte oppføringene for uken som startet <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>, permanent?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Vil du slette de valgte oppføringene for <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> permanent?"</string>
+    <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Vil du slette denne oppføringen permanent?"</string>
+    <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"Vil du slette alle <xliff:g id="APP_NAME">%1$s</xliff:g>-oppføringer for <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> permanent?"</string>
+    <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Vil du slette alle <xliff:g id="APP_NAME">%1$s</xliff:g>-oppføringer for uken som startet <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>, permanent?"</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Vil du slette alle <xliff:g id="APP_NAME">%1$s</xliff:g>-oppføringer for <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> permanent?"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Vil du slette de valgte <xliff:g id="APP_NAME">%1$s</xliff:g>-oppføringene for <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> permanent?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Vil du slette de valgte <xliff:g id="APP_NAME">%1$s</xliff:g>-oppføringene for uken som startet <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>, permanent?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Vil du slette de valgte <xliff:g id="APP_NAME">%1$s</xliff:g>-oppføringene for <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> permanent?"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Vil du slette denne <xliff:g id="APP_NAME">%s</xliff:g>-oppføringen permanent?"</string>
 </resources>
