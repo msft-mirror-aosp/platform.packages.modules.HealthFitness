@@ -17,6 +17,7 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 
 import android.content.Intent
 import android.content.Intent.*
+import android.platform.test.annotations.DisableFlags
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -55,15 +56,14 @@ import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.TestActivity
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
-import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
 import com.android.healthconnect.controller.utils.logging.DisconnectAppDialogElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthfitness.flags.Flags
 import com.android.settingslib.widget.MainSwitchPreference
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
@@ -73,7 +73,6 @@ import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
-import javax.inject.Inject
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -92,7 +91,6 @@ import org.mockito.kotlin.whenever
 class MedicalAppFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
 
     @BindValue val viewModel: AppPermissionViewModel = mock()
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
@@ -107,7 +105,6 @@ class MedicalAppFragmentTest {
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
         navHostController = TestNavHostController(context)
         hiltRule.inject()
-        (fakeFeatureUtils as FakeFeatureUtils).setIsNewInformationArchitectureEnabled(false)
 
         whenever(viewModel.revokeAllHealthPermissionsState).then { MutableLiveData(NotStarted) }
         whenever(viewModel.allMedicalPermissionsGranted).then { MediatorLiveData(false) }

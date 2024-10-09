@@ -16,8 +16,6 @@
 
 package android.healthconnect.cts.utils;
 
-import static android.Manifest.permission.READ_DEVICE_CONFIG;
-import static android.Manifest.permission.WRITE_ALLOWLISTED_DEVICE_CONFIG;
 import static android.health.connect.HealthDataCategory.ACTIVITY;
 import static android.health.connect.HealthDataCategory.BODY_MEASUREMENTS;
 import static android.health.connect.HealthDataCategory.CYCLE_TRACKING;
@@ -140,7 +138,6 @@ import android.healthconnect.test.app.TestAppReceiver;
 import android.os.Bundle;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
-import android.provider.DeviceConfig;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -944,20 +941,6 @@ public final class TestUtils {
     @NonNull
     public static HealthConnectManager getHealthConnectManager(Context context) {
         return requireNonNull(context.getSystemService(HealthConnectManager.class));
-    }
-
-    public static String getDeviceConfigValue(String key) {
-        return runWithShellPermissionIdentity(
-                () -> DeviceConfig.getProperty(DeviceConfig.NAMESPACE_HEALTH_FITNESS, key),
-                READ_DEVICE_CONFIG);
-    }
-
-    public static void setDeviceConfigValue(String key, String value) {
-        runWithShellPermissionIdentity(
-                () ->
-                        DeviceConfig.setProperty(
-                                DeviceConfig.NAMESPACE_HEALTH_FITNESS, key, value, false),
-                WRITE_ALLOWLISTED_DEVICE_CONFIG);
     }
 
     /** Reads {@link StepsRecord}s using record IDs. */

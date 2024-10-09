@@ -22,6 +22,7 @@
     <string name="home_subtitle" description="Description on the home screen of the app. [CHAR_LIMIT=NONE]">Manage the health and fitness data on your device, and control which apps can access it</string>
     <string name="data_title" description="Label for a button that takes the user to the data management screens. [CHAR_LIMIT=40]">Data and access</string>
     <string name="browse_medical_data" description="Label for a button that navigates to a screen with medical data. [CHAR_LIMIT=50]">Browse health records</string>
+    <string name="browse_medical_data_subtitle" description="Description for a button that navigates to a screen with medical data. [CHAR_LIMIT=NONE]">View your health records and which apps can access them</string>
     <string name="all_categories_title" description="Title of a screen that lists all health data categories. [CHAR_LIMIT=40]">All categories</string>
     <string name="see_all_categories" description="Label for a button that takes the user to the all categories screens. [CHAR_LIMIT=40]">See all categories</string>
     <string name="no_data" description="Label that is displayed when the given health data category does not have any data.">No data</string>
@@ -551,6 +552,7 @@
     <string name="app_access_title" description="Title of screen for a user to manage the health and fitness data a particular app has access to [CHAR_LIMIT=40]">App access</string>
     <string name="connected_apps_empty_list_section_title" description="Title of section when there are no connected apps">You don\'t currently have any compatible apps installed</string>
     <string name="additional_access_label" description="Label of a button that opens additional permissions access for an app. [CHAR_LIMIT=40]">Additional access</string>
+    <string name="additional_access_summary" description="Summary of a button that opens the additional permissions screen. [CHAR_LIMIT=40]">Past data, background data</string>
     <string name="removed_additional_permissions_toast" description="Message letting the user know that additional permissions have also been removed for this app">Removed additional permissions for this app</string>
     <string name="permissions_header" description="Title shown for section that lists permissions. [CHAR_LIMIT=40]">Permissions</string>
     <string name="fitness_permissions" description="Label of a button that opens the fitness permissions screen. [CHAR_LIMIT=40]">Fitness and wellness</string>
@@ -769,6 +771,9 @@
     <!-- region Data entries -->
     <string name="data_entry_header_with_source_app" translatable="false"><xliff:g example="14:41" id="time">%1$s</xliff:g> • <xliff:g example="Run tracker" id="app_data">%2$s</xliff:g></string>
     <string name="data_entry_header_without_source_app" translatable="false"><xliff:g example="14:41" id="time">%1$s</xliff:g></string>
+    <string name="data_entry_header_date_range_with_source_app" translatable="false"><xliff:g example="Nov 11 - Nov 17" id="date_range">%1$s</xliff:g> • <xliff:g example="Run tracker" id="app_data">%2$s</xliff:g></string>
+    <string name="data_entry_header_date_range_without_source_app" translatable="false"><xliff:g example="Nov 11 - Nov 17" id="date_range">%1$s</xliff:g></string>
+
     <string name="data_point_action_content_description" description="Content description for the menu button of an individual data entry [CHAR LIMIT=NONE]">Delete data entry <xliff:g example="1000 steps" id="entry_to_delete">%s</xliff:g></string>
     <string name="delete_data_point" description="Menu option for deleting an individual data entry [CHAR LIMIT=50]">Delete entry <xliff:g example="1000 steps" id="entry_to_delete">%s</xliff:g></string>
     <string name="aggregation_total" description="Description before the total value. For instance, Total: 1000 steps. [CHAR LIMIT=50]">Total: <xliff:g example="1000 steps" id="total_value">%s</xliff:g></string>
@@ -831,8 +836,10 @@
     <string name="flow_light" description="How heavy the user's menstruation flow was - light. [CHAR LIMIT=50]">Light flow</string>
     <string name="flow_medium" description="How heavy the user's menstruation flow was - medium. [CHAR LIMIT=50]">Medium flow</string>
     <string name="flow_heavy" description="How heavy the user's menstruation flow was - heavy. [CHAR LIMIT=50]">Heavy flow</string>
+    <string name="flow_unknown" description="How heavy the user's menstruation flow was - unknown. [CHAR LIMIT=50]">Unknown flow</string>
 
     <string name="period_day" description="Which day of the user's menstruation period it was. [CHAR LIMIT=50]">Period day <xliff:g example="2" id="day">%1$d</xliff:g> of <xliff:g example="5" id="total_length">%2$d</xliff:g></string>
+    <string name="period_length" description="A user's period entry and how many days it lasted. [CHAR_LIMIT=50]">{count, plural, =1 {Period (1 day)} other {Period (# days)}}</string>
 
     <string name="ovulation_positive" description="The positive result of a user's ovulation test. [CHAR LIMIT=50]">Positive</string>
     <string name="ovulation_negative" description="The negative result of a user's ovulation test. [CHAR LIMIT=50]">Negative</string>

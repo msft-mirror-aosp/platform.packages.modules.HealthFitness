@@ -82,8 +82,8 @@ class MedicalEntryFormatterTest {
         assertThat(result)
             .isEqualTo(
                 FormattedEntry.FormattedMedicalDataEntry(
-                    header = "App A Data Source • Health Connect test app",
-                    headerA11y = "App A Data Source • Health Connect test app",
+                    header = "Health Connect test app • App A Data Source",
+                    headerA11y = "Health Connect test app • App A Data Source",
                     title = "Tdap",
                     titleA11y = "Tdap",
                     medicalResourceId = TEST_MEDICAL_RESOURCE_IMMUNIZATION_LONG.id,

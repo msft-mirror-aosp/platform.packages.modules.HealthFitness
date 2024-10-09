@@ -92,6 +92,17 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"നിങ്ങളുടെ ആരോഗ്യ ഡാറ്റ ആക്സസ് ചെയ്യുക"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"കത്തിച്ച കലോറി റീഡ് ചെയ്യുക"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"കത്തിച്ചുകളഞ്ഞ കലോറി സംബന്ധിച്ച ഡാറ്റ റീഡ് ചെയ്യാൻ ആപ്പിനെ അനുവദിക്കുന്നു"</string>
+    <string name="background_read_medical_title" msgid="378446129450196253">"പശ്ചാത്തലത്തിൽ എല്ലാ ഡാറ്റയും ആക്സസ് ചെയ്യുക"</string>
+    <string name="background_read_medical_request_title" msgid="5388067032484069722">"പശ്ചാത്തലത്തിൽ എല്ലാ ഡാറ്റയും ആക്‌സസ് ചെയ്യാൻ <xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിനെ അനുവദിക്കണോ?"</string>
+    <string name="background_read_medical_description" msgid="4205144207056391848">"നിങ്ങൾ ആപ്പ് ഉപയോഗിക്കാത്തപ്പോൾ ഫിറ്റ്‌നസ്, ആരോഗ്യക്ഷമതാ ഡാറ്റയും ആരോഗ്യ റെക്കോർഡുകളുടെ ഡാറ്റയും ആക്‌സസ് ചെയ്യാൻ ഈ ആപ്പിനെ അനുവദിക്കുക"</string>
+    <string name="background_read_medical_request_description" msgid="6135447220241108032">"നിങ്ങൾ അനുവദിക്കുകയാണെങ്കിൽ, ആപ്പ് ഉപയോഗിക്കാത്തപ്പോൾ ഈ ആപ്പിന് ഫിറ്റ്‌നസ്, ആരോഗ്യക്ഷമതാ ഡാറ്റയും ആരോഗ്യ റെക്കോർഡുകളുടെ ഡാറ്റയും ആക്‌സസ് ചെയ്യാനാകും."</string>
+    <string name="historic_access_medical_title" msgid="1198466488695524014">"മുമ്പത്തെ ഫിറ്റ്‌നസ്, ആരോഗ്യക്ഷമതാ ഡാറ്റ ആക്സസ് ചെയ്യുക"</string>
+    <string name="historic_access_medical_request_title" msgid="4927886483832141584">"മുമ്പത്തെ ഫിറ്റ്‌നസ്, ആരോഗ്യക്ഷമതാ ഡാറ്റ ആക്സസ് ചെയ്യാൻ <xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിനെ അനുവദിക്കണോ?"</string>
+    <string name="historic_access_medical_description" msgid="513689388911992345">"<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>-ന് മുമ്പ് ചേർത്ത ഡാറ്റ ആക്സസ് ചെയ്യാൻ ഈ ആപ്പിനെ അനുവദിക്കുക"</string>
+    <string name="historic_access_medical_description_fallback" msgid="1596909285259037066">"മുമ്പത്തെ എല്ലാ ഡാറ്റയും ആക്സസ് ചെയ്യാൻ ഈ ആപ്പിനെ അനുവദിക്കുക"</string>
+    <string name="historic_access_medical_request_description" msgid="6938665708764487963">"നിങ്ങൾ അനുവദിക്കുകയാണെങ്കിൽ, ഈ ആപ്പിന് <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>-ന് മുമ്പ് ചേർത്ത ഡാറ്റ ആക്‌സസ് ചെയ്യാനാകും."</string>
+    <string name="historic_access_medical_request_description_fallback" msgid="1075934237674126677">"നിങ്ങൾ അനുവദിക്കുകയാണെങ്കിൽ, ഈ ആപ്പിന് മുമ്പത്തെ എല്ലാ ഡാറ്റയും ആക്സസ് ചെയ്യാനാകും."</string>
+    <string name="historic_access_medical_warning" msgid="6691110601538756473">"<xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിന് റീഡ് ചെയ്യാനുള്ള അനുമതിയൊന്നും ഓണായിരിക്കാത്തതിനാൽ നിലവിൽ ഫിറ്റ്‌നസ് ഡാറ്റയൊന്നും റീഡ് ചെയ്യുന്നില്ല"</string>
     <string name="background_read_title" msgid="5061383169517186234">"പശ്ചാത്തലത്തിൽ ഡാറ്റ ആക്‌സസ് ചെയ്യുക"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"പശ്ചാത്തലത്തിൽ ഡാറ്റ ആക്‌സസ് ചെയ്യാൻ <xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിനെ അനുവദിക്കണോ?"</string>
     <string name="background_read_description" msgid="3203594555849969283">"നിങ്ങൾ ആപ്പ് ഉപയോഗിക്കാത്തപ്പോൾ Health Connect ഡാറ്റ ആക്‌സസ് ചെയ്യാൻ ഈ ആപ്പിനെ അനുവദിക്കുക"</string>
@@ -270,52 +281,40 @@
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"എല്ലാ ആരോഗ്യ റെക്കോർഡുകളും"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"എല്ലാ ആരോഗ്യ റെക്കോർഡുകളും"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"എല്ലാ ആരോഗ്യ റെക്കോർഡുകളും എഴുതുക"</string>
-    <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"അലർജികൾ"</string>
-    <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"അലർജികൾ"</string>
-    <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"അലർജി സംബന്ധിച്ച ഡാറ്റ വായിക്കുക"</string>
-    <!-- no translation found for conditions_uppercase_label (5260404343402770877) -->
-    <skip />
-    <!-- no translation found for conditions_lowercase_label (2678248918552246997) -->
-    <skip />
-    <!-- no translation found for conditions_content_description (3230552343616193829) -->
-    <skip />
-    <string name="immunization_uppercase_label" msgid="1467176749064014020">"പ്രതിരോധ കുത്തിവയ്പ്പ്"</string>
-    <string name="immunization_lowercase_label" msgid="6464922369026887687">"പ്രതിരോധ കുത്തിവയ്പ്പ്"</string>
-    <string name="immunization_content_description" msgid="2910674919337229803">"പ്രതിരോധ കുത്തിവയ്പ്പ് സംബന്ധിച്ച ഡാറ്റ വായിക്കുക"</string>
-    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"ലബോറട്ടറി ഫലങ്ങൾ"</string>
-    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"ലബോറട്ടറി ഫലങ്ങൾ"</string>
-    <string name="laboratory_results_content_description" msgid="5882338877203692484">"ലബോറട്ടറി ഫലങ്ങൾ റീഡ് ചെയ്യുക"</string>
+    <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"അലർജികൾ"</string>
+    <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"അലർജികൾ"</string>
+    <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"അലർജി സംബന്ധിച്ച ഡാറ്റ വായിക്കുക"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"വ്യവസ്ഥകൾ"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"വ്യവസ്ഥകൾ"</string>
+    <string name="conditions_content_description" msgid="3230552343616193829">"വ്യവസ്ഥകൾ വായിക്കുക"</string>
+    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"വാക്‌സിനുകൾ"</string>
+    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"വാക്‌സിനുകൾ"</string>
+    <string name="immunizations_content_description" msgid="2239351886343062194">"വാക്‌സിനുകൾ സംബന്ധിച്ച ഡാറ്റ റീഡ് ചെയ്യുക"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"ലാബ് ഫലങ്ങൾ"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"ലാബ് ഫലങ്ങൾ"</string>
+    <string name="laboratory_results_content_description" msgid="7888886103734085841">"ലാബ് ഫലങ്ങൾ സംബന്ധിച്ച ഡാറ്റ റീഡ് ചെയ്യുക"</string>
     <string name="medications_uppercase_label" msgid="4783281053427990225">"മരുന്നുകൾ"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"മരുന്നുകൾ"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"മരുന്നുകളുടെ ഡാറ്റ റീഡ് ചെയ്യുക"</string>
-    <!-- no translation found for personal_details_uppercase_label (7241635933310394120) -->
-    <skip />
-    <!-- no translation found for personal_details_lowercase_label (1907848447611775151) -->
-    <skip />
-    <!-- no translation found for personal_details_content_description (3191211304673909831) -->
-    <skip />
-    <!-- no translation found for practitioner_details_uppercase_label (2940667649808082510) -->
-    <skip />
-    <!-- no translation found for practitioner_details_lowercase_label (8195591077717971542) -->
-    <skip />
-    <!-- no translation found for practitioner_details_content_description (8775396516928504185) -->
-    <skip />
+    <string name="personal_details_uppercase_label" msgid="7241635933310394120">"വ്യക്തിപരമായ വിശദാംശങ്ങൾ"</string>
+    <string name="personal_details_lowercase_label" msgid="1907848447611775151">"വ്യക്തിപരമായ വിശദാംശങ്ങൾ"</string>
+    <string name="personal_details_content_description" msgid="3191211304673909831">"വ്യക്തിപരമായ വിശദാംശങ്ങൾ വായിക്കുക"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"പ്രാക്ടീഷണറെ സംബന്ധിച്ച വിശദാംശങ്ങൾ"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"പ്രാക്ടീഷണറെ സംബന്ധിച്ച വിശദാംശങ്ങൾ"</string>
+    <string name="practitioner_details_content_description" msgid="8775396516928504185">"പ്രാക്ടീഷണറെ സംബന്ധിച്ച വിശദാംശങ്ങൾ വായിക്കുക"</string>
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"ഗർഭകാലം"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"ഗർഭകാലം"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"ഗർഭകാല ഡാറ്റ റീഡ് ചെയ്യുക"</string>
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"നടപടിക്രമങ്ങൾ"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"നടപടിക്രമങ്ങൾ"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"നടപടിക്രമങ്ങൾ റീഡ് ചെയ്യുക"</string>
-    <string name="social_history_uppercase_label" msgid="1731364502071035544">"സാമൂഹിക ചരിത്രം"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"ജീവിതരീതി സംബന്ധിച്ച ഡാറ്റ"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"സാമൂഹിക ചരിത്രം"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"സാമൂഹിക ചരിത്രം റീഡ് ചെയ്യുക"</string>
-    <!-- no translation found for visits_uppercase_label (8532619758336375886) -->
-    <skip />
-    <!-- no translation found for visits_lowercase_label (2545887061364564151) -->
-    <skip />
-    <!-- no translation found for visits_content_description (6336796415049565697) -->
-    <skip />
-    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"പ്രധാന ആരോഗ്യ വിവരങ്ങൾ"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"സന്ദർശനങ്ങൾ"</string>
+    <string name="visits_lowercase_label" msgid="2545887061364564151">"സന്ദർശനങ്ങൾ"</string>
+    <string name="visits_content_description" msgid="6336796415049565697">"സന്ദർശനങ്ങൾ വായിക്കുക"</string>
+    <string name="vital_signs_uppercase_label" msgid="289862347143374640">"പ്രധാന ആരോഗ്യ വിവരങ്ങൾ"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"പ്രധാന ആരോഗ്യ വിവരങ്ങൾ"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"പ്രധാന ആരോഗ്യ വിവരങ്ങൾ റീഡ് ചെയ്യുക"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"ഏകാഗ്രത"</string>
@@ -332,8 +331,21 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"നിങ്ങൾ റീഡ് ചെയ്യാനുള്ള ആക്‌സസ് നൽകിയാൽ, പുതിയ ഡാറ്റയും കഴിഞ്ഞ 30 ദിവസത്തെ ഡാറ്റയും ആപ്പിന് റീഡ് ചെയ്യാനാകും"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"നിങ്ങൾ റീഡ് ആക്‌സസ് നൽകിയാൽ, പുതിയ ഡാറ്റയും മുമ്പത്തെ ഡാറ്റയും ആപ്പിന് റീഡ് ചെയ്യാനാകും"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Health Connect ആക്‌സസ് ചെയ്യാൻ <xliff:g id="APP_NAME">%1$s</xliff:g> ആപ്പിനെ അനുവദിക്കണോ?"</string>
-    <string name="request_permissions_rationale" msgid="6154280355215802538">"നിങ്ങളുടെ ഡാറ്റ <xliff:g id="APP_NAME">%1$s</xliff:g> കൈകാര്യം ചെയ്യുന്നത് എങ്ങനെയെന്ന് ഡെവലപ്പറുടെ <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> -യിൽ നിന്ന് മനസ്സിലാക്കാം"</string>
+    <!-- no translation found for request_permissions_rationale (2642076968583316986) -->
+    <skip />
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"സ്വകാര്യതാ നയം"</string>
+    <!-- no translation found for medical_request_header (2300521519021510027) -->
+    <skip />
+    <!-- no translation found for medical_request_header_desc (5721171305631983663) -->
+    <skip />
+    <!-- no translation found for medical_request_about_health_records (7204918218748362687) -->
+    <skip />
+    <!-- no translation found for medical_request_data_to_share (2208383833492573960) -->
+    <skip />
+    <!-- no translation found for medical_request_share (6237397362923728514) -->
+    <skip />
+    <!-- no translation found for medical_request_footer (6533749932770903089) -->
+    <skip />
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"എല്ലാ അനുമതികളും നീക്കം ചെയ്യണോ?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"എല്ലാം നീക്കം ചെയ്യൂ"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ആപ്പിന് ഇനി Health Connect-ൽ നിന്നുള്ള ഒരു ഡാറ്റയും വായിക്കാനോ എഴുതാനോ കഴിയില്ല.\n\nക്യാമറ, മൈക്രോഫോൺ, ലൊക്കേഷൻ എന്നിവ പോലെ ഈ ആപ്പിന് ഉണ്ടായിരിക്കാനിടയുള്ള മറ്റ് അനുമതികളെ ഇത് ബാധിക്കില്ല."</string>
@@ -341,9 +353,15 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ആപ്പിന് ഇനി മുമ്പത്തെ ഡാറ്റ ഉൾപ്പെടെ, Health Connect-ൽ നിന്നുള്ള ഒരു ഡാറ്റയും വായിക്കാനോ എഴുതാനോ കഴിയില്ല.\n\nലൊക്കേഷനോ ക്യാമറയോ മൈക്രോഫോണോ പോലെ ഈ ആപ്പിന് ഉണ്ടായിരിക്കാനിടയുള്ള മറ്റ് അനുമതികളെ ഇത് ബാധിക്കില്ല."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ആപ്പിന് ഇനി പശ്ചാത്തല, മുമ്പത്തെ ഡാറ്റ ഉൾപ്പെടെ, Health Connect-ൽ നിന്നുള്ള ഒരു ഡാറ്റയും വായിക്കാനോ എഴുതാനോ കഴിയില്ല.\n\nലൊക്കേഷനോ ക്യാമറയോ മൈക്രോഫോണോ പോലെ ഈ ആപ്പിന് ഉണ്ടായിരിക്കാനിടയുള്ള മറ്റ് അനുമതികളെ ഇത് ബാധിക്കില്ല."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Health Connect-ൽ നിന്നുള്ള <xliff:g id="APP_NAME">%1$s</xliff:g> ഡാറ്റയും ഇല്ലാതാക്കുക"</string>
-    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"എല്ലാ അനുമതികളും നീക്കം ചെയ്യണോ?"</string>
-    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"എല്ലാ ആരോഗ്യ റെക്കോർഡ് അനുമതികളും നീക്കം ചെയ്യണോ?"</string>
     <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"എല്ലാ ഫിറ്റ്‌നസ്, ആരോഗ്യക്ഷമതാ അനുമതികളും നീക്കം ചെയ്യണോ?"</string>
+    <string name="disconnect_all_fitness_permissions_dialog_checkbox" msgid="8808559689899914478">"Health Connect-ൽ നിന്നുള്ള <xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിൽ നിന്ന് ഫിറ്റ്‌നസ് ഡാറ്റയും ഇല്ലാതാക്കുക"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"എല്ലാ ആരോഗ്യ റെക്കോർഡ് അനുമതികളും നീക്കം ചെയ്യണോ?"</string>
+    <string name="disconnect_all_medical_permissions_dialog_checkbox" msgid="7782158941871987263">"Health Connect-ൽ നിന്നുള്ള <xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിൽ നിന്നുള്ള ആരോഗ്യ റെക്കോർഡുകളും ഇല്ലാതാക്കുക"</string>
+    <string name="disconnect_all_fitness_or_medical_no_additional_permissions_dialog_message" msgid="6610810945930258582">"<xliff:g id="APP_NAME">%1$s</xliff:g> ആപ്പിന് ഇനി Health Connect-ൽ നിന്നുള്ള ഈ ഡാറ്റ റീഡ് ചെയ്യാനോ റൈറ്റ് ചെയ്യാനോ കഴിയില്ല.\n\nക്യാമറ, മൈക്രോഫോൺ, ലൊക്കേഷൻ എന്നിവ പോലെ ഈ ആപ്പിന് ഉണ്ടായിരിക്കാനിടയുള്ള മറ്റ് അനുമതികളെ ഇത് ബാധിക്കില്ല."</string>
+    <string name="disconnect_all_fitness_or_medical_and_background_permissions_dialog_message" msgid="7138878481421234556">"<xliff:g id="APP_NAME">%1$s</xliff:g> ആപ്പിന് ഇനി പശ്ചാത്തല ഡാറ്റ ഉൾപ്പെടെ, Health Connect-ൽ നിന്നുള്ള ഈ ഡാറ്റ റീഡ് ചെയ്യാനോ റൈറ്റ് ചെയ്യാനോ കഴിയില്ല.\n\nക്യാമറ, മൈക്രോഫോൺ, ലൊക്കേഷൻ എന്നിവ പോലെ ഈ ആപ്പിന് ഉണ്ടായിരിക്കാനിടയുള്ള മറ്റ് അനുമതികളെ ഇത് ബാധിക്കില്ല."</string>
+    <string name="disconnect_all_fitness_or_medical_and_historical_permissions_dialog_message" msgid="1519496566456028625">"<xliff:g id="APP_NAME">%1$s</xliff:g> ആപ്പിന് ഇനി മുമ്പത്തെ ഡാറ്റ ഉൾപ്പെടെ, Health Connect-ൽ നിന്നുള്ള ഈ ഡാറ്റ റീഡ് ചെയ്യാനോ റൈറ്റ് ചെയ്യാനോ കഴിയില്ല.\n\nക്യാമറ, മൈക്രോഫോൺ, ലൊക്കേഷൻ എന്നിവ പോലെ ഈ ആപ്പിന് ഉണ്ടായിരിക്കാനിടയുള്ള മറ്റ് അനുമതികളെ ഇത് ബാധിക്കില്ല."</string>
+    <string name="disconnect_all_fitness_or_medical_and_additional_permissions_dialog_message" msgid="5147728456578218902">"<xliff:g id="APP_NAME">%1$s</xliff:g> ആപ്പിന് ഇനി മുമ്പത്തെ ഡാറ്റയും പശ്ചാത്തല ഡാറ്റയും ഉൾപ്പെടെ, Health Connect-ൽ നിന്നുള്ള ഈ ഡാറ്റ റീഡ് ചെയ്യാനോ റൈറ്റ് ചെയ്യാനോ കഴിയില്ല.\n\nക്യാമറ, മൈക്രോഫോൺ, ലൊക്കേഷൻ എന്നിവ പോലെ ഈ ആപ്പിന് ഉണ്ടായിരിക്കാനിടയുള്ള മറ്റ് അനുമതികളെ ഇത് ബാധിക്കില്ല."</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"എല്ലാ അനുമതികളും നീക്കം ചെയ്യണോ?"</string>
     <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"<xliff:g id="APP_NAME">%1$s</xliff:g> ആപ്പിന് ഇനി Health Connect-ൽ നിന്നുള്ള ഡാറ്റ റീഡ് ചെയ്യാനോ റൈറ്റ് ചെയ്യാനോ കഴിയില്ല.\n\nക്യാമറ, മൈക്രോഫോൺ, ലൊക്കേഷൻ എന്നിവ പോലെ ഈ ആപ്പിന് ഉണ്ടായിരിക്കാനിടയുള്ള മറ്റ് അനുമതികളെ ഇത് ബാധിക്കില്ല."</string>
     <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"<xliff:g id="APP_NAME">%1$s</xliff:g> ആപ്പിന് ഇനി പശ്ചാത്തല ഡാറ്റ ഉൾപ്പെടെ, Health Connect-ൽ നിന്നുള്ള ഡാറ്റ റീഡ് ചെയ്യാനോ റൈറ്റ് ചെയ്യാനോ കഴിയില്ല.\n\nക്യാമറ, മൈക്രോഫോൺ, ലൊക്കേഷൻ എന്നിവ പോലെ ഈ ആപ്പിന് ഉണ്ടായിരിക്കാനിടയുള്ള മറ്റ് അനുമതികളെ ഇത് ബാധിക്കില്ല."</string>
     <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"<xliff:g id="APP_NAME">%1$s</xliff:g> ആപ്പിന് ഇനി മുമ്പത്തെ ഡാറ്റ ഉൾപ്പെടെ, Health Connect-ൽ നിന്നുള്ള ഡാറ്റ റീഡ് ചെയ്യാനോ റൈറ്റ് ചെയ്യാനോ കഴിയില്ല.\n\nക്യാമറ, മൈക്രോഫോൺ, ലൊക്കേഷൻ എന്നിവ പോലെ ഈ ആപ്പിന് ഉണ്ടായിരിക്കാനിടയുള്ള മറ്റ് അനുമതികളെ ഇത് ബാധിക്കില്ല."</string>
@@ -396,7 +414,7 @@
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"വ്യായാമവും ഉറക്കവും പോഷകാഹാരവും മറ്റും"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"ആരോഗ്യ റെക്കോർഡുകൾ"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"ആരോഗ്യ റെക്കോർഡുകൾ"</string>
-    <string name="medical_permissions_summary" msgid="5553982055903211592">"ലാബ് ഫലവും മരുന്നും പ്രതിരോധവും മറ്റും"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"ലാബ് ഫലം, മരുന്ന്, വാക്‌സിൻ തുടങ്ങിയവ"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"നീക്കം ചെയ്ത ആപ്പ് അനുമതികൾ"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"<xliff:g id="APP_DATA">%s</xliff:g> ആപ്പിനുള്ള അനുമതികൾ Health Connect നീക്കം ചെയ്തു"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"<xliff:g id="APP_DATA_0">%1$s</xliff:g>, <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> എന്നീ ആപ്പുകൾക്കുള്ള അനുമതികൾ Health Connect നീക്കം ചെയ്തു"</string>
@@ -488,10 +506,8 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Store-ലേക്ക് പോകുക"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ഉപയോഗിച്ച് തുടങ്ങൂ"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"നിങ്ങളുടെ ആരോഗ്യവും ഫിറ്റ്നസും സംബന്ധിച്ച ഡാറ്റ Health Connect സംഭരിക്കുന്നു, ഇതിലൂടെ നിങ്ങളുടെ ഉപകരണത്തിലെ വ്യത്യസ്ത ആപ്പുകൾ എളുപ്പത്തിൽ സമന്വയിപ്പിക്കാനാകും"</string>
-    <!-- no translation found for onboarding_description_health_records (6816666836571797870) -->
-    <skip />
-    <!-- no translation found for onboarding_description_with_health_connect (8751881078749676542) -->
-    <skip />
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"വ്യത്യസ്ത ആപ്പുകളിൽ നിന്നുള്ള നിങ്ങളുടെ ആരോഗ്യവും ഫിറ്റ്‍നസും സംബന്ധിച്ച ഡാറ്റ, Health Connect സംഭരിക്കുകയും സമന്വയിപ്പിക്കുകയും ചെയ്യുന്നു.\n\nവ്യായാമ സെഷനുകൾ, ചുവടുകൾ, പോഷകാഹാരം, ഉറക്കം എന്നിവയും മറ്റും ഉൾപ്പെടെയുള്ള "<b>"ഫിറ്റ്നസ്, വെൽനസ് ഡാറ്റ"</b>\n\n"വാക്‌സിനുകളും ലാബ് ഫലങ്ങളും മറ്റും ഉൾപ്പെടെയുള്ള "<b>"ആരോഗ്യ റെക്കോർഡുകൾ"</b></string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect ഉപയോഗിച്ച് ഇനിപ്പറയുന്നവ ചെയ്യാം"</string>
     <string name="share_data" msgid="3481932156368883946">"നിങ്ങളുടെ ആപ്പുകളുമായി ഡാറ്റ പങ്കിടുക"</string>
     <string name="share_data_description" msgid="2919871301634375092">"ഓരോ ആപ്പിനും റീഡ് ചെയ്യാനോ Health Connect-ലേക്ക് റൈറ്റ് ചെയ്യാനോ കഴിയുന്ന ഡാറ്റ തിരഞ്ഞെടുക്കുക"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"നിങ്ങളുടെ ക്രമീകരണവും സ്വകാര്യതയും മാനേജ് ചെയ്യുക"</string>
@@ -1076,6 +1092,8 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"ഈ ആപ്പിന്റെ പശ്ചാത്തല അല്ലെങ്കിൽ മുമ്പത്തെ ഡാറ്റാ ആക്‌സസ് ഓണാക്കാൻ വായിക്കാനുള്ള അനുമതിയിൽ കുറഞ്ഞത് ഒരെണ്ണമെങ്കിലും പ്രവർത്തനക്ഷമമാക്കുക"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"ഈ ആപ്പിന്റെ പശ്ചാത്തല ആക്‌സസ് ഓണാക്കാൻ വായിക്കാനുള്ള അനുമതിയിൽ കുറഞ്ഞത് ഒരെണ്ണമെങ്കിലും പ്രവർത്തനക്ഷമമാക്കുക"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"ഈ ആപ്പിന്റെ മുമ്പത്തെ ഡാറ്റാ ആക്‌സസ് ഓണാക്കാൻ വായിക്കാനുള്ള അനുമതിയിൽ കുറഞ്ഞത് ഒരെണ്ണമെങ്കിലും പ്രവർത്തനക്ഷമമാക്കുക"</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"നിങ്ങളുടെ ആരോഗ്യ റെക്കോർഡുകൾക്കായി <xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിന് ഇതിനകം തന്നെ മുമ്പത്തെ ഡാറ്റ ആക്‌സസ് ചെയ്യാനാകും. ഇത് മാറ്റാൻ, ഈ ആപ്പിനുള്ള ആരോഗ്യ റെക്കോർഡ് അനുമതികൾ ഓഫാക്കുക"</string>
+    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"ആരോഗ്യ റെക്കോർഡ് അനുമതികൾ മാനേജ് ചെയ്യുക"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connect ഉപയോഗിക്കാൻ ആരംഭിക്കുക"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"ആരോഗ്യ, ഫിറ്റ്‍നസ് ഡാറ്റ നിങ്ങളുടെ ആദ്യത്തെ ആപ്പുകൾക്ക് ഇടയിൽ പങ്കിടുന്നതിന് അവ സമന്വയിപ്പിക്കുക"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"സജ്ജീകരിക്കുക"</string>
