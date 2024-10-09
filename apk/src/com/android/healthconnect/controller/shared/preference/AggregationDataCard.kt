@@ -28,6 +28,7 @@ import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.SystemTimeSource
 import com.android.healthconnect.controller.utils.TimeSource
+import com.android.healthconnect.controller.utils.isLessThanOneYearAgo
 import com.android.healthconnect.controller.utils.toLocalTime
 import java.time.Instant
 import java.time.LocalTime
@@ -40,7 +41,7 @@ constructor(
     attrs: AttributeSet? = null,
     cardType: CardTypeEnum,
     cardInfo: AggregationCardInfo,
-    private val timeSource: TimeSource = SystemTimeSource
+    private val timeSource: TimeSource = SystemTimeSource,
 ) : LinearLayout(context, attrs) {
     private val dateFormatter = LocalDateTimeFormatter(context)
 
@@ -70,48 +71,89 @@ constructor(
                 R.id.card_title_number,
                 ConstraintSet.START,
                 ConstraintSet.PARENT_ID,
-                ConstraintSet.START)
+                ConstraintSet.START,
+            )
             constraintSet.connect(
                 R.id.card_title_number,
                 ConstraintSet.TOP,
                 ConstraintSet.PARENT_ID,
-                ConstraintSet.TOP)
+                ConstraintSet.TOP,
+            )
             constraintSet.connect(
-                R.id.card_title_number, ConstraintSet.BOTTOM, R.id.card_date, ConstraintSet.TOP)
+                R.id.card_title_number,
+                ConstraintSet.BOTTOM,
+                R.id.card_date,
+                ConstraintSet.TOP,
+            )
 
             constraintSet.connect(
-                R.id.card_date, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+                R.id.card_date,
+                ConstraintSet.START,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.START,
+            )
             constraintSet.connect(
-                R.id.card_date, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+                R.id.card_date,
+                ConstraintSet.BOTTOM,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.BOTTOM,
+            )
             constraintSet.connect(
-                R.id.card_date, ConstraintSet.TOP, R.id.card_title_number, ConstraintSet.BOTTOM)
+                R.id.card_date,
+                ConstraintSet.TOP,
+                R.id.card_title_number,
+                ConstraintSet.BOTTOM,
+            )
         } else {
             constraintSet.connect(
                 R.id.card_title_number,
                 ConstraintSet.START,
                 ConstraintSet.PARENT_ID,
-                ConstraintSet.START)
+                ConstraintSet.START,
+            )
             constraintSet.connect(
                 R.id.card_title_number,
                 ConstraintSet.TOP,
                 ConstraintSet.PARENT_ID,
-                ConstraintSet.TOP)
+                ConstraintSet.TOP,
+            )
             constraintSet.connect(
                 R.id.card_title_number,
                 ConstraintSet.BOTTOM,
                 ConstraintSet.PARENT_ID,
-                ConstraintSet.BOTTOM)
+                ConstraintSet.BOTTOM,
+            )
             constraintSet.connect(
-                R.id.card_title_number, ConstraintSet.END, R.id.card_date, ConstraintSet.START)
+                R.id.card_title_number,
+                ConstraintSet.END,
+                R.id.card_date,
+                ConstraintSet.START,
+            )
 
             constraintSet.connect(
-                R.id.card_date, ConstraintSet.START, R.id.card_title_number, ConstraintSet.END)
+                R.id.card_date,
+                ConstraintSet.START,
+                R.id.card_title_number,
+                ConstraintSet.END,
+            )
             constraintSet.connect(
-                R.id.card_date, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+                R.id.card_date,
+                ConstraintSet.END,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.END,
+            )
             constraintSet.connect(
-                R.id.card_date, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+                R.id.card_date,
+                ConstraintSet.TOP,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.TOP,
+            )
             constraintSet.connect(
-                R.id.card_date, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+                R.id.card_date,
+                ConstraintSet.BOTTOM,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.BOTTOM,
+            )
 
             constraintSet.createHorizontalChain(
                 ConstraintSet.PARENT_ID,
@@ -120,24 +162,14 @@ constructor(
                 ConstraintSet.RIGHT,
                 intArrayOf(R.id.card_title_number, R.id.card_date),
                 null,
-                ConstraintSet.CHAIN_SPREAD_INSIDE)
+                ConstraintSet.CHAIN_SPREAD_INSIDE,
+            )
 
             constraintSet.constrainedWidth(R.id.card_title_number, true)
             constraintSet.constrainedWidth(R.id.card_date, true)
         }
 
         constraintSet.applyTo(titleAndDateContainer)
-    }
-
-    private fun isLessThanOneYearAgo(instant: Instant): Boolean {
-        val oneYearAgo =
-            timeSource
-                .currentLocalDateTime()
-                .minusYears(1)
-                .toLocalDate()
-                .atStartOfDay(timeSource.deviceZoneOffset())
-                .toInstant()
-        return instant.isAfter(oneYearAgo)
     }
 
     private fun formatDateText(startDate: Instant, endDate: Instant?): String {
@@ -150,14 +182,17 @@ constructor(
                 localEndDate = endDate.plusMillis(1)
             }
             // display date range
-            if (isLessThanOneYearAgo(startDate) && isLessThanOneYearAgo(localEndDate)) {
+            if (
+                startDate.isLessThanOneYearAgo(timeSource) &&
+                    startDate.isLessThanOneYearAgo(timeSource)
+            ) {
                 dateFormatter.formatDateRangeWithoutYear(startDate, localEndDate)
             } else {
                 dateFormatter.formatDateRangeWithYear(startDate, localEndDate)
             }
         } else {
             // display only one date
-            if (isLessThanOneYearAgo(startDate)) {
+            if (startDate.isLessThanOneYearAgo(timeSource)) {
                 dateFormatter.formatShortDate(startDate)
             } else {
                 dateFormatter.formatLongDate(startDate)
@@ -167,6 +202,6 @@ constructor(
 
     enum class CardTypeEnum {
         SMALL_CARD,
-        LARGE_CARD
+        LARGE_CARD,
     }
 }

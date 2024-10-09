@@ -45,7 +45,6 @@ import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthfitness.flags.Flags.newInformationArchitecture
 import com.android.healthfitness.flags.Flags.personalHealthRecord
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -71,7 +70,6 @@ constructor(
     private val loadGrantedHealthPermissionsUseCase: IGetGrantedHealthPermissionsUseCase,
     private val loadExerciseRoutePermissionUseCase: ILoadExerciseRoutePermissionUseCase,
     private val healthPermissionReader: HealthPermissionReader,
-    private val featureUtils: FeatureUtils,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
@@ -496,10 +494,7 @@ constructor(
         packageName: String,
         fitnessPermission: FitnessPermission,
     ): Boolean {
-        if (
-            !featureUtils.isExerciseRouteReadAllEnabled() ||
-                fitnessPermission.toString() != READ_EXERCISE
-        ) {
+        if (fitnessPermission.toString() != READ_EXERCISE) {
             return false
         }
 
@@ -626,7 +621,6 @@ constructor(
         } else {
             oldDeleteAppData(packageName, appName)
         }
-        viewModelScope.launch { deleteAppDataUseCase.invoke(DeleteAppData(packageName, appName)) }
     }
 
     private fun newDeleteAppData(packageName: String, appName: String) {
