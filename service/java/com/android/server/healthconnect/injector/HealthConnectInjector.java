@@ -26,6 +26,8 @@ import com.android.server.healthconnect.backuprestore.CloudBackupManager;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -123,6 +125,17 @@ public abstract class HealthConnectInjector {
      * Getter for {@link CloudBackupManager} instance initialised by the Health Connect Injector.
      */
     public abstract CloudBackupManager getCloudBackupManager();
+
+    /**
+     * Getter for {@link FirstGrantTimeManager} instance initialised by the Health Connect Injector.
+     */
+    public abstract FirstGrantTimeManager getFirstGrantTimeManager();
+
+    /**
+     * Getter for {@link HealthPermissionIntentAppsTracker} instance initialised by the Health
+     * Connect Injector.
+     */
+    public abstract HealthPermissionIntentAppsTracker getHealthPermissionIntentAppsTracker();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {

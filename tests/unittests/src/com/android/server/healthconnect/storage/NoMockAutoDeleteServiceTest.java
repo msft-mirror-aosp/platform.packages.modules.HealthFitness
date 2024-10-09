@@ -31,6 +31,8 @@ import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.TestUtils;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
@@ -45,6 +47,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.quality.Strictness;
 
 import java.util.List;
@@ -62,6 +66,11 @@ public class NoMockAutoDeleteServiceTest {
     @Rule(order = 2)
     public final HealthConnectDatabaseTestRule testRule = new HealthConnectDatabaseTestRule();
 
+    // TODO(b/373322447): Remove the mock FirstGrantTimeManager
+    @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
+    // TODO(b/373322447):  HealthPermissionIntentAppsTracker
+    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
+
     private static final String TEST_PACKAGE_NAME = "package.name";
 
     private TransactionManager mTransactionManager;
@@ -70,6 +79,7 @@ public class NoMockAutoDeleteServiceTest {
 
     @Before
     public void setup() throws Exception {
+        MockitoAnnotations.initMocks(this);
         PreferenceHelper.clearInstanceForTest();
 
         HealthConnectUserContext context = testRule.getUserContext();
@@ -79,10 +89,14 @@ public class NoMockAutoDeleteServiceTest {
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         DeviceInfoHelper.resetInstanceForTest();
         AppInfoHelper.resetInstanceForTest();
+        FirstGrantTimeManager.resetInstanceForTest();
+        HealthPermissionIntentAppsTracker.resetInstanceForTest();
 
         mHealthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setTransactionManager(mTransactionManager)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
     }
 
