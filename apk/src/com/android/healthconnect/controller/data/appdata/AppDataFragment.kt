@@ -163,6 +163,8 @@ open class AppDataFragment : Hilt_AppDataFragment() {
                 icon = appMetadata.icon
                 title = appMetadata.appName
             }
+            footerPreference.title =
+                getString(R.string.app_data_no_data_footer, appMetadata.appName)
         }
 
         viewModel.fitnessAndMedicalData.observe(viewLifecycleOwner) { state ->

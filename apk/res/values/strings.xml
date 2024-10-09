@@ -1485,7 +1485,8 @@
 
     <!-- region App data -->
     <string name="app_data_title" description="Title of screen that shows the data of a certain app. [CHAR_LIMIT=50]">App data</string>
-    <string name="no_data_footer" description="Footer displayed on the empty data browse screen if no data has been written to Health Connect. [CHAR_LIMIT=NONE]">Data from apps with access to Health Connect will show here</string>
+    <string name="app_data_no_data_footer" description="Footer displayed on the empty app data screen if no data from that app has been written to Health Connect. [CHAR_LIMIT=NONE]">Data from <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> will show here</string>
+    <string name="all_data_no_data_footer" description="Footer displayed on the empty data browse screen if no data has been written to Health Connect. Note: Health Connect is the brand. [CHAR_LIMIT=NONE]">Data from apps with access to Health&#160;Connect will show here</string>
     <!--  endregion -->
 
     <!-- region App entries -->
