@@ -21,7 +21,7 @@ import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.RecordTypeIdentifier;
-import android.health.connect.internal.datatypes.utils.RecordMapper;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.health.connect.internal.datatypes.utils.RecordTypePermissionCategoryMapper;
 import android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper;
 import android.os.Parcel;
@@ -112,7 +112,7 @@ public class RecordTypeInfoResponseParcel implements Parcelable {
                                             recordType),
                                     getContributingPackagesAsDataOrigin(contributingPackages));
                     Class<? extends Record> recordTypeClass =
-                            RecordMapper.getInstance()
+                            HealthConnectMappings.getInstance()
                                     .getRecordIdToExternalRecordClassMap()
                                     .get(recordType);
                     responses.put(recordTypeClass, res);

@@ -33,6 +33,7 @@ import android.util.ArrayMap;
 import android.util.ArraySet;
 
 import com.android.healthfitness.flags.Flags;
+import com.android.internal.annotations.VisibleForTesting;
 
 import java.util.Collection;
 import java.util.List;
@@ -61,6 +62,7 @@ public final class HealthConnectMappings {
     private static volatile HealthConnectMappings sHealthConnectMappings;
 
     /** Exists for compatibility with classes which don't support injections yet. */
+    // TODO(b/353283052): inject where possible instead of using the singleton.
     public static HealthConnectMappings getInstance() {
         if (sHealthConnectMappings == null) {
             sHealthConnectMappings = new HealthConnectMappings();
@@ -68,6 +70,10 @@ public final class HealthConnectMappings {
         return sHealthConnectMappings;
     }
 
+    /**
+     * Use {@link #getInstance()} to avoid creating multiple instances until it gets migrated off.
+     */
+    @VisibleForTesting
     public HealthConnectMappings() {
         var dataTypeDescriptors = DataTypeDescriptors.getAllDataTypeDescriptors();
 
@@ -234,7 +240,7 @@ public final class HealthConnectMappings {
     /** Returns record type id for give record class. */
     @RecordTypeIdentifier.RecordType
     public int getRecordType(Class<? extends Record> recordClass) {
-        if (Flags.healthConnectMappings()) {
+        if (!Flags.healthConnectMappings()) {
             return mRecordMapper.getRecordType(recordClass);
         }
 
