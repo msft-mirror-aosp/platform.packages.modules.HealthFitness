@@ -56,6 +56,22 @@ public class UpsertMedicalResourceRequestTest {
     }
 
     @Test
+    public void testUpsertMedicalResourceRequest_setAllFields() {
+        UpsertMedicalResourceRequest upsertMedicalResourceRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                DATA_SOURCE_ID, FHIR_VERSION_R4, FHIR_DATA_ALLERGY)
+                        .setDataSourceId(DIFFERENT_DATA_SOURCE_ID)
+                        .setFhirVersion(FHIR_VERSION_R4B)
+                        .setData(FHIR_DATA_IMMUNIZATION)
+                        .build();
+
+        assertThat(upsertMedicalResourceRequest.getDataSourceId())
+                .isEqualTo(DIFFERENT_DATA_SOURCE_ID);
+        assertThat(upsertMedicalResourceRequest.getFhirVersion()).isEqualTo(FHIR_VERSION_R4B);
+        assertThat(upsertMedicalResourceRequest.getData()).isEqualTo(FHIR_DATA_IMMUNIZATION);
+    }
+
+    @Test
     public void testUpsertMedicalResourceRequest_constructWithInvalidDataSourceId_throws() {
         assertThrows(
                 IllegalArgumentException.class,
