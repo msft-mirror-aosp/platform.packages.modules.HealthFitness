@@ -25,6 +25,7 @@ import android.app.UiAutomation;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.MedicalResourceId;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
@@ -74,6 +75,13 @@ public class PhrCtsTestUtils {
                 List.of(request), Executors.newSingleThreadExecutor(), dataReceiver);
         // Make sure something got inserted.
         return Iterables.getOnlyElement(dataReceiver.getResponse());
+    }
+
+    void deleteResources(List<MedicalResourceId> resourceIds) throws InterruptedException {
+        HealthConnectReceiver<Void> deleteReceiver = new HealthConnectReceiver<>();
+        mManager.deleteMedicalResources(
+                resourceIds, Executors.newSingleThreadExecutor(), deleteReceiver);
+        deleteReceiver.verifyNoExceptionOrThrow();
     }
 
     /**
