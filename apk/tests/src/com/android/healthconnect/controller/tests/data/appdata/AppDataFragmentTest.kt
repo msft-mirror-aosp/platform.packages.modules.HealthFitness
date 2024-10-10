@@ -117,7 +117,7 @@ class AppDataFragmentTest {
         )
 
         onView(withText("No data")).check(matches(isDisplayed()))
-        onView(withText("Data from apps with access to Health Connect will show here"))
+        onView(withText("Data from Health Connect test app will show here"))
             .check(matches(isDisplayed()))
     }
 
@@ -154,6 +154,9 @@ class AppDataFragmentTest {
         onView(withText("Vitals")).check(doesNotExist())
         onView(withText("Health records")).check(doesNotExist())
         onView(withText("Vaccines")).check(doesNotExist())
+        onView(withText("No data")).check(doesNotExist())
+        onView(withText("Data from Health Connect test app will show here"))
+            .check(doesNotExist())
     }
 
     @Test
@@ -183,6 +186,9 @@ class AppDataFragmentTest {
         onView(withText("Steps")).check(doesNotExist())
         onView(withText("Body measurements")).check(doesNotExist())
         onView(withText("Cycle tracking")).check(doesNotExist())
+        onView(withText("No data")).check(doesNotExist())
+        onView(withText("Data from Health Connect test app will show here"))
+            .check(doesNotExist())
     }
 
     @Test
