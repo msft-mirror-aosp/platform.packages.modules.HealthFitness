@@ -750,6 +750,7 @@ class HomeFragmentTest {
         setupFragmentForNavigation()
 
         onView(withText("Browse health records")).check(doesNotExist())
+        onView(withText("View your health records and which apps can access them")).check(doesNotExist())
     }
 
     @Test
@@ -761,6 +762,7 @@ class HomeFragmentTest {
         setupFragmentForNavigation()
 
         onView(withText("Browse health records")).check(doesNotExist())
+        onView(withText("View your health records and which apps can access them")).check(doesNotExist())
     }
 
     @Test
@@ -772,6 +774,9 @@ class HomeFragmentTest {
         setupFragmentForNavigation()
 
         onView(withText("Browse health records")).check(matches(isDisplayed()))
+        onView(withText("View your health records and which apps can access them"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
     }
 
     // endregion

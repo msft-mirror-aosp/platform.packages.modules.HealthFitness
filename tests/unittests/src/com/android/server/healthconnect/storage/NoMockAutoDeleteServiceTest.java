@@ -28,6 +28,7 @@ import android.os.Environment;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.TestUtils;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
@@ -40,6 +41,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.StepsRecordHelpe
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -82,6 +84,12 @@ public class NoMockAutoDeleteServiceTest {
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setTransactionManager(mTransactionManager)
                         .build();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        TestUtils.waitForAllScheduledTasksToComplete();
+        DatabaseHelper.clearAllData(mTransactionManager);
     }
 
     @Test
