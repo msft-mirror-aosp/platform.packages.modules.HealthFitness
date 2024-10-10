@@ -220,7 +220,10 @@ public class HealthConnectServiceImplTest {
                     "upsertMedicalResources",
                     "readMedicalResourcesByIds",
                     "readMedicalResourcesByRequest",
-                    "queryAllMedicalResourceTypeInfos");
+                    "queryAllMedicalResourceTypeInfos",
+                    "runImmediateExport",
+                    "getChangesForBackup",
+                    "getSettingsForBackup");
 
     /** Health connect service APIs that do not block calls when data sync is in progress. */
     public static final Set<String> DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST =
@@ -349,7 +352,8 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getActivityDateHelper(),
                         healthConnectInjector.getChangeLogsHelper(),
                         healthConnectInjector.getChangeLogsRequestHelper(),
-                        healthConnectInjector.getHealthConnectMappings());
+                        healthConnectInjector.getHealthConnectMappings(),
+                        healthConnectInjector.getCloudBackupManager());
     }
 
     @After

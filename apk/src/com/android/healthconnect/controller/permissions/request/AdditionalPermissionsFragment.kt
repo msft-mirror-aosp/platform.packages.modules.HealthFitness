@@ -24,7 +24,6 @@ import com.android.healthconnect.controller.permissions.data.AdditionalPermissio
 import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.logging.ElementName
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -58,7 +57,6 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
 
     private val dateFormatter by lazy { LocalDateTimeFormatter(requireContext()) }
 
-    @Inject lateinit var featureUtils: FeatureUtils
     @Inject lateinit var logger: HealthConnectLogger
 
     override fun onResume() {
@@ -76,8 +74,14 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
         viewModel.additionalPermissionsInfo.observe(viewLifecycleOwner) { info ->
             val (additionalPermissions, appMetadata) = info
 
-            if (additionalPermissions.isNullOrEmpty()) {
+            if (additionalPermissions == null) {
                 return@observe
+            }
+            // If no (fitness) read permissions have been granted before, then this
+            // is the last screen and we just handle the results
+            if (additionalPermissions.isEmpty()) {
+                viewModel.requestAdditionalPermissions(getPackageNameExtra())
+                handlePermissionResults(viewModel.getPermissionGrants())
             }
 
             if (additionalPermissions.size > 1) {
@@ -94,16 +98,13 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
     private fun setupAllowButton(permissionList: List<AdditionalPermission>) {
         logger.logImpression(allowButtonName)
 
-        if (viewModel.isFitnessPermissionRequestConcluded() ||
-            viewModel.isMedicalPermissionRequestConcluded()) {
-            // if requested additional permissions == 1 then allow by default
-            if (permissionList.size == 1) {
-                getAllowButton().isEnabled = true
-            } else {
-                viewModel.grantedAdditionalPermissions.observe(viewLifecycleOwner) {
-                    grantedPermissions ->
-                    getAllowButton().isEnabled = grantedPermissions.isNotEmpty()
-                }
+        // if requested additional permissions == 1 then allow by default
+        if (permissionList.size == 1) {
+            getAllowButton().isEnabled = true
+        } else {
+            viewModel.grantedAdditionalPermissions.observe(viewLifecycleOwner) { grantedPermissions
+                ->
+                getAllowButton().isEnabled = grantedPermissions.isNotEmpty()
             }
         }
 
@@ -140,7 +141,8 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
             titleText = R.string.request_additional_permissions_header_title,
             appName = appMetadata.appName,
             summaryText =
-                getString(R.string.request_additional_permissions_description, appMetadata.appName))
+                getString(R.string.request_additional_permissions_description, appMetadata.appName),
+        )
 
         category.removeAll()
         category.isVisible = true
@@ -203,11 +205,13 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
             getString(
                 AdditionalPermissionStrings.fromAdditionalPermission(additionalPermission)
                     .permissionDescription,
-                formattedDate)
+                formattedDate,
+            )
         } else {
             getString(
                 AdditionalPermissionStrings.fromAdditionalPermission(additionalPermission)
-                    .permissionDescriptionFallback)
+                    .permissionDescriptionFallback
+            )
         }
     }
 
@@ -219,17 +223,19 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
             getString(
                 AdditionalPermissionStrings.fromAdditionalPermission(additionalPermission)
                     .requestDescription,
-                formattedDate)
+                formattedDate,
+            )
         } else {
             getString(
                 AdditionalPermissionStrings.fromAdditionalPermission(additionalPermission)
-                    .requestDescriptionFallback)
+                    .requestDescriptionFallback
+            )
         }
     }
 
     private fun showSingleAdditionalPermission(
         additionalPermission: AdditionalPermission,
-        appMetadata: AppMetadata
+        appMetadata: AppMetadata,
     ) {
         val additionalPermissionStrings =
             AdditionalPermissionStrings.fromAdditionalPermission(additionalPermission)
@@ -242,7 +248,8 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
             header.bind(
                 titleText = additionalPermissionStrings.requestTitle,
                 appName = appMetadata.appName,
-                summaryText = getHistoryReadPermissionRequestText(appMetadata))
+                summaryText = getHistoryReadPermissionRequestText(appMetadata),
+            )
         } else {
             pageName = PageName.REQUEST_BACKGROUND_READ_PERMISSION_PAGE
             allowButtonName = RequestBackgroundReadPermissionElement.ALLOW_BACKGROUND_READ_BUTTON
@@ -251,7 +258,8 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
             header.bind(
                 titleText = additionalPermissionStrings.requestTitle,
                 appName = appMetadata.appName,
-                summaryText = getString(additionalPermissionStrings.requestDescription))
+                summaryText = getString(additionalPermissionStrings.requestDescription),
+            )
         }
     }
 }

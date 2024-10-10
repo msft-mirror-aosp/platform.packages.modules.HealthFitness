@@ -87,9 +87,11 @@ import android.health.connect.aidl.IChangeLogsResponseCallback;
 import android.health.connect.aidl.IDataStagingFinishedCallback;
 import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IGetChangeLogTokenCallback;
+import android.health.connect.aidl.IGetChangesForBackupResponseCallback;
 import android.health.connect.aidl.IGetHealthConnectDataStateCallback;
 import android.health.connect.aidl.IGetHealthConnectMigrationUiStateCallback;
 import android.health.connect.aidl.IGetPriorityResponseCallback;
+import android.health.connect.aidl.IGetSettingsForBackupResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
@@ -157,6 +159,7 @@ import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.LocalManagerRegistry;
 import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
+import com.android.server.healthconnect.backuprestore.CloudBackupManager;
 import com.android.server.healthconnect.exportimport.DocumentProvidersManager;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
@@ -201,6 +204,7 @@ import com.android.server.healthconnect.storage.utils.StorageUtils;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -234,6 +238,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Nullable private final ImportManager mImportManager;
 
     private final TransactionManager mTransactionManager;
+    private final CloudBackupManager mCloudBackupManager;
     private final HealthConnectDeviceConfigManager mDeviceConfigManager;
     private final HealthConnectPermissionHelper mPermissionHelper;
     private final FirstGrantTimeManager mFirstGrantTimeManager;
@@ -288,7 +293,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ActivityDateHelper activityDateHelper,
             ChangeLogsHelper changeLogsHelper,
             ChangeLogsRequestHelper changeLogsRequestHelper,
-            HealthConnectMappings healthConnectMappings) {
+            HealthConnectMappings healthConnectMappings,
+            CloudBackupManager cloudBackupManager) {
         this(
                 transactionManager,
                 deviceConfigManager,
@@ -307,7 +313,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 activityDateHelper,
                 changeLogsHelper,
                 changeLogsRequestHelper,
-                healthConnectMappings);
+                healthConnectMappings,
+                cloudBackupManager);
     }
 
     @VisibleForTesting
@@ -329,7 +336,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ActivityDateHelper activityDateHelper,
             ChangeLogsHelper changeLogsHelper,
             ChangeLogsRequestHelper changeLogsRequestHelper,
-            HealthConnectMappings healthConnectMappings) {
+            HealthConnectMappings healthConnectMappings,
+            CloudBackupManager cloudBackupManager) {
         mAccessLogsHelper = accessLogsHelper;
         mTransactionManager = transactionManager;
         mPreferenceHelper = PreferenceHelper.getInstance();
@@ -362,16 +370,20 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         mHealthDataCategoryPriorityHelper);
         mMigrationUiStateManager = migrationUiStateManager;
         mExportImportSettingsStorage = exportImportSettingsStorage;
-        mImportManager =
-                Flags.exportImport()
-                        ? new ImportManager(
-                                mAppInfoHelper,
-                                mContext,
-                                mExportImportSettingsStorage,
-                                mTransactionManager,
-                                mDeviceInfoHelper,
-                                mHealthDataCategoryPriorityHelper)
-                        : null;
+        if (Flags.exportImport()) {
+            Clock clockForLogging = Flags.exportImportFastFollow() ? Clock.systemUTC() : null;
+            mImportManager =
+                    new ImportManager(
+                            mAppInfoHelper,
+                            mContext,
+                            mExportImportSettingsStorage,
+                            mTransactionManager,
+                            mDeviceInfoHelper,
+                            mHealthDataCategoryPriorityHelper,
+                            clockForLogging);
+        } else {
+            mImportManager = null;
+        }
         mExportManager = exportManager;
         migrationCleaner.attachTo(migrationStateManager);
         mMigrationUiStateManager.attachTo(migrationStateManager);
@@ -383,6 +395,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mChangeLogsHelper = changeLogsHelper;
         mMigrationEntityHelper = new MigrationEntityHelper();
         mHealthConnectMappings = healthConnectMappings;
+        mCloudBackupManager = cloudBackupManager;
     }
 
     public void onUserSwitching(UserHandle currentForegroundUser) {
@@ -2123,6 +2136,28 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 });
     }
 
+    @Override
+    public void runImmediateExport(Uri file, IEmptyResponseCallback callback) {
+        checkParamsNonNull(file);
+
+        final int uid = Binder.getCallingUid();
+        final int pid = Binder.getCallingPid();
+        final UserHandle userHandle = Binder.getCallingUserHandle();
+        HealthConnectThreadScheduler.scheduleControllerTask(
+                () -> {
+                    try {
+                        enforceIsForegroundUser(userHandle);
+                        mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
+                        // TODO(b/370954019): Modify runExport to use specific file.
+                        mExportManager.runExport();
+                        callback.onResult();
+                    } catch (Exception exception) {
+                        throw new HealthConnectException(
+                                HealthConnectException.ERROR_IO, exception.toString());
+                    }
+                });
+    }
+
     /** Queries the document providers available to be used for export/import. */
     @Override
     public void queryDocumentProviders(UserHandle user, IQueryDocumentProvidersCallback callback) {
@@ -3051,6 +3086,35 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 healthConnectException.getErrorCode());
                     } catch (Exception exception) {
                         tryAndThrowException(errorCallback, exception, ERROR_INTERNAL);
+                    }
+                });
+    }
+
+    @Override
+    public void getChangesForBackup(
+            @Nullable String changeToken, IGetChangesForBackupResponseCallback callback) {
+        checkParamsNonNull(callback);
+        final ErrorCallback errorCallback = callback::onError;
+        HealthConnectThreadScheduler.scheduleControllerTask(
+                () -> {
+                    try {
+                        callback.onResult(mCloudBackupManager.getChangesForBackup(changeToken));
+                    } catch (Exception e) {
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
+                    }
+                });
+    }
+
+    @Override
+    public void getSettingsForBackup(IGetSettingsForBackupResponseCallback callback) {
+        checkParamsNonNull(callback);
+        final ErrorCallback errorCallback = callback::onError;
+        HealthConnectThreadScheduler.scheduleControllerTask(
+                () -> {
+                    try {
+                        callback.onResult(mCloudBackupManager.getSettingsForBackup());
+                    } catch (Exception e) {
+                        tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     }
                 });
     }

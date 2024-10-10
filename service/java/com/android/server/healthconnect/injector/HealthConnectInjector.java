@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+import com.android.server.healthconnect.backuprestore.CloudBackupManager;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
@@ -46,57 +47,70 @@ public abstract class HealthConnectInjector {
 
     @Nullable private static HealthConnectInjector sHealthConnectInjector;
 
-    /** Getter for PackageInfoUtils instance initialised by the Health Connect Injector. */
+    /** Getter for {@link PackageInfoUtils} instance initialised by the Health Connect Injector. */
     public abstract PackageInfoUtils getPackageInfoUtils();
 
-    /** Getter for TransactionManager instance initialised by the Health Connect Injector. */
+    /**
+     * Getter for {@link TransactionManager} instance initialised by the Health Connect Injector.
+     */
     public abstract TransactionManager getTransactionManager();
 
     /**
-     * Getter for HealthDataCategoryPriorityHelper instance initialised by the Health Connect
-     * Injector.
+     * Getter for {@link HealthDataCategoryPriorityHelper} instance initialised by the Health
+     * Connect Injector.
      */
     public abstract HealthDataCategoryPriorityHelper getHealthDataCategoryPriorityHelper();
 
-    /** Getter for PriorityMigrationHelper instance initialised by the Health Connect Injector. */
+    /**
+     * Getter for {@link PriorityMigrationHelper} instance initialised by the Health Connect
+     * Injector.
+     */
     public abstract PriorityMigrationHelper getPriorityMigrationHelper();
 
-    /** Getter for PreferenceHelper instance initialised by the Health Connect Injector. */
+    /** Getter for {@link PreferenceHelper} instance initialised by the Health Connect Injector. */
     public abstract PreferenceHelper getPreferenceHelper();
 
     /**
-     * Getter for ExportImportSettingsStorage instance initialised by the Health Connect Injector.
+     * Getter for {@link ExportImportSettingsStorage} instance initialised by the Health Connect
+     * Injector.
      */
     public abstract ExportImportSettingsStorage getExportImportSettingsStorage();
 
-    /** Getter for ExportManager instance initialised by the Health Connect Injector. */
+    /** Getter for {@link ExportManager} instance initialised by the Health Connect Injector. */
     public abstract ExportManager getExportManager();
 
-    /** Getter for MigrationStateManager instance initialised by the Health Connect Injector. */
+    /**
+     * Getter for {@link MigrationStateManager} instance initialised by the Health Connect Injector.
+     */
     public abstract MigrationStateManager getMigrationStateManager();
 
     /**
-     * Getter for HealthConnectDeviceConfigManager instance initialised by the Health Connect
-     * Injector.
+     * Getter for {@link HealthConnectDeviceConfigManager} instance initialised by the Health
+     * Connect Injector.
      */
     public abstract HealthConnectDeviceConfigManager getHealthConnectDeviceConfigManager();
 
-    /** Getter for DeviceInfoHelper instance initialised by the Health Connect Injector. */
+    /** Getter for {@link DeviceInfoHelper} instance initialised by the Health Connect Injector. */
     public abstract DeviceInfoHelper getDeviceInfoHelper();
 
-    /** Getter for AppInfoHelper instance initialised by the Health Connect Injector. */
+    /** Getter for {@link AppInfoHelper} instance initialised by the Health Connect Injector. */
     public abstract AppInfoHelper getAppInfoHelper();
 
-    /** Getter for AccessLogsHelper instance initialised by the Health Connect Injector. */
+    /** Getter for {@link AccessLogsHelper} instance initialised by the Health Connect Injector. */
     public abstract AccessLogsHelper getAccessLogsHelper();
 
-    /** Getter for ActivityDateHelper instance initialised by the Health Connect Injector. */
+    /**
+     * Getter for {@link ActivityDateHelper} instance initialised by the Health Connect Injector.
+     */
     public abstract ActivityDateHelper getActivityDateHelper();
 
-    /** Getter for ChangeLogsHelper instance initialised by the Health Connect Injector. */
+    /** Getter for {@link ChangeLogsHelper} instance initialised by the Health Connect Injector. */
     public abstract ChangeLogsHelper getChangeLogsHelper();
 
-    /** Getter for ChangeLogsRequestHelper instance initialised by the Health Connect Injector. */
+    /**
+     * Getter for {@link ChangeLogsRequestHelper} instance initialised by the Health Connect
+     * Injector.
+     */
     public abstract ChangeLogsRequestHelper getChangeLogsRequestHelper();
 
     /**
@@ -104,6 +118,11 @@ public abstract class HealthConnectInjector {
      * Injector.
      */
     public abstract HealthConnectMappings getHealthConnectMappings();
+
+    /**
+     * Getter for {@link CloudBackupManager} instance initialised by the Health Connect Injector.
+     */
+    public abstract CloudBackupManager getCloudBackupManager();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {

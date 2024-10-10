@@ -37,7 +37,6 @@ constructor(
 
     suspend operator fun invoke(deletePermissionTypes: DeleteHealthPermissionTypes) {
         val deleteRequest = DeleteMedicalResourcesRequest.Builder()
-
         deletePermissionTypes.healthPermissionTypes.filterIsInstance<MedicalPermissionType>().map {
             permissionType ->
             deleteRequest.addMedicalResourceType(toMedicalResourceType(permissionType))

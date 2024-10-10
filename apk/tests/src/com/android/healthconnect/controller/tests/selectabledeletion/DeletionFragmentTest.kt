@@ -1458,7 +1458,41 @@ class DeletionFragmentTest {
 
     // endregion
 
-    // TODO inactive app data
+    // region inactive app
+    @Test
+    fun deleteInactiveAppHealthPermissionTypeData_showsCorrectText() {
+        whenever(viewModel.deletionProgress).then {
+            MutableLiveData(DeletionViewModel.DeletionProgress.NOT_STARTED)
+        }
+        whenever(viewModel.getDeletionType()).then {
+            DeletionType.DeleteInactiveAppData(
+                appName = TEST_APP_NAME,
+                packageName = TEST_APP_PACKAGE_NAME,
+                healthPermissionType = FitnessPermissionType.STEPS,
+            )
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(START_DELETION_KEY, bundleOf())
+        }
+
+        onView(withText("Permanently delete steps data for $TEST_APP_NAME?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Connected apps will no longer be able to read this data from Health\u00A0Connect"
+                )
+            )
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    // endregion
 
     // region confirmation dialog buttons
     @Test
