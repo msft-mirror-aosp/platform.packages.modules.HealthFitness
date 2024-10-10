@@ -129,7 +129,6 @@ import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
-import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.health.connect.internal.datatypes.utils.MedicalResourceTypePermissionMapper;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.health.connect.migration.HealthConnectMigrationUiState;
@@ -198,12 +197,15 @@ import com.android.server.healthconnect.storage.request.DeleteTransactionRequest
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -271,7 +273,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final ChangeLogsHelper mChangeLogsHelper;
     private final ChangeLogsRequestHelper mChangeLogsRequestHelper;
     private final MigrationEntityHelper mMigrationEntityHelper;
-    private final HealthConnectMappings mHealthConnectMappings;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings;
 
     private volatile UserHandle mCurrentForegroundUser;
 
@@ -293,7 +295,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ActivityDateHelper activityDateHelper,
             ChangeLogsHelper changeLogsHelper,
             ChangeLogsRequestHelper changeLogsRequestHelper,
-            HealthConnectMappings healthConnectMappings,
+            InternalHealthConnectMappings internalHealthConnectMappings,
             CloudBackupManager cloudBackupManager) {
         this(
                 transactionManager,
@@ -313,7 +315,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 activityDateHelper,
                 changeLogsHelper,
                 changeLogsRequestHelper,
-                healthConnectMappings,
+                internalHealthConnectMappings,
                 cloudBackupManager);
     }
 
@@ -336,7 +338,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ActivityDateHelper activityDateHelper,
             ChangeLogsHelper changeLogsHelper,
             ChangeLogsRequestHelper changeLogsRequestHelper,
-            HealthConnectMappings healthConnectMappings,
+            InternalHealthConnectMappings internalHealthConnectMappings,
             CloudBackupManager cloudBackupManager) {
         mAccessLogsHelper = accessLogsHelper;
         mTransactionManager = transactionManager;
@@ -354,7 +356,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
         mDataPermissionEnforcer =
                 new DataPermissionEnforcer(
-                        mPermissionManager, mContext, deviceConfigManager, healthConnectMappings);
+                        mPermissionManager,
+                        mContext,
+                        deviceConfigManager,
+                        internalHealthConnectMappings.getExternalMappings());
         mMedicalDataPermissionEnforcer = new MedicalDataPermissionEnforcer(mPermissionManager);
         mAppOpsManagerLocal = LocalManagerRegistry.getManager(AppOpsManagerLocal.class);
         mAppInfoHelper = AppInfoHelper.getInstance();
@@ -394,7 +399,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mMedicalDataSourceHelper = medicalDataSourceHelper;
         mChangeLogsHelper = changeLogsHelper;
         mMigrationEntityHelper = new MigrationEntityHelper();
-        mHealthConnectMappings = healthConnectMappings;
+        mInternalHealthConnectMappings = internalHealthConnectMappings;
         mCloudBackupManager = cloudBackupManager;
     }
 
@@ -647,6 +652,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             attributionSource.getPackageName(),
                                             request,
                                             mHealthDataCategoryPriorityHelper,
+                                            mInternalHealthConnectMappings,
                                             mTransactionManager,
                                             startDateAccess)
                                     .getAggregateDataResponseParcel(
@@ -3012,7 +3018,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     } catch (IllegalArgumentException illegalArgumentException) {
                         logger.setHealthDataServiceApiStatusError(
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
-                        Slog.e(TAG, "IllegalArgumentException: ", illegalArgumentException);
+                        if (Flags.logcatCensorIae()) {
+                            Slog.e(TAG, getStackTraceOnlyString(illegalArgumentException));
+                        } else {
+                            Slog.e(TAG, "IllegalArgumentException: ", illegalArgumentException);
+                        }
                         tryAndThrowException(
                                 errorCallback,
                                 illegalArgumentException,
@@ -3039,6 +3049,42 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 },
                 uid,
                 isController);
+    }
+
+    /**
+     * Returns a string from an exception that contains the stack trace but not the message.
+     *
+     * <p>The message for an exception may reveal privacy sensitive information. So this method
+     * returns the stack trace as a string including the cause chain for the exception, if it
+     * exists. The stack trace is not communicated through Binder, so is lost to if it is not
+     * logged.
+     */
+    private static String getStackTraceOnlyString(Throwable ex) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw, false);
+        pw.println(ex.getClass().getName());
+        printStackTrace(ex, pw);
+        Throwable cause = ex.getCause();
+        while (cause != null) {
+            pw.println(String.format("Caused by: %s", cause.getClass().getName()));
+            printStackTrace(cause, pw);
+            cause = cause.getCause();
+        }
+        pw.flush();
+        return sw.toString();
+    }
+
+    private static void printStackTrace(Throwable ex, PrintWriter pw) {
+        StackTraceElement[] stackTraceElements = ex.getStackTrace();
+        for (StackTraceElement element : stackTraceElements) {
+            pw.println(
+                    String.format(
+                            " at %s.%s(%s:%s)",
+                            element.getClassName(),
+                            element.getMethodName(),
+                            element.getFileName(),
+                            element.getLineNumber()));
+        }
     }
 
     /**
