@@ -206,7 +206,6 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -375,20 +374,16 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         mHealthDataCategoryPriorityHelper);
         mMigrationUiStateManager = migrationUiStateManager;
         mExportImportSettingsStorage = exportImportSettingsStorage;
-        if (Flags.exportImport()) {
-            Clock clockForLogging = Flags.exportImportFastFollow() ? Clock.systemUTC() : null;
-            mImportManager =
-                    new ImportManager(
-                            mAppInfoHelper,
-                            mContext,
-                            mExportImportSettingsStorage,
-                            mTransactionManager,
-                            mDeviceInfoHelper,
-                            mHealthDataCategoryPriorityHelper,
-                            clockForLogging);
-        } else {
-            mImportManager = null;
-        }
+        mImportManager =
+                Flags.exportImport()
+                        ? new ImportManager(
+                                mAppInfoHelper,
+                                mContext,
+                                mExportImportSettingsStorage,
+                                mTransactionManager,
+                                mDeviceInfoHelper,
+                                mHealthDataCategoryPriorityHelper)
+                        : null;
         mExportManager = exportManager;
         migrationCleaner.attachTo(migrationStateManager);
         mMigrationUiStateManager.attachTo(migrationStateManager);
