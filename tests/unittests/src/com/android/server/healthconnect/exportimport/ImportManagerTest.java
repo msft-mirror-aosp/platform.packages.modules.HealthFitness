@@ -19,6 +19,7 @@ package com.android.server.healthconnect.exportimport;
 import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR_NONE;
 import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR_VERSION_MISMATCH;
 import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR_WRONG_FILE;
+import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_STARTED;
 
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DATABASE_FILE_NAME;
 import static com.android.server.healthconnect.exportimport.ImportManager.IMPORT_DATABASE_DIR_NAME;
@@ -29,11 +30,15 @@ import static com.android.server.healthconnect.storage.datatypehelpers.Transacti
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.HealthConnectManager;
@@ -47,12 +52,14 @@ import android.os.UserHandle;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.FakePreferenceHelper;
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.TestUtils;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.notifications.HealthConnectNotificationSender;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -81,6 +88,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
@@ -95,7 +105,7 @@ public class ImportManagerTest {
     private static final String TEST_PACKAGE_NAME_2 = "other.app";
     private static final String TEST_PACKAGE_NAME_3 = "another.app";
 
-    private static final String CHANNEL_ID = "healthconnect-channel";
+    private static final int TEST_COMPRESSED_FILE_SIZE = 1042;
 
     @Rule(order = 1)
     public final ExtendedMockitoRule mExtendedMockitoRule =
@@ -103,19 +113,19 @@ public class ImportManagerTest {
                     .mockStatic(HealthConnectManager.class)
                     .mockStatic(Environment.class)
                     .setStrictness(Strictness.LENIENT)
+                    .mockStatic(ExportImportLogger.class)
                     .build();
 
     @Rule(order = 2)
     public final HealthConnectDatabaseTestRule mDatabaseTestRule =
             new HealthConnectDatabaseTestRule();
 
-    private HealthConnectUserContext mContext;
+    private ImportManager mImportManagerSpy;
 
+    private HealthConnectUserContext mContext;
     private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
     private HealthDataCategoryPriorityHelper mPriorityHelper;
-
-    private ImportManager mImportManager;
     private HealthConnectNotificationSender mNotificationSender;
     private ExportImportSettingsStorage mExportImportSettingsStorage;
     private AppInfoHelper mAppInfoHelper;
@@ -127,7 +137,13 @@ public class ImportManagerTest {
         InstrumentationRegistry.getInstrumentation()
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
+
         HealthDataCategoryPriorityHelper.clearInstanceForTest();
+        AppInfoHelper.resetInstanceForTest();
+        AccessLogsHelper.resetInstanceForTest();
+        DeviceInfoHelper.resetInstanceForTest();
+        HealthDataCategoryPriorityHelper.clearInstanceForTest();
+
         mContext = mDatabaseTestRule.getUserContext();
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(mContext, mTransactionManager);
@@ -135,7 +151,6 @@ public class ImportManagerTest {
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_3);
         mNotificationSender = mock(HealthConnectNotificationSender.class);
-        AppInfoHelper.resetInstanceForTest();
 
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
@@ -147,24 +162,32 @@ public class ImportManagerTest {
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
+        healthConnectInjector.getHealthConnectDeviceConfigManager();
+        mPriorityHelper = healthConnectInjector.getHealthDataCategoryPriorityHelper();
+        mPriorityHelper.setPriorityOrder(HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME));
 
-        mImportManager =
+        Instant timeStamp = Instant.parse("2024-06-04T16:39:12Z");
+        Clock fakeClock = Clock.fixed(timeStamp, ZoneId.of("UTC"));
+
+        ImportManager importManager =
                 new ImportManager(
-                        healthConnectInjector.getAppInfoHelper(),
+                        mAppInfoHelper,
                         mContext,
                         mNotificationSender,
                         mExportImportSettingsStorage,
                         mTransactionManager,
-                        healthConnectInjector.getDeviceInfoHelper(),
-                        healthConnectInjector.getHealthDataCategoryPriorityHelper());
-        HealthConnectDeviceConfigManager.initializeInstance(mContext);
-
-        mPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
-        mPriorityHelper.setPriorityOrder(HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME));
+                        mDeviceInfoHelper,
+                        mPriorityHelper,
+                        fakeClock);
+        mImportManagerSpy = ExtendedMockito.spy(importManager);
+        doReturn(TEST_COMPRESSED_FILE_SIZE)
+                .when(mImportManagerSpy)
+                .getFileSizeInKb(any(ContentResolver.class), any(Uri.class));
     }
 
     @After
     public void tearDown() throws Exception {
+        TestUtils.waitForAllScheduledTasksToComplete();
         DatabaseHelper.clearAllData(mTransactionManager);
 
         File testDir = mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE);
@@ -189,7 +212,7 @@ public class ImportManagerTest {
 
         DatabaseHelper.clearAllData(mTransactionManager);
 
-        mImportManager.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
         verify(mNotificationSender, times(1))
                 .sendNotificationAsUser(
@@ -229,7 +252,7 @@ public class ImportManagerTest {
         // Insert data so that getPriorityOrder doesn't remove apps from priority list.
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 345, 100));
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME_2, createStepsRecord(234, 432, 200));
-        AppInfoHelper.getInstance().syncAppInfoRecordTypesUsed();
+        mAppInfoHelper.syncAppInfoRecordTypesUsed();
 
         mPriorityHelper.setPriorityOrder(
                 HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2));
@@ -244,7 +267,7 @@ public class ImportManagerTest {
                 .containsExactly(TEST_PACKAGE_NAME_2)
                 .inOrder();
 
-        mImportManager.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
         verify(mNotificationSender, times(1))
                 .sendNotificationAsUser(
@@ -266,7 +289,7 @@ public class ImportManagerTest {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 345, 100));
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME_2, createStepsRecord(234, 432, 200));
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME_3, createStepsRecord(400, 510, 305));
-        AppInfoHelper.getInstance().syncAppInfoRecordTypesUsed();
+        mAppInfoHelper.syncAppInfoRecordTypesUsed();
 
         mPriorityHelper.setPriorityOrder(
                 HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2));
@@ -282,7 +305,7 @@ public class ImportManagerTest {
                 .containsExactly(TEST_PACKAGE_NAME_2, TEST_PACKAGE_NAME_3)
                 .inOrder();
 
-        mImportManager.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
         verify(mNotificationSender, times(1))
                 .sendNotificationAsUser(
@@ -322,7 +345,7 @@ public class ImportManagerTest {
 
         DatabaseHelper.clearAllData(mTransactionManager);
 
-        mImportManager.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
         verify(mNotificationSender, times(1))
                 .sendNotificationAsUser(
@@ -358,7 +381,7 @@ public class ImportManagerTest {
     public void deletesTheDatabase() throws Exception {
         File dbToImport = exportCurrentDb();
 
-        mImportManager.runImport(mContext.getUser(), Uri.fromFile(dbToImport));
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(dbToImport));
 
         verify(mNotificationSender, times(1))
                 .sendNotificationAsUser(
@@ -377,13 +400,36 @@ public class ImportManagerTest {
     }
 
     @Test
+    public void importNotADatabase_logsWrongFileError() throws Exception {
+        File textFileToImport =
+                createTextFile(
+                        mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE), "export.txt");
+        File zipToImport = zipExportedDb(textFileToImport);
+
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+
+        ExtendedMockito.verify(
+                () ->
+                        ExportImportLogger.logImportStatus(
+                                eq(DATA_IMPORT_STARTED),
+                                eq(ExportImportLogger.NO_VALUE_RECORDED),
+                                eq(ExportImportLogger.NO_VALUE_RECORDED),
+                                eq(ExportImportLogger.NO_VALUE_RECORDED)),
+                times(1));
+        ExtendedMockito.verify(
+                () ->
+                        ExportImportLogger.logImportStatus(
+                                DATA_IMPORT_ERROR_WRONG_FILE, 0, 0, TEST_COMPRESSED_FILE_SIZE));
+    }
+
+    @Test
     public void importNotADatabase_setsWrongFileError() throws Exception {
         File textFileToImport =
                 createTextFile(
                         mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE), "export.txt");
         File zipToImport = zipExportedDb(textFileToImport);
 
-        mImportManager.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
         verify(mNotificationSender, times(1))
                 .sendNotificationAsUser(
@@ -409,7 +455,7 @@ public class ImportManagerTest {
                 new File(mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE), "export.zip");
         Compressor.compress(textFileToImport, "wrong_name.txt", zipToImport);
 
-        mImportManager.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
         verify(mNotificationSender, times(1))
                 .sendNotificationAsUser(
@@ -426,6 +472,34 @@ public class ImportManagerTest {
     }
 
     @Test
+    public void importWrongFileName_logsWrongFileError() throws Exception {
+        doReturn(0)
+                .when(mImportManagerSpy)
+                .getFileSizeInKb(any(ContentResolver.class), any(Uri.class));
+
+        File textFileToImport =
+                createTextFile(
+                        mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE),
+                        "wrong_name.txt");
+        File zipToImport =
+                new File(mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE), "export.zip");
+        Compressor.compress(textFileToImport, "wrong_name.txt", zipToImport);
+
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+
+        ExtendedMockito.verify(
+                () ->
+                        ExportImportLogger.logImportStatus(
+                                eq(DATA_IMPORT_STARTED),
+                                eq(ExportImportLogger.NO_VALUE_RECORDED),
+                                eq(ExportImportLogger.NO_VALUE_RECORDED),
+                                eq(ExportImportLogger.NO_VALUE_RECORDED)),
+                times(1));
+        ExtendedMockito.verify(
+                () -> ExportImportLogger.logImportStatus(DATA_IMPORT_ERROR_WRONG_FILE, 0, 0, 0));
+    }
+
+    @Test
     public void versionMismatch_setsVersionMismatchError() throws Exception {
         File dbToImport = exportCurrentDb();
         try (SQLiteDatabase sqlDbToImport =
@@ -435,7 +509,7 @@ public class ImportManagerTest {
         }
         File zipToImport = zipExportedDb(dbToImport);
 
-        mImportManager.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
         verify(mNotificationSender, times(1))
                 .sendNotificationAsUser(
@@ -455,7 +529,7 @@ public class ImportManagerTest {
     public void successfulImport_setsNoError() throws Exception {
         File zipToImport = zipExportedDb(exportCurrentDb());
 
-        mImportManager.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
         verify(mNotificationSender, times(1))
                 .sendNotificationAsUser(
@@ -468,6 +542,49 @@ public class ImportManagerTest {
 
         assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
                 .isEqualTo(DATA_IMPORT_ERROR_NONE);
+    }
+
+    @Test
+    public void importedStarted_logsNoError() throws Exception {
+        File zipToImport = zipExportedDb(exportCurrentDb());
+
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+
+        ExtendedMockito.verify(
+                () ->
+                        ExportImportLogger.logImportStatus(
+                                eq(DATA_IMPORT_STARTED),
+                                eq(ExportImportLogger.NO_VALUE_RECORDED),
+                                eq(ExportImportLogger.NO_VALUE_RECORDED),
+                                eq(ExportImportLogger.NO_VALUE_RECORDED)),
+                times(1));
+    }
+
+    @Test
+    public void successfulImport_logsNoError() throws Exception {
+        File currentDb = exportCurrentDb();
+        File zipToImport = zipExportedDb(currentDb);
+        int expectedOriginalFileSize = intSizeInKb(currentDb);
+
+        mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+
+        ExtendedMockito.verify(
+                () ->
+                        ExportImportLogger.logImportStatus(
+                                eq(DATA_IMPORT_STARTED),
+                                eq(ExportImportLogger.NO_VALUE_RECORDED),
+                                eq(ExportImportLogger.NO_VALUE_RECORDED),
+                                eq(ExportImportLogger.NO_VALUE_RECORDED)),
+                times(1));
+
+        ExtendedMockito.verify(
+                () ->
+                        ExportImportLogger.logImportStatus(
+                                DATA_IMPORT_ERROR_NONE,
+                                0,
+                                expectedOriginalFileSize,
+                                TEST_COMPRESSED_FILE_SIZE),
+                times(1));
     }
 
     private File exportCurrentDb() throws Exception {
@@ -491,5 +608,9 @@ public class ImportManagerTest {
         fileWriter.write("Contents of file " + fileName);
         fileWriter.close();
         return file;
+    }
+
+    private int intSizeInKb(File file) {
+        return (int) (file.length() / 1024.0);
     }
 }
