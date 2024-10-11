@@ -37,6 +37,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsReques
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 /**
  * Interface for Health Connect Dependency Injector.
@@ -118,6 +119,12 @@ public abstract class HealthConnectInjector {
      * Injector.
      */
     public abstract HealthConnectMappings getHealthConnectMappings();
+
+    /**
+     * Returns an instance of {@link InternalHealthConnectMappings} initialised by the Health
+     * Connect Injector.
+     */
+    public abstract InternalHealthConnectMappings getInternalHealthConnectMappings();
 
     /**
      * Getter for {@link CloudBackupManager} instance initialised by the Health Connect Injector.

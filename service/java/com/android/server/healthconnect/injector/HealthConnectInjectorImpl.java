@@ -38,6 +38,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsReques
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import java.time.Clock;
 import java.util.Objects;
@@ -64,6 +65,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final AccessLogsHelper mAccessLogsHelper;
     private final ActivityDateHelper mActivityDateHelper;
     private final HealthConnectMappings mHealthConnectMappings;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings;
     private final ChangeLogsHelper mChangeLogsHelper;
     private final ChangeLogsRequestHelper mChangeLogsRequestHelper;
     private final CloudBackupManager mCloudBackupManager;
@@ -96,6 +98,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         ? PreferenceHelper.getInstance(mTransactionManager)
                         : builder.mPreferenceHelper;
         mHealthConnectMappings = new HealthConnectMappings();
+        mInternalHealthConnectMappings = new InternalHealthConnectMappings(mHealthConnectMappings);
         mHealthDataCategoryPriorityHelper =
                 builder.mHealthDataCategoryPriorityHelper == null
                         ? HealthDataCategoryPriorityHelper.getInstance(
@@ -234,6 +237,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     @Override
     public HealthConnectMappings getHealthConnectMappings() {
         return mHealthConnectMappings;
+    }
+
+    @Override
+    public InternalHealthConnectMappings getInternalHealthConnectMappings() {
+        return mInternalHealthConnectMappings;
     }
 
     @Override

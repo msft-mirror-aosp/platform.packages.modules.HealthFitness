@@ -207,3 +207,13 @@ flag {
     is_fixed_read_only: true
     is_exported: true
 }
+
+flag {
+    name: "logcat_censor_iae"
+    namespace: "health_fitness_aconfig"
+    description: "In Health Connect service only log the stack trace, not the message for IllegalArgumentExceptions."
+    bug: "372454440"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
