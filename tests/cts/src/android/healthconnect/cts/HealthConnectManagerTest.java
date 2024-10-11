@@ -96,7 +96,6 @@ import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.ApplicationInfoResponse;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
-import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
@@ -2200,65 +2199,6 @@ public class HealthConnectManagerTest {
 
         mManager.getMedicalDataSources(
                 List.of(dataSource.getId()), Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse()).hasSize(1);
-        Instant lastDataUpdateTime = receiver.getResponse().get(0).getLastDataUpdateTime();
-        assertThat(lastDataUpdateTime).isAtLeast(insertTime);
-        assertThat(lastDataUpdateTime).isAtMost(Instant.now());
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testGetMedicalDataSourcesByRequest_nothingPresent_returnsEmpty() throws Exception {
-        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
-        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
-
-        SystemUtil.runWithShellPermissionIdentity(
-                () -> {
-                    mManager.getMedicalDataSources(
-                            request, Executors.newSingleThreadExecutor(), receiver);
-                },
-                MANAGE_HEALTH_DATA);
-
-        assertThat(receiver.getResponse()).isEmpty();
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testGetMedicalDataSourcesByRequest_onePresentNoData_returnsItAndNullUpdateTime()
-            throws Exception {
-        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
-        mManager.createMedicalDataSource(
-                getCreateMedicalDataSourceRequest(),
-                Executors.newSingleThreadExecutor(),
-                createReceiver);
-        MedicalDataSource dataSource = createReceiver.getResponse();
-        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
-        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
-
-        mManager.getMedicalDataSources(request, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse()).containsExactly(dataSource);
-        assertThat(dataSource.getLastDataUpdateTime()).isNull();
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void
-            testGetMedicalDataSourcesByRequest_onePresentWithData_returnsCorrectLastDataUpdateTime()
-                    throws Exception {
-        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
-        mManager.createMedicalDataSource(
-                getCreateMedicalDataSourceRequest(),
-                Executors.newSingleThreadExecutor(),
-                createReceiver);
-        MedicalDataSource dataSource = createReceiver.getResponse();
-        Instant insertTime = Instant.now();
-        upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
-        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
-        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
-
-        mManager.getMedicalDataSources(request, Executors.newSingleThreadExecutor(), receiver);
 
         assertThat(receiver.getResponse()).hasSize(1);
         Instant lastDataUpdateTime = receiver.getResponse().get(0).getLastDataUpdateTime();

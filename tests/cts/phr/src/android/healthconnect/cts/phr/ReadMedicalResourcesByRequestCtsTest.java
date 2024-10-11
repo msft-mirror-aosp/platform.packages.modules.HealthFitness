@@ -20,6 +20,8 @@ import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZ
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_BACKGROUND_APP;
+import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_FOREGROUND_APP;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermissions;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
@@ -41,7 +43,6 @@ import android.health.connect.ReadMedicalResourcesPageRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
-import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
@@ -70,11 +71,7 @@ public class ReadMedicalResourcesByRequestCtsTest {
             new AssumptionCheckerRule(
                     TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
-    private static final String PHR_TEST_APP_1 = "android.healthconnect.cts.phr.testhelper.app1";
-    private static final String PHR_TEST_APP_2 = "android.healthconnect.cts.phr.testhelper.app2";
-    static final TestAppProxy PHR_BACKGROUND_APP =
-            TestAppProxy.forPackageNameInBackground(PHR_TEST_APP_1);
-    static final TestAppProxy PHR_FOREGROUND_APP = TestAppProxy.forPackageName(PHR_TEST_APP_2);
+    private PhrCtsTestUtils mUtil;
 
     @Before
     public void before() throws InterruptedException {
@@ -82,12 +79,13 @@ public class ReadMedicalResourcesByRequestCtsTest {
         revokeAllPermissions(PHR_BACKGROUND_APP.getPackageName(), "to test specific permissions");
         revokeAllPermissions(PHR_FOREGROUND_APP.getPackageName(), "to test specific permissions");
         TestUtils.deleteAllStagedRemoteData();
-        TestUtils.deleteAllMedicalData();
+        mUtil = new PhrCtsTestUtils(TestUtils.getHealthConnectManager());
+        mUtil.deleteAllMedicalData();
     }
 
     @After
     public void after() throws InterruptedException {
-        TestUtils.deleteAllMedicalData();
+        mUtil.deleteAllMedicalData();
     }
 
     @Test

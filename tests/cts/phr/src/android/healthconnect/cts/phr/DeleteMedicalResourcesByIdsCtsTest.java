@@ -23,7 +23,6 @@ import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DAT
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
@@ -32,12 +31,10 @@ import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_
 
 import static com.google.common.truth.Truth.assertThat;
 
-import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesInitialRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
-import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
@@ -48,8 +45,6 @@ import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
 import androidx.test.runner.AndroidJUnit4;
-
-import com.google.common.collect.Iterables;
 
 import org.junit.After;
 import org.junit.Before;
@@ -72,24 +67,26 @@ public class DeleteMedicalResourcesByIdsCtsTest {
                     TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     private HealthConnectManager mManager;
+    private PhrCtsTestUtils mUtil;
 
     @Before
     public void setUp() throws Exception {
         TestUtils.deleteAllStagedRemoteData();
-        TestUtils.deleteAllMedicalData();
         mManager = TestUtils.getHealthConnectManager();
+        mUtil = new PhrCtsTestUtils(mManager);
+        mUtil.deleteAllMedicalData();
     }
 
     @After
     public void after() throws InterruptedException {
-        TestUtils.deleteAllMedicalData();
+        mUtil.deleteAllMedicalData();
     }
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByIds_idsNonExistent_succeeds()
             throws InterruptedException {
-        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
         List<MedicalResourceId> ids = new ArrayList<>(MAXIMUM_PAGE_SIZE + 1);
         for (int i = 0; i < MAXIMUM_PAGE_SIZE + 1; i++) {
             ids.add(
@@ -109,7 +106,7 @@ public class DeleteMedicalResourcesByIdsCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByIds_managementPermissionNoData_succeeds()
             throws InterruptedException {
-        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
         List<MedicalResourceId> ids = new ArrayList<>(MAXIMUM_PAGE_SIZE + 1);
         for (int i = 0; i < MAXIMUM_PAGE_SIZE + 1; i++) {
             ids.add(
@@ -132,7 +129,7 @@ public class DeleteMedicalResourcesByIdsCtsTest {
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByIds_anIdMissing_succeeds() throws InterruptedException {
-        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
         HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
         MedicalResourceId id =
                 new MedicalResourceId(
@@ -159,7 +156,7 @@ public class DeleteMedicalResourcesByIdsCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByIds_managementPermissionAMissingId_succeeds()
             throws InterruptedException {
-        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
         HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
         MedicalResourceId id =
                 new MedicalResourceId(
@@ -195,11 +192,12 @@ public class DeleteMedicalResourcesByIdsCtsTest {
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByIds_managementPermissionCreate2Delete1_succeeds()
             throws InterruptedException {
-        MedicalDataSource dataSource = createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
         // Insert some data
-        MedicalResource resource1 = upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource resource1 =
+                mUtil.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
         MedicalResource resource2 =
-                upsertMedicalData(dataSource.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+                mUtil.upsertMedicalData(dataSource.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
 
         runWithShellPermissionIdentity(
@@ -220,25 +218,5 @@ public class DeleteMedicalResourcesByIdsCtsTest {
                 Executors.newSingleThreadExecutor(),
                 readReceiver);
         assertThat(readReceiver.getResponse().getMedicalResources()).containsExactly(resource2);
-    }
-
-    private MedicalDataSource createDataSource(CreateMedicalDataSourceRequest createRequest)
-            throws InterruptedException {
-        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
-        mManager.createMedicalDataSource(
-                createRequest, Executors.newSingleThreadExecutor(), createReceiver);
-        return createReceiver.getResponse();
-    }
-
-    private MedicalResource upsertMedicalData(String dataSourceId, String data)
-            throws InterruptedException {
-        HealthConnectReceiver<List<MedicalResource>> dataReceiver = new HealthConnectReceiver<>();
-        UpsertMedicalResourceRequest request =
-                new UpsertMedicalResourceRequest.Builder(dataSourceId, FHIR_VERSION_R4, data)
-                        .build();
-        mManager.upsertMedicalResources(
-                List.of(request), Executors.newSingleThreadExecutor(), dataReceiver);
-        // Make sure something got inserted.
-        return Iterables.getOnlyElement(dataReceiver.getResponse());
     }
 }
