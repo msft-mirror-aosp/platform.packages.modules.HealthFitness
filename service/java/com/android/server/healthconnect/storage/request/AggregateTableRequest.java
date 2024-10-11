@@ -41,6 +41,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.aggregation.PriorityRecordsAggregator;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.OrderByClause;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
@@ -87,6 +88,7 @@ public class AggregateTableRequest {
     private final AggregateParams.PriorityAggregationExtraParams mPriorityParams;
     private final boolean mUseLocalTime;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings;
     private final AppInfoHelper mAppInfoHelper;
     private final TransactionManager mTransactionManager;
     private List<Long> mTimeSplits;
@@ -98,6 +100,7 @@ public class AggregateTableRequest {
             RecordHelper<?> recordHelper,
             WhereClauses whereClauses,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            InternalHealthConnectMappings internalHealthConnectMappings,
             AppInfoHelper appInfoHelper,
             TransactionManager transactionManager,
             boolean useLocalTime) {
@@ -118,6 +121,7 @@ public class AggregateTableRequest {
         }
         mUseLocalTime = useLocalTime;
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
+        mInternalHealthConnectMappings = internalHealthConnectMappings;
         mAppInfoHelper = appInfoHelper;
         mTransactionManager = transactionManager;
     }
@@ -172,10 +176,11 @@ public class AggregateTableRequest {
         final StringBuilder builder = new StringBuilder("SELECT ");
         String aggCommand;
         boolean usingPriority =
-                StorageUtils.supportsPriority(
+                mInternalHealthConnectMappings.supportsPriority(
                                 mRecordHelper.getRecordIdentifier(),
                                 mAggregationType.getAggregateOperationType())
-                        || StorageUtils.isDerivedType(mRecordHelper.getRecordIdentifier());
+                        || mInternalHealthConnectMappings.isDerivedType(
+                                mRecordHelper.getRecordIdentifier());
         if (usingPriority) {
             for (String columnName : mColumnNamesToAggregate) {
                 builder.append(columnName).append(", ");
@@ -239,9 +244,9 @@ public class AggregateTableRequest {
     }
 
     public void onResultsFetched(Cursor cursor, Cursor metaDataCursor) {
-        if (StorageUtils.isDerivedType(mRecordHelper.getRecordIdentifier())) {
+        if (mInternalHealthConnectMappings.isDerivedType(mRecordHelper.getRecordIdentifier())) {
             deriveAggregate(cursor);
-        } else if (StorageUtils.supportsPriority(
+        } else if (mInternalHealthConnectMappings.supportsPriority(
                 mRecordHelper.getRecordIdentifier(),
                 mAggregationType.getAggregateOperationType())) {
             processPriorityRequest(cursor);

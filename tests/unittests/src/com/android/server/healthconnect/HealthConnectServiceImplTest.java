@@ -352,7 +352,7 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getActivityDateHelper(),
                         healthConnectInjector.getChangeLogsHelper(),
                         healthConnectInjector.getChangeLogsRequestHelper(),
-                        healthConnectInjector.getHealthConnectMappings(),
+                        healthConnectInjector.getInternalHealthConnectMappings(),
                         healthConnectInjector.getCloudBackupManager());
     }
 

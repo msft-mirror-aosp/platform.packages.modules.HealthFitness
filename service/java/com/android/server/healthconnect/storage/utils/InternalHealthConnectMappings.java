@@ -16,9 +16,16 @@
 
 package com.android.server.healthconnect.storage.utils;
 
+import static android.health.connect.HealthDataCategory.ACTIVITY;
+import static android.health.connect.HealthDataCategory.SLEEP;
+import static android.health.connect.HealthDataCategory.WELLNESS;
+import static android.health.connect.datatypes.AggregationType.SUM;
+
 import static java.util.Objects.requireNonNull;
 
+import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.ArrayMap;
 
 import com.android.healthfitness.flags.Flags;
@@ -34,17 +41,28 @@ import java.util.Map;
 /** @hide */
 public class InternalHealthConnectMappings {
 
+    private final HealthConnectMappings mExternalMappings;
     private final Map<Integer, InternalDataTypeDescriptor> mRecordTypeIdToDescriptor;
     private final List<RecordHelper<?>> mAllRecordHelpers;
 
-    public InternalHealthConnectMappings() {
-        this(InternalDataTypeDescriptors.getAllInternalDataTypeDescriptors());
+    public InternalHealthConnectMappings(HealthConnectMappings healthConnectMappings) {
+        this(
+                InternalDataTypeDescriptors.getAllInternalDataTypeDescriptors(),
+                healthConnectMappings);
     }
 
     @VisibleForTesting
-    InternalHealthConnectMappings(List<InternalDataTypeDescriptor> descriptors) {
+    InternalHealthConnectMappings(
+            List<InternalDataTypeDescriptor> descriptors,
+            HealthConnectMappings healthConnectMappings) {
+        mExternalMappings = healthConnectMappings;
         mRecordTypeIdToDescriptor = new ArrayMap<>(descriptors.size());
         mAllRecordHelpers = new ArrayList<>(descriptors.size());
+
+        if (!Flags.healthConnectMappings()) {
+            return;
+        }
+
         for (var descriptor : descriptors) {
             mRecordTypeIdToDescriptor.put(descriptor.getRecordTypeIdentifier(), descriptor);
             mAllRecordHelpers.add(descriptor.getRecordHelper());
@@ -87,6 +105,37 @@ public class InternalHealthConnectMappings {
             return HealthConnectServiceLogger.Builder.getDataTypeEnumFromRecordType(recordTypeId);
         }
         return getDescriptorFor(recordTypeId).getLoggingEnum();
+    }
+
+    public HealthConnectMappings getExternalMappings() {
+        return mExternalMappings;
+    }
+
+    /** Returns true if given record type/aggregation operation type pair support priority. */
+    public boolean supportsPriority(
+            @RecordTypeIdentifier.RecordType int recordType,
+            @AggregationType.AggregateOperationType int operationType) {
+        if (!Flags.healthConnectMappings()) {
+            return StorageUtils.supportsPriority(recordType, operationType);
+        }
+
+        if (operationType != SUM) {
+            return false;
+        }
+
+        return switch (mExternalMappings.getRecordCategoryForRecordType(recordType)) {
+            case ACTIVITY, SLEEP, WELLNESS -> true;
+            default -> false;
+        };
+    }
+
+    /** Returns true if given record type is derived. */
+    public boolean isDerivedType(@RecordTypeIdentifier.RecordType int recordType) {
+        if (!Flags.healthConnectMappings()) {
+            return StorageUtils.isDerivedType(recordType);
+        }
+
+        return getDescriptorFor(recordType).isDerived();
     }
 
     private InternalDataTypeDescriptor getDescriptorFor(
