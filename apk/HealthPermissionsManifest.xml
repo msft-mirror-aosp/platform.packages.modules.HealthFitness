@@ -275,6 +275,8 @@
         android:name="android.permission.health.READ_SKIN_TEMPERATURE"
         android:label="@string/skin_temperature_read_content_description"
         android:protectionLevel="dangerous"
+        android:backgroundPermission=
+            "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"
         android:permissionGroup="android.permission-group.HEALTH" />
 
     <permission
