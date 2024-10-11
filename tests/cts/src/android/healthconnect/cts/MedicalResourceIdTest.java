@@ -16,8 +16,8 @@
 
 package android.healthconnect.cts;
 
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
-import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_ALLERGY;
@@ -103,13 +103,10 @@ public class MedicalResourceIdTest {
     }
 
     @Test
-    public void testMedicalResourceId_fromFhirReference_unknownFhirResourceType() {
-        MedicalResourceId medicalResourceId =
-                MedicalResourceId.fromFhirReference(DATA_SOURCE_ID, "TestReport/034-AB16.0");
-
-        assertThat(medicalResourceId.getDataSourceId()).isEqualTo(DATA_SOURCE_ID);
-        assertThat(medicalResourceId.getFhirResourceType()).isEqualTo(FHIR_RESOURCE_TYPE_UNKNOWN);
-        assertThat(medicalResourceId.getFhirResourceId()).isEqualTo("034-AB16.0");
+    public void testMedicalResourceId_fromFhirReference_unknownFhirResourceType_throws() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> MedicalResourceId.fromFhirReference(DATA_SOURCE_ID, "TestReport/034-AB16.0"));
     }
 
     @Test
@@ -165,7 +162,9 @@ public class MedicalResourceIdTest {
                         FHIR_RESOURCE_ID_IMMUNIZATION);
         MedicalResourceId idWithDifferentFhirResourceType =
                 new MedicalResourceId(
-                        DATA_SOURCE_ID, FHIR_RESOURCE_TYPE_UNKNOWN, FHIR_RESOURCE_ID_IMMUNIZATION);
+                        DATA_SOURCE_ID,
+                        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                        FHIR_RESOURCE_ID_IMMUNIZATION);
         MedicalResourceId idWithDifferentFhirResourceId =
                 new MedicalResourceId(
                         DATA_SOURCE_ID, FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_RESOURCE_ID_ALLERGY);

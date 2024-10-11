@@ -35,17 +35,15 @@ import java.util.Set;
 
 /**
  * A class to capture the FHIR resource data. This is the class used for all supported FHIR resource
- * types, which is a subset of the resource list in <a
- * href="https://build.fhir.org/resourcelist.html">the official FHIR website</a>.
+ * types, which is a subset of the resource list on <a
+ * href="https://build.fhir.org/resourcelist.html">the official FHIR website</a>. The list of
+ * supported types will likely expand in future releases.
  *
  * <p>FHIR stands for the <a href="https://hl7.org/fhir/">Fast Healthcare Interoperability Resources
  * </a> standard.
  */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class FhirResource implements Parcelable {
-    /** Unknown FHIR resource type. */
-    public static final int FHIR_RESOURCE_TYPE_UNKNOWN = 0;
-
     /**
      * FHIR resource type for <a href="https://www.hl7.org/fhir/immunization.html">Immunization</a>.
      */
@@ -129,7 +127,6 @@ public final class FhirResource implements Parcelable {
 
     /** @hide */
     @IntDef({
-        FHIR_RESOURCE_TYPE_UNKNOWN,
         FHIR_RESOURCE_TYPE_IMMUNIZATION,
         FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
         FHIR_RESOURCE_TYPE_OBSERVATION,
@@ -195,6 +192,12 @@ public final class FhirResource implements Parcelable {
     /**
      * Returns the FHIR resource type. This is extracted from the "resourceType" field in {@link
      * #getData}.
+     *
+     * <p>The list of supported types is a subset of the resource list on <a
+     * href="https://build.fhir.org/resourcelist.html">the official FHIR website</a>. For a list of
+     * supported types, see the {@link FhirResource} constants, such as {@link
+     * #FHIR_RESOURCE_TYPE_IMMUNIZATION}. Clients should be aware that this list is non exhaustive
+     * and may increase in future releases when additional types will need to be handled.
      */
     @FhirResourceType
     public int getType() {
@@ -235,7 +238,6 @@ public final class FhirResource implements Parcelable {
      */
     private static final Set<Integer> VALID_TYPES =
             Set.of(
-                    FHIR_RESOURCE_TYPE_UNKNOWN,
                     FHIR_RESOURCE_TYPE_IMMUNIZATION,
                     FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
                     FHIR_RESOURCE_TYPE_OBSERVATION,
