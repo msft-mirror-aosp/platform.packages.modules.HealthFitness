@@ -361,7 +361,10 @@ public final class StorageUtils {
     /**
      * Returns if priority of apps needs to be considered to compute the aggregate request for the
      * record type.
+     *
+     * @deprecated use {@link InternalHealthConnectMappings#supportsPriority(int, int)}
      */
+    @Deprecated
     public static boolean supportsPriority(int recordType, int operationType) {
         if (operationType != SUM) {
             return false;
@@ -373,7 +376,12 @@ public final class StorageUtils {
         return recordCategory == ACTIVITY || recordCategory == SLEEP || recordCategory == WELLNESS;
     }
 
-    /** Returns if derivation needs to be done to calculate aggregate */
+    /**
+     * Returns if derivation needs to be done to calculate aggregate.
+     *
+     * @deprecated use {@link InternalHealthConnectMappings#isDerivedType(int)}
+     */
+    @Deprecated
     public static boolean isDerivedType(int recordType) {
         return recordType == RECORD_TYPE_BASAL_METABOLIC_RATE
                 || recordType == RECORD_TYPE_TOTAL_CALORIES_BURNED;
