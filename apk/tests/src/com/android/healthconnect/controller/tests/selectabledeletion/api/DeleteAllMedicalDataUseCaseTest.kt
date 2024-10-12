@@ -15,22 +15,15 @@
  */
 package com.android.healthconnect.controller.tests.selectabledeletion.api
 
-import android.health.connect.DeleteUsingFiltersRequest
 import android.health.connect.GetMedicalDataSourcesRequest
 import android.health.connect.HealthConnectManager
 import android.health.connect.datatypes.MedicalDataSource
 import android.os.OutcomeReceiver
-import android.platform.test.annotations.DisableFlags
-import android.platform.test.annotations.EnableFlags
-import android.platform.test.flag.junit.SetFlagsRule
-import com.android.healthconnect.controller.selectabledeletion.api.DeleteAllDataUseCase
-import com.android.healthconnect.controller.selectabledeletion.api.DeleteAllFitnessDataUseCase
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteAllMedicalDataUseCase
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.MedicalDataSourceReader
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_DATA_SOURCE
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_DATA_SOURCE_2
-import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -51,46 +44,30 @@ import org.mockito.invocation.InvocationOnMock
 import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
-class DeleteAllDataUseCaseTest {
+class DeleteAllMedicalDataUseCaseTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
-    @get:Rule val setFlagsRule = SetFlagsRule()
 
-    var manager: HealthConnectManager = mock(HealthConnectManager::class.java)
-
-    private lateinit var useCase: DeleteAllDataUseCase
-    private lateinit var deleteAllFitnessDataUseCase: DeleteAllFitnessDataUseCase
-    private lateinit var deleteAllMedicalDataUseCase: DeleteAllMedicalDataUseCase
+    private lateinit var useCase: DeleteAllMedicalDataUseCase
     private val healthPermissionReader: HealthPermissionReader =
         mock((HealthPermissionReader::class.java))
+    var manager: HealthConnectManager = mock(HealthConnectManager::class.java)
 
     @Captor lateinit var dataSourceIdCaptor: ArgumentCaptor<String>
-    @Captor lateinit var filtersCaptor: ArgumentCaptor<DeleteUsingFiltersRequest>
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        deleteAllFitnessDataUseCase = DeleteAllFitnessDataUseCase(manager, Dispatchers.Main)
-        deleteAllMedicalDataUseCase =
+        useCase =
             DeleteAllMedicalDataUseCase(
                 manager,
                 healthPermissionReader,
                 MedicalDataSourceReader(manager, Dispatchers.Main),
                 Dispatchers.Main,
             )
-        useCase =
-            DeleteAllDataUseCase(
-                deleteAllFitnessDataUseCase,
-                deleteAllMedicalDataUseCase,
-                Dispatchers.Main,
-            )
     }
 
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     @Test
-    fun invoke_deleteAllData_callsHealthManager() = runTest {
-        doAnswer(prepareAnswer())
-            .`when`(manager)
-            .deleteRecords(any(DeleteUsingFiltersRequest::class.java), any(), any())
+    fun invoke_deleteAllMedicalData_callsHealthManager() = runTest {
         doAnswer(prepareAnswer(listOf(TEST_MEDICAL_DATA_SOURCE, TEST_MEDICAL_DATA_SOURCE_2)))
             .`when`(manager)
             .getMedicalDataSources(any(GetMedicalDataSourcesRequest::class.java), any(), any())
@@ -99,40 +76,9 @@ class DeleteAllDataUseCaseTest {
 
         useCase.invoke()
 
-        verify(manager, times(1)).deleteRecords(filtersCaptor.capture(), any(), any())
-        assertThat(filtersCaptor.value.timeRangeFilter).isNull()
-        assertThat(filtersCaptor.value.dataOrigins).isEmpty()
-        assertThat(filtersCaptor.value.recordTypes).isEmpty()
         verify(manager, times(2))
             .deleteMedicalDataSourceWithData(dataSourceIdCaptor.capture(), any(), any())
         assertThat(dataSourceIdCaptor.value).isEqualTo(TEST_MEDICAL_DATA_SOURCE_2.id)
-    }
-
-    @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
-    @Test
-    fun invoke_deleteAllData_phrFlagDisabled_callsHealthManager() = runTest {
-        doAnswer(prepareAnswer())
-            .`when`(manager)
-            .deleteRecords(any(DeleteUsingFiltersRequest::class.java), any(), any())
-        doAnswer(prepareAnswer(listOf(TEST_MEDICAL_DATA_SOURCE, TEST_MEDICAL_DATA_SOURCE_2)))
-            .`when`(manager)
-            .getMedicalDataSources(any(GetMedicalDataSourcesRequest::class.java), any(), any())
-        whenever(healthPermissionReader.getAppsWithMedicalPermissions())
-            .thenReturn(listOf(TEST_MEDICAL_DATA_SOURCE.packageName))
-
-        useCase.invoke()
-
-        verify(manager).deleteRecords(filtersCaptor.capture(), any(), any())
-        assertThat(filtersCaptor.value.timeRangeFilter).isNull()
-        assertThat(filtersCaptor.value.dataOrigins).isEmpty()
-        assertThat(filtersCaptor.value.recordTypes).isEmpty()
-        verify(manager, times(0))
-            .deleteMedicalDataSourceWithData(dataSourceIdCaptor.capture(), any(), any())
-    }
-
-    private fun prepareAnswer(): (InvocationOnMock) -> Nothing? {
-        val answer = { _: InvocationOnMock -> null }
-        return answer
     }
 
     private fun prepareAnswer(

@@ -48,7 +48,7 @@ import android.health.connect.aidl.RecordIdFiltersParcel;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.health.connect.internal.datatypes.utils.RecordMapper;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.ArrayMap;
 import android.util.Pair;
 import android.util.Slog;
@@ -582,7 +582,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
             T record =
                     (T)
-                            RecordMapper.getInstance()
+                            HealthConnectMappings.getInstance()
                                     .getRecordIdToInternalRecordClassMap()
                                     .get(getRecordIdentifier())
                                     .getConstructor()

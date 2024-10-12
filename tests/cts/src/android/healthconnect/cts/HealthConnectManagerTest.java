@@ -37,7 +37,6 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE;
@@ -96,7 +95,6 @@ import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.ApplicationInfoResponse;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
-import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
@@ -2209,65 +2207,6 @@ public class HealthConnectManagerTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testGetMedicalDataSourcesByRequest_nothingPresent_returnsEmpty() throws Exception {
-        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
-        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
-
-        SystemUtil.runWithShellPermissionIdentity(
-                () -> {
-                    mManager.getMedicalDataSources(
-                            request, Executors.newSingleThreadExecutor(), receiver);
-                },
-                MANAGE_HEALTH_DATA);
-
-        assertThat(receiver.getResponse()).isEmpty();
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testGetMedicalDataSourcesByRequest_onePresentNoData_returnsItAndNullUpdateTime()
-            throws Exception {
-        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
-        mManager.createMedicalDataSource(
-                getCreateMedicalDataSourceRequest(),
-                Executors.newSingleThreadExecutor(),
-                createReceiver);
-        MedicalDataSource dataSource = createReceiver.getResponse();
-        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
-        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
-
-        mManager.getMedicalDataSources(request, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse()).containsExactly(dataSource);
-        assertThat(dataSource.getLastDataUpdateTime()).isNull();
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void
-            testGetMedicalDataSourcesByRequest_onePresentWithData_returnsCorrectLastDataUpdateTime()
-                    throws Exception {
-        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
-        mManager.createMedicalDataSource(
-                getCreateMedicalDataSourceRequest(),
-                Executors.newSingleThreadExecutor(),
-                createReceiver);
-        MedicalDataSource dataSource = createReceiver.getResponse();
-        Instant insertTime = Instant.now();
-        upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
-        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
-        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
-
-        mManager.getMedicalDataSources(request, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.getResponse()).hasSize(1);
-        Instant lastDataUpdateTime = receiver.getResponse().get(0).getLastDataUpdateTime();
-        assertThat(lastDataUpdateTime).isAtLeast(insertTime);
-        assertThat(lastDataUpdateTime).isAtMost(Instant.now());
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testHealthConnectManager_deleteMedicalDataSourceInvalidId_fails() throws Exception {
         HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
 
@@ -2734,28 +2673,12 @@ public class HealthConnectManagerTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testReadMedicalResources_byRequest_unknownTypeInInitialRequest_throws()
-            throws InterruptedException {
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_UNKNOWN)
-                        .build();
-
-        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.assertAndGetException().getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_unknownTypeInPageRequest_throws()
             throws InterruptedException {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
         // Encode a page token according to PhrPageTokenWrapper#encode(), with medicalResourceType
-        // being MEDICAL_RESOURCE_TYPE_UNKNOWN.
+        // being unknown type 0.
         String pageTokenStringWithUnknownType = "2,0,";
         Base64.Encoder encoder = Base64.getEncoder();
         String pageToken = encoder.encodeToString(pageTokenStringWithUnknownType.getBytes());
@@ -2774,12 +2697,8 @@ public class HealthConnectManagerTest {
             throws InterruptedException {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
-        // Encode a page token according to PhrPageTokenWrapper#encode(), with medicalResourceType
-        // being MEDICAL_RESOURCE_TYPE_UNKNOWN.
-        Base64.Encoder encoder = Base64.getEncoder();
-        String pageToken = encoder.encodeToString("".getBytes());
         ReadMedicalResourcesPageRequest request =
-                new ReadMedicalResourcesPageRequest.Builder(pageToken).build();
+                new ReadMedicalResourcesPageRequest.Builder("").build();
 
         mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
 
@@ -2792,7 +2711,7 @@ public class HealthConnectManagerTest {
     public void testReadMedicalResources_byRequest_invalidDataSourceIdsByReflection_throws()
             throws NoSuchFieldException, IllegalAccessException {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_UNKNOWN)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .build();
 
         setFieldValueUsingReflection(request, "mDataSourceIds", Set.of("invalid id"));
@@ -2811,7 +2730,7 @@ public class HealthConnectManagerTest {
     public void testReadMedicalResources_byRequest_invalidResourceTypeByReflection_throws()
             throws NoSuchFieldException, IllegalAccessException {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_UNKNOWN)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .build();
 
         setFieldValueUsingReflection(request, "mMedicalResourceType", 100);
