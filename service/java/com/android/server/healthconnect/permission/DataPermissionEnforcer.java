@@ -26,7 +26,6 @@ import android.content.Context;
 import android.health.connect.HealthPermissions;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
-import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.permission.PermissionManager;
 import android.util.ArrayMap;
 import android.util.ArraySet;
@@ -49,7 +48,6 @@ public class DataPermissionEnforcer {
     private final PermissionManager mPermissionManager;
     private final Context mContext;
     private final HealthConnectDeviceConfigManager mDeviceConfigManager;
-    private final RecordMapper mRecordMapper;
     private final HealthConnectMappings mHealthConnectMappings;
 
     public DataPermissionEnforcer(
@@ -60,7 +58,6 @@ public class DataPermissionEnforcer {
         mPermissionManager = permissionManager;
         mContext = context;
         mDeviceConfigManager = deviceConfigManager;
-        mRecordMapper = RecordMapper.getInstance();
         mHealthConnectMappings = healthConnectMappings;
     }
 
@@ -242,7 +239,7 @@ public class DataPermissionEnforcer {
                     "Caller doesn't have "
                             + permissionName
                             + prohibitedAction
-                            + mRecordMapper
+                            + mHealthConnectMappings
                                     .getRecordIdToExternalRecordClassMap()
                                     .get(recordTypeId));
         }

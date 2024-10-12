@@ -26,7 +26,6 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 
@@ -167,9 +166,7 @@ public class MedicalResourceTypePermissionMapperTest {
     public void testGetMedicalReadPermissionForResourceType_unknownType_throws() {
         assertThrows(
                 IllegalArgumentException.class,
-                () ->
-                        MedicalResourceTypePermissionMapper.getMedicalReadPermission(
-                                MEDICAL_RESOURCE_TYPE_UNKNOWN));
+                () -> MedicalResourceTypePermissionMapper.getMedicalReadPermission(0));
     }
 
     @Test

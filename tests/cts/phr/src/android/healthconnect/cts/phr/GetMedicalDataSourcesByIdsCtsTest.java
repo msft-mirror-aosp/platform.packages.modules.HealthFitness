@@ -19,6 +19,10 @@ package android.healthconnect.cts.phr;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
+import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_BACKGROUND_APP;
+import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_BACKGROUND_APP_PKG;
+import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_FOREGROUND_APP;
+import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_FOREGROUND_APP_PKG;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermissions;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
@@ -38,9 +42,7 @@ import static org.junit.Assert.assertThrows;
 
 import android.health.connect.HealthConnectException;
 import android.health.connect.datatypes.MedicalDataSource;
-import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
-import android.healthconnect.cts.utils.PermissionHelper;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 import android.platform.test.annotations.RequiresFlagsEnabled;
@@ -68,14 +70,7 @@ public class GetMedicalDataSourcesByIdsCtsTest {
             new AssumptionCheckerRule(
                     TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
-    private static final String PHR_BACKGROUND_APP_PKG =
-            "android.healthconnect.cts.phr.testhelper.app1";
-    private static final String PHR_FOREGROUND_APP_PKG =
-            "android.healthconnect.cts.phr.testhelper.app2";
-    static final TestAppProxy PHR_BACKGROUND_APP =
-            TestAppProxy.forPackageNameInBackground(PHR_BACKGROUND_APP_PKG);
-    static final TestAppProxy PHR_FOREGROUND_APP =
-            TestAppProxy.forPackageName(PHR_FOREGROUND_APP_PKG);
+    private PhrCtsTestUtils mUtil;
 
     @Before
     public void before() throws InterruptedException {
@@ -83,12 +78,13 @@ public class GetMedicalDataSourcesByIdsCtsTest {
         revokeAllPermissions(PHR_BACKGROUND_APP_PKG, "to test specific permissions");
         revokeAllPermissions(PHR_FOREGROUND_APP_PKG, "to test specific permissions");
         TestUtils.deleteAllStagedRemoteData();
-        TestUtils.deleteAllMedicalData();
+        mUtil = new PhrCtsTestUtils(TestUtils.getHealthConnectManager());
+        mUtil.deleteAllMedicalData();
     }
 
     @After
     public void after() throws InterruptedException {
-        TestUtils.deleteAllMedicalData();
+        mUtil.deleteAllMedicalData();
     }
 
     @Test
@@ -322,7 +318,7 @@ public class GetMedicalDataSourcesByIdsCtsTest {
 
         // App is in background with background read permission, no write permission but has
         // immunization read permission. App can read all dataSources belonging to immunizations.
-        PermissionHelper.revokePermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
+        revokePermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         List<MedicalDataSource> result =
                 PHR_BACKGROUND_APP.getMedicalDataSources(
                         List.of(

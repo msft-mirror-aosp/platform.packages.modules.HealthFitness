@@ -262,6 +262,19 @@ class ConnectedAppsFragmentTest {
     }
 
     @Test
+    fun allowedApps_confirmationDialogDisplayed_checkboxInDialogDisplayed() {
+        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ALLOWED))
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
+        whenever(viewModel.alertDialogActive).then { MutableLiveData(true) }
+
+        launchFragment<ConnectedAppsFragment>(Bundle())
+
+        onView(withText("Also delete all Health Connect data"))
+            .inRoot(RootMatchers.isDialog())
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
     fun noAllowedApps_removeAccessDisabled() {
         val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = DENIED))
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
@@ -427,7 +440,8 @@ class ConnectedAppsFragmentTest {
         onView(withText(R.string.inactive_apps)).check(matches(isDisplayed()))
         onView(withTagValue(`is`("Delete button inactive app"))).perform(click())
 
-        onView(withText("Permanently delete all $TEST_APP_NAME data?")).check(matches(isDisplayed()))
+        onView(withText("Permanently delete all $TEST_APP_NAME data?"))
+            .check(matches(isDisplayed()))
     }
 
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
@@ -442,7 +456,8 @@ class ConnectedAppsFragmentTest {
         onView(withText(R.string.inactive_apps)).check(matches(isDisplayed()))
         onView(withTagValue(`is`("Delete button inactive app"))).perform(click())
 
-        onView(withText("Permanently delete all $TEST_APP_NAME data?")).check(matches(isDisplayed()))
+        onView(withText("Permanently delete all $TEST_APP_NAME data?"))
+            .check(matches(isDisplayed()))
     }
 
     @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE, Flags.FLAG_PERSONAL_HEALTH_RECORD)

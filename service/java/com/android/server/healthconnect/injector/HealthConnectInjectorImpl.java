@@ -97,7 +97,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mPreferenceHelper == null
                         ? PreferenceHelper.getInstance(mTransactionManager)
                         : builder.mPreferenceHelper;
-        mHealthConnectMappings = new HealthConnectMappings();
+        mHealthConnectMappings = HealthConnectMappings.getInstance();
         mInternalHealthConnectMappings = new InternalHealthConnectMappings(mHealthConnectMappings);
         mHealthDataCategoryPriorityHelper =
                 builder.mHealthDataCategoryPriorityHelper == null

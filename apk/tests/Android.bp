@@ -336,6 +336,7 @@ android_test {
     instrumentation_target_package: "com.android.healthconnect.controller.tests.extras",
 }
 
+// For development only, not used in *TS.
 android_test {
     name: "HealthConnectControllerUITests",
     srcs: [
@@ -350,6 +351,9 @@ android_test {
         "SafetyCenterTests",
         "HealthConnectMigrationApis",
         "HealthConnectExportApis",
+    ],
+    test_suites: [
+        "general-tests",
     ],
     package_name: "com.android.healthconnect.controller.tests",
     instrumentation_target_package: "com.android.healthconnect.controller.tests",
