@@ -23,6 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Hallake oma seadmes tervise- ja treeninguandmeid ning määrake, millised rakendused andmetele juurde pääsevad"</string>
     <string name="data_title" msgid="4456619761533380816">"Andmed ja juurdepääs"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Terviseandmete sirvimine"</string>
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Saate vaadata oma terviseandmeid ja seda, millistel rakendustel on nendele juurdepääs"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Kõik kategooriad"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Kõigi kategooriate kuvamine"</string>
     <string name="no_data" msgid="1906986019249068659">"Andmed puuduvad"</string>
@@ -314,7 +315,7 @@
     <string name="visits_uppercase_label" msgid="8532619758336375886">"Külastused"</string>
     <string name="visits_lowercase_label" msgid="2545887061364564151">"külastused"</string>
     <string name="visits_content_description" msgid="6336796415049565697">"Lugeda külastuste teavet"</string>
-    <string name="vital_signs_uppercase_label" msgid="289862347143374640">"Elulised märgid"</string>
+    <string name="vital_signs_uppercase_label" msgid="289862347143374640">"Tervisenäitajad"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"elulised märgid"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"Eluliste märkide lugemine"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Ärksameelsus"</string>
@@ -331,21 +332,14 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Kui annate lugemisõiguse, võib rakendus lugeda uusi andmeid ja viimase 30 päeva andmeid"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Kui annate lugemisõiguse, võib rakendus lugeda uusi ja varasemaid andmeid"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Kas lubate rakendusel <xliff:g id="APP_NAME">%1$s</xliff:g> Health Connectile juurde pääseda?"</string>
-    <!-- no translation found for request_permissions_rationale (2642076968583316986) -->
-    <skip />
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"Teavet selle kohta, kuidas <xliff:g id="APP_NAME">%1$s</xliff:g> teie andmeid töötleb, leiate dokumendist <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"privaatsuseeskirjadest"</string>
-    <!-- no translation found for medical_request_header (2300521519021510027) -->
-    <skip />
-    <!-- no translation found for medical_request_header_desc (5721171305631983663) -->
-    <skip />
-    <!-- no translation found for medical_request_about_health_records (7204918218748362687) -->
-    <skip />
-    <!-- no translation found for medical_request_data_to_share (2208383833492573960) -->
-    <skip />
-    <!-- no translation found for medical_request_share (6237397362923728514) -->
-    <skip />
-    <!-- no translation found for medical_request_footer (6533749932770903089) -->
-    <skip />
+    <string name="medical_request_header" msgid="2300521519021510027">"Kas lubada rakendusele <xliff:g id="APP_NAME">%1$s</xliff:g> juurdepääs teie terviseandmetele?"</string>
+    <string name="medical_request_header_desc" msgid="5721171305631983663">"Kui annate juurdepääsu, saab rakendus lugeda ning kirjutada andmeid, nagu allergiad, laboritulemused, vaktsiinid ja muu\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"Teave terviseandmete kohta"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Andmed jagamiseks"</string>
+    <string name="medical_request_share" msgid="6237397362923728514">"Kui lubate, saab <xliff:g id="APP_NAME">%1$s</xliff:g> teie terviseandmeid Health Connectiga jagada."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"Sünkroonige oma eri rakendustest ja allikatest pärit terviseandmed, et neid ühes kohas hoida"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Kas eemaldada kõik load?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Eemalda kõik"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ei saa edaspidi Health Connecti andmeid lugeda ega kirjutada.\n\nSee ei mõjuta rakenduse teisi lubasid, näiteks kaamerale, mikrofonile ja asukohale juurdepääsemise lubasid."</string>
@@ -408,6 +402,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Rakenduste juurdepääs"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Teil pole praegu ühtegi ühilduvat rakendust installitud"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Täiendav juurdepääs"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"Varasemad andmed, taustaandmed"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Selle rakenduse lisaload eemaldati"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Load"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Vormisolek ja heaolu"</string>
@@ -608,7 +603,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Verevaene menstruatsioon"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Keskmine menstruatsioon"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Vererohke menstruatsioon"</string>
+    <string name="flow_unknown" msgid="1634411759928572900">"Vererohkus on teadmata"</string>
     <string name="period_day" msgid="3821944462093965882">"Menstruatsiooni <xliff:g id="DAY">%1$d</xliff:g>. päev <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>-st"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Menstruatsioon (1 päev)}other{Menstruatsioon (# päeva)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Positiivne"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Negatiivne"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Kõrge"</string>
@@ -1077,7 +1074,10 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Rakendusallikate muutmine"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Seadme vaikeseade"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Rakenduse andmed"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"Nende rakenduste andmed, millel on juurdepääs teenusele Health Connect, kuvatakse siin"</string>
+    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
+    <skip />
+    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
+    <skip />
     <string name="date_picker_day" msgid="3076687507968958991">"Päev"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Nädal"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Kuu"</string>
@@ -1123,4 +1123,6 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Kas kustutada valitud rakenduse <xliff:g id="APP_NAME">%1$s</xliff:g> nädala <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> kirjed jäädavalt?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Kas kustutada valitud rakenduse <xliff:g id="APP_NAME">%1$s</xliff:g> kuu <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> kirjed jäädavalt?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Kas kustutada see rakenduse <xliff:g id="APP_NAME">%s</xliff:g> kirje jäädavalt?"</string>
+    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
+    <skip />
 </resources>
