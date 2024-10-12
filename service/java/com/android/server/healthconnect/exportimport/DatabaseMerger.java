@@ -39,7 +39,7 @@ import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.datatypes.Record;
 import android.health.connect.internal.datatypes.PlannedExerciseSessionRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.health.connect.internal.datatypes.utils.RecordMapper;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.ArrayMap;
 import android.util.Pair;
 import android.util.Slog;
@@ -77,7 +77,7 @@ public final class DatabaseMerger {
     private final Context mContext;
     private final TransactionManager mTransactionManager;
     private final AppInfoHelper mAppInfoHelper;
-    private final RecordMapper mRecordMapper;
+    private final HealthConnectMappings mHealthConnectMappings;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     private final DeviceInfoHelper mDeviceInfoHelper;
 
@@ -104,7 +104,7 @@ public final class DatabaseMerger {
         mContext = context;
         mTransactionManager = transactionManager;
         mAppInfoHelper = appInfoHelper;
-        mRecordMapper = RecordMapper.getInstance();
+        mHealthConnectMappings = HealthConnectMappings.getInstance();
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
         mDeviceInfoHelper = deviceInfoHelper;
     }
@@ -138,7 +138,7 @@ public final class DatabaseMerger {
         List<Integer> recordTypesWithOrderingOverrides =
                 RECORD_TYPE_MIGRATION_ORDERING_OVERRIDES.stream().flatMap(List::stream).toList();
         List<Integer> recordTypesWithoutOrderingOverrides =
-                mRecordMapper.getRecordIdToExternalRecordClassMap().keySet().stream()
+                mHealthConnectMappings.getRecordIdToExternalRecordClassMap().keySet().stream()
                         .filter(it -> !recordTypesWithOrderingOverrides.contains(it))
                         .toList();
 
@@ -149,7 +149,7 @@ public final class DatabaseMerger {
                         stagedDatabase,
                         stagedPackageNamesByAppIds,
                         recordTypeToMigrate,
-                        mRecordMapper
+                        mHealthConnectMappings
                                 .getRecordIdToExternalRecordClassMap()
                                 .get(recordTypeToMigrate));
             }
@@ -160,7 +160,7 @@ public final class DatabaseMerger {
                 deleteRecordsOfType(
                         stagedDatabase,
                         recordTypeToMigrate,
-                        mRecordMapper
+                        mHealthConnectMappings
                                 .getRecordIdToExternalRecordClassMap()
                                 .get(recordTypeToMigrate));
             }
@@ -168,7 +168,9 @@ public final class DatabaseMerger {
         // Migrate remaining record types in no particular order.
         for (Integer recordTypeToMigrate : recordTypesWithoutOrderingOverrides) {
             Class<? extends Record> recordClass =
-                    mRecordMapper.getRecordIdToExternalRecordClassMap().get(recordTypeToMigrate);
+                    mHealthConnectMappings
+                            .getRecordIdToExternalRecordClassMap()
+                            .get(recordTypeToMigrate);
             mergeRecordsOfType(
                     stagedDatabase, stagedPackageNamesByAppIds, recordTypeToMigrate, recordClass);
             deleteRecordsOfType(stagedDatabase, recordTypeToMigrate, recordClass);

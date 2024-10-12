@@ -239,13 +239,29 @@ class DeletionViewModelTest {
     }
 
     @Test
-    fun appData_delete_deletionInvokesCorrectly() = runTest {
+    fun appData_delete_deletionInvokedCorrectly() = runTest {
         val deletionType = DeletionType.DeleteAppData("package.name", "appName")
 
         viewModel.setDeletionType(deletionType)
         viewModel.delete()
         advanceUntilIdle()
         verify(deleteAppDataUseCase).invoke(deletionType)
+    }
+
+    @Test
+    fun inactiveAppData_delete_deletionInvokedCorrectly() = runTest {
+        val deletionType =
+            DeletionType.DeleteInactiveAppData(
+                packageName = "package.name",
+                appName = "app.name",
+                healthPermissionType = FitnessPermissionType.STEPS,
+            )
+
+        viewModel.setDeletionType(deletionType)
+        viewModel.delete()
+        advanceUntilIdle()
+        verify(deletePermissionTypesFromAppUseCase)
+            .invoke(deletionType.toDeleteHealthPermissionTypesFromApp())
     }
 }
 

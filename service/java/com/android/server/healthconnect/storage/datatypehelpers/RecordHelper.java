@@ -35,7 +35,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getDedupeByteBuffer;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.supportsPriority;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.OR;
 
@@ -49,7 +48,7 @@ import android.health.connect.aidl.RecordIdFiltersParcel;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.health.connect.internal.datatypes.utils.RecordMapper;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.ArrayMap;
 import android.util.Pair;
 import android.util.Slog;
@@ -63,6 +62,7 @@ import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.OrderByClause;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
@@ -134,6 +134,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             String callingPackage,
             List<String> packageFilters,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            InternalHealthConnectMappings internalHealthConnectMappings,
             AppInfoHelper appInfoHelper,
             TransactionManager transactionManager,
             long startTime,
@@ -150,7 +151,8 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         params.setExtraTimeColumn(endTimeColumnName);
         params.setOffsetColumnToFetch(getZoneOffsetColumnName());
 
-        if (supportsPriority(mRecordIdentifier, aggregationType.getAggregateOperationType())) {
+        if (internalHealthConnectMappings.supportsPriority(
+                mRecordIdentifier, aggregationType.getAggregateOperationType())) {
             List<String> columns =
                     Arrays.asList(
                             physicalTimeColumnName,
@@ -159,7 +161,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                             LAST_MODIFIED_TIME_COLUMN_NAME);
             params.appendAdditionalColumns(columns);
         }
-        if (StorageUtils.isDerivedType(mRecordIdentifier)) {
+        if (internalHealthConnectMappings.isDerivedType(mRecordIdentifier)) {
             params.appendAdditionalColumns(Collections.singletonList(physicalTimeColumnName));
         }
 
@@ -188,6 +190,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                         this,
                         whereClauses,
                         healthDataCategoryPriorityHelper,
+                        internalHealthConnectMappings,
                         appInfoHelper,
                         transactionManager,
                         useLocalTime)
@@ -579,7 +582,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
             T record =
                     (T)
-                            RecordMapper.getInstance()
+                            HealthConnectMappings.getInstance()
                                     .getRecordIdToInternalRecordClassMap()
                                     .get(getRecordIdentifier())
                                     .getConstructor()

@@ -202,7 +202,10 @@ class AppDataUseCaseTest {
     fun loadMedicalAppData_noData_returnEmptyList() = runTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
-                MedicalResourceTypeInfo(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, setOf())
+                MedicalResourceTypeInfo(
+                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                    setOf(),
+                )
             )
         Mockito.doAnswer(prepareAnswer(medicalResourceTypeResources))
             .`when`(healthConnectManager)
@@ -288,7 +291,10 @@ class AppDataUseCaseTest {
     fun loadAllMedicalAppData_noData_returnEmptyList() = runTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
             listOf(
-                MedicalResourceTypeInfo(MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, setOf())
+                MedicalResourceTypeInfo(
+                    MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
+                    setOf(),
+                )
             )
         Mockito.doAnswer(prepareAnswer(medicalResourceTypeResources))
             .`when`(healthConnectManager)
@@ -354,12 +360,12 @@ class AppDataUseCaseTest {
     }
 
     private fun prepareAnswer(
-        MedicalResourceTypeInfo: List<MedicalResourceTypeInfo>
+        medicalResourceTypeInfos: List<MedicalResourceTypeInfo>
     ): (InvocationOnMock) -> List<MedicalResourceTypeInfo> {
         val answer = { args: InvocationOnMock ->
             val receiver = args.arguments[1] as OutcomeReceiver<Any?, *>
-            receiver.onResult(MedicalResourceTypeInfo)
-            MedicalResourceTypeInfo
+            receiver.onResult(medicalResourceTypeInfos)
+            medicalResourceTypeInfos
         }
         return answer
     }

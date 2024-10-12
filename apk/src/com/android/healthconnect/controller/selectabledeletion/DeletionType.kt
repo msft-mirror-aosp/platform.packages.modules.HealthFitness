@@ -53,5 +53,19 @@ sealed class DeletionType {
             DeleteEntries(idsToDataTypes, totalEntries, period, startTime)
     }
 
+    data class DeleteInactiveAppData(
+        val packageName: String,
+        val appName: String,
+        val healthPermissionType: HealthPermissionType,
+    ) : DeletionType() {
+        fun toDeleteHealthPermissionTypesFromApp(): DeleteHealthPermissionTypesFromApp =
+            DeleteHealthPermissionTypesFromApp(
+                healthPermissionTypes = setOf(healthPermissionType),
+                totalPermissionTypes = 1,
+                packageName = packageName,
+                appName = appName,
+            )
+    }
+
     data class DeleteAppData(val packageName: String, val appName: String) : DeletionType()
 }
