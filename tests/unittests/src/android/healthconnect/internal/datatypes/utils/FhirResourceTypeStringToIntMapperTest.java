@@ -204,9 +204,13 @@ public class FhirResourceTypeStringToIntMapperTest {
 
     @Test
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testFhirResourceTypeInt_unknownType() {
-        int fhirResourceTypeInt = getFhirResourceTypeInt("researchstudy");
-
-        assertThat(fhirResourceTypeInt).isEqualTo(FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN);
+    public void testFhirResourceTypeInt_unknownType_throws() {
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> getFhirResourceTypeInt("researchstudy"));
+        assertThat(thrown)
+                .hasMessageThat()
+                .isEqualTo("Unsupported FHIR resource type: researchstudy");
     }
 }

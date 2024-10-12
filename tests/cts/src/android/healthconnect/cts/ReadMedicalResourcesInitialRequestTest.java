@@ -16,8 +16,8 @@
 
 package android.healthconnect.cts;
 
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 import static android.healthconnect.cts.utils.DataFactory.DEFAULT_PAGE_SIZE;
 import static android.healthconnect.cts.utils.DataFactory.MAXIMUM_PAGE_SIZE;
 import static android.healthconnect.cts.utils.DataFactory.MINIMUM_PAGE_SIZE;
@@ -62,7 +62,8 @@ public class ReadMedicalResourcesInitialRequestTest {
     @Test
     public void testRequestBuilder_setAllFields() {
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_UNKNOWN)
+                new ReadMedicalResourcesInitialRequest.Builder(
+                                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
                         .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
@@ -190,7 +191,7 @@ public class ReadMedicalResourcesInitialRequestTest {
                         .build();
         ReadMedicalResourcesInitialRequest requestDifferentType =
                 new ReadMedicalResourcesInitialRequest.Builder(request)
-                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
+                        .setMedicalResourceType(MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES)
                         .build();
         ReadMedicalResourcesInitialRequest requestDifferentDataSource =
                 new ReadMedicalResourcesInitialRequest.Builder(request)

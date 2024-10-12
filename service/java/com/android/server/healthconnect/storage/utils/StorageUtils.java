@@ -42,7 +42,7 @@ import android.health.connect.RecordIdFilter;
 import android.health.connect.internal.datatypes.InstantRecordInternal;
 import android.health.connect.internal.datatypes.IntervalRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.health.connect.internal.datatypes.utils.RecordMapper;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper;
 import android.util.Slog;
 
@@ -184,7 +184,7 @@ public final class StorageUtils {
         return getUUID(
                 packageName,
                 clientRecordId,
-                RecordMapper.getInstance().getRecordType(recordIdFilter.getRecordType()));
+                HealthConnectMappings.getInstance().getRecordType(recordIdFilter.getRecordType()));
     }
 
     public static void addPackageNameTo(RecordInternal<?> recordInternal, String packageName) {

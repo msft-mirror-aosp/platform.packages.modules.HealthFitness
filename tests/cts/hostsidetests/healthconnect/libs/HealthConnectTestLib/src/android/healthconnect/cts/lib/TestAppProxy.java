@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
@@ -179,6 +180,14 @@ public class TestAppProxy {
     /** Gets a list of {@link MedicalDataSource}s given a list of ids on behalf of the app. */
     public List<MedicalDataSource> getMedicalDataSources(List<String> ids) throws Exception {
         Bundle requestBundle = BundleHelper.fromMedicalDataSourceIds(ids);
+        Bundle responseBundle = getFromTestApp(requestBundle);
+        return BundleHelper.toMedicalDataSources(responseBundle);
+    }
+
+    /** Gets a list of {@link MedicalDataSource}s given a {@link GetMedicalDataSourcesRequest}. */
+    public List<MedicalDataSource> getMedicalDataSources(GetMedicalDataSourcesRequest request)
+            throws Exception {
+        Bundle requestBundle = BundleHelper.fromMedicalDataSourceRequest(request);
         Bundle responseBundle = getFromTestApp(requestBundle);
         return BundleHelper.toMedicalDataSources(responseBundle);
     }

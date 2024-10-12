@@ -46,7 +46,7 @@ import java.util.Set;
  * @hide
  */
 public class ReadMedicalResourcesRequestParcel implements Parcelable {
-    private boolean mIsPageRequest;
+    private final boolean mIsPageRequest;
     @MedicalResource.MedicalResourceType private int mMedicalResourceType;
     @NonNull private Set<String> mDataSourceIds = Set.of();
     @Nullable private String mPageToken = null;
@@ -68,7 +68,6 @@ public class ReadMedicalResourcesRequestParcel implements Parcelable {
     private ReadMedicalResourcesRequestParcel(Parcel in) {
         mIsPageRequest = in.readBoolean();
         mMedicalResourceType = in.readInt();
-        validateMedicalResourceType(mMedicalResourceType);
         mDataSourceIds = new HashSet<>(requireNonNull(in.createStringArrayList()));
         validateMedicalDataSourceIds(mDataSourceIds);
         mPageToken = in.readString();
@@ -78,6 +77,8 @@ public class ReadMedicalResourcesRequestParcel implements Parcelable {
         if (mIsPageRequest && mPageToken == null) {
             throw new IllegalArgumentException(
                     "pageToken cannot be null when reading Parcel from page request.");
+        } else if (!mIsPageRequest) {
+            validateMedicalResourceType(mMedicalResourceType);
         }
     }
 
