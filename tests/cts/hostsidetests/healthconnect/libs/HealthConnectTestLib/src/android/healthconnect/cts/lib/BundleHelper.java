@@ -17,6 +17,7 @@
 package android.healthconnect.cts.lib;
 
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesInitialRequest;
 import android.health.connect.ReadMedicalResourcesPageRequest;
@@ -84,8 +85,10 @@ public final class BundleHelper {
     public static final String GET_CHANGE_LOG_TOKEN_QUERY = PREFIX + "GET_CHANGE_LOG_TOKEN_QUERY";
     public static final String CREATE_MEDICAL_DATA_SOURCE_QUERY =
             PREFIX + "CREATE_MEDICAL_DATA_SOURCE_QUERY";
-    public static final String GET_MEDICAL_DATA_SOURCES_QUERY =
-            PREFIX + "GET_MEDICAL_DATA_SOURCE_QUERY";
+    public static final String GET_MEDICAL_DATA_SOURCES_USING_IDS_QUERY =
+            PREFIX + "GET_MEDICAL_DATA_SOURCES_USING_IDS_QUERY";
+    public static final String GET_MEDICAL_DATA_SOURCES_USING_REQUEST_QUERY =
+            PREFIX + "GET_MEDICAL_DATA_SOURCES_USING_REQUEST_QUERY";
     public static final String UPSERT_MEDICAL_RESOURCES_QUERY =
             PREFIX + "UPSERT_MEDICAL_RESOURCE_QUERY";
     public static final String READ_MEDICAL_RESOURCES_BY_REQUEST_QUERY =
@@ -95,6 +98,8 @@ public final class BundleHelper {
 
     private static final String CREATE_MEDICAL_DATA_SOURCE_REQUEST =
             PREFIX + "CREATE_MEDICAL_DATA_SOURCE_REQUEST";
+    private static final String GET_MEDICAL_DATA_SOURCES_REQUEST =
+            PREFIX + "GET_MEDICAL_DATA_SOURCES_REQUEST";
     public static final String MEDICAL_DATA_SOURCE_RESPONSE =
             PREFIX + "MEDICAL_DATA_SOURCE_RESPONSE";
     public static final String MEDICAL_DATA_SOURCES_RESPONSE =
@@ -453,7 +458,7 @@ public final class BundleHelper {
     /** Converts a list of UUID strings into a bundle. */
     public static Bundle fromMedicalDataSourceIds(List<String> ids) {
         Bundle bundle = new Bundle();
-        bundle.putString(QUERY_TYPE, GET_MEDICAL_DATA_SOURCES_QUERY);
+        bundle.putString(QUERY_TYPE, GET_MEDICAL_DATA_SOURCES_USING_IDS_QUERY);
         bundle.putStringArrayList(MEDICAL_DATA_SOURCE_ID, new ArrayList<>(ids));
         return bundle;
     }
@@ -461,6 +466,20 @@ public final class BundleHelper {
     /** Converts a list of UUID strings back from a bundle. */
     public static List<String> toMedicalDataSourceIds(Bundle bundle) {
         return bundle.getStringArrayList(MEDICAL_DATA_SOURCE_ID);
+    }
+
+    /** Converts a {@link GetMedicalDataSourcesRequest} into a bundle. */
+    public static Bundle fromMedicalDataSourceRequest(GetMedicalDataSourcesRequest request) {
+        Bundle bundle = new Bundle();
+        bundle.putString(QUERY_TYPE, GET_MEDICAL_DATA_SOURCES_USING_REQUEST_QUERY);
+        bundle.putParcelable(GET_MEDICAL_DATA_SOURCES_REQUEST, request);
+        return bundle;
+    }
+
+    /** Converts a {@link GetMedicalDataSourcesRequest} into a bundle. */
+    public static GetMedicalDataSourcesRequest toMedicalDataSourceRequest(Bundle bundle) {
+        return bundle.getParcelable(
+                GET_MEDICAL_DATA_SOURCES_REQUEST, GetMedicalDataSourcesRequest.class);
     }
 
     /** Converts a list of {@link MedicalDataSource}s into a bundle. */

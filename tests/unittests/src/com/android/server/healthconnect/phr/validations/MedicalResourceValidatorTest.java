@@ -215,7 +215,7 @@ public class MedicalResourceValidatorTest {
         assertThat(thrown)
                 .hasMessageThat()
                 .contains(
-                        "Unsupported resource type "
+                        "Unsupported FHIR resource type "
                                 + FHIR_RESOURCE_TYPE_UNSUPPORTED
                                 + " for resource with id "
                                 + FHIR_RESOURCE_ID_IMMUNIZATION);

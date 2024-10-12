@@ -97,7 +97,7 @@ public final class UpsertMedicalResourceRequest implements Parcelable {
 
     /**
      * Returns the FHIR version being used for {@code data}. For the request to succeed this must
-     * match the {@link MedicalDataSource#getFhirVersion()} FHIR version} of the {@link
+     * match the {@link MedicalDataSource#getFhirVersion()} FHIR version of the {@link
      * MedicalDataSource} with the provided {@code dataSourceId}.
      */
     @NonNull
