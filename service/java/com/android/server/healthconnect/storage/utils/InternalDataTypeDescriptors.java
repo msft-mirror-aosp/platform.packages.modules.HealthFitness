@@ -142,6 +142,7 @@ import static com.android.server.healthconnect.storage.utils.RecordTypeIdForUuid
 
 import android.health.HealthFitnessStatsLog;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.datatypehelpers.ActiveCaloriesBurnedRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.BasalBodyTemperatureRecordHelper;
@@ -197,6 +198,10 @@ public class InternalDataTypeDescriptors {
 
     @VisibleForTesting(visibility = PACKAGE)
     public static List<InternalDataTypeDescriptor> getAllInternalDataTypeDescriptors() {
+        if (!Flags.healthConnectMappings()) {
+            return List.of();
+        }
+
         return List.of(
                 InternalDataTypeDescriptor.builder()
                         .setRecordTypeIdentifier(RECORD_TYPE_ACTIVE_CALORIES_BURNED)
@@ -218,6 +223,7 @@ public class InternalDataTypeDescriptors {
                         .setRecordTypeIdForUuid(RECORD_TYPE_ID_FOR_UUID_BASAL_METABOLIC_RATE)
                         .setLoggingEnum(
                                 HEALTH_CONNECT_API_INVOKED__DATA_TYPE_ONE__BASAL_METABOLIC_RATE)
+                        .setDerived()
                         .build(),
                 InternalDataTypeDescriptor.builder()
                         .setRecordTypeIdentifier(RECORD_TYPE_BLOOD_GLUCOSE)
@@ -442,6 +448,7 @@ public class InternalDataTypeDescriptors {
                         .setRecordTypeIdForUuid(RECORD_TYPE_ID_FOR_UUID_TOTAL_CALORIES_BURNED)
                         .setLoggingEnum(
                                 HEALTH_CONNECT_API_INVOKED__DATA_TYPE_ONE__TOTAL_CALORIES_BURNED)
+                        .setDerived()
                         .build(),
                 InternalDataTypeDescriptor.builder()
                         .setRecordTypeIdentifier(RECORD_TYPE_VO2_MAX)

@@ -27,6 +27,7 @@ import static java.util.Objects.requireNonNull;
 
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
+import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.FhirResource.FhirResourceType;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.os.Parcel;
@@ -89,8 +90,9 @@ public final class MedicalResourceId implements Parcelable {
      * @param fhirReference The FHIR reference string typically extracted from the "reference" field
      *     in one FHIR resource (source), pointing to another FHIR resource (target) within the same
      *     data source, for example "Patient/034AB16".
-     * @throws IllegalArgumentException if the provided {@code dataSourceId} is not a valid ID, or
-     *     {@code fhirReference} does not match with the pattern of {@code
+     * @throws IllegalArgumentException if the provided {@code dataSourceId} is not a valid ID, the
+     *     referenced resource type is not a valid {@link FhirResource} type supported by Health
+     *     Connect, or {@code fhirReference} does not match with the pattern of {@code
      *     $fhir_resource_type/$fhir_resource_id}, where the FHIR resource type should align with
      *     the resource list in <a href="https://build.fhir.org/resourcelist.html">the official FHIR
      *     website</a>, and the FHIR resource ID should also follow the pattern described in <a

@@ -28,6 +28,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.GetMedicalDataSourcesRequest;
+import android.health.connect.MedicalResourceId;
+import android.health.connect.ReadMedicalResourcesRequest;
+import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
@@ -180,6 +184,14 @@ public class TestAppProxy {
         return BundleHelper.toMedicalDataSources(responseBundle);
     }
 
+    /** Gets a list of {@link MedicalDataSource}s given a {@link GetMedicalDataSourcesRequest}. */
+    public List<MedicalDataSource> getMedicalDataSources(GetMedicalDataSourcesRequest request)
+            throws Exception {
+        Bundle requestBundle = BundleHelper.fromMedicalDataSourceRequest(request);
+        Bundle responseBundle = getFromTestApp(requestBundle);
+        return BundleHelper.toMedicalDataSources(responseBundle);
+    }
+
     /**
      * Upserts a Medical Resource to HC on behalf of the app.
      *
@@ -194,6 +206,27 @@ public class TestAppProxy {
         Bundle requestBundle = BundleHelper.fromUpsertMedicalResourceRequests(List.of(request));
         Bundle responseBundle = getFromTestApp(requestBundle);
         return BundleHelper.toMedicalResources(responseBundle).get(0);
+    }
+
+    /**
+     * Reads a list of {@link MedicalResource}s for the provided {@code request} on behalf of the
+     * app.
+     */
+    public ReadMedicalResourcesResponse readMedicalResources(ReadMedicalResourcesRequest request)
+            throws Exception {
+        Bundle requestBundle = BundleHelper.fromReadMedicalResourcesRequest(request);
+        Bundle responseBundle = getFromTestApp(requestBundle);
+        return BundleHelper.toReadMedicalResourcesResponse(responseBundle);
+    }
+
+    /**
+     * Reads a list of {@link MedicalResource}s for the provided {@code ids} on behalf of the app.
+     */
+    public List<MedicalResource> readMedicalResources(List<MedicalResourceId> ids)
+            throws Exception {
+        Bundle requestBundle = BundleHelper.fromMedicalResourceIds(ids);
+        Bundle responseBundle = getFromTestApp(requestBundle);
+        return BundleHelper.toMedicalResources(responseBundle);
     }
 
     /** Instructs the app to self-revokes the specified permission. */

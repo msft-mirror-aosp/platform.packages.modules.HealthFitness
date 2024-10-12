@@ -70,6 +70,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestU
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import com.google.common.collect.ImmutableList;
@@ -116,6 +117,7 @@ public class TransactionManagerTest {
     private AppInfoHelper mAppInfoHelper;
     private AccessLogsHelper mAccessLogsHelper;
     private DeviceInfoHelper mDeviceInfoHelper;
+    private InternalHealthConnectMappings mInternalHealthConnectMappings;
 
     @Before
     public void setup() {
@@ -134,6 +136,7 @@ public class TransactionManagerTest {
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
+        mInternalHealthConnectMappings = healthConnectInjector.getInternalHealthConnectMappings();
     }
 
     @Test
@@ -477,6 +480,7 @@ public class TransactionManagerTest {
                         TEST_PACKAGE_NAME,
                         /* packageFilters= */ List.of(),
                         HealthDataCategoryPriorityHelper.getInstance(),
+                        mInternalHealthConnectMappings,
                         mAppInfoHelper,
                         mTransactionManager,
                         /* startTime= */ 123,

@@ -43,6 +43,6 @@
             android:key="medical_data"
             android:icon="?attr/dataAndAccessIcon"
             android:title="@string/browse_medical_data"
-            android:description="@string/browse_medical_data_subtitle"/>
+            android:summary="@string/browse_medical_data_subtitle"/>
     </PreferenceCategory>
 </PreferenceScreen>

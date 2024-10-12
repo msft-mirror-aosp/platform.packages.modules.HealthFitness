@@ -139,8 +139,11 @@ constructor(
 
     /** Returns a list of records from a MedicalPermissionType. */
     suspend fun readMedicalRecords(input: LoadMedicalEntriesInput): List<MedicalResource> {
-        val medicalResourceType = toMedicalResourceType(input.medicalPermissionType)
-        if (medicalResourceType == MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN) {
+        val medicalResourceType: Int
+        try {
+            medicalResourceType = toMedicalResourceType(input.medicalPermissionType)
+        } catch (ex: IllegalArgumentException) {
+            Log.i(TAG, "Failed to convert permission type to medical resource type.")
             return emptyList()
         }
         val filter =
