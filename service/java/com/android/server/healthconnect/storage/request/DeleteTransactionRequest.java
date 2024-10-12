@@ -21,7 +21,7 @@ import static android.health.connect.Constants.DEFAULT_LONG;
 import android.health.connect.Constants;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.aidl.DeleteUsingFiltersRequestParcel;
-import android.health.connect.internal.datatypes.utils.RecordMapper;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Slog;
@@ -70,7 +70,8 @@ public final class DeleteTransactionRequest {
             for (RecordIdFilter recordId : recordIds) {
                 RecordHelper<?> recordHelper =
                         RecordHelperProvider.getRecordHelper(
-                                RecordMapper.getInstance().getRecordType(recordId.getRecordType()));
+                                HealthConnectMappings.getInstance()
+                                        .getRecordType(recordId.getRecordType()));
                 UUID uuid = StorageUtils.getUUIDFor(recordId, packageName);
                 if (uuidSet.contains(uuid)) {
                     // id has been already been processed;
@@ -97,7 +98,7 @@ public final class DeleteTransactionRequest {
         if (recordTypeFilters == null || recordTypeFilters.isEmpty()) {
             recordTypeFilters =
                     new ArrayList<>(
-                            RecordMapper.getInstance()
+                            HealthConnectMappings.getInstance()
                                     .getRecordIdToExternalRecordClassMap()
                                     .keySet());
         }

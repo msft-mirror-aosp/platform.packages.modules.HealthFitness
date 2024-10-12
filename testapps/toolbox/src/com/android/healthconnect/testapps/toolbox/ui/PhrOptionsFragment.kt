@@ -106,13 +106,13 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
                     view,
                     Uri.parse("example.fhir.com/R4/123"),
                     "My Hospital " + (0..1000).random(),
-                    FhirVersion.parseFhirVersion("4.0.1")
+                    FhirVersion.parseFhirVersion("4.0.1"),
                 )
             }
         }
 
         view.requireViewById<Button>(R.id.phr_read_by_id_button).setOnClickListener {
-            executeAndShowMessage { readreadImmunization(view) }
+            executeAndShowMessage { readImmunization(view) }
         }
 
         view.requireViewById<Button>(R.id.phr_seed_fhir_jsons_button).setOnClickListener {
@@ -240,8 +240,8 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         val dataSource =
             suspendCancellableCoroutine<MedicalDataSource> { continuation ->
                 healthConnectManager.createMedicalDataSource(
-                    CreateMedicalDataSourceRequest.Builder(fhirBaseUri, displayName,
-                        fhirVersion).build(),
+                    CreateMedicalDataSourceRequest.Builder(fhirBaseUri, displayName, fhirVersion)
+                        .build(),
                     Runnable::run,
                     continuation.asOutcomeReceiver(),
                 )
@@ -251,8 +251,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         return "Created data source: $displayName"
     }
 
-    //
-    private suspend fun readreadImmunization(view: View): String {
+    private suspend fun readImmunization(view: View): String {
         return readImmunization()
             .joinToString(separator = "\n", transform = MedicalResource::toString)
     }

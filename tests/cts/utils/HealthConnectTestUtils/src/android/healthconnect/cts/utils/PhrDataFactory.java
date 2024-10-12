@@ -32,12 +32,15 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.net.Uri;
 
+import com.google.common.truth.Correspondence;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -122,6 +125,11 @@ public class PhrDataFactory {
     public static final String RESOURCE_ID_FIELD_NAME = "id";
 
     public static final String PAGE_TOKEN = "111";
+
+    public static final Correspondence<MedicalDataSource, MedicalDataSource>
+            MEDICAL_DATA_SOURCE_EQUIVALENCE =
+                    Correspondence.from(
+                            PhrDataFactory::isMedicalDataSourceEqual, "isMedicalDataSourceEqual");
 
     /** Creates and returns a {@link MedicalDataSource.Builder} with default arguments. */
     public static MedicalDataSource.Builder getMedicalDataSourceBuilderRequiredFieldsOnly() {
@@ -460,5 +468,18 @@ public class PhrDataFactory {
             medicalResources.add(medicalResource);
         }
         return medicalResources;
+    }
+
+    /**
+     * Given two {@link MedicalDataSource}s, compare whether they are equal or not. This ignores the
+     * {@link MedicalDataSource#getLastDataUpdateTime()}.
+     */
+    public static boolean isMedicalDataSourceEqual(
+            MedicalDataSource actual, MedicalDataSource expected) {
+        return Objects.equals(actual.getId(), expected.getId())
+                && Objects.equals(actual.getFhirVersion(), expected.getFhirVersion())
+                && Objects.equals(actual.getFhirBaseUri(), expected.getFhirBaseUri())
+                && Objects.equals(actual.getPackageName(), expected.getPackageName())
+                && Objects.equals(actual.getDisplayName(), expected.getDisplayName());
     }
 }

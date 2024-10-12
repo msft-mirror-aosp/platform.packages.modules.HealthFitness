@@ -303,6 +303,8 @@ public class MedicalDataSourceHelper {
     public MedicalDataSource createMedicalDataSource(
             Context context, CreateMedicalDataSourceRequest request, String packageName) {
         try {
+            // Get the appInfoId outside the transaction
+            long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(packageName, context);
             return mTransactionManager.runAsTransaction(
                     (TransactionManager.TransactionRunnableWithReturn<
                                     MedicalDataSource, RuntimeException>)
@@ -311,6 +313,7 @@ public class MedicalDataSourceHelper {
                                             db,
                                             context,
                                             request,
+                                            appInfoId,
                                             packageName,
                                             mTimeSource.getInstantNow()));
         } catch (SQLiteConstraintException e) {
@@ -326,9 +329,9 @@ public class MedicalDataSourceHelper {
             SQLiteDatabase db,
             Context context,
             CreateMedicalDataSourceRequest request,
+            long appInfoId,
             String packageName,
             Instant instant) {
-        long appInfoId = mAppInfoHelper.getOrInsertAppInfoId(db, packageName, context);
 
         if (getMedicalDataSourcesCount(appInfoId) >= MAX_ALLOWED_MEDICAL_DATA_SOURCES) {
             throw new IllegalArgumentException(

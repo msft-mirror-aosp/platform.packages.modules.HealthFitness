@@ -27,7 +27,6 @@ import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PR
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS
 import com.android.healthconnect.controller.R
@@ -86,9 +85,6 @@ fun isValidMedicalPermissionType(permissionTypeString: String): Boolean {
 
 fun fromMedicalResourceType(medicalResourceType: Int): MedicalPermissionType {
     return when (medicalResourceType) {
-        MEDICAL_RESOURCE_TYPE_UNKNOWN ->
-            throw IllegalArgumentException("MedicalResourceType is UNKNOWN.")
-
         MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES -> MedicalPermissionType.ALLERGIES_INTOLERANCES
         MEDICAL_RESOURCE_TYPE_CONDITIONS -> MedicalPermissionType.CONDITIONS
         MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS -> MedicalPermissionType.IMMUNIZATIONS
@@ -119,6 +115,6 @@ fun toMedicalResourceType(medicalPermissionType: MedicalPermissionType): Int {
         MedicalPermissionType.SOCIAL_HISTORY -> MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY
         MedicalPermissionType.VISITS -> MEDICAL_RESOURCE_TYPE_VISITS
         MedicalPermissionType.VITAL_SIGNS -> MEDICAL_RESOURCE_TYPE_VITAL_SIGNS
-        else -> MEDICAL_RESOURCE_TYPE_UNKNOWN
+        else -> throw IllegalArgumentException("MedicalPermissionType does not map to a MedicalResourceType.")
     }
 }

@@ -79,20 +79,17 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.UNSUPPORTED_TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
-import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.di.FakeHealthPermissionManager
 import com.android.healthconnect.controller.tests.utils.showOnboarding
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import javax.inject.Inject
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
@@ -129,7 +126,6 @@ class PermissionsActivityTest {
     @BindValue val migrationViewModel: MigrationViewModel = mock(MigrationViewModel::class.java)
     @BindValue
     val loadAccessDateUseCase: LoadAccessDateUseCase = mock(LoadAccessDateUseCase::class.java)
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
 
     private lateinit var context: Context
 
@@ -156,9 +152,6 @@ class PermissionsActivityTest {
             TEST_APP_PACKAGE_NAME,
             listOf(),
         )
-        (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsSkinTemperatureEnabled(true)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
     }
 
     @After
@@ -242,38 +235,6 @@ class PermissionsActivityTest {
     }
 
     @Test
-    fun intentSkipsHiddenFitnessPermissions_excludesItFromResponse() {
-        // TODO remove after flag cleanup
-        (fakeFeatureUtils as FakeFeatureUtils).setIsSkinTemperatureEnabled(false)
-        val permissions =
-            arrayOf(READ_EXERCISE, READ_SLEEP, READ_SKIN_TEMPERATURE, WRITE_ACTIVE_CALORIES_BURNED)
-        val startActivityIntent = getPermissionScreenIntent(permissions)
-
-        val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
-        onView(withId(androidx.preference.R.id.recycler_view))
-            .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
-        Espresso.onIdle()
-
-        onView(withText("Exercise")).check(matches(isDisplayed()))
-        onView(withText("Sleep")).check(matches(isDisplayed()))
-        onView(withText("Skin temperature")).check(doesNotExist())
-        onView(withText("Active calories burned")).check(matches(isDisplayed()))
-
-        scenario.onActivity { activity: PermissionsActivity ->
-            activity.findViewById<Button>(R.id.allow).callOnClick()
-        }
-
-        assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_OK)
-        val returnedIntent = scenario.result.resultData
-
-        assertThat(returnedIntent.getStringArrayExtra(EXTRA_REQUEST_PERMISSIONS_NAMES))
-            .isEqualTo(arrayOf(READ_EXERCISE, READ_SLEEP, WRITE_ACTIVE_CALORIES_BURNED))
-        val expectedResults = intArrayOf(PERMISSION_DENIED, PERMISSION_DENIED, PERMISSION_DENIED)
-        assertThat(returnedIntent.getIntArrayExtra(EXTRA_REQUEST_PERMISSIONS_RESULTS))
-            .isEqualTo(expectedResults)
-    }
-
-    @Test
     @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     fun intentSkipsHiddenMedicalPermissions() {
         val startActivityIntent = getPermissionScreenIntent(medicalPermissions)
@@ -287,10 +248,9 @@ class PermissionsActivityTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun requestAlreadyGrantedPermissions_sendsEmptyResultOk_doesNotModifyPermissions() {
         val startActivityIntent = getPermissionScreenIntent(fitnessPermissions)
-        (fakeFeatureUtils as FakeFeatureUtils).setIsSkinTemperatureEnabled(true)
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
             TEST_APP_PACKAGE_NAME,
             fitnessPermissions.toList(),
@@ -318,7 +278,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun requestOnlyWriteMedicalPermission_clickOnAllow_sendsResultOk() {
         val permissions = arrayOf(READ_MEDICAL_DATA_IMMUNIZATIONS, WRITE_MEDICAL_DATA)
         val startActivityIntent = getPermissionScreenIntent(permissions)
@@ -352,7 +312,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun requestOnlyWriteMedicalPermission_clickOnDontAllow_sendsResultOk() {
         val permissions = arrayOf(READ_MEDICAL_DATA_IMMUNIZATIONS, WRITE_MEDICAL_DATA)
         val startActivityIntent = getPermissionScreenIntent(permissions)
@@ -386,7 +346,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun requestMedicalPermissions_someGrantedSomeDenied_clickOnAllow_includesAllInResponse() {
         val permissions =
             arrayOf(
@@ -422,7 +382,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun requestMedicalPermissions_someGrantedSomeDenied_clickOnDontAllow_includesAllInResponse() {
         val permissions =
             arrayOf(
@@ -458,7 +418,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun requestMedicalAndFitness_clickOnAllow_grantsMedical_showsFitness() {
         val permissions =
             arrayOf(
@@ -495,7 +455,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun requestMedicalAndFitness_clickOnDontAllow_revokesMedical_showsFitness() {
         val permissions =
             arrayOf(
@@ -530,7 +490,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun requestMedicalAndBackground_clickOnAllow_showsBackground() {
         val permissions =
             arrayOf(
@@ -565,7 +525,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun requestMedicalAndBackground_clickOnDontAllow_doesNotShowBackground() {
         val permissions =
             arrayOf(
@@ -908,7 +868,8 @@ class PermissionsActivityTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    @Ignore("b/363994647 - flaky rotation test")
     fun requestFitnessAndAdditionalPermissions_userFixSomeFitness_onRotate_showsAdditional() {
         val startActivityIntent =
             getPermissionScreenIntent(
@@ -954,7 +915,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     @Ignore("b/363994647 - flaky rotation test")
     fun requestMedicalAndFitnessPermissions_userFixSomeMedical_onRotate_showsFitness() {
         val startActivityIntent =

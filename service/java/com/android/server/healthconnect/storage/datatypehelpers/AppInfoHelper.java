@@ -49,7 +49,7 @@ import android.health.connect.Constants;
 import android.health.connect.datatypes.AppInfo;
 import android.health.connect.internal.datatypes.AppInfoInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.health.connect.internal.datatypes.utils.RecordMapper;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
@@ -113,12 +113,12 @@ public final class AppInfoHelper extends DatabaseHelper {
     private volatile ConcurrentHashMap<String, AppInfoInternal> mAppInfoMap;
 
     private final TransactionManager mTransactionManager;
-    private final RecordMapper mRecordMapper;
+    private final HealthConnectMappings mHealthConnectMappings;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private AppInfoHelper(TransactionManager transactionManager) {
         mTransactionManager = transactionManager;
-        mRecordMapper = RecordMapper.getInstance();
+        mHealthConnectMappings = HealthConnectMappings.getInstance();
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
@@ -461,7 +461,10 @@ public final class AppInfoHelper extends DatabaseHelper {
         Set<Integer> recordTypesToBeUpdated =
                 Objects.requireNonNullElseGet(
                         recordTypesToBeSynced,
-                        () -> mRecordMapper.getRecordIdToExternalRecordClassMap().keySet());
+                        () ->
+                                mHealthConnectMappings
+                                        .getRecordIdToExternalRecordClassMap()
+                                        .keySet());
 
         Map<Integer, Set<Long>> recordTypeToContributingPackageIdsMap =
                 mTransactionManager.getDistinctPackageIdsForRecordsTable(recordTypesToBeUpdated);

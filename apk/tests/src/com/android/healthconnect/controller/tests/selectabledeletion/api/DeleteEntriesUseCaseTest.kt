@@ -74,7 +74,7 @@ class DeleteEntryUseCaseTest {
             )
         )
 
-        verify(manager, times(1)).deleteRecords(listCaptor.capture(), any(), any())
+        verify(manager).deleteRecords(listCaptor.capture(), any(), any())
         assertThat(listCaptor.value[0].id).isEqualTo("test_id1")
         assertThat(listCaptor.value[0].recordType).isEqualTo(StepsRecord::class.java)
         assertThat(listCaptor.value[1].id).isEqualTo("test_id2")

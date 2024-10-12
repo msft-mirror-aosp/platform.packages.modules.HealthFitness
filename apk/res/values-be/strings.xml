@@ -23,6 +23,8 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Кіруйце на сваёй прыладзе данымі пра здароўе і фізічную актыўнасць, а таксама доступам праграм да гэтай інфармацыі"</string>
     <string name="data_title" msgid="4456619761533380816">"Даныя і доступ"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Паглядзець інфармацыю пра стан здароўя"</string>
+    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
+    <skip />
     <string name="all_categories_title" msgid="1446410643217937926">"Усе катэгорыі"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Праглядзець усе катэгорыі"</string>
     <string name="no_data" msgid="1906986019249068659">"Няма даных"</string>
@@ -92,6 +94,17 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"доступ да даных, датычных здароўя"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Счытваць даныя пра калорыі"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Дазваляе праграме счытваць даныя пра зрасходаваныя калорыі"</string>
+    <string name="background_read_medical_title" msgid="378446129450196253">"Доступ да ўсіх даных у фонавым рэжыме"</string>
+    <string name="background_read_medical_request_title" msgid="5388067032484069722">"Даць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" дазвол на доступ да ўсіх даных у фонавым рэжыме?"</string>
+    <string name="background_read_medical_description" msgid="4205144207056391848">"Даць праграме дазвол на доступ да даных пра фізічную актыўнасць і фізічны стан, калі вы яе не выкарыстоўваеце"</string>
+    <string name="background_read_medical_request_description" msgid="6135447220241108032">"Калі вы дасце гэты дазвол, праграма будзе мець доступ да даных пра фізічную актыўнасць і фізічны стан, а таксама інфармацыі пра стан здароўя, калі вы яе не выкарыстоўваеце."</string>
+    <string name="historic_access_medical_title" msgid="1198466488695524014">"Доступ да папярэдніх даных пра фізічную актыўнасць і стан"</string>
+    <string name="historic_access_medical_request_title" msgid="4927886483832141584">"Даць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" дазвол на доступ да папярэдніх даных пра фізічную актыўнасць і фізічны стан?"</string>
+    <string name="historic_access_medical_description" msgid="513689388911992345">"Даць праграме дазвол на доступ да даных, дададзеных да наступнай даты: <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_medical_description_fallback" msgid="1596909285259037066">"Даць праграме дазвол на доступ да ўсіх папярэдніх даных"</string>
+    <string name="historic_access_medical_request_description" msgid="6938665708764487963">"Калі вы дасце гэты дазвол, праграма будзе мець доступ да даных, дададзеных да наступнай даты: <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_medical_request_description_fallback" msgid="1075934237674126677">"Калі вы дасце гэты дазвол, праграма будзе мець доступ да ўсіх папярэдніх даных."</string>
+    <string name="historic_access_medical_warning" msgid="6691110601538756473">"У гэты момант даныя пра фізічную актыўнасць не чытаюцца, бо для праграмы \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" не ўключаны дазвол на прагляд"</string>
     <string name="background_read_title" msgid="5061383169517186234">"Доступ да даных у фонавым рэжыме"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"Дазволіць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ да даных у фонавым рэжыме?"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Дазволіць праграме доступ да даных сэрвісу \"Здароўе і спорт\", калі вы яе не выкарыстоўваеце"</string>
@@ -270,52 +283,40 @@
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Уся інфармацыя пра стан здароўя"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"уся інфармацыя пра стан здароўя"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Запісваць усю інфармацыю пра стан здароўя"</string>
-    <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"Алергія"</string>
-    <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"алергія"</string>
-    <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"Чытаць даныя аб алергіі"</string>
-    <!-- no translation found for conditions_uppercase_label (5260404343402770877) -->
-    <skip />
-    <!-- no translation found for conditions_lowercase_label (2678248918552246997) -->
-    <skip />
-    <!-- no translation found for conditions_content_description (3230552343616193829) -->
-    <skip />
-    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Вакцынацыя"</string>
-    <string name="immunization_lowercase_label" msgid="6464922369026887687">"вакцынацыя"</string>
-    <string name="immunization_content_description" msgid="2910674919337229803">"Чытаць даныя аб вакцынацыі"</string>
-    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"Вынікі лабараторных даследаванняў"</string>
-    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"вынікі лабараторных даследаванняў"</string>
-    <string name="laboratory_results_content_description" msgid="5882338877203692484">"Счытваць вынікі лабараторных даследаванняў"</string>
+    <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Алергія"</string>
+    <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"алергія"</string>
+    <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Чытаць даныя пра алергію"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Расстройствы здароўя"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"расстройствы здароўя"</string>
+    <string name="conditions_content_description" msgid="3230552343616193829">"Чытаць звесткі пра расстройствы здароўя"</string>
+    <string name="immunizations_uppercase_label" msgid="8440461752746256387">"Вакцыны"</string>
+    <string name="immunizations_lowercase_label" msgid="3807025074680621043">"вакцыны"</string>
+    <string name="immunizations_content_description" msgid="2239351886343062194">"Чытаць даныя пра вакцыны"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Вынікі аналізаў"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"вынікі аналізаў"</string>
+    <string name="laboratory_results_content_description" msgid="7888886103734085841">"Чытаць вынікі аналізаў"</string>
     <string name="medications_uppercase_label" msgid="4783281053427990225">"Лекавыя сродкі"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"лекавыя сродкі"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"Чытаць звесткі пра лекавыя сродкі"</string>
-    <!-- no translation found for personal_details_uppercase_label (7241635933310394120) -->
-    <skip />
-    <!-- no translation found for personal_details_lowercase_label (1907848447611775151) -->
-    <skip />
-    <!-- no translation found for personal_details_content_description (3191211304673909831) -->
-    <skip />
-    <!-- no translation found for practitioner_details_uppercase_label (2940667649808082510) -->
-    <skip />
-    <!-- no translation found for practitioner_details_lowercase_label (8195591077717971542) -->
-    <skip />
-    <!-- no translation found for practitioner_details_content_description (8775396516928504185) -->
-    <skip />
+    <string name="personal_details_uppercase_label" msgid="7241635933310394120">"Асабістыя звесткі"</string>
+    <string name="personal_details_lowercase_label" msgid="1907848447611775151">"асабістыя звесткі"</string>
+    <string name="personal_details_content_description" msgid="3191211304673909831">"Чытаць асабістыя звесткі"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Звесткі пра спецыялістаў па здароўі"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"звесткі пра спецыялістаў па здароўі"</string>
+    <string name="practitioner_details_content_description" msgid="8775396516928504185">"Чытаць звесткі пра спецыялістаў па здароўі"</string>
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Цяжарнасць"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"цяжарнасць"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"Счытваць даныя пра цяжарнасць"</string>
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"Працэдуры"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"працэдуры"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Счытваць даныя пра працэдуры"</string>
-    <string name="social_history_uppercase_label" msgid="1731364502071035544">"Гісторыя ўзаемадзеяння з сацыяльнымі сеткамі"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Гісторыя ўзаемадзеяння з сацыяльнымі сеткамі"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"гісторыя ўзаемадзеяння з сацыяльнымі сеткамі"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"Счытваць гісторыю ўзаемадзеяння з сацыяльнымі сеткамі"</string>
-    <!-- no translation found for visits_uppercase_label (8532619758336375886) -->
-    <skip />
-    <!-- no translation found for visits_lowercase_label (2545887061364564151) -->
-    <skip />
-    <!-- no translation found for visits_content_description (6336796415049565697) -->
-    <skip />
-    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"Фізіялагічныя паказчыкі"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"Звесткі пра візіты да спецыялістаў"</string>
+    <string name="visits_lowercase_label" msgid="2545887061364564151">"звесткі пра візіты да спецыялістаў"</string>
+    <string name="visits_content_description" msgid="6336796415049565697">"Чытаць звесткі пра візіты да спецыялістаў"</string>
+    <string name="vital_signs_uppercase_label" msgid="289862347143374640">"Фізіялагічныя паказчыкі"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"фізіялагічныя паказчыкі"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"Счытваць фізіялагічныя паказчыкі"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Самаўсведамленне"</string>
@@ -332,8 +333,14 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Калі вы дасце праграме дазвол на чытанне, яна зможа атрымліваць як новыя даныя, так і звесткі за апошнія 30 дзён"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Калі вы дасце праграме дазвол на чытанне, яна зможа атрымліваць як новыя, так і мінулыя даныя"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Даць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ да праграмы \"Здароўе і спорт\"?"</string>
-    <string name="request_permissions_rationale" msgid="6154280355215802538">"Даведацца пра тое, як праграма \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" апрацоўвае вашы даныя, можна ў <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> распрацоўшчыка"</string>
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"Каб даведацца, як праграма \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" апрацоўвае вашы даныя, прачытайце наступны дакумент: <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"палітыка прыватнасці"</string>
+    <string name="medical_request_header" msgid="2300521519021510027">"Дазволіць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ да вашай інфармацыі пра стан здароўя?"</string>
+    <string name="medical_request_header_desc" msgid="5721171305631983663">"Калі вы дазволіце доступ, праграма зможа счытваць і запісваць такія даныя, як інфармацыя пра алергію і прышчэпкі, вынікі аналізаў і шмат іншага\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"Аб інфармацыі пра стан здароўя"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Даныя для абагульвання"</string>
+    <string name="medical_request_share" msgid="6237397362923728514">"Калі вы дазволіце доступ, праграма \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" зможа абагульваць вашу інфармацыю пра стан здароўя з платформай \"Здароўе і спорт\"."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"Сінхранізуйце інфармацыю пра стан здароўя з розных праграм і крыніц, каб яна захоўвалася ў адным месцы"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Выдаліць усе дазволы?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Выдаліць усе"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> больш не зможа чытаць і запісваць даныя з платформы \"Здароўе і спорт\".\n\nГэта не паўплывае на іншыя дазволы, якія можа мець гэта праграма, напрыклад на доступ да камеры, мікрафона ці геаданых."</string>
@@ -341,9 +348,15 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> больш не зможа счытваць і запісваць даныя з праграмы \"Здароўе і спорт\" (сюды ўваходзяць і мінулыя даныя).\n\nГэта не паўплывае на іншыя дазволы, якія можа мець праграма, напрыклад, на доступ да геаданых, камеры ці мікрафона."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> больш не зможа счытваць і запісваць даныя з праграмы \"Здароўе і спорт\" (сюды ўваходзяць мінулыя даныя і фонавая перадача даных).\n\nГэта не паўплывае на іншыя дазволы, якія можа мець праграма, напрыклад, на доступ да геаданых, камеры ці мікрафона."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Таксама выдаліць даныя праграмы \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" з праграмы \"Здароўе і спорт\""</string>
-    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"Выдаліць усе дазволы?"</string>
-    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Выдаліць усе дазволы, звязаныя з данымі пра стан здароўя?"</string>
     <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"Выдаліць усе дазволы, звязаныя з фітнесам і аздараўленнем?"</string>
+    <string name="disconnect_all_fitness_permissions_dialog_checkbox" msgid="8808559689899914478">"Таксама выдаліць з платформы \"Здароўе і спорт\" даныя пра фізічную актыўнасць, атрыманыя ў праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\""</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Выдаліць усе дазволы, звязаныя з данымі пра стан здароўя?"</string>
+    <string name="disconnect_all_medical_permissions_dialog_checkbox" msgid="7782158941871987263">"Таксама выдаліць з платформы \"Здароўе і спорт\" даныя пра стан здароўя, атрыманыя ў праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\""</string>
+    <string name="disconnect_all_fitness_or_medical_no_additional_permissions_dialog_message" msgid="6610810945930258582">"<xliff:g id="APP_NAME">%1$s</xliff:g> больш не зможа чытаць і запісваць гэтыя даныя з платформы \"Здароўе і спорт\".\n\nГэта не паўплывае на іншыя дазволы, якія можа мець гэта праграма, напрыклад на доступ да камеры, мікрафона ці геаданых."</string>
+    <string name="disconnect_all_fitness_or_medical_and_background_permissions_dialog_message" msgid="7138878481421234556">"Праграма \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" больш не зможа счытваць і запісваць гэтыя даныя з платформы \"Здароўе і спорт\", у тым ліку даныя, запісаныя ў фонавым рэжыме.\n\nГэта не закране іншыя дазволы, якія праграма можа мець, напрыклад дазволы на доступ да камеры, мікрафона ці геаданых."</string>
+    <string name="disconnect_all_fitness_or_medical_and_historical_permissions_dialog_message" msgid="1519496566456028625">"Праграма \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" больш не зможа счытваць і запісваць гэтыя даныя з платформы \"Здароўе і спорт\", у тым ліку мінулыя даныя.\n\nГэта не закране іншыя дазволы, якія праграма можа мець, напрыклад дазволы на доступ да камеры, мікрафона ці геаданых."</string>
+    <string name="disconnect_all_fitness_or_medical_and_additional_permissions_dialog_message" msgid="5147728456578218902">"Праграма \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" больш не зможа счытваць і запісваць гэтыя даныя з платформы \"Здароўе і спорт\", у тым ліку мінулыя даныя і даныя, запісаныя ў фонавым рэжыме.\n\nГэта не закране іншыя дазволы, якія праграма можа мець, напрыклад дазволы на доступ да камеры, мікрафона ці геаданых."</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"Выдаліць усе дазволы?"</string>
     <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"Праграма \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" больш не зможа счытваць і запісваць даныя з платформы \"Здароўе і спорт\".\n\nГэта не паўплывае на іншыя дазволы, якія можа мець гэта праграма, напрыклад на доступ да камеры, мікрафона ці геаданых."</string>
     <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"Праграма \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" больш не зможа счытваць і запісваць даныя з платформы \"Здароўе і спорт\", у тым ліку даныя, запісаныя ў фонавым рэжыме.\n\nГэта не паўплывае на іншыя дазволы, якія можа мець гэта праграма, напрыклад на доступ да камеры, мікрафона ці геаданых."</string>
     <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"Праграма \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" больш не зможа счытваць і запісваць даныя з платформы \"Здароўе і спорт\", у тым ліку мінулыя даныя.\n\nГэта не паўплывае на іншыя дазволы, якія можа мець гэта праграма, напрыклад на доступ да камеры, мікрафона ці геаданых."</string>
@@ -355,8 +368,7 @@
     <string name="navigation_previous_day" msgid="718353386484938584">"Папярэдні дзень"</string>
     <string name="default_error" msgid="7966868260616403475">"Нешта пайшло не так. Паўтарыце спробу."</string>
     <string name="unkwown_resource" msgid="7932225227431922125">"Невядомы рэсурс"</string>
-    <!-- no translation found for raw_fhir_title (1295744907036066319) -->
-    <skip />
+    <string name="raw_fhir_title" msgid="1295744907036066319">"Зыходныя даныя"</string>
     <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>Адкрытая фігурная дужка."</string>
     <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>Закрытая фігурная дужка."</string>
     <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> Поле <xliff:g id="FIELD">%2$s</xliff:g> Значэнне"</string>
@@ -391,13 +403,15 @@
     <string name="app_access_title" msgid="7137018424885371763">"Доступы праграмы"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"У вас не ўсталяваны сумяшчальныя праграмы"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Пашыраны доступ"</string>
+    <!-- no translation found for additional_access_summary (1076197455435130191) -->
+    <skip />
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Дадатковыя дазволы для гэтай праграмы скасаваны"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Дазволы"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Фітнес і здароўе"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Трэніроўкі, сон, харчаванне і іншае"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Інфармацыя пра стан здароўя"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"інфармацыя пра стан здароўя"</string>
-    <string name="medical_permissions_summary" msgid="5553982055903211592">"Вынікі аналізаў, лекі, прышчэпкі і іншае"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"Вынікі аналізаў, лекі, вакцыны і іншае"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Выдаленыя дазволы праграм"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Дазволы на доступ да даных праграмы \"Здароўе і спорт\" выдалены для праграмы \"<xliff:g id="APP_DATA">%s</xliff:g>\""</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Дазволы на доступ да даных праграмы \"Здароўе і спорт\" выдалены для праграм \"<xliff:g id="APP_DATA_0">%1$s</xliff:g>\" і \"<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>\""</string>
@@ -489,10 +503,8 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Перайсці ў Краму Play"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Пачатак працы з праграмай \"Здароўе і спорт\""</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Праграма \"Здароўе і спорт\" захоўвае даныя пра ваша здароўе і фізічную актыўнасць і забяспечвае сінхранізацыю розных праграм на прыладзе"</string>
-    <!-- no translation found for onboarding_description_health_records (6816666836571797870) -->
-    <skip />
-    <!-- no translation found for onboarding_description_with_health_connect (8751881078749676542) -->
-    <skip />
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Праграма \"Здароўе і спорт\" захоўвае і сінхранізуе вашы даныя пра здароўе і фізічную актыўнасць з розных праграм.\n\n"<b>"Даныя пра здароўе і фізічны стан"</b>", у тым ліку сеансы трэніровак, даныя сну і іншае.\n\n"<b>"Інфармацыю пра стан здароўя"</b>", у тым ліку пра вакцыны, вынікі аналізаў і іншае."</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Праграма \"Здароўе і спорт\" дазваляе рабіць наступнае:"</string>
     <string name="share_data" msgid="3481932156368883946">"Абагульвайце даныя з праграмамі"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Выбірайце, да якіх даных у \"Здароўі і спорце\" будуць мець доступ праграмы"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Кіруйце наладамі і прыватнасцю"</string>
@@ -593,7 +605,11 @@
     <string name="flow_light" msgid="1937543318146228793">"Слабы крывацёк"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Умераны крывацёк"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Моцны крывацёк"</string>
+    <!-- no translation found for flow_unknown (1634411759928572900) -->
+    <skip />
     <string name="period_day" msgid="3821944462093965882">"Перыяд: дзень <xliff:g id="DAY">%1$d</xliff:g> з <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
+    <!-- no translation found for period_length (2257138792780916599) -->
+    <skip />
     <string name="ovulation_positive" msgid="6588547263126320238">"Станоўчы"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Адмоўны"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Высокая фертыльнасць"</string>
@@ -1062,7 +1078,10 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Змяніць спіс праграм – крыніц даных"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Стандартная праграма прылады"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Даныя праграмы"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"Тут будуць паказвацца даныя з праграм, у якіх ёсць доступ да \"Здароўя і спорта\""</string>
+    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
+    <skip />
+    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
+    <skip />
     <string name="date_picker_day" msgid="3076687507968958991">"Дзень"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Тыдзень"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Месяц"</string>
@@ -1077,6 +1096,8 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Каб уключыць доступ у фонавым рэжыме або доступ да мінулых даных для гэтай праграмы, дайце хаця б адзін дазвол на чытанне"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Каб уключыць доступ у фонавым рэжыме для гэтай праграмы, дайце хаця б адзін дазвол на чытанне"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Каб уключыць доступ да мінулых даных для гэтай праграмы, дайце хаця б адзін дазвол на чытанне"</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> мае доступ да папярэдняй інфармацыі пра стан здароўя. Каб змяніць доступ, выключыце адпаведныя дазволы для гэтай праграмы"</string>
+    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"Кіраваць дазволамі на доступ да інфармацыі пра стан здароўя"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Пачаць выкарыстанне праграмы \"Здароўе і спорт\""</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Сінхранізуйце першыя праграмы, каб абагульваць паміж імі даныя пра здароўе і фізічную актыўнасць"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Наладзіць"</string>
@@ -1106,4 +1127,6 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Назаўсёды выдаліць выбраныя запісы праграмы \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" за тыдзень <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Назаўсёды выдаліць выбраныя запісы праграмы \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Назаўсёды выдаліць гэты запіс праграмы \"<xliff:g id="APP_NAME">%s</xliff:g>\"?"</string>
+    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
+    <skip />
 </resources>

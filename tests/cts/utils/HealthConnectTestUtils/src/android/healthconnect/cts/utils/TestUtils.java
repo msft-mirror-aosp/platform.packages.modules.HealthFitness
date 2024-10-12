@@ -16,8 +16,6 @@
 
 package android.healthconnect.cts.utils;
 
-import static android.Manifest.permission.READ_DEVICE_CONFIG;
-import static android.Manifest.permission.WRITE_ALLOWLISTED_DEVICE_CONFIG;
 import static android.health.connect.HealthDataCategory.ACTIVITY;
 import static android.health.connect.HealthDataCategory.BODY_MEASUREMENTS;
 import static android.health.connect.HealthDataCategory.CYCLE_TRACKING;
@@ -140,7 +138,6 @@ import android.healthconnect.test.app.TestAppReceiver;
 import android.os.Bundle;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
-import android.provider.DeviceConfig;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -946,20 +943,6 @@ public final class TestUtils {
         return requireNonNull(context.getSystemService(HealthConnectManager.class));
     }
 
-    public static String getDeviceConfigValue(String key) {
-        return runWithShellPermissionIdentity(
-                () -> DeviceConfig.getProperty(DeviceConfig.NAMESPACE_HEALTH_FITNESS, key),
-                READ_DEVICE_CONFIG);
-    }
-
-    public static void setDeviceConfigValue(String key, String value) {
-        runWithShellPermissionIdentity(
-                () ->
-                        DeviceConfig.setProperty(
-                                DeviceConfig.NAMESPACE_HEALTH_FITNESS, key, value, false),
-                WRITE_ALLOWLISTED_DEVICE_CONFIG);
-    }
-
     /** Reads {@link StepsRecord}s using record IDs. */
     public static void readStepsRecordsUsingRecordIdsViaTestApp(
             Context context, List<String> recordIds) {
@@ -1315,12 +1298,27 @@ public final class TestUtils {
 
     /**
      * Sets value for a field using reflection. This can be used to set fields for immutable class.
+     *
+     * <p>This method recursively looks for the field in the object's class and its superclasses.
      */
     public static void setFieldValueUsingReflection(Object object, String fieldName, Object value)
             throws NoSuchFieldException, IllegalAccessException {
-        Field field = object.getClass().getDeclaredField(fieldName);
+        Field field = findFieldUsingReflection(object.getClass(), fieldName);
         field.setAccessible(true);
         field.set(object, value);
+    }
+
+    private static Field findFieldUsingReflection(Class<?> type, String fieldName) {
+        try {
+            return type.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            // If field isn't present, recursively look for it in the class's superclass.
+            Class<?> superClass = type.getSuperclass();
+            if (superClass != null) {
+                return findFieldUsingReflection(superClass, fieldName);
+            }
+        }
+        throw new IllegalArgumentException("Could not find field " + fieldName);
     }
 
     // TODO(b/328228842): Avoid using reflection once we have Builder(Record) constructors

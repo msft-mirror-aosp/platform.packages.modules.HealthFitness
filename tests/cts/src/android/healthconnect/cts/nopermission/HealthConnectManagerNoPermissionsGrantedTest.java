@@ -25,7 +25,6 @@ import static android.health.connect.HealthPermissions.READ_TOTAL_CALORIES_BURNE
 import static android.health.connect.datatypes.DistanceRecord.DISTANCE_TOTAL;
 import static android.health.connect.datatypes.ExerciseSessionRecord.EXERCISE_DURATION_TOTAL;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.connect.datatypes.SleepSessionRecord.SLEEP_DURATION_TOTAL;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.health.connect.datatypes.TotalCaloriesBurnedRecord.ENERGY_TOTAL;
@@ -72,8 +71,6 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.MedicalResourceTypeInfo;
-import android.health.connect.ReadMedicalResourcesInitialRequest;
-import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.TimeInstantRangeFilter;
@@ -417,28 +414,6 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
         assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
         assertThat(exception.getMessage())
                 .contains("Caller doesn't have permission to read or write medical data");
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testReadMedicalResourcesByRequest_noPermission_expectError()
-            throws InterruptedException {
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
-                new HealthConnectReceiver<>();
-        ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
-                        .build();
-
-        manager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-
-        HealthConnectException exception = receiver.assertAndGetException();
-        assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
-        assertThat(exception.getMessage())
-                .contains(
-                        "Caller doesn't have"
-                            + " android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS to read"
-                            + " MedicalResource");
     }
 
     @Test

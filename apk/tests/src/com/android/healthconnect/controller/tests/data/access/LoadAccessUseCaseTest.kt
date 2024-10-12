@@ -40,7 +40,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
 import com.android.healthconnect.controller.tests.utils.di.FakeGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadFitnessTypeContributorAppsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadMedicalTypeContributorAppsUseCase
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -70,7 +69,6 @@ class LoadAccessUseCaseTest {
 
     @Inject lateinit var appInfoReader: AppInfoReader
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
 
     @Before
     fun setup() {
@@ -151,7 +149,7 @@ class LoadAccessUseCaseTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun medicalPermissionsEnabled_returnsCorrectApps() = runTest {
         fakeLoadFitnessTypeContributorAppsUseCase.updateList(listOf(TEST_APP, TEST_APP_2))
         val writeSteps =
@@ -178,7 +176,7 @@ class LoadAccessUseCaseTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun medicalData_readImmunization_returnsCorrectApps() = runTest {
         fakeLoadFitnessTypeContributorAppsUseCase.updateList(listOf(TEST_APP_2))
         fakeLoadMedicalTypeContributorAppsUseCase.updateList(listOf(TEST_APP))
@@ -208,7 +206,7 @@ class LoadAccessUseCaseTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun medicalData_immunizationAndAllMedicalData_returnsCorrectApps() = runTest {
         fakeLoadFitnessTypeContributorAppsUseCase.updateList(listOf(TEST_APP_2))
         fakeLoadMedicalTypeContributorAppsUseCase.updateList(listOf(TEST_APP))
@@ -245,7 +243,7 @@ class LoadAccessUseCaseTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun medicalData_writeAllMedicalData_returnsCorrectApps() = runTest {
         fakeLoadFitnessTypeContributorAppsUseCase.updateList(listOf(TEST_APP_2))
         fakeLoadMedicalTypeContributorAppsUseCase.updateList(listOf(TEST_APP))
@@ -275,7 +273,7 @@ class LoadAccessUseCaseTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun medicalData_immunizationInactive_returnsCorrectApps() = runTest {
         fakeLoadFitnessTypeContributorAppsUseCase.updateList(listOf(TEST_APP_2))
         fakeLoadMedicalTypeContributorAppsUseCase.updateList(listOf(TEST_APP))
