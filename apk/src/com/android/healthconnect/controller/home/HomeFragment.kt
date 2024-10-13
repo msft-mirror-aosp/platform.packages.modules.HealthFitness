@@ -54,7 +54,6 @@ import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
@@ -62,10 +61,10 @@ import com.android.healthconnect.controller.utils.logging.HomePageElement
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
+import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
 import com.android.healthfitness.flags.Flags.exportImport
 import com.android.healthfitness.flags.Flags.newInformationArchitecture
 import com.android.healthfitness.flags.Flags.onboarding
-import com.android.healthfitness.flags.Flags.personalHealthRecord
 import com.android.settingslib.widget.TopIntroPreference
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
@@ -97,7 +96,6 @@ class HomeFragment : Hilt_HomeFragment() {
         this.setPageName(PageName.HOME_PAGE)
     }
 
-    @Inject lateinit var featureUtils: FeatureUtils
     @Inject lateinit var timeSource: TimeSource
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
 
@@ -168,7 +166,7 @@ class HomeFragment : Hilt_HomeFragment() {
             mManageDataPreference?.summary = getString(R.string.manage_data_summary)
         }
 
-        if (personalHealthRecord()) {
+        if (isPersonalHealthRecordEnabled()) {
             // TODO(b/343148212): Add logname.
             mBrowseMedicalDataPreference?.setOnPreferenceClickListener {
                 findNavController()
@@ -194,7 +192,7 @@ class HomeFragment : Hilt_HomeFragment() {
         if (exportImport()) {
             exportStatusViewModel.loadScheduledExportStatus()
         }
-        if (personalHealthRecord()) {
+        if (isPersonalHealthRecordEnabled()) {
             allDataViewModel.loadAllMedicalData()
         }
     }
@@ -241,7 +239,7 @@ class HomeFragment : Hilt_HomeFragment() {
                 }
             }
         }
-        if (personalHealthRecord()) {
+        if (isPersonalHealthRecordEnabled()) {
             allDataViewModel.loadAllMedicalData()
             allDataViewModel.isAnyMedicalData.observe(viewLifecycleOwner) { isAnyMedicalData ->
                 mBrowseMedicalDataPreference?.isVisible = isAnyMedicalData

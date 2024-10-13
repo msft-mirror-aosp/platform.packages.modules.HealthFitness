@@ -44,10 +44,9 @@ import com.android.healthconnect.controller.onboarding.OnboardingActivity.Compan
 import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
-import com.android.healthfitness.flags.Flags.personalHealthRecord
+import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -64,8 +63,6 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
-
-    @Inject lateinit var featureUtils: FeatureUtils
 
     private val requestPermissionsViewModel: RequestPermissionViewModel by viewModels()
 
@@ -121,7 +118,7 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
                 getPermissionStrings(),
             )
         ) {
-            if (personalHealthRecord()) {
+            if (isPersonalHealthRecordEnabled()) {
                 // First check if we are already in a permission request flow.
                 // Without this check, if any permissions from the previous screen
                 // were USER_FIXED, we would terminate the request without showing

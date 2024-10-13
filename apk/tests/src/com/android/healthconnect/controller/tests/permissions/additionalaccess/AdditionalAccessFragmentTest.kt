@@ -50,9 +50,7 @@ import com.android.healthconnect.controller.shared.preference.HealthSwitchPrefer
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
-import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -60,7 +58,6 @@ import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import javax.inject.Inject
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -82,14 +79,11 @@ class AdditionalAccessFragmentTest {
     @BindValue val additionalAccessViewModel: AdditionalAccessViewModel = mock()
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
-
     private val context = InstrumentationRegistry.getInstrumentation().context
 
     @Before
     fun setup() {
         hiltRule.inject()
-        (fakeFeatureUtils as FakeFeatureUtils).setIsExerciseRoutesReadAllEnabled(true)
 
         whenever(permissionsViewModel.appInfo).then {
             MutableLiveData(

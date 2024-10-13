@@ -41,7 +41,6 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission.Co
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
-import com.android.healthconnect.controller.utils.FeatureUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -51,7 +50,6 @@ import kotlinx.coroutines.launch
 class AdditionalAccessViewModel
 @Inject
 constructor(
-    private val featureUtils: FeatureUtils,
     private val appInfoReader: AppInfoReader,
     private val loadExerciseRoutePermissionUseCase: LoadExerciseRoutePermissionUseCase,
     private val grantHealthPermissionUseCase: GrantHealthPermissionUseCase,
@@ -102,24 +100,22 @@ constructor(
         viewModelScope.launch {
             _appInfo.postValue(appInfoReader.getAppMetadata(packageName))
             var newState = State()
-            if (featureUtils.isExerciseRouteReadAllEnabled()) {
-                newState =
-                    when (val result = loadExerciseRoutePermissionUseCase(packageName)) {
-                        is UseCaseResults.Success -> {
-                            newState.copy(
-                                exerciseRoutePermissionUIState =
-                                    result.data.exerciseRoutePermissionState,
-                                exercisePermissionUIState = result.data.exercisePermissionState,
-                            )
-                        }
-                        else -> {
-                            newState.copy(
-                                exerciseRoutePermissionUIState = NOT_DECLARED,
-                                exercisePermissionUIState = NOT_DECLARED,
-                            )
-                        }
+            newState =
+                when (val result = loadExerciseRoutePermissionUseCase(packageName)) {
+                    is UseCaseResults.Success -> {
+                        newState.copy(
+                            exerciseRoutePermissionUIState =
+                                result.data.exerciseRoutePermissionState,
+                            exercisePermissionUIState = result.data.exercisePermissionState,
+                        )
                     }
-            }
+                    else -> {
+                        newState.copy(
+                            exerciseRoutePermissionUIState = NOT_DECLARED,
+                            exercisePermissionUIState = NOT_DECLARED,
+                        )
+                    }
+                }
 
             val additionalPermissions = getAdditionalPermissionUseCase(packageName)
             val grantedPermissions = getGrantedHealthPermissionsUseCase.invoke(packageName)
@@ -134,12 +130,7 @@ constructor(
 
             var shouldShowMedicalPastDataFooter = false
 
-            // TODO (b/370286053) remove flag check for enabled permissions here since we already
-            // filter in the healthPermissionReader
-            if (
-                featureUtils.isBackgroundReadEnabled() &&
-                    additionalPermissions.contains(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
-            ) {
+            if (additionalPermissions.contains(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)) {
                 newState =
                     newState.copy(
                         backgroundReadUIState =
@@ -153,10 +144,7 @@ constructor(
                             )
                     )
             }
-            if (
-                featureUtils.isHistoryReadEnabled() &&
-                    additionalPermissions.contains(HealthPermissions.READ_HEALTH_DATA_HISTORY)
-            ) {
+            if (additionalPermissions.contains(HealthPermissions.READ_HEALTH_DATA_HISTORY)) {
                 newState =
                     newState.copy(
                         historyReadUIState =

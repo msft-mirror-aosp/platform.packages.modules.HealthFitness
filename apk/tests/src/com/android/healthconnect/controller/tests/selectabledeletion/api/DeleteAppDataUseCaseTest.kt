@@ -16,13 +16,23 @@
 package com.android.healthconnect.controller.tests.selectabledeletion.api
 
 import android.health.connect.DeleteUsingFiltersRequest
+import android.health.connect.GetMedicalDataSourcesRequest
 import android.health.connect.HealthConnectManager
 import android.health.connect.datatypes.DataOrigin
+import android.health.connect.datatypes.MedicalDataSource
+import android.os.OutcomeReceiver
+import android.platform.test.annotations.DisableFlags
+import android.platform.test.annotations.EnableFlags
+import android.platform.test.flag.junit.SetFlagsRule
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.api.RevokeAllHealthPermissionsUseCase
 import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteAppData
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteAppDataUseCase
-import com.google.common.truth.Truth
+import com.android.healthconnect.controller.shared.app.MedicalDataSourceReader
+import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_DATA_SOURCE
+import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_DATA_SOURCE_2
+import com.android.healthfitness.flags.Flags
+import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.Dispatchers
@@ -39,40 +49,88 @@ import org.mockito.invocation.InvocationOnMock
 @HiltAndroidTest
 class DeleteAppDataUseCaseTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val setFlagsRule = SetFlagsRule()
 
     private lateinit var useCase: DeleteAppDataUseCase
 
-    var dataManager: HealthConnectManager = mock(HealthConnectManager::class.java)
-    var permissionManager: HealthPermissionManager = mock(HealthPermissionManager::class.java)
+    private var dataManager: HealthConnectManager = mock(HealthConnectManager::class.java)
+    private var permissionManager: HealthPermissionManager =
+        mock(HealthPermissionManager::class.java)
 
     @Captor lateinit var filtersCaptor: ArgumentCaptor<DeleteUsingFiltersRequest>
+    @Captor lateinit var dataSourceIdCaptor: ArgumentCaptor<String>
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
         val revokePermissionsUseCase = RevokeAllHealthPermissionsUseCase(permissionManager)
-        useCase = DeleteAppDataUseCase(dataManager, revokePermissionsUseCase, Dispatchers.Main)
+        useCase =
+            DeleteAppDataUseCase(
+                dataManager,
+                MedicalDataSourceReader(dataManager, Dispatchers.Main),
+                revokePermissionsUseCase,
+                Dispatchers.Main,
+            )
     }
 
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     @Test
     fun invoke_deleteAppData_callsHealthManager() = runTest {
         doAnswer(prepareAnswer())
             .`when`(dataManager)
             .deleteRecords(any(DeleteUsingFiltersRequest::class.java), any(), any())
+        doAnswer(prepareAnswer(listOf(TEST_MEDICAL_DATA_SOURCE, TEST_MEDICAL_DATA_SOURCE_2)))
+            .`when`(dataManager)
+            .getMedicalDataSources(any(GetMedicalDataSourcesRequest::class.java), any(), any())
 
-        val deleteAppData = DeleteAppData(packageName = "package.name")
+        val deleteAppData = DeleteAppData(packageName = "package.name", appName = "App Name")
 
         useCase.invoke(deleteAppData)
 
-        verify(dataManager, times(1)).deleteRecords(filtersCaptor.capture(), any(), any())
-        Truth.assertThat(filtersCaptor.value.timeRangeFilter).isNull()
-        Truth.assertThat(filtersCaptor.value.dataOrigins)
+        verify(dataManager).deleteRecords(filtersCaptor.capture(), any(), any())
+        assertThat(filtersCaptor.value.timeRangeFilter).isNull()
+        assertThat(filtersCaptor.value.dataOrigins)
             .containsExactly(DataOrigin.Builder().setPackageName("package.name").build())
-        Truth.assertThat(filtersCaptor.value.recordTypes).isEmpty()
+        assertThat(filtersCaptor.value.recordTypes).isEmpty()
+        verify(dataManager, times(2))
+            .deleteMedicalDataSourceWithData(dataSourceIdCaptor.capture(), any(), any())
+        assertThat(dataSourceIdCaptor.value).isEqualTo(TEST_MEDICAL_DATA_SOURCE_2.id)
+    }
+
+    @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    @Test
+    fun invoke_deleteAppData_phrFlagDisabled_callsHealthManager() = runTest {
+        doAnswer(prepareAnswer())
+            .`when`(dataManager)
+            .deleteRecords(any(DeleteUsingFiltersRequest::class.java), any(), any())
+        doAnswer(prepareAnswer(listOf(TEST_MEDICAL_DATA_SOURCE, TEST_MEDICAL_DATA_SOURCE_2)))
+            .`when`(dataManager)
+            .getMedicalDataSources(any(GetMedicalDataSourcesRequest::class.java), any(), any())
+
+        val deleteAppData = DeleteAppData(packageName = "package.name", appName = "App Name")
+
+        useCase.invoke(deleteAppData)
+
+        verify(dataManager).deleteRecords(filtersCaptor.capture(), any(), any())
+        assertThat(filtersCaptor.value.timeRangeFilter).isNull()
+        assertThat(filtersCaptor.value.dataOrigins)
+            .containsExactly(DataOrigin.Builder().setPackageName("package.name").build())
+        assertThat(filtersCaptor.value.recordTypes).isEmpty()
+        verify(dataManager, times(0))
+            .deleteMedicalDataSourceWithData(dataSourceIdCaptor.capture(), any(), any())
     }
 
     private fun prepareAnswer(): (InvocationOnMock) -> Nothing? {
         val answer = { _: InvocationOnMock -> null }
         return answer
+    }
+
+    private fun prepareAnswer(
+        medicalDataSourcesResponse: List<MedicalDataSource>
+    ): (InvocationOnMock) -> Unit {
+        return { args: InvocationOnMock ->
+            val receiver = args.arguments[2] as OutcomeReceiver<List<MedicalDataSource>, *>
+            receiver.onResult(medicalDataSourcesResponse)
+        }
     }
 }

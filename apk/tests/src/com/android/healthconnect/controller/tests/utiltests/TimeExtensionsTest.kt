@@ -15,9 +15,11 @@
  */
 package com.android.healthconnect.controller.tests.utiltests
 
+import com.android.healthconnect.controller.tests.utils.TestTimeSource
 import com.android.healthconnect.controller.utils.atStartOfDay
 import com.android.healthconnect.controller.utils.getInstant
 import com.android.healthconnect.controller.utils.isAtLeastOneDayAfter
+import com.android.healthconnect.controller.utils.isLessThanOneYearAgo
 import com.android.healthconnect.controller.utils.isOnDayAfter
 import com.android.healthconnect.controller.utils.isOnDayBefore
 import com.android.healthconnect.controller.utils.isOnSameDay
@@ -250,6 +252,28 @@ class TimeExtensionsTest {
         val thisInstant = Instant.parse("2023-02-14T03:00:00Z")
         val otherInstant = Instant.parse("2023-02-13T12:00:00Z")
         assertThat(thisInstant.isAtLeastOneDayAfter(otherInstant)).isFalse()
+    }
+
+    @Test
+    fun instantIsLessThanOneYearAgo_returnsTrue() {
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+        val timeSource = TestTimeSource
+        val nowInstant = Instant.parse("2023-02-14T03:00:00Z")
+        val thenInstant = Instant.parse("2022-12-14T03:00:00Z")
+        timeSource.setNow(nowInstant)
+
+        assertThat(thenInstant.isLessThanOneYearAgo(timeSource)).isTrue()
+    }
+
+    @Test
+    fun instantIsMoreThanOneYearAgo_returnsFalse() {
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+        val timeSource = TestTimeSource
+        val nowInstant = Instant.parse("2023-02-14T03:00:00Z")
+        val thenInstant = Instant.parse("2021-12-14T03:00:00Z")
+        timeSource.setNow(nowInstant)
+
+        assertThat(thenInstant.isLessThanOneYearAgo(timeSource)).isFalse()
     }
 
     @Test

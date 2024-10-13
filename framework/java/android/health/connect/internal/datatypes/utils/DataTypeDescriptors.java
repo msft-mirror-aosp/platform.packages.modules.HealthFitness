@@ -221,6 +221,7 @@ import android.health.connect.internal.datatypes.Vo2MaxRecordInternal;
 import android.health.connect.internal.datatypes.WeightRecordInternal;
 import android.health.connect.internal.datatypes.WheelchairPushesRecordInternal;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
 
 import java.util.List;
@@ -232,6 +233,10 @@ public class DataTypeDescriptors {
     /** Returns descriptors for all supported data types. */
     @VisibleForTesting(visibility = PACKAGE)
     public static List<DataTypeDescriptor> getAllDataTypeDescriptors() {
+        if (!Flags.healthConnectMappings()) {
+            return List.of();
+        }
+
         return List.of(
                 DataTypeDescriptor.builder()
                         .setRecordTypeIdentifier(RECORD_TYPE_ACTIVE_CALORIES_BURNED)

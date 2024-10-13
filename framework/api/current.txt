@@ -1054,7 +1054,6 @@ package android.health.connect.datatypes {
     field public static final int FHIR_RESOURCE_TYPE_PRACTITIONER = 10; // 0xa
     field public static final int FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE = 11; // 0xb
     field public static final int FHIR_RESOURCE_TYPE_PROCEDURE = 5; // 0x5
-    field public static final int FHIR_RESOURCE_TYPE_UNKNOWN = 0; // 0x0
   }
 
   public static final class FhirResource.Builder {
@@ -1239,7 +1238,6 @@ package android.health.connect.datatypes {
     field public static final int MEDICAL_RESOURCE_TYPE_PREGNANCY = 3; // 0x3
     field public static final int MEDICAL_RESOURCE_TYPE_PROCEDURES = 8; // 0x8
     field public static final int MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY = 4; // 0x4
-    field public static final int MEDICAL_RESOURCE_TYPE_UNKNOWN = 0; // 0x0
     field public static final int MEDICAL_RESOURCE_TYPE_VISITS = 12; // 0xc
     field public static final int MEDICAL_RESOURCE_TYPE_VITAL_SIGNS = 5; // 0x5
   }

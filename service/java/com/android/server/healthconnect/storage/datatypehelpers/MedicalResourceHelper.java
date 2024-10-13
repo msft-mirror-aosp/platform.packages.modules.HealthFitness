@@ -345,16 +345,16 @@ public final class MedicalResourceHelper {
             boolean isCalledFromBgWithoutBgRead)
             throws SQLiteException {
 
+        Pair<String, String[]> sqlAndArgs =
+                getSqlAndArgsBasedOnPermissionFilters(
+                        medicalResourceIds,
+                        grantedReadMedicalResourceTypes,
+                        callingPackageName,
+                        hasWritePermission,
+                        isCalledFromBgWithoutBgRead);
         return mTransactionManager.runAsTransaction(
                 db -> {
                     List<MedicalResource> medicalResources;
-                    Pair<String, String[]> sqlAndArgs =
-                            getSqlAndArgsBasedOnPermissionFilters(
-                                    medicalResourceIds,
-                                    grantedReadMedicalResourceTypes,
-                                    callingPackageName,
-                                    hasWritePermission,
-                                    isCalledFromBgWithoutBgRead);
                     try (Cursor cursor = db.rawQuery(sqlAndArgs.first, sqlAndArgs.second)) {
                         medicalResources = getMedicalResources(cursor);
                     }

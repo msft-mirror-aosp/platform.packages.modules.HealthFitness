@@ -44,8 +44,6 @@ import java.util.Set;
  */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class MedicalResource implements Parcelable {
-    /** Unknown medical resource type. */
-    public static final int MEDICAL_RESOURCE_TYPE_UNKNOWN = 0;
 
     /** Medical resource type labelling data as immunizations. */
     public static final int MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS = 1;
@@ -100,7 +98,6 @@ public final class MedicalResource implements Parcelable {
 
     /** @hide */
     @IntDef({
-        MEDICAL_RESOURCE_TYPE_UNKNOWN,
         MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
         MEDICAL_RESOURCE_TYPE_CONDITIONS,
         MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
@@ -180,6 +177,10 @@ public final class MedicalResource implements Parcelable {
 
     /**
      * Returns the medical resource type, assigned by the Android Health Platform at insertion time.
+     *
+     * <p>For a list of supported types, see the {@link MedicalResource} type constants, such as
+     * {@link #MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS}. Clients should be aware that this list is non
+     * exhaustive and may increase in future releases when additional types will need to be handled.
      */
     @MedicalResourceType
     public int getType() {
@@ -232,7 +233,6 @@ public final class MedicalResource implements Parcelable {
      */
     public static final Set<Integer> VALID_TYPES =
             Set.of(
-                    MEDICAL_RESOURCE_TYPE_UNKNOWN,
                     MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
                     MEDICAL_RESOURCE_TYPE_CONDITIONS,
                     MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
