@@ -23,6 +23,8 @@
     <string name="home_subtitle" msgid="2154213430054477787">"기기에서 건강 및 피트니스 데이터를 관리하고 이러한 데이터에 액세스할 수 있는 앱을 제어하세요."</string>
     <string name="data_title" msgid="4456619761533380816">"데이터 및 액세스"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"건강 기록 살펴보기"</string>
+    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
+    <skip />
     <string name="all_categories_title" msgid="1446410643217937926">"모든 카테고리"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"모든 카테고리 보기"</string>
     <string name="no_data" msgid="1906986019249068659">"데이터 없음"</string>
@@ -331,21 +333,14 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"읽기 액세스 권한을 부여하면 앱에서 새로운 데이터와 지난 30일간의 데이터를 읽을 수 있습니다."</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"읽기 액세스 권한을 부여하면 앱에서 새로운 데이터와 이전 데이터를 읽을 수 있습니다."</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱이 헬스 커넥트에 액세스할 수 있도록 허용하시겠습니까?"</string>
-    <!-- no translation found for request_permissions_rationale (2642076968583316986) -->
-    <skip />
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"<xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>에서 <xliff:g id="APP_NAME">%1$s</xliff:g>의 데이터 처리 방식을 알아볼 수 있습니다."</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"개인정보처리방침"</string>
-    <!-- no translation found for medical_request_header (2300521519021510027) -->
-    <skip />
-    <!-- no translation found for medical_request_header_desc (5721171305631983663) -->
-    <skip />
-    <!-- no translation found for medical_request_about_health_records (7204918218748362687) -->
-    <skip />
-    <!-- no translation found for medical_request_data_to_share (2208383833492573960) -->
-    <skip />
-    <!-- no translation found for medical_request_share (6237397362923728514) -->
-    <skip />
-    <!-- no translation found for medical_request_footer (6533749932770903089) -->
-    <skip />
+    <string name="medical_request_header" msgid="2300521519021510027">"<xliff:g id="APP_NAME">%1$s</xliff:g>에서 건강 기록에 액세스하도록 허용하시겠습니까?"</string>
+    <string name="medical_request_header_desc" msgid="5721171305631983663">"액세스 권한을 부여하면 앱에서 알레르기, 실험실 결과, 백신 등과 같은 데이터를 읽고 쓸 수 있습니다.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"건강 기록에 관한 정보"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"공유할 데이터"</string>
+    <string name="medical_request_share" msgid="6237397362923728514">"허용하면 <xliff:g id="APP_NAME">%1$s</xliff:g>에서 헬스 커넥트와 건강 기록을 공유할 수 있습니다."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"다양한 앱과 소스의 건강 기록을 동기화하여 한곳에 보관합니다."</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"모든 권한을 삭제하시겠습니까?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"전체 삭제"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱에서 더 이상 헬스 커넥트의 데이터를 읽거나 쓸 수 없습니다.\n\n카메라, 마이크, 위치 등 이 앱에 부여된 다른 권한에는 영향을 미치지 않습니다."</string>
@@ -408,6 +403,8 @@
     <string name="app_access_title" msgid="7137018424885371763">"앱 액세스"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"현재 설치되어 있는 호환 앱이 없습니다"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"추가 액세스"</string>
+    <!-- no translation found for additional_access_summary (1076197455435130191) -->
+    <skip />
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"이 앱의 추가 권한이 삭제되었습니다."</string>
     <string name="permissions_header" msgid="6519976063360071569">"권한"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"피트니스 및 웰빙"</string>
@@ -608,7 +605,11 @@
     <string name="flow_light" msgid="1937543318146228793">"생리 양 적음"</string>
     <string name="flow_medium" msgid="3783688724668943154">"생리 양 보통"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"생리 양 많음"</string>
+    <!-- no translation found for flow_unknown (1634411759928572900) -->
+    <skip />
     <string name="period_day" msgid="3821944462093965882">"생리 <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>일 중 <xliff:g id="DAY">%1$d</xliff:g>일"</string>
+    <!-- no translation found for period_length (2257138792780916599) -->
+    <skip />
     <string name="ovulation_positive" msgid="6588547263126320238">"양성"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"음성"</string>
     <string name="ovulation_high" msgid="205362931427158291">"높음"</string>
@@ -1077,7 +1078,10 @@
     <string name="edit_data_sources" msgid="79641360876849547">"앱 소스 수정"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"기기 기본값"</string>
     <string name="app_data_title" msgid="6499967982291000837">"앱 데이터"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"헬스 커넥트에 액세스할 수 있는 앱의 데이터가 여기에 표시됩니다."</string>
+    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
+    <skip />
+    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
+    <skip />
     <string name="date_picker_day" msgid="3076687507968958991">"일"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"주"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"월"</string>
@@ -1123,4 +1127,6 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> 주에 해당하는 선택한 <xliff:g id="APP_NAME">%1$s</xliff:g> 항목을 완전히 삭제하시겠습니까?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>에 해당하는 선택한 <xliff:g id="APP_NAME">%1$s</xliff:g> 항목을 완전히 삭제하시겠습니까?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"이 <xliff:g id="APP_NAME">%s</xliff:g> 항목을 완전히 삭제하시겠습니까?"</string>
+    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
+    <skip />
 </resources>

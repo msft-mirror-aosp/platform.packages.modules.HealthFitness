@@ -23,6 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"మీ పరికరంలో ఆరోగ్యం, ఫిట్‌నెస్ డేటాను మేనేజ్ చేయండి, అలాగే ఏ యాప్‌లు దీన్ని యాక్సెస్ చేయవచ్చో కంట్రోల్ చేయండి"</string>
     <string name="data_title" msgid="4456619761533380816">"డేటా, యాక్సెస్"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"ఆరోగ్య సమాచారాలను బ్రౌజ్ చేయండి"</string>
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"మీ హెల్త్ రికార్డ్‌లను చూడండి, అలాగే వాటిని ఏ యాప్‌లు యాక్సెస్ చేయగలవో చూడండి"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"అన్ని కేటగిరీలు"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"అన్ని కేటగిరీలను చూడండి"</string>
     <string name="no_data" msgid="1906986019249068659">"డేటా లేదు"</string>
@@ -331,21 +332,14 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"మీరు చదవగల యాక్సెస్‌ను ఇచ్చినట్లయితే, యాప్ కొత్త డేటాను, అలాగే గత 30 రోజులకు చెందిన డేటాను చదవగలదు"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"మీరు చదవడానికి యాక్సెస్ ఇస్తే, యాప్ కొత్త, పాత డేటాను చదవగలదు"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Health Connectను యాక్సెస్ చేయడానికి <xliff:g id="APP_NAME">%1$s</xliff:g>‌ను అనుమతించాలా?"</string>
-    <!-- no translation found for request_permissions_rationale (2642076968583316986) -->
-    <skip />
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"<xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>‌లో మీ డేటాను <xliff:g id="APP_NAME">%1$s</xliff:g> ఎలా హ్యాండిల్ చేస్తుందో మీరు తెలుసుకోవచ్చు"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"గోప్యతా పాలసీ"</string>
-    <!-- no translation found for medical_request_header (2300521519021510027) -->
-    <skip />
-    <!-- no translation found for medical_request_header_desc (5721171305631983663) -->
-    <skip />
-    <!-- no translation found for medical_request_about_health_records (7204918218748362687) -->
-    <skip />
-    <!-- no translation found for medical_request_data_to_share (2208383833492573960) -->
-    <skip />
-    <!-- no translation found for medical_request_share (6237397362923728514) -->
-    <skip />
-    <!-- no translation found for medical_request_footer (6533749932770903089) -->
-    <skip />
+    <string name="medical_request_header" msgid="2300521519021510027">"మీ ఆరోగ్య సమాచారాలను యాక్సెస్ చేయడానికి <xliff:g id="APP_NAME">%1$s</xliff:g>‌ను అనుమతించాలా?"</string>
+    <string name="medical_request_header_desc" msgid="5721171305631983663">"మీరు యాక్సెస్ మంజూరు చేస్తే, యాప్ అనేది అలర్జీలు, ల్యాబ్ ఫలితాలు, వ్యాక్సిన్‌లు, మరిన్నింటి వంటి డేటాను చదవగలదు, రాయగలదు\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"ఆరోగ్య సమాచారాల గురించి"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"షేర్ చేయడానికి గల డేటా"</string>
+    <string name="medical_request_share" msgid="6237397362923728514">"మీరు అనుమతిస్తే, <xliff:g id="APP_NAME">%1$s</xliff:g> Health Connectతో మీ ఆరోగ్య సమాచారాలను షేర్ చేయగలదు."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"మీ ఆరోగ్య సమాచారాలన్నింటిని ఒకేచోట ఉంచడానికి, మీ విభిన్న యాప్‌లు, సోర్స్‌ల నుండి మీ ఆరోగ్య సమాచారాలను సింక్ చేయండి"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"అన్ని అనుమతులను తీసివేయాలా?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"అన్నీ తీసివేయండి"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ఇకపై Health Connect నుండి ఎలాంటి డేటాను చదవలేరు లేదా రాయలేరు.\n\nఇది ఈ యాప్ కలిగి ఉండే కెమెరా, మైక్రోఫోన్, లేదా లొకేషన్ వంటి ఇతర అనుమతులపై ప్రభావం చూపదు."</string>
@@ -408,6 +402,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"యాప్ యాక్సెస్"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"మీ వద్ద ప్రస్తుతం అనుకూలమైన యాప్‌లు ఏవీ ఇన్‌స్టాల్ అయి లేవు"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"అదనపు యాక్సెస్‌"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"గతంలోని డేటా, బ్యాక్‌గ్రౌండ్ డేటా"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"ఈ యాప్‌నకు సంబంధించిన అదనపు అనుమతులు తీసివేయబడ్డాయి"</string>
     <string name="permissions_header" msgid="6519976063360071569">"అనుమతులు"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"ఫిట్‌నెస్, వెల్‌నెస్"</string>
@@ -608,7 +603,9 @@
     <string name="flow_light" msgid="1937543318146228793">"తక్కువ రక్తస్రావం"</string>
     <string name="flow_medium" msgid="3783688724668943154">"మధ్యస్థ రక్తస్రావం"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"అధిక రక్తస్రావం"</string>
+    <string name="flow_unknown" msgid="1634411759928572900">"ఫ్లో తెలియదు"</string>
     <string name="period_day" msgid="3821944462093965882">"రుతుస్రావానికి సంబంధించి <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>‌లో <xliff:g id="DAY">%1$d</xliff:g>‌వ రోజు"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{రుతుక్రమం (1 రోజు)}other{రుతుక్రమం(# రోజులు)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"సానుకూలం"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"ప్రతికూలం"</string>
     <string name="ovulation_high" msgid="205362931427158291">"అధికం"</string>
@@ -1077,7 +1074,10 @@
     <string name="edit_data_sources" msgid="79641360876849547">"యాప్ సోర్స్‌లను ఎడిట్ చేయండి"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"పరికరంలో ఆటోమేటిక్‌గా సెట్ చేయబడి ఉన్న యాప్"</string>
     <string name="app_data_title" msgid="6499967982291000837">"యాప్ డేటా"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"Health Connectకు యాక్సెస్ ఉన్న యాప్‌ల డేటా ఇక్కడ చూపబడుతుంది"</string>
+    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
+    <skip />
+    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
+    <skip />
     <string name="date_picker_day" msgid="3076687507968958991">"రోజు"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"వారం"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"నెల"</string>
@@ -1123,4 +1123,6 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> మధ్య పొందిన ఎంపిక చేసిన <xliff:g id="APP_NAME">%1$s</xliff:g> ఎంట్రీలను శాశ్వతంగా తొలగించాలా?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>లో పొందిన ఎంపిక చేసిన <xliff:g id="APP_NAME">%1$s</xliff:g> ఎంట్రీలను శాశ్వతంగా తొలగించాలా?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"ఈ <xliff:g id="APP_NAME">%s</xliff:g> ఎంట్రీని శాశ్వతంగా తొలగించాలా?"</string>
+    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
+    <skip />
 </resources>

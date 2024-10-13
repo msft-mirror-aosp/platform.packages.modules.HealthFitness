@@ -23,6 +23,8 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Gérez les données de santé et d\'activité physique sur votre téléphone, et contrôlez les applis qui peuvent y accéder"</string>
     <string name="data_title" msgid="4456619761533380816">"Données et accès"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Consulter les dossiers médicaux"</string>
+    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
+    <skip />
     <string name="all_categories_title" msgid="1446410643217937926">"Toutes les catégories"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Afficher toutes les catégories"</string>
     <string name="no_data" msgid="1906986019249068659">"Aucune donnée"</string>
@@ -408,6 +410,8 @@
     <string name="app_access_title" msgid="7137018424885371763">"Accès des applis"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Aucune appli compatible n\'est actuellement installée"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Accès supplémentaire"</string>
+    <!-- no translation found for additional_access_summary (1076197455435130191) -->
+    <skip />
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Autorisations supplémentaires retirées pour cette appli"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Autorisations"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Mise en forme et bien-être"</string>
@@ -608,7 +612,11 @@
     <string name="flow_light" msgid="1937543318146228793">"Saignement léger"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Saignement moyen"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Saignement abondant"</string>
+    <!-- no translation found for flow_unknown (1634411759928572900) -->
+    <skip />
     <string name="period_day" msgid="3821944462093965882">"Jour <xliff:g id="DAY">%1$d</xliff:g> de <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> des menstruations"</string>
+    <!-- no translation found for period_length (2257138792780916599) -->
+    <skip />
     <string name="ovulation_positive" msgid="6588547263126320238">"Positif"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Négatif"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Élevé"</string>
@@ -1077,7 +1085,10 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Modifier les sources d\'applis"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Valeur par défaut de l\'appareil"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Données de l\'appli"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"Les données des applis qui ont accès à Connexion santé s\'afficheront ici"</string>
+    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
+    <skip />
+    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
+    <skip />
     <string name="date_picker_day" msgid="3076687507968958991">"Jour"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Semaine"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Mois"</string>
@@ -1123,4 +1134,6 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Supprimer définitivement les entrées <xliff:g id="APP_NAME">%1$s</xliff:g> sélectionnées pour la semaine du <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Supprimer définitivement les entrées <xliff:g id="APP_NAME">%1$s</xliff:g> sélectionnées pour <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Supprimer définitivement cette entrée <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
+    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
+    <skip />
 </resources>
