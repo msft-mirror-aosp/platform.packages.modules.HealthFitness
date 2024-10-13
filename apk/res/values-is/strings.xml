@@ -23,6 +23,8 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Stjórnaðu heilsu- og hreystigögnum í tækinu þínu og stjórnaðu hvaða forrit hafa aðgang að þeim"</string>
     <string name="data_title" msgid="4456619761533380816">"Gögn og aðgangur"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Skoða heilsufarsgögn"</string>
+    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
+    <skip />
     <string name="all_categories_title" msgid="1446410643217937926">"Allir flokkar"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Sjá alla flokka"</string>
     <string name="no_data" msgid="1906986019249068659">"Engin gögn"</string>
@@ -331,21 +333,14 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Ef þú leyfir lesaðgang getur forritið lesið ný gögn og gögn síðustu 30 daga"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Ef þú leyfir lesaðgang getur þetta forrit lesið ný og eldri gögn"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Veita <xliff:g id="APP_NAME">%1$s</xliff:g> aðgang að Heilsutengingu?"</string>
-    <!-- no translation found for request_permissions_rationale (2642076968583316986) -->
-    <skip />
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"Þú getur kynnt þér hvernig <xliff:g id="APP_NAME">%1$s</xliff:g> meðhöndlar gögnin þín í <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"persónuverndarstefnu"</string>
-    <!-- no translation found for medical_request_header (2300521519021510027) -->
-    <skip />
-    <!-- no translation found for medical_request_header_desc (5721171305631983663) -->
-    <skip />
-    <!-- no translation found for medical_request_about_health_records (7204918218748362687) -->
-    <skip />
-    <!-- no translation found for medical_request_data_to_share (2208383833492573960) -->
-    <skip />
-    <!-- no translation found for medical_request_share (6237397362923728514) -->
-    <skip />
-    <!-- no translation found for medical_request_footer (6533749932770903089) -->
-    <skip />
+    <string name="medical_request_header" msgid="2300521519021510027">"Veita <xliff:g id="APP_NAME">%1$s</xliff:g> aðgang að heilsufarsgögnum?"</string>
+    <string name="medical_request_header_desc" msgid="5721171305631983663">"Ef þú veitir forritinu aðgang getur það lesið og skrifað gögn á borð við upplýsingar um ofnæmi, rannsóknarniðurstöður, bólusetningar og fleira\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"Um heilsufarsgögn"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Gögn sem þú vilt deila"</string>
+    <string name="medical_request_share" msgid="6237397362923728514">"Ef þú veitir <xliff:g id="APP_NAME">%1$s</xliff:g> aðgang getur forritið deilt heilsufarsgögnunum þínum með Heilsutengingu."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"Samstilltu heilsufarsgögnin þín úr mismunandi forritum og af mismunandi upprunum til að nálgast þau á einum stað"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Fjarlægja allar heimildir?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Fjarlægja allt"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> mun ekki lengur geta lesið eða skrifað nein gögn frá Heilsutengingu.\n\nÞetta hefur ekki áhrif á aðrar heimildir sem forritið kann að hafa, eins og fyrir myndavél, hljóðnema eða staðsetningu."</string>
@@ -408,6 +403,8 @@
     <string name="app_access_title" msgid="7137018424885371763">"Aðgangur forrita"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Engin samhæf forrit eru uppsett eins og stendur"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Aukinn aðgangur"</string>
+    <!-- no translation found for additional_access_summary (1076197455435130191) -->
+    <skip />
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Viðbótarheimildir fjarlægðar fyrir þetta forrit"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Heimildir"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Hreysti og vellíðan"</string>
@@ -507,7 +504,7 @@
     <string name="onboarding_title" msgid="8550656211291180188">"Byrjaðu að nota Heilsutengingu"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Heilsutenging varðveitir heilsu- og hreystigögnin þín og gefur þér kost á að samstilla ýmis forrit í tækinu þínu á einfaldan hátt"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Heilsutenging vistar og samstillir heilsu- og hreystigögnin þín úr mismunandi forritum.\n\n"<b>"Heilsu- og hreystigögn,"</b>" þ.m.t. æfingalotur, skref, næring, svefn og fleira\n\n"<b>"Heilsufarsgögn,"</b>" þ.m.t. bólusetningar, rannsóknarniðurstöður og fleira"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Með Heilsutengingu geturðu"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Með Heilsutengingu er hægt að"</string>
     <string name="share_data" msgid="3481932156368883946">"Deildu gögnum með forritum"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Veldu hvaða gögn hvert forrit getur lesið eða skrifað yfir í Heilsutengingu"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Stjórnaðu stillingum og persónuvernd"</string>
@@ -608,7 +605,11 @@
     <string name="flow_light" msgid="1937543318146228793">"Lítið flæði"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Miðlungsflæði"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Mikið flæði"</string>
+    <!-- no translation found for flow_unknown (1634411759928572900) -->
+    <skip />
     <string name="period_day" msgid="3821944462093965882">"Dagur blæðinga <xliff:g id="DAY">%1$d</xliff:g> af <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
+    <!-- no translation found for period_length (2257138792780916599) -->
+    <skip />
     <string name="ovulation_positive" msgid="6588547263126320238">"Jákvætt"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Neikvætt"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Mikið"</string>
@@ -1077,7 +1078,10 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Bæta við eða fjarlægja forrit sem veita upplýsingar"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Sjálfgefin stilling tækis"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Forritsgögn"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"Gögn frá forritum með aðgang að Heilsutengingu birtast hér"</string>
+    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
+    <skip />
+    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
+    <skip />
     <string name="date_picker_day" msgid="3076687507968958991">"Dagur"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Vika"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Mánuður"</string>
@@ -1123,4 +1127,6 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Eyða völdum <xliff:g id="APP_NAME">%1$s</xliff:g>-færslum frá vikunni <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> fyrir fullt og allt?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Eyða völdum <xliff:g id="APP_NAME">%1$s</xliff:g>-færslum frá <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> fyrir fullt og allt?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Eyða þessari <xliff:g id="APP_NAME">%s</xliff:g>-færslu fyrir fullt og allt?"</string>
+    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
+    <skip />
 </resources>
