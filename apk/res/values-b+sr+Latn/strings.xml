@@ -23,6 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Upravljajte podacima o zdravlju i fitnesu na uređaju i kontrolišite koje aplikacije mogu da im pristupaju"</string>
     <string name="data_title" msgid="4456619761533380816">"Podaci i pristup"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Pregledaj zdravstvenu evidenciju"</string>
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Pogledajte zdravstvenu evidenciju i koje aplikacije mogu da joj pristupaju"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Sve kategorije"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Prikaži sve kategorije"</string>
     <string name="no_data" msgid="1906986019249068659">"Nema podataka"</string>
@@ -298,10 +299,10 @@
     <string name="medications_content_description" msgid="6165382876281780190">"Čitanje podataka o lekovima"</string>
     <string name="personal_details_uppercase_label" msgid="7241635933310394120">"Lični podaci"</string>
     <string name="personal_details_lowercase_label" msgid="1907848447611775151">"lični podaci"</string>
-    <string name="personal_details_content_description" msgid="3191211304673909831">"Čitanje ličnih podataka"</string>
-    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Detalji o lekaru"</string>
-    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"detalji o lekaru"</string>
-    <string name="practitioner_details_content_description" msgid="8775396516928504185">"Čitanje detalja o lekaru"</string>
+    <string name="personal_details_content_description" msgid="3191211304673909831">"da čitate lične podatke"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Detalji o lekarima i stručnjacima"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"detalji o lekarima i stručnjacima"</string>
+    <string name="practitioner_details_content_description" msgid="8775396516928504185">"da čitate detalje o lekarima i stručnjacima"</string>
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Trudnoća"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"trudnoća"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"Čitanje podataka o trudnoći"</string>
@@ -313,7 +314,7 @@
     <string name="social_history_content_description" msgid="7187059309389849831">"Čitanje podataka o društvenim odrednicama zdravlja"</string>
     <string name="visits_uppercase_label" msgid="8532619758336375886">"Posete"</string>
     <string name="visits_lowercase_label" msgid="2545887061364564151">"posete"</string>
-    <string name="visits_content_description" msgid="6336796415049565697">"Čitanje podataka o posetama"</string>
+    <string name="visits_content_description" msgid="6336796415049565697">"da čitate podatke o posetama"</string>
     <string name="vital_signs_uppercase_label" msgid="289862347143374640">"Vitalni znaci"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"vitalni znaci"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"Čitanje vitalnih znaka"</string>
@@ -331,21 +332,14 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Ako date pristup za čitanje, aplikacija može da čita nove podatke i podatke iz prethodnih 30 dana"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Ako date pristup za čitanje, ova aplikacija može da čita nove i ranije podatke"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Želite da dozvolite aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa Povezivanju zdravlja?"</string>
-    <!-- no translation found for request_permissions_rationale (2642076968583316986) -->
-    <skip />
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"Možete da saznate kako <xliff:g id="APP_NAME">%1$s</xliff:g> upravlja vašim podacima u: <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"politika privatnosti"</string>
-    <!-- no translation found for medical_request_header (2300521519021510027) -->
-    <skip />
-    <!-- no translation found for medical_request_header_desc (5721171305631983663) -->
-    <skip />
-    <!-- no translation found for medical_request_about_health_records (7204918218748362687) -->
-    <skip />
-    <!-- no translation found for medical_request_data_to_share (2208383833492573960) -->
-    <skip />
-    <!-- no translation found for medical_request_share (6237397362923728514) -->
-    <skip />
-    <!-- no translation found for medical_request_footer (6533749932770903089) -->
-    <skip />
+    <string name="medical_request_header" msgid="2300521519021510027">"Želite da dozvolite da <xliff:g id="APP_NAME">%1$s</xliff:g> pristupa vašoj zdravstvenoj evidenciji?"</string>
+    <string name="medical_request_header_desc" msgid="5721171305631983663">"Ako date pristup, aplikacija može da čita i upisuje podatke, na primer, alergije, laboratorijske rezultate, vakcine i drugo\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"O zdravstvenoj evidenciji"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Podaci za deljenje"</string>
+    <string name="medical_request_share" msgid="6237397362923728514">"Ako dozvolite, <xliff:g id="APP_NAME">%1$s</xliff:g> može da deli vašu zdravstvenu evidenciju sa Povezivanjem zdravlja."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"Sinhronizujte zdravstvenu evidenciju iz različitih aplikacija i izvora da biste je držali na jednom mestu"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Želite da uklonite sve dozvole?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Ukloni sve"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći da čita ni upisuje bilo koje podatke iz Povezivanja zdravlja.\n\nTo ne utiče na druge dozvole koje ova aplikacija može da ima, poput kamere, mikrofona ili lokacije."</string>
@@ -408,6 +402,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Pristup aplikacijama"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Trenutno nemate instaliranu nijednu kompatibilnu aplikaciju"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Dodatni pristup"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"Raniji podaci, pozadinski podaci"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Uklonjene su dodatne dozvole za ovu aplikaciju"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Dozvole"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Fitnes i velnes"</string>
@@ -608,7 +603,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Blago krvarenje"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Srednje krvarenje"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Obilno krvarenje"</string>
+    <string name="flow_unknown" msgid="1634411759928572900">"Nepoznata količina krvarenja"</string>
     <string name="period_day" msgid="3821944462093965882">"Dan ciklusa: <xliff:g id="DAY">%1$d</xliff:g>. od <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Menstruacija (1 dan)}one{Menstruacija (# dan)}few{Menstruacija (# dana)}other{Menstruacija (# dana)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Pozitivan"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Negativan"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Visoka plodnost"</string>
@@ -1077,7 +1074,10 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Izmeni izvore aplikacija"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Podrazumevano za uređaj"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Podaci aplikacija"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"Podaci iz aplikacija sa pristupom Povezivanju zdravlja prikazaće se ovde"</string>
+    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
+    <skip />
+    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
+    <skip />
     <string name="date_picker_day" msgid="3076687507968958991">"Dan"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Nedelja"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Mesec"</string>
@@ -1123,4 +1123,6 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Želite trajno da izbrišete izabrane unose u: <xliff:g id="APP_NAME">%1$s</xliff:g> za nedelju <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Želite trajno da izbrišete izabrane unose u: <xliff:g id="APP_NAME">%1$s</xliff:g> za <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Želite trajno da izbrišete ovaj unos u: <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
+    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
+    <skip />
 </resources>

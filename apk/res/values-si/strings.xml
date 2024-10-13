@@ -23,6 +23,8 @@
     <string name="home_subtitle" msgid="2154213430054477787">"ඔබේ උපාංගයෙහි සෞඛ්‍ය සහ යෝග්‍යතා දත්ත කළමනාකරණය කරන්න, සහ එයට ප්‍රවේශ විය හැකි යෙදුම් පාලනය කරන්න"</string>
     <string name="data_title" msgid="4456619761533380816">"දත්ත සහ ප්‍රවේශය"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"සෞඛ්‍ය වාර්තා බ්‍රවුස් කරන්න"</string>
+    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
+    <skip />
     <string name="all_categories_title" msgid="1446410643217937926">"ප්‍රවර්ග සියල්ල"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"සියලු ප්‍රවර්ග බලන්න"</string>
     <string name="no_data" msgid="1906986019249068659">"දත්ත නැත"</string>
@@ -331,21 +333,14 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"ඔබ කියවීම් ප්‍රවේශය ලබා දෙන්නේ නම්, යෙදුමට පසුගිය දින 30 සිට නව දත්ත සහ දත්ත කියවිය හැක"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"ඔබ කියවීමට ප්‍රවේශය ලබා දෙන්නේ නම්, යෙදුමට නව සහ අතීත දත්ත කියවිය හැක"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට Health Connect වෙත ප්‍රවේශ වීමට ඉඩ දෙන්නද?"</string>
-    <!-- no translation found for request_permissions_rationale (2642076968583316986) -->
-    <skip />
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"ඔවුන්ගේ <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> හි <xliff:g id="APP_NAME">%1$s</xliff:g> ඔබේ දත්ත හසුරුවන ආකාරය ඔබට දැන ගත හැක"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"පෞද්ගලිකත්ව ප්‍රතිපත්තිය"</string>
-    <!-- no translation found for medical_request_header (2300521519021510027) -->
-    <skip />
-    <!-- no translation found for medical_request_header_desc (5721171305631983663) -->
-    <skip />
-    <!-- no translation found for medical_request_about_health_records (7204918218748362687) -->
-    <skip />
-    <!-- no translation found for medical_request_data_to_share (2208383833492573960) -->
-    <skip />
-    <!-- no translation found for medical_request_share (6237397362923728514) -->
-    <skip />
-    <!-- no translation found for medical_request_footer (6533749932770903089) -->
-    <skip />
+    <string name="medical_request_header" msgid="2300521519021510027">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට ඔබේ සෞඛ්‍ය වාර්තා වෙත ප්‍රවේශ වීමට ඉඩ දෙන්න ද?"</string>
+    <string name="medical_request_header_desc" msgid="5721171305631983663">"ඔබ ප්‍රවේශය ලබා දෙන්නේ නම්, යෙදුමට අසාත්මිකතා, පරීක්ෂණාගාර ප්‍රතිඵල, එන්නත් සහ තවත් බොහෝ දත්ත කියවීමට සහ ලිවීමට හැක\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"සෞඛ්‍ය වාර්තා ගැන"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"බෙදා ගැනීමට දත්ත"</string>
+    <string name="medical_request_share" msgid="6237397362923728514">"ඔබ ඉඩ දෙන්නේ නම්, <xliff:g id="APP_NAME">%1$s</xliff:g> හට ඔබේ සෞඛ්‍ය වාර්තා Health Connect සමග බෙදා ගත හැක."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"ඔබේ සෞඛ්‍ය වාර්තා එක තැනක තබා ගැනීමට ඔබේ විවිධ යෙදුම් සහ මූලාශ්‍රවලින් සමමුහුර්ත කරන්න"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"සියලු අවසර ඉවත් කරන්න ද?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"සියල්ල ඉවත් කරන්න"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට තවදුරටත් Health Connect වෙතින් දත්ත කිසිවක් කියවීමට හෝ ලිවීමට නොහැකි වනු ඇත.\n\nමෙම යෙදුමට කැමරාව, මයික්‍රෆෝනය, හෝ ස්ථානය වැනි වෙනත් අවසරවලට මෙය බලපාන්නේ නැත."</string>
@@ -408,6 +403,8 @@
     <string name="app_access_title" msgid="7137018424885371763">"යෙදුම් ප්‍රවේශය"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"ඔබට දැනට ගැළපෙන යෙදුම් කිසිවක් ස්ථාපන කර නැත"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"අතිරේක ප්‍රවේශය"</string>
+    <!-- no translation found for additional_access_summary (1076197455435130191) -->
+    <skip />
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"මෙම යෙදුම සඳහා අතිරේක අවසර ඉවත් කරන ලදි"</string>
     <string name="permissions_header" msgid="6519976063360071569">"අවසර"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"යෝග්‍යතාවය සහ සුවතාවය"</string>
@@ -608,7 +605,11 @@
     <string name="flow_light" msgid="1937543318146228793">"සුළු වහනයක් සහිත"</string>
     <string name="flow_medium" msgid="3783688724668943154">"මධ්‍යම වහනයක් සහිත"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"දැඩි වහනයක් සහිත"</string>
+    <!-- no translation found for flow_unknown (1634411759928572900) -->
+    <skip />
     <string name="period_day" msgid="3821944462093965882">"ඔසප් වීම <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> න් <xliff:g id="DAY">%1$d</xliff:g> වෙනි දිනය"</string>
+    <!-- no translation found for period_length (2257138792780916599) -->
+    <skip />
     <string name="ovulation_positive" msgid="6588547263126320238">"පොසිටිව්"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"නෙගටිව්"</string>
     <string name="ovulation_high" msgid="205362931427158291">"ඉහළ"</string>
@@ -1077,7 +1078,10 @@
     <string name="edit_data_sources" msgid="79641360876849547">"යෙදුම් මූලාශ්‍ර සංස්කරණය කරන්න"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"උපාංගයේ පෙරනිමිය"</string>
     <string name="app_data_title" msgid="6499967982291000837">"යෙදුම් දත්ත"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"Health Connect වෙත ප්‍රවේශය ඇති යෙදුම් වෙතින් දත්ත මෙහි පෙන්වනු ඇත"</string>
+    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
+    <skip />
+    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
+    <skip />
     <string name="date_picker_day" msgid="3076687507968958991">"දිනය"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"සතිය"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"මාසය"</string>
@@ -1123,4 +1127,6 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> සතිය සඳහා තෝරා ගත් <xliff:g id="APP_NAME">%1$s</xliff:g> ඇතුළත් කිරීම් ස්ථිරවම මකන්න ද?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> සඳහා තෝරා ගත් <xliff:g id="APP_NAME">%1$s</xliff:g> ඇතුළත් කිරීම් ස්ථිරවම මකන්න ද?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"මෙම <xliff:g id="APP_NAME">%s</xliff:g> ඇතුළත් කිරීම ස්ථිරවම මකන්න ද?"</string>
+    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
+    <skip />
 </resources>
