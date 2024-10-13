@@ -86,8 +86,7 @@ class DeleteMedicalPermissionTypesFromAppUseCaseTest {
 
         useCase.invoke(deletePermissionType)
 
-        Mockito.verify(manager, Mockito.times(1))
-            .deleteMedicalResources(medicalRequestCaptor.capture(), any(), any())
+        Mockito.verify(manager).deleteMedicalResources(medicalRequestCaptor.capture(), any(), any())
 
         assertThat(medicalRequestCaptor.value.dataSourceIds)
             .containsExactly(TEST_MEDICAL_DATA_SOURCE.id)

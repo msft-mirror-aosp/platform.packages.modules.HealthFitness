@@ -18,7 +18,6 @@ package android.healthconnect.aidl;
 import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
 import static android.health.connect.Constants.MINIMUM_PAGE_SIZE;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.PAGE_TOKEN;
@@ -74,11 +73,26 @@ public class ReadMedicalResourcesRequestParcelTest {
         ReadMedicalResourcesRequestParcel restoredParcel =
                 ReadMedicalResourcesRequestParcel.CREATOR.createFromParcel(parcel);
 
-        assertThat(restoredParcel.getMedicalResourceType())
-                .isEqualTo(MEDICAL_RESOURCE_TYPE_UNKNOWN);
+        assertThat(restoredParcel.getMedicalResourceType()).isEqualTo(0);
         assertThat(restoredParcel.getDataSourceIds()).isEmpty();
         assertThat(restoredParcel.getPageToken()).isEqualTo(PAGE_TOKEN);
         assertThat(restoredParcel.getPageSize()).isEqualTo(100);
+    }
+
+    @Test
+    public void testRestoreInvalidPageRequestFromParcel_nullPageToken_expectException()
+            throws NoSuchFieldException, IllegalAccessException {
+        ReadMedicalResourcesPageRequest original =
+                new ReadMedicalResourcesPageRequest.Builder(PAGE_TOKEN).setPageSize(100).build();
+        setFieldValueUsingReflection(original, "mPageToken", null);
+
+        Parcel parcel = Parcel.obtain();
+        original.toParcel().writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> ReadMedicalResourcesRequestParcel.CREATOR.createFromParcel(parcel));
     }
 
     @Test

@@ -29,9 +29,7 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission.Co
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isFitnessReadPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.isMedicalReadPermission
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
-import com.android.healthconnect.controller.utils.FeatureUtils
-import com.android.healthfitness.flags.Flags
-import com.android.healthfitness.flags.Flags.personalHealthRecord
+import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
 import com.google.common.annotations.VisibleForTesting
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -42,37 +40,12 @@ import javax.inject.Singleton
  * resources. See android.health.connect.HealthPermissions
  */
 @Singleton
-class HealthPermissionReader
-@Inject
-constructor(
-    @ApplicationContext private val context: Context,
-    private val featureUtils: FeatureUtils,
-) {
+class HealthPermissionReader @Inject constructor(@ApplicationContext private val context: Context) {
 
     companion object {
         private const val RESOLVE_INFO_FLAG: Long = PackageManager.MATCH_ALL.toLong()
         private const val PACKAGE_INFO_PERMISSIONS_FLAG: Long =
             PackageManager.GET_PERMISSIONS.toLong()
-        private val sessionTypePermissions =
-            listOf(
-                HealthPermissions.READ_EXERCISE,
-                HealthPermissions.WRITE_EXERCISE,
-                HealthPermissions.READ_SLEEP,
-                HealthPermissions.WRITE_SLEEP,
-            )
-
-        private val backgroundReadPermission =
-            listOf(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
-
-        private val historyReadPermission = listOf(HealthPermissions.READ_HEALTH_DATA_HISTORY)
-
-        /** Special health permissions that don't represent health data types. */
-        private val additionalPermissions =
-            setOf(
-                HealthPermissions.READ_EXERCISE_ROUTES,
-                HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
-                HealthPermissions.READ_HEALTH_DATA_HISTORY,
-            )
 
         private val medicalPermissions =
             setOf(
@@ -168,7 +141,7 @@ constructor(
             val permissions = getDeclaredHealthPermissions(packageName)
             val declaredPermissions =
                 permissions.mapNotNull { permission -> parsePermission(permission) }
-            if (personalHealthRecord()) {
+            if (isPersonalHealthRecordEnabled()) {
                 maybeFilterOutAdditionalIfNotValid(declaredPermissions)
             } else {
                 declaredPermissions
@@ -258,7 +231,7 @@ constructor(
      * When PHR flag is off, returns additional permissions that are declared.
      */
     fun getAdditionalPermissions(packageName: String): List<String> {
-        return if (personalHealthRecord()) {
+        return if (isPersonalHealthRecordEnabled()) {
             getValidHealthPermissions(packageName)
                 .map { it.toString() }
                 .filter { perm -> isAdditionalPermission(perm) && !shouldHidePermission(perm) }
@@ -309,50 +282,11 @@ constructor(
     }
 
     fun shouldHidePermission(permission: String): Boolean {
-        return shouldHideSessionTypes(permission) ||
-            shouldHideBackgroundReadPermission(permission) ||
-            shouldHideSkinTemperaturePermissions(permission) ||
-            shouldHidePlannedExercisePermissions(permission) ||
-            shouldHideMindfulnessSessionPermissions(permission) ||
-            shouldHideHistoryReadPermission(permission) ||
-            shouldHideMedicalPermission(permission)
-    }
-
-    private fun shouldHideSkinTemperaturePermissions(permission: String): Boolean {
-        return (permission == HealthPermissions.READ_SKIN_TEMPERATURE ||
-            permission == HealthPermissions.WRITE_SKIN_TEMPERATURE) &&
-            !featureUtils.isSkinTemperatureEnabled()
-    }
-
-    private fun shouldHidePlannedExercisePermissions(permission: String): Boolean {
-        return (permission == HealthPermissions.READ_PLANNED_EXERCISE ||
-            permission == HealthPermissions.WRITE_PLANNED_EXERCISE) &&
-            !featureUtils.isPlannedExerciseEnabled()
-    }
-
-    private fun shouldHideMindfulnessSessionPermissions(permission: String): Boolean {
-        if (Flags.mindfulness()) {
-            return false
-        }
-
-        return permission == HealthPermissions.READ_MINDFULNESS ||
-            permission == HealthPermissions.WRITE_MINDFULNESS
-    }
-
-    private fun shouldHideSessionTypes(permission: String): Boolean {
-        return permission in sessionTypePermissions && !featureUtils.isSessionTypesEnabled()
-    }
-
-    private fun shouldHideBackgroundReadPermission(permission: String): Boolean {
-        return permission in backgroundReadPermission && !featureUtils.isBackgroundReadEnabled()
-    }
-
-    private fun shouldHideHistoryReadPermission(permission: String): Boolean {
-        return permission in historyReadPermission && !featureUtils.isHistoryReadEnabled()
+        return shouldHideMedicalPermission(permission)
     }
 
     private fun shouldHideMedicalPermission(permission: String): Boolean {
-        return permission in medicalPermissions && !personalHealthRecord()
+        return permission in medicalPermissions && !isPersonalHealthRecordEnabled()
     }
 
     private fun getRationaleIntent(packageName: String? = null): Intent {

@@ -55,7 +55,6 @@ import com.android.server.healthconnect.storage.request.DropTableRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -66,7 +65,7 @@ final class DatabaseUpgradeHelper {
     private static final String SQLITE_MASTER_TABLE_NAME = "sqlite_master";
 
     private static final Upgrader UPGRADE_TO_GENERATED_LOCAL_TIME =
-            db -> forEachRecordHelper(it -> it.applyGeneratedLocalTimeUpgrade(db));
+            db -> forEachInitialRecordHelper(it -> it.applyGeneratedLocalTimeUpgrade(db));
 
     private static final Upgrader UPGRADE_TO_SKIN_TEMPERATURE =
             db -> new SkinTemperatureRecordHelper().applySkinTemperatureUpgrade(db);
@@ -108,37 +107,41 @@ final class DatabaseUpgradeHelper {
      * <p>See go/hc-handling-database-upgrades for things to be taken care of when upgrading.
      */
     static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (isUnsupported(oldVersion)) {
+        if (isUnsupportedDbVersion(oldVersion)) {
             dropInitialSetOfTables(db);
         }
         if (oldVersion < MIN_SUPPORTED_DB_VERSION) {
             createTablesForMinSupportedVersion(db);
+            // Sets version to include local time upgrade as the table create steps includes
+            // these columns.
+            oldVersion = DB_VERSION_GENERATED_LOCAL_TIME;
         }
+        final int effectiveOldVersion = oldVersion;
 
         if (Flags.infraToGuardDbChanges()) {
             UPGRADERS.entrySet().stream()
-                    .filter(entry -> shouldUpgrade(entry.getKey(), oldVersion, newVersion))
+                    .filter(entry -> shouldUpgrade(entry.getKey(), effectiveOldVersion, newVersion))
                     .forEach(entry -> entry.getValue().upgrade(db));
         } else {
-            if (oldVersion < DB_VERSION_GENERATED_LOCAL_TIME) {
+            if (effectiveOldVersion < DB_VERSION_GENERATED_LOCAL_TIME) {
                 UPGRADE_TO_GENERATED_LOCAL_TIME.upgrade(db);
             }
-            if (oldVersion < DB_VERSION_SKIN_TEMPERATURE) {
+            if (effectiveOldVersion < DB_VERSION_SKIN_TEMPERATURE) {
                 UPGRADE_TO_SKIN_TEMPERATURE.upgrade(db);
             }
-            if (oldVersion < DB_VERSION_PLANNED_EXERCISE_SESSIONS) {
+            if (effectiveOldVersion < DB_VERSION_PLANNED_EXERCISE_SESSIONS) {
                 UPGRADE_TO_PLANNED_EXERCISE_SESSIONS.upgrade(db);
             }
-            if (oldVersion < DB_VERSION_MINDFULNESS_SESSION) {
+            if (effectiveOldVersion < DB_VERSION_MINDFULNESS_SESSION) {
                 UPGRADE_TO_MINDFULNESS_SESSION.upgrade(db);
             }
-            if (shouldUpgrade(DB_VERSION_PERSONAL_HEALTH_RECORD, oldVersion, newVersion)) {
+            if (shouldUpgrade(DB_VERSION_PERSONAL_HEALTH_RECORD, effectiveOldVersion, newVersion)) {
                 UPGRADE_TO_PERSONAL_HEALTH_RECORD.upgrade(db);
             }
         }
     }
 
-    private static boolean isUnsupported(int version) {
+    private static boolean isUnsupportedDbVersion(int version) {
         return version != 0 && version < MIN_SUPPORTED_DB_VERSION;
     }
 
@@ -165,16 +168,7 @@ final class DatabaseUpgradeHelper {
     private static List<CreateTableRequest> getInitialCreateTableRequests() {
         List<CreateTableRequest> requests = new ArrayList<>();
 
-        // Add all records that were part of the initial schema. This is everything added before
-        // SKIN_TEMPERATURE.
-        Collection<RecordHelper<?>> recordHelpers = RecordHelperProvider.getRecordHelpers();
-        recordHelpers.stream()
-                .filter(
-                        helper ->
-                                helper.getRecordIdentifier() > RECORD_TYPE_UNKNOWN
-                                        && helper.getRecordIdentifier()
-                                                < RECORD_TYPE_SKIN_TEMPERATURE)
-                .forEach(helper -> requests.add(helper.getCreateTableRequest()));
+        forEachInitialRecordHelper(helper -> requests.add(helper.getCreateTableRequest()));
 
         requests.add(DeviceInfoHelper.getCreateTableRequest());
         requests.add(AppInfoHelper.getCreateTableRequest());
@@ -188,6 +182,18 @@ final class DatabaseUpgradeHelper {
         requests.add(PriorityMigrationHelper.getCreateTableRequest());
 
         return requests;
+    }
+
+    // Retuurns all records that were part of the initial schema. This is everything added
+    // before SKIN_TEMPERATURE.
+    private static void forEachInitialRecordHelper(Consumer<RecordHelper<?>> action) {
+        RecordHelperProvider.getRecordHelpers().stream()
+                .filter(
+                        helper ->
+                                helper.getRecordIdentifier() > RECORD_TYPE_UNKNOWN
+                                        && helper.getRecordIdentifier()
+                                                < RECORD_TYPE_SKIN_TEMPERATURE)
+                .forEach(action);
     }
 
     private static void forEachRecordHelper(Consumer<RecordHelper<?>> action) {

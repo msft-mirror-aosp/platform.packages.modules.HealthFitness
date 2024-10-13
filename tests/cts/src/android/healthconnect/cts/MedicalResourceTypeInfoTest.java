@@ -15,8 +15,8 @@
  */
 package android.healthconnect.cts;
 
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalDataSourceRequiredFieldsOnly;
 import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
 
@@ -90,7 +90,8 @@ public class MedicalResourceTypeInfoTest {
         MedicalResourceTypeInfo info =
                 new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, dataSources);
         MedicalResourceTypeInfo infoDifferentMedicalResourceType =
-                new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_UNKNOWN, dataSources);
+                new MedicalResourceTypeInfo(
+                        MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES, dataSources);
         MedicalResourceTypeInfo infoDifferentDataSources =
                 new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, Set.of());
 
