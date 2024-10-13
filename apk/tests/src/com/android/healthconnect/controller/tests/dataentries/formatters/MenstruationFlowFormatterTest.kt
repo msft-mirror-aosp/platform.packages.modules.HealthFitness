@@ -20,6 +20,7 @@ import android.health.connect.datatypes.MenstruationFlowRecord
 import android.health.connect.datatypes.MenstruationFlowRecord.MenstruationFlowType.FLOW_HEAVY
 import android.health.connect.datatypes.MenstruationFlowRecord.MenstruationFlowType.FLOW_LIGHT
 import android.health.connect.datatypes.MenstruationFlowRecord.MenstruationFlowType.FLOW_MEDIUM
+import android.health.connect.datatypes.MenstruationFlowRecord.MenstruationFlowType.FLOW_UNKNOWN
 import android.health.connect.datatypes.MenstruationFlowRecord.MenstruationFlowType.MenstruationFlowTypes
 import android.health.connect.datatypes.Vo2MaxRecord.Vo2MaxMeasurementMethod.*
 import androidx.test.platform.app.InstrumentationRegistry
@@ -79,9 +80,14 @@ class MenstruationFlowFormatterTest {
         assertThat(formatter.formatValue(record, preferences)).isEqualTo("Light flow")
     }
 
-    private fun getRecord(
-        @MenstruationFlowTypes type: Int,
-    ): MenstruationFlowRecord {
+    @Test
+    fun formatValue_unknown_showsAppearance() = runBlocking {
+        val record = getRecord(type = FLOW_UNKNOWN)
+
+        assertThat(formatter.formatValue(record, preferences)).isEqualTo("Unknown flow")
+    }
+
+    private fun getRecord(@MenstruationFlowTypes type: Int): MenstruationFlowRecord {
         return MenstruationFlowRecord.Builder(getMetaData(), NOW, type).build()
     }
 }

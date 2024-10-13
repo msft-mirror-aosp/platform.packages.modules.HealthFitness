@@ -23,6 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"તમારા ડિવાઇસ પર આરોગ્ય અને ફિટનેસના ડેટાને મેનેજ કરો તથા કઈ ઍપ તે ઍક્સેસ કરી શકે, તે નિયંત્રિત કરો"</string>
     <string name="data_title" msgid="4456619761533380816">"ડેટા અને ઍક્સેસ"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"સ્વાસ્થ્ય સંબંધિત માહિતી બ્રાઉઝ કરો"</string>
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"તમારી સ્વાસ્થ્ય સંબંધિત માહિતી અને કઈ ઍપ તેને ઍક્સેસ કરી શકે તે જુઓ"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"બધી કૅટેગરી"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"બધી કૅટેગરી જુઓ"</string>
     <string name="no_data" msgid="1906986019249068659">"કોઈ ડેટા નથી"</string>
@@ -331,21 +332,14 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"જો તમે વાંચવાનો ઍક્સેસ આપશો, તો આ ઍપ નવો ડેટા ઉપરાંત છેલ્લા 30 દિવસનો ડેટા પણ વાંચી શકે છે"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"જો તમે વાંચવાનો ઍક્સેસ આપશો, તો આ ઍપ નવો અને અગાઉનો ડેટા વાંચી શકે છે"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"<xliff:g id="APP_NAME">%1$s</xliff:g>ને Health Connect ઍક્સેસ કરવાની મંજૂરી આપીએ?"</string>
-    <!-- no translation found for request_permissions_rationale (2642076968583316986) -->
-    <skip />
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"તમે <xliff:g id="APP_NAME">%1$s</xliff:g>ની તમારો ડેટા હૅન્ડલ કરવાની રીતે વિશે તેમના <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>માં જાણી શકો છો"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"પ્રાઇવસી પૉલિસી"</string>
-    <!-- no translation found for medical_request_header (2300521519021510027) -->
-    <skip />
-    <!-- no translation found for medical_request_header_desc (5721171305631983663) -->
-    <skip />
-    <!-- no translation found for medical_request_about_health_records (7204918218748362687) -->
-    <skip />
-    <!-- no translation found for medical_request_data_to_share (2208383833492573960) -->
-    <skip />
-    <!-- no translation found for medical_request_share (6237397362923728514) -->
-    <skip />
-    <!-- no translation found for medical_request_footer (6533749932770903089) -->
-    <skip />
+    <string name="medical_request_header" msgid="2300521519021510027">"શું <xliff:g id="APP_NAME">%1$s</xliff:g>ને તમારી સ્વાસ્થ્ય સંબંધિત માહિતી ઍક્સેસ કરવાની મંજૂરી આપીએ?"</string>
+    <string name="medical_request_header_desc" msgid="5721171305631983663">"જો તમે ઍક્સેસ આપો છો, તો ઍ એલર્જી, લેબના પરિણામો, રસીઓ અને બીજી ઘણી બાબતો જેવી માહિતીને લખી અને વાંચી શકે છે\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"સ્વાસ્થ્ય સંબંધિત માહિતી વિશે"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"શેર કરવા માટેનો ડેટા"</string>
+    <string name="medical_request_share" msgid="6237397362923728514">"જો તમે મંજૂરી આપો છો, તો <xliff:g id="APP_NAME">%1$s</xliff:g> તમારી સ્વાસ્થ્ય સંબંધિત માહિતીને Health Connect સાથે શેર કરી શકે છે."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"તમારી અલગ-અલગ ઍપ અને સૉર્સમાંથી તમારી સ્વાસ્થ્ય સંબંધિત માહિતી સિંક કરો, જેથી તેને એક જગ્યાએ રાખી શકાય"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"શું બધી પરવાનગીઓ કાઢી નાખીએ?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"તમામ કાઢી નાખો"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> હવેથી Health Connectમાંથી કોઈપણ ડેટા વાંચી કે લખી શકશે નહીં.\n\nઆનાથી કૅમેરા, માઇક્રોફોન કે લોકેશન જેવી આ ઍપ ધરાવતી હોઈ શકે એવી અન્ય પરવાનગીઓ પર કોઈ અસર થશે નહીં."</string>
@@ -408,6 +402,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"ઍપનો ઍક્સેસ"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"તમારી પાસે હાલમાં કોઈપણ સુસંગત ઍપ ઇન્સ્ટૉલ કરેલી નથી"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"વધારાનો ઍક્સેસ"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"ભૂતકાળનો ડેટા, બૅકગ્રાઉન્ડ ડેટા"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"આ ઍપ માટેની વધારાની પરવાનગીઓ કાઢી નાખી"</string>
     <string name="permissions_header" msgid="6519976063360071569">"પરવાનગીઓ"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"ફિટનેસ અને સુખાકારી"</string>
@@ -608,7 +603,9 @@
     <string name="flow_light" msgid="1937543318146228793">"ઓછો સ્રાવ"</string>
     <string name="flow_medium" msgid="3783688724668943154">"મધ્યમ સ્રાવ"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"ભારે સ્રાવ"</string>
+    <string name="flow_unknown" msgid="1634411759928572900">"ફ્લોનું અજાણ્યું પ્રમાણ"</string>
     <string name="period_day" msgid="3821944462093965882">"માસિકના <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> દિવસમાંથી દિવસ <xliff:g id="DAY">%1$d</xliff:g>"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{માસિક (દિવસ 1)}one{માસિક (દિવસ #)}other{માસિક (દિવસ #)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"સકારાત્મક"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"નકારાત્મક"</string>
     <string name="ovulation_high" msgid="205362931427158291">"ઊંચું"</string>
@@ -1077,7 +1074,10 @@
     <string name="edit_data_sources" msgid="79641360876849547">"ઍપના સૉર્સમાં ફેરફાર કરો"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"ડિવાઇસ પર ડિફૉલ્ટ"</string>
     <string name="app_data_title" msgid="6499967982291000837">"ઍપનો ડેટા"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"Health Connectનો ઍક્સેસ ધરાવતી ઍપનો ડેટા અહીં દેખાશે"</string>
+    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
+    <skip />
+    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
+    <skip />
     <string name="date_picker_day" msgid="3076687507968958991">"દિવસ"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"અઠવાડિયું"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"મહિનો"</string>
@@ -1123,4 +1123,6 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>ના અઠવાડિયાની <xliff:g id="APP_NAME">%1$s</xliff:g>ની પસંદ કરવામાં આવેલી એન્ટ્રી કાયમ માટે ડિલીટ કરીએ?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>ની, <xliff:g id="APP_NAME">%1$s</xliff:g>ની પસંદ કરવામાં આવેલી એન્ટ્રી કાયમ માટે ડિલીટ કરીએ?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"શું <xliff:g id="APP_NAME">%s</xliff:g>ની આ એન્ટ્રી કાયમ માટે ડિલીટ કરીએ?"</string>
+    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
+    <skip />
 </resources>

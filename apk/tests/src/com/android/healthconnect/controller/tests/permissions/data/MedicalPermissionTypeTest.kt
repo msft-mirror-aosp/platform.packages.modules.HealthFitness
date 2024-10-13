@@ -17,7 +17,6 @@ package com.android.healthconnect.controller.tests.permissions.data
 
 import android.content.Context
 import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.fromMedicalResourceType
@@ -53,15 +52,6 @@ class MedicalPermissionTypeTest {
     }
 
     @Test
-    fun fromMedicalResourceType_unknown_notSupported() {
-        val thrown =
-            assertThrows(IllegalArgumentException::class.java) {
-                fromMedicalResourceType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
-            }
-        assertThat(thrown).hasMessageThat().isEqualTo("MedicalResourceType is UNKNOWN.")
-    }
-
-    @Test
     fun fromMedicalResourceType_notSupported_throws() {
         val thrown =
             assertThrows(IllegalArgumentException::class.java) { fromMedicalResourceType(123456) }
@@ -75,9 +65,12 @@ class MedicalPermissionTypeTest {
     }
 
     @Test
-    fun toMedicalResourceType_allMedicalData() {
-        assertThat(toMedicalResourceType(MedicalPermissionType.ALL_MEDICAL_DATA))
-            .isEqualTo(MEDICAL_RESOURCE_TYPE_UNKNOWN)
+    fun toMedicalResourceType_allMedicalData_throws() {
+        val thrown =
+            assertThrows(IllegalArgumentException::class.java) {
+                toMedicalResourceType(MedicalPermissionType.ALL_MEDICAL_DATA)
+            }
+        assertThat(thrown).hasMessageThat().isEqualTo("MedicalPermissionType does not map to a MedicalResourceType.")
     }
 
     @Test
@@ -87,8 +80,6 @@ class MedicalPermissionTypeTest {
                 it == MedicalPermissionType.ALL_MEDICAL_DATA
             }) {
             assertThat(toMedicalResourceType(permissionType)).isNotNull()
-            assertThat(toMedicalResourceType(permissionType))
-                .isNotEqualTo(MEDICAL_RESOURCE_TYPE_UNKNOWN)
         }
     }
 }

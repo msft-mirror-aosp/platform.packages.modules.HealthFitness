@@ -161,7 +161,7 @@ class AllDataFragmentTest {
         launchFragment<AllDataFragment>()
 
         onView(withText("No data")).check(matches(isDisplayed()))
-        onView(withText("Data from apps with access to Health Connect will show here"))
+        onView(withText("Data from apps with access to Health\u00A0Connect will show here"))
             .check(matches(isDisplayed()))
     }
 

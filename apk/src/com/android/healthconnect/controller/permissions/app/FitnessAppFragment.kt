@@ -54,7 +54,6 @@ import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPr
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
@@ -62,6 +61,7 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.showLoadingDialog
+import com.android.healthfitness.flags.Flags
 import com.android.settingslib.widget.AppHeaderPreference
 import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
@@ -90,7 +90,6 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
         this.setPageName(PageName.APP_ACCESS_PAGE)
     }
 
-    @Inject lateinit var featureUtils: FeatureUtils
     @Inject lateinit var logger: HealthConnectLogger
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
@@ -231,7 +230,7 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
         }
         manageDataCategory.isVisible = true
         manageDataCategory.removeAll()
-        if (featureUtils.isNewInformationArchitectureEnabled()) {
+        if (Flags.newInformationArchitecture()) {
             manageDataCategory.addPreference(
                 HealthPreference(requireContext()).also {
                     it.title = getString(R.string.see_app_data)

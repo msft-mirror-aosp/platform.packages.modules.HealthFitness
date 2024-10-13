@@ -27,7 +27,7 @@
         app:isPreferenceVisible="false"/>
     <com.android.settingslib.widget.FooterPreference
         android:key="key_footer"
-        android:title="@string/no_data_footer"
+        android:title="@string/all_data_no_data_footer"
         app:isPreferenceVisible="false"/>
 
 </PreferenceScreen>
