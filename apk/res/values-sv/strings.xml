@@ -23,6 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Hantera hälso- och träningsdata på enheten och styr vilka appar som har åtkomst till den"</string>
     <string name="data_title" msgid="4456619761533380816">"Data och åtkomst"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Bläddra bland hälsojournaler"</string>
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Visa dina hälsojournaler och vilka appar som har åtkomst till dem"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Alla kategorier"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Visa alla kategorier"</string>
     <string name="no_data" msgid="1906986019249068659">"Ingen data"</string>
@@ -401,6 +402,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Appåtkomst"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Du har för närvarande inga kompatibla appar installerade"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Ytterligare åtkomst"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"Tidigare data, bakgrundsdata"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Ytterligare behörigheter för den här appen har tagits bort"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Behörigheter"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Träning och hälsa"</string>
@@ -601,7 +603,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Lätt blödning"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Normal blödning"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Riklig blödning"</string>
+    <string name="flow_unknown" msgid="1634411759928572900">"Okänt flöde"</string>
     <string name="period_day" msgid="3821944462093965882">"Dag <xliff:g id="DAY">%1$d</xliff:g> av <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> av mensen"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Mens (1 dag)}other{Mens (# dagar)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Positiv"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Negativ"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Hög"</string>
@@ -1070,7 +1074,10 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Redigera appkällor"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Enhetens standardinställning"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Appdata"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"Data från appar med åtkomst till Health Connect visas här"</string>
+    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
+    <skip />
+    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
+    <skip />
     <string name="date_picker_day" msgid="3076687507968958991">"Dag"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Vecka"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Månad"</string>
@@ -1116,4 +1123,6 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Vill du radera de markerade <xliff:g id="APP_NAME">%1$s</xliff:g>-posterna från veckan <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> permanent?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Vill du radera de markerade <xliff:g id="APP_NAME">%1$s</xliff:g>-posterna från <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> permanent?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Vill du radera <xliff:g id="APP_NAME">%s</xliff:g>-posten permanent?"</string>
+    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
+    <skip />
 </resources>

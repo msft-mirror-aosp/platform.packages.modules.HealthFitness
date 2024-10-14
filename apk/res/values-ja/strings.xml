@@ -23,6 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"デバイス上の健康とフィットネスのデータの管理や、そのデータにアクセスできるアプリの管理を行えます"</string>
     <string name="data_title" msgid="4456619761533380816">"データとアクセス"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"医療記録を見る"</string>
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"医療記録と医療記録にアクセスできるアプリを確認できます"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"すべてのカテゴリ"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"すべてのカテゴリを表示"</string>
     <string name="no_data" msgid="1906986019249068659">"データがありません"</string>
@@ -401,6 +402,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"アプリのアクセス権"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"現在、対応アプリがインストールされていません"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"アクセス権の追加"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"過去のデータ、バックグラウンド データ"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"このアプリの追加権限を削除しました"</string>
     <string name="permissions_header" msgid="6519976063360071569">"権限"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"フィットネスとウェルネス"</string>
@@ -601,7 +603,9 @@
     <string name="flow_light" msgid="1937543318146228793">"出血: 少ない"</string>
     <string name="flow_medium" msgid="3783688724668943154">"出血: 普通"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"出血: 多い"</string>
+    <string name="flow_unknown" msgid="1634411759928572900">"不明な経血量"</string>
     <string name="period_day" msgid="3821944462093965882">"<xliff:g id="DAY">%1$d</xliff:g> 日目（<xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> 日間）"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{生理（1 日目）}other{生理（# 日目）}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"好ましい"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"好ましくない"</string>
     <string name="ovulation_high" msgid="205362931427158291">"高"</string>
@@ -1070,7 +1074,10 @@
     <string name="edit_data_sources" msgid="79641360876849547">"アプリのソースを編集する"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"デバイスのデフォルト"</string>
     <string name="app_data_title" msgid="6499967982291000837">"アプリデータ"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"ヘルスコネクトにアクセスできるアプリのデータがここに表示されます"</string>
+    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
+    <skip />
+    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
+    <skip />
     <string name="date_picker_day" msgid="3076687507968958991">"日"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"週"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"月"</string>
@@ -1116,4 +1123,6 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>の週の <xliff:g id="APP_NAME">%1$s</xliff:g> の選択したエントリを完全に削除しますか？"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>の <xliff:g id="APP_NAME">%1$s</xliff:g> の選択したエントリを完全に削除しますか？"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"<xliff:g id="APP_NAME">%s</xliff:g> のこのエントリを完全に削除しますか？"</string>
+    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
+    <skip />
 </resources>

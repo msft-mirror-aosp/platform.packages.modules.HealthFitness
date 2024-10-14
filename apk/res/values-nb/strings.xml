@@ -23,6 +23,8 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Administrer helse- og treningsdata på enheten, og kontroller hvilke apper som har tilgang til dem"</string>
     <string name="data_title" msgid="4456619761533380816">"Data og tilgang"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Bla gjennom helsejournaler"</string>
+    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
+    <skip />
     <string name="all_categories_title" msgid="1446410643217937926">"Alle kategorier"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Se alle kategoriene"</string>
     <string name="no_data" msgid="1906986019249068659">"Ingen data"</string>
@@ -331,21 +333,14 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Hvis du gir lesetilgang, kan appen lese nye data og data fra de siste 30 dagene"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Hvis du gir lesetilgang, kan appen lese nye og tidligere data"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Vil du gi <xliff:g id="APP_NAME">%1$s</xliff:g> tilgang til Health Connect?"</string>
-    <!-- no translation found for request_permissions_rationale (2642076968583316986) -->
-    <skip />
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"Du kan finne ut hvordan <xliff:g id="APP_NAME">%1$s</xliff:g> håndterer dataene dine, i <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"personvernregler"</string>
-    <!-- no translation found for medical_request_header (2300521519021510027) -->
-    <skip />
-    <!-- no translation found for medical_request_header_desc (5721171305631983663) -->
-    <skip />
-    <!-- no translation found for medical_request_about_health_records (7204918218748362687) -->
-    <skip />
-    <!-- no translation found for medical_request_data_to_share (2208383833492573960) -->
-    <skip />
-    <!-- no translation found for medical_request_share (6237397362923728514) -->
-    <skip />
-    <!-- no translation found for medical_request_footer (6533749932770903089) -->
-    <skip />
+    <string name="medical_request_header" msgid="2300521519021510027">"Vil du gi <xliff:g id="APP_NAME">%1$s</xliff:g> tilgang til helsejournalene dine?"</string>
+    <string name="medical_request_header_desc" msgid="5721171305631983663">"Hvis du gir tilgang, kan appen lese og skrive data som allergier, laboratorieresultater, vaksiner med mer\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"Om helsejournaler"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Data som skal deles"</string>
+    <string name="medical_request_share" msgid="6237397362923728514">"Hvis du tillater det, kan <xliff:g id="APP_NAME">%1$s</xliff:g> dele helsejournalene dine med Health Connect."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"Synkroniser helsejournalene fra de ulike appene og kildene dine for å holde dem på ett sted"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Vil du fjerne alle tillatelsene?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Fjern alle"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan ikke lenger lese eller skrive data fra Health Connect.\n\nDette påvirker ikke andre tillatelser appen har, for eksempel kamera, mikrofon eller posisjon."</string>
@@ -408,6 +403,8 @@
     <string name="app_access_title" msgid="7137018424885371763">"Apptilgang"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Du har ingen kompatible apper installert"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Annen tilgang"</string>
+    <!-- no translation found for additional_access_summary (1076197455435130191) -->
+    <skip />
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Fjernet tilleggstillatelser for denne appen"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Tillatelser"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Trening og velvære"</string>
@@ -608,7 +605,11 @@
     <string name="flow_light" msgid="1937543318146228793">"Lett blødning"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Middels blødning"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Kraftig blødning"</string>
+    <!-- no translation found for flow_unknown (1634411759928572900) -->
+    <skip />
     <string name="period_day" msgid="3821944462093965882">"Menstruasjonsdag <xliff:g id="DAY">%1$d</xliff:g> av <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
+    <!-- no translation found for period_length (2257138792780916599) -->
+    <skip />
     <string name="ovulation_positive" msgid="6588547263126320238">"Positiv"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Negativ"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Høy"</string>
@@ -1077,7 +1078,10 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Endre appkilder"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Standard for enheten"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Appdata"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"Data fra apper med tilgang til Health Connect vises her"</string>
+    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
+    <skip />
+    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
+    <skip />
     <string name="date_picker_day" msgid="3076687507968958991">"Dag"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Uke"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Måned"</string>
@@ -1123,4 +1127,6 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Vil du slette de valgte <xliff:g id="APP_NAME">%1$s</xliff:g>-oppføringene for uken som startet <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>, permanent?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Vil du slette de valgte <xliff:g id="APP_NAME">%1$s</xliff:g>-oppføringene for <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> permanent?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Vil du slette denne <xliff:g id="APP_NAME">%s</xliff:g>-oppføringen permanent?"</string>
+    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
+    <skip />
 </resources>

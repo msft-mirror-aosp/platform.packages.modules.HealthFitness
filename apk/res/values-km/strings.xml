@@ -23,6 +23,8 @@
     <string name="home_subtitle" msgid="2154213430054477787">"គ្រប់គ្រងទិន្នន័យសុខភាព និងសម្បទានៅលើឧបករណ៍របស់អ្នក និងគ្រប់គ្រងថាតើកម្មវិធីណាខ្លះអាចចូលប្រើទិន្នន័យនេះបាន"</string>
     <string name="data_title" msgid="4456619761533380816">"ទិន្នន័យ និងការចូលប្រើ"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"រុករកកំណត់ត្រាសុខភាព"</string>
+    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
+    <skip />
     <string name="all_categories_title" msgid="1446410643217937926">"គ្រប់ប្រភេទ"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"មើលប្រភេទទាំងអស់"</string>
     <string name="no_data" msgid="1906986019249068659">"គ្មាន​ទិន្នន័យទេ"</string>
@@ -102,7 +104,7 @@
     <string name="historic_access_medical_description_fallback" msgid="1596909285259037066">"អនុញ្ញាតឱ្យកម្មវិធីនេះចូលប្រើទិន្នន័យពីមុនទាំងអស់"</string>
     <string name="historic_access_medical_request_description" msgid="6938665708764487963">"ប្រសិនបើអ្នកអនុញ្ញាត កម្មវិធីនេះអាចចូលប្រើទិន្នន័យដែលបានបញ្ចូលនៅមុនថ្ងៃទី <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>។"</string>
     <string name="historic_access_medical_request_description_fallback" msgid="1075934237674126677">"ប្រសិនបើអ្នកអនុញ្ញាត កម្មវិធីនេះអាចចូលប្រើទិន្នន័យពីមុនទាំងអស់។"</string>
-    <string name="historic_access_medical_warning" msgid="6691110601538756473">"បច្ចុប្បន្ន ទិន្នន័យ​សម្បទាមិនត្រូវបានអានទេ ដោយសារ <xliff:g id="APP_NAME">%1$s</xliff:g> មិនបើកការអនុញ្ញាតឱ្យ​អាន"</string>
+    <string name="historic_access_medical_warning" msgid="6691110601538756473">"បច្ចុប្បន្ន មិនមានទិន្នន័យ​សម្បទាដែលត្រូវបានអានទេ ដោយសារ <xliff:g id="APP_NAME">%1$s</xliff:g> មិនត្រូវបានបើកការអនុញ្ញាតឱ្យ​អាន"</string>
     <string name="background_read_title" msgid="5061383169517186234">"ចូលប្រើទិន្នន័យនៅផ្ទៃខាងក្រោយ"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"អនុញ្ញាតឱ្យ <xliff:g id="APP_NAME">%1$s</xliff:g> ចូលប្រើទិន្នន័យនៅផ្ទៃខាងក្រោយឬ?"</string>
     <string name="background_read_description" msgid="3203594555849969283">"អនុញ្ញាតឱ្យកម្មវិធីនេះចូលប្រើទិន្នន័យ Health Connect នៅពេលអ្នកមិនកំពុងប្រើកម្មវិធីនេះ"</string>
@@ -331,21 +333,14 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"ប្រសិនបើអ្នកផ្ដល់សិទ្ធិចូលអាន កម្មវិធីនេះអាចអានទិន្នន័យថ្មី និងទិន្នន័យពី 30 ថ្ងៃចុងក្រោយ"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"ប្រសិនបើអ្នកផ្ដល់សិទ្ធិចូលអាន កម្មវិធីនេះអាចអានទិន្នន័យថ្មី និងពីមុន"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"អនុញ្ញាតឱ្យ <xliff:g id="APP_NAME">%1$s</xliff:g> ចូលប្រើ Health Connect ឬ?"</string>
-    <!-- no translation found for request_permissions_rationale (2642076968583316986) -->
-    <skip />
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"អ្នកអាចស្វែងយល់អំពីរបៀបដែល <xliff:g id="APP_NAME">%1$s</xliff:g> ចាត់ចែងទិន្នន័យរបស់អ្នកនៅក្នុង<xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>របស់កម្មវិធីនោះ"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"គោលការណ៍ឯកជនភាព"</string>
-    <!-- no translation found for medical_request_header (2300521519021510027) -->
-    <skip />
-    <!-- no translation found for medical_request_header_desc (5721171305631983663) -->
-    <skip />
-    <!-- no translation found for medical_request_about_health_records (7204918218748362687) -->
-    <skip />
-    <!-- no translation found for medical_request_data_to_share (2208383833492573960) -->
-    <skip />
-    <!-- no translation found for medical_request_share (6237397362923728514) -->
-    <skip />
-    <!-- no translation found for medical_request_footer (6533749932770903089) -->
-    <skip />
+    <string name="medical_request_header" msgid="2300521519021510027">"អនុញ្ញាតឱ្យ <xliff:g id="APP_NAME">%1$s</xliff:g> ចូលប្រើកំណត់ត្រាសុខភាពរបស់អ្នកឬ?"</string>
+    <string name="medical_request_header_desc" msgid="5721171305631983663">"ប្រសិនបើអ្នកផ្ដល់សិទ្ធិចូលប្រើ កម្មវិធីអាចអាន និងសរសេរទិន្នន័យ ដូចជាអាឡែហ្ស៊ី លទ្ធផលមន្ទីរពិសោធន៍ វ៉ាក់សាំង និងអ្វីៗជាច្រើនទៀត\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"អំពីកំណត់ត្រាសុខភាព"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"ទិន្នន័យសម្រាប់ចែករំលែក"</string>
+    <string name="medical_request_share" msgid="6237397362923728514">"ប្រសិនបើអ្នកអនុញ្ញាត <xliff:g id="APP_NAME">%1$s</xliff:g> អាចចែករំលែកកំណត់ត្រាសុខភាពរបស់អ្នកជាមួយ Health Connect។"</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"ធ្វើសមកាលកម្មកំណត់ត្រាសុខភាពរបស់អ្នកពីប្រភព និងកម្មវិធីផ្សេងៗរបស់អ្នក ដើម្បីរក្សាទុកកំណត់ត្រាទាំងនេះក្នុងកន្លែងតែមួយ"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"ដក​ការអនុញ្ញាត​ទាំងអស់​ឬ?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"ដកចេញទាំងអស់"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> នឹងមិនអាចអាន ឬសរសេរទិន្នន័យពី Health Connect បានទៀតទេ។\n\nការធ្វើបែបនេះមិនប៉ះពាល់ដល់ការអនុញ្ញាតផ្សេងទៀត​ដែលកម្មវិធីនេះអាចមាន ដូចជាកាមេរ៉ា មីក្រូហ្វូន ឬទីតាំងទេ។"</string>
@@ -408,6 +403,8 @@
     <string name="app_access_title" msgid="7137018424885371763">"សិទ្ធិចូលប្រើកម្មវិធី"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"បច្ចុប្បន្ននេះ អ្នកមិនបានដំឡើង​កម្មវិធីដែលត្រូវគ្នាទេ"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"សិទ្ធិ​ចូល​ប្រើបន្ថែម"</string>
+    <!-- no translation found for additional_access_summary (1076197455435130191) -->
+    <skip />
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"បានដកការអនុញ្ញាតបន្ថែមចេញសម្រាប់កម្មវិធីនេះ"</string>
     <string name="permissions_header" msgid="6519976063360071569">"ការអនុញ្ញាត"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"សម្បទា និងសុខុមាលភាព"</string>
@@ -608,7 +605,11 @@
     <string name="flow_light" msgid="1937543318146228793">"ការធ្លាក់រដូវតិច"</string>
     <string name="flow_medium" msgid="3783688724668943154">"ការធ្លាក់រដូវមធ្យម"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"ការធ្លាក់រដូវច្រើន"</string>
+    <!-- no translation found for flow_unknown (1634411759928572900) -->
+    <skip />
     <string name="period_day" msgid="3821944462093965882">"រដូវថ្ងៃទី <xliff:g id="DAY">%1$d</xliff:g> នៃ <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
+    <!-- no translation found for period_length (2257138792780916599) -->
+    <skip />
     <string name="ovulation_positive" msgid="6588547263126320238">"វិជ្ជមាន"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"អវិជ្ជមាន"</string>
     <string name="ovulation_high" msgid="205362931427158291">"ខ្ពស់"</string>
@@ -1077,7 +1078,10 @@
     <string name="edit_data_sources" msgid="79641360876849547">"កែប្រភពកម្មវិធី"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"លំនាំដើម​របស់ឧបករណ៍"</string>
     <string name="app_data_title" msgid="6499967982291000837">"ទិន្នន័យកម្មវិធី"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"ទិន្នន័យពីកម្មវិធីដែលមានសិទ្ធិចូលប្រើ Health Connect នឹងបង្ហាញនៅទីនេះ"</string>
+    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
+    <skip />
+    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
+    <skip />
     <string name="date_picker_day" msgid="3076687507968958991">"ថ្ងៃ"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"សប្ដាហ៍"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"ខែ"</string>
@@ -1123,4 +1127,6 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"លុបធាតុ <xliff:g id="APP_NAME">%1$s</xliff:g> ដែលបានជ្រើសរើសជាអចិន្ត្រៃយ៍សម្រាប់សប្តាហ៍នៃថ្ងៃទី <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ឬ?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"លុបធាតុ <xliff:g id="APP_NAME">%1$s</xliff:g> ដែលបានជ្រើសរើសជាអចិន្ត្រៃយ៍សម្រាប់ខែ<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ឬ?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"លុបធាតុ <xliff:g id="APP_NAME">%s</xliff:g> នេះជាអចិន្ត្រៃយ៍ឬ?"</string>
+    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
+    <skip />
 </resources>
