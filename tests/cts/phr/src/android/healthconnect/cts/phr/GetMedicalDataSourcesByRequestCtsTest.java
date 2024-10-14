@@ -46,6 +46,7 @@ import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.utils.DataFactory;
 import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.TestUtils;
@@ -136,6 +137,27 @@ public class GetMedicalDataSourcesByRequestCtsTest {
         Instant lastDataUpdateTime = receiver.getResponse().get(0).getLastDataUpdateTime();
         assertThat(lastDataUpdateTime).isAtLeast(insertTime);
         assertThat(lastDataUpdateTime).isAtMost(Instant.now());
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetMedicalResourcesByRequest_deletedResource_notCountedInLastDataUpdateTime()
+            throws InterruptedException {
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        MedicalResource resource =
+                mUtil.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+        mManager.deleteMedicalResources(
+                List.of(resource.getId()), Executors.newSingleThreadExecutor(), callback);
+        callback.verifyNoExceptionOrThrow();
+        HealthConnectReceiver<List<MedicalDataSource>> readReceiver = new HealthConnectReceiver<>();
+
+        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
+        mManager.getMedicalDataSources(request, Executors.newSingleThreadExecutor(), readReceiver);
+
+        // The last data update time of dataSource is expected to be null because we have deleted
+        // all data.
+        assertThat(readReceiver.getResponse().get(0).getLastDataUpdateTime()).isNull();
     }
 
     @Test
