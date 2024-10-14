@@ -22,8 +22,6 @@ import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
-import android.health.connect.internal.datatypes.utils.RecordTypePermissionCategoryMapper;
-import android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -102,17 +100,18 @@ public class RecordTypeInfoResponseParcel implements Parcelable {
     public Map<Class<? extends Record>, RecordTypeInfoResponse> getRecordTypeInfoResponses() {
         Map<Class<? extends Record>, RecordTypeInfoResponse> responses =
                 new HashMap<>(mRecordTypeInfoResponses.size());
+        HealthConnectMappings healthConnectMappings = HealthConnectMappings.getInstance();
         mRecordTypeInfoResponses.forEach(
                 (recordType, contributingPackages) -> {
                     RecordTypeInfoResponse res =
                             new RecordTypeInfoResponse(
-                                    RecordTypePermissionCategoryMapper
-                                            .getHealthPermissionCategoryForRecordType(recordType),
-                                    RecordTypeRecordCategoryMapper.getRecordCategoryForRecordType(
+                                    healthConnectMappings.getHealthPermissionCategoryForRecordType(
+                                            recordType),
+                                    healthConnectMappings.getRecordCategoryForRecordType(
                                             recordType),
                                     getContributingPackagesAsDataOrigin(contributingPackages));
                     Class<? extends Record> recordTypeClass =
-                            HealthConnectMappings.getInstance()
+                            healthConnectMappings
                                     .getRecordIdToExternalRecordClassMap()
                                     .get(recordType);
                     responses.put(recordTypeClass, res);

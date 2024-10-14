@@ -128,8 +128,13 @@ public final class RecordTypeRecordCategoryMapper {
                 };
     }
 
-    /** Returns {@link HealthDataCategory} for the input {@link RecordTypeIdentifier.RecordType}. */
+    /**
+     * Returns {@link HealthDataCategory} for the input {@link RecordTypeIdentifier.RecordType}.
+     *
+     * @deprecated Use {@link HealthConnectMappings#getRecordCategoryForRecordType(int)}
+     */
     @SuppressLint("LongLogTag")
+    @Deprecated
     @HealthDataCategory.Type
     public static int getRecordCategoryForRecordType(
             @RecordTypeIdentifier.RecordType int recordType) {
