@@ -16,10 +16,24 @@
 
 package android.healthconnect.cts.phr;
 
+import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
+import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_BACKGROUND_APP;
+import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_FOREGROUND_APP;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
+import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
+import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME_EXCEEDED_CHARS;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI_EXCEEDED_CHARS;
+import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_BASE_URI;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4B;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_UNSUPPORTED;
 import static android.healthconnect.cts.utils.PhrDataFactory.MAX_ALLOWED_MEDICAL_DATA_SOURCES;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
+import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
 import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
@@ -28,13 +42,17 @@ import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.TestUtils;
+import android.net.Uri;
 import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.platform.test.flag.junit.CheckFlagsRule;
 import android.platform.test.flag.junit.DeviceFlagsValueProvider;
@@ -47,6 +65,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -67,6 +86,8 @@ public class CreateMedicalDataSourceCtsTest {
 
     @Before
     public void setUp() throws Exception {
+        revokeAllPermissions(PHR_BACKGROUND_APP.getPackageName(), "to test specific permissions");
+        revokeAllPermissions(PHR_FOREGROUND_APP.getPackageName(), "to test specific permissions");
         TestUtils.deleteAllStagedRemoteData();
         mManager = TestUtils.getHealthConnectManager();
         mUtil = new PhrCtsTestUtils(mManager);
@@ -114,6 +135,93 @@ public class CreateMedicalDataSourceCtsTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testCreateMedicalDataSource_invalidEmptyDisplayName_throws()
+            throws NoSuchFieldException, IllegalAccessException {
+        CreateMedicalDataSourceRequest request = getCreateMedicalDataSourceRequest();
+
+        setFieldValueUsingReflection(request, "mDisplayName", "");
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mManager.createMedicalDataSource(
+                                request,
+                                Executors.newSingleThreadExecutor(),
+                                new HealthConnectReceiver<>()));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testCreateMedicalDataSource_displayNameExceedsLimit_throws()
+            throws NoSuchFieldException, IllegalAccessException {
+        CreateMedicalDataSourceRequest request = getCreateMedicalDataSourceRequest();
+
+        setFieldValueUsingReflection(
+                request, "mDisplayName", DATA_SOURCE_DISPLAY_NAME_EXCEEDED_CHARS);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mManager.createMedicalDataSource(
+                                request,
+                                Executors.newSingleThreadExecutor(),
+                                new HealthConnectReceiver<>()));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testCreateMedicalDataSource_invalidEmptyFhirBaseUri_throws()
+            throws NoSuchFieldException, IllegalAccessException {
+        CreateMedicalDataSourceRequest request = getCreateMedicalDataSourceRequest();
+
+        setFieldValueUsingReflection(request, "mFhirBaseUri", Uri.EMPTY);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mManager.createMedicalDataSource(
+                                request,
+                                Executors.newSingleThreadExecutor(),
+                                new HealthConnectReceiver<>()));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testCreateMedicalDataSource_fhirBaseUriExceedsLimit_throws()
+            throws NoSuchFieldException, IllegalAccessException {
+        CreateMedicalDataSourceRequest request = getCreateMedicalDataSourceRequest();
+
+        setFieldValueUsingReflection(
+                request, "mFhirBaseUri", DATA_SOURCE_FHIR_BASE_URI_EXCEEDED_CHARS);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mManager.createMedicalDataSource(
+                                request,
+                                Executors.newSingleThreadExecutor(),
+                                new HealthConnectReceiver<>()));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testCreateMedicalDataSource_invalidFhirVersion_throws()
+            throws NoSuchFieldException, IllegalAccessException {
+        CreateMedicalDataSourceRequest request = getCreateMedicalDataSourceRequest();
+
+        setFieldValueUsingReflection(request, "mFhirVersion", FHIR_VERSION_UNSUPPORTED);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mManager.createMedicalDataSource(
+                                request,
+                                Executors.newSingleThreadExecutor(),
+                                new HealthConnectReceiver<>()));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testCreateMedicalDataSource_succeeds() throws InterruptedException {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
@@ -128,6 +236,16 @@ public class CreateMedicalDataSourceCtsTest {
         assertThat(responseDataSource.getDisplayName()).isEqualTo(request.getDisplayName());
         assertThat(responseDataSource.getFhirVersion()).isEqualTo(request.getFhirVersion());
         assertThat(responseDataSource.getPackageName()).isEqualTo(APP_PACKAGE_NAME);
+        // Assert that it exists in the db
+        HealthConnectReceiver<List<MedicalDataSource>> readReceiver = new HealthConnectReceiver<>();
+        runWithShellPermissionIdentity(
+                () -> {
+                    mManager.getMedicalDataSources(
+                            List.of(responseDataSource.getId()),
+                            Executors.newSingleThreadExecutor(),
+                            readReceiver);
+                    assertThat(readReceiver.getResponse()).hasSize(1);
+                });
     }
 
     @Test
@@ -161,5 +279,84 @@ public class CreateMedicalDataSourceCtsTest {
 
         assertThat(receiver.assertAndGetException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testCreateMedicalDataSource_duplicateDisplayName_throws()
+            throws InterruptedException {
+        mUtil.createDataSource(getCreateMedicalDataSourceRequest("ds1"));
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(
+                getCreateMedicalDataSourceRequest("ds1"), executor, receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testCreateMedicalDataSource_duplicateDisplayNameFromSeparatePackages_succeeds()
+            throws Exception {
+        CreateMedicalDataSourceRequest request1 =
+                new CreateMedicalDataSourceRequest.Builder(
+                                DATA_SOURCE_FHIR_BASE_URI,
+                                DATA_SOURCE_DISPLAY_NAME,
+                                FHIR_VERSION_R4)
+                        .build();
+        CreateMedicalDataSourceRequest request2 =
+                new CreateMedicalDataSourceRequest.Builder(
+                                DIFFERENT_DATA_SOURCE_BASE_URI,
+                                DATA_SOURCE_DISPLAY_NAME,
+                                FHIR_VERSION_R4B)
+                        .build();
+        grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
+        PHR_BACKGROUND_APP.createMedicalDataSource(request1);
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(request2, executor, receiver);
+
+        receiver.verifyNoExceptionOrThrow();
+        // Assert both data sources exist
+        HealthConnectReceiver<List<MedicalDataSource>> readReceiver = new HealthConnectReceiver<>();
+        runWithShellPermissionIdentity(
+                () -> {
+                    mManager.getMedicalDataSources(
+                            new GetMedicalDataSourcesRequest.Builder().build(),
+                            Executors.newSingleThreadExecutor(),
+                            readReceiver);
+                    assertThat(readReceiver.getResponse()).hasSize(2);
+                });
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testCreateMedicalDataSource_inForegroundNoWritePerms_throws() {
+        // No write permission has been granted.
+        HealthConnectException exception =
+                assertThrows(
+                        HealthConnectException.class,
+                        () ->
+                                PHR_FOREGROUND_APP.createMedicalDataSource(
+                                        getCreateMedicalDataSourceRequest()));
+
+        assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testCreateMedicalDataSource_inBackgroundNoWritePerms_throws() {
+        // No write permission has been granted.
+        HealthConnectException exception =
+                assertThrows(
+                        HealthConnectException.class,
+                        () ->
+                                PHR_BACKGROUND_APP.createMedicalDataSource(
+                                        getCreateMedicalDataSourceRequest()));
+
+        assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
     }
 }

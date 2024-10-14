@@ -43,7 +43,6 @@ import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissi
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
-import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
@@ -63,7 +62,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 import android.health.connect.AggregateRecordsRequest;
-import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
@@ -456,20 +454,6 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
         manager.queryAllMedicalResourceTypeInfos(executor, receiver);
-
-        assertThat(receiver.assertAndGetException().getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_SECURITY);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testCreateMedicalDataSource_noPermission_expectError() throws InterruptedException {
-        CreateMedicalDataSourceRequest request = getCreateMedicalDataSourceRequest();
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-
-        manager.createMedicalDataSource(request, executor, receiver);
 
         assertThat(receiver.assertAndGetException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_SECURITY);
