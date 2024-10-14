@@ -21,6 +21,7 @@ import static com.android.healthfitness.flags.Flags.FLAG_MINDFULNESS;
 import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.annotation.SystemApi;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -377,8 +378,10 @@ public final class RecordTypeIdentifier {
      * Valid set of values for this IntDef. Update this set when add new type or deprecate existing
      * type.
      *
+     * @deprecated Use {@link HealthConnectMappings#getAllRecordTypeIdentifiers()}
      * @hide
      */
+    @Deprecated
     public static final Set<Integer> VALID_TYPES =
             Set.of(
                     RECORD_TYPE_UNKNOWN,
