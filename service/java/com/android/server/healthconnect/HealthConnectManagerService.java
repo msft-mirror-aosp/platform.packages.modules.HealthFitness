@@ -186,8 +186,7 @@ public class HealthConnectManagerService extends SystemService {
                             healthDataCategoryPriorityHelper,
                             mMigrationStateManager);
             healthConnectMappings = HealthConnectMappings.getInstance();
-            internalHealthConnectMappings =
-                    new InternalHealthConnectMappings(healthConnectMappings);
+            internalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
             permissionHelper =
                     new HealthConnectPermissionHelper(
                             context,
