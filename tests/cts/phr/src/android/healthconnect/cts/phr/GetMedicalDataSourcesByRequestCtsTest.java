@@ -20,6 +20,7 @@ import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKG
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
+import static android.healthconnect.cts.phr.PhrCtsTestUtils.MAX_FOREGROUND_READ_CALL_15M;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_BACKGROUND_APP;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_BACKGROUND_APP_PKG;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_FOREGROUND_APP;
@@ -33,8 +34,10 @@ import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.MEDICAL_DATA_SOURCE_EQUIVALENCE;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
+import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
+import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
+import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
 
-import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 
@@ -42,6 +45,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
 
+import android.app.UiAutomation;
 import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
@@ -49,8 +53,11 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.utils.DataFactory;
 import android.healthconnect.cts.utils.HealthConnectReceiver;
+import android.healthconnect.cts.utils.PhrDataFactory;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.RequiresFlagsEnabled;
+
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.After;
 import org.junit.Before;
@@ -58,6 +65,7 @@ import org.junit.Test;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executors;
 
 public class GetMedicalDataSourcesByRequestCtsTest {
@@ -74,26 +82,116 @@ public class GetMedicalDataSourcesByRequestCtsTest {
         mManager = TestUtils.getHealthConnectManager();
         mUtil = new PhrCtsTestUtils(mManager);
         mUtil.deleteAllMedicalData();
+        if (TestUtils.setLowerRateLimitsForTesting(true)) {
+            mUtil.mLimitsAdjustmentForTesting = 10;
+        }
     }
 
     @After
     public void after() throws InterruptedException {
         mUtil.deleteAllMedicalData();
+        TestUtils.setLowerRateLimitsForTesting(false);
     }
 
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testGetMedicalDataSourcesByRequest_nothingPresent_returnsEmpty() throws Exception {
+    public void testGetMedicalDataSourcesByRequest_invalidPackageNameByReflection_throws()
+            throws NoSuchFieldException, IllegalAccessException {
+        GetMedicalDataSourcesRequest request =
+                new GetMedicalDataSourcesRequest.Builder()
+                        .addPackageName(PHR_FOREGROUND_APP_PKG)
+                        .build();
+        setFieldValueUsingReflection(request, "mPackageNames", Set.of("InvalidPackageName"));
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mManager.getMedicalDataSources(
+                                request,
+                                Executors.newSingleThreadExecutor(),
+                                new HealthConnectReceiver<>()));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetMedicalDataSourcesByRequest_migrationInProgress_apiBlocked()
+            throws Exception {
         HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
         GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
 
-        runWithShellPermissionIdentity(
-                () ->
-                        mManager.getMedicalDataSources(
-                                request, Executors.newSingleThreadExecutor(), receiver),
-                MANAGE_HEALTH_DATA);
+        startMigrationWithShellPermissionIdentity();
+        mManager.getMedicalDataSources(request, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
+
+        finishMigrationWithShellPermissionIdentity();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetMedicalDataSourcesByRequest_readLimitExceeded_throws()
+            throws InterruptedException {
+        mUtil.createDataSource(PhrDataFactory.getCreateMedicalDataSourceRequest());
+        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
+        // Make the maximum number of calls allowed by quota
+        int maximumCalls = MAX_FOREGROUND_READ_CALL_15M / mUtil.mLimitsAdjustmentForTesting;
+        for (int i = 0; i < maximumCalls; i++) {
+            HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+            mManager.getMedicalDataSources(request, Executors.newSingleThreadExecutor(), receiver);
+            receiver.verifyNoExceptionOrThrow();
+        }
+
+        // Make 1 extra call and check quota is exceeded
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+        mManager.getMedicalDataSources(request, Executors.newSingleThreadExecutor(), receiver);
+
+        HealthConnectException exception = receiver.assertAndGetException();
+        assertThat(exception.getMessage()).contains("API call quota exceeded");
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetMedicalDataSourcesByRequest_withManageHealthPerm_nothingPresent_returnEmpty()
+            throws Exception {
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+        GetMedicalDataSourcesRequest request = new GetMedicalDataSourcesRequest.Builder().build();
+        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+
+        mManager.getMedicalDataSources(request, Executors.newSingleThreadExecutor(), receiver);
 
         assertThat(receiver.getResponse()).isEmpty();
+
+        uiAutomation.dropShellPermissionIdentity();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetMedicalDataSourcesByRequest_withManageHealthPerm_canReadAll()
+            throws Exception {
+        grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
+        grantPermission(PHR_FOREGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
+        MedicalDataSource dataSource1 =
+                PHR_FOREGROUND_APP.createMedicalDataSource(
+                        getCreateMedicalDataSourceRequest("ds/1"));
+        MedicalDataSource dataSource2 =
+                PHR_BACKGROUND_APP.createMedicalDataSource(
+                        getCreateMedicalDataSourceRequest("ds/2"));
+        HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
+        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+
+        mManager.getMedicalDataSources(
+                new GetMedicalDataSourcesRequest.Builder().build(),
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        assertThat(receiver.getResponse())
+                .comparingElementsUsing(MEDICAL_DATA_SOURCE_EQUIVALENCE)
+                .containsExactly(dataSource1, dataSource2);
+
+        uiAutomation.dropShellPermissionIdentity();
     }
 
     @Test

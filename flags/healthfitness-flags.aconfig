@@ -217,3 +217,20 @@ flag {
     is_exported: true
 }
 
+flag {
+    name: "activity_intensity"
+    namespace: "health_fitness_aconfig"
+    description: "Enables the activity intensity data type."
+    bug: "373585917"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "activity_intensity_db"
+    namespace: "health_fitness_aconfig"
+    description: "Enables DB changes to support the activity intensity data type."
+    bug: "373585917"
+    is_fixed_read_only: true
+    is_exported: true
+}

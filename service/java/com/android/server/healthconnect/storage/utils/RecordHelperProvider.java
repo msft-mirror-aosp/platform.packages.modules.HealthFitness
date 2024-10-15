@@ -71,6 +71,7 @@ import java.util.Map;
 /**
  * Store for all the record helpers
  *
+ * @deprecated Use {@link InternalHealthConnectMappings}.
  * @hide
  */
 public final class RecordHelperProvider {
@@ -182,7 +183,12 @@ public final class RecordHelperProvider {
     // Private constructor to prevent initialisation.
     private RecordHelperProvider() {}
 
-    /** Returns an immutable collection of all the record helpers. */
+    /**
+     * Returns an immutable collection of all the record helpers.
+     *
+     * @deprecated Use {@link InternalHealthConnectMappings#getRecordHelpers()}
+     */
+    @Deprecated
     public static Collection<RecordHelper<?>> getRecordHelpers() {
         return RECORD_ID_TO_HELPER_MAP.values();
     }

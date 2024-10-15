@@ -25,6 +25,7 @@ import android.app.UiAutomation;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.MedicalResourceId;
 import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
@@ -41,6 +42,7 @@ import java.util.concurrent.Executors;
 
 public class PhrCtsTestUtils {
 
+    static final int MAX_FOREGROUND_READ_CALL_15M = 2000;
     static final String PHR_BACKGROUND_APP_PKG = "android.healthconnect.cts.phr.testhelper.app1";
     static final String PHR_FOREGROUND_APP_PKG = "android.healthconnect.cts.phr.testhelper.app2";
     static final TestAppProxy PHR_BACKGROUND_APP =
@@ -48,6 +50,7 @@ public class PhrCtsTestUtils {
     static final TestAppProxy PHR_FOREGROUND_APP =
             TestAppProxy.forPackageName(PHR_FOREGROUND_APP_PKG);
 
+    int mLimitsAdjustmentForTesting = 1;
     private final HealthConnectManager mManager;
 
     public PhrCtsTestUtils(HealthConnectManager manager) {
@@ -72,6 +75,13 @@ public class PhrCtsTestUtils {
                 List.of(request), Executors.newSingleThreadExecutor(), dataReceiver);
         // Make sure something got inserted.
         return Iterables.getOnlyElement(dataReceiver.getResponse());
+    }
+
+    void deleteResources(List<MedicalResourceId> resourceIds) throws InterruptedException {
+        HealthConnectReceiver<Void> deleteReceiver = new HealthConnectReceiver<>();
+        mManager.deleteMedicalResources(
+                resourceIds, Executors.newSingleThreadExecutor(), deleteReceiver);
+        deleteReceiver.verifyNoExceptionOrThrow();
     }
 
     /**
