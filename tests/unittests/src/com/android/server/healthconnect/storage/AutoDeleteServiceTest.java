@@ -129,7 +129,7 @@ public class AutoDeleteServiceTest {
 
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
-    // TODO(b/373322447):  HealthPermissionIntentAppsTracker
+    // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
     @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
 
     private HealthConnectInjector mHealthConnectInjector;
