@@ -34,6 +34,8 @@ import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.AutoDeleteService;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
@@ -92,6 +94,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -124,10 +127,17 @@ public class AutoDeleteServiceTest {
     @Mock private ActivityDateHelper mActivityDateHelper;
     @Mock Context mContext;
 
+    // TODO(b/373322447): Remove the mock FirstGrantTimeManager
+    @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
+    // TODO(b/373322447):  HealthPermissionIntentAppsTracker
+    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
+
     private HealthConnectInjector mHealthConnectInjector;
 
     @Before
     public void setup() {
+        MockitoAnnotations.initMocks(this);
+
         when(mContext.getUser()).thenReturn(Process.myUserHandle());
         mHealthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
@@ -137,6 +147,8 @@ public class AutoDeleteServiceTest {
                         .setTransactionManager(mTransactionManager)
                         .setAppInfoHelper(mAppInfoHelper)
                         .setActivityDateHelper(mActivityDateHelper)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
     }
 
