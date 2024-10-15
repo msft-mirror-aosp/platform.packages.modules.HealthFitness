@@ -3486,7 +3486,8 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    public void testGetContributorApplicationsInfo_succeeds() throws Exception {
+    public void testGetContributorApplicationsInfo_appCreatesMedicalDataSourceOnly_succeeds()
+            throws Exception {
         // Create health fitness data.
         Set<String> expectedPackages = new HashSet<>();
         TestUtils.insertRecords(getTestRecords());
@@ -3499,16 +3500,57 @@ public class HealthConnectManagerTest {
 
         HealthConnectReceiver<ApplicationInfoResponse> receiver = new HealthConnectReceiver<>();
         SystemUtil.runWithShellPermissionIdentity(
-                () ->
-                        mManager.getContributorApplicationsInfo(
-                                Executors.newSingleThreadExecutor(), receiver),
+                () -> {
+                    mManager.getContributorApplicationsInfo(
+                            Executors.newSingleThreadExecutor(), receiver);
+                    assertThat(
+                                    receiver.getResponse().getApplicationInfoList().stream()
+                                            .map(AppInfo::getPackageName)
+                                            .collect(Collectors.toSet()))
+                            .isEqualTo(expectedPackages);
+                },
                 MANAGE_HEALTH_DATA);
+    }
 
-        assertThat(
-                        receiver.getResponse().getApplicationInfoList().stream()
-                                .map(AppInfo::getPackageName)
-                                .collect(Collectors.toSet()))
-                .isEqualTo(expectedPackages);
+    @Test
+    public void testGetContributorApplicationsInfo_appCreatesMedicalResource_isInContributingApps()
+            throws Exception {
+        // Create health fitness data.
+        Set<String> expectedPackages = new HashSet<>();
+        TestUtils.insertRecords(getTestRecords());
+        expectedPackages.add(APP_PACKAGE_NAME);
+        // Create a dataSource and a medicalResource with a different package.
+        if (personalHealthRecord()) {
+            MedicalDataSource dataSource =
+                    APP_WRITE_PERMS_ONLY.createMedicalDataSource(
+                            getCreateMedicalDataSourceRequest());
+            APP_WRITE_PERMS_ONLY.upsertMedicalResource(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+            expectedPackages.add(APP_WRITE_PERMS_ONLY.getPackageName());
+        }
+        HealthConnectReceiver<ApplicationInfoResponse> receiver = new HealthConnectReceiver<>();
+
+        SystemUtil.runWithShellPermissionIdentity(
+                () -> {
+                    mManager.getContributorApplicationsInfo(
+                            Executors.newSingleThreadExecutor(), receiver);
+                    assertThat(
+                                    receiver.getResponse().getApplicationInfoList().stream()
+                                            .map(AppInfo::getPackageName)
+                                            .collect(Collectors.toSet()))
+                            .isEqualTo(expectedPackages);
+                },
+                MANAGE_HEALTH_DATA);
+    }
+
+    @Test
+    public void testGetContributorApplicationsInfo_noManageHealthDataPerm_throws()
+            throws InterruptedException {
+        HealthConnectReceiver<ApplicationInfoResponse> receiver = new HealthConnectReceiver<>();
+
+        mManager.getContributorApplicationsInfo(Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_SECURITY);
     }
 
     private boolean isEmptyContributingPackagesForAll(
