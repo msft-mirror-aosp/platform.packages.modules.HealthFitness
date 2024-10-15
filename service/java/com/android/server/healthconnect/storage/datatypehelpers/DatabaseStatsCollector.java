@@ -19,7 +19,7 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import android.content.Context;
 
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 /**
  * Helper class to collect Health Connect database stats for logging.
@@ -30,6 +30,8 @@ public class DatabaseStatsCollector {
 
     private final TransactionManager mTransactionManager;
     private final Context mContext;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings =
+            InternalHealthConnectMappings.getInstance();
 
     public DatabaseStatsCollector(TransactionManager transactionManager, Context context) {
         mTransactionManager = transactionManager;
@@ -44,7 +46,7 @@ public class DatabaseStatsCollector {
     /** Get the number of interval record entries in Health Connect database. */
     public long getNumberOfIntervalRecordRows() {
         long count = 0L;
-        for (RecordHelper<?> recordHelper : RecordHelperProvider.getRecordHelpers()) {
+        for (RecordHelper<?> recordHelper : mInternalHealthConnectMappings.getRecordHelpers()) {
             if (recordHelper instanceof IntervalRecordHelper
                     && !(recordHelper instanceof SeriesRecordHelper)) {
                 count +=
@@ -58,7 +60,7 @@ public class DatabaseStatsCollector {
     /** Get the number of series record entries in Health Connect database. */
     public long getNumberOfSeriesRecordRows() {
         long count = 0L;
-        for (RecordHelper<?> recordHelper : RecordHelperProvider.getRecordHelpers()) {
+        for (RecordHelper<?> recordHelper : mInternalHealthConnectMappings.getRecordHelpers()) {
             if (recordHelper instanceof SeriesRecordHelper) {
                 count +=
                         mTransactionManager.getNumberOfEntriesInTheTable(
@@ -71,7 +73,7 @@ public class DatabaseStatsCollector {
     /** Get the number of instant record entries in Health Connect database. */
     public long getNumberOfInstantRecordRows() {
         long count = 0L;
-        for (RecordHelper<?> recordHelper : RecordHelperProvider.getRecordHelpers()) {
+        for (RecordHelper<?> recordHelper : mInternalHealthConnectMappings.getRecordHelpers()) {
             if (recordHelper instanceof InstantRecordHelper) {
                 count +=
                         mTransactionManager.getNumberOfEntriesInTheTable(
