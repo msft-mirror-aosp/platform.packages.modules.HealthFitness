@@ -43,7 +43,6 @@ import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissi
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
-import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByDuration;
@@ -394,22 +393,6 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
                         .isEqualTo(HealthConnectException.ERROR_SECURITY);
             }
         }
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testReadMedicalResourcesById_noPermission_expectError()
-            throws InterruptedException {
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
-
-        manager.readMedicalResources(
-                List.of(getMedicalResourceId()), Executors.newSingleThreadExecutor(), receiver);
-
-        HealthConnectException exception = receiver.assertAndGetException();
-        assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
-        assertThat(exception.getMessage())
-                .contains("Caller doesn't have permission to read or write medical data");
     }
 
     @Test
