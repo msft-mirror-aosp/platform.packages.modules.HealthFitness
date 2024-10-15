@@ -28,6 +28,7 @@ import static android.healthconnect.cts.utils.PermissionHelper.grantPermissions;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
 import static android.healthconnect.cts.utils.PermissionHelper.revokePermission;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.MEDICAL_DATA_SOURCE_EQUIVALENCE;
@@ -41,8 +42,11 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
 import android.health.connect.HealthConnectException;
+import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 import android.platform.test.annotations.RequiresFlagsEnabled;
@@ -57,7 +61,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
@@ -70,6 +76,7 @@ public class GetMedicalDataSourcesByIdsCtsTest {
             new AssumptionCheckerRule(
                     TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
+    private HealthConnectManager mManager;
     private PhrCtsTestUtils mUtil;
 
     @Before
@@ -78,6 +85,7 @@ public class GetMedicalDataSourcesByIdsCtsTest {
         revokeAllPermissions(PHR_BACKGROUND_APP_PKG, "to test specific permissions");
         revokeAllPermissions(PHR_FOREGROUND_APP_PKG, "to test specific permissions");
         TestUtils.deleteAllStagedRemoteData();
+        mManager = TestUtils.getHealthConnectManager();
         mUtil = new PhrCtsTestUtils(TestUtils.getHealthConnectManager());
         mUtil.deleteAllMedicalData();
     }
@@ -85,6 +93,48 @@ public class GetMedicalDataSourcesByIdsCtsTest {
     @After
     public void after() throws InterruptedException {
         mUtil.deleteAllMedicalData();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetMedicalResourcesByIds_deletedResource_notCountedInLastDataUpdateTime()
+            throws InterruptedException {
+        Instant beforeUpsertTime = Instant.now();
+        MedicalDataSource dataSource1 =
+                mUtil.createDataSource(getCreateMedicalDataSourceRequest("ds1"));
+        MedicalDataSource dataSource2 =
+                mUtil.createDataSource(getCreateMedicalDataSourceRequest("ds2"));
+        MedicalResource dataSource1resource1 =
+                mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource dataSource2resource1 =
+                mUtil.upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
+        mUtil.upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+        Instant beforeDeleteTime = Instant.now();
+        mManager.deleteMedicalResources(
+                List.of(dataSource1resource1.getId(), dataSource2resource1.getId()),
+                Executors.newSingleThreadExecutor(),
+                callback);
+        callback.verifyNoExceptionOrThrow();
+        HealthConnectReceiver<List<MedicalDataSource>> readReceiver1 =
+                new HealthConnectReceiver<>();
+        HealthConnectReceiver<List<MedicalDataSource>> readReceiver2 =
+                new HealthConnectReceiver<>();
+
+        mManager.getMedicalDataSources(
+                List.of(dataSource1.getId()), Executors.newSingleThreadExecutor(), readReceiver1);
+        mManager.getMedicalDataSources(
+                List.of(dataSource2.getId()), Executors.newSingleThreadExecutor(), readReceiver2);
+
+        // The last data update time of dataSource1 is expected to be null because we have deleted
+        // all data.
+        assertThat(readReceiver1.getResponse().get(0).getLastDataUpdateTime()).isNull();
+        // The last data update time of dataSource2 is expected to be before the delete time, as the
+        // delete is not taken into account.
+        assertThat(readReceiver2.getResponse().get(0).getLastDataUpdateTime())
+                .isAtLeast(beforeUpsertTime);
+        assertThat(readReceiver2.getResponse().get(0).getLastDataUpdateTime())
+                .isAtMost(beforeDeleteTime);
     }
 
     @Test
