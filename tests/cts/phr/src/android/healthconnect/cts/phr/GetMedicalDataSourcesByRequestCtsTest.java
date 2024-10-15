@@ -35,6 +35,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZAT
 import static android.healthconnect.cts.utils.PhrDataFactory.MEDICAL_DATA_SOURCE_EQUIVALENCE;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
+import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
 import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
@@ -64,6 +65,7 @@ import org.junit.Test;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executors;
 
 public class GetMedicalDataSourcesByRequestCtsTest {
@@ -89,6 +91,25 @@ public class GetMedicalDataSourcesByRequestCtsTest {
     public void after() throws InterruptedException {
         mUtil.deleteAllMedicalData();
         TestUtils.setLowerRateLimitsForTesting(false);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetMedicalDataSourcesByRequest_invalidPackageNameByReflection_throws()
+            throws NoSuchFieldException, IllegalAccessException {
+        GetMedicalDataSourcesRequest request =
+                new GetMedicalDataSourcesRequest.Builder()
+                        .addPackageName(PHR_FOREGROUND_APP_PKG)
+                        .build();
+        setFieldValueUsingReflection(request, "mPackageNames", Set.of("InvalidPackageName"));
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mManager.getMedicalDataSources(
+                                request,
+                                Executors.newSingleThreadExecutor(),
+                                new HealthConnectReceiver<>()));
     }
 
     @Test
