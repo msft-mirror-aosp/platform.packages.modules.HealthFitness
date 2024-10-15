@@ -1652,5 +1652,17 @@
     <string name="wear_request_single_data_type_permission" description="Title shown for allowing single fitness permission. ">Allow <xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> to access <xliff:g id="data_type" example="heart rate">%2$s</xliff:g>?</string>
     <!-- endregion -->
 
+    <!-- region App Info Permissions  -->
+    <string name="fitness_and_wellness" description="Title to display fitness and wellness permissions.">Fitness and wellness</string>
+    <string name="view_permissions_all_the_time" description="Text to allow an app to read health data in background.">all the time</string>
+    <string name="view_permissions_while_in_use" description="Text to allow an app to read health data in foreground.">while in use</string>
+    <string name="view_permissions_all_the_time_cap" description="Label for button to allow an app to read health data in background.">All the time</string>
+    <string name="view_permissions_while_in_use_cap" description="Label for button to allow an app to read health data in foreground.">While in use</string>
+    <string name="view_permissions_mode" description="Text to allow an app to read health data in foreground or background."><xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g>can access all of your fitness and wellness data <xliff:g id="allow_mode" example="all the time">%2$s</xliff:g></string>
+    <string name="allowed_to_access" description="Text to display view permission mode (all the time or while in use).">Allowed to access</string>
+    <string name="allowed_to_read" description="Subtitle to display which permissions are allowed">Allowed to read</string>
+    <string name="give_permission_prompt" description="Text to display what permissions are allowed.">These permissions give <xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> access to data from your device sensors.</string>
+    <!-- endregion -->
+
     <!-- endregion -->
 </resources>
