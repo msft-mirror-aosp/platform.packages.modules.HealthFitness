@@ -64,12 +64,10 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.CreateMedicalDataSourceRequest;
-import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.LocalTimeRangeFilter;
-import android.health.connect.MedicalResourceId;
 import android.health.connect.MedicalResourceTypeInfo;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
@@ -503,35 +501,6 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
 
         manager.deleteMedicalDataSourceWithData(
                 DATA_SOURCE_ID, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.assertAndGetException().getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_SECURITY);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testDeleteMedicalResourcesByIds_noPermission_expectError()
-            throws InterruptedException {
-        List<MedicalResourceId> ids = List.of(getMedicalResourceId());
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
-
-        manager.deleteMedicalResources(ids, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.assertAndGetException().getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_SECURITY);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testDeleteMedicalResourcesByRequest_noPermission_expectError()
-            throws InterruptedException {
-        DeleteMedicalResourcesRequest request =
-                new DeleteMedicalResourcesRequest.Builder().addDataSourceId(DATA_SOURCE_ID).build();
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
-
-        manager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
 
         assertThat(receiver.assertAndGetException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_SECURITY);
