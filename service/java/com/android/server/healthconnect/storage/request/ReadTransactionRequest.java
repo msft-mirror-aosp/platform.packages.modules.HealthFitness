@@ -26,7 +26,7 @@ import android.health.connect.aidl.ReadRecordsRequestParcel;
 
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +65,8 @@ public class ReadTransactionRequest {
         mPackageName = callingPackageName;
         int recordTypeId = request.getRecordType();
         mRecordTypeIds = Set.of(recordTypeId);
-        RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordTypeId);
+        RecordHelper<?> recordHelper =
+                InternalHealthConnectMappings.getInstance().getRecordHelper(recordTypeId);
         mReadTableRequests =
                 singletonList(
                         recordHelper.getReadTableRequest(
@@ -105,7 +106,8 @@ public class ReadTransactionRequest {
         recordTypeToUuids.forEach(
                 (recordType, uuids) ->
                         mReadTableRequests.add(
-                                RecordHelperProvider.getRecordHelper(recordType)
+                                InternalHealthConnectMappings.getInstance()
+                                        .getRecordHelper(recordType)
                                         .getReadTableRequest(
                                                 packageName,
                                                 uuids,

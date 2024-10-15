@@ -32,20 +32,25 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.permission.PermissionManager.PERMISSION_GRANTED;
 import static android.permission.PermissionManager.PERMISSION_HARD_DENIED;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import android.content.AttributionSource;
 import android.content.Context;
 import android.health.connect.internal.datatypes.ExerciseRouteInternal;
 import android.health.connect.internal.datatypes.ExerciseSessionRecordInternal;
-import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
+import android.os.UserHandle;
 import android.permission.PermissionManager;
 import android.util.ArrayMap;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -63,8 +68,6 @@ public class DataPermissionEnforcerTest {
 
     @Mock private HealthConnectDeviceConfigManager mDeviceConfigManager;
 
-    private final HealthConnectMappings mHealthConnectMappings = new HealthConnectMappings();
-
     private AttributionSource mAttributionSource;
 
     private DataPermissionEnforcer mDataPermissionEnforcer;
@@ -75,9 +78,21 @@ public class DataPermissionEnforcerTest {
         HealthConnectDeviceConfigManager.initializeInstance(mContext);
 
         mAttributionSource = buildAttributionSource();
+
+        when(mContext.getUser()).thenReturn(UserHandle.CURRENT);
+        HealthConnectInjector healthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(getInstrumentation().getContext())
+                        .setHealthPermissionIntentAppsTracker(
+                                mock(HealthPermissionIntentAppsTracker.class))
+                        .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
+                        .build();
+
         mDataPermissionEnforcer =
                 new DataPermissionEnforcer(
-                        mPermissionManager, mContext, mDeviceConfigManager, mHealthConnectMappings);
+                        mPermissionManager,
+                        mContext,
+                        mDeviceConfigManager,
+                        healthConnectInjector.getInternalHealthConnectMappings());
     }
 
     /** enforceRecordIdsWritePermissions */

@@ -64,7 +64,7 @@ import com.android.server.healthconnect.storage.request.AlterTableRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.TableColumnPair;
@@ -465,7 +465,8 @@ public final class ExerciseSessionRecordHelper
                         }
                     };
             readRequest.setRecordHelper(
-                    RecordHelperProvider.getRecordHelper(RECORD_TYPE_PLANNED_EXERCISE_SESSION));
+                    InternalHealthConnectMappings.getInstance()
+                            .getRecordHelper(RECORD_TYPE_PLANNED_EXERCISE_SESSION));
             result.add(readRequest);
         }
         // There may have been a previous reference to this exercise, search for those references.
@@ -483,7 +484,8 @@ public final class ExerciseSessionRecordHelper
                 COMPLETED_SESSION_ID_COLUMN_NAME, StorageUtils.getHexString(upsertedRecordId));
         affectedTrainingPlanReadRequest.setWhereClause(whereStatement);
         affectedTrainingPlanReadRequest.setRecordHelper(
-                RecordHelperProvider.getRecordHelper(RECORD_TYPE_PLANNED_EXERCISE_SESSION));
+                InternalHealthConnectMappings.getInstance()
+                        .getRecordHelper(RECORD_TYPE_PLANNED_EXERCISE_SESSION));
         result.add(affectedTrainingPlanReadRequest);
         return result;
     }
@@ -503,7 +505,8 @@ public final class ExerciseSessionRecordHelper
                 COMPLETED_SESSION_ID_COLUMN_NAME, StorageUtils.getHexString(deletedRecordUuid));
         affectedTrainingPlanReadRequest.setWhereClause(whereStatement);
         affectedTrainingPlanReadRequest.setRecordHelper(
-                RecordHelperProvider.getRecordHelper(RECORD_TYPE_PLANNED_EXERCISE_SESSION));
+                InternalHealthConnectMappings.getInstance()
+                        .getRecordHelper(RECORD_TYPE_PLANNED_EXERCISE_SESSION));
         return Collections.singletonList(affectedTrainingPlanReadRequest);
     }
 
