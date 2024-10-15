@@ -104,6 +104,7 @@ import android.health.connect.internal.datatypes.WeightRecordInternal;
 import android.health.connect.internal.datatypes.WheelchairPushesRecordInternal;
 import android.util.ArrayMap;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -123,7 +124,9 @@ public final class RecordMapper {
     private final Map<Class<? extends Record>, Integer> mExternalRecordClassToRecordIdMap;
 
     private RecordMapper() {
-        mRecordIdToInternalRecordClassMap = new ArrayMap<>(NUM_ENTRIES);
+        // Use LinkedHashMap to guarantee the order of different records types when reading data for
+        // backup & restore.
+        mRecordIdToInternalRecordClassMap = new LinkedHashMap<>(NUM_ENTRIES);
         mRecordIdToInternalRecordClassMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_STEPS, StepsRecordInternal.class);
         mRecordIdToInternalRecordClassMap.put(
@@ -218,11 +221,11 @@ public final class RecordMapper {
         mRecordIdToInternalRecordClassMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_LEAN_BODY_MASS, LeanBodyMassRecordInternal.class);
         mRecordIdToInternalRecordClassMap.put(
-                RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION,
-                ExerciseSessionRecordInternal.class);
-        mRecordIdToInternalRecordClassMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION,
                 PlannedExerciseSessionRecordInternal.class);
+        mRecordIdToInternalRecordClassMap.put(
+                RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION,
+                ExerciseSessionRecordInternal.class);
         mRecordIdToInternalRecordClassMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION, SleepSessionRecordInternal.class);
         mRecordIdToInternalRecordClassMap.put(
