@@ -31,7 +31,6 @@ import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.TimeRangeFilter;
 import android.health.connect.TimeRangeFilterHelper;
 import android.health.connect.datatypes.AggregationType;
-import android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper;
 import android.util.ArrayMap;
 import android.util.Pair;
 import android.util.Slog;
@@ -260,7 +259,9 @@ public class AggregateTableRequest {
     /** Returns list of app Ids of contributing apps for the record type in the priority order */
     public List<Long> getAppIdPriorityList(int recordType) {
         return mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
-                RecordTypeRecordCategoryMapper.getRecordCategoryForRecordType(recordType));
+                mInternalHealthConnectMappings
+                        .getExternalMappings()
+                        .getRecordCategoryForRecordType(recordType));
     }
 
     private void processPriorityRequest(Cursor cursor) {
