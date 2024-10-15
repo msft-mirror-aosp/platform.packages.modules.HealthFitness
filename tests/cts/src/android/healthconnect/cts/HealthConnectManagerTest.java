@@ -2119,6 +2119,119 @@ public class HealthConnectManagerTest {
         assertThat(lastDataUpdateTime).isAtMost(Instant.now());
     }
 
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testHealthConnectManager_deleteMedicalDataSourceInvalidId_fails() throws Exception {
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalDataSourceWithData(
+                "illegal id", Executors.newSingleThreadExecutor(), callback);
+
+        assertThat(callback.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testHealthConnectManager_deleteMedicalDataSourceDoesntExist_fails()
+            throws Exception {
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalDataSourceWithData(
+                DATA_SOURCE_ID, Executors.newSingleThreadExecutor(), callback);
+
+        assertThat(callback.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testHealthConnectManager_deleteMedicalDataSourceExists_succeedsAndDeletes()
+            throws Exception {
+        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(
+                getCreateMedicalDataSourceRequest(),
+                Executors.newSingleThreadExecutor(),
+                createReceiver);
+        MedicalDataSource dataSource = createReceiver.getResponse();
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalDataSourceWithData(
+                dataSource.getId(), Executors.newSingleThreadExecutor(), callback);
+
+        assertThat(callback.getResponse()).isNull();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testHealthConnectManager_deleteMedicalDataSourceExistsWithData_succeedsAndDeletes()
+            throws Exception {
+        // Create the datasource
+        HealthConnectReceiver<MedicalDataSource> createReceiver = new HealthConnectReceiver<>();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        mManager.createMedicalDataSource(
+                getCreateMedicalDataSourceRequest(), executor, createReceiver);
+        MedicalDataSource dataSource = createReceiver.getResponse();
+        MedicalResource resource = upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalDataSourceWithData(dataSource.getId(), executor, callback);
+
+        assertThat(callback.getResponse()).isNull();
+        // Check for existence of data
+        HealthConnectReceiver<List<MedicalResource>> readResourceReceiver =
+                new HealthConnectReceiver<>();
+        mManager.readMedicalResources(List.of(resource.getId()), executor, readResourceReceiver);
+        assertThat(readResourceReceiver.getResponse()).isEmpty();
+        // Check for existence of datasource by trying to create again.
+        // TODO: b/350010046 - switch to using read when it is implemented.
+        HealthConnectReceiver<MedicalDataSource> secondCreateReceiver =
+                new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(
+                getCreateMedicalDataSourceRequest(), executor, secondCreateReceiver);
+        secondCreateReceiver.verifyNoExceptionOrThrow();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testHealthConnectManager_deleteMedicalDataSourceDifferentPackage_denied()
+            throws Exception {
+        // Create the datasource
+        MedicalDataSource dataSource =
+                APP_WRITE_PERMS_ONLY.createMedicalDataSource(getCreateMedicalDataSourceRequest());
+        MedicalResource resource =
+                APP_WRITE_PERMS_ONLY.upsertMedicalResource(
+                        dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalDataSourceWithData(dataSource.getId(), executor, callback);
+
+        assertThat(callback.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+
+        // Check for existence of the medicalResource and the dataSource.
+        HealthConnectReceiver<List<MedicalResource>> readResourceReceiver =
+                new HealthConnectReceiver<>();
+        HealthConnectReceiver<List<MedicalDataSource>> getDataSourceReceiver =
+                new HealthConnectReceiver<>();
+        SystemUtil.runWithShellPermissionIdentity(
+                () -> {
+                    mManager.readMedicalResources(
+                            List.of(resource.getId()), executor, readResourceReceiver);
+                    mManager.getMedicalDataSources(
+                            List.of(dataSource.getId()), executor, getDataSourceReceiver);
+                },
+                MANAGE_HEALTH_DATA);
+        assertThat(readResourceReceiver.getResponse()).containsExactly(resource);
+        assertThat(getDataSourceReceiver.getResponse()).hasSize(1);
+        MedicalDataSource responseDataSourceWithoutUpdateTime =
+                new MedicalDataSource.Builder(getDataSourceReceiver.getResponse().get(0))
+                        .setLastDataUpdateTime(null)
+                        .build();
+        assertThat(responseDataSourceWithoutUpdateTime).isEqualTo(dataSource);
+    }
+
     // TODO(b/343923754): Add more upsert/readMedicalResources tests once deleteAll can be called.
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
