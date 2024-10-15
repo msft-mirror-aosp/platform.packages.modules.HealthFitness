@@ -30,11 +30,12 @@ import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import java.util.Objects;
 
 /** @hide */
-public class InternalDataTypeDescriptor {
+public final class InternalDataTypeDescriptor {
     @RecordTypeIdentifier.RecordType private final int mRecordTypeIdentifier;
     private final RecordHelper<?> mRecordHelper;
     @RecordTypeIdForUuid.Type private final int mRecordTypeIdForUuid;
     private final int mLoggingEnum;
+    private final boolean mIsDerived;
 
     private InternalDataTypeDescriptor(Builder builder) {
         checkArgument(builder.mRecordTypeIdentifier != RECORD_TYPE_UNKNOWN);
@@ -46,6 +47,7 @@ public class InternalDataTypeDescriptor {
         mRecordHelper = Objects.requireNonNull(builder.mRecordHelper);
         mRecordTypeIdForUuid = builder.mRecordTypeIdForUuid;
         mLoggingEnum = builder.mLoggingEnum;
+        mIsDerived = builder.mIsDerived;
     }
 
     @RecordTypeIdentifier.RecordType
@@ -64,6 +66,10 @@ public class InternalDataTypeDescriptor {
 
     public int getLoggingEnum() {
         return mLoggingEnum;
+    }
+
+    public boolean isDerived() {
+        return mIsDerived;
     }
 
     interface RecordTypeIdentifierBuilderStep {
@@ -85,6 +91,8 @@ public class InternalDataTypeDescriptor {
     }
 
     interface BuildStep {
+        BuildStep setDerived();
+
         InternalDataTypeDescriptor build();
     }
 
@@ -105,6 +113,8 @@ public class InternalDataTypeDescriptor {
         private int mRecordTypeIdForUuid = RECORD_TYPE_ID_FOR_UUID_UNKNOWN;
 
         private int mLoggingEnum = HEALTH_CONNECT_API_INVOKED__DATA_TYPE_ONE__DATA_TYPE_UNKNOWN;
+
+        private boolean mIsDerived = false;
 
         private Builder() {}
 
@@ -134,6 +144,12 @@ public class InternalDataTypeDescriptor {
             checkArgument(
                     loggingEnum != HEALTH_CONNECT_API_INVOKED__DATA_TYPE_ONE__DATA_TYPE_UNKNOWN);
             mLoggingEnum = loggingEnum;
+            return this;
+        }
+
+        @Override
+        public Builder setDerived() {
+            mIsDerived = true;
             return this;
         }
 

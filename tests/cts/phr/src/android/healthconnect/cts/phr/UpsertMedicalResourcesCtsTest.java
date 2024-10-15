@@ -58,17 +58,19 @@ public class UpsertMedicalResourcesCtsTest {
                     TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     private HealthConnectManager mManager;
+    private PhrCtsTestUtils mUtil;
 
     @Before
     public void before() throws InterruptedException {
         TestUtils.deleteAllStagedRemoteData();
-        TestUtils.deleteAllMedicalData();
         mManager = TestUtils.getHealthConnectManager();
+        mUtil = new PhrCtsTestUtils(mManager);
+        mUtil.deleteAllMedicalData();
     }
 
     @After
     public void after() throws InterruptedException {
-        TestUtils.deleteAllMedicalData();
+        mUtil.deleteAllMedicalData();
     }
 
     @Test

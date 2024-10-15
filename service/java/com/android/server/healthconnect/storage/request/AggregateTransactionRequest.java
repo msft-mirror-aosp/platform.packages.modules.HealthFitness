@@ -30,6 +30,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import java.time.Duration;
@@ -62,6 +63,7 @@ public final class AggregateTransactionRequest {
             String packageName,
             AggregateDataRequestParcel request,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            InternalHealthConnectMappings internalHealthConnectMappings,
             TransactionManager transactionManager,
             long startDateAccess) {
         mPackageName = packageName;
@@ -82,6 +84,7 @@ public final class AggregateTransactionRequest {
                             packageName,
                             request.getPackageFilters(),
                             healthDataCategoryPriorityHelper,
+                            internalHealthConnectMappings,
                             appInfoHelper,
                             transactionManager,
                             request.getStartTime(),

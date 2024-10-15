@@ -345,16 +345,16 @@ public final class MedicalResourceHelper {
             boolean isCalledFromBgWithoutBgRead)
             throws SQLiteException {
 
+        Pair<String, String[]> sqlAndArgs =
+                getSqlAndArgsBasedOnPermissionFilters(
+                        medicalResourceIds,
+                        grantedReadMedicalResourceTypes,
+                        callingPackageName,
+                        hasWritePermission,
+                        isCalledFromBgWithoutBgRead);
         return mTransactionManager.runAsTransaction(
                 db -> {
                     List<MedicalResource> medicalResources;
-                    Pair<String, String[]> sqlAndArgs =
-                            getSqlAndArgsBasedOnPermissionFilters(
-                                    medicalResourceIds,
-                                    grantedReadMedicalResourceTypes,
-                                    callingPackageName,
-                                    hasWritePermission,
-                                    isCalledFromBgWithoutBgRead);
                     try (Cursor cursor = db.rawQuery(sqlAndArgs.first, sqlAndArgs.second)) {
                         medicalResources = getMedicalResources(cursor);
                     }
@@ -673,8 +673,10 @@ public final class MedicalResourceHelper {
                         List.of(MedicalResourceIndicesHelper.getMedicalResourceTypeColumnName()))
                 .setJoinClause(
                         getJoinWithMedicalDataSourceFilterOnDataSourceIdsAndAppId(
-                                dataSourceIds, appId, joinWithMedicalResourceIndicesTable()))
-                .setWhereClause(getMedicalResourceTypeWhereClause(medicalResourceTypes));
+                                dataSourceIds,
+                                appId,
+                                getJoinWithIndicesTableFilterOnMedicalResourceTypes(
+                                        medicalResourceTypes)));
     }
 
     /**
@@ -770,11 +772,19 @@ public final class MedicalResourceHelper {
      * Creates {@link SqlJoin} that is an inner join from medical_resource_table to
      * medical_resource_indices_table filtering on {@code medicalResourceTypes} followed by {@code
      * extraJoin} attached to it.
+     *
+     * <p>If the list of {@code medicalResourceTypes} is empty, then the {@link WhereClauses} will
+     * be empty.
      */
     static SqlJoin getJoinWithIndicesTableFilterOnMedicalResourceTypes(
             Set<Integer> medicalResourceTypes) {
+        WhereClauses medicalResourceTypeWhereClause =
+                new WhereClauses(AND)
+                        .addWhereInIntsClause(
+                                getMedicalResourceTypeColumnName(),
+                                new ArrayList<>(medicalResourceTypes));
         return joinWithMedicalResourceIndicesTable()
-                .setSecondTableWhereClause(getMedicalResourceTypeWhereClause(medicalResourceTypes));
+                .setSecondTableWhereClause(medicalResourceTypeWhereClause);
     }
 
     static SqlJoin getJoinWithMedicalDataSourceFilterOnDataSourceIdsAndAppId(
@@ -880,17 +890,6 @@ public final class MedicalResourceHelper {
 
         whereClauses.addWhereGreaterThanClause(MEDICAL_RESOURCE_PRIMARY_COLUMN_NAME, lastRowId);
         return whereClauses;
-    }
-
-    /**
-     * Creates a {@link WhereClauses} filtering on {@code medicalResourceTypes}. If {@code
-     * medicalResourceTypes} is empty, then it returns an empty {@link WhereClauses}.
-     */
-    private static WhereClauses getMedicalResourceTypeWhereClause(
-            Set<Integer> medicalResourceTypes) {
-        return new WhereClauses(AND)
-                .addWhereInIntsClause(
-                        getMedicalResourceTypeColumnName(), new ArrayList<>(medicalResourceTypes));
     }
 
     /**
@@ -1325,9 +1324,8 @@ public final class MedicalResourceHelper {
         SqlJoin dataSourceJoin = joinWithMedicalDataSourceTable();
         dataSourceJoin.setSecondTableWhereClause(dataSourceWhereClauses);
 
-        SqlJoin indexJoin = joinWithMedicalResourceIndicesTable();
-        indexJoin.setSecondTableWhereClause(
-                getMedicalResourceTypeWhereClause(medicalResourceTypes));
+        SqlJoin indexJoin =
+                getJoinWithIndicesTableFilterOnMedicalResourceTypes(medicalResourceTypes);
         indexJoin.attachJoin(dataSourceJoin);
 
         ReadTableRequest innerRead =

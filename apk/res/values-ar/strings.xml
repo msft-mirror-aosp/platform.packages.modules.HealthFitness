@@ -23,6 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"يمكنك إدارة بيانات الصحة واللياقة البدنية على جهازك والتحكّم في التطبيقات التي يمكنها الوصول إلى تلك البيانات"</string>
     <string name="data_title" msgid="4456619761533380816">"البيانات وإمكانية وصول التطبيقات إليها"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"تصفُّح السجلات الصحية"</string>
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"يمكنك الاطّلاع على سجلّاتك الصحية ومعرفة التطبيقات التي يمكنها الوصول إليها"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"جميع الفئات"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"عرض كل الفئات"</string>
     <string name="no_data" msgid="1906986019249068659">"ما مِن بيانات"</string>
@@ -331,21 +332,14 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"إذا منحت التطبيق إذنًا بالقراءة، فسيتمكّن من قراءة البيانات الجديدة والبيانات من آخر 30 يومًا"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"إذا منحت التطبيق إذنًا بالقراءة، سيتمكّن من قراءة البيانات الجديدة والسابقة"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"هل تريد منح تطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" الإذن بالوصول إلى Health Connect؟"</string>
-    <!-- no translation found for request_permissions_rationale (2642076968583316986) -->
-    <skip />
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"يمكنك الاطّلاع على <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> لمعرفة كيفية معالجة \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" لبياناتك"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"سياسة الخصوصية"</string>
-    <!-- no translation found for medical_request_header (2300521519021510027) -->
-    <skip />
-    <!-- no translation found for medical_request_header_desc (5721171305631983663) -->
-    <skip />
-    <!-- no translation found for medical_request_about_health_records (7204918218748362687) -->
-    <skip />
-    <!-- no translation found for medical_request_data_to_share (2208383833492573960) -->
-    <skip />
-    <!-- no translation found for medical_request_share (6237397362923728514) -->
-    <skip />
-    <!-- no translation found for medical_request_footer (6533749932770903089) -->
-    <skip />
+    <string name="medical_request_header" msgid="2300521519021510027">"هل تريد السماح لـ \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" بالوصول إلى السجلات الصحية؟"</string>
+    <string name="medical_request_header_desc" msgid="5721171305631983663">"إذا منحت التطبيق الإذن، سيتمكّن من قراءة البيانات وكتابتها، مثل بيانات عن الحساسية والنتائج المعملية واللقاحات وغير ذلك.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"لمحة عن السجلات الصحية"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"البيانات المراد مشاركتها"</string>
+    <string name="medical_request_share" msgid="6237397362923728514">"إذا منحت الإذن، يمكن لـ \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" مشاركة السجلات الصحية مع تطبيق Health Connect."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"يمكنك مزامنة السجلات الصحية من مختلف التطبيقات والمصادر للاحتفاظ بها في مكان واحد"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"هل تريد إزالة كل الأذونات؟"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"إزالة الكل"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"لم يعد بإمكان \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" تعديل أي بيانات من تطبيق Health Connect أو الاطّلاع عليها.\n\nلا يؤثر هذا الإجراء في الأذونات الأخرى التي قد تُمنح لهذا التطبيق، مثل أذونات الوصول إلى الموقع الجغرافي أو الكاميرا أو الميكروفون."</string>
@@ -408,6 +402,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"إمكانية وصول التطبيق إلى البيانات"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"ليس لديك الآن أي تطبيقات متوافقة مثبَّتة"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"إذن الوصول الإضافي"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"البيانات السابقة وبيانات الخلفية"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"تمت إزالة الأذونات الإضافية لهذا التطبيق"</string>
     <string name="permissions_header" msgid="6519976063360071569">"الأذونات"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"الصحة واللياقة البدنية"</string>
@@ -608,7 +603,9 @@
     <string name="flow_light" msgid="1937543318146228793">"تدفق بسيط"</string>
     <string name="flow_medium" msgid="3783688724668943154">"تدفق متوسط"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"تدفق كثيف"</string>
+    <string name="flow_unknown" msgid="1634411759928572900">"معدل تدفق الحيض غير معروف"</string>
     <string name="period_day" msgid="3821944462093965882">"يوم الدورة الشهرية رقم <xliff:g id="DAY">%1$d</xliff:g> من إجمالي <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{الدورة الشهرية (استمرت يومًا واحدًا)}zero{الدورة الشهرية (استمرت لمدة # يوم)}two{الدورة الشهرية (استمرت لمدة يومين)}few{الدورة الشهرية (استمرت لمدة # أيام)}many{الدورة الشهرية (استمرت لمدة # يومًا)}other{الدورة الشهرية (استمرت لمدة # يوم)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"إيجابية"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"سلبية"</string>
     <string name="ovulation_high" msgid="205362931427158291">"مرتفعة"</string>
@@ -1077,7 +1074,10 @@
     <string name="edit_data_sources" msgid="79641360876849547">"تعديل مصادر التطبيقات"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"التطبيق التلقائي في الجهاز"</string>
     <string name="app_data_title" msgid="6499967982291000837">"بيانات التطبيق"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"ستظهر هنا البيانات الواردة من التطبيقات التي يمكنها الوصول إلى Health Connect."</string>
+    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
+    <skip />
+    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
+    <skip />
     <string name="date_picker_day" msgid="3076687507968958991">"يوم"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"أسبوع"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"شهر"</string>
@@ -1123,4 +1123,6 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"هل تريد حذف إدخالات \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" المحدّدة في الأسبوع من ‎<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> نهائيًا؟"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"هل تريد حذف إدخالات \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" المحدّدة في شهر ‎<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> نهائيًا؟"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"هل تريد حذف إدخال \"<xliff:g id="APP_NAME">%s</xliff:g>\" هذا نهائيًا؟"</string>
+    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
+    <skip />
 </resources>

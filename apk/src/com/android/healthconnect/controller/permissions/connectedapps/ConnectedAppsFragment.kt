@@ -22,6 +22,9 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
+import android.widget.CheckBox
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
@@ -140,6 +143,14 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
     }
 
     private fun createRemoveAllAppsAccessDialog(apps: List<ConnectedAppMetadata>) {
+        if (newDeletionFlow) {
+            createNewIADialog(apps)
+        } else {
+            createOldIADialog(apps)
+        }
+    }
+
+    private fun createOldIADialog(apps: List<ConnectedAppMetadata>) {
         removeAllAppsDialog =
             AlertDialogBuilder(
                     this,
@@ -162,6 +173,57 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                     if (!viewModel.disconnectAllApps(apps)) {
                         Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT)
                             .show()
+                    }
+                }
+                .create()
+    }
+
+    private fun createNewIADialog(apps: List<ConnectedAppMetadata>) {
+        val body = layoutInflater.inflate(R.layout.dialog_message_with_checkbox, null)
+        body.findViewById<TextView>(R.id.dialog_message).apply {
+            text = getString(R.string.permissions_disconnect_all_dialog_message)
+        }
+        body.findViewById<TextView>(R.id.dialog_title).apply {
+            text = getString(R.string.permissions_disconnect_all_dialog_title)
+        }
+
+        val imageIcon = body.findViewById(R.id.dialog_icon) as ImageView
+        imageIcon.setImageDrawable(
+            AttributeResolver.getNullableDrawable(requireContext(), R.attr.disconnectAllIcon)
+        )
+        imageIcon.visibility = View.VISIBLE
+
+        val checkBox =
+            body.findViewById<CheckBox>(R.id.dialog_checkbox).apply {
+                text = getString(R.string.disconnect_all_app_permissions_dialog_checkbox)
+            }
+        checkBox.setOnCheckedChangeListener { _, _ ->
+            // TODO(b/372636258): add logging
+        }
+
+        removeAllAppsDialog =
+            AlertDialogBuilder(
+                    this,
+                    DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_CONTAINER,
+                )
+                .setView(body)
+                .setCancelable(false)
+                .setNeutralButton(
+                    android.R.string.cancel,
+                    DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_CANCEL_BUTTON,
+                ) { _, _ ->
+                    viewModel.setAlertDialogStatus(false)
+                }
+                .setPositiveButton(
+                    R.string.permissions_disconnect_all_dialog_disconnect,
+                    DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_REMOVE_ALL_BUTTON,
+                ) { _, _ ->
+                    if (!viewModel.disconnectAllApps(apps)) {
+                        Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    if (checkBox.isChecked) {
+                        viewModel.deleteAllData()
                     }
                 }
                 .create()

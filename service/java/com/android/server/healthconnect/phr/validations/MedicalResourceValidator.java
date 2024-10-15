@@ -30,7 +30,6 @@ import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_P
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_PROCEDURE;
-import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN;
 import static android.health.connect.datatypes.FhirResource.FhirResourceType;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
@@ -205,10 +204,12 @@ public class MedicalResourceValidator {
      */
     @FhirResourceType
     private static int validateAndGetResourceType(String fhirResourceType, String fhirResourceId) {
-        int fhirResourceTypeInt = getFhirResourceTypeInt(fhirResourceType);
-        if (fhirResourceTypeInt == FHIR_RESOURCE_TYPE_UNKNOWN) {
+        int fhirResourceTypeInt;
+        try {
+            fhirResourceTypeInt = getFhirResourceTypeInt(fhirResourceType);
+        } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(
-                    "Unsupported resource type "
+                    "Unsupported FHIR resource type "
                             + fhirResourceType
                             + " for resource with id "
                             + fhirResourceId);

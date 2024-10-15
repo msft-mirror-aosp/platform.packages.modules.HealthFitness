@@ -106,7 +106,11 @@ import android.util.ArrayMap;
 
 import java.util.Map;
 
-/** @hide */
+/**
+ * @deprecated Use {@link HealthConnectMappings}
+ * @hide
+ */
+@Deprecated
 public final class RecordMapper {
     private static final int NUM_ENTRIES = 35;
 
@@ -341,11 +345,13 @@ public final class RecordMapper {
         return sRecordMapper;
     }
 
+    // TODO: Mark deprecated.
     @NonNull
     public Map<Integer, Class<? extends RecordInternal<?>>> getRecordIdToInternalRecordClassMap() {
         return mRecordIdToInternalRecordClassMap;
     }
 
+    // TODO: Mark deprecated.
     @NonNull
     public Map<Integer, Class<? extends Record>> getRecordIdToExternalRecordClassMap() {
         return mRecordIdToExternalRecordClassMap;

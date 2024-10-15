@@ -58,6 +58,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCatego
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.utils.TimeSource;
 import com.android.server.healthconnect.utils.TimeSourceImpl;
 
@@ -106,6 +107,7 @@ public class HealthConnectManagerService extends SystemService {
         HealthConnectMappings healthConnectMappings;
         HealthConnectPermissionHelper permissionHelper;
         MigrationCleaner migrationCleaner;
+        InternalHealthConnectMappings internalHealthConnectMappings;
 
         if (Flags.dependencyInjection()) {
             HealthConnectInjector.setInstance(new HealthConnectInjectorImpl(context));
@@ -131,6 +133,8 @@ public class HealthConnectManagerService extends SystemService {
                             healthDataCategoryPriorityHelper,
                             mMigrationStateManager);
             healthConnectMappings = mHealthConnectInjector.getHealthConnectMappings();
+            internalHealthConnectMappings =
+                    mHealthConnectInjector.getInternalHealthConnectMappings();
             permissionHelper =
                     new HealthConnectPermissionHelper(
                             context,
@@ -181,7 +185,9 @@ public class HealthConnectManagerService extends SystemService {
                             PackageInfoUtils.getInstance(),
                             healthDataCategoryPriorityHelper,
                             mMigrationStateManager);
-            healthConnectMappings = new HealthConnectMappings();
+            healthConnectMappings = HealthConnectMappings.getInstance();
+            internalHealthConnectMappings =
+                    new InternalHealthConnectMappings(healthConnectMappings);
             permissionHelper =
                     new HealthConnectPermissionHelper(
                             context,
@@ -255,7 +261,7 @@ public class HealthConnectManagerService extends SystemService {
                         activityDateHelper,
                         changeLogsHelper,
                         changeLogsRequestHelper,
-                        healthConnectMappings,
+                        internalHealthConnectMappings,
                         mCloudBackupManager);
     }
 

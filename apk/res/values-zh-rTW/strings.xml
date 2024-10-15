@@ -23,6 +23,8 @@
     <string name="home_subtitle" msgid="2154213430054477787">"管理裝置上的健康與健身資料，並控管哪些應用程式可以存取這類資料"</string>
     <string name="data_title" msgid="4456619761533380816">"資料和存取權"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"瀏覽健康記錄"</string>
+    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
+    <skip />
     <string name="all_categories_title" msgid="1446410643217937926">"所有類別"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"顯示所有類別"</string>
     <string name="no_data" msgid="1906986019249068659">"沒有資料"</string>
@@ -331,21 +333,14 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"如果授予讀取權限，這個應用程式將可讀取新資料和過去 30 天內的資料"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"如果授予讀取權限，這個應用程式將可讀取新資料和過往資料"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"要允許「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取「健康資料同步」嗎？"</string>
-    <!-- no translation found for request_permissions_rationale (2642076968583316986) -->
-    <skip />
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"你可以參考「<xliff:g id="APP_NAME">%1$s</xliff:g>」的<xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>，瞭解該應用程式如何處理你的資料"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"隱私權政策"</string>
-    <!-- no translation found for medical_request_header (2300521519021510027) -->
-    <skip />
-    <!-- no translation found for medical_request_header_desc (5721171305631983663) -->
-    <skip />
-    <!-- no translation found for medical_request_about_health_records (7204918218748362687) -->
-    <skip />
-    <!-- no translation found for medical_request_data_to_share (2208383833492573960) -->
-    <skip />
-    <!-- no translation found for medical_request_share (6237397362923728514) -->
-    <skip />
-    <!-- no translation found for medical_request_footer (6533749932770903089) -->
-    <skip />
+    <string name="medical_request_header" msgid="2300521519021510027">"要允許「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取你的健康記錄嗎？"</string>
+    <string name="medical_request_header_desc" msgid="5721171305631983663">"如果授予存取權，這個應用程式就能讀取及寫入過敏、檢驗結果、疫苗接種等資料\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"關於健康記錄"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"要分享的資料"</string>
+    <string name="medical_request_share" msgid="6237397362923728514">"如果允許，「<xliff:g id="APP_NAME">%1$s</xliff:g>」就可以將你的健康記錄提供給「健康資料同步」。"</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"同步處理來自不同應用程式和來源的健康記錄，集中存放這些資料"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"要移除所有權限嗎？"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"全部移除"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」將無法在「健康資料同步」中讀取或寫入任何資料\n\n這不會影響這個應用程式可能擁有的其他權限，例如相機、麥克風或位置資訊的存取權。"</string>
@@ -408,6 +403,8 @@
     <string name="app_access_title" msgid="7137018424885371763">"應用程式存取權"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"你目前未安裝任何相容的應用程式"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"額外存取權"</string>
+    <!-- no translation found for additional_access_summary (1076197455435130191) -->
+    <skip />
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"這個應用程式的其他權限已移除"</string>
     <string name="permissions_header" msgid="6519976063360071569">"權限"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"健身與保健"</string>
@@ -608,7 +605,11 @@
     <string name="flow_light" msgid="1937543318146228793">"流量少"</string>
     <string name="flow_medium" msgid="3783688724668943154">"流量中等"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"流量多"</string>
+    <!-- no translation found for flow_unknown (1634411759928572900) -->
+    <skip />
     <string name="period_day" msgid="3821944462093965882">"生理期第 <xliff:g id="DAY">%1$d</xliff:g> 天，共 <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> 天"</string>
+    <!-- no translation found for period_length (2257138792780916599) -->
+    <skip />
     <string name="ovulation_positive" msgid="6588547263126320238">"陽性"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"陰性"</string>
     <string name="ovulation_high" msgid="205362931427158291">"高"</string>
@@ -1077,7 +1078,10 @@
     <string name="edit_data_sources" msgid="79641360876849547">"編輯應用程式來源清單"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"裝置預設設定"</string>
     <string name="app_data_title" msgid="6499967982291000837">"應用程式資料"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"如果資料是來自有權存取「健康資料同步」的應用程式，就會顯示在這裡"</string>
+    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
+    <skip />
+    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
+    <skip />
     <string name="date_picker_day" msgid="3076687507968958991">"一天"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"一週"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"一個月"</string>
@@ -1123,4 +1127,6 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>該週的所選「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>的所選「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"要永久刪除這個「<xliff:g id="APP_NAME">%s</xliff:g>」項目嗎？"</string>
+    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
+    <skip />
 </resources>
