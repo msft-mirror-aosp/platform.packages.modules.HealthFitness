@@ -459,20 +459,6 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
                 .isEqualTo(HealthConnectException.ERROR_SECURITY);
     }
 
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testDeleteMedicalDataSourceWithData_noPermission_expectError()
-            throws InterruptedException {
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
-
-        manager.deleteMedicalDataSourceWithData(
-                DATA_SOURCE_ID, Executors.newSingleThreadExecutor(), receiver);
-
-        assertThat(receiver.assertAndGetException().getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_SECURITY);
-    }
-
     private static List<Record> getTestRecords() {
         return Arrays.asList(
                 getStepsRecord(),

@@ -16,11 +16,14 @@
 
 package android.healthconnect.cts.phr;
 
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_BACKGROUND_APP;
+import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_FOREGROUND_APP;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
+import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.MEDICAL_DATA_SOURCE_EQUIVALENCE;
@@ -31,6 +34,8 @@ import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 
 import static com.google.common.truth.Truth.assertThat;
+
+import static org.junit.Assert.assertThrows;
 
 import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectException;
@@ -72,6 +77,8 @@ public class DeleteMedicalDataSourceWithDataCtsTest {
 
     @Before
     public void setUp() throws Exception {
+        revokeAllPermissions(PHR_BACKGROUND_APP.getPackageName(), "to test specific permissions");
+        revokeAllPermissions(PHR_FOREGROUND_APP.getPackageName(), "to test specific permissions");
         TestUtils.deleteAllStagedRemoteData();
         mManager = TestUtils.getHealthConnectManager();
         mUtil = new PhrCtsTestUtils(mManager);
@@ -202,5 +209,39 @@ public class DeleteMedicalDataSourceWithDataCtsTest {
                     assertThat(resourceReadReceiver.getResponse()).containsExactly(resource);
                 },
                 MANAGE_HEALTH_DATA);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testDeleteMedicalDataSource_inForegroundNoPermission_throws() {
+        // App has not been granted any permissions.
+        HealthConnectException exception =
+                assertThrows(
+                        HealthConnectException.class,
+                        () -> PHR_FOREGROUND_APP.deleteMedicalDataSourceWithData(DATA_SOURCE_ID));
+        assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testDeleteMedicalDataSource_inForegroundOnlyReadPerm_throws() {
+        grantPermission(PHR_FOREGROUND_APP.getPackageName(), READ_MEDICAL_DATA_IMMUNIZATIONS);
+
+        HealthConnectException exception =
+                assertThrows(
+                        HealthConnectException.class,
+                        () -> PHR_FOREGROUND_APP.deleteMedicalDataSourceWithData(DATA_SOURCE_ID));
+        assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testDeleteMedicalDataSource_inBackgroundNoPermission_throws() {
+        // App has not been granted any permissions.
+        HealthConnectException exception =
+                assertThrows(
+                        HealthConnectException.class,
+                        () -> PHR_BACKGROUND_APP.deleteMedicalDataSourceWithData(DATA_SOURCE_ID));
+        assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
     }
 }
