@@ -404,7 +404,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 mTransactionManager,
                                 mAppInfoHelper,
                                 mAccessLogsHelper,
-                                mDeviceInfoHelper)
+                                mDeviceInfoHelper,
+                                mHealthConnectMappings,
+                                mInternalHealthConnectMappings)
                         : null;
     }
 
