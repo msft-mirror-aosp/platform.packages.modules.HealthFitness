@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.android.server.healthconnect.backuprestore;
 
 import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
@@ -24,6 +23,11 @@ import android.annotation.Nullable;
 import android.health.connect.backuprestore.GetChangesForBackupResponse;
 import android.health.connect.backuprestore.GetSettingsForBackupResponse;
 
+import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
+
 /**
  * Manages Cloud Backup operations.
  *
@@ -31,6 +35,18 @@ import android.health.connect.backuprestore.GetSettingsForBackupResponse;
  */
 @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
 public final class CloudBackupManager {
+
+    private final BackupRestoreDatabaseHelper mDatabaseHelper;
+
+    public CloudBackupManager(
+            TransactionManager transactionManager,
+            AppInfoHelper appInfoHelper,
+            AccessLogsHelper accessLogsHelper,
+            DeviceInfoHelper deviceInfoHelper) {
+        mDatabaseHelper =
+                new BackupRestoreDatabaseHelper(
+                        transactionManager, appInfoHelper, accessLogsHelper, deviceInfoHelper);
+    }
 
     /**
      * The changeToken returned by the previous call should be passed in to resume the upload. A
@@ -46,7 +62,13 @@ public final class CloudBackupManager {
      */
     @NonNull
     public GetChangesForBackupResponse getChangesForBackup(@Nullable String changeToken) {
-        throw new UnsupportedOperationException();
+        if (changeToken != null) {
+            // TODO: b/369799948 - handles the case when still reading records from data tables.
+            throw new UnsupportedOperationException();
+        }
+        // TODO: b/369799948 - add proper next change token.
+        return new GetChangesForBackupResponse(
+                mDatabaseHelper.getChangesFromDataTables(), "placeHolderPageToken");
     }
 
     /** Returns all user settings bundled as a single byte array. */

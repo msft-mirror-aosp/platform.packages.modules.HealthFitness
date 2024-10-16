@@ -16,19 +16,28 @@
 
 package android.healthconnect.cts.phr;
 
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
+import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_BACKGROUND_APP;
+import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_FOREGROUND_APP;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
+import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
+import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.MEDICAL_DATA_SOURCE_EQUIVALENCE;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
+import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
+import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 
 import static com.google.common.truth.Truth.assertThat;
+
+import static org.junit.Assert.assertThrows;
 
 import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectException;
@@ -70,6 +79,8 @@ public class DeleteMedicalDataSourceWithDataCtsTest {
 
     @Before
     public void setUp() throws Exception {
+        revokeAllPermissions(PHR_BACKGROUND_APP.getPackageName(), "to test specific permissions");
+        revokeAllPermissions(PHR_FOREGROUND_APP.getPackageName(), "to test specific permissions");
         TestUtils.deleteAllStagedRemoteData();
         mManager = TestUtils.getHealthConnectManager();
         mUtil = new PhrCtsTestUtils(mManager);
@@ -79,6 +90,22 @@ public class DeleteMedicalDataSourceWithDataCtsTest {
     @After
     public void after() throws InterruptedException {
         mUtil.deleteAllMedicalData();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testDeleteMedicalDataSource_migrationInProgress_apiBlocked()
+            throws InterruptedException {
+        startMigrationWithShellPermissionIdentity();
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalDataSourceWithData(
+                DATA_SOURCE_ID, Executors.newSingleThreadExecutor(), callback);
+
+        assertThat(callback.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
+
+        finishMigrationWithShellPermissionIdentity();
     }
 
     @Test
@@ -101,8 +128,7 @@ public class DeleteMedicalDataSourceWithDataCtsTest {
                             Executors.newSingleThreadExecutor(),
                             readReceiver);
                     assertThat(readReceiver.getResponse()).isEmpty();
-                },
-                MANAGE_HEALTH_DATA);
+                });
     }
 
     @Test
@@ -135,8 +161,7 @@ public class DeleteMedicalDataSourceWithDataCtsTest {
                             Executors.newSingleThreadExecutor(),
                             resourceReadReceiver);
                     assertThat(resourceReadReceiver.getResponse().getMedicalResources()).isEmpty();
-                },
-                MANAGE_HEALTH_DATA);
+                });
     }
 
     @Test
@@ -146,6 +171,98 @@ public class DeleteMedicalDataSourceWithDataCtsTest {
 
         mManager.deleteMedicalDataSourceWithData(
                 DATA_SOURCE_ID, Executors.newSingleThreadExecutor(), callback);
+
+        assertThat(callback.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testDeleteMedicalDataSource_withManagePerm_existsWithoutData_succeedsAndDeletes()
+            throws Exception {
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        runWithShellPermissionIdentity(
+                () -> {
+                    mManager.deleteMedicalDataSourceWithData(
+                            dataSource.getId(), Executors.newSingleThreadExecutor(), callback);
+                    callback.verifyNoExceptionOrThrow();
+                },
+                MANAGE_HEALTH_DATA);
+
+        // Verifies that data source is deleted.
+        HealthConnectReceiver<List<MedicalDataSource>> readReceiver = new HealthConnectReceiver<>();
+        runWithShellPermissionIdentity(
+                () -> {
+                    mManager.getMedicalDataSources(
+                            new GetMedicalDataSourcesRequest.Builder().build(),
+                            Executors.newSingleThreadExecutor(),
+                            readReceiver);
+                    assertThat(readReceiver.getResponse()).isEmpty();
+                });
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testDeleteMedicalDataSource_withManagePerm_existsWithData_succeedsAndDeletes()
+            throws Exception {
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        mUtil.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        runWithShellPermissionIdentity(
+                () -> {
+                    mManager.deleteMedicalDataSourceWithData(
+                            dataSource.getId(), Executors.newSingleThreadExecutor(), callback);
+                    callback.verifyNoExceptionOrThrow();
+                },
+                MANAGE_HEALTH_DATA);
+
+        HealthConnectReceiver<List<MedicalDataSource>> dataSourceReadReceiver =
+                new HealthConnectReceiver<>();
+        HealthConnectReceiver<ReadMedicalResourcesResponse> resourceReadReceiver =
+                new HealthConnectReceiver<>();
+        // Verifies that both data source and resource are deleted.
+        runWithShellPermissionIdentity(
+                () -> {
+                    mManager.getMedicalDataSources(
+                            new GetMedicalDataSourcesRequest.Builder().build(),
+                            Executors.newSingleThreadExecutor(),
+                            dataSourceReadReceiver);
+                    assertThat(dataSourceReadReceiver.getResponse()).isEmpty();
+                    mManager.readMedicalResources(
+                            new ReadMedicalResourcesInitialRequest.Builder(
+                                            MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                                    .build(),
+                            Executors.newSingleThreadExecutor(),
+                            resourceReadReceiver);
+                    assertThat(resourceReadReceiver.getResponse().getMedicalResources()).isEmpty();
+                });
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testDeleteMedicalDataSource_withManagePerm_doesntExist_throws() throws Exception {
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        runWithShellPermissionIdentity(
+                () -> {
+                    mManager.deleteMedicalDataSourceWithData(
+                            DATA_SOURCE_ID, Executors.newSingleThreadExecutor(), callback);
+                    assertThat(callback.assertAndGetException().getErrorCode())
+                            .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+                },
+                MANAGE_HEALTH_DATA);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testDeleteMedicalDataSource_emptyId_throws() throws Exception {
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        mManager.deleteMedicalDataSourceWithData(
+                " ", Executors.newSingleThreadExecutor(), callback);
 
         assertThat(callback.assertAndGetException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
@@ -166,6 +283,7 @@ public class DeleteMedicalDataSourceWithDataCtsTest {
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalDataSource_differentPackage_throws() throws Exception {
+        grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
         MedicalDataSource dataSource =
                 PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
         MedicalResource resource =
@@ -197,7 +315,80 @@ public class DeleteMedicalDataSourceWithDataCtsTest {
                             Executors.newSingleThreadExecutor(),
                             resourceReadReceiver);
                     assertThat(resourceReadReceiver.getResponse()).containsExactly(resource);
+                });
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testDeleteMedicalDataSource_inForegroundNoPermission_throws() {
+        // App has not been granted any permissions.
+        HealthConnectException exception =
+                assertThrows(
+                        HealthConnectException.class,
+                        () -> PHR_FOREGROUND_APP.deleteMedicalDataSourceWithData(DATA_SOURCE_ID));
+        assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testDeleteMedicalDataSource_inForegroundOnlyReadPerm_throws() {
+        grantPermission(PHR_FOREGROUND_APP.getPackageName(), READ_MEDICAL_DATA_IMMUNIZATIONS);
+
+        HealthConnectException exception =
+                assertThrows(
+                        HealthConnectException.class,
+                        () -> PHR_FOREGROUND_APP.deleteMedicalDataSourceWithData(DATA_SOURCE_ID));
+        assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testDeleteMedicalDataSource_inBackgroundNoPermission_throws() {
+        // App has not been granted any permissions.
+        HealthConnectException exception =
+                assertThrows(
+                        HealthConnectException.class,
+                        () -> PHR_BACKGROUND_APP.deleteMedicalDataSourceWithData(DATA_SOURCE_ID));
+        assertThat(exception.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testDeleteMedicalDataSource_withManagePerm_differentPackage_succeedsAndDeletes()
+            throws Exception {
+        grantPermission(PHR_BACKGROUND_APP.getPackageName(), WRITE_MEDICAL_DATA);
+        MedicalDataSource dataSource =
+                PHR_BACKGROUND_APP.createMedicalDataSource(getCreateMedicalDataSourceRequest());
+        MedicalResource resource =
+                PHR_BACKGROUND_APP.upsertMedicalResource(
+                        dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+
+        runWithShellPermissionIdentity(
+                () -> {
+                    mManager.deleteMedicalDataSourceWithData(
+                            dataSource.getId(), Executors.newSingleThreadExecutor(), callback);
+                    callback.verifyNoExceptionOrThrow();
                 },
                 MANAGE_HEALTH_DATA);
+
+        HealthConnectReceiver<List<MedicalDataSource>> dataSourceReadReceiver =
+                new HealthConnectReceiver<>();
+        HealthConnectReceiver<List<MedicalResource>> resourceReadReceiver =
+                new HealthConnectReceiver<>();
+        // Verifies that both data source and resource are deleted.
+        runWithShellPermissionIdentity(
+                () -> {
+                    mManager.getMedicalDataSources(
+                            List.of(dataSource.getId()),
+                            Executors.newSingleThreadExecutor(),
+                            dataSourceReadReceiver);
+                    assertThat(dataSourceReadReceiver.getResponse()).isEmpty();
+                    mManager.readMedicalResources(
+                            List.of(resource.getId()),
+                            Executors.newSingleThreadExecutor(),
+                            resourceReadReceiver);
+                    assertThat(resourceReadReceiver.getResponse()).isEmpty();
+                });
     }
 }
