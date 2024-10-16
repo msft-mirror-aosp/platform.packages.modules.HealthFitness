@@ -240,7 +240,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Nullable private final ImportManager mImportManager;
 
     private final TransactionManager mTransactionManager;
-    private final CloudBackupManager mCloudBackupManager;
+    @Nullable private final CloudBackupManager mCloudBackupManager;
     private final HealthConnectDeviceConfigManager mDeviceConfigManager;
     private final HealthConnectPermissionHelper mPermissionHelper;
     private final FirstGrantTimeManager mFirstGrantTimeManager;
@@ -295,8 +295,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ActivityDateHelper activityDateHelper,
             ChangeLogsHelper changeLogsHelper,
             ChangeLogsRequestHelper changeLogsRequestHelper,
-            InternalHealthConnectMappings internalHealthConnectMappings,
-            CloudBackupManager cloudBackupManager) {
+            InternalHealthConnectMappings internalHealthConnectMappings) {
         this(
                 transactionManager,
                 deviceConfigManager,
@@ -315,8 +314,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 activityDateHelper,
                 changeLogsHelper,
                 changeLogsRequestHelper,
-                internalHealthConnectMappings,
-                cloudBackupManager);
+                internalHealthConnectMappings);
     }
 
     @VisibleForTesting
@@ -338,8 +336,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ActivityDateHelper activityDateHelper,
             ChangeLogsHelper changeLogsHelper,
             ChangeLogsRequestHelper changeLogsRequestHelper,
-            InternalHealthConnectMappings internalHealthConnectMappings,
-            CloudBackupManager cloudBackupManager) {
+            InternalHealthConnectMappings internalHealthConnectMappings) {
         mAccessLogsHelper = accessLogsHelper;
         mTransactionManager = transactionManager;
         mPreferenceHelper = PreferenceHelper.getInstance();
@@ -396,7 +393,14 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mMigrationEntityHelper = new MigrationEntityHelper();
         mInternalHealthConnectMappings = internalHealthConnectMappings;
         mHealthConnectMappings = internalHealthConnectMappings.getExternalMappings();
-        mCloudBackupManager = cloudBackupManager;
+        mCloudBackupManager =
+                Flags.cloudBackupAndRestore()
+                        ? new CloudBackupManager(
+                                mTransactionManager,
+                                mAppInfoHelper,
+                                mAccessLogsHelper,
+                                mDeviceInfoHelper)
+                        : null;
     }
 
     public void onUserSwitching(UserHandle currentForegroundUser) {
@@ -3111,6 +3115,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Override
     public void getChangesForBackup(
             @Nullable String changeToken, IGetChangesForBackupResponseCallback callback) {
+        if (mCloudBackupManager == null) return;
         checkParamsNonNull(callback);
         final ErrorCallback errorCallback = callback::onError;
         HealthConnectThreadScheduler.scheduleControllerTask(
@@ -3125,6 +3130,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     public void getSettingsForBackup(IGetSettingsForBackupResponseCallback callback) {
+        if (mCloudBackupManager == null) return;
         checkParamsNonNull(callback);
         final ErrorCallback errorCallback = callback::onError;
         HealthConnectThreadScheduler.scheduleControllerTask(

@@ -135,7 +135,6 @@ public class ImportManagerTest {
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME_3);
         mNotificationSender = mock(HealthConnectNotificationSender.class);
-        AppInfoHelper.resetInstanceForTest();
 
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
@@ -175,6 +174,9 @@ public class ImportManagerTest {
             }
         }
         testDir.delete();
+        AppInfoHelper.resetInstanceForTest();
+        AccessLogsHelper.resetInstanceForTest();
+        DeviceInfoHelper.resetInstanceForTest();
     }
 
     @Test
