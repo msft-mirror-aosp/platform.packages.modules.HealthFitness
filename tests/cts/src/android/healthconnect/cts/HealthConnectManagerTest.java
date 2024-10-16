@@ -26,9 +26,7 @@ import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_COMPLETE
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_FAILED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
 import static android.health.connect.HealthConnectManager.isHealthPermission;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
@@ -49,8 +47,6 @@ import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DAT
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
-import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_FHIR_DATA_IMMUNIZATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_FIELD_MISSING_INVALID;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION_ID_EMPTY;
@@ -94,7 +90,6 @@ import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.MedicalResourceId;
-import android.health.connect.MedicalResourceTypeInfo;
 import android.health.connect.ReadMedicalResourcesInitialRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequestUsingIds;
@@ -2278,141 +2273,6 @@ public class HealthConnectManagerTest {
 
         assertThat(receiver.assertAndGetException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testQueryAllMedicalResourceTypeInfos_succeeds() throws InterruptedException {
-        // Create some data sources with data: ds1 contains [immunization, differentImmunization,
-        // allergy], ds2 contains [immunization], and ds3 contains [allergy].
-        MedicalDataSource dataSource1 = createDataSource(getCreateMedicalDataSourceRequest("1"));
-        MedicalDataSource dataSource2 = createDataSource(getCreateMedicalDataSourceRequest("2"));
-        MedicalDataSource dataSource3 = createDataSource(getCreateMedicalDataSourceRequest("3"));
-        Instant upsertTime = Instant.now();
-        upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
-        upsertMedicalData(dataSource1.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
-        upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
-        upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
-        upsertMedicalData(dataSource3.getId(), FHIR_DATA_ALLERGY);
-
-        HealthConnectReceiver<List<MedicalResourceTypeInfo>> receiver =
-                new HealthConnectReceiver<>();
-        SystemUtil.runWithShellPermissionIdentity(
-                () ->
-                        mManager.queryAllMedicalResourceTypeInfos(
-                                Executors.newSingleThreadExecutor(), receiver),
-                MANAGE_HEALTH_DATA);
-
-        List<MedicalResourceTypeInfo> response = receiver.getResponse();
-        for (MedicalResourceTypeInfo info : response) {
-            info.getContributingDataSources()
-                    .forEach(
-                            source -> {
-                                assertThat(source.getLastDataUpdateTime()).isAtLeast(upsertTime);
-                                assertThat(source.getLastDataUpdateTime()).isAtMost(Instant.now());
-                            });
-        }
-        List<MedicalResourceTypeInfo> responseWithoutLastUpdateTime = new ArrayList<>();
-        for (MedicalResourceTypeInfo info : response) {
-            MedicalResourceTypeInfo infoWithoutLastDataUpdateTime =
-                    new MedicalResourceTypeInfo(
-                            info.getMedicalResourceType(),
-                            info.getContributingDataSources().stream()
-                                    .map(
-                                            source ->
-                                                    new MedicalDataSource.Builder(source)
-                                                            .setLastDataUpdateTime(null)
-                                                            .build())
-                                    .collect(Collectors.toSet()));
-            responseWithoutLastUpdateTime.add(infoWithoutLastDataUpdateTime);
-        }
-        assertThat(responseWithoutLastUpdateTime)
-                .containsExactly(
-                        new MedicalResourceTypeInfo(
-                                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
-                                Set.of(dataSource1, dataSource3)),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_CONDITIONS, Set.of()),
-                        new MedicalResourceTypeInfo(
-                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS,
-                                Set.of(dataSource1, dataSource2)),
-                        new MedicalResourceTypeInfo(
-                                MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_MEDICATIONS, Set.of()),
-                        new MedicalResourceTypeInfo(
-                                MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS, Set.of()),
-                        new MedicalResourceTypeInfo(
-                                MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PREGNANCY, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROCEDURES, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_VISITS, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_VITAL_SIGNS, Set.of()));
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testQueryAllMedicalResourceTypeInfos_noDataSources_succeeds()
-            throws InterruptedException {
-        HealthConnectReceiver<List<MedicalResourceTypeInfo>> receiver =
-                new HealthConnectReceiver<>();
-        SystemUtil.runWithShellPermissionIdentity(
-                () ->
-                        mManager.queryAllMedicalResourceTypeInfos(
-                                Executors.newSingleThreadExecutor(), receiver),
-                MANAGE_HEALTH_DATA);
-
-        assertThat(receiver.getResponse())
-                .containsExactly(
-                        new MedicalResourceTypeInfo(
-                                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_CONDITIONS, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, Set.of()),
-                        new MedicalResourceTypeInfo(
-                                MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_MEDICATIONS, Set.of()),
-                        new MedicalResourceTypeInfo(
-                                MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS, Set.of()),
-                        new MedicalResourceTypeInfo(
-                                MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PREGNANCY, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROCEDURES, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_VISITS, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_VITAL_SIGNS, Set.of()));
-    }
-
-    @Test
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testQueryAllMedicalResourceTypeInfos_noMedicalResources_succeeds()
-            throws InterruptedException {
-        createDataSource(getCreateMedicalDataSourceRequest("1"));
-
-        HealthConnectReceiver<List<MedicalResourceTypeInfo>> receiver =
-                new HealthConnectReceiver<>();
-        SystemUtil.runWithShellPermissionIdentity(
-                () ->
-                        mManager.queryAllMedicalResourceTypeInfos(
-                                Executors.newSingleThreadExecutor(), receiver),
-                MANAGE_HEALTH_DATA);
-
-        assertThat(receiver.getResponse())
-                .containsExactly(
-                        new MedicalResourceTypeInfo(
-                                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_CONDITIONS, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS, Set.of()),
-                        new MedicalResourceTypeInfo(
-                                MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_MEDICATIONS, Set.of()),
-                        new MedicalResourceTypeInfo(
-                                MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS, Set.of()),
-                        new MedicalResourceTypeInfo(
-                                MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PREGNANCY, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_PROCEDURES, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_VISITS, Set.of()),
-                        new MedicalResourceTypeInfo(MEDICAL_RESOURCE_TYPE_VITAL_SIGNS, Set.of()));
     }
 
     @Test
