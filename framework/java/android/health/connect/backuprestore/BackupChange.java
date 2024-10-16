@@ -24,7 +24,8 @@ import android.annotation.Nullable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-// TODO(b/369798725): Add tests for the parcelable implementation
+import java.util.Arrays;
+import java.util.Objects;
 
 /** @hide */
 @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
@@ -50,6 +51,23 @@ public final class BackupChange implements Parcelable {
         mVersion = version;
         mIsDeletion = isDeletion;
         mData = data;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BackupChange that)) return false;
+        return mVersion == that.mVersion
+                && mIsDeletion == that.mIsDeletion
+                && mUid.equals(that.mUid)
+                && Arrays.equals(mData, that.mData);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(mUid, mVersion, mIsDeletion);
+        result = 31 * result + Arrays.hashCode(mData);
+        return result;
     }
 
     private BackupChange(Parcel in) {

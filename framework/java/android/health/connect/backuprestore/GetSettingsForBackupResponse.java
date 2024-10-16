@@ -23,7 +23,7 @@ import android.annotation.NonNull;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-// TODO(b/369798725): Add tests for the parcelable implementation
+import java.util.Objects;
 
 /** @hide */
 @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
@@ -37,6 +37,18 @@ public final class GetSettingsForBackupResponse implements Parcelable {
 
     private GetSettingsForBackupResponse(Parcel in) {
         mSettings = in.readParcelable(BackupSettings.class.getClassLoader());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GetSettingsForBackupResponse that)) return false;
+        return mSettings.equals(that.mSettings);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mSettings);
     }
 
     @NonNull
