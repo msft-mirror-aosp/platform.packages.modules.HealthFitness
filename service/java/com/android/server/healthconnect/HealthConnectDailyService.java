@@ -28,7 +28,10 @@ import android.app.job.JobInfo;
 import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
 import android.app.job.JobService;
+import android.content.Context;
 import android.health.connect.Constants;
+import android.health.connect.HealthConnectManager;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.Slog;
 
 import com.android.healthfitness.flags.Flags;
@@ -37,6 +40,11 @@ import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.migration.MigrationStateChangeJob;
 import com.android.server.healthconnect.migration.MigrationStateManager;
+import com.android.server.healthconnect.permission.FirstGrantTimeDatastore;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
+import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
@@ -79,6 +87,8 @@ public class HealthConnectDailyService extends JobService {
             return false;
         }
 
+        Context context = getApplicationContext();
+
         HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper;
         ExportImportSettingsStorage exportImportSettingsStorage;
         PreferenceHelper preferenceHelper;
@@ -89,6 +99,9 @@ public class HealthConnectDailyService extends JobService {
         AccessLogsHelper accessLogsHelper;
         TransactionManager transactionManager;
         ActivityDateHelper activityDateHelper;
+        HealthConnectMappings healthConnectMappings;
+        HealthPermissionIntentAppsTracker permissionIntentTracker;
+        FirstGrantTimeManager firstGrantTimeManager;
 
         if (Flags.dependencyInjection()) {
             HealthConnectInjector healthConnectInjector = HealthConnectInjector.getInstance();
@@ -104,6 +117,9 @@ public class HealthConnectDailyService extends JobService {
             accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
             transactionManager = healthConnectInjector.getTransactionManager();
             activityDateHelper = healthConnectInjector.getActivityDateHelper();
+            healthConnectMappings = healthConnectInjector.getHealthConnectMappings();
+            permissionIntentTracker = healthConnectInjector.getHealthPermissionIntentAppsTracker();
+            firstGrantTimeManager = healthConnectInjector.getFirstGrantTimeManager();
         } else {
             transactionManager = TransactionManager.getInitialisedInstance();
             healthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
@@ -121,7 +137,28 @@ public class HealthConnectDailyService extends JobService {
             appInfoHelper = AppInfoHelper.getInstance();
             accessLogsHelper = AccessLogsHelper.getInstance();
             activityDateHelper = ActivityDateHelper.getInstance();
+            healthConnectMappings = HealthConnectMappings.getInstance();
+            permissionIntentTracker = HealthPermissionIntentAppsTracker.getInstance(context);
+            firstGrantTimeManager =
+                    FirstGrantTimeManager.getInstance(
+                            context,
+                            permissionIntentTracker,
+                            FirstGrantTimeDatastore.createInstance(),
+                            PackageInfoUtils.getInstance(),
+                            healthDataCategoryPriorityHelper,
+                            migrationStateManager);
         }
+
+        HealthConnectPermissionHelper healthConnectPermissionHelper =
+                new HealthConnectPermissionHelper(
+                        context,
+                        context.getPackageManager(),
+                        HealthConnectManager.getHealthPermissions(context),
+                        permissionIntentTracker,
+                        firstGrantTimeManager,
+                        healthDataCategoryPriorityHelper,
+                        appInfoHelper,
+                        healthConnectMappings);
 
         // This service executes each incoming job on a Handler running on the application's
         // main thread. This means that we must offload the execution logic to background executor.
@@ -130,14 +167,15 @@ public class HealthConnectDailyService extends JobService {
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () -> {
                             HealthConnectDailyJobs.execute(
-                                    getApplicationContext(),
+                                    context,
                                     params,
                                     healthDataCategoryPriorityHelper,
                                     preferenceHelper,
                                     appInfoHelper,
                                     accessLogsHelper,
                                     transactionManager,
-                                    activityDateHelper);
+                                    activityDateHelper,
+                                    healthConnectPermissionHelper);
                             jobFinished(params, false);
                         });
                 return true;
@@ -145,7 +183,7 @@ public class HealthConnectDailyService extends JobService {
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () -> {
                             MigrationStateChangeJob.executeMigrationCompletionJob(
-                                    getApplicationContext(),
+                                    context,
                                     preferenceHelper,
                                     healthConnectDeviceConfigManager,
                                     migrationStateManager);
@@ -156,7 +194,7 @@ public class HealthConnectDailyService extends JobService {
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () -> {
                             MigrationStateChangeJob.executeMigrationPauseJob(
-                                    getApplicationContext(),
+                                    context,
                                     preferenceHelper,
                                     healthConnectDeviceConfigManager,
                                     migrationStateManager);
@@ -168,7 +206,7 @@ public class HealthConnectDailyService extends JobService {
                         () -> {
                             boolean isExportSuccessful =
                                     ExportImportJobs.executePeriodicExportJob(
-                                            getApplicationContext(),
+                                            context,
                                             userId,
                                             params.getExtras(),
                                             exportManager,

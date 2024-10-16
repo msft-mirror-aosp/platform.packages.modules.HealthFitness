@@ -28,6 +28,7 @@ import android.healthconnect.cts.HostSideTestUtil;
 
 import com.android.os.StatsLog;
 import com.android.os.healthfitness.api.ApiExtensionAtoms;
+import com.android.os.healthfitness.api.HealthConnectPermissionStats;
 import com.android.os.healthfitness.api.HealthConnectStorageStats;
 import com.android.os.healthfitness.api.HealthConnectUsageStats;
 import com.android.tradefed.build.IBuildInfo;
@@ -305,6 +306,35 @@ public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements 
                         .getExtension(ApiExtensionAtoms.healthConnectUsageStats);
 
         assertThat(atom.getIsMonthlyActiveUser()).isFalse();
+    }
+
+    public void testPermissionStats() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+
+        List<String> testAppPermissions =
+                List.of(
+                        "WRITE_BLOOD_PRESSURE",
+                        "WRITE_HEART_RATE",
+                        "WRITE_STEPS",
+                        "READ_BLOOD_PRESSURE",
+                        "READ_HEART_RATE");
+
+        ConfigUtils.uploadConfigForPushedAtoms(
+                getDevice(),
+                TEST_APP_PKG_NAME,
+                new int[] {ApiExtensionAtoms.HEALTH_CONNECT_PERMISSION_STATS_FIELD_NUMBER});
+        List<StatsLog.EventMetricData> data =
+                getEventMetricDataList(/* testName= */ null, NUMBER_OF_RETRIES);
+        assertThat(data.size()).isAtLeast(1);
+        HealthConnectPermissionStats atom =
+                data.get(data.size() - 1)
+                        .getAtom()
+                        .getExtension(ApiExtensionAtoms.healthConnectPermissionStats);
+
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
+        assertThat(atom.getPermissionNameList()).isEqualTo(testAppPermissions);
     }
 
     private List<StatsLog.EventMetricData> getEventMetricDataList(String testName, int retryCount)
