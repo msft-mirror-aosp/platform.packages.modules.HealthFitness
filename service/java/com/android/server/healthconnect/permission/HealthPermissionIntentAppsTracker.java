@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.permission;
 
+import android.annotation.Nullable;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -47,10 +48,12 @@ public class HealthPermissionIntentAppsTracker {
     private final PackageManager mPackageManager;
     private final Object mLock = new Object();
 
+    @Nullable private static HealthPermissionIntentAppsTracker sHealthPermissionIntentAppsTracker;
+
     @GuardedBy("mLock")
     private Map<UserHandle, Set<String>> mUserToHealthPackageNamesMap;
 
-    public HealthPermissionIntentAppsTracker(Context context) {
+    private HealthPermissionIntentAppsTracker(Context context) {
         mPackageManager = context.getPackageManager();
         initPerUserMapping(context);
     }
@@ -175,5 +178,17 @@ public class HealthPermissionIntentAppsTracker {
                 Log.d(TAG, mUserToHealthPackageNamesMap.toString());
             }
         }
+    }
+
+    public static synchronized HealthPermissionIntentAppsTracker getInstance(Context context) {
+        if (sHealthPermissionIntentAppsTracker == null) {
+            sHealthPermissionIntentAppsTracker = new HealthPermissionIntentAppsTracker(context);
+        }
+        return sHealthPermissionIntentAppsTracker;
+    }
+
+    /** Used to reset instance for testing. */
+    public static void resetInstanceForTest() {
+        sHealthPermissionIntentAppsTracker = null;
     }
 }
