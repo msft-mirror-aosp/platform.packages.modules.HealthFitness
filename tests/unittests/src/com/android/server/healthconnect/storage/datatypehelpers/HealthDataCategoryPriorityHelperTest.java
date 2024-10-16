@@ -53,7 +53,9 @@ import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.TestUtils;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -68,6 +70,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -112,11 +115,19 @@ public class HealthDataCategoryPriorityHelperTest {
     @Mock private PackageInfo mPackageInfo2;
     @Mock private PackageInfo mPackageInfo3;
     @Mock private PreferenceHelper mPreferenceHelper;
+
+    // TODO(b/373322447): Remove the mock FirstGrantTimeManager
+    @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
+    // TODO(b/373322447):  HealthPermissionIntentAppsTracker
+    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
+
     private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     private Context mContext;
 
     @Before
     public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+
         when(mTransactionManager.read(any())).thenReturn(mCursor);
         when(mTransactionManager.getCurrentUserHandle()).thenReturn(UserHandle.CURRENT);
         when(mAppInfoHelper.getOrInsertAppInfoId(eq(APP_PACKAGE_NAME), any()))
@@ -142,7 +153,10 @@ public class HealthDataCategoryPriorityHelperTest {
 
         mContext = InstrumentationRegistry.getInstrumentation().getContext();
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mContext).build();
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .build();
         HealthDataCategoryPriorityHelper.clearInstanceForTest();
         mHealthDataCategoryPriorityHelper =
                 HealthDataCategoryPriorityHelper.getInstance(

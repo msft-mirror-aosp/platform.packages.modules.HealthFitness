@@ -17,6 +17,7 @@
 package android.healthconnect.cts.lib;
 
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesInitialRequest;
@@ -95,6 +96,10 @@ public final class BundleHelper {
             PREFIX + "READ_MEDICAL_RESOURCES_BY_REQUEST_QUERY";
     public static final String READ_MEDICAL_RESOURCES_BY_IDS_QUERY =
             PREFIX + "READ_MEDICAL_RESOURCES_BY_IDS_QUERY";
+    public static final String DELETE_MEDICAL_RESOURCES_BY_REQUEST_QUERY =
+            PREFIX + "DELETE_MEDICAL_RESOURCES_BY_REQUEST_QUERY";
+    public static final String DELETE_MEDICAL_RESOURCES_BY_IDS_QUERY =
+            PREFIX + "DELETE_MEDICAL_RESOURCES_BY_IDS_QUERY";
 
     private static final String CREATE_MEDICAL_DATA_SOURCE_REQUEST =
             PREFIX + "CREATE_MEDICAL_DATA_SOURCE_REQUEST";
@@ -120,6 +125,8 @@ public final class BundleHelper {
     public static final String MEDICAL_RESOURCES_RESPONSE = PREFIX + "MEDICAL_RESOURCE_RESPONSE";
     public static final String READ_MEDICAL_RESOURCES_RESPONSE =
             PREFIX + "READ_MEDICAL_RESOURCES_RESPONSE";
+    private static final String DELETE_MEDICAL_RESOURCES_REQUEST =
+            PREFIX + "DELETE_MEDICAL_RESOURCES_REQUEST";
 
     public static final String SELF_REVOKE_PERMISSION_REQUEST =
             PREFIX + "SELF_REVOKE_PERMISSION_REQUEST";
@@ -597,10 +604,24 @@ public final class BundleHelper {
         return bundle.getParcelableArrayList(MEDICAL_RESOURCE_IDS, MedicalResourceId.class);
     }
 
-    /** Converts a list of {@link MedicalResourceId}s into a bundle. */
-    public static Bundle fromMedicalResourceIds(List<MedicalResourceId> ids) {
+    /**
+     * Converts a list of {@link MedicalResourceId}s into a bundle with QUERY_TYPE set to
+     * READ_MEDICAL_RESOURCES_BY_IDS_QUERY
+     */
+    public static Bundle fromMedicalResourceIdsForRead(List<MedicalResourceId> ids) {
         Bundle bundle = new Bundle();
         bundle.putString(QUERY_TYPE, READ_MEDICAL_RESOURCES_BY_IDS_QUERY);
+        bundle.putParcelableArrayList(MEDICAL_RESOURCE_IDS, new ArrayList<>(ids));
+        return bundle;
+    }
+
+    /**
+     * Converts a list of {@link MedicalResourceId}s into a bundle with QUERY_TYPE set to
+     * DELETE_MEDICAL_RESOURCES_BY_IDS_QUERY
+     */
+    public static Bundle fromMedicalResourceIdsForDelete(List<MedicalResourceId> ids) {
+        Bundle bundle = new Bundle();
+        bundle.putString(QUERY_TYPE, DELETE_MEDICAL_RESOURCES_BY_IDS_QUERY);
         bundle.putParcelableArrayList(MEDICAL_RESOURCE_IDS, new ArrayList<>(ids));
         return bundle;
     }
@@ -636,6 +657,20 @@ public final class BundleHelper {
     public static Bundle fromReadMedicalResourcesResponse(ReadMedicalResourcesResponse response) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(READ_MEDICAL_RESOURCES_RESPONSE, response);
+        return bundle;
+    }
+
+    /** Converts a {@link DeleteMedicalResourcesRequest} from a bundle. */
+    public static DeleteMedicalResourcesRequest toDeleteMedicalResourcesRequest(Bundle bundle) {
+        return bundle.getParcelable(
+                DELETE_MEDICAL_RESOURCES_REQUEST, DeleteMedicalResourcesRequest.class);
+    }
+
+    /** Converts a {@link DeleteMedicalResourcesRequest} into a bundle. */
+    public static Bundle fromDeleteMedicalResourcesRequest(DeleteMedicalResourcesRequest request) {
+        Bundle bundle = new Bundle();
+        bundle.putString(QUERY_TYPE, DELETE_MEDICAL_RESOURCES_BY_REQUEST_QUERY);
+        bundle.putParcelable(DELETE_MEDICAL_RESOURCES_REQUEST, request);
         return bundle;
     }
 

@@ -27,6 +27,9 @@ import com.android.server.healthconnect.backuprestore.CloudBackupManager;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
+import com.android.server.healthconnect.permission.FirstGrantTimeDatastore;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -69,6 +72,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final ChangeLogsHelper mChangeLogsHelper;
     private final ChangeLogsRequestHelper mChangeLogsRequestHelper;
     private final CloudBackupManager mCloudBackupManager;
+    private final FirstGrantTimeManager mFirstGrantTimeManager;
+    private final HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -76,10 +81,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
 
     private HealthConnectInjectorImpl(Builder builder) {
         HealthConnectUserContext healthConnectUserContext = builder.mHealthConnectUserContext;
+        Context context = builder.mContext;
+
         mHealthConnectDeviceConfigManager =
                 builder.mHealthConnectDeviceConfigManager == null
-                        ? HealthConnectDeviceConfigManager.initializeInstance(
-                                healthConnectUserContext)
+                        ? HealthConnectDeviceConfigManager.initializeInstance(context)
                         : builder.mHealthConnectDeviceConfigManager;
         mTransactionManager =
                 builder.mTransactionManager == null
@@ -98,7 +104,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         ? PreferenceHelper.getInstance(mTransactionManager)
                         : builder.mPreferenceHelper;
         mHealthConnectMappings = HealthConnectMappings.getInstance();
-        mInternalHealthConnectMappings = new InternalHealthConnectMappings(mHealthConnectMappings);
+        mInternalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
         mHealthDataCategoryPriorityHelper =
                 builder.mHealthDataCategoryPriorityHelper == null
                         ? HealthDataCategoryPriorityHelper.getInstance(
@@ -121,7 +127,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         mExportManager =
                 builder.mExportManager == null
                         ? new ExportManager(
-                                healthConnectUserContext,
+                                context,
                                 Clock.systemUTC(),
                                 mExportImportSettingsStorage,
                                 mTransactionManager)
@@ -157,6 +163,22 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mCloudBackupManager == null
                         ? new CloudBackupManager()
                         : builder.mCloudBackupManager;
+        mPermissionIntentAppsTracker =
+                builder.mPermissionIntentAppsTracker == null
+                        ? HealthPermissionIntentAppsTracker.getInstance(context)
+                        : builder.mPermissionIntentAppsTracker;
+        mFirstGrantTimeManager =
+                builder.mFirstGrantTimeManager == null
+                        ? FirstGrantTimeManager.getInstance(
+                                context,
+                                mPermissionIntentAppsTracker,
+                                builder.mFirstGrantTimeDatastore == null
+                                        ? FirstGrantTimeDatastore.createInstance()
+                                        : builder.mFirstGrantTimeDatastore,
+                                mPackageInfoUtils,
+                                mHealthDataCategoryPriorityHelper,
+                                mMigrationStateManager)
+                        : builder.mFirstGrantTimeManager;
     }
 
     @Override
@@ -249,6 +271,16 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         return mCloudBackupManager;
     }
 
+    @Override
+    public FirstGrantTimeManager getFirstGrantTimeManager() {
+        return mFirstGrantTimeManager;
+    }
+
+    @Override
+    public HealthPermissionIntentAppsTracker getHealthPermissionIntentAppsTracker() {
+        return mPermissionIntentAppsTracker;
+    }
+
     /**
      * Returns a new Builder of Health Connect Injector
      *
@@ -267,6 +299,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     public static class Builder {
 
         private final HealthConnectUserContext mHealthConnectUserContext;
+        private final Context mContext;
 
         @Nullable private PackageInfoUtils mPackageInfoUtils;
         @Nullable private TransactionManager mTransactionManager;
@@ -284,8 +317,12 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private ChangeLogsHelper mChangeLogsHelper;
         @Nullable private ChangeLogsRequestHelper mChangeLogsRequestHelper;
         @Nullable private CloudBackupManager mCloudBackupManager;
+        @Nullable private FirstGrantTimeManager mFirstGrantTimeManager;
+        @Nullable private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
+        @Nullable private FirstGrantTimeDatastore mFirstGrantTimeDatastore;
 
         private Builder(Context context) {
+            mContext = context;
             mHealthConnectUserContext = new HealthConnectUserContext(context, context.getUser());
         }
 
@@ -401,6 +438,28 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         public Builder setCloudBackupManager(CloudBackupManager cloudBackupManager) {
             Objects.requireNonNull(cloudBackupManager);
             mCloudBackupManager = cloudBackupManager;
+            return this;
+        }
+
+        /** Set fake or custom {@link FirstGrantTimeManager} */
+        public Builder setFirstGrantTimeManager(FirstGrantTimeManager firstGrantTimeManager) {
+            Objects.requireNonNull(firstGrantTimeManager);
+            mFirstGrantTimeManager = firstGrantTimeManager;
+            return this;
+        }
+
+        /** Set fake or custom {@link FirstGrantTimeDatastore} */
+        public Builder setFirstGrantTimeDatastore(FirstGrantTimeDatastore firstGrantTimeDatastore) {
+            Objects.requireNonNull(firstGrantTimeDatastore);
+            mFirstGrantTimeDatastore = firstGrantTimeDatastore;
+            return this;
+        }
+
+        /** Set fake or custom {@link HealthPermissionIntentAppsTracker} */
+        public Builder setHealthPermissionIntentAppsTracker(
+                HealthPermissionIntentAppsTracker healthPermissionIntentAppsTracker) {
+            Objects.requireNonNull(healthPermissionIntentAppsTracker);
+            mPermissionIntentAppsTracker = healthPermissionIntentAppsTracker;
             return this;
         }
 
