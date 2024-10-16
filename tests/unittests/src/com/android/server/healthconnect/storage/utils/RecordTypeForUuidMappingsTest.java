@@ -16,7 +16,7 @@
 
 package healthconnect.storage.utils;
 
-import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -36,10 +36,12 @@ public class RecordTypeForUuidMappingsTest {
 
     @Rule public final Expect mExpect = Expect.create();
 
+    private final HealthConnectMappings mHealthConnectMappings = new HealthConnectMappings();
+
     @Test
     public void testForEveryInternalRecordTypeReturnsDistinctResult() {
         final Set<Integer> resultTypeIds = new HashSet<>();
-        for (Integer recordTypeId : RecordTypeIdentifier.VALID_TYPES) {
+        for (Integer recordTypeId : mHealthConnectMappings.getAllRecordTypeIdentifiers()) {
             final int resultTypeId = RecordTypeForUuidMappings.getRecordTypeIdForUuid(recordTypeId);
             mExpect.that(resultTypeIds).doesNotContain(resultTypeId);
             resultTypeIds.add(resultTypeId);

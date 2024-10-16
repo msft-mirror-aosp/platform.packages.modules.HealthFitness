@@ -18,17 +18,27 @@ package android.healthconnect.cts.phr;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_BACKGROUND_APP;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_FOREGROUND_APP;
+import static android.healthconnect.cts.utils.DataFactory.MAXIMUM_PAGE_SIZE;
+import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermissions;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
 import static android.healthconnect.cts.utils.PermissionHelper.revokePermission;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
+import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
+import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
+import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
 
+import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 
@@ -37,9 +47,12 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
 import android.health.connect.HealthConnectException;
+import android.health.connect.HealthConnectManager;
+import android.health.connect.MedicalResourceId;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 import android.platform.test.annotations.RequiresFlagsEnabled;
@@ -54,7 +67,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
@@ -69,19 +86,190 @@ public class ReadMedicalResourcesByIdsCtsTest {
 
     private PhrCtsTestUtils mUtil;
 
+    private HealthConnectManager mManager;
+
     @Before
-    public void before() throws InterruptedException {
+    public void setUp() throws InterruptedException {
         // To make sure we don't leave any state behind after running each test.
         revokeAllPermissions(PHR_BACKGROUND_APP.getPackageName(), "to test specific permissions");
         revokeAllPermissions(PHR_FOREGROUND_APP.getPackageName(), "to test specific permissions");
         TestUtils.deleteAllStagedRemoteData();
         mUtil = new PhrCtsTestUtils(TestUtils.getHealthConnectManager());
         mUtil.deleteAllMedicalData();
+        mManager = TestUtils.getHealthConnectManager();
     }
 
     @After
     public void after() throws InterruptedException {
         mUtil.deleteAllMedicalData();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResourcesByIds_migrationInProgress_apiBlocked()
+            throws InterruptedException {
+        MedicalDataSource dataSource =
+                mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalResource immunization =
+                mUtil.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+
+        startMigrationWithShellPermissionIdentity();
+        mManager.readMedicalResources(List.of(immunization.getId()), executor, receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
+        finishMigrationWithShellPermissionIdentity();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testReadMedicalResourcesByIds_emptyIds_returnsEmptyList()
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+
+        mManager.readMedicalResources(List.of(), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testReadMedicalResourcesByIds_exceedsMaxPageSize_throws() {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        List<MedicalResourceId> ids = new ArrayList<>(MAXIMUM_PAGE_SIZE + 1);
+        for (int i = 0; i < MAXIMUM_PAGE_SIZE + 1; i++) {
+            ids.add(
+                    new MedicalResourceId(
+                            UUID.randomUUID().toString(),
+                            FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                            FHIR_RESOURCE_ID_IMMUNIZATION));
+        }
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mManager.readMedicalResources(
+                                ids, Executors.newSingleThreadExecutor(), receiver));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResourcesByIds_invalidResourceTypeByReflection_throws()
+            throws NoSuchFieldException, IllegalAccessException {
+        MedicalResourceId id =
+                new MedicalResourceId(
+                        DATA_SOURCE_ID,
+                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                        FHIR_RESOURCE_ID_IMMUNIZATION);
+
+        setFieldValueUsingReflection(id, "mFhirResourceType", 100);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mManager.readMedicalResources(
+                                List.of(id),
+                                Executors.newSingleThreadExecutor(),
+                                new HealthConnectReceiver<>()));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResourcesByIds_invalidDataSourceIdByReflection_throws()
+            throws NoSuchFieldException, IllegalAccessException {
+        MedicalResourceId id =
+                new MedicalResourceId(
+                        DATA_SOURCE_ID,
+                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                        FHIR_RESOURCE_ID_IMMUNIZATION);
+
+        setFieldValueUsingReflection(id, "mDataSourceId", "invalid id");
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        mManager.readMedicalResources(
+                                List.of(id),
+                                Executors.newSingleThreadExecutor(),
+                                new HealthConnectReceiver<>()));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResourcesByIds_noData_returnsEmptyList()
+            throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        List<MedicalResourceId> ids = List.of(getMedicalResourceId());
+
+        mManager.readMedicalResources(ids, Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse()).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResourcesByIds_happyPath_succeeds() throws InterruptedException {
+        // Create two data sources.
+        MedicalDataSource dataSource1 =
+                mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 =
+                mUtil.createDataSource(getCreateMedicalDataSourceRequest("2"));
+        // Insert 3 Immunizations and 1 Allergy.
+        MedicalResource immunization1 =
+                mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource immunization2 =
+                mUtil.upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        // Immunization 3 will not be checked for, but inserted to check that everything isn't read.
+        mUtil.upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource allergy = mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+
+        mManager.readMedicalResources(
+                List.of(
+                        immunization1.getId(),
+                        immunization2.getId(),
+                        // leave out 3
+                        allergy.getId()),
+                Executors.newSingleThreadExecutor(),
+                receiver);
+
+        assertThat(receiver.getResponse()).containsExactly(immunization1, immunization2, allergy);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResourcesByIds_happyPathWithManageHealthDataPermission_succeeds()
+            throws InterruptedException {
+        // Create two data sources.
+        MedicalDataSource dataSource1 =
+                mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
+        MedicalDataSource dataSource2 =
+                mUtil.createDataSource(getCreateMedicalDataSourceRequest("2"));
+        // Insert 3 Immunizations and 1 Allergy.
+        MedicalResource immunization1 =
+                mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource immunization2 =
+                mUtil.upsertMedicalData(dataSource2.getId(), DIFFERENT_FHIR_DATA_IMMUNIZATION);
+        // Immunization 3 will not be checked for, but inserted to check that everything isn't read.
+        mUtil.upsertMedicalData(dataSource2.getId(), FHIR_DATA_IMMUNIZATION);
+        MedicalResource allergy = mUtil.upsertMedicalData(dataSource1.getId(), FHIR_DATA_ALLERGY);
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+
+        runWithShellPermissionIdentity(
+                () ->
+                        mManager.readMedicalResources(
+                                List.of(
+                                        immunization1.getId(),
+                                        immunization2.getId(),
+                                        // leave out 3
+                                        allergy.getId()),
+                                Executors.newSingleThreadExecutor(),
+                                receiver),
+                MANAGE_HEALTH_DATA);
+
+        assertThat(receiver.getResponse()).containsExactly(immunization1, immunization2, allergy);
     }
 
     @Test
