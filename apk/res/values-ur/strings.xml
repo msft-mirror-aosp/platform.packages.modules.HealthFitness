@@ -362,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> پس منظر اور ماضی کے ڈیٹا سمیت، Health Connect سے مزید ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nیہ دوسری اجازتیں جو اس ایپ کی ہو سکتی ہیں، جیسے کیمرا، مائیکروفون یا مقام کو متاثر نہیں کرتی ہے۔"</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> پر موجود تندرستی کا ڈیٹا اور صحت کے ریکارڈز کو بھی Health Connect سے حذف کریں"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"اس ایپ کی اجازتیں ہٹائی گئیں"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"تمام Health Connect ڈیٹا کو بھی حذف کریں"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"اگلا دن"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"منتخب کردہ یوم"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"پچھلا دن"</string>
@@ -1074,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"ایپ کے مآخذ میں ترمیم کریں"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"آلہ ڈیفالٹ"</string>
     <string name="app_data_title" msgid="6499967982291000837">"ایپ کا ڈیٹا"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"<xliff:g id="APP_NAME">%1$s</xliff:g> کا ڈیٹا یہاں دکھائی دے گا"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"‫Health Connect تک رسائی والی ایپس کا ڈیٹا یہاں ظاہر ہوگا"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"دن"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"ہفتہ"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"مہینہ"</string>
@@ -1123,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> کے ہفتے کے لیے <xliff:g id="APP_NAME">%1$s</xliff:g> کے منتخب اندراجات کو مستقل طور پر حذف کریں؟"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> کے لیے <xliff:g id="APP_NAME">%1$s</xliff:g> کے منتخب اندراجات کو مستقل طور پر حذف کریں؟"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"مستقل طور پر اس <xliff:g id="APP_NAME">%s</xliff:g> کے اندراج کو حذف کریں؟"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g> کے لیے <xliff:g id="DATA_TYPE">%1$s</xliff:g> ڈیٹا کو مستقل طور پر حذف کریں؟"</string>
 </resources>

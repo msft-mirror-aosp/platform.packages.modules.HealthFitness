@@ -23,8 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"داده‌های سلامتی و تناسب اندام را در دستگاهتان مدیریت کنید و کنترل کنید کدام برنامه‌ها می‌توانند به این داده‌ها دسترسی داشته باشند"</string>
     <string name="data_title" msgid="4456619761533380816">"داده‌ها و دسترسی"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"مرور سوابق سلامتی"</string>
-    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
-    <skip />
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"سوابق سلامتی خود و برنامه‌هایی را که می‌توانند به آن‌ها دسترسی داشته باشند مشاهده کنید"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"همه دسته‌ها"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"دیدن همه دسته‌ها"</string>
     <string name="no_data" msgid="1906986019249068659">"داده‌ای وجود ندارد"</string>
@@ -363,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> دیگر نمی‌تواند داده‌های Health Connect شامل داده‌های پس‌زمینه و داده‌های قبلی را بخواند یا بنویسد.\n\nاین تنظیم بر دیگر اجازه‌هایی که این برنامه ممکن است داشته باشد (مثلاً دوربین، میکروفون، یا مکان) اثر نمی‌گذارد."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"داده‌های تناسب اندام و سابقه‌های سلامتی <xliff:g id="APP_NAME">%1$s</xliff:g> نیز از Health Connect حذف شود"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"اجازه‌های این برنامه برداشته شد"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"همه داده‌های Health Connect نیز حذف شود"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"روز بعد"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"روز انتخاب‌شده"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"روز قبل"</string>
@@ -403,8 +403,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"دسترسی برنامه"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"درحال‌حاضر هیچ برنامه سازگاری نصب نکرده‌اید"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"دسترسی اضافی"</string>
-    <!-- no translation found for additional_access_summary (1076197455435130191) -->
-    <skip />
+    <string name="additional_access_summary" msgid="1076197455435130191">"داده‌های قبلی، داده‌های پس‌زمینه"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"اجازه‌های اضافی این برنامه برداشته شد"</string>
     <string name="permissions_header" msgid="6519976063360071569">"اجازه‌ها"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"تناسب اندام و تندرستی"</string>
@@ -605,11 +604,9 @@
     <string name="flow_light" msgid="1937543318146228793">"خون‌ریزی کم"</string>
     <string name="flow_medium" msgid="3783688724668943154">"خون‌ریزی متوسط"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"خون‌ریزی زیاد"</string>
-    <!-- no translation found for flow_unknown (1634411759928572900) -->
-    <skip />
+    <string name="flow_unknown" msgid="1634411759928572900">"جریان نامشخص"</string>
     <string name="period_day" msgid="3821944462093965882">"روز <xliff:g id="DAY">%1$d</xliff:g> از <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> روز عادت ماهانه"</string>
-    <!-- no translation found for period_length (2257138792780916599) -->
-    <skip />
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{قاعدگی (۱ روز)}one{قاعدگی (# روز)}other{قاعدگی (# روز)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"مثبت"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"منفی"</string>
     <string name="ovulation_high" msgid="205362931427158291">"بالا"</string>
@@ -1078,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"ویرایش منابع برنامه"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"پیش‌فرض دستگاه"</string>
     <string name="app_data_title" msgid="6499967982291000837">"داده‌های برنامه"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"داده‌های «<xliff:g id="APP_NAME">%1$s</xliff:g>» در اینجا نشان داده خواهد شد"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"داده‌های برنامه‌هایی که به Health Connect دسترسی دارند در اینجا نشان داده خواهد شد"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"روز"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"هفته"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"ماه"</string>
@@ -1127,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"ورودی‌های انتخابی «<xliff:g id="APP_NAME">%1$s</xliff:g>» برای هفته <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> به‌طور دائمی حذف شود؟"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"ورودی‌های انتخابی «<xliff:g id="APP_NAME">%1$s</xliff:g>» برای <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> به‌طور دائمی حذف شود؟"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"این ورودی «<xliff:g id="APP_NAME">%s</xliff:g>» به‌طور دائمی حذف شود؟"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"داده‌های <xliff:g id="DATA_TYPE">%1$s</xliff:g> مربوط به «<xliff:g id="APP_NAME">%2$s</xliff:g>» برای همیشه حذف شود؟"</string>
 </resources>

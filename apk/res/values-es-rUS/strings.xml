@@ -332,21 +332,14 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Si otorgas acceso de lectura, la app podrá leer los datos nuevos y los de los últimos 30 días"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Si otorgas acceso de lectura, la app podrá leer datos nuevos y antiguos"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"¿Quieres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a Health Connect?"</string>
-    <!-- no translation found for request_permissions_rationale (2642076968583316986) -->
-    <skip />
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"Consulta cómo <xliff:g id="APP_NAME">%1$s</xliff:g> administra tus datos en su <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"política de privacidad"</string>
-    <!-- no translation found for medical_request_header (2300521519021510027) -->
-    <skip />
-    <!-- no translation found for medical_request_header_desc (5721171305631983663) -->
-    <skip />
-    <!-- no translation found for medical_request_about_health_records (7204918218748362687) -->
-    <skip />
-    <!-- no translation found for medical_request_data_to_share (2208383833492573960) -->
-    <skip />
-    <!-- no translation found for medical_request_share (6237397362923728514) -->
-    <skip />
-    <!-- no translation found for medical_request_footer (6533749932770903089) -->
-    <skip />
+    <string name="medical_request_header" msgid="2300521519021510027">"¿Quieres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a tus registros de salud?"</string>
+    <string name="medical_request_header_desc" msgid="5721171305631983663">"Si otorgas acceso, la app podrá leer y escribir datos como alergias, resultados de laboratorio, vacunas y más.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"Información sobre los registros de salud"</string>
+    <string name="medical_request_data_to_share" msgid="2208383833492573960">"Datos para compartir"</string>
+    <string name="medical_request_share" msgid="6237397362923728514">"Si lo permites, <xliff:g id="APP_NAME">%1$s</xliff:g> podrá compartir tus registros de salud con Health Connect."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"Sincroniza los registros de salud de diferentes apps y fuentes para tenerlos en un solo lugar"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"¿Quieres quitar todos los permisos?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Quitar todo"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ya no podrá leer ni escribir datos de Health Connect.\n\nEsto no afecta otros permisos que la app pueda tener, como la cámara, el micrófono o la ubicación."</string>
@@ -369,6 +362,8 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> ya no podrá leer ni escribir datos de Health Connect, incluidos los datos anteriores y en segundo plano.\n\nEsto no afecta otros permisos que la app pueda tener, como la cámara, el micrófono o la ubicación."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"También borrar los datos de actividad física y los registros de salud de <xliff:g id="APP_NAME">%1$s</xliff:g> de Health Connect"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Se quitaron los permisos para esta app"</string>
+    <!-- no translation found for disconnect_all_app_permissions_dialog_checkbox (2927403999111348272) -->
+    <skip />
     <string name="navigation_next_day" msgid="8853443471183944219">"Día siguiente"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Día seleccionado"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Día anterior"</string>
@@ -1081,10 +1076,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Editar fuentes de app"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Opción predeterminada del dispositivo"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Datos de app"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Aquí se mostrarán datos de <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Aquí se mostrará la información de apps con acceso a Health Connect"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Día"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Semana"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Mes"</string>
@@ -1130,6 +1123,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"¿Quieres borrar de forma permanente las entradas seleccionadas de <xliff:g id="APP_NAME">%1$s</xliff:g> de la semana del <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"¿Quieres borrar de forma permanente las entradas seleccionadas de <xliff:g id="APP_NAME">%1$s</xliff:g> del <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"¿Quieres borrar de forma permanente esta entrada de <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"¿Quieres borrar de forma permanente los datos de <xliff:g id="DATA_TYPE">%1$s</xliff:g> de <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
 </resources>
