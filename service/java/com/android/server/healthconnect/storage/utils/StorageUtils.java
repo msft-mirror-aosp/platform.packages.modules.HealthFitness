@@ -30,7 +30,6 @@ import static com.android.internal.annotations.VisibleForTesting.Visibility.PRIV
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.CLIENT_RECORD_ID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.UUID_COLUMN_NAME;
-import static com.android.server.healthconnect.storage.utils.RecordTypeForUuidMappings.getRecordTypeIdForUuid;
 
 import static java.util.Objects.requireNonNull;
 
@@ -352,7 +351,9 @@ public final class StorageUtils {
                                         + Integer.BYTES
                                         + clientRecordIdBytes.length)
                         .put(packageNameBytes)
-                        .putInt(getRecordTypeIdForUuid(recordTypeId))
+                        .putInt(
+                                InternalHealthConnectMappings.getInstance()
+                                        .getRecordTypeIdForUuid(recordTypeId))
                         .put(clientRecordIdBytes)
                         .array();
         return UUID.nameUUIDFromBytes(bytes);
