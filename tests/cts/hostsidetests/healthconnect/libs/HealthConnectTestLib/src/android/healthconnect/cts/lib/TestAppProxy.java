@@ -242,6 +242,12 @@ public class TestAppProxy {
         getFromTestApp(requestBundle);
     }
 
+    /** Deletes Medical Data Source with data for the provided {@code id} on behalf of the app. */
+    public void deleteMedicalDataSourceWithData(String id) throws Exception {
+        Bundle requestBundle = BundleHelper.fromMedicalDataSourceId(id);
+        getFromTestApp(requestBundle);
+    }
+
     /** Instructs the app to self-revokes the specified permission. */
     public void selfRevokePermission(String permission) throws Exception {
         Bundle requestBundle = BundleHelper.forSelfRevokePermissionRequest(permission);

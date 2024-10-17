@@ -100,6 +100,8 @@ public final class BundleHelper {
             PREFIX + "DELETE_MEDICAL_RESOURCES_BY_REQUEST_QUERY";
     public static final String DELETE_MEDICAL_RESOURCES_BY_IDS_QUERY =
             PREFIX + "DELETE_MEDICAL_RESOURCES_BY_IDS_QUERY";
+    public static final String DELETE_MEDICAL_DATA_SOURCE_WITH_DATA_QUERY =
+            PREFIX + "DELETE_MEDICAL_DATA_SOURCE_WITH_DATA_QUERY";
 
     private static final String CREATE_MEDICAL_DATA_SOURCE_REQUEST =
             PREFIX + "CREATE_MEDICAL_DATA_SOURCE_REQUEST";
@@ -460,6 +462,19 @@ public final class BundleHelper {
         bundle.putString(QUERY_TYPE, CREATE_MEDICAL_DATA_SOURCE_QUERY);
         bundle.putParcelable(CREATE_MEDICAL_DATA_SOURCE_REQUEST, request);
         return bundle;
+    }
+
+    /** Converts one UUID string into a bundle. */
+    public static Bundle fromMedicalDataSourceId(String id) {
+        Bundle bundle = new Bundle();
+        bundle.putString(QUERY_TYPE, DELETE_MEDICAL_DATA_SOURCE_WITH_DATA_QUERY);
+        bundle.putString(MEDICAL_DATA_SOURCE_ID, id);
+        return bundle;
+    }
+
+    /** Converts one UUID strings back from a bundle. */
+    public static String toMedicalDataSourceId(Bundle bundle) {
+        return bundle.getString(MEDICAL_DATA_SOURCE_ID);
     }
 
     /** Converts a list of UUID strings into a bundle. */
