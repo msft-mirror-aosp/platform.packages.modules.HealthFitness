@@ -37,7 +37,6 @@ import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentat
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import android.content.AttributionSource;
@@ -68,6 +67,11 @@ public class DataPermissionEnforcerTest {
 
     @Mock private HealthConnectDeviceConfigManager mDeviceConfigManager;
 
+    // TODO(b/373322447): Remove the mock FirstGrantTimeManager
+    @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
+    // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
+    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
+
     private AttributionSource mAttributionSource;
 
     private DataPermissionEnforcer mDataPermissionEnforcer;
@@ -82,9 +86,8 @@ public class DataPermissionEnforcerTest {
         when(mContext.getUser()).thenReturn(UserHandle.CURRENT);
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(getInstrumentation().getContext())
-                        .setHealthPermissionIntentAppsTracker(
-                                mock(HealthPermissionIntentAppsTracker.class))
-                        .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .build();
 
         mDataPermissionEnforcer =
