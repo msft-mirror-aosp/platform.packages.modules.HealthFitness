@@ -16,9 +16,32 @@
 package android.healthconnect.cts.phr;
 
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_CONDITIONS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_LABORATORY_RESULTS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_MEDICATIONS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PRACTITIONER_DETAILS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PREGNANCY;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_PROCEDURES;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_SOCIAL_HISTORY;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VISITS;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VITAL_SIGNS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_BACKGROUND_APP;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_FOREGROUND_APP;
 import static android.healthconnect.cts.utils.DataFactory.MAXIMUM_PAGE_SIZE;
@@ -43,6 +66,7 @@ import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import static org.junit.Assert.assertThrows;
 
@@ -69,6 +93,7 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -642,5 +667,56 @@ public class ReadMedicalResourcesByIdsCtsTest {
 
         // Then it only receives its own immunization resources
         assertThat(responseResources).containsExactly(backgroundAppImmunization);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadPermissionMapping_eachPermissionOnlyGivesAccessToSpecificData()
+            throws Exception {
+        List<MedicalResourceId> allInsertedIds =
+                mUtil.insertSourceAndOneResourcePerPermissionCategory(PHR_BACKGROUND_APP);
+        Map<String, Integer> permissionToExpectedMedicalResourceTypeMap =
+                Map.ofEntries(
+                        Map.entry(
+                                READ_MEDICAL_DATA_IMMUNIZATIONS,
+                                MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS),
+                        Map.entry(
+                                READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
+                                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES),
+                        Map.entry(READ_MEDICAL_DATA_CONDITIONS, MEDICAL_RESOURCE_TYPE_CONDITIONS),
+                        Map.entry(READ_MEDICAL_DATA_MEDICATIONS, MEDICAL_RESOURCE_TYPE_MEDICATIONS),
+                        Map.entry(
+                                READ_MEDICAL_DATA_PERSONAL_DETAILS,
+                                MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS),
+                        Map.entry(
+                                READ_MEDICAL_DATA_PRACTITIONER_DETAILS,
+                                MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS),
+                        Map.entry(READ_MEDICAL_DATA_VISITS, MEDICAL_RESOURCE_TYPE_VISITS),
+                        Map.entry(READ_MEDICAL_DATA_PROCEDURES, MEDICAL_RESOURCE_TYPE_PROCEDURES),
+                        Map.entry(READ_MEDICAL_DATA_PREGNANCY, MEDICAL_RESOURCE_TYPE_PREGNANCY),
+                        Map.entry(
+                                READ_MEDICAL_DATA_SOCIAL_HISTORY,
+                                MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY),
+                        Map.entry(READ_MEDICAL_DATA_VITAL_SIGNS, MEDICAL_RESOURCE_TYPE_VITAL_SIGNS),
+                        Map.entry(
+                                READ_MEDICAL_DATA_LABORATORY_RESULTS,
+                                MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS));
+
+        // When permissions are granted for one category at a time, then only that category will be
+        // returned
+        for (String permission : permissionToExpectedMedicalResourceTypeMap.keySet()) {
+            int expectedResourceType = permissionToExpectedMedicalResourceTypeMap.get(permission);
+            grantPermission(PHR_FOREGROUND_APP.getPackageName(), permission);
+
+            List<MedicalResource> returnedResources =
+                    PHR_FOREGROUND_APP.readMedicalResources(allInsertedIds);
+
+            assertWithMessage("Reading data with permission: " + permission)
+                    .that(returnedResources)
+                    .hasSize(1);
+            assertThat(returnedResources.get(0).getType()).isEqualTo(expectedResourceType);
+
+            revokePermission(PHR_FOREGROUND_APP.getPackageName(), permission);
+        }
     }
 }
