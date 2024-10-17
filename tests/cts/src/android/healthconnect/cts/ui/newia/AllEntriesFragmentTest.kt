@@ -13,17 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package android.healthconnect.cts.ui
+package android.healthconnect.cts.ui.newia
 
-import android.health.connect.datatypes.HeartRateRecord
-import android.health.connect.datatypes.HeightRecord
-import android.health.connect.datatypes.HydrationRecord
-import android.health.connect.datatypes.OvulationTestRecord
-import android.health.connect.datatypes.OvulationTestRecord.OvulationTestResult
-import android.health.connect.datatypes.SleepSessionRecord
 import android.health.connect.datatypes.StepsRecord
-import android.health.connect.datatypes.units.Length
-import android.health.connect.datatypes.units.Volume
 import android.healthconnect.cts.lib.ActivityLauncher.launchDataActivity
 import android.healthconnect.cts.lib.RecordFactory.newEmptyMetadata
 import android.healthconnect.cts.lib.UiTestUtils.findObjectAndClick
@@ -32,21 +24,24 @@ import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.scrollUpTo
 import android.healthconnect.cts.lib.UiTestUtils.verifyObjectNotFound
+import android.healthconnect.cts.lib.UiTestUtils.verifyTextNotFound
+import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.healthconnect.cts.utils.TestUtils
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.uiautomator.By
 import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
-import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-/** CTS test for Health Connect All Data fragment in the new IA. */
+/** CTS test for Health Connect All Entries fragment in the new IA. */
 @RequiresFlagsEnabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
-class AllDataFragmentTest : HealthConnectBaseTest() {
+class AllEntriesFragmentTest : HealthConnectBaseTest() {
 
     @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
@@ -62,41 +57,60 @@ class AllDataFragmentTest : HealthConnectBaseTest() {
     }
 
     companion object {
-        private val NOW: Instant = Instant.parse("2024-01-20T07:06:05.432Z")
+        private val TODAY =
+            LocalDate.now(ZoneId.systemDefault()).atTime(0, 0).atZone(ZoneId.systemDefault())
     }
 
     @Test
-    fun allDataFragment_showsAllAvailableDataTypes() {
+    fun allEntries_dayView_showsDataOnlyFromDay() {
         context.launchDataActivity {
             findText("Activity")
-            findText("Steps")
-            scrollDownTo(By.text("Body measurements"))
-            findText("Body measurements")
-            findText("Height")
-            scrollDownTo(By.text("Cycle tracking"))
-            findText("Cycle tracking")
-            findText("Ovulation test")
-            scrollDownTo(By.text("Sleep"))
-            findText("Sleep")
-            scrollDownTo(By.text("Vitals"))
-            findText("Vitals")
-            findText("Heart rate")
+            findTextAndClick("Steps")
+            findText("Entries")
+            findText("Access")
+
+            findText("Today")
+            findText("10 steps")
+            verifyTextNotFound("20 steps")
         }
     }
 
     @Test
-    fun allDataFragment_clickOnDataSourcesIcon_navigatesToDataSources() {
+    fun allEntries_navigationView_showsDayWeekMonth() {
         context.launchDataActivity {
-            findObjectAndClick(By.desc("Data sources and priority"))
-            findText("App sources")
+            findText("Activity")
+            findTextAndClick("Steps")
+            findText("Entries")
+            findText("Access")
+
+            findTextAndClick("Today")
+            findText("Day")
+            findText("Week")
+            findText("Month")
         }
     }
 
     @Test
-    fun allDataFragment_deletesAllData() {
+    fun allEntries_clickOnAccessTab_navigatesToAccessScreen() {
         context.launchDataActivity {
             findText("Activity")
-            findText("Steps")
+            findTextAndClick("Steps")
+            findText("Entries")
+
+            findTextAndClick("Access")
+            findText("Can read steps")
+            scrollDownTo(By.text("Can write steps"))
+            findText("Can write steps")
+        }
+    }
+
+    @Test
+    fun allEntries_deletesAllData() {
+        context.launchDataActivity {
+            findText("Activity")
+            findTextAndClick("Steps")
+            findText("Entries")
+
             verifyObjectNotFound(By.text("Select all"))
             findObjectAndClick(By.desc("Enter deletion"))
             scrollUpTo(By.text("Select all"))
@@ -108,40 +122,23 @@ class AllDataFragmentTest : HealthConnectBaseTest() {
         }
     }
 
-    @Test
-    fun allDataFragment_clickOnPermissionType_navigatesToEntriesAndAccess() {
-        context.launchDataActivity {
-            findText("Activity")
-            findTextAndClick("Steps")
-        }
-    }
-
     private fun insertData() {
         TestUtils.insertRecords(
             mutableListOf(
-                StepsRecord.Builder(newEmptyMetadata(), NOW, NOW.plusSeconds(2), 10).build(),
-                HeightRecord.Builder(newEmptyMetadata(), NOW, Length.fromMeters(1.75)).build(),
-                HeartRateRecord.Builder(
+                StepsRecord.Builder(
                         newEmptyMetadata(),
-                        NOW,
-                        NOW.plusSeconds(10),
-                        listOf(HeartRateRecord.HeartRateSample(140, NOW)),
+                        TODAY.toInstant(),
+                        TODAY.plusMinutes(2).toInstant(),
+                        10,
                     )
                     .build(),
-                HydrationRecord.Builder(
+                StepsRecord.Builder(
                         newEmptyMetadata(),
-                        NOW,
-                        NOW.plusSeconds(100),
-                        Volume.fromLiters(0.5),
+                        TODAY.minusDays(1).toInstant(),
+                        TODAY.minusDays(1).plusMinutes(1).toInstant(),
+                        20,
                     )
                     .build(),
-                OvulationTestRecord.Builder(
-                        newEmptyMetadata(),
-                        NOW,
-                        OvulationTestResult.RESULT_INCONCLUSIVE,
-                    )
-                    .build(),
-                SleepSessionRecord.Builder(newEmptyMetadata(), NOW, NOW.plusSeconds(1000)).build(),
             )
         )
     }
