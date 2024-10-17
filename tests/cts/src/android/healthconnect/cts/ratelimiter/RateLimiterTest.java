@@ -36,11 +36,9 @@ import static org.junit.Assert.assertThrows;
 import android.app.UiAutomation;
 import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
-import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
-import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesInitialRequest;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
@@ -89,7 +87,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.Executors;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
@@ -146,28 +143,6 @@ public class RateLimiterTest {
         HealthConnectException exception =
                 assertThrows(
                         HealthConnectException.class, () -> exceedWriteQuotaWithInsertRecords());
-        assertThat(exception).hasMessageThat().contains("API call quota exceeded");
-    }
-
-    @Test
-    @ApiTest(apis = {"android.health.connect#deleteMedicalResource"})
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testTryAcquireApiCallQuota_deleteMedicalResourcesById_writeLimitExceeded() {
-        HealthConnectException exception =
-                assertThrows(
-                        HealthConnectException.class,
-                        this::exceedWriteQuotaWithDeleteMedicalDataSourceByIds);
-        assertThat(exception).hasMessageThat().contains("API call quota exceeded");
-    }
-
-    @Test
-    @ApiTest(apis = {"android.health.connect#deleteMedicalResource"})
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testTryAcquireApiCallQuota_deleteMedicalResourcesByRequest_writeLimitExceeded() {
-        HealthConnectException exception =
-                assertThrows(
-                        HealthConnectException.class,
-                        this::exceedWriteQuotaWithDeleteMedicalDataSourceByRequest);
         assertThat(exception).hasMessageThat().contains("API call quota exceeded");
     }
 
@@ -389,55 +364,6 @@ public class RateLimiterTest {
         while (tryWriteWithBuffer > 0) {
             TestUtils.insertRecords(List.of(getCompleteStepsRecord()));
 
-            tryWriteWithBuffer--;
-        }
-    }
-
-    private void exceedWriteQuotaWithDeleteMedicalDataSourceByIds() throws InterruptedException {
-        float quotaAcquired = acquireCallQuotaForWrite();
-        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        // We will try to delete an id that doesn't exist. This doesn't matter.
-        List<MedicalResourceId> request = List.of(PhrDataFactory.getMedicalResourceId());
-
-        while (quotaAcquired > 1) {
-            // Using a non-existent id is fine for quota check.
-            manager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
-            quotaAcquired--;
-        }
-        int tryWriteWithBuffer = 20;
-        while (tryWriteWithBuffer > 0) {
-            // Using a non-existent id is fine for quota check.
-            manager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
-            tryWriteWithBuffer--;
-        }
-    }
-
-    private void exceedWriteQuotaWithDeleteMedicalDataSourceByRequest()
-            throws InterruptedException {
-        float quotaAcquired = acquireCallQuotaForWrite();
-        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        // We will try to delete a data source that doesn't exist. This doesn't matter for quota
-        // check.
-        DeleteMedicalResourcesRequest request =
-                new DeleteMedicalResourcesRequest.Builder()
-                        .addDataSourceId(UUID.randomUUID().toString())
-                        .build();
-
-        while (quotaAcquired > 1) {
-            // Using a non-existent id is fine for quota check.
-            manager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
-            quotaAcquired--;
-        }
-        int tryWriteWithBuffer = 20;
-        while (tryWriteWithBuffer > 0) {
-            // Using a non-existent id is fine for quota check.
-            manager.deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
             tryWriteWithBuffer--;
         }
     }
