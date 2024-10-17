@@ -362,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> हे यापुढे बॅकग्राउंड डेटा आणि मागील डेटाच्या समावेशासह Health Connect वरील डेटा रीड किंवा राइट करू शकणार नाही.\n\nयामुळे या अ‍ॅपच्या कॅमेरा, मायक्रोफोन किंवा स्थान यांसारख्या इतर परवानग्यांवर परिणाम होत नाही."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Health Connect वरून <xliff:g id="APP_NAME">%1$s</xliff:g> वरील फिटनेससंबंधी डेटा आणि आरोग्यविषयक माहितीदेखील हटवा"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"या अ‍ॅपसाठी परवानग्या काढून टाकल्या आहेत"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"सर्व Health Connect डेटादेखील हटवा"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"पुढील दिवस"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"निवडलेला दिवस"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"मागील दिवस"</string>
@@ -1074,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"अ‍ॅप स्रोत संपादित करा"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"डिव्हाइस डीफॉल्ट"</string>
     <string name="app_data_title" msgid="6499967982291000837">"अ‍ॅप डेटा"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"<xliff:g id="APP_NAME">%1$s</xliff:g> मधील डेटा इथे दिसेल"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Health Connect चा अ‍ॅक्सेस असलेल्या ॲप्सचा डेटा इथे दर्शवला जाईल"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"दिवस"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"आठवडा"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"महिना"</string>
@@ -1123,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> या आठवड्यासाठीच्या <xliff:g id="APP_NAME">%1$s</xliff:g> च्या निवडलेल्या एंट्री कायमच्या हटवायच्या आहेत का?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> साठी <xliff:g id="APP_NAME">%1$s</xliff:g> च्या निवडलेल्या एंट्री कायमच्या हटवायच्या आहेत का?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"ही <xliff:g id="APP_NAME">%s</xliff:g> ची एंट्री कायमची हटवायची आहे का?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g> साठीचा सर्व <xliff:g id="DATA_TYPE">%1$s</xliff:g> डेटा कायमचा हटवायचा आहे का?"</string>
 </resources>

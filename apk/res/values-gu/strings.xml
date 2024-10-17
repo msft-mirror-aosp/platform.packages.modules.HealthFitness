@@ -362,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> હવેથી Health Connectમાંથી કોઈપણ ડેટા વાંચી કે લખી શકશે નહીં, જેમાં બૅકગ્રાઉન્ડ અને અગાઉનો ડેટા શામેલ છે.\n\nઆ ઍપને કદાચ મળી હોય તેવી અન્ય પરવાનગીઓ જેમ કે કૅમેરા, માઇક્રોફોન કે લોકેશન પર આની કોઈ અસર થતી નથી."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"<xliff:g id="APP_NAME">%1$s</xliff:g> પર Health Connectમાંથી લખવામાં આવેલો ફિટનેસ સંબંધિત ડેટા અને સ્વાસ્થ્ય સંબંધિત માહિતી પણ ડિલીટ કરો"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"આ ઍપમાંથી પરવાનગીઓ કાઢી નાખી"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Health Connectનો તમામ ડેટા પણ ડિલીટ કરો"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"આગલો દિવસ"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"પસંદ કરેલો દિવસ"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"પાછલો દિવસ"</string>
@@ -1074,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"ઍપના સૉર્સમાં ફેરફાર કરો"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"ડિવાઇસ પર ડિફૉલ્ટ"</string>
     <string name="app_data_title" msgid="6499967982291000837">"ઍપનો ડેટા"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"<xliff:g id="APP_NAME">%1$s</xliff:g>માંનો ડેટા અહીં દેખાશે"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Health Connectનો ઍક્સેસ ધરાવતી ઍપનો ડેટા અહીં દેખાશે"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"દિવસ"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"અઠવાડિયું"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"મહિનો"</string>
@@ -1123,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>ના અઠવાડિયાની <xliff:g id="APP_NAME">%1$s</xliff:g>ની પસંદ કરવામાં આવેલી એન્ટ્રી કાયમ માટે ડિલીટ કરીએ?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>ની, <xliff:g id="APP_NAME">%1$s</xliff:g>ની પસંદ કરવામાં આવેલી એન્ટ્રી કાયમ માટે ડિલીટ કરીએ?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"શું <xliff:g id="APP_NAME">%s</xliff:g>ની આ એન્ટ્રી કાયમ માટે ડિલીટ કરીએ?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g> માટે <xliff:g id="DATA_TYPE">%1$s</xliff:g> ડેટા કાયમી રીતે ડિલીટ કરીએ?"</string>
 </resources>

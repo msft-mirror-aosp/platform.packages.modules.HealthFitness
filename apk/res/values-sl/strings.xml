@@ -362,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> ne bo več mogla brati ali zapisovati podatkov storitve Health Connect, vključno s prenosom podatkov v ozadju in preteklimi podatki.\n\nTo ne vpliva na druga dovoljenja, ki jih morda ima ta aplikacija, na primer za fotoaparat, mikrofon ali lokacijo."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Iz storitve Health Connect izbriši tudi podatke o telesni pripravljenosti in zdravstvene evidence v aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Dovoljenja za to aplikacijo so bila odstranjena"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Izbriši tudi vse podatke storitve Health Connect"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Naslednji dan"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Izbrani dan"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Prejšnji dan"</string>
@@ -1074,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Urejanje virov aplikacij"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Privzeta aplikacija v napravi"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Podatki aplikacije"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Podatki iz aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> bodo prikazani tukaj"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Podatki iz aplikacij z dostopom do storitve Health Connect bodo prikazani tukaj"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Dan"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Teden"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Mesec"</string>
@@ -1123,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Ali želite trajno izbrisati izbrane vnose aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> za teden od dne <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Ali želite trajno izbrisati izbrane vnose aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> za mesec <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Ali želite trajno izbrisati ta vnos aplikacije <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Ali želite trajno izbrisati podatke vrste »<xliff:g id="DATA_TYPE">%1$s</xliff:g>« za aplikacijo <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
 </resources>
