@@ -43,6 +43,7 @@ import java.util.concurrent.Executors;
 public class PhrCtsTestUtils {
 
     static final int MAX_FOREGROUND_READ_CALL_15M = 2000;
+    static final int MAX_FOREGROUND_WRITE_CALL_15M = 1000;
     static final String PHR_BACKGROUND_APP_PKG = "android.healthconnect.cts.phr.testhelper.app1";
     static final String PHR_FOREGROUND_APP_PKG = "android.healthconnect.cts.phr.testhelper.app2";
     static final TestAppProxy PHR_BACKGROUND_APP =
