@@ -30,6 +30,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -85,21 +86,22 @@ final class UsageStatsCollector {
     }
 
     /**
-     * Returns the number of apps that are connected to Health Connect.
+     * Returns the list of apps that are connected to Health Connect.
      *
-     * @return Number of apps that are connected (have read/write) to Health Connect
+     * @return List of apps that are connected (have read/write) to Health Connect
      */
-    int getPackagesHoldingHealthPermissions() {
+    List<String> getPackagesHoldingHealthPermissions() {
         // TODO(b/260707328): replace with getPackagesHoldingPermissions
-        int count = 0;
+        List<String> packageNames = new ArrayList<>();
 
         for (PackageInfo info : mAllPackagesInstalledForUser) {
             if (PackageInfoUtils.anyRequestedHealthPermissionGranted(mContext, info)) {
-                count++;
+                packageNames.add(info.packageName);
             }
         }
-        return count;
+        return packageNames;
     }
+
 
     /**
      * Returns the configured export frequency of the user.

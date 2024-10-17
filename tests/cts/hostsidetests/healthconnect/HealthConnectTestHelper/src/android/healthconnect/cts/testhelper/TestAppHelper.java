@@ -17,6 +17,7 @@
 package android.healthconnect.cts.testhelper;
 
 import static android.healthconnect.cts.lib.BundleHelper.CREATE_MEDICAL_DATA_SOURCE_QUERY;
+import static android.healthconnect.cts.lib.BundleHelper.DELETE_MEDICAL_DATA_SOURCE_WITH_DATA_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.DELETE_MEDICAL_RESOURCES_BY_IDS_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.DELETE_MEDICAL_RESOURCES_BY_REQUEST_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.DELETE_RECORDS_QUERY;
@@ -102,6 +103,8 @@ final class TestAppHelper {
                     handleDeleteMedicalResourcesByRequest(context, bundle);
             case DELETE_MEDICAL_RESOURCES_BY_IDS_QUERY ->
                     handleDeleteMedicalResourcesByIds(context, bundle);
+            case DELETE_MEDICAL_DATA_SOURCE_WITH_DATA_QUERY ->
+                    handleDeleteMedicalDataSourceWithData(context, bundle);
             case SELF_REVOKE_PERMISSION_REQUEST -> handleSelfRevoke(context, bundle);
             case KILL_SELF_REQUEST -> handleKillSelf();
             default ->
@@ -227,6 +230,16 @@ final class TestAppHelper {
         HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
         TestUtils.getHealthConnectManager(context)
                 .deleteMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+        receiver.verifyNoExceptionOrThrow();
+        return new Bundle();
+    }
+
+    private static Bundle handleDeleteMedicalDataSourceWithData(Context context, Bundle bundle)
+            throws Exception {
+        String id = BundleHelper.toMedicalDataSourceId(bundle);
+        HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
+        TestUtils.getHealthConnectManager(context)
+                .deleteMedicalDataSourceWithData(id, Executors.newSingleThreadExecutor(), receiver);
         receiver.verifyNoExceptionOrThrow();
         return new Bundle();
     }
