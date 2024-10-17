@@ -824,17 +824,19 @@ public class HealthConnectDeviceTest {
             throws InterruptedException {
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
 
-        List<String> healthPerms =
+        List<String> healthPermsA =
                 getGrantedHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
+        List<String> healthPermsB =
+                getGrantedHealthPermissions(APP_B_WITH_READ_WRITE_PERMS.getPackageName());
 
         revokeHealthPermissions(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
         revokeHealthPermissions(APP_B_WITH_READ_WRITE_PERMS.getPackageName());
 
-        for (String perm : healthPerms) {
+        for (String perm : healthPermsA) {
             grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), perm);
         }
 
-        for (String perm : healthPerms) {
+        for (String perm : healthPermsB) {
             grantPermission(APP_B_WITH_READ_WRITE_PERMS.getPackageName(), perm);
         }
 
