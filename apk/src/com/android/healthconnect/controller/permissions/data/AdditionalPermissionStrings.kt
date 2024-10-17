@@ -15,86 +15,235 @@
  */
 package com.android.healthconnect.controller.permissions.data
 
-import android.health.connect.HealthPermissions
 import androidx.annotation.StringRes
 import com.android.healthconnect.controller.R
-import com.google.common.collect.ImmutableMap
 
 /** Represents the display strings used for Additional Permissions. */
 data class AdditionalPermissionStrings(
-    @StringRes val permissionTitle: Int,
-    @StringRes val permissionDescription: Int,
-    @StringRes val requestTitle: Int,
-    @StringRes val requestDescription: Int,
-    @StringRes val permissionDescriptionFallback: Int = 0,
-    @StringRes val requestDescriptionFallback: Int = 0,
-) {
+    @StringRes val title: Int,
+    @StringRes val description: Int,
+    @StringRes val descriptionFallback: Int = 0,
+)
 
-    companion object {
-        fun fromAdditionalPermission(
-            additionalPermission: HealthPermission.AdditionalPermission,
-            hasMedicalPermissions: Boolean = false,
-        ): AdditionalPermissionStrings {
-            return if (hasMedicalPermissions) {
-                ADDITIONAL_PERMISSION_MEDICAL_STRINGS[additionalPermission.additionalPermission]
-                    ?: throw IllegalArgumentException(
-                        "No strings for additional permission $additionalPermission"
-                    )
+fun additionalPermissionString(
+    additionalPermission: HealthPermission.AdditionalPermission,
+    type: AccessType,
+    hasMedicalPermissions: Boolean,
+    isMedicalReadGranted: Boolean,
+    isFitnessReadGranted: Boolean,
+): AdditionalPermissionStrings {
+    return if (additionalPermission.isBackgroundReadPermission()) {
+        getBackgroundReadString(
+            type,
+            hasMedicalPermissions,
+            isMedicalReadGranted,
+            isFitnessReadGranted,
+        )
+    } else if (additionalPermission.isHistoryReadPermission()) {
+        getHistoryReadString(type, hasMedicalPermissions)
+    } else {
+        throw IllegalArgumentException("No strings for additional permission $additionalPermission")
+    }
+}
+
+private fun getHistoryReadString(
+    type: AccessType,
+    hasMedicalPermissions: Boolean,
+): AdditionalPermissionStrings {
+    return if (hasMedicalPermissions) {
+        getHistoryMedicalString(type)
+    } else {
+        getHistoryNonMedicalString(type)
+    }
+}
+
+private fun getHistoryNonMedicalString(type: AccessType): AdditionalPermissionStrings {
+    return when (type) {
+        AccessType.SINGLE_REQUEST -> {
+            AdditionalPermissionStrings(
+                title = R.string.history_read_single_request_title,
+                description = R.string.history_read_single_request_description,
+                descriptionFallback = R.string.history_read_single_request_description_fallback,
+            )
+        }
+        AccessType.COMBINED_REQUEST -> {
+            AdditionalPermissionStrings(
+                title = R.string.history_read_combined_request_title,
+                description = R.string.history_read_combined_request_description,
+                descriptionFallback = R.string.history_read_combined_request_description_fallback,
+            )
+        }
+        AccessType.ACCESS -> {
+            AdditionalPermissionStrings(
+                title = R.string.history_read_access_title,
+                description = R.string.history_read_access_description,
+                descriptionFallback = R.string.history_read_access_description_fallback,
+            )
+        }
+    }
+}
+
+private fun getHistoryMedicalString(type: AccessType): AdditionalPermissionStrings {
+    return when (type) {
+        AccessType.SINGLE_REQUEST -> {
+            AdditionalPermissionStrings(
+                title = R.string.history_read_single_request_title,
+                description = R.string.history_read_medical_single_request_description,
+                descriptionFallback =
+                    R.string.history_read_medical_single_request_description_fallback,
+            )
+        }
+        AccessType.COMBINED_REQUEST -> {
+            AdditionalPermissionStrings(
+                title = R.string.history_read_medical_combined_request_title,
+                description = R.string.history_read_medical_combined_request_description,
+                descriptionFallback =
+                    R.string.history_read_medical_combined_request_description_fallback,
+            )
+        }
+        AccessType.ACCESS -> {
+            AdditionalPermissionStrings(
+                title = R.string.history_read_medical_access_title,
+                description = R.string.history_read_medical_access_description,
+                descriptionFallback = R.string.history_read_medical_access_description_fallback,
+            )
+        }
+    }
+}
+
+private fun getBackgroundReadString(
+    type: AccessType,
+    hasMedicalPermissions: Boolean,
+    isMedicalReadGranted: Boolean,
+    isFitnessReadGranted: Boolean,
+): AdditionalPermissionStrings {
+    return if (hasMedicalPermissions) {
+        getBackgroundMedicalString(type, isMedicalReadGranted, isFitnessReadGranted)
+    } else {
+        getBackgroundNonMedicalString(type)
+    }
+}
+
+private fun getBackgroundNonMedicalString(type: AccessType): AdditionalPermissionStrings {
+    return when (type) {
+        AccessType.SINGLE_REQUEST -> {
+            AdditionalPermissionStrings(
+                title = R.string.background_read_single_request_title,
+                description = R.string.background_read_single_request_description,
+            )
+        }
+        AccessType.COMBINED_REQUEST -> {
+            AdditionalPermissionStrings(
+                title = R.string.background_read_combined_request_title,
+                description = R.string.background_read_combined_request_description,
+            )
+        }
+        AccessType.ACCESS -> {
+            AdditionalPermissionStrings(
+                title = R.string.background_read_access_title,
+                description = R.string.background_read_access_description,
+            )
+        }
+    }
+}
+
+private fun getBackgroundMedicalString(
+    type: AccessType,
+    isMedicalReadGranted: Boolean,
+    isFitnessReadGranted: Boolean,
+): AdditionalPermissionStrings {
+    return when (type) {
+        AccessType.SINGLE_REQUEST -> {
+            if (isMedicalReadGranted && isFitnessReadGranted) {
+                AdditionalPermissionStrings(
+                    title = R.string.background_read_single_request_title,
+                    description =
+                        R.string
+                            .background_read_medical_single_request_description_both_types_granted,
+                )
+            } else if (isMedicalReadGranted) {
+                AdditionalPermissionStrings(
+                    title = R.string.background_read_single_request_title,
+                    description =
+                        R.string.background_read_medical_single_request_description_medical_granted,
+                )
+            } else if (isFitnessReadGranted) {
+                AdditionalPermissionStrings(
+                    title = R.string.background_read_single_request_title,
+                    description =
+                        R.string.background_read_medical_single_request_description_fitness_granted,
+                )
             } else {
-                ADDITIONAL_PERMISSION_STRINGS[additionalPermission.additionalPermission]
-                    ?: throw IllegalArgumentException(
-                        "No strings for additional permission $additionalPermission"
-                    )
+                throw IllegalArgumentException(
+                    "No strings for this state of additional permission " +
+                        "${HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND}"
+                )
+            }
+        }
+        AccessType.COMBINED_REQUEST -> {
+            if (isMedicalReadGranted && isFitnessReadGranted) {
+                AdditionalPermissionStrings(
+                    title =
+                        R.string.background_read_medical_combined_request_title_both_types_granted,
+                    description =
+                        R.string
+                            .background_read_medical_combined_request_description_both_types_granted,
+                )
+            } else if (isMedicalReadGranted) {
+                AdditionalPermissionStrings(
+                    title = R.string.background_read_medical_combined_request_title_medical_granted,
+                    description =
+                        R.string
+                            .background_read_medical_combined_request_description_medical_granted,
+                )
+            } else if (isFitnessReadGranted) {
+                AdditionalPermissionStrings(
+                    title = R.string.background_read_medical_combined_request_title_fitness_granted,
+                    description =
+                        R.string
+                            .background_read_medical_combined_request_description_fitness_granted,
+                )
+            } else {
+                throw IllegalArgumentException(
+                    "No strings for this state of additional permission " +
+                        "${HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND}"
+                )
+            }
+        }
+        AccessType.ACCESS -> {
+            if (isMedicalReadGranted && isFitnessReadGranted) {
+                AdditionalPermissionStrings(
+                    title = R.string.background_read_medical_access_title_both_types_granted,
+                    description =
+                        R.string.background_read_medical_access_description_both_types_granted,
+                )
+            } else if (isMedicalReadGranted) {
+                AdditionalPermissionStrings(
+                    title = R.string.background_read_medical_access_title_medical_granted,
+                    description =
+                        R.string.background_read_medical_access_description_medical_granted,
+                )
+            } else if (isFitnessReadGranted) {
+                AdditionalPermissionStrings(
+                    title = R.string.background_read_medical_access_title_fitness_granted,
+                    description =
+                        R.string.background_read_medical_access_description_fitness_granted,
+                )
+            } else {
+                // text to show when disabled
+                AdditionalPermissionStrings(
+                    title = R.string.background_read_medical_access_title_both_types_granted,
+                    description =
+                        R.string.background_read_medical_access_description_both_types_granted,
+                )
             }
         }
     }
 }
 
-private val ADDITIONAL_PERMISSION_STRINGS: ImmutableMap<String, AdditionalPermissionStrings> =
-    ImmutableMap.Builder<String, AdditionalPermissionStrings>()
-        .put(
-            HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
-            AdditionalPermissionStrings(
-                R.string.background_read_title,
-                R.string.background_read_description,
-                R.string.background_read_request_title,
-                R.string.background_read_request_description,
-            ),
-        )
-        .put(
-            HealthPermissions.READ_HEALTH_DATA_HISTORY,
-            AdditionalPermissionStrings(
-                R.string.historic_access_title,
-                R.string.historic_access_description,
-                R.string.historic_access_request_title,
-                R.string.historic_access_request_description,
-                R.string.historic_access_description_fallback,
-                R.string.historic_access_request_description_fallback,
-            ),
-        )
-        .buildOrThrow()
-
-private val ADDITIONAL_PERMISSION_MEDICAL_STRINGS:
-    ImmutableMap<String, AdditionalPermissionStrings> =
-    ImmutableMap.Builder<String, AdditionalPermissionStrings>()
-        .put(
-            HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
-            AdditionalPermissionStrings(
-                R.string.background_read_medical_title,
-                R.string.background_read_medical_description,
-                R.string.background_read_medical_request_title,
-                R.string.background_read_medical_request_description,
-            ),
-        )
-        .put(
-            HealthPermissions.READ_HEALTH_DATA_HISTORY,
-            AdditionalPermissionStrings(
-                R.string.historic_access_medical_title,
-                R.string.historic_access_medical_description,
-                R.string.historic_access_medical_request_title,
-                R.string.historic_access_medical_request_description,
-                R.string.historic_access_medical_description_fallback,
-                R.string.historic_access_medical_request_description_fallback,
-            ),
-        )
-        .buildOrThrow()
+/** Defines the type of strings shown for additional permissions */
+enum class AccessType {
+    SINGLE_REQUEST,
+    COMBINED_REQUEST,
+    ACCESS,
+}

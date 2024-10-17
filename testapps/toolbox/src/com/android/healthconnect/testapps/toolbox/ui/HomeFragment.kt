@@ -36,9 +36,12 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.testapps.toolbox.Constants.ADDITIONAL_PERMISSIONS
-import com.android.healthconnect.testapps.toolbox.Constants.DATA_TYPE_PERMISSIONS
+import com.android.healthconnect.testapps.toolbox.Constants.FITNESS_PERMISSIONS
+import com.android.healthconnect.testapps.toolbox.Constants.FITNESS_READ_PERMISSIONS
+import com.android.healthconnect.testapps.toolbox.Constants.FITNESS_WRITE_PERMISSIONS
 import com.android.healthconnect.testapps.toolbox.Constants.HEALTH_PERMISSIONS
 import com.android.healthconnect.testapps.toolbox.Constants.MEDICAL_PERMISSIONS
+import com.android.healthconnect.testapps.toolbox.Constants.MEDICAL_READ_PERMISSIONS
 import com.android.healthconnect.testapps.toolbox.Constants.MEDICAL_WRITE_AND_OTHERS
 import com.android.healthconnect.testapps.toolbox.Constants.READ_HEALTH_DATA_HISTORY
 import com.android.healthconnect.testapps.toolbox.Constants.READ_HEALTH_DATA_IN_BACKGROUND
@@ -64,7 +67,7 @@ class HomeFragment : Fragment() {
     private lateinit var mRequestPermissionLauncher: ActivityResultLauncher<Array<String>>
     private lateinit var mNavigationController: NavController
     private val performanceTestingViewModel: PerformanceTestingViewModel by viewModels()
-    private val homeFragmentViewModel : HomeFragmentViewModel by viewModels()
+    private val homeFragmentViewModel: HomeFragmentViewModel by viewModels()
 
     private val manager by lazy {
         requireContext().getSystemService(HealthConnectManager::class.java)
@@ -179,24 +182,28 @@ class HomeFragment : Fragment() {
             .findViewById<Button>(R.id.request_medical_write_and_other_health_permissions)
             .setOnClickListener { requestMedicalWriteAndOtherPermissions() }
 
+        view.findViewById<Button>(R.id.request_medical_read).setOnClickListener {
+            requestMedicalReadPermissions()
+        }
+
+        view.findViewById<Button>(R.id.request_fitness_read).setOnClickListener {
+            requestFitnessRead()
+        }
+
+        view.findViewById<Button>(R.id.request_fitness_write).setOnClickListener {
+            requestFitnessWrite()
+        }
+
         // view
         //     .findViewById<Button>(R.id.seed_performance_insert_data_button_in_parallel)
         //     .setOnClickListener { performanceTestingViewModel.beginInsertingData(true) }
         mNavigationController = findNavController()
 
         homeFragmentViewModel.seedAllDataState.observe(viewLifecycleOwner) { state ->
-            if(state is HomeFragmentViewModel.SeedAllDataState.Error){
-                Toast.makeText(
-                    context,
-                    state.errorMessage,
-                    Toast.LENGTH_SHORT
-                ).show()
+            if (state is HomeFragmentViewModel.SeedAllDataState.Error) {
+                Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(
-                    context,
-                    R.string.toast_seed_data_success,
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(context, R.string.toast_seed_data_success, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -221,7 +228,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun seedAllDataButtonPressed(){
+    private fun seedAllDataButtonPressed() {
         homeFragmentViewModel.seedAllDataViewModel(requireContext(), manager)
     }
 
@@ -240,7 +247,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun isDataTypePermissionMissing(): Boolean {
-        for (permission in DATA_TYPE_PERMISSIONS) {
+        for (permission in FITNESS_PERMISSIONS) {
             if (!isPermissionGranted(permission)) {
                 return true
             }
@@ -286,7 +293,7 @@ class HomeFragment : Fragment() {
 
     private fun requestDataTypePermissions() {
         if (isDataTypePermissionMissing()) {
-            mRequestPermissionLauncher.launch(DATA_TYPE_PERMISSIONS)
+            mRequestPermissionLauncher.launch(FITNESS_PERMISSIONS)
             return
         }
         Toast.makeText(
@@ -363,6 +370,18 @@ class HomeFragment : Fragment() {
                 Toast.LENGTH_LONG,
             )
             .show()
+    }
+
+    private fun requestMedicalReadPermissions() {
+        mRequestPermissionLauncher.launch(MEDICAL_READ_PERMISSIONS)
+    }
+
+    private fun requestFitnessRead() {
+        mRequestPermissionLauncher.launch(FITNESS_READ_PERMISSIONS)
+    }
+
+    private fun requestFitnessWrite() {
+        mRequestPermissionLauncher.launch(FITNESS_WRITE_PERMISSIONS)
     }
 
     private fun goToRequestRoute() {
