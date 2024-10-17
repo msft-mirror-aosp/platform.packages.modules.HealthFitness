@@ -17,6 +17,7 @@ package com.android.healthconnect.controller.permissions.connectedapps.wear
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.app.LoadAppPermissionsStatusUseCase
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
 import com.android.healthconnect.controller.permissions.data.HealthPermission
@@ -26,6 +27,7 @@ import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlin.collections.MutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -35,6 +37,7 @@ class WearConnectedAppsViewModel
 constructor(
     private val loadHealthPermissionApps: ILoadHealthPermissionApps,
     private val loadAppPermissionsStatusUseCase: LoadAppPermissionsStatusUseCase,
+    private val revokeHealthPermissionUseCase: RevokeHealthPermissionUseCase,
     private val healthPermissionReader: HealthPermissionReader,
 ) : ViewModel() {
 
@@ -47,11 +50,11 @@ constructor(
 
     /** Mapping from [HealthPermission] to a list of [AppMetadata] of the allowed apps. */
     val dataTypeToAllowedApps =
-        MutableStateFlow<Map<HealthPermission, List<AppMetadata>>>(emptyMap())
+        MutableStateFlow<Map<HealthPermission, MutableList<AppMetadata>>>(emptyMap())
 
     /** Mapping from [HealthPermission] to a list of [AppMetadata] of the denied apps. */
     val dataTypeToDeniedApps =
-        MutableStateFlow<Map<HealthPermission, List<AppMetadata>>>(emptyMap())
+        MutableStateFlow<Map<HealthPermission, MutableList<AppMetadata>>>(emptyMap())
 
     /** A list of [HealthPermission] that are at system level (not restricted to HC-only). */
     val systemHealthPermissions = MutableStateFlow<List<HealthPermission>>(emptyList())
@@ -91,5 +94,19 @@ constructor(
             dataTypeToAllowedApps.value = allowedAppsMap
             dataTypeToDeniedApps.value = deniedAppsMap
         }
+    }
+
+    /** Removes all apps from accessing a specific fitness permission. */
+    fun removeFitnessPermissionForAllApps(permission: HealthPermission) {
+        val permissionStr = permission.toString()
+        val deniedAppsMap = dataTypeToDeniedApps.value.toMutableMap()
+
+        dataTypeToAllowedApps.value[permission]?.forEach { appMetadata ->
+            revokeHealthPermissionUseCase.invoke(appMetadata.packageName, permissionStr)
+            deniedAppsMap.getOrPut(permission) { mutableListOf() }.add(appMetadata)
+        }
+
+        dataTypeToAllowedApps.value = dataTypeToAllowedApps.value - permission
+        dataTypeToDeniedApps.value = deniedAppsMap
     }
 }

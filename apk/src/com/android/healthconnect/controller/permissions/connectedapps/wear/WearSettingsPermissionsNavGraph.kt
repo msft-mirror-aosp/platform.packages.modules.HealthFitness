@@ -30,9 +30,8 @@ import androidx.navigation.navArgument
 /**
  * Wear Settings Permissions navigation graph.
  *
- * TODO: b/364643019 - Per data type screen, Remove one health permission for all apps screen,
- *   Control single health permission for one app screen, Control background health read permission
- *   screen.
+ * TODO: b/364643019 - Control single health permission for one app screen, Control background
+ *   health read permission screen.
  */
 @Composable
 fun WearSettingsPermissionsNavGraph() {
@@ -60,7 +59,34 @@ fun WearSettingsPermissionsNavGraph() {
         ) { backStackEntry ->
             val permissionStr = backStackEntry.arguments?.getString("permissionStr") ?: ""
             val dataTypeStr = backStackEntry.arguments?.getString("dataTypeStr") ?: ""
-            PerDataTypeScreen(viewModel, permissionStr, dataTypeStr)
+            PerDataTypeScreen(
+                viewModel,
+                permissionStr,
+                dataTypeStr,
+                onRemoveAllAppAccessButtonClick = { permissionStr, dataTypeStr ->
+                    navController.navigate(
+                        "${PermissionManagerScreen.RemoveAll.name}/$permissionStr/$dataTypeStr"
+                    )
+                },
+            )
+        }
+
+        composable(
+            route = "${PermissionManagerScreen.RemoveAll.name}/{permissionStr}/{dataTypeStr}",
+            arguments =
+                listOf(
+                    navArgument("permissionStr") { type = NavType.StringType },
+                    navArgument("dataTypeStr") { type = NavType.StringType },
+                ),
+        ) { backStackEntry ->
+            val permissionStr = backStackEntry.arguments?.getString("permissionStr") ?: ""
+            val dataTypeStr = backStackEntry.arguments?.getString("dataTypeStr") ?: ""
+            RemoveAllAppsOnePermissionScreen(
+                viewModel,
+                permissionStr,
+                dataTypeStr,
+                onBackClick = { navController.popBackStack() },
+            )
         }
     }
 }
@@ -68,4 +94,5 @@ fun WearSettingsPermissionsNavGraph() {
 enum class PermissionManagerScreen() {
     Vitals,
     PerDataType,
+    RemoveAll,
 }
