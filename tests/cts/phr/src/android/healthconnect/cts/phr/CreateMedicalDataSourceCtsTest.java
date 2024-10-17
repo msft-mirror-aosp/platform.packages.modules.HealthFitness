@@ -17,6 +17,7 @@
 package android.healthconnect.cts.phr;
 
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
+import static android.healthconnect.cts.phr.PhrCtsTestUtils.MAX_FOREGROUND_WRITE_CALL_15M;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_BACKGROUND_APP;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_FOREGROUND_APP;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
@@ -32,6 +33,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4B;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_UNSUPPORTED;
 import static android.healthconnect.cts.utils.PhrDataFactory.MAX_ALLOWED_MEDICAL_DATA_SOURCES;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
+import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
 import static android.healthconnect.cts.utils.TestUtils.finishMigrationWithShellPermissionIdentity;
 import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
 import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellPermissionIdentity;
@@ -92,11 +94,15 @@ public class CreateMedicalDataSourceCtsTest {
         mManager = TestUtils.getHealthConnectManager();
         mUtil = new PhrCtsTestUtils(mManager);
         mUtil.deleteAllMedicalData();
+        if (TestUtils.setLowerRateLimitsForTesting(true)) {
+            mUtil.mLimitsAdjustmentForTesting = 10;
+        }
     }
 
     @After
     public void after() throws InterruptedException {
         mUtil.deleteAllMedicalData();
+        TestUtils.setLowerRateLimitsForTesting(false);
     }
 
     @Test
@@ -131,6 +137,33 @@ public class CreateMedicalDataSourceCtsTest {
                             .isEqualTo(HealthConnectException.ERROR_SECURITY);
                 },
                 MANAGE_HEALTH_DATA);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testCreateMedicalDataSource_writeLimitExceeded_throws() throws Exception {
+        // Insert a data source to ensure we have an appInfoId.
+        mUtil.createDataSource(getCreateMedicalDataSourceRequest("1"));
+        // Make the maximum number of delete medical resources calls just to use up the WRITE quota,
+        // because data sources one app can create has a lower limit than this rate limit. Minus 1
+        // because of the above call.
+        int maximumCalls = MAX_FOREGROUND_WRITE_CALL_15M / mUtil.mLimitsAdjustmentForTesting - 1;
+        for (int i = 0; i < maximumCalls; i++) {
+            HealthConnectReceiver<Void> callback = new HealthConnectReceiver<>();
+            mManager.deleteMedicalResources(
+                    List.of(getMedicalResourceId()), Executors.newSingleThreadExecutor(), callback);
+            callback.verifyNoExceptionOrThrow();
+        }
+
+        // Make 1 extra create call and check quota is exceeded.
+        HealthConnectReceiver<MedicalDataSource> callback = new HealthConnectReceiver<>();
+        mManager.createMedicalDataSource(
+                getCreateMedicalDataSourceRequest("2"),
+                Executors.newSingleThreadExecutor(),
+                callback);
+
+        HealthConnectException exception = callback.assertAndGetException();
+        assertThat(exception.getMessage()).contains("API call quota exceeded");
     }
 
     @Test
