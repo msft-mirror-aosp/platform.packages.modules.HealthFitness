@@ -73,7 +73,7 @@ public final class TransactionTestUtils {
     private static final String TEST_PACKAGE_NAME = "package.name";
     private final TransactionManager mTransactionManager;
     private final Context mContext;
-    private final HealthConnectInjectorImpl.Builder mHealthConnectInjectorBuilder;
+    private final HealthConnectInjector mHealthConnectInjector;
 
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
@@ -87,11 +87,18 @@ public final class TransactionTestUtils {
 
         mContext = context;
         mTransactionManager = transactionManager;
-        mHealthConnectInjectorBuilder = HealthConnectInjectorImpl.newBuilderForTest(mContext);
-        mHealthConnectInjectorBuilder
-                .setTransactionManager(transactionManager)
-                .setFirstGrantTimeManager(mFirstGrantTimeManager)
-                .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker);
+        mHealthConnectInjector =
+                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                        .setTransactionManager(transactionManager)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .build();
+    }
+
+    public TransactionTestUtils(Context context, HealthConnectInjector injector) {
+        mContext = context;
+        mTransactionManager = injector.getTransactionManager();
+        mHealthConnectInjector = injector;
     }
 
     public void insertApp(String packageName) {
@@ -112,18 +119,18 @@ public final class TransactionTestUtils {
 
     /** Inserts records attributed to the given package. */
     public List<String> insertRecords(String packageName, List<RecordInternal<?>> records) {
-        HealthConnectInjector healthConnectInjector = mHealthConnectInjectorBuilder.build();
+        AppInfoHelper appInfoHelper = mHealthConnectInjector.getAppInfoHelper();
         return mTransactionManager.insertAll(
-                healthConnectInjector.getAppInfoHelper(),
-                healthConnectInjector.getAccessLogsHelper(),
+                appInfoHelper,
+                mHealthConnectInjector.getAccessLogsHelper(),
                 new UpsertTransactionRequest(
                         packageName,
                         records,
-                        healthConnectInjector.getDeviceInfoHelper(),
+                        mHealthConnectInjector.getDeviceInfoHelper(),
                         mContext,
                         /* isInsertRequest= */ true,
                         /* extraPermsStateMap= */ Collections.emptyMap(),
-                        healthConnectInjector.getAppInfoHelper()));
+                        mHealthConnectInjector.getAppInfoHelper()));
     }
 
     /** Creates a {@link ReadTransactionRequest} from the given record to id map. */
