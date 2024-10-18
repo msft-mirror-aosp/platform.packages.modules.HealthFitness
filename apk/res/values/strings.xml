@@ -1680,6 +1680,9 @@
     <string name="icon_content_check_mark" description="Content description for icon to confirm removing one granular health permission for all apps.">Check mark</string>
     <string name="icon_content_cross_mark" description="Content description for icon to dismiss removing one granular health permission for all apps.">Cross mark</string>
     <string name="current_allow_mode" description="Text to indicate currently the app is allowed all the time or while in use.">"Currently, <xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> can access fitness and wellness data <xliff:g id="allow_mode" example="all the time">%2$s</xliff:g></string>
+    <string name="allow_all_the_time_prompt" description="Title to ask user select all the time or while in use.">Allow <xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> access to fitness and wellness data all the time?</string>
+    <string name="current_access" description="Subtitle to indicate which data types the app currently has permission to."><xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> has access to <xliff:g id="data_types" example="Heart rate, Skin temp">%2$s</xliff:g>.</string>
+    <string name="manage_fitness_and_wellness_permissions" description="Label for button to manager fitness and wellness permissions for an app.">Manage fitness and wellness permissions</string>
     <!-- endregion -->
 
     <!-- endregion -->
