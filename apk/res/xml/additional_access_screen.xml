@@ -24,8 +24,8 @@
 
     <com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
         android:key="key_history_read"
-        android:title="@string/historic_access_title"
-        android:summary="@string/historic_access_description"
+        android:title="@string/history_read_combined_request_title"
+        android:summary="@string/history_read_combined_request_description"
         app:isPreferenceVisible="false"
         />
 
@@ -35,8 +35,8 @@
 
     <com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
         android:key="key_background_read"
-        android:title="@string/background_read_title"
-        android:summary="@string/background_read_description"
+        android:title="@string/background_read_combined_request_title"
+        android:summary="@string/background_read_combined_request_description"
         app:isPreferenceVisible="false"
         />
 

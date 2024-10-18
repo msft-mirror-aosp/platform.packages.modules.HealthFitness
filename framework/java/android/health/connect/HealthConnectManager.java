@@ -2200,9 +2200,6 @@ public class HealthConnectManager {
     /**
      * Reads {@link MedicalResource}s based on a list of {@link MedicalResourceId}s.
      *
-     * <p>The returned list of {@link MedicalResource}s will be in the same order as the {@code
-     * ids}.
-     *
      * <p>Number of medical resources returned by this API will depend based on below factors:
      *
      * <ul>
@@ -2559,8 +2556,6 @@ public class HealthConnectManager {
 
     /**
      * Returns {@link MedicalDataSource}s for the provided list of IDs.
-     *
-     * <p>The returned list of data sources will be in the same order as the {@code ids}.
      *
      * <p>Number of data sources returned by this API will depend based on below factors:
      *

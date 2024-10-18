@@ -199,7 +199,6 @@ import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import org.json.JSONException;
@@ -357,7 +356,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         mPermissionManager,
                         mContext,
                         deviceConfigManager,
-                        internalHealthConnectMappings.getExternalMappings());
+                        internalHealthConnectMappings);
         mMedicalDataPermissionEnforcer = new MedicalDataPermissionEnforcer(mPermissionManager);
         mAppOpsManagerLocal = LocalManagerRegistry.getManager(AppOpsManagerLocal.class);
         mAppInfoHelper = AppInfoHelper.getInstance();
@@ -3390,7 +3389,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         for (Entry<Integer, List<RecordInternal<?>>> recordTypeToRecordInternalsEntry :
                 recordTypeToRecordInternals.entrySet()) {
             RecordHelper<?> recordHelper =
-                    RecordHelperProvider.getRecordHelper(recordTypeToRecordInternalsEntry.getKey());
+                    mInternalHealthConnectMappings.getRecordHelper(
+                            recordTypeToRecordInternalsEntry.getKey());
             recordHelper.logUpsertMetrics(recordTypeToRecordInternalsEntry.getValue(), packageName);
         }
     }
@@ -3404,7 +3404,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         for (Entry<Integer, List<RecordInternal<?>>> recordTypeToRecordInternalsEntry :
                 recordTypeToRecordInternals.entrySet()) {
             RecordHelper<?> recordHelper =
-                    RecordHelperProvider.getRecordHelper(recordTypeToRecordInternalsEntry.getKey());
+                    mInternalHealthConnectMappings.getRecordHelper(
+                            recordTypeToRecordInternalsEntry.getKey());
             recordHelper.logReadMetrics(recordTypeToRecordInternalsEntry.getValue(), packageName);
         }
     }

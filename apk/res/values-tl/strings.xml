@@ -362,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang data mula sa Health Connect, kabilang ang data sa background at dating data.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng camera, mikropono, o lokasyon."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"I-delete din sa Health Connect ang data ng fitness at mga health record mula sa <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Inalis ang mga pahintulot para sa app na ito"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"I-delete din ang lahat ng data ng Health Connect"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Kinabukasan"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Piniling araw"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Nakaraang araw"</string>
@@ -1074,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"I-edit ang mga source ng app"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Default ng device"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Data ng app"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Lalabas dito ang data mula sa <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Lalabas dito ang data mula sa mga app na may access sa Health Connect"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Araw"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Linggo"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Buwan"</string>
@@ -1123,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Permanenteng i-delete ang mga napiling entry ng <xliff:g id="APP_NAME">%1$s</xliff:g> para sa linggo ng <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Permanenteng i-delete ang mga napiling entry ng <xliff:g id="APP_NAME">%1$s</xliff:g> para sa <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Permanenteng i-delete ang entry ng <xliff:g id="APP_NAME">%s</xliff:g> na ito?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Permanenteng i-delete ang data ng <xliff:g id="DATA_TYPE">%1$s</xliff:g> para sa <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
 </resources>
