@@ -1679,6 +1679,7 @@
     <string name="remove_one_permission_for_all" description="Text to indicate removing a data type access for all apps.">Remove <xliff:g example="heart rate" id="data_type">%s</xliff:g> access for all apps on your watch?</string>
     <string name="icon_content_check_mark" description="Content description for icon to confirm removing one granular health permission for all apps.">Check mark</string>
     <string name="icon_content_cross_mark" description="Content description for icon to dismiss removing one granular health permission for all apps.">Cross mark</string>
+    <string name="current_allow_mode" description="Text to indicate currently the app is allowed all the time or while in use.">"Currently, <xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> can access fitness and wellness data <xliff:g id="allow_mode" example="all the time">%2$s</xliff:g></string>
     <!-- endregion -->
 
     <!-- endregion -->

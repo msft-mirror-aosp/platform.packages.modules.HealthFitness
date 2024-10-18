@@ -63,6 +63,11 @@ fun WearSettingsPermissionsNavGraph() {
                 viewModel,
                 permissionStr,
                 dataTypeStr,
+                onAppChipClick = { permissionStr, dataTypeStr, packageName ->
+                    navController.navigate(
+                        "${PermissionManagerScreen.PerDataTypePerApp.name}/$permissionStr/$dataTypeStr/$packageName"
+                    )
+                },
                 onRemoveAllAppAccessButtonClick = { permissionStr, dataTypeStr ->
                     navController.navigate(
                         "${PermissionManagerScreen.RemoveAll.name}/$permissionStr/$dataTypeStr"
@@ -88,6 +93,27 @@ fun WearSettingsPermissionsNavGraph() {
                 onBackClick = { navController.popBackStack() },
             )
         }
+
+        composable(
+            route =
+                "${PermissionManagerScreen.PerDataTypePerApp.name}/{permissionStr}/{dataTypeStr}/{packageName}",
+            arguments =
+                listOf(
+                    navArgument("permissionStr") { type = NavType.StringType },
+                    navArgument("dataTypeStr") { type = NavType.StringType },
+                    navArgument("packageName") { type = NavType.StringType },
+                ),
+        ) { backStackEntry ->
+            val permissionStr = backStackEntry.arguments?.getString("permissionStr") ?: ""
+            val dataTypeStr = backStackEntry.arguments?.getString("dataTypeStr") ?: ""
+            val packageName = backStackEntry.arguments?.getString("packageName") ?: ""
+            ControlSingleDataTypeForSingleAppScreen(
+                viewModel,
+                permissionStr,
+                dataTypeStr,
+                packageName,
+            )
+        }
     }
 }
 
@@ -95,4 +121,5 @@ enum class PermissionManagerScreen() {
     Vitals,
     PerDataType,
     RemoveAll,
+    PerDataTypePerApp,
 }

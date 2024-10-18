@@ -42,6 +42,7 @@ fun PerDataTypeScreen(
     viewModel: WearConnectedAppsViewModel,
     permissionStr: String,
     dataTypeStr: String,
+    onAppChipClick: (String, String, String) -> Unit,
     onRemoveAllAppAccessButtonClick: (String, String) -> Unit,
 ) {
     val healthPermission = fromPermissionString(permissionStr)
@@ -52,6 +53,7 @@ fun PerDataTypeScreen(
                 viewModel,
                 healthPermission,
                 dataTypeStr,
+                onAppChipClick,
                 onRemoveAllAppAccessButtonClick,
             )
         }
@@ -64,7 +66,7 @@ fun PerDataTypeScreen(
         }
 
         // Not allowed apps.
-        item { DeniedAppsList(viewModel, healthPermission) }
+        item { DeniedAppsList(viewModel, healthPermission, dataTypeStr, onAppChipClick) }
     }
 }
 
@@ -73,6 +75,7 @@ fun AllowedAppsList(
     viewModel: WearConnectedAppsViewModel,
     healthPermission: HealthPermission,
     dataTypeStr: String,
+    onAppChipClick: (String, String, String) -> Unit,
     onRemoveAllAppAccessButtonClick: (String, String) -> Unit,
 ) {
     val dataTypeToAllowedApps by viewModel.dataTypeToAllowedApps.collectAsState()
@@ -88,7 +91,9 @@ fun AllowedAppsList(
                 Chip(
                     label = app.appName,
                     labelMaxLines = 3,
-                    onClick = {}, // TODO: navigate
+                    onClick = {
+                        onAppChipClick(healthPermission.toString(), dataTypeStr, app.packageName)
+                    },
                     icon = app.icon,
                     modifier = Modifier.padding(4.dp),
                 )
@@ -108,7 +113,12 @@ fun AllowedAppsList(
 }
 
 @Composable
-fun DeniedAppsList(viewModel: WearConnectedAppsViewModel, healthPermission: HealthPermission) {
+fun DeniedAppsList(
+    viewModel: WearConnectedAppsViewModel,
+    healthPermission: HealthPermission,
+    dataTypeStr: String,
+    onAppChipClick: (String, String, String) -> Unit,
+) {
     val dataTypeToDeniedApps by viewModel.dataTypeToDeniedApps.collectAsState()
     val deniedApps = dataTypeToDeniedApps[healthPermission]
     if (deniedApps?.isNotEmpty() == true) {
@@ -122,7 +132,9 @@ fun DeniedAppsList(viewModel: WearConnectedAppsViewModel, healthPermission: Heal
                 Chip(
                     label = app.appName,
                     labelMaxLines = 3,
-                    onClick = {}, // TODO: navigate
+                    onClick = {
+                        onAppChipClick(healthPermission.toString(), dataTypeStr, app.packageName)
+                    },
                     icon = app.icon,
                     modifier = Modifier.padding(4.dp),
                 )
