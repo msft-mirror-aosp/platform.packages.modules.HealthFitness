@@ -60,7 +60,7 @@ import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.TableColumnPair;
 
@@ -92,11 +92,15 @@ public final class TransactionManager {
 
     private volatile HealthConnectDatabase mHealthConnectDatabase;
     private UserHandle mUserHandle;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings;
 
-    private TransactionManager(HealthConnectUserContext context) {
+    private TransactionManager(
+            HealthConnectUserContext context,
+            InternalHealthConnectMappings internalHealthConnectMappings) {
         mHealthConnectDatabase = new HealthConnectDatabase(context);
         mUserHandleToDatabaseMap.put(context.getCurrentUserHandle(), mHealthConnectDatabase);
         mUserHandle = context.getCurrentUserHandle();
+        mInternalHealthConnectMappings = internalHealthConnectMappings;
     }
 
     public void onUserUnlocked(HealthConnectUserContext healthConnectUserContext) {
@@ -233,7 +237,7 @@ public final class TransactionManager {
                     int numberOfRecordsDeleted = 0;
                     for (DeleteTableRequest deleteTableRequest : request.getDeleteTableRequests()) {
                         final RecordHelper<?> recordHelper =
-                                RecordHelperProvider.getRecordHelper(
+                                mInternalHealthConnectMappings.getRecordHelper(
                                         deleteTableRequest.getRecordType());
                         int innerRequestRecordsDeleted;
                         if (deleteTableRequest.requiresRead()) {
@@ -675,7 +679,8 @@ public final class TransactionManager {
         final SQLiteDatabase db = getReadableDb();
         HashMap<Integer, Set<Long>> recordTypeToPackageIdsMap = new HashMap<>();
         for (Integer recordType : recordTypes) {
-            RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordType);
+            RecordHelper<?> recordHelper =
+                    mInternalHealthConnectMappings.getRecordHelper(recordType);
             HashSet<Long> packageIds = new HashSet<>();
             try (Cursor cursorForDistinctPackageNames =
                     db.rawQuery(
@@ -1019,7 +1024,7 @@ public final class TransactionManager {
         // Carries out read requests provided by the record helper and uses the results to add
         // changelogs to the transaction.
         final RecordHelper<?> recordHelper =
-                RecordHelperProvider.getRecordHelper(upsertRequest.getRecordType());
+                mInternalHealthConnectMappings.getRecordHelper(upsertRequest.getRecordType());
         for (ReadTableRequest additionalChangelogUuidRequest :
                 recordHelper.getReadRequestsForRecordsModifiedByUpsertion(
                         upsertRequest.getRecordInternal().getUuid(),
@@ -1060,7 +1065,8 @@ public final class TransactionManager {
     public static synchronized TransactionManager initializeInstance(
             HealthConnectUserContext context) {
         if (sTransactionManager == null) {
-            sTransactionManager = new TransactionManager(context);
+            sTransactionManager =
+                    new TransactionManager(context, InternalHealthConnectMappings.getInstance());
         }
 
         return sTransactionManager;

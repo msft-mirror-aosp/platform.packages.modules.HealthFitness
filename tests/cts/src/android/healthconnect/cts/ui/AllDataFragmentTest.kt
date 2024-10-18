@@ -113,8 +113,6 @@ class AllDataFragmentTest : HealthConnectBaseTest() {
         context.launchDataActivity {
             findText("Activity")
             findTextAndClick("Steps")
-            findText("Entries")
-            findText("Access")
         }
     }
 

@@ -362,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> ಗೆ ಹಿನ್ನೆಲೆ ಮತ್ತು ಹಿಂದಿನ ಡೇಟಾ ಸೇರಿದಂತೆ Health Connect ನಿಂದ ಡೇಟಾವನ್ನು ಓದಲು ಅಥವಾ ಬರೆಯಲು ಇನ್ನು ಮುಂದೆ ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ.\n\nಈ ಆ್ಯಪ್ ಹೊಂದಿರಬಹುದಾದ ಕ್ಯಾಮರಾ, ಮೈಕ್ರೊಫೋನ್ ಅಥವಾ ಸ್ಥಳದಂತಹ ಇತರ ಅನುಮತಿಗಳ ಮೇಲೆ ಇದು ಪರಿಣಾಮ ಬೀರುವುದಿಲ್ಲ."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"<xliff:g id="APP_NAME">%1$s</xliff:g> ಆ್ಯಪ್‌ನ Health Connect ನಲ್ಲಿನ ಫಿಟ್‌ನೆಸ್ ಡೇಟಾ ಮತ್ತು ಆರೋಗ್ಯ ದಾಖಲೆಗಳನ್ನು ಸಹ ಅಳಿಸಿ"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"ಈ ಆ್ಯಪ್‌ಗೆ ಅನುಮತಿಗಳನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"ಎಲ್ಲಾ Health Connect ಡೇಟಾವನ್ನು ಸಹ ಅಳಿಸಿ"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"ಮುಂದಿನ ದಿನ"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"ಆಯ್ಕೆ ಮಾಡಿದ ದಿನ"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"ಹಿಂದಿನ ದಿನ"</string>
@@ -1074,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"ಆ್ಯಪ್ ಮೂಲಗಳನ್ನು ಎಡಿಟ್ ಮಾಡಿ"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"ಸಾಧನದ ಡೀಫಾಲ್ಟ್"</string>
     <string name="app_data_title" msgid="6499967982291000837">"ಆ್ಯಪ್ ಡೇಟಾ"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ನಲ್ಲಿನ ಡೇಟಾವನ್ನು ಇಲ್ಲಿ ತೋರಿಸಲಾಗುತ್ತದೆ"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Health Connect ಗೆ ಆ್ಯಕ್ಸೆಸ್ ಹೊಂದಿರುವ ಆ್ಯಪ್‌ಗಳ ಡೇಟಾವನ್ನು ಇಲ್ಲಿ ತೋರಿಸಲಾಗುತ್ತದೆ"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"ದಿನ"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"ವಾರ"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"ತಿಂಗಳು"</string>
@@ -1123,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ವಾರದ ಆಯ್ದ <xliff:g id="APP_NAME">%1$s</xliff:g> ನಮೂದುಗಳನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಬೇಕೆ?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ತಿಂಗಳಿನ ಆಯ್ದ <xliff:g id="APP_NAME">%1$s</xliff:g> ನಮೂದುಗಳನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಬೇಕೆ?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"ಈ <xliff:g id="APP_NAME">%s</xliff:g> ನಮೂದನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಬೇಕೆ?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g> ನಲ್ಲಿನ <xliff:g id="DATA_TYPE">%1$s</xliff:g> ಡೇಟಾವನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಬೇಕೆ?"</string>
 </resources>
