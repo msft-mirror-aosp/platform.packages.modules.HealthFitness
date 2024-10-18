@@ -464,12 +464,12 @@ public class MigrationStateChangeJobTest {
     public void testScheduleCompletionJob() {
         long jobRunInterval = MIGRATION_COMPLETION_JOB_RUN_INTERVAL_MOCK_VALUE;
         MigrationStateChangeJob.scheduleMigrationCompletionJob(
-                mHealthConnectDeviceConfigManager, mContext, DEFAULT_USER_HANDLE.getIdentifier());
+                mHealthConnectDeviceConfigManager, mContext, DEFAULT_USER_HANDLE);
         verify(
                 () ->
                         HealthConnectDailyService.schedule(
                                 any(JobScheduler.class),
-                                anyInt(),
+                                any(UserHandle.class),
                                 argThat(
                                         job ->
                                                 hasExpectedParameters(
@@ -482,14 +482,14 @@ public class MigrationStateChangeJobTest {
     public void testSchedulePauseJob() {
         long jobRunInterval = MIGRATION_PAUSE_JOB_RUN_INTERVAL_MOCK_VALUE;
         MigrationStateChangeJob.scheduleMigrationPauseJob(
-                mHealthConnectDeviceConfigManager, mContext, DEFAULT_USER_HANDLE.getIdentifier());
+                mHealthConnectDeviceConfigManager, mContext, DEFAULT_USER_HANDLE);
         when(mContext.getSystemService(eq(JobScheduler.class))).thenReturn(mJobScheduler);
 
         verify(
                 () ->
                         HealthConnectDailyService.schedule(
                                 any(JobScheduler.class),
-                                anyInt(),
+                                any(UserHandle.class),
                                 argThat(
                                         job ->
                                                 hasExpectedParameters(
