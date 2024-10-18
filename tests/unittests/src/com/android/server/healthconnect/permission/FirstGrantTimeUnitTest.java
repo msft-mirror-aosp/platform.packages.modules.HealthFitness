@@ -52,12 +52,12 @@ import android.util.Pair;
 
 import androidx.test.InstrumentationRegistry;
 
+import com.android.compatibility.common.util.SystemUtil;
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.HealthConnectUserContext;
-import com.android.server.healthconnect.TestUtils;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -119,7 +119,7 @@ public class FirstGrantTimeUnitTest {
     public void setUp() {
         Context context = InstrumentationRegistry.getContext();
         MockitoAnnotations.initMocks(this);
-        TestUtils.runWithShellPermissionIdentity(
+        SystemUtil.runWithShellPermissionIdentity(
                 () -> HealthConnectDeviceConfigManager.initializeInstance(mContext),
                 Manifest.permission.READ_DEVICE_CONFIG);
         TransactionManager.initializeInstance(new HealthConnectUserContext(context, CURRENT_USER));

@@ -31,8 +31,9 @@ import com.android.healthconnect.controller.permissions.additionalaccess.Permiss
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ASK_EVERY_TIME
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.NOT_DECLARED
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
-import com.android.healthconnect.controller.permissions.data.AdditionalPermissionStrings
+import com.android.healthconnect.controller.permissions.data.AccessType
 import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.additionalPermissionString
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
 import com.android.healthconnect.controller.shared.preference.HealthPreference
@@ -195,22 +196,25 @@ class AdditionalAccessFragment : Hilt_AdditionalAccessFragment() {
         if (screenState.state.historyReadUIState.isDeclared) {
             val appName = permissionsViewModel.appInfo.value!!.appName
 
-            val permStrings =
-                AdditionalPermissionStrings.fromAdditionalPermission(
+            val historyReadStrings =
+                additionalPermissionString(
                     HealthPermission.AdditionalPermission.READ_HEALTH_DATA_HISTORY,
-                    screenState.appHasDeclaredMedicalPermissions,
+                    type = AccessType.ACCESS,
+                    hasMedicalPermissions = screenState.appHasDeclaredMedicalPermissions,
+                    isMedicalReadGranted = false, // doesn't matter here
+                    isFitnessReadGranted = false, // doesn't matter here
                 )
 
             val dataAccessDate = viewModel.loadAccessDate(packageName)
             val summary =
                 if (dataAccessDate != null) {
                     val formattedDate = dateFormatter.formatLongDate(dataAccessDate)
-                    getString(permStrings.permissionDescription, formattedDate)
+                    getString(historyReadStrings.description, formattedDate)
                 } else {
-                    getString(permStrings.permissionDescriptionFallback)
+                    getString(historyReadStrings.descriptionFallback)
                 }
 
-            historicReadPref.title = getString(permStrings.permissionTitle)
+            historicReadPref.title = getString(historyReadStrings.title)
             historicReadPref.isVisible = true
             healthConnectLogger.logImpression(HISTORY_READ_BUTTON)
             historicReadPref.isChecked = screenState.state.historyReadUIState.isGranted
@@ -243,14 +247,17 @@ class AdditionalAccessFragment : Hilt_AdditionalAccessFragment() {
         }
 
         if (screenState.state.backgroundReadUIState.isDeclared) {
-            val permStrings =
-                AdditionalPermissionStrings.fromAdditionalPermission(
+            val backgroundReadString =
+                additionalPermissionString(
                     HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
-                    screenState.appHasDeclaredMedicalPermissions,
+                    type = AccessType.ACCESS,
+                    hasMedicalPermissions = screenState.appHasDeclaredMedicalPermissions,
+                    isMedicalReadGranted = screenState.showMedicalPastDataFooter,
+                    isFitnessReadGranted = screenState.appHasGrantedFitnessReadPermission,
                 )
 
-            backgroundReadPref.title = getString(permStrings.permissionTitle)
-            backgroundReadPref.summary = getString(permStrings.permissionDescription)
+            backgroundReadPref.title = getString(backgroundReadString.title)
+            backgroundReadPref.summary = getString(backgroundReadString.description)
             backgroundReadPref.isVisible = true
             healthConnectLogger.logImpression(BACKGROUND_READ_BUTTON)
             backgroundReadPref.isChecked = screenState.state.backgroundReadUIState.isGranted
@@ -274,7 +281,7 @@ class AdditionalAccessFragment : Hilt_AdditionalAccessFragment() {
         isGranted: Boolean,
         anyFitnessReadPermissionGranted: Boolean,
     ) {
-        warningPref.setTitle(getString(R.string.historic_access_medical_warning, appName))
+        warningPref.setTitle(getString(R.string.history_read_medical_access_read_warning, appName))
         warningPref.isVisible = isGranted && isEnabled && !anyFitnessReadPermissionGranted
     }
 

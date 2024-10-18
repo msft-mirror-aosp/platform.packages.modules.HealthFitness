@@ -697,13 +697,9 @@ class AdditionalAccessFragmentTest {
 
         onView(withText("Access exercise routes")).check(matches(isDisplayed()))
         onView(withText("Don't allow")).check(matches(isDisplayed()))
-        onView(withText("Access all data in the background")).check(matches(isDisplayed()))
-        onView(
-                withText(
-                    "Allow this app to access fitness and wellness data and health records data " +
-                        "when you're not using the app"
-                )
-            )
+        onView(withText("Access fitness and wellness data in the background"))
+            .check(matches(isDisplayed()))
+        onView(withText("Allow this app to access this data " + "when you're not using the app"))
             .check(matches(isDisplayed()))
         onView(
                 withText(
@@ -756,13 +752,9 @@ class AdditionalAccessFragmentTest {
 
         onView(withText("Access exercise routes")).check(matches(isDisplayed()))
         onView(withText("Don't allow")).check(matches(isDisplayed()))
-        onView(withText("Access all data in the background")).check(matches(isDisplayed()))
-        onView(
-                withText(
-                    "Allow this app to access fitness and wellness data and health records data " +
-                        "when you're not using the app"
-                )
-            )
+        onView(withText("Access fitness and wellness data in the background"))
+            .check(matches(isDisplayed()))
+        onView(withText("Allow this app to access this data " + "when you're not using the app"))
             .check(matches(isDisplayed()))
         onView(
                 withText(
@@ -818,13 +810,9 @@ class AdditionalAccessFragmentTest {
 
         onView(withText("Access exercise routes")).check(matches(isDisplayed()))
         onView(withText("Ask every time")).check(matches(isDisplayed()))
-        onView(withText("Access all data in the background")).check(matches(isDisplayed()))
-        onView(
-                withText(
-                    "Allow this app to access fitness and wellness data and health records data " +
-                        "when you're not using the app"
-                )
-            )
+        onView(withText("Access fitness and wellness data in the background"))
+            .check(matches(isDisplayed()))
+        onView(withText("Allow this app to access this data " + "when you're not using the app"))
             .check(matches(isDisplayed()))
             .check(matches(isDisplayed()))
         onView(withText("Access past fitness and wellness data")).check(matches(isDisplayed()))
@@ -898,7 +886,7 @@ class AdditionalAccessFragmentTest {
         onView(withText("Access all data in the background")).check(matches(isDisplayed()))
         onView(
                 withText(
-                    "Allow this app to access fitness and wellness data and health records data " +
+                    "Allow this app to access fitness and wellness data and health records " +
                         "when you're not using the app"
                 )
             )
@@ -972,7 +960,7 @@ class AdditionalAccessFragmentTest {
         onView(withText("Access all data in the background")).check(matches(isDisplayed()))
         onView(
                 withText(
-                    "Allow this app to access fitness and wellness data and health records data " +
+                    "Allow this app to access fitness and wellness data and health records " +
                         "when you're not using the app"
                 )
             )
@@ -1032,13 +1020,8 @@ class AdditionalAccessFragmentTest {
 
         onView(withText("Access exercise routes")).check(matches(isDisplayed()))
         onView(withText("Ask every time")).check(matches(isDisplayed()))
-        onView(withText("Access all data in the background")).check(matches(isDisplayed()))
-        onView(
-                withText(
-                    "Allow this app to access fitness and wellness data and health records data " +
-                        "when you're not using the app"
-                )
-            )
+        onView(withText("Access health records in the background")).check(matches(isDisplayed()))
+        onView(withText("Allow this app to access this data " + "when you're not using the app"))
             .check(matches(isDisplayed()))
             .check(matches(isDisplayed()))
         onView(withText("Access past fitness and wellness data")).check(matches(isDisplayed()))

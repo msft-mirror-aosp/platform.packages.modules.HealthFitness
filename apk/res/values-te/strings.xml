@@ -362,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> ఇకపై బ్యాక్‌గ్రౌండ్, గతంలోని డేటాతో సహా Health Connect నుండి ఏ డేటాను చదవలేదు లేదా రాయలేదు.\n\nయాప్‌నకు ఉన్న కెమెరా, మైక్రోఫోన్ లేదా లొకేషన్, వంటి ఇతర అనుమతులను ఇది ప్రభావితం చేయదు."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"<xliff:g id="APP_NAME">%1$s</xliff:g>లోని Health Connect నుండి ఫిట్‌నెస్ డేటాను, హెల్త్ రికార్డ్‌లను కూడా తొలగించండి"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"ఈ యాప్‌కి అనుమతులు తీసివేయబడ్డాయి"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Health Connect డేటా మొత్తాన్ని కూడా తొలగించండి"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"తర్వాతి రోజు"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"ఎంచుకున్న రోజు"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"మునుపటి రోజు"</string>
@@ -1074,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"యాప్ సోర్స్‌లను ఎడిట్ చేయండి"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"పరికరంలో ఆటోమేటిక్‌గా సెట్ చేయబడి ఉన్న యాప్"</string>
     <string name="app_data_title" msgid="6499967982291000837">"యాప్ డేటా"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"<xliff:g id="APP_NAME">%1$s</xliff:g> నుండి డేటా ఇక్కడ చూపబడుతుంది"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Health Connectకు యాక్సెస్ ఉన్న యాప్‌ల డేటా ఇక్కడ చూపబడుతుంది"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"రోజు"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"వారం"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"నెల"</string>
@@ -1123,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> మధ్య పొందిన ఎంపిక చేసిన <xliff:g id="APP_NAME">%1$s</xliff:g> ఎంట్రీలను శాశ్వతంగా తొలగించాలా?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>లో పొందిన ఎంపిక చేసిన <xliff:g id="APP_NAME">%1$s</xliff:g> ఎంట్రీలను శాశ్వతంగా తొలగించాలా?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"ఈ <xliff:g id="APP_NAME">%s</xliff:g> ఎంట్రీని శాశ్వతంగా తొలగించాలా?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g>‌కు సంబంధించిన <xliff:g id="DATA_TYPE">%1$s</xliff:g> డేటాను శాశ్వతంగా తొలగించాలా?"</string>
 </resources>
