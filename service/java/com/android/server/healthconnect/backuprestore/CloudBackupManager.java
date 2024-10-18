@@ -22,11 +22,13 @@ import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.health.connect.backuprestore.GetChangesForBackupResponse;
 import android.health.connect.backuprestore.GetSettingsForBackupResponse;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 /**
  * Manages Cloud Backup operations.
@@ -42,10 +44,17 @@ public final class CloudBackupManager {
             TransactionManager transactionManager,
             AppInfoHelper appInfoHelper,
             AccessLogsHelper accessLogsHelper,
-            DeviceInfoHelper deviceInfoHelper) {
+            DeviceInfoHelper deviceInfoHelper,
+            HealthConnectMappings healthConnectMappings,
+            InternalHealthConnectMappings internalHealthConnectMappings) {
         mDatabaseHelper =
                 new BackupRestoreDatabaseHelper(
-                        transactionManager, appInfoHelper, accessLogsHelper, deviceInfoHelper);
+                        transactionManager,
+                        appInfoHelper,
+                        accessLogsHelper,
+                        deviceInfoHelper,
+                        healthConnectMappings,
+                        internalHealthConnectMappings);
     }
 
     /**
