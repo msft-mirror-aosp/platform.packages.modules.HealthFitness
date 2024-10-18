@@ -54,7 +54,7 @@ import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import java.util.ArrayList;
@@ -78,6 +78,7 @@ public final class DatabaseMerger {
     private final TransactionManager mTransactionManager;
     private final AppInfoHelper mAppInfoHelper;
     private final HealthConnectMappings mHealthConnectMappings;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     private final DeviceInfoHelper mDeviceInfoHelper;
 
@@ -105,6 +106,7 @@ public final class DatabaseMerger {
         mTransactionManager = transactionManager;
         mAppInfoHelper = appInfoHelper;
         mHealthConnectMappings = HealthConnectMappings.getInstance();
+        mInternalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
         mDeviceInfoHelper = deviceInfoHelper;
     }
@@ -231,7 +233,7 @@ public final class DatabaseMerger {
             Map<Long, String> stagedPackageNamesByAppIds,
             int recordType,
             Class<T> recordTypeClass) {
-        RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordType);
+        RecordHelper<?> recordHelper = mInternalHealthConnectMappings.getRecordHelper(recordType);
         if (!StorageUtils.checkTableExists(stagedDatabase, recordHelper.getMainTableName())) {
             return;
         }
@@ -287,7 +289,7 @@ public final class DatabaseMerger {
 
     private <T extends Record> void deleteRecordsOfType(
             HealthConnectDatabase stagedDatabase, int recordType, Class<T> recordTypeClass) {
-        RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordType);
+        RecordHelper<?> recordHelper = mInternalHealthConnectMappings.getRecordHelper(recordType);
         if (!StorageUtils.checkTableExists(stagedDatabase, recordHelper.getMainTableName())) {
             return;
         }

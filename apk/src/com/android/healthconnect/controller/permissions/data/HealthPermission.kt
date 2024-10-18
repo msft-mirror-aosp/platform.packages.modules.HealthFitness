@@ -71,9 +71,19 @@ sealed class HealthPermission {
                 permission.permissionsAccessType == PermissionsAccessType.READ
         }
 
+        fun isFitnessWritePermission(permission: HealthPermission): Boolean {
+            return (permission is FitnessPermission) &&
+                permission.permissionsAccessType == PermissionsAccessType.WRITE
+        }
+
         fun isMedicalReadPermission(permission: HealthPermission): Boolean {
             return (permission is MedicalPermission) &&
                 permission.medicalPermissionType != MedicalPermissionType.ALL_MEDICAL_DATA
+        }
+
+        fun isMedicalWritePermission(permission: HealthPermission): Boolean {
+            return (permission is MedicalPermission) &&
+                permission.medicalPermissionType == MedicalPermissionType.ALL_MEDICAL_DATA
         }
 
         fun isAdditionalPermission(permission: String): Boolean {

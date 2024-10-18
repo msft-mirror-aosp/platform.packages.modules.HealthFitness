@@ -23,8 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Tvarkykite įrenginyje esančius sveikatos ir kūno rengybos duomenis ir valdykite, kurios programos gali juos pasiekti"</string>
     <string name="data_title" msgid="4456619761533380816">"Duomenys ir prieiga"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Naršyti įrašus apie sveikatą"</string>
-    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
-    <skip />
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Peržiūrėkite sveikatos įrašus ir kurios programos gali juos pasiekti"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Visos kategorijos"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Žr. visas kategorijas"</string>
     <string name="no_data" msgid="1906986019249068659">"Nėra jokių duomenų"</string>
@@ -363,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"Programa „<xliff:g id="APP_NAME">%1$s</xliff:g>” nebegalės skaityti ar rašyti jokių „Health Connect“ duomenų, įskaitant foninius ir ankstesnius duomenis.\n\nTai nepaveiks kitų leidimų, kuriuos ši programa gali turėti, pvz., vaizdo kameros, mikrofono ar vietovės."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Taip pat ištrinti „<xliff:g id="APP_NAME">%1$s</xliff:g>“ mankštos duomenis ir sveikatos įrašus iš „Health Connect“"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Pašalinti šios programos leidimai"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Taip pat ištrinti visus „Health Connect“ duomenis"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Kita diena"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Pasirinkta diena"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Ankstesnė diena"</string>
@@ -403,8 +403,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Programos prieiga"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Šiuo metu neturite įdiegtų suderinamų programų"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Papildoma prieiga"</string>
-    <!-- no translation found for additional_access_summary (1076197455435130191) -->
-    <skip />
+    <string name="additional_access_summary" msgid="1076197455435130191">"Ankstesni duomenys, foniniai duomenys"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Pašalinti papildomi šios programos leidimai"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Leidimai"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Kūno rengyba ir sveikata"</string>
@@ -605,11 +604,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Lengvas kraujavimas"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Vidutinis kraujavimas"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Gausus kraujavimas"</string>
-    <!-- no translation found for flow_unknown (1634411759928572900) -->
-    <skip />
+    <string name="flow_unknown" msgid="1634411759928572900">"Nežinomas srautas"</string>
     <string name="period_day" msgid="3821944462093965882">"<xliff:g id="DAY">%1$d</xliff:g> menstruacijų diena iš <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
-    <!-- no translation found for period_length (2257138792780916599) -->
-    <skip />
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Menstruacijos (1 diena)}one{Menstruacijos (# diena)}few{Menstruacijos (# dienos)}many{Menstruacijos (# dienos)}other{Menstruacijos (# dienų)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Teigiamas"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Neigiamas"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Aukšta"</string>
@@ -1078,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Redaguoti programų šaltinius"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Numatytasis įrenginio nustatymas"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Programos duomenys"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Duomenys iš programos „<xliff:g id="APP_NAME">%1$s</xliff:g>“ bus rodomi čia"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Čia bus rodomi programų, turinčių prieigą prie „Health Connect“, duomenys"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Diena"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Savaitė"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Mėnuo"</string>
@@ -1127,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Visam laikui ištrinti <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> savaitės programos „<xliff:g id="APP_NAME">%1$s</xliff:g>“ įrašus?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Visam laikui ištrinti pasirinktus <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> programos „<xliff:g id="APP_NAME">%1$s</xliff:g>“ įrašus?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Visam laikui ištrinti šį programos „<xliff:g id="APP_NAME">%s</xliff:g>“ įrašą?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Visam laikui ištrinti „<xliff:g id="APP_NAME">%2$s</xliff:g>“ <xliff:g id="DATA_TYPE">%1$s</xliff:g> duomenis?"</string>
 </resources>

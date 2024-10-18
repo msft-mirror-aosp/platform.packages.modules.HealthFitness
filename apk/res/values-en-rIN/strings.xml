@@ -23,8 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Manage the health and fitness data on your device, and control which apps can access it"</string>
     <string name="data_title" msgid="4456619761533380816">"Data and access"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Browse health records"</string>
-    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
-    <skip />
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"View your health records and which apps can access them"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"All categories"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"See all categories"</string>
     <string name="no_data" msgid="1906986019249068659">"No data"</string>
@@ -363,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> will no longer be able to read or write data from Health Connect, including background and past data.\n\nThis doesn\'t affect other permissions that this app may have, like camera, microphone or location."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Also delete fitness data and health records from <xliff:g id="APP_NAME">%1$s</xliff:g> from Health Connect"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Removed permissions for this app"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Also delete all Health Connect data"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Next day"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Selected day"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Previous day"</string>
@@ -403,8 +403,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"App access"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"You currently don\'t have any compatible apps installed"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Additional access"</string>
-    <!-- no translation found for additional_access_summary (1076197455435130191) -->
-    <skip />
+    <string name="additional_access_summary" msgid="1076197455435130191">"Past data, background data"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Removed additional permissions for this app"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Permissions"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Fitness and wellness"</string>
@@ -605,11 +604,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Light flow"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Medium flow"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Heavy flow"</string>
-    <!-- no translation found for flow_unknown (1634411759928572900) -->
-    <skip />
+    <string name="flow_unknown" msgid="1634411759928572900">"Unknown flow"</string>
     <string name="period_day" msgid="3821944462093965882">"Period day <xliff:g id="DAY">%1$d</xliff:g> of <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
-    <!-- no translation found for period_length (2257138792780916599) -->
-    <skip />
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Period (1 day)}other{Period (# days)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Positive"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Negative"</string>
     <string name="ovulation_high" msgid="205362931427158291">"High"</string>
@@ -1078,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Edit app sources"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Device default"</string>
     <string name="app_data_title" msgid="6499967982291000837">"App data"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Data from <xliff:g id="APP_NAME">%1$s</xliff:g> will show here"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Data from apps with access to Health Connect will show here"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Day"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Week"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Month"</string>
@@ -1127,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Permanently delete selected <xliff:g id="APP_NAME">%1$s</xliff:g> entries for the week of <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Permanently delete selected <xliff:g id="APP_NAME">%1$s</xliff:g> entries for <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Permanently delete this <xliff:g id="APP_NAME">%s</xliff:g> entry?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Permanently delete <xliff:g id="DATA_TYPE">%1$s</xliff:g> data for <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
 </resources>

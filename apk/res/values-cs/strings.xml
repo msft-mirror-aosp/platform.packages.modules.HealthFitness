@@ -362,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> už nebude moct číst ani zapisovat data ze služby Health Connect, včetně dat na pozadí a dřívějších dat.\n\nTato akce nemá vliv na ostatní oprávnění, která aplikace může mít, jako je přístup k fotoaparátu, mikrofonu nebo poloze."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Vymazat ze služby Health Connect také údaje o kondici a zdravotní záznamy z aplikace <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Této aplikaci byla odebrána oprávnění"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Smazat i všechna data Health Connect"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Další den"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Vybraný den"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Předchozí den"</string>
@@ -1074,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Upravit zdroje aplikací"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Výchozí nastavení zařízení"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Data aplikace"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Tady se budou zobrazovat data z aplikace <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Tady se budou zobrazovat data z aplikací s přístupem na platformu Health Connect"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Den"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Týden"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Měsíc"</string>
@@ -1123,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Trvale smazat vybrané záznamy aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> za období <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Trvale smazat vybrané záznamy aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> za období <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Trvale smazat tento záznam aplikace <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Trvale smazat data (<xliff:g id="DATA_TYPE">%1$s</xliff:g>) aplikace <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
 </resources>

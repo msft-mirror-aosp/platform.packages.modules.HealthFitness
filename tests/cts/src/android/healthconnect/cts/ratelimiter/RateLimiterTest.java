@@ -36,7 +36,6 @@ import static org.junit.Assert.assertThrows;
 import android.app.UiAutomation;
 import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
-import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
@@ -147,17 +146,6 @@ public class RateLimiterTest {
         HealthConnectException exception =
                 assertThrows(
                         HealthConnectException.class, () -> exceedWriteQuotaWithInsertRecords());
-        assertThat(exception).hasMessageThat().contains("API call quota exceeded");
-    }
-
-    @Test
-    @ApiTest(apis = {"android.health.connect#createMedicalDataSource"})
-    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testTryAcquireApiCallQuota_createMedicalDataSource_writeLimitExceeded() {
-        HealthConnectException exception =
-                assertThrows(
-                        HealthConnectException.class,
-                        this::exceedWriteQuotaWithCreateMedicalDataSource);
         assertThat(exception).hasMessageThat().contains("API call quota exceeded");
     }
 
@@ -401,32 +389,6 @@ public class RateLimiterTest {
         while (tryWriteWithBuffer > 0) {
             TestUtils.insertRecords(List.of(getCompleteStepsRecord()));
 
-            tryWriteWithBuffer--;
-        }
-    }
-
-    private void exceedWriteQuotaWithCreateMedicalDataSource() throws InterruptedException {
-        float quotaAcquired = acquireCallQuotaForWrite();
-        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
-        HealthConnectManager manager = TestUtils.getHealthConnectManager();
-        int count = 0;
-
-        while (quotaAcquired > 1) {
-            count++;
-            // Append request count to the fhir base uri to avoid duplicates.
-            CreateMedicalDataSourceRequest request =
-                    PhrDataFactory.getCreateMedicalDataSourceRequest(String.valueOf(count));
-            manager.createMedicalDataSource(request, Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
-            quotaAcquired--;
-        }
-        int tryWriteWithBuffer = 20;
-        while (tryWriteWithBuffer > 0) {
-            count++;
-            CreateMedicalDataSourceRequest request =
-                    PhrDataFactory.getCreateMedicalDataSourceRequest(String.valueOf(count));
-            manager.createMedicalDataSource(request, Executors.newSingleThreadExecutor(), receiver);
-            receiver.verifyNoExceptionOrThrow();
             tryWriteWithBuffer--;
         }
     }

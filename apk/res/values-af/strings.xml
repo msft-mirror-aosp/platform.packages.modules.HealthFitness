@@ -23,8 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Bestuur die gesondheid- en fiksheiddata op jou toestel, en beheer watter apps toegang daartoe het"</string>
     <string name="data_title" msgid="4456619761533380816">"Data en toegang"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Blaai deur gesondheidrekords"</string>
-    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
-    <skip />
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Bekyk jou gesondheidrekords en die apps wat toegang daartoe kan verkry"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Alle kategorieë"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Sien alle kategorieë"</string>
     <string name="no_data" msgid="1906986019249068659">"Geen data nie"</string>
@@ -363,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> sal nie meer data van Health Connect af kan lees of skryf nie, insluitend agtergrond en vorige data.\n\nDit raak nie ander toestemmings wat hierdie app dalk het nie, soos kamera, mikrofoon of ligging."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Vee ook fiksheiddata en gesondheidsrekords op <xliff:g id="APP_NAME">%1$s</xliff:g> vanaf Health Connect uit"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Toestemmings is van hierdie app af verwyder"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Vee ook alle Health Connect-data uit"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Volgende dag"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Gekose dag"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Vorige dag"</string>
@@ -403,8 +403,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Apptoegang"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Jy het tans geen versoenbare apps geïnstalleer nie"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Bykomende toegang"</string>
-    <!-- no translation found for additional_access_summary (1076197455435130191) -->
-    <skip />
+    <string name="additional_access_summary" msgid="1076197455435130191">"Vorige data, agtergronddata"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Het bykomende toestemmings vir hierdie app verwyder"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Toestemmings"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Fiksheid en welstand"</string>
@@ -605,11 +604,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Ligte vloei"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Middelmatige vloei"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Sterk vloei"</string>
-    <!-- no translation found for flow_unknown (1634411759928572900) -->
-    <skip />
+    <string name="flow_unknown" msgid="1634411759928572900">"Onbekende vloei"</string>
     <string name="period_day" msgid="3821944462093965882">"Menstruasiedag <xliff:g id="DAY">%1$d</xliff:g> van <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
-    <!-- no translation found for period_length (2257138792780916599) -->
-    <skip />
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Menstruasie (1 dag)}other{Menstruasie (# dae)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Positief"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Negatief"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Hoog"</string>
@@ -1078,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Wysig appbronne"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Toestelverstek"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Appdata"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Data van <xliff:g id="APP_NAME">%1$s</xliff:g> af sal hier wys"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Data vanaf apps met toegang tot Health Connect sal hier gewys word"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Dag"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Week"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Maand"</string>
@@ -1127,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Vee geselekteerde <xliff:g id="APP_NAME">%1$s</xliff:g>-inskrywings vir die week van <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> permanent uit?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Vee geselekteerde <xliff:g id="APP_NAME">%1$s</xliff:g>-inskrywings vir <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> permanent uit?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Vee hierdie <xliff:g id="APP_NAME">%s</xliff:g>-inskrywing permanent uit?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Vee <xliff:g id="DATA_TYPE">%1$s</xliff:g>-data vir <xliff:g id="APP_NAME">%2$s</xliff:g> permanent uit?"</string>
 </resources>

@@ -49,7 +49,7 @@ class MedicalWritePermissionFragment : Hilt_MedicalWritePermissionFragment() {
 
     private val viewModel: RequestPermissionViewModel by activityViewModels()
 
-    private val header: AdditionalPermissionHeaderPreference by pref(HEADER_PREFERENCE)
+    private val header: RequestPermissionHeaderPreference by pref(HEADER_PREFERENCE)
 
     private val supportedMedicalPreference: HealthPreference? by lazy {
         preferenceScreen.findPreference(SUPPORTED_PERMS_PREFERENCE)
@@ -65,13 +65,32 @@ class MedicalWritePermissionFragment : Hilt_MedicalWritePermissionFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.appMetadata.observe(viewLifecycleOwner) { app ->
-            header.bind(
-                titleText = R.string.medical_request_header,
-                appName = app.appName,
-                summaryText = getString(R.string.medical_request_share, app.appName),
-            )
+        viewModel.medicalScreenState.observe(viewLifecycleOwner) { screenState ->
+            when (screenState) {
+                is MedicalScreenState.ShowMedicalWrite -> {
+                    setupScreen(screenState)
+                }
+                is MedicalScreenState.ShowMedicalRead,
+                is MedicalScreenState.ShowMedicalReadWrite -> {
+                    requireActivity()
+                        .supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.permission_content, MedicalPermissionsFragment())
+                        .commit()
+                }
+                else -> {
+                    requireActivity()
+                        .supportFragmentManager
+                        .beginTransaction()
+                        .remove(this)
+                        .commit()
+                }
+            }
         }
+    }
+
+    private fun setupScreen(screenState: MedicalScreenState.ShowMedicalWrite) {
+        header.bind(appName = screenState.appMetadata.appName, screenState = screenState)
 
         val allMedicalPermissions =
             MedicalPermissionType.entries
