@@ -59,9 +59,13 @@ import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.logging.ExportImportLogger;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 
@@ -70,6 +74,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.quality.Strictness;
 
 import java.io.File;
@@ -112,8 +117,12 @@ public class ExportManagerTest {
     private ExportManager mExportManager;
     private DatabaseContext mExportedDbContext;
     private Instant mTimeStamp;
-    private Clock mFakeClock;
     private ExportImportSettingsStorage mExportImportSettingsStorage;
+
+    // TODO(b/373322447): Remove the mock FirstGrantTimeManager
+    @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
+    // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
+    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
 
     @Before
     public void setUp() throws Exception {
@@ -123,17 +132,19 @@ public class ExportManagerTest {
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
 
         mTimeStamp = Instant.parse("2024-06-04T16:39:12Z");
-        mFakeClock = Clock.fixed(mTimeStamp, ZoneId.of("UTC"));
+        Clock fakeClock = Clock.fixed(mTimeStamp, ZoneId.of("UTC"));
 
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(new FakePreferenceHelper())
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .build();
 
         mExportImportSettingsStorage = healthConnectInjector.getExportImportSettingsStorage();
         mExportManager =
                 new ExportManager(
-                        mContext, mFakeClock, mExportImportSettingsStorage, transactionManager);
+                        mContext, fakeClock, mExportImportSettingsStorage, transactionManager);
 
         mExportedDbContext =
                 DatabaseContext.create(
@@ -146,6 +157,8 @@ public class ExportManagerTest {
         SQLiteDatabase.deleteDatabase(
                 mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME));
         mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME).delete();
+        AppInfoHelper.resetInstanceForTest();
+        AccessLogsHelper.resetInstanceForTest();
     }
 
     @Test

@@ -75,7 +75,7 @@ import com.android.server.healthconnect.storage.request.AlterTableRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.TableColumnPair;
@@ -601,7 +601,8 @@ public final class PlannedExerciseSessionRecordHelper
                 StorageUtils.getHexString(deletedRecordUuid));
         affectedExerciseSessionsReadRequest.setWhereClause(whereStatement);
         affectedExerciseSessionsReadRequest.setRecordHelper(
-                RecordHelperProvider.getRecordHelper(RECORD_TYPE_EXERCISE_SESSION));
+                InternalHealthConnectMappings.getInstance()
+                        .getRecordHelper(RECORD_TYPE_EXERCISE_SESSION));
         return Collections.singletonList(affectedExerciseSessionsReadRequest);
     }
 }

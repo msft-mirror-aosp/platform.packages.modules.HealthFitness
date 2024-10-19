@@ -362,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> ആപ്പിന് ഇനി മുമ്പത്തെ ഡാറ്റയും പശ്ചാത്തല ഡാറ്റയും ഉൾപ്പെടെ, Health Connect-ൽ നിന്നുള്ള ഡാറ്റ റീഡ് ചെയ്യാനോ റൈറ്റ് ചെയ്യാനോ കഴിയില്ല.\n\nക്യാമറ, മൈക്രോഫോൺ, ലൊക്കേഷൻ എന്നിവ പോലെ ഈ ആപ്പിന് ഉണ്ടായിരിക്കാനിടയുള്ള മറ്റ് അനുമതികളെ ഇത് ബാധിക്കില്ല."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Health Connect-ൽ നിന്നുള്ള <xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിൽ നിന്നുള്ള ഫിറ്റ്‌നസ് ഡാറ്റയും ആരോഗ്യ റെക്കോർഡുകളും ഇല്ലാതാക്കുക"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"ഈ ആപ്പിനുള്ള അനുമതികൾ നീക്കം ചെയ്തു"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"എല്ലാ Health Connect ഡാറ്റയും ഇല്ലാതാക്കുക"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"അടുത്ത ദിവസം"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"തിരഞ്ഞെടുത്ത ദിവസം"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"മുമ്പത്തെ ദിവസം"</string>
@@ -1074,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"ആപ്പ് ഉറവിടങ്ങൾ എഡിറ്റ് ചെയ്യുക"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"ഉപകരണത്തിൽ ഡിഫോൾട്ടായുള്ളത്"</string>
     <string name="app_data_title" msgid="6499967982291000837">"ആപ്പ് ഡാറ്റ"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"<xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിൽ നിന്നുള്ള ഡാറ്റ ഇവിടെ കാണിക്കും"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Health Connect-ലേക്ക് ആക്‌സസുള്ള ആപ്പുകളിൽ നിന്നുള്ള ഡാറ്റ ഇവിടെ കാണിക്കും"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"ദിവസം"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"ആഴ്‌ച"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"മാസം"</string>
@@ -1123,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> എന്ന ആഴ്ചയിലേക്കുള്ള തിരഞ്ഞെടുത്ത <xliff:g id="APP_NAME">%1$s</xliff:g> എൻട്രികൾ ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> എന്ന മാസത്തേക്കുള്ള തിരഞ്ഞെടുത്ത <xliff:g id="APP_NAME">%1$s</xliff:g> എൻട്രികൾ ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"ഈ <xliff:g id="APP_NAME">%s</xliff:g> എൻട്രി ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g> എന്നതിനുള്ള <xliff:g id="DATA_TYPE">%1$s</xliff:g> ഡാറ്റ ശാശ്വതമായി നീക്കം ചെയ്യണോ?"</string>
 </resources>

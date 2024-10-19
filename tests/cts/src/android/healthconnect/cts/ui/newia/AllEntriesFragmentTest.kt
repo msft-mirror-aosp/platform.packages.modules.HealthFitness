@@ -13,18 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package android.healthconnect.cts.ui
+package android.healthconnect.cts.ui.newia
 
 import android.health.connect.datatypes.StepsRecord
 import android.healthconnect.cts.lib.ActivityLauncher.launchDataActivity
 import android.healthconnect.cts.lib.RecordFactory.newEmptyMetadata
+import android.healthconnect.cts.lib.UiTestUtils.findObjectAndClick
 import android.healthconnect.cts.lib.UiTestUtils.findText
 import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
+import android.healthconnect.cts.lib.UiTestUtils.scrollUpTo
+import android.healthconnect.cts.lib.UiTestUtils.verifyObjectNotFound
 import android.healthconnect.cts.lib.UiTestUtils.verifyTextNotFound
+import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.healthconnect.cts.utils.TestUtils
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.test.uiautomator.By
 import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import java.time.LocalDate
 import java.time.ZoneId
@@ -93,11 +99,28 @@ class AllEntriesFragmentTest : HealthConnectBaseTest() {
 
             findTextAndClick("Access")
             findText("Can read steps")
+            scrollDownTo(By.text("Can write steps"))
             findText("Can write steps")
         }
     }
 
-    // TODO (b/360887258) Deletion tests
+    @Test
+    fun allEntries_deletesAllData() {
+        context.launchDataActivity {
+            findText("Activity")
+            findTextAndClick("Steps")
+            findText("Entries")
+
+            verifyObjectNotFound(By.text("Select all"))
+            findObjectAndClick(By.desc("Enter deletion"))
+            scrollUpTo(By.text("Select all"))
+            findTextAndClick("Select all")
+            findObjectAndClick(By.desc("Delete data"))
+            findTextAndClick("Delete")
+            findTextAndClick("Done")
+            findText("No data")
+        }
+    }
 
     private fun insertData() {
         TestUtils.insertRecords(

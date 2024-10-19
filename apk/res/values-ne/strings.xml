@@ -23,8 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"आफ्नो डिभाइसमा भएका स्वास्थ्य र तन्दुरुस्तीसम्बन्धी जानकारी व्यवस्थापन गर्नुहोस् र ती जानकारी कुन कुन एपलाई प्रयोग गर्न दिने भन्ने कुरा नियन्त्रण गर्नुहोस्"</string>
     <string name="data_title" msgid="4456619761533380816">"डेटा र अनुमति"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"स्वास्थ्य अभिलेखहरू ब्राउज गर्नुहोस्"</string>
-    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
-    <skip />
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"आफ्ना स्वास्थ्य अभिलेख र ती स्वास्थ्य अभिलेख एक्सेस गर्न सक्ने एपहरू हेर्नुहोस्"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"सबै कोटीहरू"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"सबै कोटीहरू हेर्नुहोस्"</string>
     <string name="no_data" msgid="1906986019249068659">"डेटा छैन"</string>
@@ -363,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> ले अबदेखि Health Connect मा भएका ब्याकग्राउन्ड र विगतका जानकारीलगायतका जानकारी रिड वा राइट गर्न सक्ने छैन।\n\nयसले गर्दा यो एपलाई दिइएका क्यामेरा, माइक्रोफोन वा लोकेसन प्रयोग गर्ने अनुमतिलगायतको अन्य कुनै पनि अनुमति परिवर्तन हुने छैन।"</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Health Connect बाट <xliff:g id="APP_NAME">%1$s</xliff:g> मा भएका व्यायामसम्बन्धी जानकारी र स्वास्थ्य अभिलेख पनि मेटाउनुहोस्"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"यो एपलाई दिइएका अनुमति हटाइएको छ"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Health Connect का सबै डेटा पनि मेटाउनुहोस्"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"अर्को दिन"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"चयन गरिएको दिन"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"अघिल्लो दिन"</string>
@@ -403,8 +403,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"एपलाई दिइएका अनुमति"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"तपाईंले अहिले कुनै पनि कम्प्याटिबल एप इन्स्टल गर्नुभएको छैन"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"अतिरिक्त एक्सेस"</string>
-    <!-- no translation found for additional_access_summary (1076197455435130191) -->
-    <skip />
+    <string name="additional_access_summary" msgid="1076197455435130191">"विगतको डेटा, ब्याकग्राउन्ड डेटा"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"यो एपलाई दिइएका अतिरिक्त अनुमतिहरू हटाइएका छन्"</string>
     <string name="permissions_header" msgid="6519976063360071569">"अनुमति"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"तन्दुरुस्ती तथा आरोग्य"</string>
@@ -605,11 +604,9 @@
     <string name="flow_light" msgid="1937543318146228793">"हल्का रजस्राव"</string>
     <string name="flow_medium" msgid="3783688724668943154">"मध्यम रजस्राव"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"उच्च रजस्राव"</string>
-    <!-- no translation found for flow_unknown (1634411759928572900) -->
-    <skip />
+    <string name="flow_unknown" msgid="1634411759928572900">"रगत बहाबका बारेमा थाहा छैन"</string>
     <string name="period_day" msgid="3821944462093965882">"महिनावारी भएको <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> मध्ये <xliff:g id="DAY">%1$d</xliff:g> दिन"</string>
-    <!-- no translation found for period_length (2257138792780916599) -->
-    <skip />
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{महिनावारी (१ दिन)}other{महिनावारी (# दिन)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"पोजेटिभ"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"नेगेटिभ"</string>
     <string name="ovulation_high" msgid="205362931427158291">"उच्च"</string>
@@ -1078,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"एपका स्रोत सम्पादन गर्नुहोस्"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"डिफल्ट डिभाइस"</string>
     <string name="app_data_title" msgid="6499967982291000837">"एपसम्बन्धी डेटा"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"<xliff:g id="APP_NAME">%1$s</xliff:g> मा भएको डेटा यहाँ देखिने छ"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Health Connect एक्सेस गर्न सक्ने एपहरूमा भएको डेटा यहाँ देखिने छ"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"दिन"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"हप्ता"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"महिना"</string>
@@ -1127,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="APP_NAME">%1$s</xliff:g> मा भएका <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> का चयन गरिएका इन्ट्रीहरू सदाका लागि मेटाउने हो?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="APP_NAME">%1$s</xliff:g> मा भएका <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> का चयन गरिएका इन्ट्रीहरू सदाका लागि मेटाउने हो?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"<xliff:g id="APP_NAME">%s</xliff:g> मा भएको यो इन्ट्री सदाका लागि मेटाउने हो?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g> मा भएको <xliff:g id="DATA_TYPE">%1$s</xliff:g> सम्बन्धी डेटा सदाका लागि मेटाउने हो?"</string>
 </resources>

@@ -16,11 +16,7 @@
 
 package com.android.server.healthconnect;
 
-import android.app.UiAutomation;
 import android.os.UserHandle;
-
-import androidx.annotation.NonNull;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -75,18 +71,4 @@ public final class TestUtils {
                 15);
     }
 
-    /** Runs a {@link Runnable} adopting a subset of Shell's permissions. */
-    public static void runWithShellPermissionIdentity(
-            @NonNull Runnable runnable, String... permissions) {
-        final UiAutomation uiAutomation =
-                InstrumentationRegistry.getInstrumentation().getUiAutomation();
-        uiAutomation.adoptShellPermissionIdentity(permissions);
-        try {
-            runnable.run();
-        } catch (Exception e) {
-            throw new RuntimeException("Caught exception", e);
-        } finally {
-            uiAutomation.dropShellPermissionIdentity();
-        }
-    }
 }

@@ -352,8 +352,7 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getActivityDateHelper(),
                         healthConnectInjector.getChangeLogsHelper(),
                         healthConnectInjector.getChangeLogsRequestHelper(),
-                        healthConnectInjector.getInternalHealthConnectMappings(),
-                        healthConnectInjector.getCloudBackupManager());
+                        healthConnectInjector.getInternalHealthConnectMappings());
     }
 
     @After
@@ -1980,22 +1979,6 @@ public class HealthConnectServiceImplTest {
         verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
         assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
                 .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
-    }
-
-    @Test
-    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    public void testQueryAllMedicalResourceTypeInfos_noDataManagementPermission_throws()
-            throws Exception {
-        doThrow(SecurityException.class)
-                .when(mServiceContext)
-                .enforcePermission(eq(MANAGE_HEALTH_DATA_PERMISSION), anyInt(), anyInt(), isNull());
-        IMedicalResourceTypeInfosCallback callback = mock(IMedicalResourceTypeInfosCallback.class);
-
-        mHealthConnectService.queryAllMedicalResourceTypeInfos(callback);
-
-        verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
-        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_SECURITY);
     }
 
     @Test

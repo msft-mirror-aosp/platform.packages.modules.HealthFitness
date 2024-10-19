@@ -15,7 +15,7 @@
   limitations under the License.
 -->
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <com.android.healthconnect.controller.permissions.request.AdditionalPermissionHeaderPreference
+    <com.android.healthconnect.controller.permissions.request.RequestPermissionHeaderPreference
         android:key="request_permissions_header"/>
     <PreferenceCategory
         android:key="data_to_share"

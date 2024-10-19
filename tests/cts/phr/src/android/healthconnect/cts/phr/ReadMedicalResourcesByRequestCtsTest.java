@@ -16,10 +16,14 @@
 package android.healthconnect.cts.phr;
 
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_CONDITIONS;
 import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS;
+import static android.healthconnect.cts.phr.PhrCtsTestUtils.MAX_FOREGROUND_READ_CALL_15M;
+import static android.healthconnect.cts.phr.PhrCtsTestUtils.MEDICAL_RESOURCE_TYPES_LIST;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_BACKGROUND_APP;
 import static android.healthconnect.cts.phr.PhrCtsTestUtils.PHR_FOREGROUND_APP;
 import static android.healthconnect.cts.utils.DataFactory.MAXIMUM_PAGE_SIZE;
@@ -53,6 +57,7 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.HealthConnectReceiver;
+import android.healthconnect.cts.utils.PhrDataFactory;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 import android.platform.test.annotations.RequiresFlagsEnabled;
@@ -68,6 +73,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -98,11 +104,15 @@ public class ReadMedicalResourcesByRequestCtsTest {
         mUtil = new PhrCtsTestUtils(TestUtils.getHealthConnectManager());
         mUtil.deleteAllMedicalData();
         mManager = TestUtils.getHealthConnectManager();
+        if (TestUtils.setLowerRateLimitsForTesting(true)) {
+            mUtil.mLimitsAdjustmentForTesting = 10;
+        }
     }
 
     @After
     public void after() throws InterruptedException {
         mUtil.deleteAllMedicalData();
+        TestUtils.setLowerRateLimitsForTesting(false);
     }
 
     @Test
@@ -123,6 +133,34 @@ public class ReadMedicalResourcesByRequestCtsTest {
                 .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
 
         finishMigrationWithShellPermissionIdentity();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResourcesByRequest_readLimitExceeded_throws()
+            throws InterruptedException {
+        MedicalDataSource dataSource =
+                mUtil.createDataSource(PhrDataFactory.getCreateMedicalDataSourceRequest());
+        mUtil.upsertMedicalData(dataSource.getId(), FHIR_DATA_IMMUNIZATION);
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATIONS)
+                        .build();
+        // Make the maximum number of calls allowed by quota
+        int maximumCalls = MAX_FOREGROUND_READ_CALL_15M / mUtil.mLimitsAdjustmentForTesting;
+        for (int i = 0; i < maximumCalls; i++) {
+            HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                    new HealthConnectReceiver<>();
+            mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+            receiver.verifyNoExceptionOrThrow();
+        }
+
+        // Make 1 extra call and check quota is exceeded
+        HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
+                new HealthConnectReceiver<>();
+        mManager.readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+
+        HealthConnectException exception = receiver.assertAndGetException();
+        assertThat(exception.getMessage()).contains("API call quota exceeded");
     }
 
     @Test
@@ -1082,5 +1120,38 @@ public class ReadMedicalResourcesByRequestCtsTest {
                         "Caller doesn't have"
                                 + " android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS"
                                 + " to read MedicalResource");
+    }
+
+    // We are only testing permission mapping for one type here, because testing all permissions
+    // in one test leads to presubmit test timeout. The full list of read permission mappings is
+    // tested in the ReadMedicalResourcesByIdsCtsTest.
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadPermissionMapping_permission_onlyGivesAccessToSpecificData()
+            throws Exception {
+        mUtil.insertSourceAndOneResourcePerPermissionCategory(PHR_BACKGROUND_APP);
+
+        grantPermission(PHR_FOREGROUND_APP.getPackageName(), READ_MEDICAL_DATA_CONDITIONS);
+        Set<Integer> notPermittedTypes = new HashSet<>(MEDICAL_RESOURCE_TYPES_LIST);
+        notPermittedTypes.remove(Integer.valueOf(MEDICAL_RESOURCE_TYPE_CONDITIONS));
+
+        assertThat(
+                        PHR_FOREGROUND_APP
+                                .readMedicalResources(
+                                        new ReadMedicalResourcesInitialRequest.Builder(
+                                                        MEDICAL_RESOURCE_TYPE_CONDITIONS)
+                                                .build())
+                                .getMedicalResources()
+                                .get(0)
+                                .getType())
+                .isEqualTo(MEDICAL_RESOURCE_TYPE_CONDITIONS);
+        for (int medicalResourceType : notPermittedTypes) {
+            ReadMedicalResourcesInitialRequest request =
+                    new ReadMedicalResourcesInitialRequest.Builder(medicalResourceType).build();
+            assertThrows(
+                    "Reading medicalResourceType: " + medicalResourceType,
+                    HealthConnectException.class,
+                    () -> PHR_FOREGROUND_APP.readMedicalResources(request));
+        }
     }
 }

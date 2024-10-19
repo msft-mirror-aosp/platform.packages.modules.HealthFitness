@@ -151,7 +151,11 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
                     showFragment(FitnessPermissionsFragment())
                 }
                 is PermissionsActivityState.ShowAdditional -> {
-                    showFragment(AdditionalPermissionsFragment())
+                    if (screenState.singlePermission) {
+                        showFragment(SingleAdditionalPermissionFragment())
+                    } else {
+                        showFragment(CombinedAdditionalPermissionsFragment())
+                    }
                 }
                 else -> {
                     // No permissions
