@@ -575,18 +575,20 @@ constructor(
 
     fun revokeAllFitnessAndMaybeAdditionalPermissions(packageName: String): Boolean {
         try {
-            _revokeAllHealthPermissionsState.postValue(RevokeAllState.Loading)
-            _fitnessPermissions.value?.forEach {
-                revokePermissionsStatusUseCase.invoke(packageName, it.toString())
-            }
-            if (!atLeastOneMedicalReadPermissionGranted()) {
-                _grantedAdditionalPermissions.value?.forEach {
-                    revokePermissionsStatusUseCase.invoke(packageName, it.additionalPermission)
+            viewModelScope.launch(ioDispatcher) {
+                _revokeAllHealthPermissionsState.postValue(RevokeAllState.Loading)
+                _fitnessPermissions.value?.forEach {
+                    revokePermissionsStatusUseCase.invoke(packageName, it.toString())
                 }
-                _grantedAdditionalPermissions.postValue(emptySet())
+                if (!atLeastOneMedicalReadPermissionGranted()) {
+                    _grantedAdditionalPermissions.value?.forEach {
+                        revokePermissionsStatusUseCase.invoke(packageName, it.additionalPermission)
+                    }
+                    _grantedAdditionalPermissions.postValue(emptySet())
+                }
+                _revokeAllHealthPermissionsState.postValue(RevokeAllState.Updated)
+                _grantedFitnessPermissions.postValue(emptySet())
             }
-            _revokeAllHealthPermissionsState.postValue(RevokeAllState.Updated)
-            _grantedFitnessPermissions.postValue(emptySet())
             return true
         } catch (ex: Exception) {
             Log.e(TAG, "Failed to revoke fitness permissions!", ex)
@@ -596,18 +598,20 @@ constructor(
 
     fun revokeAllMedicalAndMaybeAdditionalPermissions(packageName: String): Boolean {
         try {
-            _revokeAllHealthPermissionsState.postValue(RevokeAllState.Loading)
-            _medicalPermissions.value?.forEach {
-                revokePermissionsStatusUseCase.invoke(packageName, it.toString())
-            }
-            if (!atLeastOneFitnessReadPermissionGranted()) {
-                _grantedAdditionalPermissions.value?.forEach {
-                    revokePermissionsStatusUseCase.invoke(packageName, it.additionalPermission)
+            viewModelScope.launch(ioDispatcher) {
+                _revokeAllHealthPermissionsState.postValue(RevokeAllState.Loading)
+                _medicalPermissions.value?.forEach {
+                    revokePermissionsStatusUseCase.invoke(packageName, it.toString())
                 }
-                _grantedAdditionalPermissions.postValue(emptySet())
+                if (!atLeastOneFitnessReadPermissionGranted()) {
+                    _grantedAdditionalPermissions.value?.forEach {
+                        revokePermissionsStatusUseCase.invoke(packageName, it.additionalPermission)
+                    }
+                    _grantedAdditionalPermissions.postValue(emptySet())
+                }
+                _revokeAllHealthPermissionsState.postValue(RevokeAllState.Updated)
+                _grantedMedicalPermissions.postValue(emptySet())
             }
-            _revokeAllHealthPermissionsState.postValue(RevokeAllState.Updated)
-            _grantedMedicalPermissions.postValue(emptySet())
             return true
         } catch (ex: Exception) {
             Log.e(TAG, "Failed to revoke medical permissions!", ex)
