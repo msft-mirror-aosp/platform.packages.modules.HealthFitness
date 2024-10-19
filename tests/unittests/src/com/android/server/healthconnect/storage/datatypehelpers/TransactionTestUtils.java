@@ -45,6 +45,8 @@ import android.health.connect.internal.datatypes.StepsRecordInternal;
 
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
@@ -53,6 +55,9 @@ import com.android.server.healthconnect.storage.request.UpsertTransactionRequest
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import com.google.common.collect.ImmutableList;
+
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -70,14 +75,23 @@ public final class TransactionTestUtils {
     private final Context mContext;
     private final HealthConnectInjectorImpl.Builder mHealthConnectInjectorBuilder;
 
+    // TODO(b/373322447): Remove the mock FirstGrantTimeManager
+    @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
+    // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
+    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
+
     public TransactionTestUtils(Context context, TransactionManager transactionManager) {
+        MockitoAnnotations.initMocks(this);
         DeviceInfoHelper.resetInstanceForTest();
         AppInfoHelper.resetInstanceForTest();
 
         mContext = context;
         mTransactionManager = transactionManager;
         mHealthConnectInjectorBuilder = HealthConnectInjectorImpl.newBuilderForTest(mContext);
-        mHealthConnectInjectorBuilder.setTransactionManager(transactionManager);
+        mHealthConnectInjectorBuilder
+                .setTransactionManager(transactionManager)
+                .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker);
     }
 
     public void insertApp(String packageName) {

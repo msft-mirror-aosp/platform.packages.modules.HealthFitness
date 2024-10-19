@@ -28,7 +28,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCatego
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +98,8 @@ public class AutoDeleteService {
         if (recordAutoDeletePeriod != 0) {
             // 0 represents that no period is set,to delete only if not 0 else don't do anything
             List<DeleteTableRequest> deleteTableRequests = new ArrayList<>();
-            RecordHelperProvider.getRecordHelpers()
+            InternalHealthConnectMappings.getInstance()
+                    .getRecordHelpers()
                     .forEach(
                             (recordHelper) -> {
                                 DeleteTableRequest request =

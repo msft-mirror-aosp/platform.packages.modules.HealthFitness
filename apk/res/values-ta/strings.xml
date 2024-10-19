@@ -362,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"பின்புலத் தரவு, கடந்தகாலத் தரவு உட்பட Health Connect ஆப்ஸிலுள்ள தரவை <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸால் இனி திருத்தவோ பார்க்கவோ முடியாது.\n\nஇது இந்த ஆப்ஸுக்கு வழங்கப்பட்டுள்ள பிற அனுமதிகளில் (கேமரா, மைக்ரோஃபோன், இருப்பிடம் போன்றவை) எந்த மாற்றத்தையும் ஏற்படுத்தாது."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Health Connect ஆப்ஸில் இருந்து <xliff:g id="APP_NAME">%1$s</xliff:g> பெற்ற உடற்பயிற்சித் தரவையும் உடல்நலம் குறித்த சுருக்கமான தகவல்களையும் நீக்கு"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"இந்த ஆப்ஸுக்கான அனுமதிகள் அகற்றப்பட்டன"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"அனைத்து Health Connect தரவையும் நீக்கு"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"அடுத்த நாள்"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"தேர்ந்தெடுத்துள்ள நாள்"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"முந்தைய நாள்"</string>
@@ -1074,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"ஆப்ஸ் ஆதாரங்களை மாற்றுதல்"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"சாதனத்தின் இயல்புநிலை"</string>
     <string name="app_data_title" msgid="6499967982291000837">"ஆப்ஸ் தரவு"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸ் தரவு இங்கே காட்டப்படும்"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Health Connectடுக்கான அணுகல் உள்ள ஆப்ஸின் தரவு இங்கே காட்டப்படும்"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"நாள்"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"வாரம்"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"மாதம்"</string>
@@ -1123,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"தேர்ந்தெடுக்கப்பட்ட <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸின் <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> வாரத்திற்கான பதிவுகளை நிரந்தரமாக நீக்கவா?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"தேர்ந்தெடுக்கப்பட்ட <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸின் <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>க்கான பதிவுகளை நிரந்தரமாக நீக்கவா?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"இந்த <xliff:g id="APP_NAME">%s</xliff:g> ஆப்ஸின் பதிவை நிரந்தரமாக நீக்கவா?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g> ஆப்ஸுக்கான <xliff:g id="DATA_TYPE">%1$s</xliff:g> தரவை நிரந்தரமாக நீக்கவா?"</string>
 </resources>

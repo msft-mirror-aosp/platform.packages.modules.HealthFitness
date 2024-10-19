@@ -59,6 +59,8 @@ import android.util.Pair;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.AlterTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
@@ -66,6 +68,8 @@ import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.quality.Strictness;
 
 import java.util.List;
@@ -92,8 +96,14 @@ public class AccessLogsHelperTest {
     private TransactionManager mTransactionManager;
     private AccessLogsHelper mAccessLogsHelper;
 
+    // TODO(b/373322447): Remove the mock FirstGrantTimeManager
+    @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
+    // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
+    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
+
     @Before
     public void setup() {
+        MockitoAnnotations.initMocks(this);
         AccessLogsHelper.resetInstanceForTest();
 
         mTransactionTestUtils =
@@ -105,6 +115,8 @@ public class AccessLogsHelperTest {
                 HealthConnectInjectorImpl.newBuilderForTest(
                                 mHealthConnectDatabaseTestRule.getUserContext())
                         .setTransactionManager(mTransactionManager)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
 

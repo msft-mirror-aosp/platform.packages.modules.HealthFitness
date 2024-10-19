@@ -45,6 +45,23 @@ public class InternalHealthConnectMappings {
     private final Map<Integer, InternalDataTypeDescriptor> mRecordTypeIdToDescriptor;
     private final List<RecordHelper<?>> mAllRecordHelpers;
 
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
+    private static volatile InternalHealthConnectMappings sInternalHealthConnectMappings;
+
+    /** Exists for compatibility with classes which don't support injections yet. */
+    // TODO(b/353283052): inject where possible instead of using the singleton.
+    public static InternalHealthConnectMappings getInstance() {
+        if (sInternalHealthConnectMappings == null) {
+            sInternalHealthConnectMappings =
+                    new InternalHealthConnectMappings(HealthConnectMappings.getInstance());
+        }
+        return sInternalHealthConnectMappings;
+    }
+
+    /**
+     * Use {@link #getInstance()} to avoid creating multiple instances until it gets migrated off.
+     */
+    @VisibleForTesting
     public InternalHealthConnectMappings(HealthConnectMappings healthConnectMappings) {
         this(
                 InternalDataTypeDescriptors.getAllInternalDataTypeDescriptors(),

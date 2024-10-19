@@ -22,12 +22,14 @@ import android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES
 import android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY
 import android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND
 import android.health.connect.HealthPermissions.READ_HEART_RATE
-import android.health.connect.HealthPermissions.READ_PLANNED_EXERCISE
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES
+import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATIONS
 import android.health.connect.HealthPermissions.READ_SKIN_TEMPERATURE
 import android.health.connect.HealthPermissions.READ_SLEEP
 import android.health.connect.HealthPermissions.READ_STEPS
 import android.health.connect.HealthPermissions.WRITE_DISTANCE
 import android.health.connect.HealthPermissions.WRITE_EXERCISE
+import android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA
 import android.health.connect.HealthPermissions.WRITE_PLANNED_EXERCISE
 import android.health.connect.HealthPermissions.WRITE_SKIN_TEMPERATURE
 import android.platform.test.flag.junit.SetFlagsRule
@@ -38,11 +40,15 @@ import com.android.healthconnect.controller.permissions.api.GrantHealthPermissio
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.api.LoadAccessDateUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
-import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.fromPermissionString
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
 import com.android.healthconnect.controller.permissions.data.PermissionState
+import com.android.healthconnect.controller.permissions.request.AdditionalScreenState
+import com.android.healthconnect.controller.permissions.request.FitnessScreenState
+import com.android.healthconnect.controller.permissions.request.MedicalScreenState
+import com.android.healthconnect.controller.permissions.request.PermissionsActivityState
 import com.android.healthconnect.controller.permissions.request.RequestPermissionViewModel
 import com.android.healthconnect.controller.service.HealthPermissionManagerModule
 import com.android.healthconnect.controller.shared.app.AppInfoReader
@@ -50,10 +56,12 @@ import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
+import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME_2
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
+import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.di.FakeHealthPermissionManager
-import com.google.common.truth.Truth.*
+import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -100,6 +108,7 @@ class RequestPermissionViewModelTest {
     fun setup() {
         hiltRule.inject()
         permissionManager.revokeAllHealthPermissions(TEST_APP_PACKAGE_NAME)
+        permissionManager.revokeAllHealthPermissions(TEST_APP_PACKAGE_NAME_2)
         Dispatchers.setMain(testDispatcher)
         viewModel =
             RequestPermissionViewModel(
@@ -112,6 +121,7 @@ class RequestPermissionViewModelTest {
                 loadDeclaredHealthPermissionUseCase,
             )
         whenever(loadAccessDateUseCase.invoke(eq(TEST_APP_PACKAGE_NAME))).thenReturn(NOW)
+        whenever(loadAccessDateUseCase.invoke(eq(TEST_APP_PACKAGE_NAME_2))).thenReturn(NOW)
     }
 
     @After
@@ -132,8 +142,55 @@ class RequestPermissionViewModelTest {
         assertThat(testObserver.getLastValue().packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
     }
 
+    // PermissionScreenStates
     @Test
-    fun init_loadsHealthPermissions() = runTest {
+    fun init_withMedicalReadAndWritePermissions_loadsPermissionActivityScreenStateShowMedical() =
+        runTest {
+            val permissions =
+                arrayOf(
+                    READ_MEDICAL_DATA_IMMUNIZATIONS,
+                    WRITE_MEDICAL_DATA,
+                    READ_EXERCISE,
+                    READ_SLEEP,
+                    WRITE_EXERCISE,
+                    READ_HEALTH_DATA_IN_BACKGROUND,
+                    READ_HEALTH_DATA_HISTORY,
+                )
+            val permissionActivityStateObserver = TestObserver<PermissionsActivityState>()
+            viewModel.permissionsActivityState.observeForever(permissionActivityStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+            advanceUntilIdle()
+
+            val result = permissionActivityStateObserver.getLastValue()
+            assertThat(result is PermissionsActivityState.ShowMedical).isTrue()
+            assertThat((result as PermissionsActivityState.ShowMedical).isWriteOnly).isFalse()
+        }
+
+    @Test
+    fun init_withMedicalWritePermissions_loadsPermissionActivityScreenStateShowMedical() = runTest {
+        val permissions =
+            arrayOf(
+                WRITE_MEDICAL_DATA,
+                READ_EXERCISE,
+                READ_SLEEP,
+                WRITE_EXERCISE,
+                READ_HEALTH_DATA_IN_BACKGROUND,
+                READ_HEALTH_DATA_HISTORY,
+            )
+        val permissionActivityStateObserver = TestObserver<PermissionsActivityState>()
+        viewModel.permissionsActivityState.observeForever(permissionActivityStateObserver)
+
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+        advanceUntilIdle()
+
+        val result = permissionActivityStateObserver.getLastValue()
+        assertThat(result is PermissionsActivityState.ShowMedical).isTrue()
+        assertThat((result as PermissionsActivityState.ShowMedical).isWriteOnly).isTrue()
+    }
+
+    @Test
+    fun init_withFitnessPermissions_loadsPermissionActivityScreenStateShowFitness() = runTest {
         val permissions =
             arrayOf(
                 READ_EXERCISE,
@@ -142,52 +199,795 @@ class RequestPermissionViewModelTest {
                 READ_HEALTH_DATA_IN_BACKGROUND,
                 READ_HEALTH_DATA_HISTORY,
             )
+        val permissionActivityStateObserver = TestObserver<PermissionsActivityState>()
+        viewModel.permissionsActivityState.observeForever(permissionActivityStateObserver)
+
         viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
-
-        val fitnessPermissionObserver = TestObserver<List<FitnessPermission>>()
-        viewModel.fitnessPermissionsList.observeForever(fitnessPermissionObserver)
-
-        val additionalPermissionObserver = TestObserver<List<AdditionalPermission>>()
-        viewModel.additionalPermissionsList.observeForever(additionalPermissionObserver)
-
-        val healthPermissionObserver = TestObserver<List<HealthPermission>>()
-        viewModel.healthPermissionsList.observeForever(healthPermissionObserver)
-
         advanceUntilIdle()
-        assertThat(fitnessPermissionObserver.getLastValue())
-            .isEqualTo(
-                listOf(
-                    fromPermissionString(READ_EXERCISE),
-                    fromPermissionString(READ_SLEEP),
-                    fromPermissionString(WRITE_EXERCISE),
-                )
+
+        val result = permissionActivityStateObserver.getLastValue()
+        assertThat(result is PermissionsActivityState.ShowFitness).isTrue()
+    }
+
+    @Test
+    fun init_withSingleAdditionalPermissions_loadsPermissionActivityScreenStateShowAdditional() =
+        runTest {
+            val permissions =
+                arrayOf(READ_EXERCISE, READ_SLEEP, WRITE_EXERCISE, READ_HEALTH_DATA_IN_BACKGROUND)
+            (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+                TEST_APP_PACKAGE_NAME,
+                listOf(READ_EXERCISE, READ_SLEEP, WRITE_EXERCISE),
             )
-        // additional permissions are empty unless at least one read permission is granted
-        assertThat(additionalPermissionObserver.getLastValue()).isEmpty()
-        assertThat(healthPermissionObserver.getLastValue())
-            .isEqualTo(
-                listOf(
-                    fromPermissionString(READ_EXERCISE),
-                    fromPermissionString(READ_SLEEP),
-                    fromPermissionString(WRITE_EXERCISE),
+            val permissionActivityStateObserver = TestObserver<PermissionsActivityState>()
+            viewModel.permissionsActivityState.observeForever(permissionActivityStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+            advanceUntilIdle()
+
+            val result = permissionActivityStateObserver.getLastValue()
+            assertThat(result is PermissionsActivityState.ShowAdditional).isTrue()
+            assertThat((result as PermissionsActivityState.ShowAdditional).singlePermission)
+                .isTrue()
+        }
+
+    @Test
+    fun init_withMultipleAdditionalPermissions_loadsPermissionActivityScreenStateShowAdditional() =
+        runTest {
+            val permissions =
+                arrayOf(
+                    READ_EXERCISE,
+                    READ_SLEEP,
+                    WRITE_EXERCISE,
+                    READ_HEALTH_DATA_IN_BACKGROUND,
+                    READ_HEALTH_DATA_HISTORY,
                 )
+            (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+                TEST_APP_PACKAGE_NAME,
+                listOf(READ_EXERCISE, READ_SLEEP, WRITE_EXERCISE),
+            )
+            val permissionActivityStateObserver = TestObserver<PermissionsActivityState>()
+            viewModel.permissionsActivityState.observeForever(permissionActivityStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+            advanceUntilIdle()
+
+            val result = permissionActivityStateObserver.getLastValue()
+            assertThat(result is PermissionsActivityState.ShowAdditional).isTrue()
+            assertThat((result as PermissionsActivityState.ShowAdditional).singlePermission)
+                .isFalse()
+        }
+
+    // MedicalScreenStates
+    @Test
+    fun init_withNoMedicalPermissions_loadsMedicalScreenStateNoMedicalData() = runTest {
+        val permissions =
+            arrayOf(
+                READ_EXERCISE,
+                READ_SLEEP,
+                WRITE_EXERCISE,
+                READ_HEALTH_DATA_IN_BACKGROUND,
+                READ_HEALTH_DATA_HISTORY,
+            )
+        val medicalScreenStateObserver = TestObserver<MedicalScreenState>()
+        viewModel.medicalScreenState.observeForever(medicalScreenStateObserver)
+
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+        advanceUntilIdle()
+
+        val result = medicalScreenStateObserver.getLastValue()
+        assertThat(result is MedicalScreenState.NoMedicalData).isTrue()
+    }
+
+    @Test
+    fun init_withMedicalWritePermissions_loadsMedicalScreenStateShowMedicalWrite() = runTest {
+        val permissions =
+            arrayOf(
+                WRITE_MEDICAL_DATA,
+                READ_EXERCISE,
+                READ_SLEEP,
+                WRITE_EXERCISE,
+                READ_HEALTH_DATA_IN_BACKGROUND,
+                READ_HEALTH_DATA_HISTORY,
+            )
+        val medicalScreenStateObserver = TestObserver<MedicalScreenState>()
+        viewModel.medicalScreenState.observeForever(medicalScreenStateObserver)
+
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+        advanceUntilIdle()
+
+        val result = medicalScreenStateObserver.getLastValue()
+        assertThat(result is MedicalScreenState.ShowMedicalWrite).isTrue()
+        assertThat((result as MedicalScreenState.ShowMedicalWrite).appMetadata.appName)
+            .isEqualTo(TEST_APP_NAME)
+        assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+        assertThat(result.medicalPermissions)
+            .containsExactlyElementsIn(listOf(fromPermissionString(WRITE_MEDICAL_DATA)))
+    }
+
+    @Test
+    fun init_withMedicalReadPermissions_loadsMedicalScreenStateShowMedicalRead() = runTest {
+        val permissions =
+            arrayOf(
+                READ_MEDICAL_DATA_IMMUNIZATIONS,
+                READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
+                READ_EXERCISE,
+                READ_HEALTH_DATA_IN_BACKGROUND,
+                READ_HEALTH_DATA_HISTORY,
+            )
+        val medicalScreenStateObserver = TestObserver<MedicalScreenState>()
+        viewModel.medicalScreenState.observeForever(medicalScreenStateObserver)
+
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+        advanceUntilIdle()
+
+        val result = medicalScreenStateObserver.getLastValue()
+        assertThat(result is MedicalScreenState.ShowMedicalRead).isTrue()
+        assertThat((result as MedicalScreenState.ShowMedicalRead).appMetadata.appName)
+            .isEqualTo(TEST_APP_NAME)
+        assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+        assertThat(result.medicalPermissions)
+            .containsExactlyElementsIn(
+                listOf(READ_MEDICAL_DATA_IMMUNIZATIONS, READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES)
+                    .map { fromPermissionString(it) }
             )
     }
 
     @Test
-    fun initPermissions_filtersOutAdditionalPermissions() = runTest {
-        viewModel.init(
-            TEST_APP_PACKAGE_NAME,
-            arrayOf(READ_EXERCISE, READ_SLEEP, READ_HEALTH_DATA_IN_BACKGROUND),
-        )
-        val testObserver = TestObserver<List<FitnessPermission>>()
-        viewModel.fitnessPermissionsList.observeForever(testObserver)
+    fun init_withMedicalReadWritePermissions_loadsMedicalScreenStateShowMedicalReadWrite() =
+        runTest {
+            val permissions =
+                arrayOf(
+                    READ_MEDICAL_DATA_IMMUNIZATIONS,
+                    READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
+                    WRITE_MEDICAL_DATA,
+                    READ_EXERCISE,
+                    READ_HEALTH_DATA_IN_BACKGROUND,
+                    READ_HEALTH_DATA_HISTORY,
+                )
+            val medicalScreenStateObserver = TestObserver<MedicalScreenState>()
+            viewModel.medicalScreenState.observeForever(medicalScreenStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+            advanceUntilIdle()
+
+            val result = medicalScreenStateObserver.getLastValue()
+            assertThat(result is MedicalScreenState.ShowMedicalReadWrite).isTrue()
+            assertThat((result as MedicalScreenState.ShowMedicalReadWrite).appMetadata.appName)
+                .isEqualTo(TEST_APP_NAME)
+            assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+            assertThat(result.medicalPermissions)
+                .containsExactlyElementsIn(
+                    listOf(
+                            READ_MEDICAL_DATA_IMMUNIZATIONS,
+                            READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
+                            WRITE_MEDICAL_DATA,
+                        )
+                        .map { fromPermissionString(it) }
+                )
+        }
+
+    // FitnessScreenStates
+    @Test
+    fun init_withNoFitnessPermissions_loadsFitnessScreenStateNoFitnessData() = runTest {
+        val permissions =
+            arrayOf(
+                READ_MEDICAL_DATA_IMMUNIZATIONS,
+                READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
+                READ_HEALTH_DATA_IN_BACKGROUND,
+                READ_HEALTH_DATA_HISTORY,
+            )
+        val fitnessScreenStateObserver = TestObserver<FitnessScreenState>()
+        viewModel.fitnessScreenState.observeForever(fitnessScreenStateObserver)
+
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
         advanceUntilIdle()
-        assertThat(testObserver.getLastValue())
-            .isEqualTo(
-                listOf(fromPermissionString(READ_EXERCISE), fromPermissionString(READ_SLEEP))
+
+        val result = fitnessScreenStateObserver.getLastValue()
+        assertThat(result is FitnessScreenState.NoFitnessData).isTrue()
+    }
+
+    @Test
+    fun init_withFitnessRead_withNoMedical_withNoHistory_loadsFitnessScreenStateShowFitnessRead() =
+        runTest {
+            val permissions =
+                arrayOf(
+                    READ_EXERCISE,
+                    READ_SLEEP,
+                    READ_HEALTH_DATA_IN_BACKGROUND,
+                    READ_HEALTH_DATA_HISTORY,
+                )
+            val fitnessScreenStateObserver = TestObserver<FitnessScreenState>()
+            viewModel.fitnessScreenState.observeForever(fitnessScreenStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME_2, permissions)
+            advanceUntilIdle()
+
+            val result = fitnessScreenStateObserver.getLastValue()
+            assertThat(result is FitnessScreenState.ShowFitnessRead).isTrue()
+            assertThat((result as FitnessScreenState.ShowFitnessRead).appMetadata.appName)
+                .isEqualTo(TEST_APP_NAME_2)
+            assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME_2)
+            assertThat(result.historyGranted).isFalse()
+            assertThat(result.hasMedical).isFalse()
+            assertThat(result.fitnessPermissions)
+                .containsExactlyElementsIn(
+                    listOf(READ_EXERCISE, READ_SLEEP).map { fromPermissionString(it) }
+                )
+        }
+
+    @Test
+    fun init_withFitnessRead_withNoMedical_withHistory_loadsFitnessScreenStateShowFitnessRead() =
+        runTest {
+            val permissions =
+                arrayOf(
+                    READ_HEART_RATE,
+                    READ_SLEEP,
+                    READ_HEALTH_DATA_IN_BACKGROUND,
+                    READ_HEALTH_DATA_HISTORY,
+                )
+            (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+                TEST_APP_PACKAGE_NAME_2,
+                listOf(READ_HEALTH_DATA_HISTORY),
+            )
+            val fitnessScreenStateObserver = TestObserver<FitnessScreenState>()
+            viewModel.fitnessScreenState.observeForever(fitnessScreenStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME_2, permissions)
+            advanceUntilIdle()
+
+            val result = fitnessScreenStateObserver.getLastValue()
+            assertThat(result is FitnessScreenState.ShowFitnessRead).isTrue()
+            assertThat((result as FitnessScreenState.ShowFitnessRead).appMetadata.appName)
+                .isEqualTo(TEST_APP_NAME_2)
+            assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME_2)
+            assertThat(result.historyGranted).isTrue()
+            assertThat(result.hasMedical).isFalse()
+            assertThat(result.fitnessPermissions)
+                .containsExactlyElementsIn(
+                    listOf(READ_HEART_RATE, READ_SLEEP).map { fromPermissionString(it) }
+                )
+        }
+
+    @Test
+    fun init_withFitnessRead_withMedical_withNoHistory_loadsFitnessScreenStateShowFitnessRead() =
+        runTest {
+            val permissions =
+                arrayOf(
+                    READ_EXERCISE,
+                    READ_SLEEP,
+                    READ_HEALTH_DATA_IN_BACKGROUND,
+                    READ_HEALTH_DATA_HISTORY,
+                )
+            val fitnessScreenStateObserver = TestObserver<FitnessScreenState>()
+            viewModel.fitnessScreenState.observeForever(fitnessScreenStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+            advanceUntilIdle()
+
+            val result = fitnessScreenStateObserver.getLastValue()
+            assertThat(result is FitnessScreenState.ShowFitnessRead).isTrue()
+            assertThat((result as FitnessScreenState.ShowFitnessRead).appMetadata.appName)
+                .isEqualTo(TEST_APP_NAME)
+            assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+            assertThat(result.historyGranted).isFalse()
+            assertThat(result.hasMedical).isTrue()
+            assertThat(result.fitnessPermissions)
+                .containsExactlyElementsIn(
+                    listOf(READ_EXERCISE, READ_SLEEP).map { fromPermissionString(it) }
+                )
+        }
+
+    @Test
+    fun init_withFitnessRead_withMedical_withHistory_loadsFitnessScreenStateShowFitnessRead() =
+        runTest {
+            val permissions =
+                arrayOf(
+                    READ_EXERCISE,
+                    READ_SLEEP,
+                    READ_HEALTH_DATA_IN_BACKGROUND,
+                    READ_HEALTH_DATA_HISTORY,
+                )
+            (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+                TEST_APP_PACKAGE_NAME,
+                listOf(READ_HEALTH_DATA_HISTORY),
+            )
+            val fitnessScreenStateObserver = TestObserver<FitnessScreenState>()
+            viewModel.fitnessScreenState.observeForever(fitnessScreenStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+            advanceUntilIdle()
+
+            val result = fitnessScreenStateObserver.getLastValue()
+            assertThat(result is FitnessScreenState.ShowFitnessRead).isTrue()
+            assertThat((result as FitnessScreenState.ShowFitnessRead).appMetadata.appName)
+                .isEqualTo(TEST_APP_NAME)
+            assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+            assertThat(result.historyGranted).isTrue()
+            assertThat(result.hasMedical).isTrue()
+            assertThat(result.fitnessPermissions)
+                .containsExactlyElementsIn(
+                    listOf(READ_EXERCISE, READ_SLEEP).map { fromPermissionString(it) }
+                )
+        }
+
+    @Test
+    fun init_withFitnessWrite_withNoMedical_loadsFitnessScreenStateShowFitnessWrite() = runTest {
+        val permissions =
+            arrayOf(
+                WRITE_SKIN_TEMPERATURE,
+                WRITE_EXERCISE,
+                WRITE_PLANNED_EXERCISE,
+                READ_HEALTH_DATA_IN_BACKGROUND,
+                READ_HEALTH_DATA_HISTORY,
+            )
+        val fitnessScreenStateObserver = TestObserver<FitnessScreenState>()
+        viewModel.fitnessScreenState.observeForever(fitnessScreenStateObserver)
+
+        viewModel.init(TEST_APP_PACKAGE_NAME_2, permissions)
+        advanceUntilIdle()
+
+        val result = fitnessScreenStateObserver.getLastValue()
+        assertThat(result is FitnessScreenState.ShowFitnessWrite).isTrue()
+        assertThat((result as FitnessScreenState.ShowFitnessWrite).appMetadata.appName)
+            .isEqualTo(TEST_APP_NAME_2)
+        assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME_2)
+        assertThat(result.hasMedical).isFalse()
+        assertThat(result.fitnessPermissions)
+            .containsExactlyElementsIn(
+                listOf(WRITE_EXERCISE, WRITE_PLANNED_EXERCISE, WRITE_SKIN_TEMPERATURE).map {
+                    fromPermissionString(it)
+                }
             )
     }
+
+    @Test
+    fun init_withFitnessWrite_withMedical_loadsFitnessScreenStateShowFitnessWrite() = runTest {
+        val permissions =
+            arrayOf(
+                WRITE_SKIN_TEMPERATURE,
+                WRITE_EXERCISE,
+                WRITE_PLANNED_EXERCISE,
+                READ_HEALTH_DATA_IN_BACKGROUND,
+                READ_HEALTH_DATA_HISTORY,
+            )
+        val fitnessScreenStateObserver = TestObserver<FitnessScreenState>()
+        viewModel.fitnessScreenState.observeForever(fitnessScreenStateObserver)
+
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+        advanceUntilIdle()
+
+        val result = fitnessScreenStateObserver.getLastValue()
+        assertThat(result is FitnessScreenState.ShowFitnessWrite).isTrue()
+        assertThat((result as FitnessScreenState.ShowFitnessWrite).appMetadata.appName)
+            .isEqualTo(TEST_APP_NAME)
+        assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+        assertThat(result.hasMedical).isTrue()
+        assertThat(result.fitnessPermissions)
+            .containsExactlyElementsIn(
+                listOf(WRITE_EXERCISE, WRITE_PLANNED_EXERCISE, WRITE_SKIN_TEMPERATURE).map {
+                    fromPermissionString(it)
+                }
+            )
+    }
+
+    @Test
+    fun init_withFitnessReadWrite_withNoMedical_withNoHistory_loadsFitnessScreenStateShowFitnessReadWrite() =
+        runTest {
+            val permissions =
+                arrayOf(
+                    READ_EXERCISE,
+                    READ_SLEEP,
+                    WRITE_SKIN_TEMPERATURE,
+                    WRITE_EXERCISE,
+                    WRITE_PLANNED_EXERCISE,
+                    READ_HEALTH_DATA_IN_BACKGROUND,
+                    READ_HEALTH_DATA_HISTORY,
+                )
+            val fitnessScreenStateObserver = TestObserver<FitnessScreenState>()
+            viewModel.fitnessScreenState.observeForever(fitnessScreenStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME_2, permissions)
+            advanceUntilIdle()
+
+            val result = fitnessScreenStateObserver.getLastValue()
+            assertThat(result is FitnessScreenState.ShowFitnessReadWrite).isTrue()
+            assertThat((result as FitnessScreenState.ShowFitnessReadWrite).appMetadata.appName)
+                .isEqualTo(TEST_APP_NAME_2)
+            assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME_2)
+            assertThat(result.hasMedical).isFalse()
+            assertThat(result.historyGranted).isFalse()
+            assertThat(result.fitnessPermissions)
+                .containsExactlyElementsIn(
+                    listOf(
+                            READ_EXERCISE,
+                            READ_SLEEP,
+                            WRITE_EXERCISE,
+                            WRITE_PLANNED_EXERCISE,
+                            WRITE_SKIN_TEMPERATURE,
+                        )
+                        .map { fromPermissionString(it) }
+                )
+        }
+
+    @Test
+    fun init_withFitnessReadWrite_withNoMedical_withHistory_loadsFitnessScreenStateShowFitnessReadWrite() =
+        runTest {
+            val permissions =
+                arrayOf(
+                    READ_HEART_RATE,
+                    READ_STEPS,
+                    WRITE_SKIN_TEMPERATURE,
+                    WRITE_EXERCISE,
+                    WRITE_PLANNED_EXERCISE,
+                    READ_HEALTH_DATA_IN_BACKGROUND,
+                    READ_HEALTH_DATA_HISTORY,
+                )
+            (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+                TEST_APP_PACKAGE_NAME_2,
+                listOf(READ_HEALTH_DATA_HISTORY),
+            )
+            val fitnessScreenStateObserver = TestObserver<FitnessScreenState>()
+            viewModel.fitnessScreenState.observeForever(fitnessScreenStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME_2, permissions)
+            advanceUntilIdle()
+
+            val result = fitnessScreenStateObserver.getLastValue()
+            assertThat(result is FitnessScreenState.ShowFitnessReadWrite).isTrue()
+            assertThat((result as FitnessScreenState.ShowFitnessReadWrite).appMetadata.appName)
+                .isEqualTo(TEST_APP_NAME_2)
+            assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME_2)
+            assertThat(result.hasMedical).isFalse()
+            assertThat(result.historyGranted).isTrue()
+            assertThat(result.fitnessPermissions)
+                .containsExactlyElementsIn(
+                    listOf(
+                            READ_HEART_RATE,
+                            READ_STEPS,
+                            WRITE_EXERCISE,
+                            WRITE_PLANNED_EXERCISE,
+                            WRITE_SKIN_TEMPERATURE,
+                        )
+                        .map { fromPermissionString(it) }
+                )
+        }
+
+    @Test
+    fun init_withFitnessReadWrite_withMedical_withNoHistory_loadsFitnessScreenStateShowFitnessReadWrite() =
+        runTest {
+            val permissions =
+                arrayOf(
+                    READ_EXERCISE,
+                    READ_SLEEP,
+                    WRITE_SKIN_TEMPERATURE,
+                    WRITE_EXERCISE,
+                    WRITE_PLANNED_EXERCISE,
+                    READ_HEALTH_DATA_IN_BACKGROUND,
+                    READ_HEALTH_DATA_HISTORY,
+                )
+            val fitnessScreenStateObserver = TestObserver<FitnessScreenState>()
+            viewModel.fitnessScreenState.observeForever(fitnessScreenStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+            advanceUntilIdle()
+
+            val result = fitnessScreenStateObserver.getLastValue()
+            assertThat(result is FitnessScreenState.ShowFitnessReadWrite).isTrue()
+            assertThat((result as FitnessScreenState.ShowFitnessReadWrite).appMetadata.appName)
+                .isEqualTo(TEST_APP_NAME)
+            assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+            assertThat(result.hasMedical).isTrue()
+            assertThat(result.historyGranted).isFalse()
+            assertThat(result.fitnessPermissions)
+                .containsExactlyElementsIn(
+                    listOf(
+                            READ_EXERCISE,
+                            READ_SLEEP,
+                            WRITE_EXERCISE,
+                            WRITE_PLANNED_EXERCISE,
+                            WRITE_SKIN_TEMPERATURE,
+                        )
+                        .map { fromPermissionString(it) }
+                )
+        }
+
+    @Test
+    fun init_withFitnessReadWrite_withMedical_withHistory_loadsFitnessScreenStateShowFitnessReadWrite() =
+        runTest {
+            val permissions =
+                arrayOf(
+                    READ_EXERCISE,
+                    READ_SLEEP,
+                    WRITE_SKIN_TEMPERATURE,
+                    WRITE_EXERCISE,
+                    WRITE_PLANNED_EXERCISE,
+                    READ_HEALTH_DATA_IN_BACKGROUND,
+                    READ_HEALTH_DATA_HISTORY,
+                )
+            (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+                TEST_APP_PACKAGE_NAME,
+                listOf(READ_HEALTH_DATA_HISTORY),
+            )
+            val fitnessScreenStateObserver = TestObserver<FitnessScreenState>()
+            viewModel.fitnessScreenState.observeForever(fitnessScreenStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+            advanceUntilIdle()
+
+            val result = fitnessScreenStateObserver.getLastValue()
+            assertThat(result is FitnessScreenState.ShowFitnessReadWrite).isTrue()
+            assertThat((result as FitnessScreenState.ShowFitnessReadWrite).appMetadata.appName)
+                .isEqualTo(TEST_APP_NAME)
+            assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+            assertThat(result.hasMedical).isTrue()
+            assertThat(result.historyGranted).isTrue()
+            assertThat(result.fitnessPermissions)
+                .containsExactlyElementsIn(
+                    listOf(
+                            READ_EXERCISE,
+                            READ_SLEEP,
+                            WRITE_EXERCISE,
+                            WRITE_PLANNED_EXERCISE,
+                            WRITE_SKIN_TEMPERATURE,
+                        )
+                        .map { fromPermissionString(it) }
+                )
+        }
+
+    // AdditionalScreenStates
+    @Test
+    fun init_withNoAdditionalPermissions_loadsAdditionalScreenStateNoAdditionalData() = runTest {
+        val permissions = arrayOf(READ_HEALTH_DATA_IN_BACKGROUND, READ_HEALTH_DATA_HISTORY)
+        val additionalScreenStateObserver = TestObserver<AdditionalScreenState>()
+        viewModel.additionalScreenState.observeForever(additionalScreenStateObserver)
+
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+        advanceUntilIdle()
+
+        val result = additionalScreenStateObserver.getLastValue()
+        assertThat(result is AdditionalScreenState.NoAdditionalData).isTrue()
+    }
+
+    @Test
+    fun init_withHistoryRead_withNoMedical_loadsAdditionalScreenStateShowHistory() = runTest {
+        val permissions = arrayOf(READ_HEALTH_DATA_HISTORY)
+        (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+            TEST_APP_PACKAGE_NAME_2,
+            listOf(READ_SLEEP),
+        )
+        val additionalScreenStateObserver = TestObserver<AdditionalScreenState>()
+        viewModel.additionalScreenState.observeForever(additionalScreenStateObserver)
+
+        viewModel.init(TEST_APP_PACKAGE_NAME_2, permissions)
+        advanceUntilIdle()
+
+        val result = additionalScreenStateObserver.getLastValue()
+        assertThat(result is AdditionalScreenState.ShowHistory).isTrue()
+        assertThat((result as AdditionalScreenState.ShowHistory).appMetadata.appName)
+            .isEqualTo(TEST_APP_NAME_2)
+        assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME_2)
+        assertThat(result.hasMedical).isFalse()
+        assertThat(result.isMedicalReadGranted).isFalse()
+        assertThat(result.dataAccessDate).isEqualTo(NOW)
+    }
+
+    @Test
+    fun init_withHistoryRead_withMedical_medicalNotGranted_loadsAdditionalScreenStateShowHistory() =
+        runTest {
+            val permissions = arrayOf(READ_HEALTH_DATA_HISTORY)
+            (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+                TEST_APP_PACKAGE_NAME,
+                listOf(READ_SLEEP),
+            )
+            val additionalScreenStateObserver = TestObserver<AdditionalScreenState>()
+            viewModel.additionalScreenState.observeForever(additionalScreenStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+            advanceUntilIdle()
+
+            val result = additionalScreenStateObserver.getLastValue()
+            assertThat(result is AdditionalScreenState.ShowHistory).isTrue()
+            assertThat((result as AdditionalScreenState.ShowHistory).appMetadata.appName)
+                .isEqualTo(TEST_APP_NAME)
+            assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+            assertThat(result.hasMedical).isTrue()
+            assertThat(result.isMedicalReadGranted).isFalse()
+            assertThat(result.dataAccessDate).isEqualTo(NOW)
+        }
+
+    @Test
+    fun init_withHistoryRead_withMedical_medicalGranted_loadsAdditionalScreenStateShowHistory() =
+        runTest {
+            val permissions = arrayOf(READ_HEALTH_DATA_HISTORY)
+            (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+                TEST_APP_PACKAGE_NAME,
+                listOf(READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES, READ_SLEEP),
+            )
+            val additionalScreenStateObserver = TestObserver<AdditionalScreenState>()
+            viewModel.additionalScreenState.observeForever(additionalScreenStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+            advanceUntilIdle()
+
+            val result = additionalScreenStateObserver.getLastValue()
+            assertThat(result is AdditionalScreenState.ShowHistory).isTrue()
+            assertThat((result as AdditionalScreenState.ShowHistory).appMetadata.appName)
+                .isEqualTo(TEST_APP_NAME)
+            assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+            assertThat(result.hasMedical).isTrue()
+            assertThat(result.isMedicalReadGranted).isTrue()
+            assertThat(result.dataAccessDate).isEqualTo(NOW)
+        }
+
+    @Test
+    fun init_withBackgroundRead_withNoMedical_loadsAdditionalScreenStateShowBackground() = runTest {
+        val permissions = arrayOf(READ_HEALTH_DATA_IN_BACKGROUND)
+        (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+            TEST_APP_PACKAGE_NAME_2,
+            listOf(READ_SLEEP),
+        )
+        val additionalScreenStateObserver = TestObserver<AdditionalScreenState>()
+        viewModel.additionalScreenState.observeForever(additionalScreenStateObserver)
+
+        viewModel.init(TEST_APP_PACKAGE_NAME_2, permissions)
+        advanceUntilIdle()
+
+        val result = additionalScreenStateObserver.getLastValue()
+        assertThat(result is AdditionalScreenState.ShowBackground).isTrue()
+        assertThat((result as AdditionalScreenState.ShowBackground).appMetadata.appName)
+            .isEqualTo(TEST_APP_NAME_2)
+        assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME_2)
+        assertThat(result.hasMedical).isFalse()
+        assertThat(result.isMedicalReadGranted).isFalse()
+        assertThat(result.isFitnessReadGranted).isTrue()
+    }
+
+    @Test
+    fun init_withBackgroundRead_withMedical_medicalGranted_fitnessNotGranted_loadsAdditionalScreenStateShowBackground() =
+        runTest {
+            val permissions = arrayOf(READ_HEALTH_DATA_IN_BACKGROUND)
+            (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+                TEST_APP_PACKAGE_NAME,
+                listOf(READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES),
+            )
+            val additionalScreenStateObserver = TestObserver<AdditionalScreenState>()
+            viewModel.additionalScreenState.observeForever(additionalScreenStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+            advanceUntilIdle()
+
+            val result = additionalScreenStateObserver.getLastValue()
+            assertThat(result is AdditionalScreenState.ShowBackground).isTrue()
+            assertThat((result as AdditionalScreenState.ShowBackground).appMetadata.appName)
+                .isEqualTo(TEST_APP_NAME)
+            assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+            assertThat(result.hasMedical).isTrue()
+            assertThat(result.isMedicalReadGranted).isTrue()
+            assertThat(result.isFitnessReadGranted).isFalse()
+        }
+
+    @Test
+    fun init_withBackgroundRead_withMedical_medicalNotGranted_fitnessGranted_loadsAdditionalScreenStateShowBackground() =
+        runTest {
+            val permissions = arrayOf(READ_HEALTH_DATA_IN_BACKGROUND)
+            (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+                TEST_APP_PACKAGE_NAME,
+                listOf(READ_SLEEP),
+            )
+            val additionalScreenStateObserver = TestObserver<AdditionalScreenState>()
+            viewModel.additionalScreenState.observeForever(additionalScreenStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+            advanceUntilIdle()
+
+            val result = additionalScreenStateObserver.getLastValue()
+            assertThat(result is AdditionalScreenState.ShowBackground).isTrue()
+            assertThat((result as AdditionalScreenState.ShowBackground).appMetadata.appName)
+                .isEqualTo(TEST_APP_NAME)
+            assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+            assertThat(result.hasMedical).isTrue()
+            assertThat(result.isMedicalReadGranted).isFalse()
+            assertThat(result.isFitnessReadGranted).isTrue()
+        }
+
+    @Test
+    fun init_withBackgroundRead_withMedical_medicalGranted_fitnessGranted_loadsAdditionalScreenStateShowBackground() =
+        runTest {
+            val permissions = arrayOf(READ_HEALTH_DATA_IN_BACKGROUND)
+            (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+                TEST_APP_PACKAGE_NAME,
+                listOf(READ_SLEEP, READ_MEDICAL_DATA_IMMUNIZATIONS),
+            )
+            val additionalScreenStateObserver = TestObserver<AdditionalScreenState>()
+            viewModel.additionalScreenState.observeForever(additionalScreenStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+            advanceUntilIdle()
+
+            val result = additionalScreenStateObserver.getLastValue()
+            assertThat(result is AdditionalScreenState.ShowBackground).isTrue()
+            assertThat((result as AdditionalScreenState.ShowBackground).appMetadata.appName)
+                .isEqualTo(TEST_APP_NAME)
+            assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+            assertThat(result.hasMedical).isTrue()
+            assertThat(result.isMedicalReadGranted).isTrue()
+            assertThat(result.isFitnessReadGranted).isTrue()
+        }
+
+    @Test
+    fun init_withAdditionalPermissions_withNoMedical_loadsAdditionalScreenStateShowCombined() =
+        runTest {
+            val permissions = arrayOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
+            (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+                TEST_APP_PACKAGE_NAME_2,
+                listOf(READ_SLEEP),
+            )
+            val additionalScreenStateObserver = TestObserver<AdditionalScreenState>()
+            viewModel.additionalScreenState.observeForever(additionalScreenStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME_2, permissions)
+            advanceUntilIdle()
+
+            val result = additionalScreenStateObserver.getLastValue()
+            assertThat(result is AdditionalScreenState.ShowCombined).isTrue()
+            assertThat((result as AdditionalScreenState.ShowCombined).appMetadata.appName)
+                .isEqualTo(TEST_APP_NAME_2)
+            assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME_2)
+            assertThat(result.hasMedical).isFalse()
+            assertThat(result.isMedicalReadGranted).isFalse()
+            assertThat(result.isFitnessReadGranted).isTrue()
+            assertThat(result.dataAccessDate).isEqualTo(NOW)
+        }
+
+    @Test
+    fun init_withAdditionalPermissions_withMedical_medicalNotGranted_fitnessGranted_loadsAdditionalScreenStateShowCombined() =
+        runTest {
+            val permissions = arrayOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
+            (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+                TEST_APP_PACKAGE_NAME,
+                listOf(READ_SLEEP),
+            )
+            val additionalScreenStateObserver = TestObserver<AdditionalScreenState>()
+            viewModel.additionalScreenState.observeForever(additionalScreenStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+            advanceUntilIdle()
+
+            val result = additionalScreenStateObserver.getLastValue()
+            assertThat(result is AdditionalScreenState.ShowCombined).isTrue()
+            assertThat((result as AdditionalScreenState.ShowCombined).appMetadata.appName)
+                .isEqualTo(TEST_APP_NAME)
+            assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+            assertThat(result.hasMedical).isTrue()
+            assertThat(result.isMedicalReadGranted).isFalse()
+            assertThat(result.isFitnessReadGranted).isTrue()
+            assertThat(result.dataAccessDate).isEqualTo(NOW)
+        }
+
+    @Test
+    fun init_withAdditionalPermissions_withMedical_medicalGranted_fitnessGranted_loadsAdditionalScreenStateShowCombined() =
+        runTest {
+            val permissions = arrayOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
+            (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+                TEST_APP_PACKAGE_NAME,
+                listOf(READ_SLEEP, READ_MEDICAL_DATA_IMMUNIZATIONS),
+            )
+            val additionalScreenStateObserver = TestObserver<AdditionalScreenState>()
+            viewModel.additionalScreenState.observeForever(additionalScreenStateObserver)
+
+            viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+            advanceUntilIdle()
+
+            val result = additionalScreenStateObserver.getLastValue()
+            assertThat(result is AdditionalScreenState.ShowCombined).isTrue()
+            assertThat((result as AdditionalScreenState.ShowCombined).appMetadata.appName)
+                .isEqualTo(TEST_APP_NAME)
+            assertThat(result.appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+            assertThat(result.hasMedical).isTrue()
+            assertThat(result.isMedicalReadGranted).isTrue()
+            assertThat(result.isFitnessReadGranted).isTrue()
+            assertThat(result.dataAccessDate).isEqualTo(NOW)
+        }
 
     @Test
     fun initPermissions_filtersOutUndeclaredPermissions() = runTest {
@@ -195,57 +995,55 @@ class RequestPermissionViewModelTest {
             TEST_APP_PACKAGE_NAME,
             listOf(READ_EXERCISE),
         )
+        val permissionActivityStateObserver = TestObserver<PermissionsActivityState>()
+        viewModel.permissionsActivityState.observeForever(permissionActivityStateObserver)
+
+        val fitnessStateObserver = TestObserver<FitnessScreenState>()
+        viewModel.fitnessScreenState.observeForever(fitnessStateObserver)
+
+        val additionalStateObserver = TestObserver<AdditionalScreenState>()
+        viewModel.additionalScreenState.observeForever(additionalStateObserver)
+
         viewModel.init(
             TEST_APP_PACKAGE_NAME,
             arrayOf(READ_STEPS, READ_HEART_RATE, READ_HEALTH_DATA_IN_BACKGROUND),
         )
-        val testObserver = TestObserver<List<HealthPermission>>()
-        viewModel.healthPermissionsList.observeForever(testObserver)
-        advanceUntilIdle()
-        assertThat(testObserver.getLastValue())
-            .isEqualTo(listOf(fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND)))
-    }
 
-    @Test
-    fun initPermissions_whenPermissionsNotHidden_doesNotFilterOutPermissions() = runTest {
-
-        viewModel.init(
-            TEST_APP_PACKAGE_NAME,
-            arrayOf(
-                READ_SLEEP,
-                READ_EXERCISE,
-                READ_SKIN_TEMPERATURE,
-                WRITE_SKIN_TEMPERATURE,
-                READ_PLANNED_EXERCISE,
-                WRITE_PLANNED_EXERCISE,
-            ),
-        )
-        val testObserver = TestObserver<List<FitnessPermission>>()
-        viewModel.fitnessPermissionsList.observeForever(testObserver)
         advanceUntilIdle()
-        assertThat(testObserver.getLastValue())
-            .isEqualTo(
-                listOf(
-                    fromPermissionString(READ_SLEEP),
-                    fromPermissionString(READ_EXERCISE),
-                    fromPermissionString(READ_SKIN_TEMPERATURE),
-                    fromPermissionString(WRITE_SKIN_TEMPERATURE),
-                    fromPermissionString(READ_PLANNED_EXERCISE),
-                    fromPermissionString(WRITE_PLANNED_EXERCISE),
-                )
+        assertThat(
+                permissionActivityStateObserver.getLastValue()
+                    is PermissionsActivityState.ShowAdditional
             )
+            .isTrue()
+        assertThat(fitnessStateObserver.getLastValue() is FitnessScreenState.NoFitnessData).isTrue()
+        assertThat(additionalStateObserver.getLastValue() is AdditionalScreenState.ShowBackground)
+            .isTrue()
     }
 
     @Test
     fun initPermissions_filtersOutUnrecognisedPermissions() = runTest {
-        viewModel.init(TEST_APP_PACKAGE_NAME, arrayOf(READ_EXERCISE, READ_SLEEP, "permission"))
+        val permissionActivityStateObserver = TestObserver<PermissionsActivityState>()
+        viewModel.permissionsActivityState.observeForever(permissionActivityStateObserver)
 
-        val testObserver = TestObserver<List<HealthPermission>>()
-        viewModel.healthPermissionsList.observeForever(testObserver)
+        val fitnessStateObserver = TestObserver<FitnessScreenState>()
+        viewModel.fitnessScreenState.observeForever(fitnessStateObserver)
+
+        viewModel.init(TEST_APP_PACKAGE_NAME, arrayOf(READ_EXERCISE, READ_SLEEP, "permission"))
         advanceUntilIdle()
-        assertThat(testObserver.getLastValue())
-            .isEqualTo(
-                listOf(fromPermissionString(READ_EXERCISE), fromPermissionString(READ_SLEEP))
+
+        assertThat(
+                permissionActivityStateObserver.getLastValue()
+                    is PermissionsActivityState.ShowFitness
+            )
+            .isTrue()
+        assertThat(fitnessStateObserver.getLastValue() is FitnessScreenState.ShowFitnessRead)
+            .isTrue()
+        assertThat(
+                (fitnessStateObserver.getLastValue() as FitnessScreenState.ShowFitnessRead)
+                    .fitnessPermissions
+            )
+            .containsExactlyElementsIn(
+                listOf(READ_EXERCISE, READ_SLEEP).map { fromPermissionString(it) }
             )
     }
 
@@ -255,15 +1053,35 @@ class RequestPermissionViewModelTest {
             TEST_APP_PACKAGE_NAME,
             listOf(READ_EXERCISE, READ_HEALTH_DATA_IN_BACKGROUND),
         )
+        val permissionActivityStateObserver = TestObserver<PermissionsActivityState>()
+        viewModel.permissionsActivityState.observeForever(permissionActivityStateObserver)
+
+        val fitnessStateObserver = TestObserver<FitnessScreenState>()
+        viewModel.fitnessScreenState.observeForever(fitnessStateObserver)
+
+        val additionalStateObserver = TestObserver<AdditionalScreenState>()
+        viewModel.additionalScreenState.observeForever(additionalStateObserver)
+
         viewModel.init(
             TEST_APP_PACKAGE_NAME,
             arrayOf(READ_EXERCISE, READ_SLEEP, READ_HEALTH_DATA_IN_BACKGROUND),
         )
 
-        val testObserver = TestObserver<List<HealthPermission>>()
-        viewModel.healthPermissionsList.observeForever(testObserver)
         advanceUntilIdle()
-        assertThat(testObserver.getLastValue()).isEqualTo(listOf(fromPermissionString(READ_SLEEP)))
+        assertThat(
+                permissionActivityStateObserver.getLastValue()
+                    is PermissionsActivityState.ShowFitness
+            )
+            .isTrue()
+        assertThat(fitnessStateObserver.getLastValue() is FitnessScreenState.ShowFitnessRead)
+            .isTrue()
+        assertThat(
+                (fitnessStateObserver.getLastValue() as FitnessScreenState.ShowFitnessRead)
+                    .fitnessPermissions
+            )
+            .containsExactlyElementsIn(listOf(READ_SLEEP).map { fromPermissionString(it) })
+        assertThat(additionalStateObserver.getLastValue() is AdditionalScreenState.NoAdditionalData)
+            .isTrue()
     }
 
     @Test
@@ -275,6 +1093,17 @@ class RequestPermissionViewModelTest {
         viewModel.updateHealthPermission(readExercisePermission, grant = true)
 
         assertThat(viewModel.isPermissionLocallyGranted(readExercisePermission)).isTrue()
+    }
+
+    @Test
+    fun isPermissionLocallyGranted_medicalPermissionGranted_returnsTrue() = runTest {
+        val permissions = arrayOf(READ_EXERCISE, READ_SLEEP, READ_MEDICAL_DATA_IMMUNIZATIONS)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+        val readImmunizationPermission = fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATIONS)
+        viewModel.updateHealthPermission(readImmunizationPermission, grant = true)
+
+        assertThat(viewModel.isPermissionLocallyGranted(readImmunizationPermission)).isTrue()
     }
 
     @Test
@@ -296,8 +1125,18 @@ class RequestPermissionViewModelTest {
         val readStepsPermission = fromPermissionString(READ_STEPS)
         viewModel.updateHealthPermission(readStepsPermission, grant = false)
 
-        assertThat(viewModel.isPermissionLocallyGranted(fromPermissionString(READ_EXERCISE)))
-            .isFalse()
+        assertThat(viewModel.isPermissionLocallyGranted(readStepsPermission)).isFalse()
+    }
+
+    @Test
+    fun isPermissionLocallyGranted_medicalPermissionRevoked_returnsFalse() = runTest {
+        val permissions = arrayOf(READ_EXERCISE, READ_SLEEP, READ_MEDICAL_DATA_IMMUNIZATIONS)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+        val readImmunizationPermission = fromPermissionString(READ_MEDICAL_DATA_IMMUNIZATIONS)
+        viewModel.updateHealthPermission(readImmunizationPermission, grant = false)
+
+        assertThat(viewModel.isPermissionLocallyGranted(readImmunizationPermission)).isFalse()
     }
 
     @Test
@@ -318,7 +1157,7 @@ class RequestPermissionViewModelTest {
     }
 
     @Test
-    fun init_anyReadPermissionsGranted_whenReadPermissionGranted_returnsTrue() = runTest {
+    fun init_anyReadPermissionsGranted_whenReadFitnessPermissionGranted_returnsTrue() = runTest {
         val permissions =
             arrayOf(
                 READ_EXERCISE,
@@ -338,6 +1177,26 @@ class RequestPermissionViewModelTest {
     }
 
     @Test
+    fun init_anyReadPermissionsGranted_whenReadMedicalPermissionGranted_returnsTrue() = runTest {
+        val permissions =
+            arrayOf(
+                READ_EXERCISE,
+                READ_SLEEP,
+                WRITE_DISTANCE,
+                READ_HEALTH_DATA_IN_BACKGROUND,
+                READ_HEALTH_DATA_HISTORY,
+            )
+        (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+            TEST_APP_PACKAGE_NAME,
+            listOf(READ_MEDICAL_DATA_IMMUNIZATIONS),
+        )
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+        advanceUntilIdle()
+        assertThat(viewModel.isAnyReadPermissionGranted()).isTrue()
+    }
+
+    @Test
     fun init_anyReadPermissionsGranted_whenNoReadPermissionGranted_returnsFalse() = runTest {
         val permissions =
             arrayOf(
@@ -349,7 +1208,7 @@ class RequestPermissionViewModelTest {
             )
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
             TEST_APP_PACKAGE_NAME,
-            listOf(),
+            listOf(WRITE_MEDICAL_DATA),
         )
         viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
 
@@ -423,6 +1282,21 @@ class RequestPermissionViewModelTest {
     }
 
     @Test
+    fun updateHealthPermission_grant_updatesGrantedMedicalPermissions() = runTest {
+        val permissions =
+            arrayOf(READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES, READ_SLEEP, READ_HEALTH_DATA_HISTORY)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+        val readAllergiesPermission = fromPermissionString(READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES)
+        val testObserver = TestObserver<Set<MedicalPermission>>()
+        viewModel.grantedMedicalPermissions.observeForever(testObserver)
+        viewModel.updateHealthPermission(readAllergiesPermission, grant = true)
+        advanceUntilIdle()
+
+        assertThat(testObserver.getLastValue()).contains(readAllergiesPermission)
+    }
+
+    @Test
     fun updateHealthPermission_grant_updatesGrantedAdditionalPermissions() = runTest {
         val permissions = arrayOf(READ_EXERCISE, READ_SLEEP, READ_HEALTH_DATA_HISTORY)
         viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
@@ -451,6 +1325,21 @@ class RequestPermissionViewModelTest {
     }
 
     @Test
+    fun updateHealthPermission_revoke_updatesGrantedMedicalPermissions() = runTest {
+        val permissions =
+            arrayOf(READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES, READ_SLEEP, READ_HEALTH_DATA_HISTORY)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+        val readAllergiesPermission = fromPermissionString(READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES)
+        val testObserver = TestObserver<Set<MedicalPermission>>()
+        viewModel.grantedMedicalPermissions.observeForever(testObserver)
+        viewModel.updateHealthPermission(readAllergiesPermission, grant = false)
+        advanceUntilIdle()
+
+        assertThat(testObserver.getLastValue()).doesNotContain(readAllergiesPermission)
+    }
+
+    @Test
     fun updateHealthPermission_revoke_updatesGrantedAdditionalPermissions() = runTest {
         val permissions = arrayOf(READ_EXERCISE, READ_SLEEP, READ_HEALTH_DATA_HISTORY)
         viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
@@ -476,6 +1365,31 @@ class RequestPermissionViewModelTest {
 
         assertThat(testObserver.getLastValue())
             .containsExactly(fromPermissionString(READ_EXERCISE), fromPermissionString(READ_SLEEP))
+    }
+
+    @Test
+    fun updateMedicalPermissions_grant_updatesGrantedMedicalPermissions() = runTest {
+        val permissions =
+            arrayOf(
+                READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
+                WRITE_MEDICAL_DATA,
+                READ_EXERCISE,
+                READ_SLEEP,
+                READ_HEALTH_DATA_HISTORY,
+            )
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+        val testObserver = TestObserver<Set<MedicalPermission>>()
+        viewModel.grantedMedicalPermissions.observeForever(testObserver)
+        viewModel.updateMedicalPermissions(grant = true)
+        advanceUntilIdle()
+
+        assertThat(testObserver.getLastValue())
+            .containsExactlyElementsIn(
+                setOf(READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES, WRITE_MEDICAL_DATA).map {
+                    fromPermissionString(it)
+                }
+            )
     }
 
     @Test
@@ -513,6 +1427,26 @@ class RequestPermissionViewModelTest {
         val testObserver = TestObserver<Set<FitnessPermission>>()
         viewModel.grantedFitnessPermissions.observeForever(testObserver)
         viewModel.updateFitnessPermissions(grant = false)
+        advanceUntilIdle()
+
+        assertThat(testObserver.getLastValue()).isEmpty()
+    }
+
+    @Test
+    fun updateMedicalPermissions_revoke_updatesGrantedMedicalPermissions() = runTest {
+        val permissions =
+            arrayOf(
+                READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
+                WRITE_MEDICAL_DATA,
+                READ_EXERCISE,
+                READ_SLEEP,
+                READ_HEALTH_DATA_HISTORY,
+            )
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+        val testObserver = TestObserver<Set<MedicalPermission>>()
+        viewModel.grantedMedicalPermissions.observeForever(testObserver)
+        viewModel.updateMedicalPermissions(grant = false)
         advanceUntilIdle()
 
         assertThat(testObserver.getLastValue()).isEmpty()
@@ -557,6 +1491,38 @@ class RequestPermissionViewModelTest {
                 mutableMapOf(
                     fromPermissionString(READ_EXERCISE) to PermissionState.GRANTED,
                     fromPermissionString(READ_SLEEP) to PermissionState.GRANTED,
+                    fromPermissionString(READ_HEALTH_DATA_HISTORY) to PermissionState.NOT_GRANTED,
+                    fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND) to
+                        PermissionState.NOT_GRANTED,
+                )
+            )
+    }
+
+    @Test
+    fun requestMedicalPermissions_updatesPermissionState() {
+        val permissions =
+            arrayOf(
+                READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES,
+                WRITE_MEDICAL_DATA,
+                READ_EXERCISE,
+                READ_SLEEP,
+                READ_HEALTH_DATA_HISTORY,
+                READ_HEALTH_DATA_IN_BACKGROUND,
+            )
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+        viewModel.updateMedicalPermissions(true)
+
+        viewModel.requestMedicalPermissions(TEST_APP_PACKAGE_NAME)
+        assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
+            .containsExactly(READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES, WRITE_MEDICAL_DATA)
+        assertThat(viewModel.getPermissionGrants())
+            .isEqualTo(
+                mutableMapOf(
+                    fromPermissionString(READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES) to
+                        PermissionState.GRANTED,
+                    fromPermissionString(WRITE_MEDICAL_DATA) to PermissionState.GRANTED,
+                    fromPermissionString(READ_EXERCISE) to PermissionState.NOT_GRANTED,
+                    fromPermissionString(READ_SLEEP) to PermissionState.NOT_GRANTED,
                     fromPermissionString(READ_HEALTH_DATA_HISTORY) to PermissionState.NOT_GRANTED,
                     fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND) to
                         PermissionState.NOT_GRANTED,
@@ -661,11 +1627,6 @@ class RequestPermissionViewModelTest {
                     fromPermissionString(READ_EXERCISE_ROUTES) to PermissionState.NOT_GRANTED,
                 )
             )
-    }
-
-    @Test
-    fun loadAccessDate_returnsCorrectAccessDate() {
-        assertThat(viewModel.loadAccessDate(TEST_APP_PACKAGE_NAME)).isEqualTo(NOW)
     }
 
     @Test

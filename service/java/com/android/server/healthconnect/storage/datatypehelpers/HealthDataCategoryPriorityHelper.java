@@ -18,7 +18,6 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.HealthPermissions.getDataCategoriesWithWritePermissionsForPackage;
 import static android.health.connect.HealthPermissions.getPackageHasWriteHealthPermissionsForCategory;
-import static android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper.getRecordCategoryForRecordType;
 
 import static com.android.server.healthconnect.storage.request.UpsertTableRequest.TYPE_STRING;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
@@ -673,7 +672,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         for (Map.Entry<Integer, Set<String>> entry : recordTypeToContributingPackages.entrySet()) {
             Integer recordType = entry.getKey();
             Set<String> contributingPackages = entry.getValue();
-            int recordCategory = getRecordCategoryForRecordType(recordType);
+            int recordCategory = mHealthConnectMappings.getRecordCategoryForRecordType(recordType);
             boolean isPackageNameContributor = contributingPackages.contains(packageName);
             if (isPackageNameContributor) {
                 dataCategoriesWithData.add(recordCategory);
@@ -694,7 +693,8 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         Map<Integer, Set<String>> allContributorApps = new HashMap<>();
 
         for (Map.Entry<Integer, Set<String>> entry : recordTypeToContributingPackages.entrySet()) {
-            int recordCategory = getRecordCategoryForRecordType(entry.getKey());
+            int recordCategory =
+                    mHealthConnectMappings.getRecordCategoryForRecordType(entry.getKey());
             Set<String> contributingPackages = entry.getValue();
 
             Set<String> currentPackages =

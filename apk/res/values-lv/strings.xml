@@ -23,8 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Pārvaldiet ierīcē saglabātos veselības un fitnesa datus un kontrolējiet, kuras lietotnes tiem var piekļūt."</string>
     <string name="data_title" msgid="4456619761533380816">"Dati un piekļuve"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Pārlūkot veselības datus"</string>
-    <!-- no translation found for browse_medical_data_subtitle (4115165261000205538) -->
-    <skip />
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Skatiet savus veselības ierakstus un to, kuras lietotnes tiem var piekļūt."</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Visas kategorijas"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Skatīt visas kategorijas"</string>
     <string name="no_data" msgid="1906986019249068659">"Nav datu"</string>
@@ -363,6 +362,7 @@
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"Lietotne <xliff:g id="APP_NAME">%1$s</xliff:g> vairs nevarēs lasīt un rakstīt no platformas Health Connect iegūtos datus, tostarp fona un iepriekšējos datus.\n\nTādējādi netiek ietekmētas citas atļaujas, kas lietotnei var būt piešķirtas, piemēram, kameras, mikrofona vai atrašanās vietas atļaujas."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Turklāt no platformas Health Connect izdzēst fitnesa un veselības datus, kas iegūti no lietotnes <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Šai lietotnei ir noņemtas atļaujas."</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Turklāt dzēst visus Health Connect datus"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Nākamā diena"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Atlasītā diena"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Iepriekšējā diena"</string>
@@ -403,8 +403,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Lietotnes piekļuve"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Pašlaik nav instalēta neviena saderīga lietotne"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Papildu piekļuve"</string>
-    <!-- no translation found for additional_access_summary (1076197455435130191) -->
-    <skip />
+    <string name="additional_access_summary" msgid="1076197455435130191">"Iepriekšējie dati, fona dati"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Šai lietotnei ir noņemtas papildu atļaujas."</string>
     <string name="permissions_header" msgid="6519976063360071569">"Atļaujas"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Fitness un labsajūta"</string>
@@ -605,11 +604,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Viegla asiņošana"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Vidēja asiņošana"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Spēcīga asiņošana"</string>
-    <!-- no translation found for flow_unknown (1634411759928572900) -->
-    <skip />
+    <string name="flow_unknown" msgid="1634411759928572900">"Nezināma asiņošanas intensitāte"</string>
     <string name="period_day" msgid="3821944462093965882">"Menstruālā cikla <xliff:g id="DAY">%1$d</xliff:g>. diena no <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
-    <!-- no translation found for period_length (2257138792780916599) -->
-    <skip />
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Menstruācija (viena diena)}zero{Menstruācija (# dienu)}one{Menstruācija (# diena)}other{Menstruācija (# dienas)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Pozitīvs"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Negatīvs"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Augsts līmenis"</string>
@@ -1078,10 +1075,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Rediģēt lietotņu avotus"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Ierīces noklusējuma lietotne"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Lietotnes dati"</string>
-    <!-- no translation found for app_data_no_data_footer (7027700714577530371) -->
-    <skip />
-    <!-- no translation found for all_data_no_data_footer (2553443887019153340) -->
-    <skip />
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Šeit tiks rādīti dati no lietotnes <xliff:g id="APP_NAME">%1$s</xliff:g>."</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Šeit būs redzami dati no lietotnēm, kurām ir piekļuve platformai Health Connect."</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Diena"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Nedēļa"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Mēnesis"</string>
@@ -1127,6 +1122,5 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Vai neatgriezeniski dzēst atlasītos lietotnes <xliff:g id="APP_NAME">%1$s</xliff:g>ierakstus par šo nedēļu: <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Vai neatgriezeniski dzēst atlasītos lietotnes <xliff:g id="APP_NAME">%1$s</xliff:g> ierakstus par šo mēnesi: <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Vai neatgriezeniski dzēst šo lietotnes <xliff:g id="APP_NAME">%s</xliff:g> ierakstu?"</string>
-    <!-- no translation found for inactive_app_data_selected_deletion_confirmation_dialog (3192411589802497811) -->
-    <skip />
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Vai neatgriezeniski dzēst datus (<xliff:g id="DATA_TYPE">%1$s</xliff:g>) lietotnei <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
 </resources>

@@ -31,7 +31,7 @@ import android.util.Slog;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
@@ -178,7 +178,8 @@ public class UpsertTransactionRequest {
 
     private void addRequest(RecordInternal<?> recordInternal, boolean isInsertRequest) {
         RecordHelper<?> recordHelper =
-                RecordHelperProvider.getRecordHelper(recordInternal.getRecordType());
+                InternalHealthConnectMappings.getInstance()
+                        .getRecordHelper(recordInternal.getRecordType());
         Objects.requireNonNull(recordHelper);
 
         UpsertTableRequest request =

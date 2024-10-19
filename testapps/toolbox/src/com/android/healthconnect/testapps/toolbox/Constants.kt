@@ -74,7 +74,7 @@ object Constants {
     const val INPUT_TYPE_INT = InputType.TYPE_CLASS_NUMBER
     const val INPUT_TYPE_TEXT = InputType.TYPE_CLASS_TEXT
 
-    val DATA_TYPE_PERMISSIONS =
+    val FITNESS_READ_PERMISSIONS =
         arrayOf(
             "android.permission.health.READ_ACTIVE_CALORIES_BURNED",
             "android.permission.health.READ_BASAL_BODY_TEMPERATURE",
@@ -115,6 +115,10 @@ object Constants {
             "android.permission.health.READ_WEIGHT",
             "android.permission.health.READ_INTERMENSTRUAL_BLEEDING",
             "android.permission.health.READ_WHEELCHAIR_PUSHES",
+        )
+
+    val FITNESS_WRITE_PERMISSIONS =
+        arrayOf(
             "android.permission.health.WRITE_ACTIVE_CALORIES_BURNED",
             "android.permission.health.WRITE_BASAL_BODY_TEMPERATURE",
             "android.permission.health.WRITE_BASAL_METABOLIC_RATE",
@@ -155,6 +159,7 @@ object Constants {
             "android.permission.health.WRITE_INTERMENSTRUAL_BLEEDING",
             "android.permission.health.WRITE_EXERCISE_ROUTE",
         )
+    val FITNESS_PERMISSIONS = FITNESS_READ_PERMISSIONS + FITNESS_WRITE_PERMISSIONS
 
     const val READ_HEALTH_DATA_IN_BACKGROUND =
         "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"
@@ -164,9 +169,8 @@ object Constants {
 
     const val READ_IMMUNIZATION = "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS"
     const val WRITE_ALL_MEDICAL_DATA = "android.permission.health.WRITE_MEDICAL_DATA"
-    val MEDICAL_PERMISSIONS =
+    val MEDICAL_READ_PERMISSIONS =
         arrayOf(
-            "android.permission.health.WRITE_MEDICAL_DATA",
             "android.permission.health.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES",
             "android.permission.health.READ_MEDICAL_DATA_CONDITIONS",
             "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATIONS",
@@ -180,10 +184,12 @@ object Constants {
             "android.permission.health.READ_MEDICAL_DATA_VISITS",
             "android.permission.health.READ_MEDICAL_DATA_VITAL_SIGNS",
         )
+    val MEDICAL_WRITE_PERMISSIONS = arrayOf("android.permission.health.WRITE_MEDICAL_DATA")
+    val MEDICAL_PERMISSIONS = MEDICAL_READ_PERMISSIONS + MEDICAL_WRITE_PERMISSIONS
 
     val MEDICAL_WRITE_AND_OTHERS =
-        arrayOf(WRITE_ALL_MEDICAL_DATA) + DATA_TYPE_PERMISSIONS + ADDITIONAL_PERMISSIONS
-    val HEALTH_PERMISSIONS = DATA_TYPE_PERMISSIONS + ADDITIONAL_PERMISSIONS + MEDICAL_PERMISSIONS
+        MEDICAL_WRITE_PERMISSIONS + FITNESS_PERMISSIONS + ADDITIONAL_PERMISSIONS
+    val HEALTH_PERMISSIONS = FITNESS_PERMISSIONS + ADDITIONAL_PERMISSIONS + MEDICAL_PERMISSIONS
 
     /** Represents Category group for HealthConnect data. */
     enum class HealthDataCategory(
